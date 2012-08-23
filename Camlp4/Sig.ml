@@ -389,7 +389,7 @@ module type Camlp4Ast = sig
   (** The inner module for locations *)
   module Loc : Loc;
 
-  INCLUDE "camlp4/Camlp4/Camlp4Ast.partial.ml";
+  INCLUDE "Camlp4/Camlp4Ast.partial.ml";
 
   value loc_of_ctyp : ctyp -> loc;
   value loc_of_patt : patt -> loc;
@@ -685,9 +685,7 @@ module Camlp4AstToAst (M : Camlp4Ast) : Ast
     Since the Ast contains locations, this functor produces Ast types
     for a given location type. *)
 module MakeCamlp4Ast (Loc : Type) = struct
-
-  INCLUDE "camlp4/Camlp4/Camlp4Ast.partial.ml";
-
+  INCLUDE "Camlp4/Camlp4Ast.partial.ml";
 end;
 
 (** {6 Filters} *)

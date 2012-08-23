@@ -1,20 +1,31 @@
 
+<Camlp4>: include
+
 <**/*.ml*>: camlp4boot, warn_Z
 <Camlp4_{config,import}.ml*>: -camlp4boot
 <p4_util.ml>:-camlp4boot
-"Camlp4_import.ml": -warn_Z
-<build/*> or <boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot, -warn_Z, warn_a
-<Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.byte>: use_dynlink
-<Camlp4Printers/**.ml>: include_unix
-"Camlp4/Struct/DynLoader.ml" or "boot/Camlp4.ml": include_dynlink
-<Camlp4Top/**>: include_toplevel
-<camlp4{,boot,o,r,of,rf,oof,orf}.byte>: -debug
-<boot/Camlp4.cmo>:include_compiler
-<Camlp4_config.ml> or <Camlp4/ErrorHandler.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: include_compiler
 
-<boot/camlp4boot.byte>: use_compiler
+# "Camlp4_import.ml": -warn_Z
+
+<build/*> or <boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot, -warn_Z, warn_a
+
+<Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.byte>: pkg_dynlink
+
+<Camlp4Printers/**.ml>: use_unix
+
+"Camlp4/Struct/DynLoader.ml" or "boot/Camlp4.ml": pkg_dynlink
+
+<Camlp4Top/**>: pkg_compiler-libs.toplevel
+
+<camlp4{,boot,o,r,of,rf,oof,orf}.byte>: -debug
+
+
+<boot/Camlp4.ml> or <Camlp4_config.ml> or <Camlp4/ErrorHandler.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
+
+<boot/camlp4boot.byte>: pkg_compiler-libs.common
 
 <Camlp4Parsers>:include
 <Camlp4Filters>:include
+
 # true:include_unix
 # <boot/camlp4boot.byte>:use_unix

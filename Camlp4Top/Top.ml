@@ -27,7 +27,7 @@ module Toploop : sig
   value print_location :
     Format.formatter -> Location.t -> unit;
   value print_warning :
-    Location.t -> Format.formatter -> Camlp4_import.Warnings.t -> unit;
+    Location.t -> Format.formatter -> Warnings.t -> unit;
   value parse_toplevel_phrase :
     ref (Lexing.lexbuf -> Parsetree.toplevel_phrase);
   value parse_use_file :
