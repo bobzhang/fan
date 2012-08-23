@@ -9,7 +9,7 @@
 
 <build/*> or <boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot, -warn_Z, warn_a
 
-<Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.byte>: pkg_dynlink
+<Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.{byte,native}>: pkg_dynlink
 
 <Camlp4Printers/**.ml>: use_unix
 
