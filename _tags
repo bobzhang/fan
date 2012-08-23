@@ -1,5 +1,5 @@
 
-<Camlp4>: traverse
+
 
 <**/*.ml*>: camlp4boot, warn_Z
 <Camlp4_{config,import}.ml*>: -camlp4boot
@@ -12,6 +12,7 @@
 <Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.{byte,native}>: pkg_dynlink
 
 <Camlp4Printers/**.ml>: use_unix
+<Camlp4/**/*.ml*>:include_camlp4
 
 "Camlp4/Struct/DynLoader.ml" or "boot/Camlp4.ml": pkg_dynlink
 

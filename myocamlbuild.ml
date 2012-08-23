@@ -683,6 +683,7 @@ flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);;
 
+flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
 "Camlp4/Sig.ml"  |-? ["Camlp4/Camlp4Ast.partial.ml"];;
 
 copy_rule "camlp4: boot/Camlp4Ast.ml -> Camlp4/Struct/Camlp4Ast.ml"
