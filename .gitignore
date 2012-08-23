@@ -32,4 +32,5 @@ scratch.ml
 *.js
 *.css
 report
-astdefs.syntax_lib_file_cache
+astdefs
+.syntax_lib_file_cache
