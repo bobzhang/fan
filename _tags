@@ -1,5 +1,5 @@
 
-<Camlp4>: include
+<Camlp4>: traverse
 
 <**/*.ml*>: camlp4boot, warn_Z
 <Camlp4_{config,import}.ml*>: -camlp4boot
