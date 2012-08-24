@@ -1,0 +1,214 @@
+# -*- Mode:Shell-script -*-
+../ocamlcomp.sh dynlink.cma -g -I stdlib -I ../otherlibs/dynlink camlp4/Camlp4_import.cmo camlp4/Camlp4_config.cmo camlp4/boot/Camlp4.cmo camlp4/boot/camlp4boot.cmo -o camlp4/boot/camlp4boot.byte
+boot/ocamlrun boot/ocamldep -pp 'boot/ocamlrun camlp4/boot/camlp4boot.byte -D OPT' -modules camlp4/Camlp4/Printers/OCaml.ml > camlp4/Camlp4/Printers/OCaml.ml.depends
+../ocamlcomp.sh -c -g -warn-error A -w Z -pp 'boot/ocamlrun camlp4/boot/camlp4boot.byte' -I camlp4/Camlp4/Printers -I camlp4/Camlp4 -I camlp4/build -I camlp4 -I stdlib -o camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCaml.ml
+../ocamlcomp.sh -pack -g camlp4/Camlp4/Printers/DumpCamlp4Ast.cmo camlp4/Camlp4/Printers/DumpOCamlAst.cmo camlp4/Camlp4/Printers/Null.cmo camlp4/Camlp4/Printers/OCaml.cmo camlp4/Camlp4/Printers/OCamlr.cmo -o camlp4/Camlp4/Printers.cmo
+../ocamlcomp.sh -pack -g camlp4/Camlp4/Debug.cmo camlp4/Camlp4/Sig.cmo camlp4/Camlp4/ErrorHandler.cmo camlp4/Camlp4/OCamlInitSyntax.cmo camlp4/Camlp4/Options.cmo camlp4/Camlp4/Struct.cmo camlp4/Camlp4/Printers.cmo camlp4/Camlp4/PreCast.cmo camlp4/Camlp4/Register.cmo -o camlp4/Camlp4.cmo
+boot/ocamlrun boot/ocamldep -pp 'boot/ocamlrun camlp4/boot/camlp4boot.byte -D OPT' -modules camlp4/Camlp4Top/Rprint.ml > camlp4/Camlp4Top/Rprint.ml.depends
+../ocamlcomp.sh -c -g -warn-error A -w Z -I ../toplevel -pp 'boot/ocamlrun camlp4/boot/camlp4boot.byte' -I camlp4 -I stdlib -I camlp4/Camlp4Top -I camlp4/build -o camlp4/Camlp4Top/Rprint.cmo camlp4/Camlp4Top/Rprint.ml
+../ocamlcomp.sh -pack -g camlp4/Camlp4Top/Top.cmo camlp4/Camlp4Top/Rprint.cmo -o camlp4/Camlp4Top.cmo
+../ocamlcomp.sh -a -I stdlib camlp4/Camlp4_import.cmo camlp4/Camlp4_config.cmo camlp4/Camlp4.cmo -o camlp4/camlp4lib.cma
+../ocamlcomp.sh dynlink.cma -g -I stdlib -I ../otherlibs/dynlink camlp4/camlp4lib.cma camlp4/mkcamlp4.cmo -o camlp4/mkcamlp4.byte
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Bin.cmo -o camlp4/camlp4.byte
+../ocamlcomp.sh -a -I stdlib camlp4/Camlp4_import.cmo camlp4/Camlp4_config.cmo camlp4/Camlp4.cmo camlp4/Camlp4Parsers/Camlp4AstLoader.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Printers/Camlp4AstDumper.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Printers/Camlp4NullDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo camlp4/Camlp4Filters/Camlp4AstLifter.cmo camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo camlp4/Camlp4Filters/Camlp4LocationStripper.cmo camlp4/Camlp4Filters/Camlp4MapGenerator.cmo camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo camlp4/Camlp4Filters/Camlp4Profiler.cmo camlp4/Camlp4Filters/Camlp4TrashRemover.cmo camlp4/Camlp4Top.cmo -o camlp4/camlp4fulllib.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4boot.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4DebugParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Top/Rprint.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4boot.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4r.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Top/Rprint.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4r.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4rf.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Top/Rprint.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4rf.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4o.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4o.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4of.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4of.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4oof.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4oof.cma
+# ../ocamlcomp.sh -annot -I ../otherlibs/dynlink dynlink.cma -I ../otherlibs/unix unix.cma -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo camlp4/Camlp4Bin.cmo -o camlp4/camlp4orf.byte
+../ocamlcomp.sh -annot -a -I stdlib camlp4/camlp4lib.cma -linkall camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo camlp4/Camlp4Parsers/Camlp4MacroParser.cmo camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo camlp4/Camlp4Top/Top.cmo -o camlp4/camlp4orf.cma
+Installing camlp4...
+  install binary /home1/h/hongboz/ocaml/bin/camlp4prof
+  install binary /home1/h/hongboz/ocaml/bin/mkcamlp4
+  install binary /home1/h/hongboz/ocaml/bin/camlp4
+  install binary /home1/h/hongboz/ocaml/bin/camlp4boot
+  install binary /home1/h/hongboz/ocaml/bin/camlp4o
+  install binary /home1/h/hongboz/ocaml/bin/camlp4of
+  install binary /home1/h/hongboz/ocaml/bin/camlp4oof
+  install binary /home1/h/hongboz/ocaml/bin/camlp4orf
+  install binary /home1/h/hongboz/ocaml/bin/camlp4r
+  install binary /home1/h/hongboz/ocaml/bin/camlp4rf
+  install binary /home1/h/hongboz/ocaml/bin/camlp4o.opt
+  install binary /home1/h/hongboz/ocaml/bin/camlp4of.opt
+  install binary /home1/h/hongboz/ocaml/bin/camlp4oof.opt
+  install binary /home1/h/hongboz/ocaml/bin/camlp4orf.opt
+  install binary /home1/h/hongboz/ocaml/bin/camlp4r.opt
+  install binary /home1/h/hongboz/ocaml/bin/camlp4rf.opt
+Installing Camlp4Parsers...
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4AstLoader.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4AstLoader.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4AstLoader.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4DebugParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4DebugParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4DebugParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4GrammarParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4GrammarParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4GrammarParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4ListComprehension.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4ListComprehension.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4ListComprehension.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4MacroParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4MacroParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4MacroParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParserParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationCommon.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationExpander.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4AstLoader.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4DebugParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4GrammarParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4ListComprehension.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4MacroParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlOriginalQuotationExpander.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlParserParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlReloadedParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedParserParser.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4OCamlRevisedQuotationExpander.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationCommon.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Parsers/Camlp4QuotationExpander.o
+Installing Camlp4Printers...
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AstDumper.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AstDumper.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AstDumper.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AutoPrinter.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AutoPrinter.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AutoPrinter.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4NullDumper.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4NullDumper.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4NullDumper.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlAstDumper.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlPrinter.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AstDumper.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4AutoPrinter.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4NullDumper.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlAstDumper.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlPrinter.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Printers/Camlp4OCamlRevisedPrinter.o
+Installing Camlp4Filters...
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4AstLifter.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4AstLifter.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4AstLifter.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4ExceptionTracer.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4FoldGenerator.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4FoldGenerator.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4FoldGenerator.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4LocationStripper.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4LocationStripper.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4LocationStripper.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MapGenerator.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MapGenerator.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MapGenerator.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MetaGenerator.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MetaGenerator.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MetaGenerator.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4Profiler.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4Profiler.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4Profiler.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4TrashRemover.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4TrashRemover.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4TrashRemover.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4AstLifter.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4ExceptionTracer.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4FoldGenerator.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4LocationStripper.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MapGenerator.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4MetaGenerator.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4Profiler.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Filters/Camlp4TrashRemover.o
+Installing Camlp4Top...
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Rprint.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Rprint.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Rprint.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Top.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Top.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Top.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Rprint.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top/Top.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4lib.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4lib.cmxa
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4fulllib.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4fulllib.cmxa
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4o.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4of.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4oof.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4orf.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4r.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4rf.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Bin.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Bin.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Bin.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Bin.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4Top.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4_config.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4prof.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4prof.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4prof.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4prof.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/camlp4/Camlp4_import.cmi
+  install library /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4lib.a
+  install library /home1/h/hongboz/ocaml/lib/ocaml/camlp4/camlp4fulllib.a
+Installing ocamlbuild...
+  install binary /home1/h/hongboz/ocaml/bin/ocamlbuild.byte
+  install binary /home1/h/hongboz/ocaml/bin/ocamlbuild.native
+  install binary /home1/h/hongboz/ocaml/bin/ocamlbuild (with ocamlbuild.native)
+  install library /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuildlib.a
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuildlib.cmxa
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuildlib.cma
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_plugin.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_pack.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_unix_plugin.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_unix_plugin.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_unix_plugin.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_unix_plugin.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_executor.cmi
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_executor.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_executor.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild_executor.o
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild.cmo
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild.cmx
+  install /home1/h/hongboz/ocaml/lib/ocaml/ocamlbuild/ocamlbuild.o
+  install /home1/h/hongboz/ocaml/man/man1/ocamlbuild.1
