@@ -5,9 +5,10 @@
 <Camlp4_{config,import}.ml*>: -camlp4boot
 <p4_util.ml>:-camlp4boot
 
-# "Camlp4_import.ml": -warn_Z
 
-<build/*> or <boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot, -warn_Z, warn_a
+
+<boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot
+# , -warn_Z, warn_a
 
 <Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.{byte,native}>: pkg_dynlink
 
@@ -25,8 +26,9 @@
 
 <boot/camlp4boot.{byte,native}>: pkg_compiler-libs.common
 
-<Camlp4Parsers>:include
-<Camlp4Filters>:include
+<Camlp4>:include
+# <Camlp4Parsers>:include
+# <Camlp4Filters>:include
 
 # true:include_unix
 # <boot/camlp4boot.byte>:use_unix

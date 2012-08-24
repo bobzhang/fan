@@ -201,5 +201,7 @@ two printers
 
    
 * building
+  include Camlp4 for traversing is necessary
+  Take care of Warning message emitted by ocamlbuild 
   
   

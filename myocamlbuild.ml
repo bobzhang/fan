@@ -567,12 +567,13 @@ let find_syntaxes () = ["camlp4o"; "camlp4r"]
 let ocamlfind x = S[A"ocamlfind"; x]
 module Default = struct
   let before_options () = (
-    Options.ocamlc     := ocamlfind & S[A"ocamlc"; A"-annot";
+    Options.ocamlc     := ocamlfind & S[A"ocamlc";
+                                        (* A"-annot"; *)
                                         (* A"-warn-error"; *)
                                         (* A"A" *)
                                         (* A" 4-6-7-9-27..29"; *)
                                       ];
-    Options.ocamlopt   := ocamlfind & S[A"ocamlopt";A"-annot"];
+    Options.ocamlopt   := ocamlfind & S[A"ocamlopt"] (*;A"-annot"]*);
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
@@ -676,18 +677,92 @@ let apply  before_options_dispatch after_rules_dispatch = (
 (*******************************)
 (** Insert most your code here *)                           
 (***)
-let hot_camlp4boot = "boot"// "camlp4boot.byte" ;; 
 
+let hot_camlp4boot = "boot"// "camlp4boot.native" ;; 
+let cold_camlp4o = "" (* to be added *)
+let cold_camlp4boot = "" (* to be added *);;
+    
 flag ["ocaml"; "pp"; "camlp4boot"] (S[ P hot_camlp4boot]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);;
 
 flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
+flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
 "Camlp4/Sig.ml"  |-? ["Camlp4/Camlp4Ast.partial.ml"];;
 
+(* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
 copy_rule "camlp4: boot/Camlp4Ast.ml -> Camlp4/Struct/Camlp4Ast.ml"
   ~insert:`top "boot/Camlp4Ast.ml" "Camlp4/Struct/Camlp4Ast.ml";;
+
+(* (\* seems  non-necessary should be fixed later *\)
+ * rule "camlp4: Camlp4/Struct/Lexer.ml -> boot/Lexer.ml"
+ *   ~prod:"camlp4/boot/Lexer.ml"
+ *   ~dep:"camlp4/Camlp4/Struct/Lexer.ml"
+ *   begin fun _ _ ->
+ *     Cmd(S[P cold_camlp4o; P"camlp4/Camlp4/Struct/Lexer.ml";
+ *           A"-printer"; A"r"; A"-o"; Px"camlp4/boot/Lexer.ml"])
+ *   end;; *)
+
+module Camlp4deps = struct
+  let lexer = Genlex.make_lexer ["INCLUDE"; ";"; "="; ":"]
+  let rec parse strm =
+    match Stream.peek strm with
+    | None -> []
+    | Some(Genlex.Kwd "INCLUDE") ->
+        Stream.junk strm;
+        begin match Stream.peek strm with
+        | Some(Genlex.String s) ->
+            Stream.junk strm;
+            s :: parse strm
+        | _ -> invalid_arg "Camlp4deps parse failure"
+        end
+    | Some _ ->
+        Stream.junk strm;
+        parse strm
+
+  let parse_file file =
+    with_input_file file begin fun ic ->
+      let strm = Stream.of_channel ic in
+      parse (lexer strm)
+    end
+
+  let build_deps build file =
+    let includes = parse_file file in
+    List.iter Outcome.ignore_good (build (List.map (fun i -> [i]) includes));
+end;;
+
+dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];;
+
+(* bootstraping *)
+(* rule "camlp4: ml4 -> ml"
+ *   ~prod:"%.ml"
+ *   ~dep:"%.ml4"
+ *   begin fun env build ->
+ *     let ml4 = env "%.ml4" and ml = env "%.ml" in
+ *     Camlp4deps.build_deps build ml4;
+ *     Cmd(S[P cold_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o";
+ *           A"-D"; A"OPT"; A"-o"; Px ml])
+ *   end;; *)
+
+(* rule "camlp4: mlast -> ml"
+ *   ~prod:"%.ml"
+ *   ~deps:["%.mlast"; "camlp4/Camlp4/Camlp4Ast.partial.ml"]
+ *   begin fun env _ ->
+ *     let mlast = env "%.mlast" and ml = env "%.ml" in
+ *     (\* Camlp4deps.build_deps build mlast; too hard to lex *\)
+ *     Cmd(S[P cold_camlp4boot;
+ *           A"-printer"; A"r";
+ *           A"-filter"; A"map";
+ *           A"-filter"; A"fold";
+ *           A"-filter"; A"meta";
+ *           A"-filter"; A"trash";
+ *           A"-impl"; P mlast;
+ *           A"-o"; Px ml])
+ *   end;; *)
+
+dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
+    ["camlp4/Camlp4/Camlp4Ast.partial.ml"];;
 
 let _ = begin 
   apply !before_options_dispatch !after_rules_dispatch

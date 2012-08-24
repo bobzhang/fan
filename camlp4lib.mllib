@@ -2,5 +2,5 @@ Camlp4_config
 Camlp4
 P4_util
 MakeCamlp4Bin
-Camlp4Parsers/Camlp4Parsers
-Camlp4Filters/Camlp4Filters
+Camlp4Parsers
+Camlp4Filters
