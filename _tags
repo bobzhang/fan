@@ -2,33 +2,23 @@
 
 
 <**/*.ml*>: camlp4boot, warn_Z
+
 <Camlp4_{config,import}.ml*>: -camlp4boot
+
 <p4_util.ml>:-camlp4boot
 
-
-
 <boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot
-# , -warn_Z, warn_a
 
-<Camlp4Bin.{byte,native}> or <{mkcamlp4,boot/camlp4boot}.{byte,native}>: pkg_dynlink
+<{Camlp4Bin,boot/camlp4boot}.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
 
 <Camlp4Printers/**.ml>: use_unix
+
 <Camlp4/**/*.ml*>:include_camlp4
 
 "Camlp4/Struct/DynLoader.ml" or "boot/Camlp4.ml": pkg_dynlink
 
 <Camlp4Top/**>: pkg_compiler-libs.toplevel
 
-<camlp4{,boot,o,r,of,rf,oof,orf}.byte>: -debug
-
-
 <boot/Camlp4.ml> or <Camlp4_config.ml> or <Camlp4/ErrorHandler.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
 
-<boot/camlp4boot.{byte,native}>: pkg_compiler-libs.common
-
 <Camlp4>:include
-# <Camlp4Parsers>:include
-# <Camlp4Filters>:include
-
-# true:include_unix
-# <boot/camlp4boot.byte>:use_unix

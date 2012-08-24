@@ -1,9 +1,0 @@
-camlp4boot -printer r -filter map -filter fold -filter meta -filter trash -impl camlp4/Camlp4/Struct/Camlp4Ast.mlast -o camlp4/Camlp4/Struct/Camlp4Ast.ml
-camlp4boot -impl camlp4/boot/Camlp4.ml4 -printer o -D OPT -o camlp4/boot/Camlp4.ml
-camlp4boot -impl camlp4/boot/camlp4boot.ml4 -printer o -D OPT -o camlp4/boot/camlp4boot.ml
-promote camlp4/Camlp4/Struct/Camlp4Ast.ml
-fixpoint for camlp4/Camlp4/Struct/Camlp4Ast.ml
-promote camlp4/boot/Camlp4.ml
-fixpoint for camlp4/boot/Camlp4.ml
-promote camlp4/boot/camlp4boot.ml
-fixpoint for camlp4/boot/camlp4boot.ml
