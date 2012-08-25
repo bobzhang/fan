@@ -203,5 +203,10 @@ two printers
 * building
   include Camlp4 for traversing is necessary
   Take care of Warning message emitted by ocamlbuild 
+  ocamldep sucks when it handles dependency.
+
+  Camlp4Filters.ml request dependency on Register, but it is incorrect
+  
+* Factoring
   
   

@@ -1,6 +1,5 @@
 
-(* module Register (Syntax:Sig.FilterSyntax) = struct *)
-  module type S = sig
+module type S = sig
     include Sig.FilterSyntax;
   module Plugin
       (Id : Sig.Id) (Plugin : functor (Unit : sig end) -> sig end) : sig end;
@@ -87,7 +86,7 @@
 module Make (Syntax:Sig.FilterSyntax) : S
      with   module Loc = Syntax.Loc and module Ast = Syntax.Ast = struct
   include Syntax;
-  module PP = Printers;
+  module PP = Printers; (* packing module Printers for Printers directory *)
   type parser_fun 'a =
       ?directive_handler:('a -> option 'a) -> Syntax.Loc.t -> Stream.t char -> 'a;
 
@@ -224,7 +223,7 @@ module Make (Syntax:Sig.FilterSyntax) : S
   end;
 
   value enable_ocaml_printer () =
-    let module M = OCamlPrinter PP.OCaml.Id PP.OCaml.MakeMore in ();
+    let module M = OCamlPrinter PP.OCaml.Id Printers.OCaml.MakeMore in ();
 
   value enable_ocamlr_printer () =
     let module M = OCamlPrinter PP.OCamlr.Id PP.OCamlr.MakeMore in ();

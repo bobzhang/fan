@@ -4,10 +4,8 @@ MakePreCast
 MakeRegister
 OCamlInitSyntax
 Options
-PreCast
 Struct
 Sig
-Register
 Printers
 
 

@@ -21,7 +21,6 @@ module MakeAstLoader (Ast : Sig.Ast) : (Sig.Parser Ast).S= struct
       Marshal.from_string str magic_len;
     };
 
-  open Camlp4.PreCast;
   value parse_implem = parse Camlp4_config.camlp4_ast_impl_magic_number;
   value parse_interf = parse Camlp4_config.camlp4_ast_intf_magic_number;
 end;

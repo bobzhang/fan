@@ -568,12 +568,12 @@ let ocamlfind x = S[A"ocamlfind"; x]
 module Default = struct
   let before_options () = (
     Options.ocamlc     := ocamlfind & S[A"ocamlc";
-                                        (* A"-annot"; *)
+                                        A"-annot";
                                         (* A"-warn-error"; *)
                                         (* A"A" *)
                                         (* A" 4-6-7-9-27..29"; *)
                                       ];
-    Options.ocamlopt   := ocamlfind & S[A"ocamlopt"] (*;A"-annot"]*);
+    Options.ocamlopt   := ocamlfind & S[A"ocamlopt";A"-annot"];
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
