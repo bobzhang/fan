@@ -400,7 +400,7 @@ module Camlp4Bin
                             eprintf "Use option -help for usage@.";
                             exit 2 }
         | Arg.Help _ -> usage ()
-        | exc -> do { eprintf "@[<v0>%a@]@." ErrorHandler.print exc; exit 2 } ];
+        | exc -> do { eprintf "@[<v0>%a@]@." Camlp4.ErrorHandler.print exc; exit 2 } ];
       
       main Sys.argv;
             

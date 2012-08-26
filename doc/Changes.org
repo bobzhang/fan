@@ -207,7 +207,14 @@ two printers
 
   Camlp4Filters.ml request dependency on Register, but it is incorrect
 
-  ocamldep is not friendly to open struct. it can not handle it correctly
+  ocamldep is not friendly to open struct. it can not handle it
+  correctly
+
+
+  Take care of how Camlp4Ast.ml was bootstrapped, it was built using
+  different filters, and then copied to my software.
+
+
 * Factoring
 ** no dynamic loading for built-in parser any more.
    possible inconsistent behavior is that no duplicated check any more 

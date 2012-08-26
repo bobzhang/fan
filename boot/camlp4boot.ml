@@ -7,7 +7,7 @@ module Camlp4Parsers =
                 let version = Sys.ocaml_version
                    end
       
-    module MakeAstLoader (Ast : Sig.Ast) : Sig.Parser(Ast).S =
+    module MakeAstLoader (Ast : Camlp4.Sig.Ast) : Camlp4.Sig.Parser(Ast).S =
       struct
         module Ast = Ast
           
@@ -41,9 +41,9 @@ module Camlp4Parsers =
                   
       end
       
-    module MakeDebugParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeDebugParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -209,9 +209,9 @@ module Camlp4Parsers =
                   
       end
       
-    module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -2619,15 +2619,15 @@ module Camlp4Parsers =
                   ()))
           
         let _ =
-          Options.add "-split_ext" (Arg.Set split_ext)
+          Camlp4.Options.add "-split_ext" (Arg.Set split_ext)
             "Split EXTEND by functions to turn around a PowerPC problem."
           
         let _ =
-          Options.add "-split_gext" (Arg.Set split_ext)
+          Camlp4.Options.add "-split_gext" (Arg.Set split_ext)
             "Old name for the option -split_ext."
           
         let _ =
-          Options.add "-meta_action" (Arg.Set meta_action) "Undocumented"
+          Camlp4.Options.add "-meta_action" (Arg.Set meta_action) "Undocumented"
           
       end
       
@@ -2640,9 +2640,9 @@ module Camlp4Parsers =
           
       end
       
-    module MakeListComprehension (Syntax : Sig.Camlp4Syntax) =
+    module MakeListComprehension (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -3054,9 +3054,9 @@ Added statements:
   macro parameter. It cannot be used outside a macro definition.
 
 *)
-    module MakeMacroParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -4056,15 +4056,15 @@ Added statements:
                   ()))
           
         let _ =
-          Options.add "-D" (Arg.String parse_def)
+          Camlp4.Options.add "-D" (Arg.String parse_def)
             "<string> Define for IFDEF instruction."
           
         let _ =
-          Options.add "-U" (Arg.String undef)
+          Camlp4.Options.add "-U" (Arg.String undef)
             "<string> Undefine for IFDEF instruction."
           
         let _ =
-          Options.add "-I" (Arg.String add_include_dir)
+          Camlp4.Options.add "-I" (Arg.String add_include_dir)
             "<string> Add a directory to INCLUDE search path."
           
       end
@@ -4124,9 +4124,9 @@ Added statements:
                 let version = Sys.ocaml_version
                    end
       
-    module MakeReloadedParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeReloadedParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -4332,9 +4332,9 @@ Added statements:
           
       end
       
-    module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeRevisedParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -4361,7 +4361,7 @@ New syntax:\
            exit 1)
           
         let _ =
-          Options.add "-help_seq" (Arg.Unit help_sequences)
+          Camlp4.Options.add "-help_seq" (Arg.Unit help_sequences)
             "Print explanations about new sequences and exit."
           
         let _ = Gram.Entry.clear a_CHAR
@@ -13711,7 +13711,7 @@ New syntax:\
           
       end
       
-    module IdRevisedParserParser : Sig.Id =
+    module IdRevisedParserParser : Camlp4.Sig.Id =
       struct
         let name = "Camlp4OCamlRevisedParserParser"
           
@@ -13719,9 +13719,9 @@ New syntax:\
           
       end
       
-    module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeRevisedParserParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -14628,15 +14628,15 @@ New syntax:\
           
       end
       
-    module IdParser : Sig.Id =
+    module IdParser : Camlp4.Sig.Id =
       struct let name = "Camlp4OCamlParser"
                 let version = Sys.ocaml_version
                   
       end
       
-    module MakeParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -17757,7 +17757,7 @@ New syntax:\
           
       end
       
-    module IdParserParser : Sig.Id =
+    module IdParserParser : Camlp4.Sig.Id =
       struct
         let name = "Camlp4OCamlParserParser"
           
@@ -17765,9 +17765,9 @@ New syntax:\
           
       end
       
-    module MakeParserParser (Syntax : Sig.Camlp4Syntax) =
+    module MakeParserParser (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -17849,10 +17849,10 @@ New syntax:\
       end
       
     module MakeQuotationCommon
-      (Syntax : Sig.Camlp4Syntax)
-      (TheAntiquotSyntax : Sig.Parser(Syntax.Ast).SIMPLE) =
+      (Syntax : Camlp4.Sig.Camlp4Syntax)
+      (TheAntiquotSyntax : Camlp4.Sig.Parser(Syntax.Ast).SIMPLE) =
       struct
-        open Sig
+        open Camlp4.Sig
           
         include Syntax
           
@@ -18618,7 +18618,7 @@ New syntax:\
           
       end
       
-    module MakeQuotationExpander (Syntax : Sig.Camlp4Syntax) =
+    module MakeQuotationExpander (Syntax : Camlp4.Sig.Camlp4Syntax) =
       struct
         module M = MakeQuotationCommon(Syntax)(Syntax.AntiquotSyntax)
           
@@ -18681,10 +18681,10 @@ New syntax:\
    *unreflective*, quotation syntax use revised syntax.
  *)
     let pa_rq ((module Register) : (module MakeRegister.S))
-              ((module PreCast) : (module MakePreCast.S)) =
+              ((module PreCast) : (module Camlp4.MakePreCast.S)) =
       let open PreCast
       in let module Gram = PreCast.MakeGram(PreCast.Lexer)
-        in let module M1 = OCamlInitSyntax.Make(Ast)(Gram)(Quotation)
+        in let module M1 = Camlp4.OCamlInitSyntax.Make(Ast)(Gram)(Quotation)
           in let module M2 = MakeRevisedParser(M1)
             in let module M3 = MakeQuotationCommon(M2)(Syntax.AntiquotSyntax)
               in ()
@@ -18693,11 +18693,11 @@ New syntax:\
    *unreflective*, quotation syntax use original syntax.
    *There's a bug in ocamlbuild* which will generate wrong dependency based on 
  *)
-    let pa_oq ((module Register) : (module MakeRegister.S))
-              ((module PreCast) : (module MakePreCast.S)) =
+    let pa_oq ((module Register) : (module Camlp4.MakeRegister.S))
+              ((module PreCast) : (module Camlp4.MakePreCast.S)) =
       let open PreCast
       in let module Gram = PreCast.MakeGram(PreCast.Lexer)
-        in let module M1 = OCamlInitSyntax.Make(Ast)(Gram)(Quotation)
+        in let module M1 = Camlp4.OCamlInitSyntax.Make(Ast)(Gram)(Quotation)
           in (* *) let module M2 = MakeRevisedParser(M1)
             in let module M3 = MakeParser(M2)
               in
@@ -20667,7 +20667,7 @@ module MakeCamlp4Bin =
       Hashtbl.create 30
       
     module Camlp4Bin
-      (Loc : Sig.Loc) (PreCast : MakePreCast.S with module Loc = Loc)
+      (Loc : Camlp4.Sig.Loc) (PreCast : Camlp4.MakePreCast.S with module Loc = Loc)
       (Register : MakeRegister.S with module Loc = Loc
         and module Ast = PreCast.Ast) =
       struct
@@ -20889,11 +20889,11 @@ module MakeCamlp4Bin =
       <file>.mli       Parse this interface file\n\
       <file>.%s Load this module inside the Camlp4 core@."
              (if DynLoader.is_native then "cmxs     " else "(cmo|cma)");
-           Options.print_usage_list ini_sl;
+           Camlp4.Options.print_usage_list ini_sl;
            if ext_sl <> []
            then
              (eprintf "Options added by loaded object files:@.";
-              Options.print_usage_list ext_sl)
+              Camlp4.Options.print_usage_list ext_sl)
            else ())
           
         let warn_noassert () =
@@ -20989,7 +20989,7 @@ module MakeCamlp4Bin =
             ("-ignore", (Arg.String ignore), "ignore the next argument");
             ("--", (Arg.Unit ignore), "Deprecated, does nothing") ]
           
-        let _ = Options.init initial_spec_list
+        let _ = Camlp4.Options.init initial_spec_list
           
         let anon_fun name =
           input_file
@@ -21009,7 +21009,7 @@ module MakeCamlp4Bin =
           
         let main argv =
           let usage () =
-            (usage initial_spec_list (Options.ext_spec_list ()); exit 0)
+            (usage initial_spec_list (Camlp4.Options.ext_spec_list ()); exit 0)
           in
             try
               let dynloader =
@@ -21025,7 +21025,7 @@ module MakeCamlp4Bin =
                  in
                    (call_callback ();
                     rcall_callback := call_callback;
-                    (match Options.parse anon_fun argv with
+                    (match Camlp4.Options.parse anon_fun argv with
                      | [] -> ()
                      | ("-help" | "--help" | "-h" | "-?") :: _ -> usage ()
                      | s :: _ ->
@@ -21043,7 +21043,7 @@ module MakeCamlp4Bin =
                  eprintf "Use option -help for usage@.";
                  exit 2)
             | Arg.Help _ -> usage ()
-            | exc -> (eprintf "@[<v0>%a@]@." ErrorHandler.print exc; exit 2)
+            | exc -> (eprintf "@[<v0>%a@]@." Camlp4.ErrorHandler.print exc; exit 2)
           
         let _ = main Sys.argv
           

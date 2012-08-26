@@ -22,3 +22,4 @@
 <boot/Camlp4.ml> or <Camlp4_config.ml> or <Camlp4/ErrorHandler.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
 
 <Camlp4>:include
+
