@@ -1463,9 +1463,111 @@ module type SyntaxExtension = functor (Syn : Syntax)
                                 and module Gram           = Syn.Gram
                                 and module Quotation      = Syn.Quotation);
 (** Camlp4Syntax with module [AstFilter] added *)                      
-module type FilterSyntax = sig
-  include Camlp4Syntax;
-  module AstFilters:AstFilters with module Ast = Ast; 
+(* module type FilterSyntax = sig
+ *   include Camlp4Syntax;
+ *   module AstFilters:AstFilters with module Ast = Ast; 
+ * end ; *)
+
+
+module type PLUGIN = functor (Unit:sig end) -> sig end;
+    
+module type OCAML_SYNTAX_EXTENSION = functor (Syn:Camlp4Syntax) -> Camlp4Syntax ;
+
+module type SYNTAX_PLUGIN = functor (Syn:Syntax) -> sig end ;
+module type PRINTER_PLUGIN = functor (Syn:Syntax) -> (Printer Syn.Ast).S;   
+module type OCAML_PRINTER_PLUGIN =
+    functor (Syn:Camlp4Syntax) ->  (Printer Syn.Ast).S;
+module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
+module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
+module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
+module type LEXER = functor (Token: Camlp4Token) -> Lexer
+  with module Loc = Token.Loc and module Token = Token;
+
+
+
+module type PRECAST = sig
+  type token = camlp4_token ;
+  module Loc        : Loc;
+  module Ast        : Camlp4Ast with module Loc = Loc;
+  module Token      : Token  with module Loc = Loc and type t = camlp4_token;
+  module Lexer      : Lexer  with module Loc = Loc and module Token = Token;
+  module Gram       : Grammar.Static  with module Loc = Loc and module Token = Token;
+  module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
+  module DynLoader  : DynLoader;
+  module AstFilters : AstFilters with module Ast = Ast;
+  module Syntax     : Camlp4Syntax with module Loc     = Loc
+                       and module Token   = Token
+                       and module Ast     = Ast
+                       and module Gram    = Gram
+                       and module Quotation = Quotation;
+  module Printers : sig
+    module OCaml         : (Printer Ast).S;
+    module OCamlr        : (Printer Ast).S;
+    module DumpOCamlAst  : (Printer Ast).S;
+    module DumpCamlp4Ast : (Printer Ast).S;
+    module Null          : (Printer Ast).S;
+  end;
+  module MakeGram (Lexer : Lexer with module Loc = Loc) :
+      Grammar.Static with module Loc = Loc and module Token = Lexer.Token;
+
+  module MakeSyntax (U : sig end) : Syntax;
+
+  (* parser signature *)  
+  type parser_fun 'a =
+      ?directive_handler:('a -> option 'a) -> Loc.t -> Stream.t char -> 'a;
+  type printer_fun 'a =
+      ?input_file:string -> ?output_file:string -> 'a -> unit;
+  value loaded_modules : ref (list string);
+  value iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;  
+  value register_str_item_parser : parser_fun Ast.str_item -> unit;
+  value register_sig_item_parser : parser_fun Ast.sig_item -> unit;
+  value register_parser :
+      parser_fun Ast.str_item -> parser_fun Ast.sig_item -> unit;
+  value current_parser :
+      unit -> (parser_fun Ast.str_item * parser_fun Ast.sig_item);
+
+  value plugin : (module Id) -> (module PLUGIN) -> unit ;      
+  value syntax_plugin : (module Id) -> (module SYNTAX_PLUGIN) -> unit ;
+  value syntax_extension : (module Id) -> (module SyntaxExtension) -> unit;
+  value ocaml_syntax_extension : (module Id) ->
+    (module OCAML_SYNTAX_EXTENSION) -> unit ;
+
+  value parser_plugin : (module Id) -> (module PARSER) -> unit;
+  value ocaml_parser_plugin : (module Id) -> (module OCAML_PARSER) -> unit;
+  value ocaml_precast_parser_plugin : (module Id) ->
+    (module (Parser Syntax.Ast).S) -> unit ;
+
+
+  value register_str_item_printer : printer_fun Ast.str_item -> unit;
+  value register_sig_item_printer : printer_fun Ast.sig_item -> unit;
+  value register_printer :
+      printer_fun Ast.str_item -> printer_fun Ast.sig_item -> unit;
+  value current_printer :
+      unit -> (printer_fun Ast.str_item * printer_fun Ast.sig_item);
+        
+  value printer : (module Id) -> (module PRINTER_PLUGIN) -> unit ;
+  value ocaml_printer : (module Id) -> (module OCAML_PRINTER_PLUGIN) -> unit;
+  value ocaml_precast_printer : (module Id) ->
+    (module (Printer Syntax.Ast).S) -> unit ;
+
+  value ast_filter : (module Id)-> (module ASTFILTER_PLUGIN) -> unit ;
+
+  value declare_dyn_module : string -> (unit -> unit) -> unit  ;
+
+  module CurrentParser : (Parser Ast).S;
+  module CurrentPrinter : (Printer Ast).S;
+
+  value enable_ocaml_printer : unit -> unit;
+  value enable_ocamlr_printer : unit -> unit;
+  value enable_null_printer : unit -> unit;
+  value enable_dump_ocaml_ast_printer : unit -> unit;
+  value enable_dump_camlp4_ast_printer : unit -> unit;
+  value enable_auto : (unit -> bool) -> unit ;  
+
 end ;
 
 
+(* for dynamic loading *)  
+module type PRECAST_PLUGIN = sig
+  value apply : (module PRECAST) -> unit;
+end; 

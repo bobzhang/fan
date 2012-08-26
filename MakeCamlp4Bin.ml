@@ -5,20 +5,15 @@ open Camlp4;
 open Camlp4Parsers;
 open Camlp4Filters;
 
-
-module type PRINTER_PLUGIN = sig
-  value apply : (module MakeRegister.S) -> unit;
-end ;
-value printers : Hashtbl.t string (module PRINTER_PLUGIN) = Hashtbl.create 30; 
 module Camlp4Bin
-    (Loc:Sig.Loc)
-    (PreCast:MakePreCast.S with module Loc=Loc)
-    (Register: MakeRegister.S with module Loc =Loc and module Ast = PreCast.Ast) =struct
+    (Loc:Sig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
+    =struct
       open PreCast;
       module CleanAst = Struct.CleanAst.Make PreCast.Ast;
       module SSet = Set.Make String;
 
-
+      value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
+        Hashtbl.create 30;
       value dyn_loader = ref (fun []);
       value rcall_callback = ref (fun () -> ());
       value loaded_modules = ref SSet.empty;
@@ -40,7 +35,7 @@ module Camlp4Bin
         (* no dynamic loading for built in parser any more, possible
             inconsistent behavior is that no duplicated check any more *)
         let load =  begin fun n ->
-          if SSet.mem n loaded_modules.val || List.mem n Register.loaded_modules.val then ()
+          if SSet.mem n loaded_modules.val || List.mem n PreCast.loaded_modules.val then ()
           else begin
             add_to_loaded_modules n;
             PreCast.DynLoader.load dyn_loader (n ^ objext);
@@ -51,138 +46,138 @@ module Camlp4Bin
           [ ("Parsers"|"",
              "pa_r.cmo" | "r"|"ocamlr"|"ocamlrevised" | "camlp4ocamlrevisedparser.cmo")
             -> begin
-              pa_r (module Register) ;
+              pa_r (module PreCast) ;
             end
           | ("Parsers"|"",
              "rr" | "reloaded" | "ocamlreloaded"| "camlp4ocamlreloadedparser.cmo")
             -> begin
-              pa_rr (module Register) ;
+              pa_rr (module PreCast) ;
           end 
           | ("Parsers"|"",
              "pa_o.cmo"| "o"| "ocaml" | "camlp4ocamlparser.cmo") ->
                begin
-                 pa_r (module Register);
-                 pa_o (module Register);
+                 pa_r (module PreCast);
+                 pa_o (module PreCast);
                end 
           | ("Parsers"|"",
              "pa_rp.cmo" | "rp" | "rparser" | "camlp4ocamlrevisedparserparser.cmo")
             -> begin
-              pa_r (module Register);
-              pa_rp (module Register);
+              pa_r (module PreCast);
+              pa_rp (module PreCast);
             end 
           | ("Parsers"|"",
              "pa_op.cmo"| "op" | "parser" | "camlp4ocamlparserparser.cmo")
             -> begin
-              pa_r (module Register);
-              pa_o (module Register) ;
-              pa_rp (module Register) ;
-              pa_op (module Register);
+              pa_r (module PreCast);
+              pa_o (module PreCast) ;
+              pa_rp (module PreCast) ;
+              pa_op (module PreCast);
             end 
           | ("Parsers"|"",
              "pa_extend.cmo" | "pa_extend_m.cmo" | "g" | "grammar" | "camlp4grammarparser.cmo")
             -> begin
-              pa_g (module Register);
+              pa_g (module PreCast);
             end 
           | ("Parsers"|"",
              "pa_macro.cmo"  | "m"  | "macro" | "camlp4macroparser.cmo") -> begin
-               pa_m (module Register);
+               pa_m (module PreCast);
              end 
           | ("Parsers"|"", "q" | "camlp4quotationexpander.cmo") -> begin
-              pa_q (module Register); (* no pa_qb any more*)
+              pa_q (module PreCast); (* no pa_qb any more*)
           end 
           | ("Parsers"|"",
              "q_mlast.cmo" | "rq" | "camlp4ocamlrevisedquotationexpander.cmo")
             -> begin (* no pa_qb any more *)
-              pa_rq (module Register) (module PreCast);
+              pa_rq (module PreCast) ;
             end
           | ("Parsers"|"",
              "oq" | "camlp4ocamloriginalquotationexpander.cmo")
             ->  begin
-              pa_r (module Register);
-              pa_o (module Register);
+              pa_r (module PreCast);
+              pa_o (module PreCast);
               (* pa_qb;*)
-              pa_oq (module Register) (module PreCast) ;
+              pa_oq (module PreCast);
             end 
           | ("Parsers"|"", "rf") -> begin
-              pa_r (module Register);
-              pa_rp (module Register);
+              pa_r (module PreCast);
+              pa_rp (module PreCast);
               (* pa_qb; *)
-              pa_q (module Register);
-              pa_g (module Register);
-              pa_l (module Register);
-              pa_m (module Register);
+              pa_q (module PreCast);
+              pa_g (module PreCast);
+              pa_l (module PreCast);
+              pa_m (module PreCast);
           end 
           | ("Parsers"|"", "of")
             -> begin
-              pa_r (module Register);
-              pa_o (module Register);
-              pa_rp (module Register);
-              pa_op (module Register);
+              pa_r (module PreCast);
+              pa_o (module PreCast);
+              pa_rp (module PreCast);
+              pa_op (module PreCast);
               (* pa_qb; *)
-              pa_q (module Register);
-              pa_g (module Register);
-              pa_l (module Register);
-              pa_m (module Register);
+              pa_q (module PreCast);
+              pa_g (module PreCast);
+              pa_l (module PreCast);
+              pa_m (module PreCast);
             end
           | ("Parsers"|"",
              "comp" | "camlp4listcomprehension.cmo") ->
                begin
-                 pa_l (module Register);
+                 pa_l (module PreCast);
                end 
           | ("Filters"|"",
              "lift" | "camlp4astlifter.cmo") -> begin
-               f_lift (module Register);
+               f_lift (module PreCast);
              end
 
           | ("Filters"|"",
              "exn" | "camlp4exceptiontracer.cmo") -> begin
-               f_exn (module Register);
+               f_exn (module PreCast);
              end 
           | ("Filters"|"",
              "prof" | "camlp4profiler.cmo") -> begin 
-               f_prof (module Register);
+               f_prof (module PreCast);
              end 
           (* map is now an alias of fold since fold handles map too *)
           | ("Filters"|"",
              "map" | "camlp4mapgenerator.cmo") -> begin
-               f_fold (module Register);
+               f_fold (module PreCast);
              end 
           | ("Filters"|"", 
              "fold" | "camlp4foldgenerator.cmo") -> begin
-               f_fold (module Register);
+               f_fold (module PreCast);
              end 
           | ("Filters"|"",
              "meta" | "camlp4metagenerator.cmo") -> begin
-               f_meta (module Register);
+               f_meta (module PreCast);
              end 
           | ("Filters"|"",
              "trash" | "camlp4trashremover.cmo") -> begin
-               f_trash (module Register);
+               f_trash (module PreCast);
              end 
           | ("Filters"|"",
              "striploc" | "camlp4locationstripper.cmo") -> begin
-               f_striploc (module Register);
+               f_striploc (module PreCast);
              end
           | ("Printers"|"",
              "pr_r.cmo" | "r" | "ocamlr" | "camlp4ocamlrevisedprinter.cmo") ->
-              Register.enable_ocamlr_printer ()
+              PreCast.enable_ocamlr_printer ()
           | ("Printers"|"",
              "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") ->
-              Register.enable_ocaml_printer ()
+              PreCast.enable_ocaml_printer ()
           | ("Printers"|"",
              "pr_dump.cmo" | "p" | "dumpocaml" | "camlp4ocamlastdumper.cmo") ->
-              Register.enable_dump_ocaml_ast_printer ()
+              PreCast.enable_dump_ocaml_ast_printer ()
           | ("Printers"|"",
              "d" | "dumpcamlp4" | "camlp4astdumper.cmo") ->
-              Register.enable_dump_camlp4_ast_printer ()
+              PreCast.enable_dump_camlp4_ast_printer ()
           | ("Printers"|"",
              "a" | "auto" | "camlp4autoprinter.cmo") ->
                (* FIXME introduced dependency on Unix *)
-               (* Register.enable_auto (fun [ () -> Unix.isatty Unix.stdout]) *)
+               (* PreCast.enable_auto (fun [ () -> Unix.isatty Unix.stdout]) *)
                begin
                  load "Camlp4Autoprinter";
                  let (module P ) = Hashtbl.find printers "camlp4autoprinter" in
-                 P.apply (module Register);
+                 P.apply (module PreCast);
                end
           | _ ->
             let y = "Camlp4"^n^"/"^x^objext in
@@ -236,11 +231,11 @@ module Camlp4Bin
         | _ -> None ];
       
       value process_intf dyn_loader name =
-        process dyn_loader name Register.CurrentParser.parse_interf Register.CurrentPrinter.print_interf
+        process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new CleanAst.clean_ast)#sig_item
                 AstFilters.fold_interf_filters gind;
       value process_impl dyn_loader name =
-        process dyn_loader name Register.CurrentParser.parse_implem Register.CurrentPrinter.print_implem
+        process dyn_loader name PreCast.CurrentParser.parse_implem PreCast.CurrentPrinter.print_implem
                 (new CleanAst.clean_ast)#str_item
                 AstFilters.fold_implem_filters gimd;
       
@@ -381,7 +376,7 @@ module Camlp4Bin
                                        ~camlp4_stdlib:search_stdlib.val ();
           dyn_loader.val := fun () -> dynloader;
           let call_callback () =
-            Register.iter_and_take_callbacks
+            PreCast.iter_and_take_callbacks
               (fun (name, module_callback) ->
                  let () = add_to_loaded_modules name in
                  module_callback ());

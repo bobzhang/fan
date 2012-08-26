@@ -4823,83 +4823,63 @@ module MakeQuotationExpander (Syntax : Sig.Camlp4Syntax)
   include M;
 end;
 
-(* value pa_r  = "Camlp4OCamlRevisedParser"; *)  
-value pa_r (module Register: MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension IdRevisedParser MakeRevisedParser  in
-  ();
+(* value pa_r  = "Camlp4OCamlRevisedParser"; *)    
+value pa_r (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
 
 (* value pa_rr = "Camlp4OCamlReloadedParser"; *)
-value pa_rr (module Register: MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdReloadedParser
-      MakeReloadedParser in ();
+value pa_rr (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdReloadedParser) (module MakeReloadedParser);
   
 (* value pa_o  = "Camlp4OCamlParser"; *)
-value pa_o (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdParser
-      MakeParser in  ();
+value pa_o (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdParser) (module MakeParser);
   
 (* value pa_rp = "Camlp4OCamlRevisedParserParser"; *)
-value pa_rp (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdRevisedParserParser
-      MakeRevisedParserParser in ();
+value pa_rp (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdRevisedParserParser)
+    (module MakeRevisedParserParser);
 
 (* value pa_op = "Camlp4OCamlParserParser"; *)
-value pa_op (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdParserParser
-      MakeParserParser in ();
+value pa_op (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdParserParser) (module MakeParserParser);
 
-(* value pa_g  = "Camlp4GrammarParser"; *)
-value pa_g (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdGrammarParser
-      MakeGrammarParser in ();
+value pa_g (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
+
 (* value pa_m  = "Camlp4MacroParser"; *)
-value pa_m (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdMacroParser
-      MakeMacroParser in
-  let module M = Register.AstFilter IdMacroParser
-      MakeNothing in ();
-  
-(* value pa_qb = "Camlp4QuotationCommon"; pure module no longer used
-         Compatibility issue?  *)
+value pa_m (module P:Sig.PRECAST) =
+  let () = P.ocaml_syntax_extension (module IdMacroParser) (module MakeMacroParser) in
+  P.ast_filter (module IdMacroParser) (module MakeNothing);
+
 (* value pa_q  = "Camlp4QuotationExpander"; *)
-value pa_q (module Register:MakeRegister.S) =
-  let module M = Register.OCamlSyntaxExtension
-      IdQuotationExpander
-      MakeQuotationExpander in ();
+value pa_q (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
   
 (* value pa_rq = "Camlp4OCamlRevisedQuotationExpander";
    *unreflective*, quotation syntax use revised syntax.
  *)
-value pa_rq (module Register:MakeRegister.S) (module PreCast:MakePreCast.S) =
-  let open PreCast in 
-  let module Gram = PreCast.MakeGram PreCast.Lexer in
-  let module M1 = OCamlInitSyntax.Make Ast Gram Quotation in
+value pa_rq (module P:Sig.PRECAST) =
+  let module Gram = P.MakeGram P.Lexer in
+  let module M1 = OCamlInitSyntax.Make P.Ast P.Gram P.Quotation in
   let module M2 = MakeRevisedParser M1 in
-  let module M3 = MakeQuotationCommon M2 Syntax.AntiquotSyntax  in ();
-
+  let module M3 = MakeQuotationCommon M2 P.Syntax.AntiquotSyntax in ();
+  
 (* value pa_oq = "Camlp4OCamlOriginalQuotationExpander";
    *unreflective*, quotation syntax use original syntax.
-   *There's a bug in ocamlbuild* which will generate wrong dependency based on 
+   Build the whole parser used by quotation. 
  *)
-value pa_oq (module Register:MakeRegister.S) (module PreCast:MakePreCast.S) =
-  let open PreCast in 
-  let module Gram = PreCast.MakeGram PreCast.Lexer in
-  let module M1 = OCamlInitSyntax.Make Ast Gram Quotation in (* *)
+value pa_oq (module P:Sig.PRECAST)   =
+  let module Gram = P.MakeGram P.Lexer in
+  let module M1 = OCamlInitSyntax.Make P.Ast P.Gram P.Quotation in
   let module M2 = MakeRevisedParser M1 in
-  let module M3 = MakeParser M2 in 
-  let module M3 = MakeQuotationCommon M3 Syntax.AntiquotSyntax in ();
+  let module M3 = MakeParser M2 in
+  let module M4 = MakeQuotationCommon M3 P.Syntax.AntiquotSyntax in ();
 
-(* value pa_l  = "Camlp4ListComprehension"; *)
-value pa_l (module Register:MakeRegister.S)  =
-  let module M = Register.OCamlSyntaxExtension
-      IdListComprehension
-      MakeListComprehension in ();
+
+value pa_l  (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdListComprehension) (module MakeListComprehension);
+
   
 
 

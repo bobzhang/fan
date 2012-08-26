@@ -206,7 +206,10 @@ two printers
   ocamldep sucks when it handles dependency.
 
   Camlp4Filters.ml request dependency on Register, but it is incorrect
-  
+
+  ocamldep is not friendly to open struct. it can not handle it correctly
 * Factoring
-  
-  
+** no dynamic loading for built-in parser any more.
+   possible inconsistent behavior is that no duplicated check any more 
+
+   

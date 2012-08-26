@@ -1,7 +1,6 @@
 Debug
 ErrorHandler
 MakePreCast
-MakeRegister
 OCamlInitSyntax
 Options
 Struct

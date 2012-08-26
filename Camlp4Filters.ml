@@ -946,19 +946,27 @@ value filter st =
   register_str_item_filter filter;
 end;
   
-value f_lift (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdAstLifter MakeAstLifter in ();
-value f_exn (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdExceptionTracer MakeExceptionTracer in ();
-value f_prof (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdProfiler MakeProfiler in ();
-value f_fold (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdFoldGenerator MakeFoldGenerator in ();
-value f_striploc (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdLocationStripper MakeLocationStripper in ();
-value f_trash (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdTrashRemover MakeTrashRemover in ();
-value f_meta (module Register:MakeRegister.S) =
-  let module M = Register.AstFilter IdMetaGenerator MakeMetaGenerator in ();
+value f_lift (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdAstLifter) (module MakeAstLifter); 
+  
+value f_exn (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdExceptionTracer) (module MakeExceptionTracer);
+  
+value f_prof (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdProfiler) (module MakeProfiler) ;
+  
+value f_fold (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdFoldGenerator) (module MakeFoldGenerator) ;
+  
+value f_striploc (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdLocationStripper) (module MakeLocationStripper) ;
+  
+value f_trash (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdTrashRemover) (module MakeTrashRemover) ;
+  
+value f_meta (module P:Camlp4.Sig.PRECAST) =
+  P.ast_filter (module IdMetaGenerator) (module MakeMetaGenerator) ;
+  
+
   
   
