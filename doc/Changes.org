@@ -216,7 +216,7 @@ two printers
 
 
 * Factoring
-** no dynamic loading for built-in parser any more.
-   possible inconsistent behavior is that no duplicated check any more 
+  - no dynamic loading for built-in parser any more.  possible
+    inconsistent behavior is that no duplicated check any more
 
    

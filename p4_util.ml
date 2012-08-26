@@ -1,4 +1,8 @@
-(* Values *)
+(* utilty modules for Camlp4 *)
+
+
+
+(* copied from otypes.ml Values *)
 let valid_float_lexeme s =
   let l = String.length s in
   let rec loop i =
@@ -25,5 +29,5 @@ let float_repres f =
                else Printf.sprintf "%.18g" f)
       in valid_float_lexeme float_val
   
-
+module SSet = Set.Make (String)
 

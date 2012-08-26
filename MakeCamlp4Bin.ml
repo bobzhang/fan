@@ -4,13 +4,13 @@ open Format;
 open Camlp4;
 open Camlp4Parsers;
 open Camlp4Filters;
-
+open P4_util;
 module Camlp4Bin
     (Loc:Sig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
     =struct
       open PreCast;
       module CleanAst = Struct.CleanAst.Make PreCast.Ast;
-      module SSet = Set.Make String;
+
 
       value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
         Hashtbl.create 30;
@@ -32,10 +32,9 @@ module Camlp4Bin
           add_to_loaded_modules name;
           PreCast.DynLoader.load dyn_loader name
         } in
-        (* no dynamic loading for built in parser any more, possible
-            inconsistent behavior is that no duplicated check any more *)
         let load =  begin fun n ->
-          if SSet.mem n loaded_modules.val || List.mem n PreCast.loaded_modules.val then ()
+          if SSet.mem n loaded_modules.val
+          || List.mem n PreCast.loaded_modules.val then ()
           else begin
             add_to_loaded_modules n;
             PreCast.DynLoader.load dyn_loader (n ^ objext);
