@@ -7,7 +7,6 @@ DynLoader
 EmptyError
 EmptyPrinter
 FreeVars
-Lexer
 Loc
 Quotation
 Token

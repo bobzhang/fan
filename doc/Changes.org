@@ -209,14 +209,18 @@ two printers
 
   ocamldep is not friendly to open struct. it can not handle it
   correctly
+** [[file:bootstrapping.log][boot]]
+   1. boot Camlp4Ast.ml
+   2. Camlp4.ml4 -> Camlp4.ml
+   3. Camlp4boot.ml4 -> Camlp4boot.ml
+   4. compare
+   5. make binary
+* Factoring
+  - no dynamic loading for built-in parser any more.  possible
+    inconsistent behavior is that no duplicated check any more
 
 
   Take care of how Camlp4Ast.ml was bootstrapped, it was built using
   different filters, and then copied to my software.
-
-
-* Factoring
-  - no dynamic loading for built-in parser any more.  possible
-    inconsistent behavior is that no duplicated check any more
 
    

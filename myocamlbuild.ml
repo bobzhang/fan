@@ -734,6 +734,16 @@ end;;
 
 dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];;
 
+rule "camlp4: ml4 -> ml"
+  ~prod:"%.ml"
+  ~dep:"%.ml4"
+  begin fun env build ->
+    let ml4 = env "%.ml4" and ml = env "%.ml" in
+    Camlp4deps.build_deps build ml4;
+    Cmd(S[P hot_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o";
+          A"-D"; A"OPT"; A"-o"; Px ml])
+  end;;
+
 (* bootstraping *)
 (* rule "camlp4: ml4 -> ml"
  *   ~prod:"%.ml"

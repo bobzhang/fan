@@ -68,7 +68,8 @@ module Make (Loc: Sig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
     declare_dyn_module Id.name
       (fun _ -> let module M = Maker Syntax in
       register_printer M.print_implem M.print_interf);
-    
+
+  (* Apply the functor and register the generated printer as the main printer *)  
   value ocaml_printer (module Id:Sig.Id) (module Maker:Sig.OCAML_PRINTER_PLUGIN) =
     declare_dyn_module Id.name
       (fun _ -> let module M = Maker Syntax in

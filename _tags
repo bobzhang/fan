@@ -7,7 +7,7 @@
 
 <p4_util.ml>:-camlp4boot
 
-<boot/*> or "Camlp4/Struct/Lexer.ml": -camlp4boot
+<boot/*> or "Lexer.ml": -camlp4boot
 
 <{Fan,boot/camlp4boot}.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
 
