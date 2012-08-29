@@ -31,3 +31,21 @@ let float_repres f =
   
 module SSet = Set.Make (String)
 
+
+(* either dump to a file or stdout *)    
+let with_open_out_file x f =
+  match x with
+  | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
+  | None -> (set_binary_mode_out stdout true; f stdout; flush stdout)
+  
+(* dump binary *)
+let dump_ast magic ast oc =
+  (output_string oc magic; output_value oc ast)
+  
+let dump_pt magic fname pt oc =
+  (output_string oc magic;
+   output_value oc (if fname = "-" then "" else fname);
+   output_value oc pt)
+  
+
+

@@ -23,8 +23,6 @@ module Id = struct
 end;
 
 module Make (Syntax : Sig.Syntax) = struct
-  include Syntax;
-
   value print_interf ?input_file:(_) ?output_file:(_) _ = ();
   value print_implem ?input_file:(_) ?output_file:(_) _ = ();
 end;

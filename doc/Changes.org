@@ -224,3 +224,35 @@ two printers
   different filters, and then copied to my software.
 
    
+
+
+* code
+** Signature
+   - Camlp4Syntax
+     It contains sub-modules: /Loc/, /Ast/, /Token/, /Gram/,
+     /Quotation/, /AntiquotSyntax/
+** Printers
+
+   Signature for printer plugin:
+   #+BEGIN_SRC caml
+   module Printer (Ast : Ast) = struct
+     module type S = sig
+       value print_interf : ?input_file:string -> ?output_file:string ->
+                            Ast.sig_item -> unit;
+       value print_implem : ?input_file:string -> ?output_file:string ->
+                            Ast.str_item -> unit;
+     end;
+   end;
+   #+END_SRC
+   - DumpCamlp4Ast
+     Simple, simple marshalize camlp4ast
+   - Null
+     Do nothing
+   - DumpOCamlpAst
+     It makes use of the module =Struct.Camlp4Ast2OCamlAst.Make= to
+     dump the binary output of ocamlast.
+   - OCaml
+     Dump to Ocaml's textual output
+   - OCamlr Dump to Ocaml's revised textual output. It depends on the
+     module OCaml.
+
