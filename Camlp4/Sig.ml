@@ -1502,7 +1502,7 @@ module type PRECAST = sig
                        and module Quotation = Quotation;
   module Printers : sig
     module OCaml         : (Printer Ast).S;
-    module OCamlr        : (Printer Ast).S;
+    (* module OCamlr        : (Printer Ast).S; *)
     module DumpOCamlAst  : (Printer Ast).S;
     module DumpCamlp4Ast : (Printer Ast).S;
     module Null          : (Printer Ast).S;
@@ -1558,7 +1558,7 @@ module type PRECAST = sig
   module CurrentPrinter : (Printer Ast).S;
 
   value enable_ocaml_printer : unit -> unit;
-  value enable_ocamlr_printer : unit -> unit;
+  (* value enable_ocamlr_printer : unit -> unit; *)
   value enable_null_printer : unit -> unit;
   value enable_dump_ocaml_ast_printer : unit -> unit;
   value enable_dump_camlp4_ast_printer : unit -> unit;

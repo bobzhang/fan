@@ -116,10 +116,10 @@ module Make (Loc: Sig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   end;
 
   value enable_ocaml_printer () =
-    ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.MakeMore);
+    ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.Make);
 
-  value enable_ocamlr_printer () =
-    ocaml_printer (module Printers.OCamlr.Id) (module Printers.OCamlr.MakeMore);
+  (* value enable_ocamlr_printer () = *)
+  (*   ocaml_printer (module Printers.OCamlr.Id) (module Printers.OCamlr.MakeMore); *)
 
   value enable_dump_ocaml_ast_printer () =
     ocaml_printer (module Printers.DumpOCamlAst.Id)
@@ -140,7 +140,7 @@ module Make (Loc: Sig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   (* rebound module Printers to extract most useful parts *)  
   module Printers = struct
     module OCaml = Printers.OCaml.Make Syntax;
-    module OCamlr = Printers.OCamlr.Make Syntax;
+    (* module OCamlr = Printers.OCamlr.Make Syntax; *)
     (* module OCamlrr = Printers.OCamlrr.Make Syntax; *)
     module DumpOCamlAst = Printers.DumpOCamlAst.Make Syntax;
     module DumpCamlp4Ast = Printers.DumpCamlp4Ast.Make Syntax;
