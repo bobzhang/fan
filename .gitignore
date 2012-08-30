@@ -36,3 +36,4 @@ report
 astdefs
 .syntax_lib_file_cache
 tmp/*
+tmp*
