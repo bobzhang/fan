@@ -26,7 +26,7 @@ value mk' : context -> Stream.t char -> Stream.t (Token.t * Loc.t);             
  * mk' { (default_context) with ... = ... } strm
  *)
 
-module TokenEval = Camlp4.Token.Eval
+module TokenEval = Camlp4.Struct.Token.Eval
 module Make (Token : Camlp4.Sig.Camlp4Token)
 = struct
   module Loc = Token.Loc
@@ -82,7 +82,7 @@ module Make (Token : Camlp4.Sig.Camlp4Token)
       let () = bprintf b "%a" print x in Buffer.contents b
   end;;
 
-  let module M = ErrorHandler.Register(Error) in ()
+  let module M = Camlp4.ErrorHandler.Register(Error) in ()
 
   open Error
 
@@ -140,7 +140,7 @@ module Make (Token : Camlp4.Sig.Camlp4Token)
   let mk_quotation quotation c name loc shift =
     let s = parse_nested quotation (update_loc c) in
     let contents = String.sub s 0 (String.length s - 2) in
-    QUOTATION { q_name     = name     ;
+    Camlp4.Sig.QUOTATION { Camlp4.Sig.q_name     = name     ;
                 q_loc      = loc      ;
                 q_shift    = shift    ;
                 q_contents = contents }

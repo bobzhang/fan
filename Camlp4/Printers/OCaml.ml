@@ -30,11 +30,15 @@ module Make (Syntax : Sig.Camlp4Syntax) : (Sig.Printer Syntax.Ast).S = struct
     P4_util.with_open_out_file output_file
       (fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
-        Pprintast.print_structure fmt pt);
+        let () = Pprintast.print_structure fmt pt in 
+        pp_print_flush fmt ();
+      );
   value print_interf ?input_file:(_) ?output_file ast =
     let pt = Ast2pt.sig_item ast in
     P4_util.with_open_out_file output_file
       (fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
-        Pprintast.print_signature fmt pt);
+        let () = Pprintast.print_signature fmt pt in
+        pp_print_flush fmt ();
+      );
 end;

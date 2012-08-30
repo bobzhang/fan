@@ -216,14 +216,17 @@ two printers
    4. compare
    5. make binary
 * Factoring
-  - no dynamic loading for built-in parser any more.  possible
+  1. No dynamic loading for built-in parser any more.  possible
     inconsistent behavior is that no duplicated check any more
 
 
-  Take care of how Camlp4Ast.ml was bootstrapped, it was built using
+  2. Take care of how Camlp4Ast.ml was bootstrapped, it was built using
   different filters, and then copied to my software.
 
+  3. Remove support of printers for revised syntax.
+     
    
+  4. Camlp4Parsers depends on string_of_patt, which relies on a printer
 
 
 * code

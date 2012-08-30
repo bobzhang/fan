@@ -158,11 +158,9 @@ module Camlp4Bin
                f_striploc (module PreCast);
              end
           | ("Printers"|"",
-             "pr_r.cmo" | "r" | "ocamlr" | "camlp4ocamlrevisedprinter.cmo") ->
-              PreCast.enable_ocamlr_printer ()
-          | ("Printers"|"",
-             "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") ->
-              PreCast.enable_ocaml_printer ()
+             "pr_o.cmo" | "o" | "ocaml" | "camlp4ocamlprinter.cmo") -> begin
+               PreCast.enable_ocaml_printer ();
+             end 
           | ("Printers"|"",
              "pr_dump.cmo" | "p" | "dumpocaml" | "camlp4ocamlastdumper.cmo") ->
               PreCast.enable_dump_ocaml_ast_printer ()

@@ -7,7 +7,7 @@
 
 <{p4_util,pprintast}.ml>:-camlp4boot
 
-<boot/*> or "Lexer.ml": -camlp4boot
+<tmp*.ml> or <boot/*> or "Fan_lexer.ml": -camlp4boot
 
 <{Fan,boot/camlp4boot}.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
 

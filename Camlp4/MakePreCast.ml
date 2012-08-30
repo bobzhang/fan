@@ -115,8 +115,10 @@ module Make (Loc: Sig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
       str_item_printer.val ?input_file ?output_file ast;
   end;
 
-  value enable_ocaml_printer () =
+  value enable_ocaml_printer () = begin
+    Format.eprintf "enable..";
     ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.Make);
+  end;
 
   (* value enable_ocamlr_printer () = *)
   (*   ocaml_printer (module Printers.OCamlr.Id) (module Printers.OCamlr.MakeMore); *)

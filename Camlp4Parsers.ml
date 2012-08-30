@@ -100,14 +100,17 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   module MetaLoc = Ast.Meta.MetaGhostLoc;
   module MetaAst = Ast.Meta.Make MetaLoc;
-  module PP = Camlp4.Printers.OCaml.Make Syntax;
+  (* module PP = Camlp4.Printers.OCaml.Make Syntax; *)
   (* value pp = new PP.printer ~comments:False (); *)
-
-  (* value string_of_patt patt = *)
-  (*   let buf = Buffer.create 42 in *)
-  (*   let () = Format.bprintf buf "%a@?" pp#patt patt in *)
-  (*   let str = Buffer.contents buf in *)
-  (*   if str = "" then assert False else str; *)
+  module Ast2pt = Camlp4.Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast;
+  value string_of_patt patt =
+    let buf = Buffer.create 42 in
+    let () =
+      Format.bprintf buf "%a@?"
+        (fun fmt p -> Pprintast.pattern fmt (Ast2pt.patt p)) patt in
+    (* let () = Format.bprintf buf "%a@?" pp#patt patt in *)
+    let str = Buffer.contents buf in
+    if str = "" then assert False else str;
 
   value split_ext = ref False;
 
@@ -675,16 +678,16 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       | p -> super#patt p ];
   end;
 
-  (* value mk_tok _loc p t = *)
-  (*   let p' = wildcarder#patt p in *)
-  (*   let match_fun = *)
-  (*     if Ast.is_irrefut_patt p' then *)
-  (*       <:expr< fun [ $pat:p'$ -> True ] >> *)
-  (*     else *)
-  (*       <:expr< fun [ $pat:p'$ -> True | _ -> False ] >> in *)
-  (*   let descr = string_of_patt p' in *)
-  (*   let text = TXtok _loc match_fun descr in *)
-  (*   {used = []; text = text; styp = t; pattern = Some p }; *)
+  value mk_tok _loc p t =
+    let p' = wildcarder#patt p in
+    let match_fun =
+      if Ast.is_irrefut_patt p' then
+        <:expr< fun [ $pat:p'$ -> True ] >>
+      else
+        <:expr< fun [ $pat:p'$ -> True | _ -> False ] >> in
+    let descr = string_of_patt p' in
+    let text = TXtok _loc match_fun descr in
+    {used = []; text = text; styp = t; pattern = Some p };
 
   value symbol = Gram.Entry.mk "symbol";
 
