@@ -674,15 +674,26 @@ let apply  before_options_dispatch after_rules_dispatch = (
  );;
 
 
-(*******************************)
-(** Insert most your code here *)                           
-(***)
+(**************************************************************)
+(*****************  Insert most your code here ****************)                           
+(**************************************************************)
 
-let hot_camlp4boot = "boot"// "camlp4boot.native" ;; 
-let cold_camlp4o = "" (* to be added *)
+(* let boot1 = "camlp4boot.native";; *)
+(* let hot_camlp4boot = "boot"// boot1;; *)
+(* let boot_flags = S[P hot_camlp4boot];; *)
+   
+let boot2 = "fanboot";;
+let hot_camlp4boot = boot2;;
+let boot_flags =
+  S[P hot_camlp4boot;
+    A "-parser"; A"rf";
+    A "-parser"; A"debug";
+    A"-printer"; A"p"];;
+
+let cold_camlp4o = "" (* to be added *);;
 let cold_camlp4boot = "" (* to be added *);;
     
-flag ["ocaml"; "pp"; "camlp4boot"] (S[ P hot_camlp4boot]);;
+flag ["ocaml"; "pp"; "camlp4boot"] boot_flags;;
 flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);;
 flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);;
@@ -694,6 +705,9 @@ flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
 (* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
 copy_rule "camlp4: boot/Camlp4Ast.ml -> Camlp4/Struct/Camlp4Ast.ml"
   ~insert:`top "boot/Camlp4Ast.ml" "Camlp4/Struct/Camlp4Ast.ml";;
+
+copy_rule "camlp4: Fan.byte -> fanboot"
+  ~insert:`top "Fan.byte" "fanboot";;
 
 (* (\* seems  non-necessary should be fixed later *\)
  * rule "camlp4: Camlp4/Struct/Lexer.ml -> boot/Lexer.ml"

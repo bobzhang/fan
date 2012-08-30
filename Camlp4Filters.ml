@@ -1,4 +1,4 @@
-(* open Camlp4; *)
+open Camlp4;
 
 module IdAstLifter = struct
   value name    = "Camlp4AstLifter";

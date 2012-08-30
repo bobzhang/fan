@@ -4883,6 +4883,11 @@ value pa_oq (module P:Sig.PRECAST)   =
 value pa_l  (module P:Sig.PRECAST) =
   P.ocaml_syntax_extension (module IdListComprehension) (module MakeListComprehension);
 
+
+(* load debug parser for bootstrapping *)  
+value pa_debug (module P:Sig.PRECAST) =
+  P.ocaml_syntax_extension (module IdDebugParser) (module MakeDebugParser);
+
   
 
 

@@ -105,7 +105,10 @@ module Camlp4Bin
               pa_g (module PreCast);
               pa_l (module PreCast);
               pa_m (module PreCast);
-          end 
+          end
+          | ("Parsers"|"","debug") -> begin
+              pa_debug (module PreCast);
+          end
           | ("Parsers"|"", "of")
             -> begin
               pa_r (module PreCast);
