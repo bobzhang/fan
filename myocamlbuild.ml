@@ -678,17 +678,17 @@ let apply  before_options_dispatch after_rules_dispatch = (
 (*****************  Insert most your code here ****************)                           
 (**************************************************************)
 
-(* let boot1 = "camlp4boot.native";; *)
-(* let hot_camlp4boot = "boot"// boot1;; *)
-(* let boot_flags = S[P hot_camlp4boot];; *)
+let boot1 = "camlp4boot.native";;
+let hot_camlp4boot = "boot"// boot1;;
+let boot_flags = S[P hot_camlp4boot];;
    
-let boot2 = "fanboot";;
-let hot_camlp4boot = boot2;;
-let boot_flags =
-  S[P hot_camlp4boot;
-    A "-parser"; A"rf";
-    A "-parser"; A"debug";
-    A"-printer"; A"p"];;
+(* let boot2 = "fanboot";; *)
+(* let hot_camlp4boot = boot2;; *)
+(* let boot_flags = *)
+(*   S[P hot_camlp4boot; *)
+(*     A "-parser"; A"rf"; *)
+(*     A "-parser"; A"debug"; *)
+(*     A"-printer"; A"p"];; *)
 
 let cold_camlp4o = "" (* to be added *);;
 let cold_camlp4boot = "" (* to be added *);;
