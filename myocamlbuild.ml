@@ -627,6 +627,38 @@ module Default = struct
    )
 end 
 
+(**************************************************************)
+module PackageLinkFix =  struct
+  let packages_in_dir dir = Array.fold_right (fun f l
+    -> if (Pathname.check_extension f "mlpack") then
+      (dir / (Pathname.remove_extension f)) :: l
+    else l) (Sys.readdir dir)  []
+
+  let byte_dep_mlpack arg out env _build =
+    let arg = env arg and out = env out in
+    Echo (([arg; ":"] @
+           (List.map
+              (fun s -> " "^s)
+              (string_list_of_file (arg))) @
+           ["\n"]), out)
+
+  let ()  = 
+    rule "ocaml dependencies mlpack"
+      ~prod:"%.ml.depends"
+      ~dep:"%.mlpack"
+      (byte_dep_mlpack "%.mlpack" "%.ml.depends")
+  let mlpack_dirs = ["."]      
+  let after_rules () = 
+        List.iter
+          (fun p ->  dep ["ocaml"; "byte"; "pack"; "extension:cmo"; "file:"^p^".cmo"]
+              [p^".ml.depends"])
+          (List.concat (List.map packages_in_dir (List.map Pathname.mk mlpack_dirs)))
+
+end
+
+;;    
+(**************************************************************)
+    
 
 type actions =  (unit -> unit) list ref
 let before_options : actions = ref []
@@ -662,6 +694,7 @@ let apply  before_options_dispatch after_rules_dispatch = (
   Default.after_rules +> after_rules;
   before_options_dispatch +> before_options;
   after_rules_dispatch +> after_rules;
+  PackageLinkFix.after_rules +> after_rules;
   dispatch begin function
     | Before_options -> begin
         List.iter (fun f -> f () ) !before_options;
@@ -674,14 +707,18 @@ let apply  before_options_dispatch after_rules_dispatch = (
  );;
 
 
+
 (**************************************************************)
 (*****************  Insert most your code here ****************)                           
 (**************************************************************)
 
+Pathname.define_context "Camlp4/Printers" ["Camlp4/Struct"; "Camlp4";"."] ;;
+Pathname.define_context "Camlp4/Struct" ["Camlp4";"."];;
+Pathname.define_context "Camlp4/Struct/Grammar" ["Camlp4";"."];;
 let boot1 = "camlp4boot.native";;
 let hot_camlp4boot = "boot"// boot1;;
 let boot_flags = S[P hot_camlp4boot];;
-   
+
 (* let boot2 = "fanboot";; *)
 (* let hot_camlp4boot = boot2;; *)
 (* let boot_flags = *)
