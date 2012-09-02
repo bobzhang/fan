@@ -7,9 +7,19 @@ OB=ocamlbuild
 
 echo "First round buiding $target"
 $OB src/$target # using previous target as preprocessor
-mv _build/boot/$target _build/boot/$target.old # store it
-mv _build/src/$target _build/boot/$target # now use the new one  as preprocessor
+
+if [ -f _build/boot/$target ]
+then mv _build/boot/$target _build/boot/$target.old
+fi  # store it
+
 echo "First round building finished and do the copy"
+cp _build/src/$target _build/boot/$target
+
+rm -rf _build/boot/fan
+ln -s $target _build/boot/fan # now use the new one  as preprocessor
+
+
+
 
 echo "Cleaning for the second round building"
 make cleansrc

@@ -724,7 +724,7 @@ Pathname.define_context "src/Camlp4" ["src"];;
 (* let boot2 = "fanboot.byte";; *)
 (* let hot_camlp4boot = boot2;; *)
 let boot_flags =
-  S[P ("boot"//"fan.byte");
+  S[P ("boot"//"fan"); (* symlink fan to either fan.byte or fan.native *)
     A "-parser"; A"rf";
     A "-parser"; A"debug";
     A"-printer"; A"p"];;
