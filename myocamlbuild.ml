@@ -712,9 +712,9 @@ let apply  before_options_dispatch after_rules_dispatch = (
 (*****************  Insert most your code here ****************)                           
 (**************************************************************)
 
-Pathname.define_context "Camlp4/Printers" ["Camlp4/Struct"; "Camlp4";"."] ;;
-Pathname.define_context "Camlp4/Struct" ["Camlp4";"."];;
-Pathname.define_context "Camlp4/Struct/Grammar" ["Camlp4";"."];;
+Pathname.define_context "src/Camlp4/Printers" ["src/Camlp4/Struct"; "src/Camlp4";"src"] ;;
+Pathname.define_context "src/Camlp4/Struct" ["src/Camlp4";"src"];;
+Pathname.define_context "src/Camlp4/Struct/Grammar" ["src/Camlp4";"src"];;
 let boot1 = "camlp4boot.native";;
 let hot_camlp4boot = "boot"// boot1;;
 let boot_flags = S[P hot_camlp4boot];;
@@ -740,8 +740,8 @@ flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
 "Camlp4/Sig.ml"  |-? ["Camlp4/Camlp4Ast.partial.ml"];;
 
 (* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
-copy_rule "camlp4: boot/Camlp4Ast.ml -> Camlp4/Struct/Camlp4Ast.ml"
-  ~insert:`top "boot/Camlp4Ast.ml" "Camlp4/Struct/Camlp4Ast.ml";;
+copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml"
+  ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";;
 
 copy_rule "camlp4: Fan.byte -> fanboot"
   ~insert:`top "Fan.byte" "fanboot";;
