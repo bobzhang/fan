@@ -576,6 +576,7 @@ module Default = struct
     Options.ocamlopt   := ocamlfind & S[A"ocamlopt";A"-annot"];
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
+    Options.make_links := false;
     (* Options.ocamldoc := S [A "ocamldoc"]; *)
     (** ocamlfind does not accept -search
         ocamldoc.opt does not work on mac
@@ -614,11 +615,16 @@ module Default = struct
     flag ["ocaml"; "pkg_threads"; "infer_interface"] (S[A "-thread"]);
     
 
+    (****************************************************************)
+    (* internal parsers *)
     flag["pp"  ; "ocaml"; "use_macro"]  (S[A"-parser"; A"macro"]);
     flag["pp"  ; "ocaml"; "use_map"] (S[A"-filter"; A"map"]);
+    flag["pp"  ; "ocaml"; "use_meta"] (S[A"-filter"; A"meta"]);
+    flag["pp"  ; "ocaml"; "use_trash"] (S[A"-filter"; A"trash"]);
     flag["pp"  ; "ocaml"; "use_lift"] (S[A"-filter"; A"lift"]);
     flag["pp"  ; "ocaml"; "use_fold"] (S[A"-filter"; A"fold"]);
-    flag["pp"  ; "ocaml"; "use_debug"] (S[A"-parser"; A"Camlp4DebugParser.cmo"]);
+    flag["pp"  ; "ocaml"; "use_debug"] (S[A"-parser"; A"debug"]);
+    (****************************************************************)
     flag ["link";"ocaml";"g++";] (S[A"-cc"; A"g++"]);
     (* flag ["ocaml"; "doc"]  (S [A"-keep-code"]); *)
     (* argot_installed (); *)

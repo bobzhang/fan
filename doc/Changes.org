@@ -227,6 +227,9 @@ two printers
    File "Camlp4/Struct/Camlp4Ast2OCamlAst.ml" depends on a debug parser
    
    1. boot Camlp4Ast.ml
+      #+BEGIN_EXAMPLE
+      _build/boot/fan -parser rf -parser debug -printer o -filter fold -filter meta -filter trash  -impl src/Camlp4/Struct/Camlp4Ast.mlast  -o src/Camlp4/Struct/Camlp4Ast.ml
+      #+END_EXAMPLE
    2. Camlp4.ml4 -> Camlp4.ml
    3. Camlp4boot.ml4 -> Camlp4boot.ml
    4. compare

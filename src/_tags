@@ -7,8 +7,9 @@
 # remove some warnings
 
 <Camlp4_{config,import}.ml*>: -camlp4boot
-
 <{p4_util,pprintast}.ml>:-camlp4boot
+
+<Camlp4/Struct/Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
 
 <tmp*.ml> or <boot/*> or "fan_lexer.ml": -camlp4boot
 
