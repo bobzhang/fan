@@ -717,36 +717,50 @@ Pathname.define_context "src/Camlp4/Struct" ["src/Camlp4";"src"];;
 Pathname.define_context "src/Camlp4/Struct/Grammar" ["src/Camlp4";"src"];;
 Pathname.define_context "src/Camlp4" ["src"];;
 
-let boot1 = "camlp4boot.native";;
-let hot_camlp4boot = "boot"// boot1;;
-let boot_flags = S[P hot_camlp4boot];;
+(* let boot1 = "camlp4boot.native";; *)
+(* let hot_camlp4boot = "boot"// boot1;; *)
+(* let boot_flags = S[P hot_camlp4boot];; *)
 
-(* let boot2 = "fanboot";; *)
+(* let boot2 = "fanboot.byte";; *)
 (* let hot_camlp4boot = boot2;; *)
-(* let boot_flags = *)
-(*   S[P hot_camlp4boot; *)
-(*     A "-parser"; A"rf"; *)
-(*     A "-parser"; A"debug"; *)
-(*     A"-printer"; A"p"];; *)
+let boot_flags =
+  S[P ("boot"//"fan.byte");
+    A "-parser"; A"rf";
+    A "-parser"; A"debug";
+    A"-printer"; A"p"];;
 
 let cold_camlp4o = "" (* to be added *);;
 let cold_camlp4boot = "" (* to be added *);;
     
-flag ["ocaml"; "pp"; "camlp4boot"] boot_flags;;
-flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);;
-flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);;
-flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);;
 
-flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
-flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
-"src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];;
-dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];;
+let () =
+  after_rules_dispatch := fun () -> begin
+    flag ["ocaml"; "pp"; "camlp4boot"] boot_flags;
+    flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);
+    flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);
+    flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);
+    "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
+    dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];
+    dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
+      ["camlp4/Camlp4/Camlp4Ast.partial.ml"]
+  end;;
+
+(* flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
+(* flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
 (* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
 copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml"
   ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";;
 
-copy_rule "camlp4: Fan.byte -> fanboot"
-  ~insert:`top "Fan.byte" "fanboot";;
+copy_rule "camlp4: fan.byte -> fanboot.byte"
+  ~insert:`top "src/fan.byte" "boot/fanboot.byte";;
+
+copy_rule "camlp4: fan.native -> fanboot.native"
+  ~insert:`top "src/fan.native" "boot/fanboot.native";;
+
+(* let spec_list = *)
+(*   ["-ppcommand", Arg.String (fun x -> prerr_endline x ), "set the pp driver"] ;; *)
+
+(* Arg.parse spec_list (fun _ -> ()) "";; *)
 
 (* (\* seems  non-necessary should be fixed later *\)
  * rule "camlp4: Camlp4/Struct/Lexer.ml -> boot/Lexer.ml"
@@ -757,45 +771,45 @@ copy_rule "camlp4: Fan.byte -> fanboot"
  *           A"-printer"; A"r"; A"-o"; Px"camlp4/boot/Lexer.ml"])
  *   end;; *)
 
-module Camlp4deps = struct
-  let lexer = Genlex.make_lexer ["INCLUDE"; ";"; "="; ":"]
-  let rec parse strm =
-    match Stream.peek strm with
-    | None -> []
-    | Some(Genlex.Kwd "INCLUDE") ->
-        Stream.junk strm;
-        begin match Stream.peek strm with
-        | Some(Genlex.String s) ->
-            Stream.junk strm;
-            s :: parse strm
-        | _ -> invalid_arg "Camlp4deps parse failure"
-        end
-    | Some _ ->
-        Stream.junk strm;
-        parse strm
+(* module Camlp4deps = struct *)
+(*   let lexer = Genlex.make_lexer ["INCLUDE"; ";"; "="; ":"] *)
+(*   let rec parse strm = *)
+(*     match Stream.peek strm with *)
+(*     | None -> [] *)
+(*     | Some(Genlex.Kwd "INCLUDE") -> *)
+(*         Stream.junk strm; *)
+(*         begin match Stream.peek strm with *)
+(*         | Some(Genlex.String s) -> *)
+(*             Stream.junk strm; *)
+(*             s :: parse strm *)
+(*         | _ -> invalid_arg "Camlp4deps parse failure" *)
+(*         end *)
+(*     | Some _ -> *)
+(*         Stream.junk strm; *)
+(*         parse strm *)
 
-  let parse_file file =
-    with_input_file file begin fun ic ->
-      let strm = Stream.of_channel ic in
-      parse (lexer strm)
-    end
+(*   let parse_file file = *)
+(*     with_input_file file begin fun ic -> *)
+(*       let strm = Stream.of_channel ic in *)
+(*       parse (lexer strm) *)
+(*     end *)
 
-  let build_deps build file =
-    let includes = parse_file file in
-    List.iter Outcome.ignore_good (build (List.map (fun i -> [i]) includes));
-end;;
+(*   let build_deps build file = *)
+(*     let includes = parse_file file in *)
+(*     List.iter Outcome.ignore_good (build (List.map (fun i -> [i]) includes)); *)
+(* end;; *)
 
 
 
-rule "camlp4: ml4 -> ml"
-  ~prod:"%.ml"
-  ~dep:"%.ml4"
-  begin fun env build ->
-    let ml4 = env "%.ml4" and ml = env "%.ml" in
-    Camlp4deps.build_deps build ml4;
-    Cmd(S[P hot_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o";
-          A"-D"; A"OPT"; A"-o"; Px ml])
-  end;;
+(* rule "camlp4: ml4 -> ml" *)
+(*   ~prod:"%.ml" *)
+(*   ~dep:"%.ml4" *)
+(*   begin fun env build -> *)
+(*     let ml4 = env "%.ml4" and ml = env "%.ml" in *)
+(*     Camlp4deps.build_deps build ml4; *)
+(*     Cmd(S[P hot_camlp4boot; A"-impl"; P ml4; A"-printer"; A"o"; *)
+(*           A"-D"; A"OPT"; A"-o"; Px ml]) *)
+(*   end;; *)
 
 (* bootstraping *)
 (* rule "camlp4: ml4 -> ml"
@@ -824,8 +838,6 @@ rule "camlp4: ml4 -> ml"
  *           A"-o"; Px ml])
  *   end;; *)
 
-dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
-    ["camlp4/Camlp4/Camlp4Ast.partial.ml"];;
 
 let _ = begin 
   apply !before_options_dispatch !after_rules_dispatch
