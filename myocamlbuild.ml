@@ -715,6 +715,7 @@ let apply  before_options_dispatch after_rules_dispatch = (
 Pathname.define_context "src/Camlp4/Printers" ["src/Camlp4/Struct"; "src/Camlp4";"src"] ;;
 Pathname.define_context "src/Camlp4/Struct" ["src/Camlp4";"src"];;
 Pathname.define_context "src/Camlp4/Struct/Grammar" ["src/Camlp4";"src"];;
+Pathname.define_context "src/Camlp4" ["src"];;
 let boot1 = "camlp4boot.native";;
 let hot_camlp4boot = "boot"// boot1;;
 let boot_flags = S[P hot_camlp4boot];;
@@ -737,8 +738,8 @@ flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);;
 
 flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
 flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);;
-"Camlp4/Sig.ml"  |-? ["Camlp4/Camlp4Ast.partial.ml"];;
-
+"src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];;
+dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];;
 (* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
 copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml"
   ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";;
@@ -783,7 +784,7 @@ module Camlp4deps = struct
     List.iter Outcome.ignore_good (build (List.map (fun i -> [i]) includes));
 end;;
 
-dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];;
+
 
 rule "camlp4: ml4 -> ml"
   ~prod:"%.ml"
