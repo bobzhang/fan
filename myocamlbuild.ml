@@ -716,6 +716,7 @@ Pathname.define_context "src/Camlp4/Printers" ["src/Camlp4/Struct"; "src/Camlp4"
 Pathname.define_context "src/Camlp4/Struct" ["src/Camlp4";"src"];;
 Pathname.define_context "src/Camlp4/Struct/Grammar" ["src/Camlp4";"src"];;
 Pathname.define_context "src/Camlp4" ["src"];;
+
 let boot1 = "camlp4boot.native";;
 let hot_camlp4boot = "boot"// boot1;;
 let boot_flags = S[P hot_camlp4boot];;
