@@ -2,7 +2,7 @@
 # -*- Mode:Shell-script -*-
 set -e
 
-target=fan.byte
+target=$1
 OB=ocamlbuild
 
 echo "First round buiding $target"
