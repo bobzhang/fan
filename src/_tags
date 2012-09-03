@@ -1,7 +1,9 @@
 # -*- Mode:Shell-script -*-
 
 
-<**/*.ml*>: camlp4boot
+# <**/*.ml*>: camlp4boot
+<**/*.ml>: camlp4boot
+<**/*.mli>: camlp4boot
 # , warn_Z
 <pprintast.ml>:warn_a
 # remove some warnings

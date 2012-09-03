@@ -172,7 +172,20 @@ module Util = struct
         :: acc
       end extensions
     end modules []
+  let file_deps   (bs:string list) (tybs: file_type list)  (deps:string list)
+      (tydeps:file_type list) = let open List in let open Opt in 
+      let files = concat & map (fun f ->
+        (map (fun ty -> f /*> ty) tydeps)) deps in
+      let bases = concat & map (fun f ->
+        (map (fun ty -> f /*> ty) tybs)) bs in
+      bases |-?? files
+  let deps_mli f files = file_deps [f]  [Ml;Pp_ml;Ppo_ml] files [Inferred]
+  let deps_mli_table (tbl: (string* string list ) list) =
+    List.iter (fun (s,lst) ->
+      deps_mli s lst ) tbl
 
+(*****************************************************************************************)
+(***************************** mainly for camlp4 driver, deprecated now ******************)      
   let p4  = Pathname.concat "camlp4"
   let pa  = Pathname.concat (p4 "Camlp4Parsers")
   let pr  = Pathname.concat (p4 "Camlp4Printers")
@@ -242,17 +255,7 @@ module Util = struct
       [pr_a] ;
   end
   let use_p4="use_camlp4"
-  let file_deps   (bs:string list) (tybs: file_type list)  (deps:string list)
-      (tydeps:file_type list) = let open List in let open Opt in 
-      let files = concat & map (fun f ->
-        (map (fun ty -> f /*> ty) tydeps)) deps in
-      let bases = concat & map (fun f ->
-        (map (fun ty -> f /*> ty) tybs)) bs in
-      bases |-?? files
-  let deps_mli f files = file_deps [f]  [Ml;Pp_ml;Ppo_ml] files [Inferred]
-  let deps_mli_table (tbl: (string* string list ) list) =
-    List.iter (fun (s,lst) ->
-      deps_mli s lst ) tbl
+(*****************************************************************************************)            
 end
 
     
@@ -292,7 +295,7 @@ module Driver = struct
 
   let p4_flags' = List.iter (fun (p4, flags) -> flag ["ocaml"; "pp"; p4] flags)
 
-  let camlp4 ?(default = A "camlp4o.opt") ?(printer=A "r")
+  let camlp4  ?(printer=A "o")
       tag i o env build = (
     let ml = env i and pp_ml = env o in
     (**  add a pp here to triger the rule pp,
@@ -305,8 +308,15 @@ module Driver = struct
      *     Rule.build_deps_of_tags will try to build the deps  *)
     let _deps = Rule.build_deps_of_tags build (tags ++ "ocamldep") in
     let pp = Command.reduce (Flags.of_tags tags) in
-    let pp = match pp with | N -> default | _ -> pp in
-    Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ])
+    match pp with
+    | N -> begin
+        Log.dprintf 0 "could not find pp flags for source %s, using cat instead" ml;
+        Cmd (S[A"cat"; P ml; Sh ">"; Px pp_ml])
+    end
+    | _ ->
+        Cmd (S[pp; P ml; A "-printer"; printer; A "-o"; Px pp_ml])
+    (* let pp = match pp with | N -> default | _ -> pp in *)
+    (* Cmd (S [ pp; P ml; A "-printer";printer; A "-o"; Px pp_ml ]) *)
    )
   let infer_with_error_channel ?(ocamlc=Options.ocamlc) flag tag =
     let infer ml dlambda env build = let open Ocaml_utils in
@@ -396,7 +406,7 @@ open Driver;;
    rule "generate %.itarget" ~prod:"%.itarget" mk_itarget;
    rule "version.ml" ~prod:"version.ml" mk_version;
    rule "preprocess: ml -> _ppr.ml" ~dep: "%.ml" ~prod:"%_ppr.ml"
-    (camlp4 "%_ppr.ml" "%.ml" "%_ppr.ml");
+    (camlp4 ~printer:(A"r") "%_ppr.ml" "%.ml" "%_ppr.ml");
    rule "preprocess: ml -> _ppo.ml" ~dep: "%.ml" ~prod: "%_ppo.ml"
     (camlp4 ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
    let myocamldoc tags =
@@ -718,11 +728,19 @@ let apply  before_options_dispatch after_rules_dispatch = (
 (*****************  Insert most your code here ****************)                           
 (**************************************************************)
 
-Pathname.define_context "src/Camlp4/Printers" ["src/Camlp4/Struct"; "src/Camlp4";"src"] ;;
-Pathname.define_context "src/Camlp4/Struct" ["src/Camlp4";"src"];;
-Pathname.define_context "src/Camlp4/Struct/Grammar" ["src/Camlp4";"src"];;
-Pathname.define_context "src/Camlp4" ["src"];;
+let root1 = "src";;
+let root2 = "cold";;
+let tmp = "tmp"    
 
+let define_context_for_root r =
+  let def = Pathname.define_context in   begin 
+    def (r // "Camlp4/Printers") [ r //"Camlp4/Struct"; r // "Camlp4"; r] ;
+    def (r // "Camlp4/Struct") [ r // "Camlp4"; r ];
+    def (r // "Camlp4/Struct/Grammar")  [ r // "Camlp4"; r];
+    def (r // "Camlp4") [ r]
+  end ;;
+define_context_for_root root1;;
+define_context_for_root root2;;
 (* let boot1 = "camlp4boot.native";; *)
 (* let hot_camlp4boot = "boot"// boot1;; *)
 (* let boot_flags = S[P hot_camlp4boot];; *)
@@ -737,7 +755,18 @@ let boot_flags =
 
 let cold_camlp4o = "" (* to be added *);;
 let cold_camlp4boot = "" (* to be added *);;
-    
+
+
+rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
+    (camlp4  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
+
+rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
+    (camlp4  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
+
+rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
+    (camlp4  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
+rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
+    (camlp4  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
   after_rules_dispatch := fun () -> begin
@@ -748,20 +777,16 @@ let () =
     "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
     dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];
     dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
-      ["camlp4/Camlp4/Camlp4Ast.partial.ml"]
-  end;;
+      ["camlp4/Camlp4/Camlp4Ast.partial.ml"];
 
-(* flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
-(* flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
-(* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)
+  end;;
 copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml"
   ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";;
 
-copy_rule "camlp4: fan.byte -> fanboot.byte"
-  ~insert:`top "src/fan.byte" "boot/fanboot.byte";;
-
-copy_rule "camlp4: fan.native -> fanboot.native"
-  ~insert:`top "src/fan.native" "boot/fanboot.native";;
+copy_rule "camlp4: src/fan.byte -> boot/fan.byte"
+  ~insert:`top "src/fan.byte" "boot/fan.byte";;
+copy_rule "camlp4: src/fan.native -> boot/fan.native"
+  ~insert:`top "src/fan.native" "boot/fan.native";;
 
 (* let spec_list = *)
 (*   ["-ppcommand", Arg.String (fun x -> prerr_endline x ), "set the pp driver"] ;; *)
@@ -1006,3 +1031,6 @@ end
  *     Filename.check_suffix x ".ml"
  *   || Filename.check_suffix x ".mli");;
  * Array.iter update_ml_files  paths;; *)
+(* flag ["ocaml"; "compile"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
+(* flag ["ocaml"; "ocamldep"; "include_camlp4"] (S[A"-I";P "Camlp4"]);; *)
+(* copy boot/Camlp4Ast.ml to Camlp4/Struct/Camlp4Ast.ml *)

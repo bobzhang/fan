@@ -14,7 +14,7 @@ module Camlp4Bin
 
       value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
         Hashtbl.create 30;
-      value dyn_loader = ref (fun []);
+      value dyn_loader = ref (fun () -> failwith "empty in dynloader");
       value rcall_callback = ref (fun () -> ());
       value loaded_modules = ref SSet.empty;
       value add_to_loaded_modules name =

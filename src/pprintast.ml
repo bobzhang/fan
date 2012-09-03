@@ -321,7 +321,7 @@ let rec core_type ppf x =
         | "" -> core_type ppf ct1;
         | s when (String.get s 0 = '?')  ->
             (match ct1.ptyp_desc with
-              | Ptyp_constr ({ txt = Longident.Lident ("option")}, l) ->
+              | Ptyp_constr ({ txt = Longident.Ldot (Longident.Lident "*predef*", "option")}, l) ->
                   fprintf ppf "%s :@ " s ;
                   type_constr_list ppf l ;
               | _ -> core_type ppf ct1; (* todo: what do we do here? *)
@@ -1775,8 +1775,19 @@ and string_x_core_type ppf (s, ct) =
 
 and longident_x_with_constraint ppf (li, wc) =
   match wc with
-  | Pwith_type (td) ->
-      fprintf ppf "type@ %a =@ " fmt_longident li;
+  | Pwith_type ({ptype_params= ls } as td) ->
+      fprintf ppf "type@ %a %a =@ "
+        (fun ppf ls ->
+          let len = List.length ls in
+          if len >= 2 then begin
+            fprintf ppf "(";
+            list2 type_var_option_print ppf ls ",";
+            fprintf ppf ")";
+           end
+        else
+            list2 type_var_option_print ppf ls ",";
+        ) ls
+        fmt_longident li;
       type_declaration ppf td ;
   | Pwith_module (li2) ->
       fprintf ppf "module %a =@ %a" fmt_longident li fmt_longident li2;
@@ -1852,7 +1863,7 @@ and pattern_x_expression_case_list
       pp_close_box ppf () ;
   | (p,e)::r  -> (* not last  *)
       pp_open_hvbox ppf (indent + 2) ;
-      if ((first=true) & (special_first_case=false)) then begin
+      if ((first=true) && (special_first_case=false)) then begin (* fix the convention*)
           pp_print_if_newline ppf () ;
           pp_print_string ppf "  "
         end else
