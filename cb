@@ -1,0 +1,10 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
+set -e
+ocamlbuild $(find src | grep ml$ | perl -pe 's|.*?/|tmp/|')
+# needs copy mll mlpack as well
+ocamlbuild $(find src | grep mll$ | perl -pe 's|.*?/|tmp/|')
+ocamlbuild $(find src | grep mli$ | perl -pe 's|.*?/|tmp/|')
+ocamlbuild $(find src | grep mlpack$ | perl -pe 's|.*?/|tmp/|')
+
+cp -rf _build/tmp/ cold      

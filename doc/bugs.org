@@ -1,0 +1,72 @@
+#+STARTUP: overview
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+#+OPTIONS: toc:nil ^:{} num:nil creator:nil author:nil
+#+OPTIONS: author:nil timestamp:nil d:nil
+
+
+* printer bug  pprintast.ml
+** for option type 
+   #+BEGIN_SRC caml -n -r
+     value dyn_loader  = ref (fun [] ); 
+   #+END_SRC
+   when using =pprintast= was dumped as =(function)
+
+   #+BEGIN_SRC caml -n -r
+     value mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
+   #+END_SRC
+
+   #+BEGIN_SRC tuareg -n -r
+     interface_of_string
+       "val mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t"
+     |> Pprintast.print_signature std_formatter;;
+     val mk : (bool *predef*.option -> (bool *predef*.option -> (unit -> t)))
+   #+END_SRC
+
+   #+BEGIN_SRC caml -n -r 
+     <:sig_item< value mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t >> ;
+     - : Camlp4.PreCast.Ast.sig_item =
+     SgVal  "mk"
+      (TyArr  (TyOlb  "ocaml_stdlib" (TyId  (IdLid  "bool")))
+        (TyArr  (TyOlb  "camlp4_stdlib" (TyId  (IdLid  "bool")))
+          (TyArr  (TyId  (IdLid  "unit")) (TyId  (IdLid  "t")))))
+   #+END_SRC
+
+   #+BEGIN_SRC caml -n -r 
+    (* quotation   *)  | <:ctyp< ? $s$ : $t$ >>
+                      -> pp f "@[<2>?%s:@ %a@]" s o#simple_ctyp t
+
+    (* translated * ) | Ast.TyOlb (_, s, t) ->
+                    pp f "@[<2>?%s:@ %a@]" s o#simple_ctyp t
+   #+END_SRC
+   
+** for type parameters
+   #+BEGIN_SRC tuareg -n -r
+     "module  C : A with type 'a option = 'a M.option = U"
+     |> implementation_of_string |> print_structure std_formatter;;
+     module C = (U : (A with type option = 'a M.option))
+     - : unit = ()
+   #+END_SRC
+
+   #+BEGIN_SRC tuareg -n -r
+     with_constraint:
+         TYPE type_parameters label_longident with_type_binder core_type constraints
+           { let params, variance = List.split $2 in
+             (mkrhs $3 3,  Pwith_type {ptype_params = List.map (fun x -> Some x) params;
+                              ptype_cstrs = List.rev $6;
+                              ptype_kind = Ptype_abstract;
+                              ptype_manifest = Some $5;
+                              ptype_private = $4;
+                              ptype_variance = variance;
+                              ptype_loc = symbol_rloc()}) }
+   #+END_SRC
+* filter plugin does not work with /.mli/ file
+
+
+* fixpoint
+  I have came across a weird problem, for a change update
+  I need to bootstrap fan.byte, first (reach a fixpoint ) then
+  bootstrap fan.native, then it's ok.
+
+  But if I do bootstrap fan.native,(tried 3 times not to get a fix point) 
