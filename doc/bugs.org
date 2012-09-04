@@ -7,6 +7,8 @@
 
 
 * printer bug  pprintast.ml
+
+
 ** for option type 
    #+BEGIN_SRC caml -n -r
      value dyn_loader  = ref (fun [] ); 
@@ -41,6 +43,33 @@
                     pp f "@[<2>?%s:@ %a@]" s o#simple_ctyp t
    #+END_SRC
    
+
+
+** option type in class signature
+
+   #+BEGIN_SRC tuareg -n -r
+     "module type S = sig
+       class fold: ?env_int:int -> object end
+     end" |> implementation_of_string |> print_structure std_formatter;;
+     module type S =
+      sig class fold : int *predef*.option -> [?env_int] object end
+      end
+        
+   #+END_SRC
+
+
+
+** option for class structure
+   #+BEGIN_SRC tuareg
+     "class f ?(x=3) = object end "
+     |> implementation_of_string
+     |>print_structure std_formatter;;
+     class f x (* Some
+     3label="?x"
+      *) = object end   
+   #+END_SRC
+
+   only fixed =class_fun_helper=, did not fix =class_expr= yet
 ** for type parameters
    #+BEGIN_SRC tuareg -n -r
      "module  C : A with type 'a option = 'a M.option = U"
@@ -61,6 +90,7 @@
                               ptype_variance = variance;
                               ptype_loc = symbol_rloc()}) }
    #+END_SRC
+   
 * filter plugin does not work with /.mli/ file
 
 
