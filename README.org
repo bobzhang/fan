@@ -37,3 +37,13 @@
 
    Then type =cb= to snapshot your changes to cold.(This is for
    distribute purpose) 
+
+
+* Directory Structure
+  
+** src
+   The main dev strcuture
+   
+
+** cold
+   The mirror of src, for distribute purpose 
