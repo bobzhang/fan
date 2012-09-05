@@ -1,0 +1,39 @@
+#+STARTUP: overview
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+#+OPTIONS: toc:4 ^:{} num:nil creator:nil author:nil
+#+OPTIONS: author:nil timestamp:nil d:nil
+#+STYLE: <link rel="stylesheet" type="text/css" href="../css/style.css">
+
+
+
+
+* Install
+** Requirements
+   OCaml dev (I am not sure it works with ocaml 4.00, probably ok)
+   OCamlfind 
+** Initial Install
+   #+BEGIN_SRC shell-script
+     ocamlbuild cold/fan.byte
+   #+END_SRC
+   This is mainly for the cold start(compile from the original syntax
+   code). Actually all work is done. The following work is to use the
+   compile binary to preprocess the revised syntax to verify =Fan=
+   reaches a fix point now.
+
+   #+BEGIN_SRC shell-script
+     mkdir _build/boot
+     ln -s _build/cold/fan.byte _build/boot/fan
+   #+END_SRC
+
+   If it reaches fix point, then it succeeds
+   
+** Develop
+
+   Everytime, you made some nontrival changes(change the grammar,
+   lexer), make sure to type =hb fan.byte= or =hb fan.native= to
+   verify it can be hot-bootstrapped.
+
+   Then type =cb= to snapshot your changes to cold.(This is for
+   distribute purpose) 
