@@ -25,9 +25,11 @@
    #+BEGIN_SRC shell-script
      mkdir _build/boot
      ln -s _build/cold/fan.byte _build/boot/fan
+     hb fan.byte
    #+END_SRC
 
-   If it reaches fix point, then it succeeds
+   If it reaches fix point, then it succeeds. You can also test =hb
+   fan.native= for fun!
    
 ** Develop
 
