@@ -1,0 +1,22 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
+set -e
+target=Fan.byte
+echo "cold start..."
+make cleancold
+ocamlbuild cold/$target
+echo "cold start finished.. now bootstrapping to verify it could reach a fix point"
+
+if [! -f  _build/boot]
+then
+    mkdir _build/boot
+fi
+
+
+if [ -f _build/boot/fan ]
+then
+    rm _build/boot/fan
+fi
+
+ln -s _build/cold/$target _build/boot/fan
+hb $target
