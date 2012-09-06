@@ -88,7 +88,7 @@ module ObjTools =
                         (( (String.escaped ( ((Obj.magic r) : string) )) ) ^
                           "\"") ))
                    | x when (x = Obj.double_tag) ->
-                      (P4_util.float_repres ( ((Obj.magic r) : float) ))
+                      (FanUtil.float_repres ( ((Obj.magic r) : float) ))
                    | x when (x = Obj.abstract_tag) -> (opaque "abstract")
                    | x when (x = Obj.custom_tag) -> (opaque "custom")
                    | x when (x = Obj.final_tag) -> (opaque "final")

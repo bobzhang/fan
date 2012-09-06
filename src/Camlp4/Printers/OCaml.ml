@@ -27,7 +27,7 @@ module Make (Syntax : Sig.Camlp4Syntax) : (Sig.Printer Syntax.Ast).S = struct
   module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast;
   value print_implem ?input_file:(_) ?output_file ast =
     let pt = Ast2pt.str_item ast in
-    P4_util.with_open_out_file output_file
+    FanUtil.with_open_out_file output_file
       (fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
         let () = Pprintast.print_structure fmt pt in 
@@ -35,7 +35,7 @@ module Make (Syntax : Sig.Camlp4Syntax) : (Sig.Printer Syntax.Ast).S = struct
       );
   value print_interf ?input_file:(_) ?output_file ast =
     let pt = Ast2pt.sig_item ast in
-    P4_util.with_open_out_file output_file
+    FanUtil.with_open_out_file output_file
       (fun oc ->
         let fmt = Format.formatter_of_out_channel oc in
         let () = Pprintast.print_signature fmt pt in

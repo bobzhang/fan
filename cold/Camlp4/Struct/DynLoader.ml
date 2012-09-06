@@ -21,10 +21,7 @@ let mk =
      ->
     let q = (Queue.create () ) in
     (
-    if ocaml_stdlib then
-     (
-     (include_dir q Camlp4_config.ocaml_standard_library)
-     )
+    if ocaml_stdlib then ( (include_dir q FanConfig.ocaml_standard_library) )
     else ()
     );
     (
@@ -32,21 +29,19 @@ let mk =
     then
      begin
      (
-     (include_dir q Camlp4_config.camlp4_standard_library)
+     (include_dir q FanConfig.camlp4_standard_library)
      );
      (
      (include_dir q (
-       (Filename.concat Camlp4_config.camlp4_standard_library
-         "Camlp4Parsers") ))
+       (Filename.concat FanConfig.camlp4_standard_library "Camlp4Parsers") ))
      );
      (
      (include_dir q (
-       (Filename.concat Camlp4_config.camlp4_standard_library
-         "Camlp4Printers") ))
+       (Filename.concat FanConfig.camlp4_standard_library "Camlp4Printers")
+       ))
      );
      (include_dir q (
-       (Filename.concat Camlp4_config.camlp4_standard_library
-         "Camlp4Filters") ))
+       (Filename.concat FanConfig.camlp4_standard_library "Camlp4Filters") ))
     end else ()
     );
     (

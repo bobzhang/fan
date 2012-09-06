@@ -19,7 +19,7 @@ module Make =
                          fun ?output_file ->
                           fun ast ->
                            let pt = (Ast2pt.str_item ast) in
-                           (P4_util.with_open_out_file output_file (
+                           (FanUtil.with_open_out_file output_file (
                              fun oc ->
                               let fmt = (Format.formatter_of_out_channel oc) in
                               let () = (Pprintast.print_structure fmt pt) in
@@ -30,7 +30,7 @@ module Make =
                          fun ?output_file ->
                           fun ast ->
                            let pt = (Ast2pt.sig_item ast) in
-                           (P4_util.with_open_out_file output_file (
+                           (FanUtil.with_open_out_file output_file (
                              fun oc ->
                               let fmt = (Format.formatter_of_out_channel oc) in
                               let () = (Pprintast.print_signature fmt pt) in

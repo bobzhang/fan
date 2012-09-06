@@ -35,7 +35,7 @@ module Make (Lexer : Sig.Lexer)
       gfilter = Token.Filter.mk (Hashtbl.mem gkeywords);
       glexer = Lexer.mk ();
       warning_verbose = ref True; (* FIXME *)
-      error_verbose = Camlp4_config.verbose
+      error_verbose = FanConfig.verbose
     };
 
   value get_filter g = g.gfilter;

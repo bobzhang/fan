@@ -17,10 +17,10 @@ module Make =
              fun ast ->
               let pt = (Ast2pt.sig_item ast) in
               let open
-              P4_util in
+              FanUtil in
               (with_open_out_file output_file (
-                (dump_pt Camlp4_config.ocaml_ast_intf_magic_number input_file
-                  pt) ))
+                (dump_pt FanConfig.ocaml_ast_intf_magic_number input_file pt)
+                ))
 
           let print_implem =
            fun ?(input_file = "-") ->
@@ -28,9 +28,9 @@ module Make =
              fun ast ->
               let pt = (Ast2pt.str_item ast) in
               let open
-              P4_util in
+              FanUtil in
               (with_open_out_file output_file (
-                (dump_pt Camlp4_config.ocaml_ast_impl_magic_number input_file
-                  pt) ))
+                (dump_pt FanConfig.ocaml_ast_impl_magic_number input_file pt)
+                ))
 
          end : Sig.Printer(Syntax.Ast).S)

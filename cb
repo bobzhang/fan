@@ -8,4 +8,14 @@ ocamlbuild $(find src | grep mll$ | perl -pe 's|.*?/|tmp/|')
 ocamlbuild $(find src | grep mli$ | perl -pe 's|.*?/|tmp/|')
 ocamlbuild $(find src | grep mlpack$ | perl -pe 's|.*?/|tmp/|')
 
-cp -rf _build/tmp/ cold      
+rm -rf cold # do the cleaning, in case some files are discarded 
+mkdir cold
+
+cp -rf _build/tmp/ cold
+
+# creat tag files
+cat <<EOF > cold/_tags
+<{Pprintast,FanConfig,Camlp4/ErrorHandler,Camlp4/Sig}.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
+<Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
+EOF
+

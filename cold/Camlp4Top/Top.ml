@@ -58,7 +58,7 @@ let initialization =
  lazy (
   if !Sys.interactive then
    (
-   (Format.printf "\tCamlp4 Parsing version %s\n@." Camlp4_config.version)
+   (Format.printf "\tCamlp4 Parsing version %s\n@." FanConfig.version)
    )
   else () )
 

@@ -38,10 +38,10 @@ module MakeAstLoader =
                             (Marshal.from_string str magic_len)
 
                        let parse_implem =
-                        (parse Camlp4_config.camlp4_ast_impl_magic_number)
+                        (parse FanConfig.camlp4_ast_impl_magic_number)
 
                        let parse_interf =
-                        (parse Camlp4_config.camlp4_ast_intf_magic_number)
+                        (parse FanConfig.camlp4_ast_intf_magic_number)
 
                       end : Sig.Parser(Ast).S)
 
@@ -1688,7 +1688,7 @@ and ('e, 'p) symbol = {
            ("Deprecated syntax, use a sub rule. " ^
              "LIST0 STRING becomes LIST0 [ x = STRING -> x ]")) ))
     | _ -> ())
- let _ = (Camlp4_config.antiquotations := true )
+ let _ = (FanConfig.antiquotations := true )
 
  let _ = let _ = (expr : 'expr Gram.Entry.t)
          and _ = (symbol : 'symbol Gram.Entry.t) in
@@ -7224,7 +7224,7 @@ module MakeRevisedParser =
 
                                                             include Syntax
 
-                                                            let _ = (Camlp4_config.constructors_arity
+                                                            let _ = (FanConfig.constructors_arity
                                                                     :=
                                                                     false
                                                                     )
@@ -42715,7 +42715,7 @@ module MakeParser =
 
                 include Syntax
 
-                let _ = (Camlp4_config.constructors_arity := false )
+                let _ = (FanConfig.constructors_arity := false )
 
                 let bigarray_set =
                  fun _loc ->
@@ -42995,8 +42995,8 @@ module MakeParser =
                  | Ast.ExAcc (_, _, e) -> (is_expr_constr_call e)
                  | Ast.ExApp (_loc, e, _) ->
                     let res = (is_expr_constr_call e) in
-                    if (( (not ( !Camlp4_config.constructors_arity ))
-                         ) && res) then
+                    if (( (not ( !FanConfig.constructors_arity )) )
+                         && res) then
                      (
                      (Loc.raise _loc (
                        (Stream.Error ("currified constructor")) ))
@@ -49353,7 +49353,7 @@ module MakeQuotationCommon =
                                                                   (
                                                                   (Ast.IdUid
                                                                     (_loc,
-                                                                    "P4_util"))
+                                                                    "FanUtil"))
                                                                   ),
                                                                   (
                                                                   (Ast.IdLid
@@ -50417,15 +50417,15 @@ module MakeQuotationCommon =
                                                   fun loc ->
                                                    fun s ->
                                                     let q =
-                                                     !Camlp4_config.antiquotations in
+                                                     !FanConfig.antiquotations in
                                                     let () =
-                                                     (Camlp4_config.antiquotations
+                                                     (FanConfig.antiquotations
                                                        := true ) in
                                                     let res =
                                                      (Gram.parse_string
                                                        entry loc s) in
                                                     let () =
-                                                     (Camlp4_config.antiquotations
+                                                     (FanConfig.antiquotations
                                                        := q) in
                                                     res in
                                                 let expand_expr =

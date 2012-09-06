@@ -6,7 +6,7 @@ open Camlp4Parsers
 
 open Camlp4Filters
 
-open P4_util
+open FanUtil
 
 
 module Camlp4Bin =
@@ -275,17 +275,17 @@ module Camlp4Bin =
          gimd)
 
     let just_print_the_version =
-     fun ()  -> ( (printf "%s@." Camlp4_config.version) ); (exit 0)
+     fun ()  -> ( (printf "%s@." FanConfig.version) ); (exit 0)
 
     let print_version =
      fun ()
        ->
-      ( (eprintf "Camlp4 version %s@." Camlp4_config.version) ); (exit 0)
+      ( (eprintf "Camlp4 version %s@." FanConfig.version) ); (exit 0)
 
     let print_stdlib =
      fun ()
        ->
-      ( (printf "%s@." Camlp4_config.camlp4_standard_library) ); (exit 0)
+      ( (printf "%s@." FanConfig.camlp4_standard_library) ); (exit 0)
 
     let usage =
      fun ini_sl ->
@@ -329,7 +329,7 @@ module Camlp4Bin =
      let task =
       fun f ->
        fun x ->
-        let () = (Camlp4_config.current_input_file := x) in
+        let () = (FanConfig.current_input_file := x) in
         (t := (
           (Some
             (if (( !t ) = None ) then ( fun _ -> (f x) )
@@ -378,11 +378,11 @@ module Camlp4Bin =
        "<file>  Parse <file> as an implementation, whatever its extension.");
       ("-str", ( (Arg.String (fun x -> (input_file ( (Str (x)) )))) ),
        "<string>  Parse <string> as an implementation.");
-      ("-unsafe", ( (Arg.Set (Camlp4_config.unsafe)) ),
+      ("-unsafe", ( (Arg.Set (FanConfig.unsafe)) ),
        "Generate unsafe accesses to array and strings.");
       ("-noassert", ( (Arg.Unit (warn_noassert)) ),
        "Obsolete, do not use this option.");
-      ("-verbose", ( (Arg.Set (Camlp4_config.verbose)) ),
+      ("-verbose", ( (Arg.Set (FanConfig.verbose)) ),
        "More verbose in parsing errors.");
       ("-loc", ( (Arg.Set_string (Loc.name)) ), (
        ("<name>   Name of the location variable (default: " ^ (
@@ -398,7 +398,7 @@ module Camlp4Bin =
        "Print Camlp4 version number and exit.");
       ("-vnum", ( (Arg.Unit (just_print_the_version)) ),
        "Print Camlp4 version number and exit.");
-      ("-no_quot", ( (Arg.Clear (Camlp4_config.quotations)) ),
+      ("-no_quot", ( (Arg.Clear (FanConfig.quotations)) ),
        "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
       ("-loaded-modules", ( (Arg.Set (print_loaded_modules)) ),
        "Print the list of loaded modules.");

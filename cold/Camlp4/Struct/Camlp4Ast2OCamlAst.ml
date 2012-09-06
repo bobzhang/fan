@@ -11,7 +11,7 @@ module Make =
 
    open Ast
 
-   let constructors_arity = fun ()  -> !Camlp4_config.constructors_arity
+   let constructors_arity = fun ()  -> !FanConfig.constructors_arity
 
    let error = fun loc -> fun str -> (Loc.raise loc ( (Failure (str)) ))
 
@@ -133,7 +133,7 @@ module Make =
     fun str ->
      fun name ->
       (ldot ( (lident str) ) (
-        if !Camlp4_config.unsafe then ( ("unsafe_" ^ name) ) else name ))
+        if !FanConfig.unsafe then ( ("unsafe_" ^ name) ) else name ))
 
    let array_function =
     fun loc ->

@@ -56,7 +56,7 @@ external not_filtered : 'a -> Gram.not_filtered 'a = "%identity";
 
 value initialization = lazy begin
   if Sys.interactive.val
-    then Format.printf "\tCamlp4 Parsing version %s\n@." Camlp4_config.version
+    then Format.printf "\tCamlp4 Parsing version %s\n@." FanConfig.version
     else ()
 end;
 

@@ -28,8 +28,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
   open Ast;
 
   value constructors_arity () =
-    debug ast2pt "constructors_arity: %b@." Camlp4_config.constructors_arity.val in
-    Camlp4_config.constructors_arity.val;
+    debug ast2pt "constructors_arity: %b@." FanConfig.constructors_arity.val in
+    FanConfig.constructors_arity.val;
 
   value error loc str = Loc.raise loc (Failure str);
 
@@ -115,7 +115,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
   ;
 
   value array_function_no_loc str name =
-    ldot (lident str) (if Camlp4_config.unsafe.val then "unsafe_" ^ name else name)
+    ldot (lident str) (if FanConfig.unsafe.val then "unsafe_" ^ name else name)
   ;
   value array_function loc str name = with_loc (array_function_no_loc str name) loc;
   value mkrf =

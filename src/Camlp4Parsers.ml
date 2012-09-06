@@ -21,8 +21,8 @@ module MakeAstLoader (Ast : Sig.Ast) : (Sig.Parser Ast).S= struct
       Marshal.from_string str magic_len;
     };
 
-  value parse_implem = parse Camlp4_config.camlp4_ast_impl_magic_number;
-  value parse_interf = parse Camlp4_config.camlp4_ast_intf_magic_number;
+  value parse_implem = parse FanConfig.camlp4_ast_impl_magic_number;
+  value parse_interf = parse FanConfig.camlp4_ast_intf_magic_number;
 end;
 
 
@@ -699,7 +699,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
     | _ -> () ];
 
-  Camlp4_config.antiquotations.val := True;
+  FanConfig.antiquotations.val := True;
 
   EXTEND Gram
     GLOBAL: expr symbol;
@@ -1615,8 +1615,8 @@ module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
   open Sig;
   include Syntax;
 
-  (* Camlp4_config.constructors_arity.val := True; *)
-  Camlp4_config.constructors_arity.val := False;
+  (* FanConfig.constructors_arity.val := True; *)
+  FanConfig.constructors_arity.val := False;
 
   value help_sequences () =
     do {
@@ -3891,7 +3891,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
   open Sig;
   include Syntax;
 
-  Camlp4_config.constructors_arity.val := False;
+  FanConfig.constructors_arity.val := False;
 
   (*FIXME remove this and use OCaml ones *)
   value bigarray_set _loc var newval =
@@ -3992,7 +3992,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
     | <:expr< $_$.$e$ >> -> is_expr_constr_call e
     | <:expr@_loc< $e$ $_$ >> ->
         let res = is_expr_constr_call e in
-        if (not Camlp4_config.constructors_arity.val) && res then
+        if (not FanConfig.constructors_arity.val) && res then
           Loc.raise _loc (Stream.Error "currified constructor")
         else res
     | _ -> False ];
@@ -4692,7 +4692,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
             | "`int32" -> <:expr< Int32.to_string $e$ >>
             | "`int64" -> <:expr< Int64.to_string $e$ >>
             | "`nativeint" -> <:expr< Nativeint.to_string $e$ >>
-            | "`flo" -> <:expr< P4_util.float_repres $e$ >>
+            | "`flo" -> <:expr< FanUtil.float_repres $e$ >>
             | "`str" -> <:expr< Ast.safe_string_escaped $e$ >>
             | "`chr" -> <:expr< Char.escaped $e$ >>
             | "`bool" -> <:expr< Ast.IdUid $mloc _loc$ (if $e$ then "True" else "False") >>
@@ -4745,10 +4745,10 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   value add_quotation name entry mexpr mpatt =
     let entry_eoi = Gram.Entry.mk (Gram.Entry.name entry) in
     let parse_quot_string entry loc s =
-      let q = Camlp4_config.antiquotations.val in
-      let () = Camlp4_config.antiquotations.val := True in
+      let q = FanConfig.antiquotations.val in
+      let () = FanConfig.antiquotations.val := True in
       let res = Gram.parse_string entry loc s in
-      let () = Camlp4_config.antiquotations.val := q in
+      let () = FanConfig.antiquotations.val := q in
       res in
     let expand_expr loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi loc s in

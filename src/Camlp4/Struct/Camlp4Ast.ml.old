@@ -5051,7 +5051,7 @@ module Make (Loc : Sig.Loc) : Sig.Camlp4Ast with module Loc = Loc =
             (*                                                                          *)
             (****************************************************************************)
             (* Note: when you modify these types you must increment
-   ast magic numbers defined in Camlp4_config.ml. *)
+   ast magic numbers defined in FanConfig.ml. *)
             'a 'a_out.
             ('self_type -> 'a -> 'a_out) ->
               meta_option 'a -> meta_option 'a_out =

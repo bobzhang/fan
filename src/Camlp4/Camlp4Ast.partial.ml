@@ -13,7 +13,7 @@
 (****************************************************************************)
 
 (* Note: when you modify these types you must increment
-   ast magic numbers defined in Camlp4_config.ml. *)
+   ast magic numbers defined in FanConfig.ml. *)
 
   type loc = Loc.t
    and meta_bool =

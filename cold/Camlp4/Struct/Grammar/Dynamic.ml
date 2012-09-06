@@ -22,7 +22,7 @@ module Make =
       {gkeywords = gkeywords;
        gfilter = ( (Token.Filter.mk ( (Hashtbl.mem gkeywords) )) );
        glexer = ( (Lexer.mk () ) ); warning_verbose = ( (ref true ) );
-       error_verbose = Camlp4_config.verbose}
+       error_verbose = FanConfig.verbose}
 
     let get_filter = fun g -> g.gfilter
 
