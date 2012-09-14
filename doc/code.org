@@ -1,0 +1,90 @@
+#+STARTUP: overview
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+#+OPTIONS: toc:4 ^:{} num:nil creator:nil author:nil
+#+OPTIONS: author:nil timestamp:nil d:nil
+#+STYLE: <link rel="stylesheet" type="text/css" href="../css/style.css">
+
+* code
+** Signature
+   - Camlp4Syntax
+     It contains sub-modules: /Loc/, /Ast/, /Token/, /Gram/,
+     /Quotation/, /AntiquotSyntax/
+** Printers
+
+   Signature for printer plugin:
+   #+BEGIN_SRC caml
+   module Printer (Ast : Ast) = struct
+     module type S = sig
+       value print_interf : ?input_file:string -> ?output_file:string ->
+                            Ast.sig_item -> unit;
+       value print_implem : ?input_file:string -> ?output_file:string ->
+                            Ast.str_item -> unit;
+     end;
+   end;
+   #+END_SRC
+   - DumpCamlp4Ast
+     Simple, simple marshalize camlp4ast
+   - Null
+     Do nothing
+   - DumpOCamlpAst
+     It makes use of the module =Struct.Camlp4Ast2OCamlAst.Make= to
+     dump the binary output of ocamlast.
+   - OCaml
+     Dump to Ocaml's textual output
+   - OCamlr Dump to Ocaml's revised textual output. It depends on the
+     module OCaml.
+
+
+
+
+** [[file:~/camlp4/src/FanLexer.mll][Lexer]]
+
+   #+BEGIN_SRC ocaml
+       (* To store some context information:
+        *   loc       : position of the beginning of a string, quotation and comment
+        *   in_comment: are we in a comment?
+        *   quotations: shall we lex quotation?
+        *               If quotations is false it's a SYMBOL token.
+        *   antiquots : shall we lex antiquotations.
+        *)
+     
+     type context =
+       { loc        : Loc.t    ;
+         in_comment : bool     ;
+         quotations : bool     ;
+         antiquots  : bool     ;
+         lexbuf     : lexbuf   ;
+         buffer     : Buffer.t }
+     
+     let default_context lb =
+       { loc        = Loc.ghost ;
+         in_comment = false     ;
+         quotations = true      ;
+         antiquots  = false     ;
+         lexbuf     = lb        ;
+         buffer     = Buffer.create 256 }
+        
+   #+END_SRC
+
+   #+BEGIN_SRC ocaml
+     val loc:context -> Loc.t
+     val set_start_p:context -> unit
+     val move_start_p : int -> context -> unit
+     val with_curr_loc : (context -> Lexing.lexbuf -> 'a) -> context -> 'a
+   #+END_SRC
+   
+* ideas
+  
+
+** take a look at design of xstrp4
+   how to make
+   =/fprintf ppf "ghso" more simple /=
+
+   =/<:fmt<Illegal character ($(Char.escaped c))>>/=
+
+   the quotation fmt can config which "fprintf" was used actually,
+   like "bprintf", "ifprintf", "eprintf"
+** integrating ulex
+   an extensible lexer?

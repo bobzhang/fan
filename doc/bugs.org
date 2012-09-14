@@ -93,7 +93,10 @@
    
 * filter plugin does not work with /.mli/ file
 
-
+* lexer bug
+  - antiquot with newline
+    https://github.com/np/camllexer/commit/1aac1219e78af5cd2d094f1d15d5c812058e12f6
+  - antiquot with dollar in string 
 * fixpoint
   I have came across a weird problem, for a change update
   I need to bootstrap fan.byte, first (reach a fixpoint ) then
