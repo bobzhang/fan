@@ -82,7 +82,7 @@ value wrap parse_fun lb =
         | x -> x ]
       in
       do {
-        Format.eprintf "@[<0>%a@]@." Camlp4.ErrorHandler.print x;
+        Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print x;
         raise Exit
       } ];
 

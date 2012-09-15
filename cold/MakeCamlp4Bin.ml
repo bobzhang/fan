@@ -493,7 +493,7 @@ module Camlp4Bin =
        | Arg.Help (_) -> (usage () )
        | exc ->
           (
-          (eprintf "@[<v0>%a@]@." Camlp4.ErrorHandler.print exc)
+          (eprintf "@[<v0>%a@]@." FanUtil.ErrorHandler.print exc)
           );
           (exit 2))
 

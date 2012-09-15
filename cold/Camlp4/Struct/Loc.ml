@@ -382,7 +382,7 @@ let check =
 
 exception Exc_located of t * exn
 
-let _ = (ErrorHandler.register
+let _ = (FanUtil.ErrorHandler.register
                                                                 (
                                                                 fun ppf ->
                                                                  function
@@ -392,7 +392,7 @@ let _ = (ErrorHandler.register
                                                                     ppf
                                                                     "%a:@\n%a"
                                                                     print loc
-                                                                    ErrorHandler.print
+                                                                    FanUtil.ErrorHandler.print
                                                                     exn)
                                                                  | exn ->
                                                                     (raise

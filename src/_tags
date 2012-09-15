@@ -10,7 +10,7 @@
 <Pprintast.ml>: warn_a
 # <Camlp4_{config,import}.ml*>: -camlp4boot
 # <{p4_util,pprintast}.ml>:-camlp4boot
-<{P4_util,*_ppo,Pprintast,tmp*,FanLexer,FanConfig,FanUtil}.ml>: -camlp4boot
+<{P4_util,*_ppo,Pprintast,tmp*,FanLexer,FanConfig,FanUtil,FanSig}.ml>: -camlp4boot
 
 <Camlp4/Struct/Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
 
@@ -26,8 +26,8 @@
 
 <Camlp4Top/**>: pkg_compiler-libs.toplevel
 
-<Pprintast.ml> or <FanConfig.ml> or <Camlp4/ErrorHandler.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
+<Pprintast.ml> or <FanConfig.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
 
-<Camlp4/{Debug,ErrorHandler,MakePreCast,OCamlInitSyntax,Options,Struct,Sig,Printers}.cmx>:for-pack(Camlp4)
+<Camlp4/{Debug,MakePreCast,OCamlInitSyntax,Options,Struct,Sig,Printers}.cmx>:for-pack(Camlp4)
 # <Camlp4>:include
 

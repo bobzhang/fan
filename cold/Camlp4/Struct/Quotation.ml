@@ -127,7 +127,7 @@ module Make =
                | None ->
                   (fprintf ppf
                     "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))) in
-         (fprintf ppf "@\n%a@]@." ErrorHandler.print exn)
+         (fprintf ppf "@\n%a@]@." FanUtil.ErrorHandler.print exn)
 
       let to_string =
        fun x ->
@@ -136,7 +136,7 @@ module Make =
 
      end
 
-    let _ = let module M = (ErrorHandler.Register)(Error) in ()
+    let _ = let module M = (FanUtil.ErrorHandler.Register)(Error) in ()
 
     open Error
 

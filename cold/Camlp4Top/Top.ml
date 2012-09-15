@@ -92,7 +92,7 @@ let wrap =
                          x
                       | x -> x) in
                     (
-                    (Format.eprintf "@[<0>%a@]@." Camlp4.ErrorHandler.print
+                    (Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print
                       x)
                     );
                     (raise Exit ))

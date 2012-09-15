@@ -93,7 +93,7 @@ module Make (Loc : Sig.Loc)
       let b = Buffer.create 50 in
       let () = bprintf b "%a" print x in Buffer.contents b;
   end;
-  let module M = ErrorHandler.Register Error in ();
+  let module M = FanUtil.ErrorHandler.Register Error in ();
 
   module Filter = struct
     type token_filter = stream_filter t Loc.t;

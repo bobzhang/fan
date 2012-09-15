@@ -81,7 +81,7 @@ module Make (Token : Camlp4.Sig.Camlp4Token)
       let () = bprintf b "%a" print x in Buffer.contents b
   end;;
 
-  let module M = Camlp4.ErrorHandler.Register(Error) in ()
+  let module M = FanUtil.ErrorHandler.Register(Error) in ()
 
   open Error
 

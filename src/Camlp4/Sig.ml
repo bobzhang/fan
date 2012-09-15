@@ -29,14 +29,6 @@ module type Type = sig
   type t;
 end;
 
-(** Signature for errors modules, an Error modules can be registred with
-    the {!ErrorHandler.Register} functor in order to be well printed. *)
-module type Error = sig
-  type t;
-  exception E of t;
-  value to_string : t -> string;
-  value print : Format.formatter -> t -> unit;
-end;
 
 (** A signature for extensions identifiers. *)
 module type Id = sig
@@ -804,7 +796,7 @@ module type Quotation = sig
       result is dumped in the file [fname]. *)
   value dump_file : ref (option string);
 
-  module Error : Error;
+  module Error : FanSig.Error;
 
 end;
 
@@ -858,7 +850,7 @@ module type Token = sig
     value keyword_removed : t -> string -> unit;
   end;
 
-  module Error : Error;
+  module Error : FanSig.Error;
 end;
 
 (** This signature describes tokens for the OCaml and the Revised
@@ -1199,7 +1191,7 @@ end;
 module type Lexer = sig
   module Loc : Loc;
   module Token : Token with module Loc = Loc;
-  module Error : Error;
+  module Error : FanSig.Error;
 
   (** The constructor for a lexing function. The character stream is the input
       stream to be lexed. The result is a stream of pairs of a token and

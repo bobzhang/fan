@@ -97,7 +97,9 @@ module Make =
 
                   end
 
-                 let _ = let module M = (ErrorHandler.Register)(Error) in ()
+                 let _ = let module M =
+                          (FanUtil.ErrorHandler.Register)(Error) in
+                         ()
 
                  module Filter =
                   struct

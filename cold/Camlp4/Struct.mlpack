@@ -4,8 +4,6 @@ Camlp4Ast2OCamlAst
 CleanAst
 CommentFilter
 DynLoader
-EmptyError
-EmptyPrinter
 FreeVars
 Loc
 Quotation

@@ -1,1569 +1,1704 @@
 module type Type = sig type t
  end
 
-module type Error =
+module type Id =
                                      sig
-                                      type t
+                                      val name : string
 
-                                      exception E of t
-
-                                      val to_string : (t -> string)
-
-                                      val print :
-                                       (Format.formatter -> (t -> unit))
+                                      val version : string
 
                                      end
 
-module type Id =
-                                           sig
-                                            val name : string
-
-                                            val version : string
-
-                                           end
-
 module Warning =
-                                                 functor (Loc : Type) ->
-                                                  struct
-                                                   module type S =
-                                                    sig
-                                                     type warning =
-                                                      (Loc.t ->
-                                                       (string -> unit))
+                                           functor (Loc : Type) ->
+                                            struct
+                                             module type S =
+                                              sig
+                                               type warning =
+                                                (Loc.t -> (string -> unit))
 
-                                                     val default_warning :
-                                                      warning
+                                               val default_warning : warning
 
-                                                     val current_warning :
-                                                      warning ref
+                                               val current_warning :
+                                                warning ref
 
-                                                     val print_warning :
-                                                      warning
+                                               val print_warning : warning
 
-                                                    end
+                                              end
+
+                                            end
+
+module type Loc =
+                                                  sig
+                                                   type t
+
+                                                   val mk : (string -> t)
+
+                                                   val ghost : t
+
+                                                   val of_lexing_position :
+                                                    (Lexing.position -> t)
+
+                                                   val to_ocaml_location :
+                                                    (t -> Location.t)
+
+                                                   val of_ocaml_location :
+                                                    (Location.t -> t)
+
+                                                   val of_lexbuf :
+                                                    (Lexing.lexbuf -> t)
+
+                                                   val of_tuple :
+                                                    ((string * int * 
+                                                      int * int * int * 
+                                                      int * int * bool) -> 
+                                                     t)
+
+                                                   val to_tuple :
+                                                    (t ->
+                                                     (string * int * 
+                                                      int * int * int * 
+                                                      int * int * bool))
+
+                                                   val merge :
+                                                    (t -> (t -> t))
+
+                                                   val join : (t -> t)
+
+                                                   val move :
+                                                    ([ `start | `stop |
+                                                      `both ] ->
+                                                     (int -> (t -> t)))
+
+                                                   val shift :
+                                                    (int -> (t -> t))
+
+                                                   val move_line :
+                                                    (int -> (t -> t))
+
+                                                   val file_name :
+                                                    (t -> string)
+
+                                                   val start_line :
+                                                    (t -> int)
+
+                                                   val stop_line : (t -> int)
+
+                                                   val start_bol : (t -> int)
+
+                                                   val stop_bol : (t -> int)
+
+                                                   val start_off : (t -> int)
+
+                                                   val stop_off : (t -> int)
+
+                                                   val start_pos :
+                                                    (t -> Lexing.position)
+
+                                                   val stop_pos :
+                                                    (t -> Lexing.position)
+
+                                                   val is_ghost : (t -> bool)
+
+                                                   val ghostify : (t -> t)
+
+                                                   val set_file_name :
+                                                    (string -> (t -> t))
+
+                                                   val strictly_before :
+                                                    (t -> (t -> bool))
+
+                                                   val make_absolute :
+                                                    (t -> t)
+
+                                                   val print :
+                                                    (Format.formatter ->
+                                                     (t -> unit))
+
+                                                   val dump :
+                                                    (Format.formatter ->
+                                                     (t -> unit))
+
+                                                   val to_string :
+                                                    (t -> string)
+
+                                                   exception Exc_located of
+                                                    t * exn
+
+                                                   val raise :
+                                                    (t -> (exn -> 'a))
+
+                                                   val name : string ref
 
                                                   end
 
-module type Loc =
-                                                        sig
-                                                         type t
-
-                                                         val mk :
-                                                          (string -> t)
-
-                                                         val ghost : t
-
-                                                         val of_lexing_position :
-                                                          (Lexing.position ->
-                                                           t)
-
-                                                         val to_ocaml_location :
-                                                          (t -> Location.t)
-
-                                                         val of_ocaml_location :
-                                                          (Location.t -> t)
-
-                                                         val of_lexbuf :
-                                                          (Lexing.lexbuf ->
-                                                           t)
-
-                                                         val of_tuple :
-                                                          ((string * 
-                                                            int * int * 
-                                                            int * int * 
-                                                            int * int * 
-                                                            bool) -> 
-                                                           t)
-
-                                                         val to_tuple :
-                                                          (t ->
-                                                           (string * 
-                                                            int * int * 
-                                                            int * int * 
-                                                            int * int * 
-                                                            bool))
-
-                                                         val merge :
-                                                          (t -> (t -> t))
-
-                                                         val join : (t -> t)
-
-                                                         val move :
-                                                          ([ `start | 
-                                                            `stop | `both ]
-                                                           ->
-                                                           (int -> (t -> t)))
-
-                                                         val shift :
-                                                          (int -> (t -> t))
-
-                                                         val move_line :
-                                                          (int -> (t -> t))
-
-                                                         val file_name :
-                                                          (t -> string)
-
-                                                         val start_line :
-                                                          (t -> int)
-
-                                                         val stop_line :
-                                                          (t -> int)
-
-                                                         val start_bol :
-                                                          (t -> int)
-
-                                                         val stop_bol :
-                                                          (t -> int)
-
-                                                         val start_off :
-                                                          (t -> int)
-
-                                                         val stop_off :
-                                                          (t -> int)
-
-                                                         val start_pos :
-                                                          (t ->
-                                                           Lexing.position)
-
-                                                         val stop_pos :
-                                                          (t ->
-                                                           Lexing.position)
-
-                                                         val is_ghost :
-                                                          (t -> bool)
-
-                                                         val ghostify :
-                                                          (t -> t)
-
-                                                         val set_file_name :
-                                                          (string ->
-                                                           (t -> t))
-
-                                                         val strictly_before :
-                                                          (t -> (t -> bool))
-
-                                                         val make_absolute :
-                                                          (t -> t)
-
-                                                         val print :
-                                                          (Format.formatter
-                                                           -> (t -> unit))
-
-                                                         val dump :
-                                                          (Format.formatter
-                                                           -> (t -> unit))
-
-                                                         val to_string :
-                                                          (t -> string)
-
-                                                         exception Exc_located
-                                                          of t * exn
-
-                                                         val raise :
-                                                          (t -> (exn -> 'a))
-
-                                                         val name :
-                                                          string ref
-
-                                                        end
-
 module type Ast =
-                                                              sig
-                                                               type loc
+                                                        sig
+                                                         type loc
 
-                                                               type meta_bool
+                                                         type meta_bool
 
-                                                               type 'a meta_option
-                                                               
+                                                         type 'a meta_option
 
-                                                               type 'a meta_list
-                                                               
+                                                         type 'a meta_list
 
-                                                               type ctyp
+                                                         type ctyp
 
-                                                               type patt
+                                                         type patt
 
-                                                               type expr
+                                                         type expr
 
-                                                               type module_type
-                                                               
+                                                         type module_type
 
-                                                               type sig_item
+                                                         type sig_item
 
-                                                               type with_constr
-                                                               
+                                                         type with_constr
 
-                                                               type module_expr
-                                                               
+                                                         type module_expr
 
-                                                               type str_item
+                                                         type str_item
 
-                                                               type class_type
-                                                               
+                                                         type class_type
 
-                                                               type class_sig_item
-                                                               
+                                                         type class_sig_item
 
-                                                               type class_expr
-                                                               
+                                                         type class_expr
 
-                                                               type class_str_item
-                                                               
+                                                         type class_str_item
 
-                                                               type match_case
-                                                               
+                                                         type match_case
 
-                                                               type ident
+                                                         type ident
 
-                                                               type binding
+                                                         type binding
 
-                                                               type rec_binding
-                                                               
+                                                         type rec_binding
 
-                                                               type module_binding
-                                                               
+                                                         type module_binding
 
-                                                               type rec_flag
+                                                         type rec_flag
 
-                                                               type direction_flag
-                                                               
+                                                         type direction_flag
 
-                                                               type mutable_flag
-                                                               
+                                                         type mutable_flag
 
-                                                               type private_flag
-                                                               
+                                                         type private_flag
 
-                                                               type virtual_flag
-                                                               
+                                                         type virtual_flag
 
-                                                               type row_var_flag
-                                                               
+                                                         type row_var_flag
 
-                                                               type override_flag
-                                                               
+                                                         type override_flag
 
-                                                               val loc_of_ctyp :
-                                                                (ctyp -> loc)
+                                                         val loc_of_ctyp :
+                                                          (ctyp -> loc)
 
-                                                               val loc_of_patt :
-                                                                (patt -> loc)
+                                                         val loc_of_patt :
+                                                          (patt -> loc)
 
-                                                               val loc_of_expr :
-                                                                (expr -> loc)
+                                                         val loc_of_expr :
+                                                          (expr -> loc)
 
-                                                               val loc_of_module_type :
-                                                                (module_type
-                                                                 -> loc)
+                                                         val loc_of_module_type :
+                                                          (module_type ->
+                                                           loc)
 
-                                                               val loc_of_module_expr :
-                                                                (module_expr
-                                                                 -> loc)
+                                                         val loc_of_module_expr :
+                                                          (module_expr ->
+                                                           loc)
 
-                                                               val loc_of_sig_item :
-                                                                (sig_item ->
-                                                                 loc)
+                                                         val loc_of_sig_item :
+                                                          (sig_item -> loc)
 
-                                                               val loc_of_str_item :
-                                                                (str_item ->
-                                                                 loc)
+                                                         val loc_of_str_item :
+                                                          (str_item -> loc)
 
-                                                               val loc_of_class_type :
-                                                                (class_type
-                                                                 -> loc)
+                                                         val loc_of_class_type :
+                                                          (class_type -> loc)
 
-                                                               val loc_of_class_sig_item :
-                                                                (class_sig_item
-                                                                 -> loc)
+                                                         val loc_of_class_sig_item :
+                                                          (class_sig_item ->
+                                                           loc)
 
-                                                               val loc_of_class_expr :
-                                                                (class_expr
-                                                                 -> loc)
+                                                         val loc_of_class_expr :
+                                                          (class_expr -> loc)
 
-                                                               val loc_of_class_str_item :
-                                                                (class_str_item
-                                                                 -> loc)
+                                                         val loc_of_class_str_item :
+                                                          (class_str_item ->
+                                                           loc)
 
-                                                               val loc_of_with_constr :
-                                                                (with_constr
-                                                                 -> loc)
+                                                         val loc_of_with_constr :
+                                                          (with_constr ->
+                                                           loc)
 
-                                                               val loc_of_binding :
-                                                                (binding ->
-                                                                 loc)
+                                                         val loc_of_binding :
+                                                          (binding -> loc)
 
-                                                               val loc_of_rec_binding :
-                                                                (rec_binding
-                                                                 -> loc)
+                                                         val loc_of_rec_binding :
+                                                          (rec_binding ->
+                                                           loc)
 
-                                                               val loc_of_module_binding :
-                                                                (module_binding
-                                                                 -> loc)
+                                                         val loc_of_module_binding :
+                                                          (module_binding ->
+                                                           loc)
 
-                                                               val loc_of_match_case :
-                                                                (match_case
-                                                                 -> loc)
+                                                         val loc_of_match_case :
+                                                          (match_case -> loc)
 
-                                                               val loc_of_ident :
-                                                                (ident ->
-                                                                 loc)
+                                                         val loc_of_ident :
+                                                          (ident -> loc)
 
-                                                               class map :
-                                                                object
-                                                                 ('self_type)
-                                                                 method string :
-                                                                  (string ->
-                                                                   string)
-                                                                 method list :
-                                                                  'a 'b .
-                                                                   (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'b)) ->
-                                                                    ('a list
-                                                                    ->
-                                                                    'b list))
-                                                                 method meta_bool :
-                                                                  (meta_bool
-                                                                   ->
-                                                                   meta_bool)
-                                                                 method meta_option :
-                                                                  'a 'b .
-                                                                   (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'b)) ->
-                                                                    ('a meta_option
-                                                                    ->
-                                                                    'b meta_option))
-                                                                 method meta_list :
-                                                                  'a 'b .
-                                                                   (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'b)) ->
-                                                                    ('a meta_list
-                                                                    ->
-                                                                    'b meta_list))
-                                                                 method loc :
-                                                                  (loc ->
-                                                                   loc)
-                                                                 method expr :
-                                                                  (expr ->
-                                                                   expr)
-                                                                 method patt :
-                                                                  (patt ->
-                                                                   patt)
-                                                                 method ctyp :
-                                                                  (ctyp ->
-                                                                   ctyp)
-                                                                 method str_item :
-                                                                  (str_item
-                                                                   ->
-                                                                   str_item)
-                                                                 method sig_item :
-                                                                  (sig_item
-                                                                   ->
-                                                                   sig_item)
-                                                                 method module_expr :
-                                                                  (module_expr
-                                                                   ->
-                                                                   module_expr)
-                                                                 method module_type :
-                                                                  (module_type
-                                                                   ->
-                                                                   module_type)
-                                                                 method class_expr :
-                                                                  (class_expr
-                                                                   ->
-                                                                   class_expr)
-                                                                 method class_type :
-                                                                  (class_type
-                                                                   ->
-                                                                   class_type)
-                                                                 method class_sig_item :
-                                                                  (class_sig_item
-                                                                   ->
-                                                                   class_sig_item)
-                                                                 method class_str_item :
-                                                                  (class_str_item
-                                                                   ->
-                                                                   class_str_item)
-                                                                 method with_constr :
-                                                                  (with_constr
-                                                                   ->
-                                                                   with_constr)
-                                                                 method binding :
-                                                                  (binding ->
-                                                                   binding)
-                                                                 method rec_binding :
-                                                                  (rec_binding
-                                                                   ->
-                                                                   rec_binding)
-                                                                 method module_binding :
-                                                                  (module_binding
-                                                                   ->
-                                                                   module_binding)
-                                                                 method match_case :
-                                                                  (match_case
-                                                                   ->
-                                                                   match_case)
-                                                                 method ident :
-                                                                  (ident ->
-                                                                   ident)
-                                                                 method override_flag :
-                                                                  (override_flag
-                                                                   ->
-                                                                   override_flag)
-                                                                 method mutable_flag :
-                                                                  (mutable_flag
-                                                                   ->
-                                                                   mutable_flag)
-                                                                 method private_flag :
-                                                                  (private_flag
-                                                                   ->
-                                                                   private_flag)
-                                                                 method virtual_flag :
-                                                                  (virtual_flag
-                                                                   ->
-                                                                   virtual_flag)
-                                                                 method direction_flag :
-                                                                  (direction_flag
-                                                                   ->
-                                                                   direction_flag)
-                                                                 method rec_flag :
-                                                                  (rec_flag
-                                                                   ->
-                                                                   rec_flag)
-                                                                 method row_var_flag :
-                                                                  (row_var_flag
-                                                                   ->
-                                                                   row_var_flag)
-                                                                 method unknown :
-                                                                  'a .
-                                                                   ('a -> 'a)
-                                                                end
+                                                         class map :
+                                                          object ('self_type)
+                                                           method string :
+                                                            (string ->
+                                                             string)
+                                                           method list :
+                                                            'a 'b .
+                                                             (('self_type ->
+                                                               ('a -> 'b)) ->
+                                                              ('a list ->
+                                                               'b list))
+                                                           method meta_bool :
+                                                            (meta_bool ->
+                                                             meta_bool)
+                                                           method meta_option :
+                                                            'a 'b .
+                                                             (('self_type ->
+                                                               ('a -> 'b)) ->
+                                                              ('a meta_option
+                                                               ->
+                                                               'b meta_option))
+                                                           method meta_list :
+                                                            'a 'b .
+                                                             (('self_type ->
+                                                               ('a -> 'b)) ->
+                                                              ('a meta_list
+                                                               ->
+                                                               'b meta_list))
+                                                           method loc :
+                                                            (loc -> loc)
+                                                           method expr :
+                                                            (expr -> expr)
+                                                           method patt :
+                                                            (patt -> patt)
+                                                           method ctyp :
+                                                            (ctyp -> ctyp)
+                                                           method str_item :
+                                                            (str_item ->
+                                                             str_item)
+                                                           method sig_item :
+                                                            (sig_item ->
+                                                             sig_item)
+                                                           method module_expr :
+                                                            (module_expr ->
+                                                             module_expr)
+                                                           method module_type :
+                                                            (module_type ->
+                                                             module_type)
+                                                           method class_expr :
+                                                            (class_expr ->
+                                                             class_expr)
+                                                           method class_type :
+                                                            (class_type ->
+                                                             class_type)
+                                                           method class_sig_item :
+                                                            (class_sig_item
+                                                             ->
+                                                             class_sig_item)
+                                                           method class_str_item :
+                                                            (class_str_item
+                                                             ->
+                                                             class_str_item)
+                                                           method with_constr :
+                                                            (with_constr ->
+                                                             with_constr)
+                                                           method binding :
+                                                            (binding ->
+                                                             binding)
+                                                           method rec_binding :
+                                                            (rec_binding ->
+                                                             rec_binding)
+                                                           method module_binding :
+                                                            (module_binding
+                                                             ->
+                                                             module_binding)
+                                                           method match_case :
+                                                            (match_case ->
+                                                             match_case)
+                                                           method ident :
+                                                            (ident -> ident)
+                                                           method override_flag :
+                                                            (override_flag ->
+                                                             override_flag)
+                                                           method mutable_flag :
+                                                            (mutable_flag ->
+                                                             mutable_flag)
+                                                           method private_flag :
+                                                            (private_flag ->
+                                                             private_flag)
+                                                           method virtual_flag :
+                                                            (virtual_flag ->
+                                                             virtual_flag)
+                                                           method direction_flag :
+                                                            (direction_flag
+                                                             ->
+                                                             direction_flag)
+                                                           method rec_flag :
+                                                            (rec_flag ->
+                                                             rec_flag)
+                                                           method row_var_flag :
+                                                            (row_var_flag ->
+                                                             row_var_flag)
+                                                           method unknown :
+                                                            'a . ('a -> 'a)
+                                                          end
 
-                                                                class fold :
-                                                                 object
-                                                                  ('self_type)
-                                                                  method string :
-                                                                   (string ->
-                                                                    'self_type)
-                                                                  method list :
-                                                                   'a .
-                                                                    (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'self_type))
-                                                                    ->
-                                                                    ('a list
-                                                                    ->
-                                                                    'self_type))
-                                                                  method meta_bool :
-                                                                   (meta_bool
-                                                                    ->
-                                                                    'self_type)
-                                                                  method meta_option :
-                                                                   'a .
-                                                                    (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'self_type))
-                                                                    ->
-                                                                    ('a meta_option
-                                                                    ->
-                                                                    'self_type))
-                                                                  method meta_list :
-                                                                   'a .
-                                                                    (('self_type
-                                                                    ->
-                                                                    ('a ->
-                                                                    'self_type))
-                                                                    ->
-                                                                    ('a meta_list
-                                                                    ->
-                                                                    'self_type))
-                                                                  method loc :
-                                                                   (loc ->
-                                                                    'self_type)
-                                                                  method expr :
-                                                                   (expr ->
-                                                                    'self_type)
-                                                                  method patt :
-                                                                   (patt ->
-                                                                    'self_type)
-                                                                  method ctyp :
-                                                                   (ctyp ->
-                                                                    'self_type)
-                                                                  method str_item :
-                                                                   (str_item
-                                                                    ->
-                                                                    'self_type)
-                                                                  method sig_item :
-                                                                   (sig_item
-                                                                    ->
-                                                                    'self_type)
-                                                                  method module_expr :
-                                                                   (module_expr
-                                                                    ->
-                                                                    'self_type)
-                                                                  method module_type :
-                                                                   (module_type
-                                                                    ->
-                                                                    'self_type)
-                                                                  method class_expr :
-                                                                   (class_expr
-                                                                    ->
-                                                                    'self_type)
-                                                                  method class_type :
-                                                                   (class_type
-                                                                    ->
-                                                                    'self_type)
-                                                                  method class_sig_item :
-                                                                   (class_sig_item
-                                                                    ->
-                                                                    'self_type)
-                                                                  method class_str_item :
-                                                                   (class_str_item
-                                                                    ->
-                                                                    'self_type)
-                                                                  method with_constr :
-                                                                   (with_constr
-                                                                    ->
-                                                                    'self_type)
-                                                                  method binding :
-                                                                   (binding
-                                                                    ->
-                                                                    'self_type)
-                                                                  method rec_binding :
-                                                                   (rec_binding
-                                                                    ->
-                                                                    'self_type)
-                                                                  method module_binding :
-                                                                   (module_binding
-                                                                    ->
-                                                                    'self_type)
-                                                                  method match_case :
-                                                                   (match_case
-                                                                    ->
-                                                                    'self_type)
-                                                                  method ident :
-                                                                   (ident ->
-                                                                    'self_type)
-                                                                  method rec_flag :
-                                                                   (rec_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method direction_flag :
-                                                                   (direction_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method mutable_flag :
-                                                                   (mutable_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method private_flag :
-                                                                   (private_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method virtual_flag :
-                                                                   (virtual_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method row_var_flag :
-                                                                   (row_var_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method override_flag :
-                                                                   (override_flag
-                                                                    ->
-                                                                    'self_type)
-                                                                  method unknown :
-                                                                   'a .
-                                                                    ('a ->
-                                                                    'self_type)
-                                                                 end
+                                                          class fold :
+                                                           object
+                                                            ('self_type)
+                                                            method string :
+                                                             (string ->
+                                                              'self_type)
+                                                            method list :
+                                                             'a .
+                                                              (('self_type ->
+                                                                ('a ->
+                                                                 'self_type))
+                                                               ->
+                                                               ('a list ->
+                                                                'self_type))
+                                                            method meta_bool :
+                                                             (meta_bool ->
+                                                              'self_type)
+                                                            method meta_option :
+                                                             'a .
+                                                              (('self_type ->
+                                                                ('a ->
+                                                                 'self_type))
+                                                               ->
+                                                               ('a meta_option
+                                                                ->
+                                                                'self_type))
+                                                            method meta_list :
+                                                             'a .
+                                                              (('self_type ->
+                                                                ('a ->
+                                                                 'self_type))
+                                                               ->
+                                                               ('a meta_list
+                                                                ->
+                                                                'self_type))
+                                                            method loc :
+                                                             (loc ->
+                                                              'self_type)
+                                                            method expr :
+                                                             (expr ->
+                                                              'self_type)
+                                                            method patt :
+                                                             (patt ->
+                                                              'self_type)
+                                                            method ctyp :
+                                                             (ctyp ->
+                                                              'self_type)
+                                                            method str_item :
+                                                             (str_item ->
+                                                              'self_type)
+                                                            method sig_item :
+                                                             (sig_item ->
+                                                              'self_type)
+                                                            method module_expr :
+                                                             (module_expr ->
+                                                              'self_type)
+                                                            method module_type :
+                                                             (module_type ->
+                                                              'self_type)
+                                                            method class_expr :
+                                                             (class_expr ->
+                                                              'self_type)
+                                                            method class_type :
+                                                             (class_type ->
+                                                              'self_type)
+                                                            method class_sig_item :
+                                                             (class_sig_item
+                                                              -> 'self_type)
+                                                            method class_str_item :
+                                                             (class_str_item
+                                                              -> 'self_type)
+                                                            method with_constr :
+                                                             (with_constr ->
+                                                              'self_type)
+                                                            method binding :
+                                                             (binding ->
+                                                              'self_type)
+                                                            method rec_binding :
+                                                             (rec_binding ->
+                                                              'self_type)
+                                                            method module_binding :
+                                                             (module_binding
+                                                              -> 'self_type)
+                                                            method match_case :
+                                                             (match_case ->
+                                                              'self_type)
+                                                            method ident :
+                                                             (ident ->
+                                                              'self_type)
+                                                            method rec_flag :
+                                                             (rec_flag ->
+                                                              'self_type)
+                                                            method direction_flag :
+                                                             (direction_flag
+                                                              -> 'self_type)
+                                                            method mutable_flag :
+                                                             (mutable_flag ->
+                                                              'self_type)
+                                                            method private_flag :
+                                                             (private_flag ->
+                                                              'self_type)
+                                                            method virtual_flag :
+                                                             (virtual_flag ->
+                                                              'self_type)
+                                                            method row_var_flag :
+                                                             (row_var_flag ->
+                                                              'self_type)
+                                                            method override_flag :
+                                                             (override_flag
+                                                              -> 'self_type)
+                                                            method unknown :
+                                                             'a .
+                                                              ('a ->
+                                                               'self_type)
+                                                           end
 
-                                                                end
+                                                          end
 
+module type Camlp4Ast =
+                                                                sig
+                                                                 module Loc :
+                                                                  Loc
 
-                                                              module type Camlp4Ast =
-                                                               sig
-                                                                module Loc :
-                                                                 Loc
-
-                                                                type loc =
-                                                                 Loc.t
-                                                                and meta_bool =
-                                                                    BTrue
-                                                                  | BFalse
-                                                                  | BAnt of
+                                                                 type loc =
+                                                                  Loc.t
+                                                                 and meta_bool =
+                                                                     
+                                                                   BTrue
+                                                                   | 
+                                                                   BFalse
+                                                                   | 
+                                                                   BAnt of
                                                                     string
-                                                                and rec_flag =
-                                                                    ReRecursive
-                                                                  | ReNil
-                                                                  | ReAnt of
+                                                                 and rec_flag =
+                                                                     
+                                                                   ReRecursive
+                                                                   | 
+                                                                   ReNil
+                                                                   | 
+                                                                   ReAnt of
                                                                     string
-                                                                and direction_flag =
-                                                                    DiTo
-                                                                  | DiDownto
-                                                                  | DiAnt of
+                                                                 and direction_flag =
+                                                                     
+                                                                   DiTo
+                                                                   | 
+                                                                   DiDownto
+                                                                   | 
+                                                                   DiAnt of
                                                                     string
-                                                                and mutable_flag =
-                                                                    MuMutable
-                                                                  | MuNil
-                                                                  | MuAnt of
+                                                                 and mutable_flag =
+                                                                     
+                                                                   MuMutable
+                                                                   | 
+                                                                   MuNil
+                                                                   | 
+                                                                   MuAnt of
                                                                     string
-                                                                and private_flag =
-                                                                    PrPrivate
-                                                                  | PrNil
-                                                                  | PrAnt of
+                                                                 and private_flag =
+                                                                     
+                                                                   PrPrivate
+                                                                   | 
+                                                                   PrNil
+                                                                   | 
+                                                                   PrAnt of
                                                                     string
-                                                                and virtual_flag =
-                                                                    ViVirtual
-                                                                  | ViNil
-                                                                  | ViAnt of
+                                                                 and virtual_flag =
+                                                                     
+                                                                   ViVirtual
+                                                                   | 
+                                                                   ViNil
+                                                                   | 
+                                                                   ViAnt of
                                                                     string
-                                                                and override_flag =
-                                                                    OvOverride
-                                                                  | OvNil
-                                                                  | OvAnt of
+                                                                 and override_flag =
+                                                                     
+                                                                   OvOverride
+                                                                   | 
+                                                                   OvNil
+                                                                   | 
+                                                                   OvAnt of
                                                                     string
-                                                                and row_var_flag =
-                                                                    RvRowVar
-                                                                  | RvNil
-                                                                  | RvAnt of
+                                                                 and row_var_flag =
+                                                                     
+                                                                   RvRowVar
+                                                                   | 
+                                                                   RvNil
+                                                                   | 
+                                                                   RvAnt of
                                                                     string
-                                                                and 'a meta_option =
-                                                                    ONone
-                                                                  | OSome of
+                                                                 and 'a meta_option =
+                                                                     
+                                                                   ONone
+                                                                   | 
+                                                                   OSome of
                                                                     'a
-                                                                  | OAnt of
+                                                                   | 
+                                                                   OAnt of
                                                                     string
-                                                                and 'a meta_list =
-                                                                    LNil
-                                                                  | LCons of
+                                                                 and 'a meta_list =
+                                                                     
+                                                                   LNil
+                                                                   | 
+                                                                   LCons of
                                                                     'a *
                                                                     'a meta_list
-                                                                  | LAnt of
+                                                                   | 
+                                                                   LAnt of
                                                                     string
-                                                                and ident =
-                                                                    IdAcc of
+                                                                 and ident =
+                                                                     
+                                                                   IdAcc of
                                                                     loc *
                                                                     ident *
                                                                     ident
-                                                                  | IdApp of
+                                                                   | 
+                                                                   IdApp of
                                                                     loc *
                                                                     ident *
                                                                     ident
-                                                                  | IdLid of
+                                                                   | 
+                                                                   IdLid of
                                                                     loc *
                                                                     string
-                                                                  | IdUid of
+                                                                   | 
+                                                                   IdUid of
                                                                     loc *
                                                                     string
-                                                                  | IdAnt of
+                                                                   | 
+                                                                   IdAnt of
                                                                     loc *
                                                                     string
-                                                                and ctyp =
-                                                                    TyNil of
+                                                                 and ctyp =
+                                                                     
+                                                                   TyNil of
                                                                     loc
-                                                                  | TyAli of
+                                                                   | 
+                                                                   TyAli of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyAny of
+                                                                   | 
+                                                                   TyAny of
                                                                     loc
-                                                                  | TyApp of
+                                                                   | 
+                                                                   TyApp of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyArr of
+                                                                   | 
+                                                                   TyArr of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyCls of
+                                                                   | 
+                                                                   TyCls of
                                                                     loc *
                                                                     ident
-                                                                  | TyLab of
+                                                                   | 
+                                                                   TyLab of
                                                                     loc *
                                                                     string *
                                                                     ctyp
-                                                                  | TyId of
+                                                                   | 
+                                                                   TyId of
                                                                     loc *
                                                                     ident
-                                                                  | TyMan of
+                                                                   | 
+                                                                   TyMan of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyDcl of
+                                                                   | 
+                                                                   TyDcl of
                                                                     loc *
                                                                     string *
                                                                     ctyp list *
                                                                     ctyp *
                                                                     (ctyp *
                                                                     ctyp) list
-                                                                  | TyObj of
+                                                                   | 
+                                                                   TyObj of
                                                                     loc *
                                                                     ctyp *
                                                                     row_var_flag
-                                                                  | TyOlb of
+                                                                   | 
+                                                                   TyOlb of
                                                                     loc *
                                                                     string *
                                                                     ctyp
-                                                                  | TyPol of
+                                                                   | 
+                                                                   TyPol of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyTypePol
+                                                                   | 
+                                                                   TyTypePol
                                                                     of 
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyQuo of
+                                                                   | 
+                                                                   TyQuo of
                                                                     loc *
                                                                     string
-                                                                  | TyQuP of
+                                                                   | 
+                                                                   TyQuP of
                                                                     loc *
                                                                     string
-                                                                  | TyQuM of
+                                                                   | 
+                                                                   TyQuM of
                                                                     loc *
                                                                     string
-                                                                  | TyAnP of
+                                                                   | 
+                                                                   TyAnP of
                                                                     loc
-                                                                  | TyAnM of
+                                                                   | 
+                                                                   TyAnM of
                                                                     loc
-                                                                  | TyVrn of
+                                                                   | 
+                                                                   TyVrn of
                                                                     loc *
                                                                     string
-                                                                  | TyRec of
+                                                                   | 
+                                                                   TyRec of
                                                                     loc *
                                                                     ctyp
-                                                                  | TyCol of
-                                                                    loc *
-                                                                    ctyp *
-                                                                    ctyp
-                                                                  | TySem of
+                                                                   | 
+                                                                   TyCol of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyCom of
+                                                                   | 
+                                                                   TySem of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TySum of
-                                                                    loc *
-                                                                    ctyp
-                                                                  | TyOf of
+                                                                   | 
+                                                                   TyCom of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyAnd of
+                                                                   | 
+                                                                   TySum of
+                                                                    loc *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyOf of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyOr of
+                                                                   | 
+                                                                   TyAnd of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyPrv of
-                                                                    loc *
-                                                                    ctyp
-                                                                  | TyMut of
-                                                                    loc *
-                                                                    ctyp
-                                                                  | TyTup of
-                                                                    loc *
-                                                                    ctyp
-                                                                  | TySta of
+                                                                   | 
+                                                                   TyOr of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyVrnEq
+                                                                   | 
+                                                                   TyPrv of
+                                                                    loc *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyMut of
+                                                                    loc *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyTup of
+                                                                    loc *
+                                                                    ctyp
+                                                                   | 
+                                                                   TySta of
+                                                                    loc *
+                                                                    ctyp *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyVrnEq of
+                                                                    loc *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyVrnSup
                                                                     of 
                                                                     loc *
                                                                     ctyp
-                                                                  | TyVrnSup
+                                                                   | 
+                                                                   TyVrnInf
                                                                     of 
                                                                     loc *
                                                                     ctyp
-                                                                  | TyVrnInf
-                                                                    of 
-                                                                    loc *
-                                                                    ctyp
-                                                                  | TyVrnInfSup
-                                                                    of 
-                                                                    loc *
-                                                                    ctyp *
-                                                                    ctyp
-                                                                  | TyAmp of
-                                                                    loc *
-                                                                    ctyp *
-                                                                    ctyp
-                                                                  | TyOfAmp
+                                                                   | 
+                                                                   TyVrnInfSup
                                                                     of 
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | TyPkg of
+                                                                   | 
+                                                                   TyAmp of
+                                                                    loc *
+                                                                    ctyp *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyOfAmp of
+                                                                    loc *
+                                                                    ctyp *
+                                                                    ctyp
+                                                                   | 
+                                                                   TyPkg of
                                                                     loc *
                                                                     module_type
-                                                                  | TyAnt of
+                                                                   | 
+                                                                   TyAnt of
                                                                     loc *
                                                                     string
-                                                                and patt =
-                                                                    PaNil of
+                                                                 and patt =
+                                                                     
+                                                                   PaNil of
                                                                     loc
-                                                                  | PaId of
+                                                                   | 
+                                                                   PaId of
                                                                     loc *
                                                                     ident
-                                                                  | PaAli of
+                                                                   | 
+                                                                   PaAli of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaAnt of
+                                                                   | 
+                                                                   PaAnt of
                                                                     loc *
                                                                     string
-                                                                  | PaAny of
+                                                                   | 
+                                                                   PaAny of
                                                                     loc
-                                                                  | PaApp of
+                                                                   | 
+                                                                   PaApp of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaArr of
+                                                                   | 
+                                                                   PaArr of
                                                                     loc *
                                                                     patt
-                                                                  | PaCom of
+                                                                   | 
+                                                                   PaCom of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaSem of
+                                                                   | 
+                                                                   PaSem of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaChr of
+                                                                   | 
+                                                                   PaChr of
                                                                     loc *
                                                                     string
-                                                                  | PaInt of
+                                                                   | 
+                                                                   PaInt of
                                                                     loc *
                                                                     string
-                                                                  | PaInt32
+                                                                   | 
+                                                                   PaInt32 of
+                                                                    loc *
+                                                                    string
+                                                                   | 
+                                                                   PaInt64 of
+                                                                    loc *
+                                                                    string
+                                                                   | 
+                                                                   PaNativeInt
                                                                     of 
                                                                     loc *
                                                                     string
-                                                                  | PaInt64
-                                                                    of 
+                                                                   | 
+                                                                   PaFlo of
                                                                     loc *
                                                                     string
-                                                                  | PaNativeInt
-                                                                    of 
-                                                                    loc *
-                                                                    string
-                                                                  | PaFlo of
-                                                                    loc *
-                                                                    string
-                                                                  | PaLab of
+                                                                   | 
+                                                                   PaLab of
                                                                     loc *
                                                                     string *
                                                                     patt
-                                                                  | PaOlb of
+                                                                   | 
+                                                                   PaOlb of
                                                                     loc *
                                                                     string *
                                                                     patt
-                                                                  | PaOlbi of
+                                                                   | 
+                                                                   PaOlbi of
                                                                     loc *
                                                                     string *
                                                                     patt *
                                                                     expr
-                                                                  | PaOrp of
+                                                                   | 
+                                                                   PaOrp of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaRng of
+                                                                   | 
+                                                                   PaRng of
                                                                     loc *
                                                                     patt *
                                                                     patt
-                                                                  | PaRec of
+                                                                   | 
+                                                                   PaRec of
                                                                     loc *
                                                                     patt
-                                                                  | PaEq of
+                                                                   | 
+                                                                   PaEq of
                                                                     loc *
                                                                     ident *
                                                                     patt
-                                                                  | PaStr of
+                                                                   | 
+                                                                   PaStr of
                                                                     loc *
                                                                     string
-                                                                  | PaTup of
+                                                                   | 
+                                                                   PaTup of
                                                                     loc *
                                                                     patt
-                                                                  | PaTyc of
+                                                                   | 
+                                                                   PaTyc of
                                                                     loc *
                                                                     patt *
                                                                     ctyp
-                                                                  | PaTyp of
+                                                                   | 
+                                                                   PaTyp of
                                                                     loc *
                                                                     ident
-                                                                  | PaVrn of
+                                                                   | 
+                                                                   PaVrn of
                                                                     loc *
                                                                     string
-                                                                  | PaLaz of
+                                                                   | 
+                                                                   PaLaz of
                                                                     loc *
                                                                     patt
-                                                                  | PaMod of
+                                                                   | 
+                                                                   PaMod of
                                                                     loc *
                                                                     string
-                                                                and expr =
-                                                                    ExNil of
+                                                                 and expr =
+                                                                     
+                                                                   ExNil of
                                                                     loc
-                                                                  | ExId of
+                                                                   | 
+                                                                   ExId of
                                                                     loc *
                                                                     ident
-                                                                  | ExAcc of
+                                                                   | 
+                                                                   ExAcc of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExAnt of
+                                                                   | 
+                                                                   ExAnt of
                                                                     loc *
                                                                     string
-                                                                  | ExApp of
+                                                                   | 
+                                                                   ExApp of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExAre of
+                                                                   | 
+                                                                   ExAre of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExArr of
+                                                                   | 
+                                                                   ExArr of
                                                                     loc *
                                                                     expr
-                                                                  | ExSem of
+                                                                   | 
+                                                                   ExSem of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExAsf of
+                                                                   | 
+                                                                   ExAsf of
                                                                     loc
-                                                                  | ExAsr of
+                                                                   | 
+                                                                   ExAsr of
                                                                     loc *
                                                                     expr
-                                                                  | ExAss of
+                                                                   | 
+                                                                   ExAss of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExChr of
+                                                                   | 
+                                                                   ExChr of
                                                                     loc *
                                                                     string
-                                                                  | ExCoe of
+                                                                   | 
+                                                                   ExCoe of
                                                                     loc *
                                                                     expr *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | ExFlo of
+                                                                   | 
+                                                                   ExFlo of
                                                                     loc *
                                                                     string
-                                                                  | ExFor of
+                                                                   | 
+                                                                   ExFor of
                                                                     loc *
                                                                     string *
                                                                     expr *
                                                                     expr *
                                                                     direction_flag *
                                                                     expr
-                                                                  | ExFun of
+                                                                   | 
+                                                                   ExFun of
                                                                     loc *
                                                                     match_case
-                                                                  | ExIfe of
+                                                                   | 
+                                                                   ExIfe of
                                                                     loc *
                                                                     expr *
                                                                     expr *
                                                                     expr
-                                                                  | ExInt of
+                                                                   | 
+                                                                   ExInt of
                                                                     loc *
                                                                     string
-                                                                  | ExInt32
+                                                                   | 
+                                                                   ExInt32 of
+                                                                    loc *
+                                                                    string
+                                                                   | 
+                                                                   ExInt64 of
+                                                                    loc *
+                                                                    string
+                                                                   | 
+                                                                   ExNativeInt
                                                                     of 
                                                                     loc *
                                                                     string
-                                                                  | ExInt64
-                                                                    of 
-                                                                    loc *
-                                                                    string
-                                                                  | ExNativeInt
-                                                                    of 
-                                                                    loc *
-                                                                    string
-                                                                  | ExLab of
+                                                                   | 
+                                                                   ExLab of
                                                                     loc *
                                                                     string *
                                                                     expr
-                                                                  | ExLaz of
+                                                                   | 
+                                                                   ExLaz of
                                                                     loc *
                                                                     expr
-                                                                  | ExLet of
+                                                                   | 
+                                                                   ExLet of
                                                                     loc *
                                                                     rec_flag *
                                                                     binding *
                                                                     expr
-                                                                  | ExLmd of
+                                                                   | 
+                                                                   ExLmd of
                                                                     loc *
                                                                     string *
                                                                     module_expr *
                                                                     expr
-                                                                  | ExMat of
+                                                                   | 
+                                                                   ExMat of
                                                                     loc *
                                                                     expr *
                                                                     match_case
-                                                                  | ExNew of
+                                                                   | 
+                                                                   ExNew of
                                                                     loc *
                                                                     ident
-                                                                  | ExObj of
+                                                                   | 
+                                                                   ExObj of
                                                                     loc *
                                                                     patt *
                                                                     class_str_item
-                                                                  | ExOlb of
+                                                                   | 
+                                                                   ExOlb of
                                                                     loc *
                                                                     string *
                                                                     expr
-                                                                  | ExOvr of
+                                                                   | 
+                                                                   ExOvr of
                                                                     loc *
                                                                     rec_binding
-                                                                  | ExRec of
+                                                                   | 
+                                                                   ExRec of
                                                                     loc *
                                                                     rec_binding *
                                                                     expr
-                                                                  | ExSeq of
+                                                                   | 
+                                                                   ExSeq of
                                                                     loc *
                                                                     expr
-                                                                  | ExSnd of
+                                                                   | 
+                                                                   ExSnd of
                                                                     loc *
                                                                     expr *
                                                                     string
-                                                                  | ExSte of
+                                                                   | 
+                                                                   ExSte of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExStr of
+                                                                   | 
+                                                                   ExStr of
                                                                     loc *
                                                                     string
-                                                                  | ExTry of
+                                                                   | 
+                                                                   ExTry of
                                                                     loc *
                                                                     expr *
                                                                     match_case
-                                                                  | ExTup of
+                                                                   | 
+                                                                   ExTup of
                                                                     loc *
                                                                     expr
-                                                                  | ExCom of
+                                                                   | 
+                                                                   ExCom of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExTyc of
+                                                                   | 
+                                                                   ExTyc of
                                                                     loc *
                                                                     expr *
                                                                     ctyp
-                                                                  | ExVrn of
+                                                                   | 
+                                                                   ExVrn of
                                                                     loc *
                                                                     string
-                                                                  | ExWhi of
+                                                                   | 
+                                                                   ExWhi of
                                                                     loc *
                                                                     expr *
                                                                     expr
-                                                                  | ExOpI of
+                                                                   | 
+                                                                   ExOpI of
                                                                     loc *
                                                                     ident *
                                                                     expr
-                                                                  | ExFUN of
+                                                                   | 
+                                                                   ExFUN of
                                                                     loc *
                                                                     string *
                                                                     expr
-                                                                  | ExPkg of
+                                                                   | 
+                                                                   ExPkg of
                                                                     loc *
                                                                     module_expr
-                                                                and module_type =
-                                                                    MtNil of
+                                                                 and module_type =
+                                                                     
+                                                                   MtNil of
                                                                     loc
-                                                                  | MtId of
+                                                                   | 
+                                                                   MtId of
                                                                     loc *
                                                                     ident
-                                                                  | MtFun of
+                                                                   | 
+                                                                   MtFun of
                                                                     loc *
                                                                     string *
                                                                     module_type *
                                                                     module_type
-                                                                  | MtQuo of
+                                                                   | 
+                                                                   MtQuo of
                                                                     loc *
                                                                     string
-                                                                  | MtSig of
+                                                                   | 
+                                                                   MtSig of
                                                                     loc *
                                                                     sig_item
-                                                                  | MtWit of
+                                                                   | 
+                                                                   MtWit of
                                                                     loc *
                                                                     module_type *
                                                                     with_constr
-                                                                  | MtOf of
+                                                                   | 
+                                                                   MtOf of
                                                                     loc *
                                                                     module_expr
-                                                                  | MtAnt of
+                                                                   | 
+                                                                   MtAnt of
                                                                     loc *
                                                                     string
-                                                                and sig_item =
-                                                                    SgNil of
+                                                                 and sig_item =
+                                                                     
+                                                                   SgNil of
                                                                     loc
-                                                                  | SgCls of
+                                                                   | 
+                                                                   SgCls of
                                                                     loc *
                                                                     class_type
-                                                                  | SgClt of
+                                                                   | 
+                                                                   SgClt of
                                                                     loc *
                                                                     class_type
-                                                                  | SgSem of
+                                                                   | 
+                                                                   SgSem of
                                                                     loc *
                                                                     sig_item *
                                                                     sig_item
-                                                                  | SgDir of
+                                                                   | 
+                                                                   SgDir of
                                                                     loc *
                                                                     string *
                                                                     expr
-                                                                  | SgExc of
+                                                                   | 
+                                                                   SgExc of
                                                                     loc *
                                                                     ctyp
-                                                                  | SgExt of
+                                                                   | 
+                                                                   SgExt of
                                                                     loc *
                                                                     string *
                                                                     ctyp *
                                                                     string meta_list
-                                                                  | SgInc of
+                                                                   | 
+                                                                   SgInc of
                                                                     loc *
                                                                     module_type
-                                                                  | SgMod of
+                                                                   | 
+                                                                   SgMod of
                                                                     loc *
                                                                     string *
                                                                     module_type
-                                                                  | SgRecMod
+                                                                   | 
+                                                                   SgRecMod
                                                                     of 
                                                                     loc *
                                                                     module_binding
-                                                                  | SgMty of
+                                                                   | 
+                                                                   SgMty of
                                                                     loc *
                                                                     string *
                                                                     module_type
-                                                                  | SgOpn of
+                                                                   | 
+                                                                   SgOpn of
                                                                     loc *
                                                                     ident
-                                                                  | SgTyp of
+                                                                   | 
+                                                                   SgTyp of
                                                                     loc *
                                                                     ctyp
-                                                                  | SgVal of
+                                                                   | 
+                                                                   SgVal of
                                                                     loc *
                                                                     string *
                                                                     ctyp
-                                                                  | SgAnt of
+                                                                   | 
+                                                                   SgAnt of
                                                                     loc *
                                                                     string
-                                                                and with_constr =
-                                                                    WcNil of
+                                                                 and with_constr =
+                                                                     
+                                                                   WcNil of
                                                                     loc
-                                                                  | WcTyp of
+                                                                   | 
+                                                                   WcTyp of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | WcMod of
+                                                                   | 
+                                                                   WcMod of
                                                                     loc *
                                                                     ident *
                                                                     ident
-                                                                  | WcTyS of
+                                                                   | 
+                                                                   WcTyS of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | WcMoS of
+                                                                   | 
+                                                                   WcMoS of
                                                                     loc *
                                                                     ident *
                                                                     ident
-                                                                  | WcAnd of
+                                                                   | 
+                                                                   WcAnd of
                                                                     loc *
                                                                     with_constr *
                                                                     with_constr
-                                                                  | WcAnt of
+                                                                   | 
+                                                                   WcAnt of
                                                                     loc *
                                                                     string
-                                                                and binding =
-                                                                    BiNil of
+                                                                 and binding =
+                                                                     
+                                                                   BiNil of
                                                                     loc
-                                                                  | BiAnd of
+                                                                   | 
+                                                                   BiAnd of
                                                                     loc *
                                                                     binding *
                                                                     binding
-                                                                  | BiEq of
+                                                                   | 
+                                                                   BiEq of
                                                                     loc *
                                                                     patt *
                                                                     expr
-                                                                  | BiAnt of
+                                                                   | 
+                                                                   BiAnt of
                                                                     loc *
                                                                     string
-                                                                and rec_binding =
-                                                                    RbNil of
+                                                                 and rec_binding =
+                                                                     
+                                                                   RbNil of
                                                                     loc
-                                                                  | RbSem of
+                                                                   | 
+                                                                   RbSem of
                                                                     loc *
                                                                     rec_binding *
                                                                     rec_binding
-                                                                  | RbEq of
+                                                                   | 
+                                                                   RbEq of
                                                                     loc *
                                                                     ident *
                                                                     expr
-                                                                  | RbAnt of
+                                                                   | 
+                                                                   RbAnt of
                                                                     loc *
                                                                     string
-                                                                and module_binding =
-                                                                    MbNil of
+                                                                 and module_binding =
+                                                                     
+                                                                   MbNil of
                                                                     loc
-                                                                  | MbAnd of
+                                                                   | 
+                                                                   MbAnd of
                                                                     loc *
                                                                     module_binding *
                                                                     module_binding
-                                                                  | MbColEq
-                                                                    of 
+                                                                   | 
+                                                                   MbColEq of
                                                                     loc *
                                                                     string *
                                                                     module_type *
                                                                     module_expr
-                                                                  | MbCol of
+                                                                   | 
+                                                                   MbCol of
                                                                     loc *
                                                                     string *
                                                                     module_type
-                                                                  | MbAnt of
+                                                                   | 
+                                                                   MbAnt of
                                                                     loc *
                                                                     string
-                                                                and match_case =
-                                                                    McNil of
+                                                                 and match_case =
+                                                                     
+                                                                   McNil of
                                                                     loc
-                                                                  | McOr of
+                                                                   | 
+                                                                   McOr of
                                                                     loc *
                                                                     match_case *
                                                                     match_case
-                                                                  | McArr of
+                                                                   | 
+                                                                   McArr of
                                                                     loc *
                                                                     patt *
                                                                     expr *
                                                                     expr
-                                                                  | McAnt of
+                                                                   | 
+                                                                   McAnt of
                                                                     loc *
                                                                     string
-                                                                and module_expr =
-                                                                    MeNil of
+                                                                 and module_expr =
+                                                                     
+                                                                   MeNil of
                                                                     loc
-                                                                  | MeId of
+                                                                   | 
+                                                                   MeId of
                                                                     loc *
                                                                     ident
-                                                                  | MeApp of
+                                                                   | 
+                                                                   MeApp of
                                                                     loc *
                                                                     module_expr *
                                                                     module_expr
-                                                                  | MeFun of
+                                                                   | 
+                                                                   MeFun of
                                                                     loc *
                                                                     string *
                                                                     module_type *
                                                                     module_expr
-                                                                  | MeStr of
+                                                                   | 
+                                                                   MeStr of
                                                                     loc *
                                                                     str_item
-                                                                  | MeTyc of
+                                                                   | 
+                                                                   MeTyc of
                                                                     loc *
                                                                     module_expr *
                                                                     module_type
-                                                                  | MePkg of
+                                                                   | 
+                                                                   MePkg of
                                                                     loc *
                                                                     expr
-                                                                  | MeAnt of
+                                                                   | 
+                                                                   MeAnt of
                                                                     loc *
                                                                     string
-                                                                and str_item =
-                                                                    StNil of
+                                                                 and str_item =
+                                                                     
+                                                                   StNil of
                                                                     loc
-                                                                  | StCls of
+                                                                   | 
+                                                                   StCls of
                                                                     loc *
                                                                     class_expr
-                                                                  | StClt of
+                                                                   | 
+                                                                   StClt of
                                                                     loc *
                                                                     class_type
-                                                                  | StSem of
+                                                                   | 
+                                                                   StSem of
                                                                     loc *
                                                                     str_item *
                                                                     str_item
-                                                                  | StDir of
+                                                                   | 
+                                                                   StDir of
                                                                     loc *
                                                                     string *
                                                                     expr
-                                                                  | StExc of
+                                                                   | 
+                                                                   StExc of
                                                                     loc *
                                                                     ctyp *
                                                                     ident meta_option
-                                                                  | StExp of
+                                                                   | 
+                                                                   StExp of
                                                                     loc *
                                                                     expr
-                                                                  | StExt of
+                                                                   | 
+                                                                   StExt of
                                                                     loc *
                                                                     string *
                                                                     ctyp *
                                                                     string meta_list
-                                                                  | StInc of
+                                                                   | 
+                                                                   StInc of
                                                                     loc *
                                                                     module_expr
-                                                                  | StMod of
+                                                                   | 
+                                                                   StMod of
                                                                     loc *
                                                                     string *
                                                                     module_expr
-                                                                  | StRecMod
+                                                                   | 
+                                                                   StRecMod
                                                                     of 
                                                                     loc *
                                                                     module_binding
-                                                                  | StMty of
+                                                                   | 
+                                                                   StMty of
                                                                     loc *
                                                                     string *
                                                                     module_type
-                                                                  | StOpn of
+                                                                   | 
+                                                                   StOpn of
                                                                     loc *
                                                                     ident
-                                                                  | StTyp of
+                                                                   | 
+                                                                   StTyp of
                                                                     loc *
                                                                     ctyp
-                                                                  | StVal of
+                                                                   | 
+                                                                   StVal of
                                                                     loc *
                                                                     rec_flag *
                                                                     binding
-                                                                  | StAnt of
+                                                                   | 
+                                                                   StAnt of
                                                                     loc *
                                                                     string
-                                                                and class_type =
-                                                                    CtNil of
+                                                                 and class_type =
+                                                                     
+                                                                   CtNil of
                                                                     loc
-                                                                  | CtCon of
+                                                                   | 
+                                                                   CtCon of
                                                                     loc *
                                                                     virtual_flag *
                                                                     ident *
                                                                     ctyp
-                                                                  | CtFun of
+                                                                   | 
+                                                                   CtFun of
                                                                     loc *
                                                                     ctyp *
                                                                     class_type
-                                                                  | CtSig of
+                                                                   | 
+                                                                   CtSig of
                                                                     loc *
                                                                     ctyp *
                                                                     class_sig_item
-                                                                  | CtAnd of
+                                                                   | 
+                                                                   CtAnd of
                                                                     loc *
                                                                     class_type *
                                                                     class_type
-                                                                  | CtCol of
+                                                                   | 
+                                                                   CtCol of
                                                                     loc *
                                                                     class_type *
                                                                     class_type
-                                                                  | CtEq of
+                                                                   | 
+                                                                   CtEq of
                                                                     loc *
                                                                     class_type *
                                                                     class_type
-                                                                  | CtAnt of
+                                                                   | 
+                                                                   CtAnt of
                                                                     loc *
                                                                     string
-                                                                and class_sig_item =
-                                                                    CgNil of
+                                                                 and class_sig_item =
+                                                                     
+                                                                   CgNil of
                                                                     loc
-                                                                  | CgCtr of
+                                                                   | 
+                                                                   CgCtr of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | CgSem of
+                                                                   | 
+                                                                   CgSem of
                                                                     loc *
                                                                     class_sig_item *
                                                                     class_sig_item
-                                                                  | CgInh of
+                                                                   | 
+                                                                   CgInh of
                                                                     loc *
                                                                     class_type
-                                                                  | CgMth of
+                                                                   | 
+                                                                   CgMth of
                                                                     loc *
                                                                     string *
                                                                     private_flag *
                                                                     ctyp
-                                                                  | CgVal of
+                                                                   | 
+                                                                   CgVal of
                                                                     loc *
                                                                     string *
                                                                     mutable_flag *
                                                                     virtual_flag *
                                                                     ctyp
-                                                                  | CgVir of
+                                                                   | 
+                                                                   CgVir of
                                                                     loc *
                                                                     string *
                                                                     private_flag *
                                                                     ctyp
-                                                                  | CgAnt of
+                                                                   | 
+                                                                   CgAnt of
                                                                     loc *
                                                                     string
-                                                                and class_expr =
-                                                                    CeNil of
+                                                                 and class_expr =
+                                                                     
+                                                                   CeNil of
                                                                     loc
-                                                                  | CeApp of
+                                                                   | 
+                                                                   CeApp of
                                                                     loc *
                                                                     class_expr *
                                                                     expr
-                                                                  | CeCon of
+                                                                   | 
+                                                                   CeCon of
                                                                     loc *
                                                                     virtual_flag *
                                                                     ident *
                                                                     ctyp
-                                                                  | CeFun of
+                                                                   | 
+                                                                   CeFun of
                                                                     loc *
                                                                     patt *
                                                                     class_expr
-                                                                  | CeLet of
+                                                                   | 
+                                                                   CeLet of
                                                                     loc *
                                                                     rec_flag *
                                                                     binding *
                                                                     class_expr
-                                                                  | CeStr of
+                                                                   | 
+                                                                   CeStr of
                                                                     loc *
                                                                     patt *
                                                                     class_str_item
-                                                                  | CeTyc of
+                                                                   | 
+                                                                   CeTyc of
                                                                     loc *
                                                                     class_expr *
                                                                     class_type
-                                                                  | CeAnd of
+                                                                   | 
+                                                                   CeAnd of
                                                                     loc *
                                                                     class_expr *
                                                                     class_expr
-                                                                  | CeEq of
+                                                                   | 
+                                                                   CeEq of
                                                                     loc *
                                                                     class_expr *
                                                                     class_expr
-                                                                  | CeAnt of
+                                                                   | 
+                                                                   CeAnt of
                                                                     loc *
                                                                     string
-                                                                and class_str_item =
-                                                                    CrNil of
+                                                                 and class_str_item =
+                                                                     
+                                                                   CrNil of
                                                                     loc
-                                                                  | CrSem of
+                                                                   | 
+                                                                   CrSem of
                                                                     loc *
                                                                     class_str_item *
                                                                     class_str_item
-                                                                  | CrCtr of
+                                                                   | 
+                                                                   CrCtr of
                                                                     loc *
                                                                     ctyp *
                                                                     ctyp
-                                                                  | CrInh of
+                                                                   | 
+                                                                   CrInh of
                                                                     loc *
                                                                     override_flag *
                                                                     class_expr *
                                                                     string
-                                                                  | CrIni of
+                                                                   | 
+                                                                   CrIni of
                                                                     loc *
                                                                     expr
-                                                                  | CrMth of
+                                                                   | 
+                                                                   CrMth of
                                                                     loc *
                                                                     string *
                                                                     override_flag *
                                                                     private_flag *
                                                                     expr *
                                                                     ctyp
-                                                                  | CrVal of
+                                                                   | 
+                                                                   CrVal of
                                                                     loc *
                                                                     string *
                                                                     override_flag *
                                                                     mutable_flag *
                                                                     expr
-                                                                  | CrVir of
+                                                                   | 
+                                                                   CrVir of
                                                                     loc *
                                                                     string *
                                                                     private_flag *
                                                                     ctyp
-                                                                  | CrVvr of
+                                                                   | 
+                                                                   CrVvr of
                                                                     loc *
                                                                     string *
                                                                     mutable_flag *
                                                                     ctyp
-                                                                  | CrAnt of
+                                                                   | 
+                                                                   CrAnt of
                                                                     loc *
                                                                     string
 
-                                                                val loc_of_ctyp :
-                                                                 (ctyp ->
-                                                                  loc)
+                                                                 val loc_of_ctyp :
+                                                                  (ctyp ->
+                                                                   loc)
 
-                                                                val loc_of_patt :
-                                                                 (patt ->
-                                                                  loc)
+                                                                 val loc_of_patt :
+                                                                  (patt ->
+                                                                   loc)
 
-                                                                val loc_of_expr :
-                                                                 (expr ->
-                                                                  loc)
+                                                                 val loc_of_expr :
+                                                                  (expr ->
+                                                                   loc)
 
-                                                                val loc_of_module_type :
-                                                                 (module_type
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_module_type :
+                                                                  (module_type
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_module_expr :
-                                                                 (module_expr
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_module_expr :
+                                                                  (module_expr
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_sig_item :
-                                                                 (sig_item ->
-                                                                  loc)
+                                                                 val loc_of_sig_item :
+                                                                  (sig_item
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_str_item :
-                                                                 (str_item ->
-                                                                  loc)
+                                                                 val loc_of_str_item :
+                                                                  (str_item
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_class_type :
-                                                                 (class_type
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_class_type :
+                                                                  (class_type
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_class_sig_item :
-                                                                 (class_sig_item
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_class_sig_item :
+                                                                  (class_sig_item
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_class_expr :
-                                                                 (class_expr
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_class_expr :
+                                                                  (class_expr
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_class_str_item :
-                                                                 (class_str_item
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_class_str_item :
+                                                                  (class_str_item
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_with_constr :
-                                                                 (with_constr
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_with_constr :
+                                                                  (with_constr
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_binding :
-                                                                 (binding ->
-                                                                  loc)
+                                                                 val loc_of_binding :
+                                                                  (binding ->
+                                                                   loc)
 
-                                                                val loc_of_rec_binding :
-                                                                 (rec_binding
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_rec_binding :
+                                                                  (rec_binding
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_module_binding :
-                                                                 (module_binding
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_module_binding :
+                                                                  (module_binding
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_match_case :
-                                                                 (match_case
-                                                                  -> 
-                                                                  loc)
+                                                                 val loc_of_match_case :
+                                                                  (match_case
+                                                                   -> 
+                                                                   loc)
 
-                                                                val loc_of_ident :
-                                                                 (ident ->
-                                                                  loc)
+                                                                 val loc_of_ident :
+                                                                  (ident ->
+                                                                   loc)
 
-                                                                module Meta :
-                                                                 sig
-                                                                  module type META_LOC
-                                                                    = 
-                                                                   sig
+                                                                 module
+                                                                  Meta :
+                                                                  sig
+                                                                   module type META_LOC
+                                                                     = 
+                                                                    sig
                                                                     val meta_loc_patt :
                                                                     (loc ->
                                                                     (loc ->
@@ -1574,11 +1709,11 @@ module type Ast =
                                                                     (loc ->
                                                                     expr))
 
-                                                                   end
+                                                                    end
 
-                                                                  module
-                                                                   MetaLoc :
-                                                                   sig
+                                                                   module
+                                                                    MetaLoc :
+                                                                    sig
                                                                     val meta_loc_patt :
                                                                     (loc ->
                                                                     (loc ->
@@ -1589,11 +1724,11 @@ module type Ast =
                                                                     (loc ->
                                                                     expr))
 
-                                                                   end
+                                                                    end
 
-                                                                  module
-                                                                   MetaGhostLoc :
-                                                                   sig
+                                                                   module
+                                                                    MetaGhostLoc :
+                                                                    sig
                                                                     val meta_loc_patt :
                                                                     (loc ->
                                                                     ('a ->
@@ -1604,11 +1739,11 @@ module type Ast =
                                                                     ('a ->
                                                                     expr))
 
-                                                                   end
+                                                                    end
 
-                                                                  module
-                                                                   MetaLocVar :
-                                                                   sig
+                                                                   module
+                                                                    MetaLocVar :
+                                                                    sig
                                                                     val meta_loc_patt :
                                                                     (loc ->
                                                                     ('a ->
@@ -1619,11 +1754,11 @@ module type Ast =
                                                                     ('a ->
                                                                     expr))
 
-                                                                   end
+                                                                    end
 
-                                                                  module
-                                                                   Make :
-                                                                   functor
+                                                                   module
+                                                                    Make :
+                                                                    functor
                                                                     (MetaLoc : META_LOC) ->
                                                                     sig
                                                                     module
@@ -1994,16 +2129,17 @@ module type Ast =
 
                                                                     end
 
-                                                                 end
+                                                                  end
 
-                                                                class map :
-                                                                 object
-                                                                  ('self_type)
-                                                                  method string :
-                                                                   (string ->
+                                                                 class map :
+                                                                  object
+                                                                   ('self_type)
+                                                                   method string :
+                                                                    (string
+                                                                    ->
                                                                     string)
-                                                                  method list :
-                                                                   'a 'b .
+                                                                   method list :
+                                                                    'a 'b .
                                                                     (('self_type
                                                                     ->
                                                                     ('a ->
@@ -2011,12 +2147,12 @@ module type Ast =
                                                                     ('a list
                                                                     ->
                                                                     'b list))
-                                                                  method meta_bool :
-                                                                   (meta_bool
+                                                                   method meta_bool :
+                                                                    (meta_bool
                                                                     ->
                                                                     meta_bool)
-                                                                  method meta_option :
-                                                                   'a 'b .
+                                                                   method meta_option :
+                                                                    'a 'b .
                                                                     (('self_type
                                                                     ->
                                                                     ('a ->
@@ -2024,8 +2160,8 @@ module type Ast =
                                                                     ('a meta_option
                                                                     ->
                                                                     'b meta_option))
-                                                                  method meta_list :
-                                                                   'a 'b .
+                                                                   method meta_list :
+                                                                    'a 'b .
                                                                     (('self_type
                                                                     ->
                                                                     ('a ->
@@ -2033,115 +2169,115 @@ module type Ast =
                                                                     ('a meta_list
                                                                     ->
                                                                     'b meta_list))
-                                                                  method loc :
-                                                                   (loc ->
+                                                                   method loc :
+                                                                    (loc ->
                                                                     loc)
-                                                                  method expr :
-                                                                   (expr ->
+                                                                   method expr :
+                                                                    (expr ->
                                                                     expr)
-                                                                  method patt :
-                                                                   (patt ->
+                                                                   method patt :
+                                                                    (patt ->
                                                                     patt)
-                                                                  method ctyp :
-                                                                   (ctyp ->
+                                                                   method ctyp :
+                                                                    (ctyp ->
                                                                     ctyp)
-                                                                  method str_item :
-                                                                   (str_item
+                                                                   method str_item :
+                                                                    (str_item
                                                                     ->
                                                                     str_item)
-                                                                  method sig_item :
-                                                                   (sig_item
+                                                                   method sig_item :
+                                                                    (sig_item
                                                                     ->
                                                                     sig_item)
-                                                                  method module_expr :
-                                                                   (module_expr
+                                                                   method module_expr :
+                                                                    (module_expr
                                                                     ->
                                                                     module_expr)
-                                                                  method module_type :
-                                                                   (module_type
+                                                                   method module_type :
+                                                                    (module_type
                                                                     ->
                                                                     module_type)
-                                                                  method class_expr :
-                                                                   (class_expr
+                                                                   method class_expr :
+                                                                    (class_expr
                                                                     ->
                                                                     class_expr)
-                                                                  method class_type :
-                                                                   (class_type
+                                                                   method class_type :
+                                                                    (class_type
                                                                     ->
                                                                     class_type)
-                                                                  method class_sig_item :
-                                                                   (class_sig_item
+                                                                   method class_sig_item :
+                                                                    (class_sig_item
                                                                     ->
                                                                     class_sig_item)
-                                                                  method class_str_item :
-                                                                   (class_str_item
+                                                                   method class_str_item :
+                                                                    (class_str_item
                                                                     ->
                                                                     class_str_item)
-                                                                  method with_constr :
-                                                                   (with_constr
+                                                                   method with_constr :
+                                                                    (with_constr
                                                                     ->
                                                                     with_constr)
-                                                                  method binding :
-                                                                   (binding
+                                                                   method binding :
+                                                                    (binding
                                                                     ->
                                                                     binding)
-                                                                  method rec_binding :
-                                                                   (rec_binding
+                                                                   method rec_binding :
+                                                                    (rec_binding
                                                                     ->
                                                                     rec_binding)
-                                                                  method module_binding :
-                                                                   (module_binding
+                                                                   method module_binding :
+                                                                    (module_binding
                                                                     ->
                                                                     module_binding)
-                                                                  method match_case :
-                                                                   (match_case
+                                                                   method match_case :
+                                                                    (match_case
                                                                     ->
                                                                     match_case)
-                                                                  method ident :
-                                                                   (ident ->
+                                                                   method ident :
+                                                                    (ident ->
                                                                     ident)
-                                                                  method mutable_flag :
-                                                                   (mutable_flag
+                                                                   method mutable_flag :
+                                                                    (mutable_flag
                                                                     ->
                                                                     mutable_flag)
-                                                                  method private_flag :
-                                                                   (private_flag
+                                                                   method private_flag :
+                                                                    (private_flag
                                                                     ->
                                                                     private_flag)
-                                                                  method virtual_flag :
-                                                                   (virtual_flag
+                                                                   method virtual_flag :
+                                                                    (virtual_flag
                                                                     ->
                                                                     virtual_flag)
-                                                                  method direction_flag :
-                                                                   (direction_flag
+                                                                   method direction_flag :
+                                                                    (direction_flag
                                                                     ->
                                                                     direction_flag)
-                                                                  method rec_flag :
-                                                                   (rec_flag
+                                                                   method rec_flag :
+                                                                    (rec_flag
                                                                     ->
                                                                     rec_flag)
-                                                                  method row_var_flag :
-                                                                   (row_var_flag
+                                                                   method row_var_flag :
+                                                                    (row_var_flag
                                                                     ->
                                                                     row_var_flag)
-                                                                  method override_flag :
-                                                                   (override_flag
+                                                                   method override_flag :
+                                                                    (override_flag
                                                                     ->
                                                                     override_flag)
-                                                                  method unknown :
-                                                                   'a .
+                                                                   method unknown :
+                                                                    'a .
                                                                     ('a ->
                                                                     'a)
-                                                                 end
+                                                                  end
 
-                                                                 class fold :
-                                                                  object
-                                                                   ('self_type)
-                                                                   method string :
+                                                                  class fold :
+                                                                   object
+                                                                    ('self_type)
+                                                                    method string :
                                                                     (string
                                                                     ->
                                                                     'self_type)
-                                                                   method list :
+                                                                    method list :
                                                                     'a .
                                                                     (('self_type
                                                                     ->
@@ -2151,11 +2287,11 @@ module type Ast =
                                                                     ('a list
                                                                     ->
                                                                     'self_type))
-                                                                   method meta_bool :
+                                                                    method meta_bool :
                                                                     (meta_bool
                                                                     ->
                                                                     'self_type)
-                                                                   method meta_option :
+                                                                    method meta_option :
                                                                     'a .
                                                                     (('self_type
                                                                     ->
@@ -2165,7 +2301,7 @@ module type Ast =
                                                                     ('a meta_option
                                                                     ->
                                                                     'self_type))
-                                                                   method meta_list :
+                                                                    method meta_list :
                                                                     'a .
                                                                     (('self_type
                                                                     ->
@@ -2175,454 +2311,455 @@ module type Ast =
                                                                     ('a meta_list
                                                                     ->
                                                                     'self_type))
-                                                                   method loc :
+                                                                    method loc :
                                                                     (loc ->
                                                                     'self_type)
-                                                                   method expr :
+                                                                    method expr :
                                                                     (expr ->
                                                                     'self_type)
-                                                                   method patt :
+                                                                    method patt :
                                                                     (patt ->
                                                                     'self_type)
-                                                                   method ctyp :
+                                                                    method ctyp :
                                                                     (ctyp ->
                                                                     'self_type)
-                                                                   method str_item :
+                                                                    method str_item :
                                                                     (str_item
                                                                     ->
                                                                     'self_type)
-                                                                   method sig_item :
+                                                                    method sig_item :
                                                                     (sig_item
                                                                     ->
                                                                     'self_type)
-                                                                   method module_expr :
+                                                                    method module_expr :
                                                                     (module_expr
                                                                     ->
                                                                     'self_type)
-                                                                   method module_type :
+                                                                    method module_type :
                                                                     (module_type
                                                                     ->
                                                                     'self_type)
-                                                                   method class_expr :
+                                                                    method class_expr :
                                                                     (class_expr
                                                                     ->
                                                                     'self_type)
-                                                                   method class_type :
+                                                                    method class_type :
                                                                     (class_type
                                                                     ->
                                                                     'self_type)
-                                                                   method class_sig_item :
+                                                                    method class_sig_item :
                                                                     (class_sig_item
                                                                     ->
                                                                     'self_type)
-                                                                   method class_str_item :
+                                                                    method class_str_item :
                                                                     (class_str_item
                                                                     ->
                                                                     'self_type)
-                                                                   method with_constr :
+                                                                    method with_constr :
                                                                     (with_constr
                                                                     ->
                                                                     'self_type)
-                                                                   method binding :
+                                                                    method binding :
                                                                     (binding
                                                                     ->
                                                                     'self_type)
-                                                                   method rec_binding :
+                                                                    method rec_binding :
                                                                     (rec_binding
                                                                     ->
                                                                     'self_type)
-                                                                   method module_binding :
+                                                                    method module_binding :
                                                                     (module_binding
                                                                     ->
                                                                     'self_type)
-                                                                   method match_case :
+                                                                    method match_case :
                                                                     (match_case
                                                                     ->
                                                                     'self_type)
-                                                                   method ident :
+                                                                    method ident :
                                                                     (ident ->
                                                                     'self_type)
-                                                                   method rec_flag :
+                                                                    method rec_flag :
                                                                     (rec_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method direction_flag :
+                                                                    method direction_flag :
                                                                     (direction_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method mutable_flag :
+                                                                    method mutable_flag :
                                                                     (mutable_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method private_flag :
+                                                                    method private_flag :
                                                                     (private_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method virtual_flag :
+                                                                    method virtual_flag :
                                                                     (virtual_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method row_var_flag :
+                                                                    method row_var_flag :
                                                                     (row_var_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method override_flag :
+                                                                    method override_flag :
                                                                     (override_flag
                                                                     ->
                                                                     'self_type)
-                                                                   method unknown :
+                                                                    method unknown :
                                                                     'a .
                                                                     ('a ->
                                                                     'self_type)
-                                                                  end
+                                                                   end
 
-                                                                  val map_expr :
-                                                                   ((expr ->
+                                                                   val map_expr :
+                                                                    ((expr ->
                                                                     expr) ->
                                                                     map)
 
-                                                                  val map_patt :
-                                                                   ((patt ->
+                                                                   val map_patt :
+                                                                    ((patt ->
                                                                     patt) ->
                                                                     map)
 
-                                                                  val map_ctyp :
-                                                                   ((ctyp ->
+                                                                   val map_ctyp :
+                                                                    ((ctyp ->
                                                                     ctyp) ->
                                                                     map)
 
-                                                                  val map_str_item :
-                                                                   ((str_item
+                                                                   val map_str_item :
+                                                                    ((str_item
                                                                     ->
                                                                     str_item)
                                                                     -> 
                                                                     map)
 
-                                                                  val map_sig_item :
-                                                                   ((sig_item
+                                                                   val map_sig_item :
+                                                                    ((sig_item
                                                                     ->
                                                                     sig_item)
                                                                     -> 
                                                                     map)
 
-                                                                  val map_loc :
-                                                                   ((loc ->
+                                                                   val map_loc :
+                                                                    ((loc ->
                                                                     loc) ->
                                                                     map)
 
-                                                                  val ident_of_expr :
-                                                                   (expr ->
+                                                                   val ident_of_expr :
+                                                                    (expr ->
                                                                     ident)
 
-                                                                  val ident_of_patt :
-                                                                   (patt ->
+                                                                   val ident_of_patt :
+                                                                    (patt ->
                                                                     ident)
 
-                                                                  val ident_of_ctyp :
-                                                                   (ctyp ->
+                                                                   val ident_of_ctyp :
+                                                                    (ctyp ->
                                                                     ident)
 
-                                                                  val biAnd_of_list :
-                                                                   (binding list
+                                                                   val biAnd_of_list :
+                                                                    (binding list
                                                                     ->
                                                                     binding)
 
-                                                                  val rbSem_of_list :
-                                                                   (rec_binding list
+                                                                   val rbSem_of_list :
+                                                                    (rec_binding list
                                                                     ->
                                                                     rec_binding)
 
-                                                                  val paSem_of_list :
-                                                                   (patt list
+                                                                   val paSem_of_list :
+                                                                    (patt list
                                                                     -> 
                                                                     patt)
 
-                                                                  val paCom_of_list :
-                                                                   (patt list
+                                                                   val paCom_of_list :
+                                                                    (patt list
                                                                     -> 
                                                                     patt)
 
-                                                                  val tyOr_of_list :
-                                                                   (ctyp list
+                                                                   val tyOr_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val tyAnd_of_list :
-                                                                   (ctyp list
+                                                                   val tyAnd_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val tyAmp_of_list :
-                                                                   (ctyp list
+                                                                   val tyAmp_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val tySem_of_list :
-                                                                   (ctyp list
+                                                                   val tySem_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val tyCom_of_list :
-                                                                   (ctyp list
+                                                                   val tyCom_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val tySta_of_list :
-                                                                   (ctyp list
+                                                                   val tySta_of_list :
+                                                                    (ctyp list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val stSem_of_list :
-                                                                   (str_item list
+                                                                   val stSem_of_list :
+                                                                    (str_item list
                                                                     ->
                                                                     str_item)
 
-                                                                  val sgSem_of_list :
-                                                                   (sig_item list
+                                                                   val sgSem_of_list :
+                                                                    (sig_item list
                                                                     ->
                                                                     sig_item)
 
-                                                                  val crSem_of_list :
-                                                                   (class_str_item list
+                                                                   val crSem_of_list :
+                                                                    (class_str_item list
                                                                     ->
                                                                     class_str_item)
 
-                                                                  val cgSem_of_list :
-                                                                   (class_sig_item list
+                                                                   val cgSem_of_list :
+                                                                    (class_sig_item list
                                                                     ->
                                                                     class_sig_item)
 
-                                                                  val ctAnd_of_list :
-                                                                   (class_type list
+                                                                   val ctAnd_of_list :
+                                                                    (class_type list
                                                                     ->
                                                                     class_type)
 
-                                                                  val ceAnd_of_list :
-                                                                   (class_expr list
+                                                                   val ceAnd_of_list :
+                                                                    (class_expr list
                                                                     ->
                                                                     class_expr)
 
-                                                                  val wcAnd_of_list :
-                                                                   (with_constr list
+                                                                   val wcAnd_of_list :
+                                                                    (with_constr list
                                                                     ->
                                                                     with_constr)
 
-                                                                  val meApp_of_list :
-                                                                   (module_expr list
+                                                                   val meApp_of_list :
+                                                                    (module_expr list
                                                                     ->
                                                                     module_expr)
 
-                                                                  val mbAnd_of_list :
-                                                                   (module_binding list
+                                                                   val mbAnd_of_list :
+                                                                    (module_binding list
                                                                     ->
                                                                     module_binding)
 
-                                                                  val mcOr_of_list :
-                                                                   (match_case list
+                                                                   val mcOr_of_list :
+                                                                    (match_case list
                                                                     ->
                                                                     match_case)
 
-                                                                  val idAcc_of_list :
-                                                                   (ident list
+                                                                   val idAcc_of_list :
+                                                                    (ident list
                                                                     -> 
                                                                     ident)
 
-                                                                  val idApp_of_list :
-                                                                   (ident list
+                                                                   val idApp_of_list :
+                                                                    (ident list
                                                                     -> 
                                                                     ident)
 
-                                                                  val exSem_of_list :
-                                                                   (expr list
+                                                                   val exSem_of_list :
+                                                                    (expr list
                                                                     -> 
                                                                     expr)
 
-                                                                  val exCom_of_list :
-                                                                   (expr list
+                                                                   val exCom_of_list :
+                                                                    (expr list
                                                                     -> 
                                                                     expr)
 
-                                                                  val list_of_ctyp :
-                                                                   (ctyp ->
+                                                                   val list_of_ctyp :
+                                                                    (ctyp ->
                                                                     (ctyp list
                                                                     ->
                                                                     ctyp list))
 
-                                                                  val list_of_binding :
-                                                                   (binding
+                                                                   val list_of_binding :
+                                                                    (binding
                                                                     ->
                                                                     (binding list
                                                                     ->
                                                                     binding list))
 
-                                                                  val list_of_rec_binding :
-                                                                   (rec_binding
+                                                                   val list_of_rec_binding :
+                                                                    (rec_binding
                                                                     ->
                                                                     (rec_binding list
                                                                     ->
                                                                     rec_binding list))
 
-                                                                  val list_of_with_constr :
-                                                                   (with_constr
+                                                                   val list_of_with_constr :
+                                                                    (with_constr
                                                                     ->
                                                                     (with_constr list
                                                                     ->
                                                                     with_constr list))
 
-                                                                  val list_of_patt :
-                                                                   (patt ->
+                                                                   val list_of_patt :
+                                                                    (patt ->
                                                                     (patt list
                                                                     ->
                                                                     patt list))
 
-                                                                  val list_of_expr :
-                                                                   (expr ->
+                                                                   val list_of_expr :
+                                                                    (expr ->
                                                                     (expr list
                                                                     ->
                                                                     expr list))
 
-                                                                  val list_of_str_item :
-                                                                   (str_item
+                                                                   val list_of_str_item :
+                                                                    (str_item
                                                                     ->
                                                                     (str_item list
                                                                     ->
                                                                     str_item list))
 
-                                                                  val list_of_sig_item :
-                                                                   (sig_item
+                                                                   val list_of_sig_item :
+                                                                    (sig_item
                                                                     ->
                                                                     (sig_item list
                                                                     ->
                                                                     sig_item list))
 
-                                                                  val list_of_class_sig_item :
-                                                                   (class_sig_item
+                                                                   val list_of_class_sig_item :
+                                                                    (class_sig_item
                                                                     ->
                                                                     (class_sig_item list
                                                                     ->
                                                                     class_sig_item list))
 
-                                                                  val list_of_class_str_item :
-                                                                   (class_str_item
+                                                                   val list_of_class_str_item :
+                                                                    (class_str_item
                                                                     ->
                                                                     (class_str_item list
                                                                     ->
                                                                     class_str_item list))
 
-                                                                  val list_of_class_type :
-                                                                   (class_type
+                                                                   val list_of_class_type :
+                                                                    (class_type
                                                                     ->
                                                                     (class_type list
                                                                     ->
                                                                     class_type list))
 
-                                                                  val list_of_class_expr :
-                                                                   (class_expr
+                                                                   val list_of_class_expr :
+                                                                    (class_expr
                                                                     ->
                                                                     (class_expr list
                                                                     ->
                                                                     class_expr list))
 
-                                                                  val list_of_module_expr :
-                                                                   (module_expr
+                                                                   val list_of_module_expr :
+                                                                    (module_expr
                                                                     ->
                                                                     (module_expr list
                                                                     ->
                                                                     module_expr list))
 
-                                                                  val list_of_module_binding :
-                                                                   (module_binding
+                                                                   val list_of_module_binding :
+                                                                    (module_binding
                                                                     ->
                                                                     (module_binding list
                                                                     ->
                                                                     module_binding list))
 
-                                                                  val list_of_match_case :
-                                                                   (match_case
+                                                                   val list_of_match_case :
+                                                                    (match_case
                                                                     ->
                                                                     (match_case list
                                                                     ->
                                                                     match_case list))
 
-                                                                  val list_of_ident :
-                                                                   (ident ->
+                                                                   val list_of_ident :
+                                                                    (ident ->
                                                                     (ident list
                                                                     ->
                                                                     ident list))
 
-                                                                  val safe_string_escaped :
-                                                                   (string ->
+                                                                   val safe_string_escaped :
+                                                                    (string
+                                                                    ->
                                                                     string)
 
-                                                                  val is_irrefut_patt :
-                                                                   (patt ->
+                                                                   val is_irrefut_patt :
+                                                                    (patt ->
                                                                     bool)
 
-                                                                  val is_constructor :
-                                                                   (ident ->
+                                                                   val is_constructor :
+                                                                    (ident ->
                                                                     bool)
 
-                                                                  val is_patt_constructor :
-                                                                   (patt ->
+                                                                   val is_patt_constructor :
+                                                                    (patt ->
                                                                     bool)
 
-                                                                  val is_expr_constructor :
-                                                                   (expr ->
+                                                                   val is_expr_constructor :
+                                                                    (expr ->
                                                                     bool)
 
-                                                                  val ty_of_stl :
-                                                                   ((Loc.t *
+                                                                   val ty_of_stl :
+                                                                    ((Loc.t *
                                                                     string *
                                                                     ctyp list)
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val ty_of_sbt :
-                                                                   ((Loc.t *
+                                                                   val ty_of_sbt :
+                                                                    ((Loc.t *
                                                                     string *
                                                                     bool *
                                                                     ctyp) ->
                                                                     ctyp)
 
-                                                                  val bi_of_pe :
-                                                                   ((patt *
+                                                                   val bi_of_pe :
+                                                                    ((patt *
                                                                     expr) ->
                                                                     binding)
 
-                                                                  val pel_of_binding :
-                                                                   (binding
+                                                                   val pel_of_binding :
+                                                                    (binding
                                                                     ->
                                                                     (patt *
                                                                     expr) list)
 
-                                                                  val binding_of_pel :
-                                                                   ((patt *
+                                                                   val binding_of_pel :
+                                                                    ((patt *
                                                                     expr) list
                                                                     ->
                                                                     binding)
 
-                                                                  val sum_type_of_list :
-                                                                   ((Loc.t *
+                                                                   val sum_type_of_list :
+                                                                    ((Loc.t *
                                                                     string *
                                                                     ctyp list) list
                                                                     -> 
                                                                     ctyp)
 
-                                                                  val record_type_of_list :
-                                                                   ((Loc.t *
+                                                                   val record_type_of_list :
+                                                                    ((Loc.t *
                                                                     string *
                                                                     bool *
                                                                     ctyp) list
                                                                     -> 
                                                                     ctyp)
 
-                                                                 end
+                                                                  end
 
 
-                                                               module Camlp4AstToAst =
-                                                                functor (M : Camlp4Ast) ->
-                                                                 (M :
-                                                                   (Ast with
+                                                                module Camlp4AstToAst =
+                                                                 functor (M : Camlp4Ast) ->
+                                                                  (M :
+                                                                    (Ast with
                                                                     type
                                                                      loc =
                                                                     M.loc
@@ -2790,12 +2927,12 @@ module type Ast =
                                                                     M.override_flag))
 
 
-                                                               module MakeCamlp4Ast =
-                                                                functor (Loc : Type) ->
-                                                                 struct
-                                                                  type loc =
-                                                                   Loc.t
-                                                                  and meta_bool =
+                                                                module MakeCamlp4Ast =
+                                                                 functor (Loc : Type) ->
+                                                                  struct
+                                                                   type loc =
+                                                                    Loc.t
+                                                                   and meta_bool =
                                                                       
                                                                     BTrue
                                                                     | 
@@ -2803,7 +2940,7 @@ module type Ast =
                                                                     | 
                                                                     BAnt of
                                                                     string
-                                                                  and rec_flag =
+                                                                   and rec_flag =
                                                                       
                                                                     ReRecursive
                                                                     | 
@@ -2811,7 +2948,7 @@ module type Ast =
                                                                     | 
                                                                     ReAnt of
                                                                     string
-                                                                  and direction_flag =
+                                                                   and direction_flag =
                                                                       
                                                                     DiTo
                                                                     | 
@@ -2819,7 +2956,7 @@ module type Ast =
                                                                     | 
                                                                     DiAnt of
                                                                     string
-                                                                  and mutable_flag =
+                                                                   and mutable_flag =
                                                                       
                                                                     MuMutable
                                                                     | 
@@ -2827,7 +2964,7 @@ module type Ast =
                                                                     | 
                                                                     MuAnt of
                                                                     string
-                                                                  and private_flag =
+                                                                   and private_flag =
                                                                       
                                                                     PrPrivate
                                                                     | 
@@ -2835,7 +2972,7 @@ module type Ast =
                                                                     | 
                                                                     PrAnt of
                                                                     string
-                                                                  and virtual_flag =
+                                                                   and virtual_flag =
                                                                       
                                                                     ViVirtual
                                                                     | 
@@ -2843,7 +2980,7 @@ module type Ast =
                                                                     | 
                                                                     ViAnt of
                                                                     string
-                                                                  and override_flag =
+                                                                   and override_flag =
                                                                       
                                                                     OvOverride
                                                                     | 
@@ -2851,7 +2988,7 @@ module type Ast =
                                                                     | 
                                                                     OvAnt of
                                                                     string
-                                                                  and row_var_flag =
+                                                                   and row_var_flag =
                                                                       
                                                                     RvRowVar
                                                                     | 
@@ -2859,7 +2996,7 @@ module type Ast =
                                                                     | 
                                                                     RvAnt of
                                                                     string
-                                                                  and 'a meta_option =
+                                                                   and 'a meta_option =
                                                                       
                                                                     ONone
                                                                     | 
@@ -2868,7 +3005,7 @@ module type Ast =
                                                                     | 
                                                                     OAnt of
                                                                     string
-                                                                  and 'a meta_list =
+                                                                   and 'a meta_list =
                                                                       
                                                                     LNil
                                                                     | 
@@ -2878,7 +3015,7 @@ module type Ast =
                                                                     | 
                                                                     LAnt of
                                                                     string
-                                                                  and ident =
+                                                                   and ident =
                                                                       
                                                                     IdAcc of
                                                                     loc *
@@ -2901,7 +3038,7 @@ module type Ast =
                                                                     IdAnt of
                                                                     loc *
                                                                     string
-                                                                  and ctyp =
+                                                                   and ctyp =
                                                                       
                                                                     TyNil of
                                                                     loc
@@ -3087,7 +3224,7 @@ module type Ast =
                                                                     TyAnt of
                                                                     loc *
                                                                     string
-                                                                  and patt =
+                                                                   and patt =
                                                                       
                                                                     PaNil of
                                                                     loc
@@ -3217,7 +3354,7 @@ module type Ast =
                                                                     PaMod of
                                                                     loc *
                                                                     string
-                                                                  and expr =
+                                                                   and expr =
                                                                       
                                                                     ExNil of
                                                                     loc
@@ -3425,7 +3562,7 @@ module type Ast =
                                                                     ExPkg of
                                                                     loc *
                                                                     module_expr
-                                                                  and module_type =
+                                                                   and module_type =
                                                                       
                                                                     MtNil of
                                                                     loc
@@ -3460,7 +3597,7 @@ module type Ast =
                                                                     MtAnt of
                                                                     loc *
                                                                     string
-                                                                  and sig_item =
+                                                                   and sig_item =
                                                                       
                                                                     SgNil of
                                                                     loc
@@ -3528,7 +3665,7 @@ module type Ast =
                                                                     SgAnt of
                                                                     loc *
                                                                     string
-                                                                  and with_constr =
+                                                                   and with_constr =
                                                                       
                                                                     WcNil of
                                                                     loc
@@ -3561,7 +3698,7 @@ module type Ast =
                                                                     WcAnt of
                                                                     loc *
                                                                     string
-                                                                  and binding =
+                                                                   and binding =
                                                                       
                                                                     BiNil of
                                                                     loc
@@ -3579,7 +3716,7 @@ module type Ast =
                                                                     BiAnt of
                                                                     loc *
                                                                     string
-                                                                  and rec_binding =
+                                                                   and rec_binding =
                                                                       
                                                                     RbNil of
                                                                     loc
@@ -3597,7 +3734,7 @@ module type Ast =
                                                                     RbAnt of
                                                                     loc *
                                                                     string
-                                                                  and module_binding =
+                                                                   and module_binding =
                                                                       
                                                                     MbNil of
                                                                     loc
@@ -3622,7 +3759,7 @@ module type Ast =
                                                                     MbAnt of
                                                                     loc *
                                                                     string
-                                                                  and match_case =
+                                                                   and match_case =
                                                                       
                                                                     McNil of
                                                                     loc
@@ -3641,7 +3778,7 @@ module type Ast =
                                                                     McAnt of
                                                                     loc *
                                                                     string
-                                                                  and module_expr =
+                                                                   and module_expr =
                                                                       
                                                                     MeNil of
                                                                     loc
@@ -3677,7 +3814,7 @@ module type Ast =
                                                                     MeAnt of
                                                                     loc *
                                                                     string
-                                                                  and str_item =
+                                                                   and str_item =
                                                                       
                                                                     StNil of
                                                                     loc
@@ -3750,7 +3887,7 @@ module type Ast =
                                                                     StAnt of
                                                                     loc *
                                                                     string
-                                                                  and class_type =
+                                                                   and class_type =
                                                                       
                                                                     CtNil of
                                                                     loc
@@ -3789,7 +3926,7 @@ module type Ast =
                                                                     CtAnt of
                                                                     loc *
                                                                     string
-                                                                  and class_sig_item =
+                                                                   and class_sig_item =
                                                                       
                                                                     CgNil of
                                                                     loc
@@ -3830,7 +3967,7 @@ module type Ast =
                                                                     CgAnt of
                                                                     loc *
                                                                     string
-                                                                  and class_expr =
+                                                                   and class_expr =
                                                                       
                                                                     CeNil of
                                                                     loc
@@ -3880,7 +4017,7 @@ module type Ast =
                                                                     CeAnt of
                                                                     loc *
                                                                     string
-                                                                  and class_str_item =
+                                                                   and class_str_item =
                                                                       
                                                                     CrNil of
                                                                     loc
@@ -3936,134 +4073,138 @@ module type Ast =
                                                                     loc *
                                                                     string
 
+                                                                  end
+
+
+                                                                type 
+                                                                ('a, 'loc) stream_filter =
+                                                                 (('a * 'loc) Stream.t
+                                                                  ->
+                                                                  ('a * 'loc) Stream.t)
+
+
+                                                                module type AstFilters =
+                                                                 sig
+                                                                  module
+                                                                   Ast :
+                                                                   Camlp4Ast
+
+                                                                  type 'a filter =
+                                                                   ('a -> 'a)
+
+                                                                  val register_sig_item_filter :
+                                                                   (Ast.sig_item filter
+                                                                    -> 
+                                                                    unit)
+
+                                                                  val register_str_item_filter :
+                                                                   (Ast.str_item filter
+                                                                    -> 
+                                                                    unit)
+
+                                                                  val register_topphrase_filter :
+                                                                   (Ast.str_item filter
+                                                                    -> 
+                                                                    unit)
+
+                                                                  val fold_interf_filters :
+                                                                   (('a ->
+                                                                    (Ast.sig_item filter
+                                                                    -> 'a))
+                                                                    ->
+                                                                    ('a ->
+                                                                    'a))
+
+                                                                  val fold_implem_filters :
+                                                                   (('a ->
+                                                                    (Ast.str_item filter
+                                                                    -> 'a))
+                                                                    ->
+                                                                    ('a ->
+                                                                    'a))
+
+                                                                  val fold_topphrase_filters :
+                                                                   (('a ->
+                                                                    (Ast.str_item filter
+                                                                    -> 'a))
+                                                                    ->
+                                                                    ('a ->
+                                                                    'a))
+
                                                                  end
 
 
-                                                               type ('a,
-                                                                    'loc) stream_filter =
-                                                                (('a * 'loc) Stream.t
-                                                                 ->
-                                                                 ('a * 'loc) Stream.t)
+                                                                module type DynAst =
+                                                                 sig
+                                                                  module
+                                                                   Ast : Ast
 
+                                                                  type 'a tag
 
-                                                               module type AstFilters =
-                                                                sig
-                                                                 module Ast :
-                                                                  Camlp4Ast
+                                                                  val ctyp_tag :
+                                                                   Ast.ctyp tag
 
-                                                                 type 'a filter =
-                                                                  ('a -> 'a)
+                                                                  val patt_tag :
+                                                                   Ast.patt tag
 
-                                                                 val register_sig_item_filter :
-                                                                  (Ast.sig_item filter
-                                                                   -> 
-                                                                   unit)
+                                                                  val expr_tag :
+                                                                   Ast.expr tag
 
-                                                                 val register_str_item_filter :
-                                                                  (Ast.str_item filter
-                                                                   -> 
-                                                                   unit)
+                                                                  val module_type_tag :
+                                                                   Ast.module_type tag
 
-                                                                 val register_topphrase_filter :
-                                                                  (Ast.str_item filter
-                                                                   -> 
-                                                                   unit)
+                                                                  val sig_item_tag :
+                                                                   Ast.sig_item tag
 
-                                                                 val fold_interf_filters :
-                                                                  (('a ->
-                                                                    (Ast.sig_item filter
-                                                                    -> 'a))
-                                                                   ->
-                                                                   ('a -> 'a))
+                                                                  val with_constr_tag :
+                                                                   Ast.with_constr tag
 
-                                                                 val fold_implem_filters :
-                                                                  (('a ->
-                                                                    (Ast.str_item filter
-                                                                    -> 'a))
-                                                                   ->
-                                                                   ('a -> 'a))
+                                                                  val module_expr_tag :
+                                                                   Ast.module_expr tag
 
-                                                                 val fold_topphrase_filters :
-                                                                  (('a ->
-                                                                    (Ast.str_item filter
-                                                                    -> 'a))
-                                                                   ->
-                                                                   ('a -> 'a))
+                                                                  val str_item_tag :
+                                                                   Ast.str_item tag
 
-                                                                end
+                                                                  val class_type_tag :
+                                                                   Ast.class_type tag
 
+                                                                  val class_sig_item_tag :
+                                                                   Ast.class_sig_item tag
 
-                                                               module type DynAst =
-                                                                sig
-                                                                 module Ast :
-                                                                  Ast
+                                                                  val class_expr_tag :
+                                                                   Ast.class_expr tag
 
-                                                                 type 'a tag
+                                                                  val class_str_item_tag :
+                                                                   Ast.class_str_item tag
 
-                                                                 val ctyp_tag :
-                                                                  Ast.ctyp tag
+                                                                  val match_case_tag :
+                                                                   Ast.match_case tag
 
-                                                                 val patt_tag :
-                                                                  Ast.patt tag
+                                                                  val ident_tag :
+                                                                   Ast.ident tag
 
-                                                                 val expr_tag :
-                                                                  Ast.expr tag
+                                                                  val binding_tag :
+                                                                   Ast.binding tag
 
-                                                                 val module_type_tag :
-                                                                  Ast.module_type tag
+                                                                  val rec_binding_tag :
+                                                                   Ast.rec_binding tag
 
-                                                                 val sig_item_tag :
-                                                                  Ast.sig_item tag
+                                                                  val module_binding_tag :
+                                                                   Ast.module_binding tag
 
-                                                                 val with_constr_tag :
-                                                                  Ast.with_constr tag
+                                                                  val string_of_tag :
+                                                                   ('a tag ->
+                                                                    string)
 
-                                                                 val module_expr_tag :
-                                                                  Ast.module_expr tag
-
-                                                                 val str_item_tag :
-                                                                  Ast.str_item tag
-
-                                                                 val class_type_tag :
-                                                                  Ast.class_type tag
-
-                                                                 val class_sig_item_tag :
-                                                                  Ast.class_sig_item tag
-
-                                                                 val class_expr_tag :
-                                                                  Ast.class_expr tag
-
-                                                                 val class_str_item_tag :
-                                                                  Ast.class_str_item tag
-
-                                                                 val match_case_tag :
-                                                                  Ast.match_case tag
-
-                                                                 val ident_tag :
-                                                                  Ast.ident tag
-
-                                                                 val binding_tag :
-                                                                  Ast.binding tag
-
-                                                                 val rec_binding_tag :
-                                                                  Ast.rec_binding tag
-
-                                                                 val module_binding_tag :
-                                                                  Ast.module_binding tag
-
-                                                                 val string_of_tag :
-                                                                  ('a tag ->
-                                                                   string)
-
-                                                                 module
-                                                                  Pack :
-                                                                  functor
-                                                                   (X : 
-                                                                   sig
+                                                                  module
+                                                                   Pack :
+                                                                   functor
+                                                                    (X : 
+                                                                    sig
                                                                     type 'a t
 
-                                                                   end) ->
-                                                                   sig
+                                                                    end) ->
+                                                                    sig
                                                                     type pack
 
                                                                     val pack :
@@ -4085,73 +4226,76 @@ module type Ast =
                                                                     (pack ->
                                                                     unit))
 
-                                                                   end
+                                                                    end
 
-                                                                end
-
-
-                                                               type quotation = 
-                                                               {
-                                                                 q_name:string;
-                                                                 q_loc:string;
-                                                                 q_shift:int;
-                                                                 q_contents:
-                                                                  string}
+                                                                 end
 
 
-                                                               module type Quotation =
-                                                                sig
-                                                                 module Ast :
-                                                                  Ast
+                                                                type quotation = 
+                                                                {
+                                                                  q_name:
+                                                                   string;
+                                                                  q_loc:
+                                                                   string;
+                                                                  q_shift:int;
+                                                                  q_contents:
+                                                                   string}
 
-                                                                 module
-                                                                  DynAst :
-                                                                  (DynAst
-                                                                   with
-                                                                   module Ast =
-                                                                   Ast)
 
-                                                                 open Ast
+                                                                module type Quotation =
+                                                                 sig
+                                                                  module
+                                                                   Ast : Ast
 
-                                                                 type 'a expand_fun =
-                                                                  (loc ->
-                                                                   (string option
+                                                                  module
+                                                                   DynAst :
+                                                                   (DynAst
+                                                                    with
+                                                                    module Ast =
+                                                                    Ast)
+
+                                                                  open Ast
+
+                                                                  type 'a expand_fun =
+                                                                   (loc ->
+                                                                    (string option
                                                                     ->
                                                                     (string
                                                                     -> 'a)))
 
-                                                                 val add :
-                                                                  (string ->
-                                                                   ('a DynAst.tag
+                                                                  val add :
+                                                                   (string ->
+                                                                    ('a DynAst.tag
                                                                     ->
                                                                     ('a expand_fun
                                                                     -> 
                                                                     unit)))
 
-                                                                 val find :
-                                                                  (string ->
-                                                                   ('a DynAst.tag
+                                                                  val find :
+                                                                   (string ->
+                                                                    ('a DynAst.tag
                                                                     ->
                                                                     'a expand_fun))
 
-                                                                 val default :
-                                                                  string ref
+                                                                  val default :
+                                                                   string ref
 
-                                                                 val default_tbl :
-                                                                  (string,
-                                                                   string) Hashtbl.t
+                                                                  val default_tbl :
+                                                                   (string,
+                                                                    string) Hashtbl.t
 
-                                                                 val default_at_pos :
-                                                                  (string ->
+                                                                  val default_at_pos :
                                                                    (string ->
+                                                                    (string
+                                                                    -> 
                                                                     unit))
 
-                                                                 val parse_quotation_result :
-                                                                  ((loc ->
+                                                                  val parse_quotation_result :
+                                                                   ((loc ->
                                                                     (string
                                                                     -> 'a))
-                                                                   ->
-                                                                   (loc ->
+                                                                    ->
+                                                                    (loc ->
                                                                     (quotation
                                                                     ->
                                                                     (string
@@ -4159,69 +4303,69 @@ module type Ast =
                                                                     (string
                                                                     -> 'a)))))
 
-                                                                 val translate :
-                                                                  (string ->
-                                                                   string) ref
+                                                                  val translate :
+                                                                   (string ->
+                                                                    string) ref
 
-                                                                 val expand :
-                                                                  (loc ->
-                                                                   (quotation
+                                                                  val expand :
+                                                                   (loc ->
+                                                                    (quotation
                                                                     ->
                                                                     ('a DynAst.tag
                                                                     -> 'a)))
 
-                                                                 val dump_file :
-                                                                  string option ref
+                                                                  val dump_file :
+                                                                   string option ref
 
-                                                                 module
-                                                                  Error :
-                                                                  Error
+                                                                  module
+                                                                   Error :
+                                                                   FanSig.Error
 
-                                                                end
+                                                                 end
 
 
-                                                               module type Token =
-                                                                sig
-                                                                 module Loc :
-                                                                  Loc
+                                                                module type Token =
+                                                                 sig
+                                                                  module
+                                                                   Loc : Loc
 
-                                                                 type t
+                                                                  type t
 
-                                                                 val to_string :
-                                                                  (t ->
-                                                                   string)
-
-                                                                 val print :
-                                                                  (Format.formatter
-                                                                   ->
+                                                                  val to_string :
                                                                    (t ->
+                                                                    string)
+
+                                                                  val print :
+                                                                   (Format.formatter
+                                                                    ->
+                                                                    (t ->
                                                                     unit))
 
-                                                                 val match_keyword :
-                                                                  (string ->
-                                                                   (t ->
+                                                                  val match_keyword :
+                                                                   (string ->
+                                                                    (t ->
                                                                     bool))
 
-                                                                 val extract_string :
-                                                                  (t ->
-                                                                   string)
+                                                                  val extract_string :
+                                                                   (t ->
+                                                                    string)
 
-                                                                 module
-                                                                  Filter :
-                                                                  sig
-                                                                   type token_filter =
+                                                                  module
+                                                                   Filter :
+                                                                   sig
+                                                                    type token_filter =
                                                                     (t,
                                                                     Loc.t) stream_filter
 
-                                                                   type t
+                                                                    type t
 
-                                                                   val mk :
+                                                                    val mk :
                                                                     ((string
                                                                     -> 
                                                                     bool) ->
                                                                     t)
 
-                                                                   val define_filter :
+                                                                    val define_filter :
                                                                     (t ->
                                                                     ((token_filter
                                                                     ->
@@ -4229,199 +4373,212 @@ module type Ast =
                                                                     -> 
                                                                     unit))
 
-                                                                   val filter :
+                                                                    val filter :
                                                                     (t ->
                                                                     token_filter)
 
-                                                                   val keyword_added :
+                                                                    val keyword_added :
                                                                     (t ->
                                                                     (string
                                                                     ->
                                                                     (bool ->
                                                                     unit)))
 
-                                                                   val keyword_removed :
+                                                                    val keyword_removed :
                                                                     (t ->
                                                                     (string
                                                                     -> 
                                                                     unit))
 
-                                                                  end
+                                                                   end
 
-                                                                 module
-                                                                  Error :
-                                                                  Error
+                                                                  module
+                                                                   Error :
+                                                                   FanSig.Error
 
-                                                                end
+                                                                 end
 
 
-                                                               type camlp4_token =
-                                                                  KEYWORD of
-                                                                   string
-                                                                | SYMBOL of
-                                                                   string
-                                                                | LIDENT of
-                                                                   string
-                                                                | UIDENT of
-                                                                   string
-                                                                | ESCAPED_IDENT
-                                                                   of 
-                                                                   string
-                                                                | INT of
-                                                                   int *
-                                                                   string
-                                                                | INT32 of
-                                                                   int32 *
-                                                                   string
-                                                                | INT64 of
-                                                                   int64 *
-                                                                   string
-                                                                | NATIVEINT
+                                                                type camlp4_token =
+                                                                   KEYWORD of
+                                                                    string
+                                                                 | SYMBOL of
+                                                                    string
+                                                                 | LIDENT of
+                                                                    string
+                                                                 | UIDENT of
+                                                                    string
+                                                                 | ESCAPED_IDENT
+                                                                    of 
+                                                                    string
+                                                                 | INT of
+                                                                    int *
+                                                                    string
+                                                                 | INT32 of
+                                                                    int32 *
+                                                                    string
+                                                                 | INT64 of
+                                                                    int64 *
+                                                                    string
+                                                                 | NATIVEINT
+                                                                    of
+                                                                    nativeint *
+                                                                    string
+                                                                 | FLOAT of
+                                                                    float *
+                                                                    string
+                                                                 | CHAR of
+                                                                    char *
+                                                                    string
+                                                                 | STRING of
+                                                                    string *
+                                                                    string
+                                                                 | LABEL of
+                                                                    string
+                                                                 | OPTLABEL
+                                                                    of 
+                                                                    string
+                                                                 | QUOTATION
+                                                                    of
+                                                                    quotation
+                                                                 | ANTIQUOT
+                                                                    of
+                                                                    string *
+                                                                    string
+                                                                 | COMMENT of
+                                                                    string
+                                                                 | BLANKS of
+                                                                    string
+                                                                 | NEWLINE
+                                                                 | LINE_DIRECTIVE
+                                                                    of 
+                                                                    int *
+                                                                    string option
+                                                                 | EOI
+
+
+                                                                module type Camlp4Token =
+                                                                 (Token with
+                                                                  type  t =
+                                                                  camlp4_token)
+
+
+                                                                module type DynLoader =
+                                                                 sig
+                                                                  type t
+
+                                                                  exception Error
                                                                    of
-                                                                   nativeint *
-                                                                   string
-                                                                | FLOAT of
-                                                                   float *
-                                                                   string
-                                                                | CHAR of
-                                                                   char *
-                                                                   string
-                                                                | STRING of
                                                                    string *
                                                                    string
-                                                                | LABEL of
-                                                                   string
-                                                                | OPTLABEL of
-                                                                   string
-                                                                | QUOTATION
-                                                                   of
-                                                                   quotation
-                                                                | ANTIQUOT of
-                                                                   string *
-                                                                   string
-                                                                | COMMENT of
-                                                                   string
-                                                                | BLANKS of
-                                                                   string
-                                                                | NEWLINE
-                                                                | LINE_DIRECTIVE
-                                                                   of 
-                                                                   int *
-                                                                   string option
-                                                                | EOI
 
-
-                                                               module type Camlp4Token =
-                                                                (Token with
-                                                                 type  t =
-                                                                 camlp4_token)
-
-
-                                                               module type DynLoader =
-                                                                sig
-                                                                 type t
-
-                                                                 exception Error
-                                                                  of 
-                                                                  string *
-                                                                  string
-
-                                                                 val mk :
-                                                                  (?ocaml_stdlib :
-                                                                   bool ->
-                                                                   (?camlp4_stdlib :
+                                                                  val mk :
+                                                                   (?ocaml_stdlib :
+                                                                    bool ->
+                                                                    (?camlp4_stdlib :
                                                                     bool ->
                                                                     (unit ->
                                                                     t)))
 
-                                                                 val fold_load_path :
-                                                                  (t ->
-                                                                   ((string
+                                                                  val fold_load_path :
+                                                                   (t ->
+                                                                    ((string
                                                                     ->
                                                                     ('a ->
                                                                     'a)) ->
                                                                     ('a ->
                                                                     'a)))
 
-                                                                 val load :
-                                                                  (t ->
-                                                                   (string ->
+                                                                  val load :
+                                                                   (t ->
+                                                                    (string
+                                                                    -> 
                                                                     unit))
 
-                                                                 val include_dir :
-                                                                  (t ->
-                                                                   (string ->
+                                                                  val include_dir :
+                                                                   (t ->
+                                                                    (string
+                                                                    -> 
                                                                     unit))
 
-                                                                 val find_in_path :
-                                                                  (t ->
-                                                                   (string ->
+                                                                  val find_in_path :
+                                                                   (t ->
+                                                                    (string
+                                                                    ->
                                                                     string))
 
-                                                                 val is_native :
-                                                                  bool
+                                                                  val is_native :
+                                                                   bool
 
-                                                                end
+                                                                 end
 
 
-                                                               module Grammar =
-                                                                struct
-                                                                 module type Action =
-                                                                  sig
-                                                                   type t
+                                                                module Grammar =
+                                                                 struct
+                                                                  module type Action =
+                                                                   sig
+                                                                    type t
 
-                                                                   val mk :
+                                                                    val mk :
                                                                     ('a -> t)
 
-                                                                   val get :
+                                                                    val get :
                                                                     (t -> 'a)
 
-                                                                   val getf :
+                                                                    val getf :
                                                                     (t ->
                                                                     ('a ->
                                                                     'b))
 
-                                                                   val getf2 :
+                                                                    val getf2 :
                                                                     (t ->
                                                                     ('a ->
                                                                     ('b ->
                                                                     'c)))
 
-                                                                  end
+                                                                   end
 
-                                                                 type assoc =
-                                                                    NonA
-                                                                  | RightA
-                                                                  | LeftA
+                                                                  type assoc =
+                                                                     
+                                                                   NonA
+                                                                   | 
+                                                                   RightA
+                                                                   | 
+                                                                   LeftA
 
-                                                                 type position =
-                                                                    First
-                                                                  | Last
-                                                                  | Before of
+                                                                  type position =
+                                                                     
+                                                                   First
+                                                                   | 
+                                                                   Last
+                                                                   | 
+                                                                   Before of
                                                                     string
-                                                                  | After of
+                                                                   | 
+                                                                   After of
                                                                     string
-                                                                  | Level of
+                                                                   | 
+                                                                   Level of
                                                                     string
 
-                                                                 module type Structure =
-                                                                  sig
-                                                                   module
+                                                                  module type Structure =
+                                                                   sig
+                                                                    module
                                                                     Loc : Loc
 
-                                                                   module
+                                                                    module
                                                                     Action :
                                                                     Action
 
-                                                                   module
+                                                                    module
                                                                     Token :
                                                                     (Token
                                                                     with
                                                                     module Loc =
                                                                     Loc)
 
-                                                                   type gram = 
-                                                                   {
+                                                                    type gram = 
+                                                                    {
                                                                     gfilter:
                                                                     Token.Filter.t;
                                                                     gkeywords:
@@ -4438,30 +4595,30 @@ module type Ast =
                                                                     error_verbose:
                                                                     bool ref}
 
-                                                                   type internal_entry
-                                                                   
+                                                                    type internal_entry
+                                                                    
 
-                                                                   type tree
+                                                                    type tree
 
-                                                                   type token_pattern =
+                                                                    type token_pattern =
                                                                     ((Token.t
                                                                     -> 
                                                                     bool) *
                                                                     string)
 
-                                                                   type token_info
-                                                                   
+                                                                    type token_info
+                                                                    
 
-                                                                   type token_stream =
+                                                                    type token_stream =
                                                                     (Token.t *
                                                                     token_info) Stream.t
 
-                                                                   val token_location :
+                                                                    val token_location :
                                                                     (token_info
                                                                     -> 
                                                                     Loc.t)
 
-                                                                   type symbol =
+                                                                    type symbol =
                                                                       
                                                                     Smeta of
                                                                     string *
@@ -4512,24 +4669,24 @@ module type Ast =
                                                                     Stree of
                                                                     tree
 
-                                                                   type production_rule =
+                                                                    type production_rule =
                                                                     (symbol list *
                                                                     Action.t)
 
-                                                                   type single_extend_statment =
+                                                                    type single_extend_statment =
                                                                     (string option *
                                                                     assoc option *
                                                                     production_rule list)
 
-                                                                   type extend_statment =
+                                                                    type extend_statment =
                                                                     (position option *
                                                                     single_extend_statment list)
 
-                                                                   type delete_statment =
+                                                                    type delete_statment =
                                                                     symbol list
 
-                                                                   type 
-                                                                   ('a, 'b,
+                                                                    type 
+                                                                    ('a, 'b,
                                                                     'c) fold =
                                                                     (internal_entry
                                                                     ->
@@ -4540,8 +4697,8 @@ module type Ast =
                                                                     ('a Stream.t
                                                                     -> 'c))))
 
-                                                                   type 
-                                                                   ('a, 'b,
+                                                                    type 
+                                                                    ('a, 'b,
                                                                     'c) foldsep =
                                                                     (internal_entry
                                                                     ->
@@ -4555,18 +4712,18 @@ module type Ast =
                                                                     ('a Stream.t
                                                                     -> 'c)))))
 
-                                                                  end
+                                                                   end
 
-                                                                 module type Dynamic =
-                                                                  sig
-                                                                   include
+                                                                  module type Dynamic =
+                                                                   sig
+                                                                    include
                                                                     Structure
 
-                                                                   val mk :
+                                                                    val mk :
                                                                     (unit ->
                                                                     gram)
 
-                                                                   module
+                                                                    module
                                                                     Entry :
                                                                     sig
                                                                     type 'a t
@@ -4617,28 +4774,28 @@ module type Ast =
 
                                                                     end
 
-                                                                   val get_filter :
+                                                                    val get_filter :
                                                                     (gram ->
                                                                     Token.Filter.t)
 
-                                                                   type 'a not_filtered
-                                                                   
+                                                                    type 'a not_filtered
+                                                                    
 
-                                                                   val extend :
+                                                                    val extend :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (extend_statment
                                                                     -> 
                                                                     unit))
 
-                                                                   val delete_rule :
+                                                                    val delete_rule :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (delete_statment
                                                                     -> 
                                                                     unit))
 
-                                                                   val srules :
+                                                                    val srules :
                                                                     ('a Entry.t
                                                                     ->
                                                                     ((symbol list *
@@ -4646,7 +4803,7 @@ module type Ast =
                                                                     ->
                                                                     symbol))
 
-                                                                   val sfold0 :
+                                                                    val sfold0 :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4654,7 +4811,7 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) fold))
 
-                                                                   val sfold1 :
+                                                                    val sfold1 :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4662,7 +4819,7 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) fold))
 
-                                                                   val sfold0sep :
+                                                                    val sfold0sep :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4670,7 +4827,7 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) foldsep))
 
-                                                                   val lex :
+                                                                    val lex :
                                                                     (gram ->
                                                                     (Loc.t ->
                                                                     (char Stream.t
@@ -4678,7 +4835,7 @@ module type Ast =
                                                                     (Token.t *
                                                                     Loc.t) Stream.t not_filtered)))
 
-                                                                   val lex_string :
+                                                                    val lex_string :
                                                                     (gram ->
                                                                     (Loc.t ->
                                                                     (string
@@ -4686,54 +4843,54 @@ module type Ast =
                                                                     (Token.t *
                                                                     Loc.t) Stream.t not_filtered)))
 
-                                                                   val filter :
+                                                                    val filter :
                                                                     (gram ->
                                                                     ((Token.t *
                                                                     Loc.t) Stream.t not_filtered
                                                                     ->
                                                                     token_stream))
 
-                                                                   val parse :
+                                                                    val parse :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (Loc.t ->
                                                                     (char Stream.t
                                                                     -> 'a)))
 
-                                                                   val parse_string :
+                                                                    val parse_string :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (Loc.t ->
                                                                     (string
                                                                     -> 'a)))
 
-                                                                   val parse_tokens_before_filter :
+                                                                    val parse_tokens_before_filter :
                                                                     ('a Entry.t
                                                                     ->
                                                                     ((Token.t *
                                                                     Loc.t) Stream.t not_filtered
                                                                     -> 'a))
 
-                                                                   val parse_tokens_after_filter :
+                                                                    val parse_tokens_after_filter :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (token_stream
                                                                     -> 'a))
 
-                                                                  end
+                                                                   end
 
-                                                                 module type Static =
-                                                                  sig
-                                                                   include
+                                                                  module type Static =
+                                                                   sig
+                                                                    include
                                                                     Structure
 
-                                                                   val trace_parser :
+                                                                    val trace_parser :
                                                                     bool ref
 
-                                                                   val gram :
+                                                                    val gram :
                                                                     gram
 
-                                                                   module
+                                                                    module
                                                                     Entry :
                                                                     sig
                                                                     type 'a t
@@ -4782,28 +4939,28 @@ module type Ast =
 
                                                                     end
 
-                                                                   val get_filter :
+                                                                    val get_filter :
                                                                     (unit ->
                                                                     Token.Filter.t)
 
-                                                                   type 'a not_filtered
-                                                                   
+                                                                    type 'a not_filtered
+                                                                    
 
-                                                                   val extend :
+                                                                    val extend :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (extend_statment
                                                                     -> 
                                                                     unit))
 
-                                                                   val delete_rule :
+                                                                    val delete_rule :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (delete_statment
                                                                     -> 
                                                                     unit))
 
-                                                                   val srules :
+                                                                    val srules :
                                                                     ('a Entry.t
                                                                     ->
                                                                     ((symbol list *
@@ -4811,7 +4968,7 @@ module type Ast =
                                                                     ->
                                                                     symbol))
 
-                                                                   val sfold0 :
+                                                                    val sfold0 :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4819,7 +4976,7 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) fold))
 
-                                                                   val sfold1 :
+                                                                    val sfold1 :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4827,7 +4984,7 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) fold))
 
-                                                                   val sfold0sep :
+                                                                    val sfold0sep :
                                                                     (('a ->
                                                                     ('b ->
                                                                     'b)) ->
@@ -4835,107 +4992,103 @@ module type Ast =
                                                                     (_, 'a,
                                                                     'b) foldsep))
 
-                                                                   val lex :
+                                                                    val lex :
                                                                     (Loc.t ->
                                                                     (char Stream.t
                                                                     ->
                                                                     (Token.t *
                                                                     Loc.t) Stream.t not_filtered))
 
-                                                                   val lex_string :
+                                                                    val lex_string :
                                                                     (Loc.t ->
                                                                     (string
                                                                     ->
                                                                     (Token.t *
                                                                     Loc.t) Stream.t not_filtered))
 
-                                                                   val filter :
+                                                                    val filter :
                                                                     ((Token.t *
                                                                     Loc.t) Stream.t not_filtered
                                                                     ->
                                                                     token_stream)
 
-                                                                   val parse :
+                                                                    val parse :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (Loc.t ->
                                                                     (char Stream.t
                                                                     -> 'a)))
 
-                                                                   val parse_string :
+                                                                    val parse_string :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (Loc.t ->
                                                                     (string
                                                                     -> 'a)))
 
-                                                                   val parse_tokens_before_filter :
+                                                                    val parse_tokens_before_filter :
                                                                     ('a Entry.t
                                                                     ->
                                                                     ((Token.t *
                                                                     Loc.t) Stream.t not_filtered
                                                                     -> 'a))
 
-                                                                   val parse_tokens_after_filter :
+                                                                    val parse_tokens_after_filter :
                                                                     ('a Entry.t
                                                                     ->
                                                                     (token_stream
                                                                     -> 'a))
 
-                                                                  end
+                                                                   end
 
-                                                                end
+                                                                 end
 
 
-                                                              module type Lexer =
-                                                               sig
-                                                                module Loc :
-                                                                 Loc
+                                                        module type Lexer =
+                                                         sig
+                                                          module Loc : Loc
 
-                                                                module
-                                                                 Token :
-                                                                 (Token with
-                                                                  module Loc =
-                                                                  Loc)
+                                                          module Token :
+                                                           (Token with
+                                                            module Loc = Loc)
 
-                                                                module
-                                                                 Error :
-                                                                 Error
+                                                          module Error :
+                                                           FanSig.Error
 
-                                                                val mk :
-                                                                 (unit ->
-                                                                  (Loc.t ->
-                                                                   (char Stream.t
-                                                                    ->
-                                                                    (Token.t *
-                                                                    Loc.t) Stream.t)))
+                                                          val mk :
+                                                           (unit ->
+                                                            (Loc.t ->
+                                                             (char Stream.t
+                                                              ->
+                                                              (Token.t *
+                                                               Loc.t) Stream.t)))
 
-                                                               end
+                                                         end
 
 module Parser =
-                                                                    functor (Ast : Ast) ->
-                                                                    struct
-                                                                    module type SIMPLE =
-                                                                    sig
-                                                                    val parse_expr :
+                                                               functor (Ast : Ast) ->
+                                                                struct
+                                                                 module type SIMPLE =
+                                                                  sig
+                                                                   val parse_expr :
                                                                     (Ast.loc
                                                                     ->
                                                                     (string
                                                                     ->
                                                                     Ast.expr))
 
-                                                                    val parse_patt :
+                                                                   val parse_patt :
                                                                     (Ast.loc
                                                                     ->
                                                                     (string
                                                                     ->
                                                                     Ast.patt))
 
-                                                                    end
+                                                                  end
 
-                                                                    module type S =
-                                                                    sig
-                                                                    val parse_implem :
+                                                                 module type S =
+                                                                  sig
+                                                                   val parse_implem :
                                                                     (?directive_handler :
                                                                     (Ast.str_item
                                                                     ->
@@ -4947,7 +5100,7 @@ module Parser =
                                                                     ->
                                                                     Ast.str_item)))
 
-                                                                    val parse_interf :
+                                                                   val parse_interf :
                                                                     (?directive_handler :
                                                                     (Ast.sig_item
                                                                     ->
@@ -4959,653 +5112,636 @@ module Parser =
                                                                     ->
                                                                     Ast.sig_item)))
 
-                                                                    end
-
-                                                                    end
-
-
-                                                              module Printer =
-                                                               functor (Ast : Ast) ->
-                                                                struct
-                                                                 module type S =
-                                                                  sig
-                                                                   val print_interf :
-                                                                    (?input_file :
-                                                                    string ->
-                                                                    (?output_file :
-                                                                    string ->
-                                                                    (Ast.sig_item
-                                                                    -> 
-                                                                    unit)))
-
-                                                                   val print_implem :
-                                                                    (?input_file :
-                                                                    string ->
-                                                                    (?output_file :
-                                                                    string ->
-                                                                    (Ast.str_item
-                                                                    -> 
-                                                                    unit)))
-
                                                                   end
 
                                                                 end
 
 
-                                                              module type Syntax =
-                                                               sig
-                                                                module Loc :
-                                                                 Loc
+                                                        module Printer =
+                                                         functor (Ast : Ast) ->
+                                                          struct
+                                                           module type S =
+                                                            sig
+                                                             val print_interf :
+                                                              (?input_file :
+                                                               string ->
+                                                               (?output_file :
+                                                                string ->
+                                                                (Ast.sig_item
+                                                                 -> unit)))
 
-                                                                module Ast :
-                                                                 (Ast with
-                                                                  type  loc =
-                                                                  Loc.t)
+                                                             val print_implem :
+                                                              (?input_file :
+                                                               string ->
+                                                               (?output_file :
+                                                                string ->
+                                                                (Ast.str_item
+                                                                 -> unit)))
 
-                                                                module
-                                                                 Token :
-                                                                 (Token with
-                                                                  module Loc =
-                                                                  Loc)
+                                                            end
 
-                                                                module Gram :
-                                                                 (Grammar.Static
-                                                                  with
-                                                                  module Loc =
+                                                          end
+
+module type Syntax =
+                                                                sig
+                                                                 module Loc :
                                                                   Loc
-                                                                  and module Loc =
-                                                                  Loc
-                                                                  and module Token =
-                                                                  Token)
-
-                                                                module
-                                                                 Quotation :
-                                                                 (Quotation
-                                                                  with
-                                                                  module Ast =
-                                                                  Ast)
-
-                                                                module
-                                                                 AntiquotSyntax :
-                                                                 Parser(Ast).SIMPLE
-
-                                                                include
-                                                                 Warning(Loc).S
-
-                                                                include
-                                                                 Parser(Ast).S
-
-                                                                include
-                                                                 Printer(Ast).S
-
-                                                               end
-
-module type Camlp4Syntax =
-                                                                    sig
-                                                                    module
-                                                                    Loc : Loc
 
-                                                                    module
-                                                                    Ast :
-                                                                    (Camlp4Ast
-                                                                    with
-                                                                    module Loc =
-                                                                    Loc)
+                                                                 module Ast :
+                                                                  (Ast with
+                                                                   type
+                                                                    loc =
+                                                                   Loc.t)
+
+                                                                 module
+                                                                  Token :
+                                                                  (Token with
+                                                                   module Loc =
+                                                                   Loc)
+
+                                                                 module
+                                                                  Gram :
+                                                                  (Grammar.Static
+                                                                   with
+                                                                   module Loc =
+                                                                   Loc
+                                                                   and module Loc =
+                                                                   Loc
+                                                                   and module Token =
+                                                                   Token)
 
-                                                                    module
-                                                                    Token :
-                                                                    (Camlp4Token
-                                                                    with
-                                                                    module Loc =
-                                                                    Loc)
+                                                                 module
+                                                                  Quotation :
+                                                                  (Quotation
+                                                                   with
+                                                                   module Ast =
+                                                                   Ast)
 
-                                                                    module
-                                                                    Gram :
-                                                                    (Grammar.Static
-                                                                    with
-                                                                    module Loc =
-                                                                    Loc
-                                                                    and module Loc =
-                                                                    Loc
-                                                                    and module Token =
-                                                                    Token)
+                                                                 module
+                                                                  AntiquotSyntax :
+                                                                  Parser(Ast).SIMPLE
 
-                                                                    module
-                                                                    Quotation :
-                                                                    (Quotation
-                                                                    with
-                                                                    module Ast =
-                                                                    Camlp4AstToAst(Ast))
+                                                                 include
+                                                                  Warning(Loc).S
 
-                                                                    module
-                                                                    AntiquotSyntax :
-                                                                    Parser(Ast).SIMPLE
+                                                                 include
+                                                                  Parser(Ast).S
 
-                                                                    include
-                                                                    Warning(Loc).S
+                                                                 include
+                                                                  Printer(Ast).S
 
-                                                                    include
-                                                                    Parser(Ast).S
+                                                                end
 
-                                                                    include
-                                                                    Printer(Ast).S
 
-                                                                    val interf :
-                                                                    (Ast.sig_item list *
-                                                                    Loc.t option) Gram.Entry.t
+                                                        module type Camlp4Syntax =
+                                                         sig
+                                                          module Loc : Loc
 
-                                                                    val implem :
-                                                                    (Ast.str_item list *
-                                                                    Loc.t option) Gram.Entry.t
+                                                          module Ast :
+                                                           (Camlp4Ast with
+                                                            module Loc = Loc)
 
-                                                                    val top_phrase :
-                                                                    Ast.str_item option Gram.Entry.t
+                                                          module Token :
+                                                           (Camlp4Token with
+                                                            module Loc = Loc)
 
-                                                                    val use_file :
-                                                                    (Ast.str_item list *
-                                                                    Loc.t option) Gram.Entry.t
+                                                          module Gram :
+                                                           (Grammar.Static
+                                                            with module Loc =
+                                                            Loc
+                                                            and module Loc =
+                                                            Loc
+                                                            and module Token =
+                                                            Token)
 
-                                                                    val a_CHAR :
-                                                                    string Gram.Entry.t
+                                                          module Quotation :
+                                                           (Quotation with
+                                                            module Ast =
+                                                            Camlp4AstToAst(Ast))
 
-                                                                    val a_FLOAT :
-                                                                    string Gram.Entry.t
+                                                          module
+                                                           AntiquotSyntax :
+                                                           Parser(Ast).SIMPLE
 
-                                                                    val a_INT :
-                                                                    string Gram.Entry.t
+                                                          include
+                                                           Warning(Loc).S
 
-                                                                    val a_INT32 :
-                                                                    string Gram.Entry.t
+                                                          include
+                                                           Parser(Ast).S
 
-                                                                    val a_INT64 :
-                                                                    string Gram.Entry.t
+                                                          include
+                                                           Printer(Ast).S
 
-                                                                    val a_LABEL :
-                                                                    string Gram.Entry.t
+                                                          val interf :
+                                                           (Ast.sig_item list *
+                                                            Loc.t option) Gram.Entry.t
 
-                                                                    val a_LIDENT :
-                                                                    string Gram.Entry.t
+                                                          val implem :
+                                                           (Ast.str_item list *
+                                                            Loc.t option) Gram.Entry.t
 
-                                                                    val a_NATIVEINT :
-                                                                    string Gram.Entry.t
+                                                          val top_phrase :
+                                                           Ast.str_item option Gram.Entry.t
 
-                                                                    val a_OPTLABEL :
-                                                                    string Gram.Entry.t
+                                                          val use_file :
+                                                           (Ast.str_item list *
+                                                            Loc.t option) Gram.Entry.t
 
-                                                                    val a_STRING :
-                                                                    string Gram.Entry.t
+                                                          val a_CHAR :
+                                                           string Gram.Entry.t
 
-                                                                    val a_UIDENT :
-                                                                    string Gram.Entry.t
+                                                          val a_FLOAT :
+                                                           string Gram.Entry.t
 
-                                                                    val a_ident :
-                                                                    string Gram.Entry.t
+                                                          val a_INT :
+                                                           string Gram.Entry.t
 
-                                                                    val amp_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val a_INT32 :
+                                                           string Gram.Entry.t
 
-                                                                    val and_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val a_INT64 :
+                                                           string Gram.Entry.t
 
-                                                                    val match_case :
-                                                                    Ast.match_case Gram.Entry.t
+                                                          val a_LABEL :
+                                                           string Gram.Entry.t
 
-                                                                    val match_case0 :
-                                                                    Ast.match_case Gram.Entry.t
+                                                          val a_LIDENT :
+                                                           string Gram.Entry.t
 
-                                                                    val match_case_quot :
-                                                                    Ast.match_case Gram.Entry.t
+                                                          val a_NATIVEINT :
+                                                           string Gram.Entry.t
 
-                                                                    val binding :
-                                                                    Ast.binding Gram.Entry.t
+                                                          val a_OPTLABEL :
+                                                           string Gram.Entry.t
 
-                                                                    val binding_quot :
-                                                                    Ast.binding Gram.Entry.t
+                                                          val a_STRING :
+                                                           string Gram.Entry.t
 
-                                                                    val rec_binding_quot :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                          val a_UIDENT :
+                                                           string Gram.Entry.t
 
-                                                                    val class_declaration :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val a_ident :
+                                                           string Gram.Entry.t
 
-                                                                    val class_description :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val amp_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val class_expr :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val and_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val class_expr_quot :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val match_case :
+                                                           Ast.match_case Gram.Entry.t
 
-                                                                    val class_fun_binding :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val match_case0 :
+                                                           Ast.match_case Gram.Entry.t
 
-                                                                    val class_fun_def :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val match_case_quot :
+                                                           Ast.match_case Gram.Entry.t
 
-                                                                    val class_info_for_class_expr :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val binding :
+                                                           Ast.binding Gram.Entry.t
 
-                                                                    val class_info_for_class_type :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val binding_quot :
+                                                           Ast.binding Gram.Entry.t
 
-                                                                    val class_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val rec_binding_quot :
+                                                           Ast.rec_binding Gram.Entry.t
 
-                                                                    val class_longident_and_param :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                          val class_declaration :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_name_and_param :
-                                                                    (string *
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                          val class_description :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val class_sig_item :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                          val class_expr :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_sig_item_quot :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                          val class_expr_quot :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_signature :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                          val class_fun_binding :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_str_item :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                          val class_fun_def :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_str_item_quot :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                          val class_info_for_class_expr :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_structure :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                          val class_info_for_class_type :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val class_type :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val class_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val class_type_declaration :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val class_longident_and_param :
+                                                           Ast.class_expr Gram.Entry.t
 
-                                                                    val class_type_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val class_name_and_param :
+                                                           (string *
+                                                            Ast.ctyp) Gram.Entry.t
 
-                                                                    val class_type_longident_and_param :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val class_sig_item :
+                                                           Ast.class_sig_item Gram.Entry.t
 
-                                                                    val class_type_plus :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val class_sig_item_quot :
+                                                           Ast.class_sig_item Gram.Entry.t
 
-                                                                    val class_type_quot :
-                                                                    Ast.class_type Gram.Entry.t
+                                                          val class_signature :
+                                                           Ast.class_sig_item Gram.Entry.t
 
-                                                                    val comma_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val class_str_item :
+                                                           Ast.class_str_item Gram.Entry.t
 
-                                                                    val comma_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val class_str_item_quot :
+                                                           Ast.class_str_item Gram.Entry.t
 
-                                                                    val comma_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val class_structure :
+                                                           Ast.class_str_item Gram.Entry.t
 
-                                                                    val comma_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val class_type :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val comma_type_parameter :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val class_type_declaration :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val constrain :
-                                                                    (Ast.ctyp *
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                          val class_type_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val constructor_arg_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val class_type_longident_and_param :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val constructor_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val class_type_plus :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val constructor_declarations :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val class_type_quot :
+                                                           Ast.class_type Gram.Entry.t
 
-                                                                    val ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val comma_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val ctyp_quot :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val comma_expr :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val cvalue_binding :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val comma_ipatt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val direction_flag :
-                                                                    Ast.direction_flag Gram.Entry.t
+                                                          val comma_patt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val direction_flag_quot :
-                                                                    Ast.direction_flag Gram.Entry.t
+                                                          val comma_type_parameter :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val dummy :
-                                                                    unit Gram.Entry.t
+                                                          val constrain :
+                                                           (Ast.ctyp *
+                                                            Ast.ctyp) Gram.Entry.t
 
-                                                                    val eq_expr :
-                                                                    (string
-                                                                    ->
-                                                                    (Ast.patt
-                                                                    ->
-                                                                    Ast.patt)) Gram.Entry.t
+                                                          val constructor_arg_list :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val constructor_declaration :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val expr_eoi :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val constructor_declarations :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val expr_quot :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val field_expr :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                          val ctyp_quot :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val field_expr_list :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                          val cvalue_binding :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val fun_binding :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val direction_flag :
+                                                           Ast.direction_flag Gram.Entry.t
 
-                                                                    val fun_def :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val direction_flag_quot :
+                                                           Ast.direction_flag Gram.Entry.t
 
-                                                                    val ident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val dummy :
+                                                           unit Gram.Entry.t
 
-                                                                    val ident_quot :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val eq_expr :
+                                                           (string ->
+                                                            (Ast.patt ->
+                                                             Ast.patt)) Gram.Entry.t
 
-                                                                    val ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val expr :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val ipatt_tcon :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val expr_eoi :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val label :
-                                                                    string Gram.Entry.t
+                                                          val expr_quot :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val label_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val field_expr :
+                                                           Ast.rec_binding Gram.Entry.t
 
-                                                                    val label_declaration_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val field_expr_list :
+                                                           Ast.rec_binding Gram.Entry.t
 
-                                                                    val label_expr :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                          val fun_binding :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val label_expr_list :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                          val fun_def :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val label_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val ident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val label_ipatt_list :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val ident_quot :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val label_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val ipatt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val label_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val ipatt_tcon :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val label_patt_list :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val label :
+                                                           string Gram.Entry.t
 
-                                                                    val labeled_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val label_declaration :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val let_binding :
-                                                                    Ast.binding Gram.Entry.t
+                                                          val label_declaration_list :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val meth_list :
-                                                                    (Ast.ctyp *
-                                                                    Ast.row_var_flag) Gram.Entry.t
+                                                          val label_expr :
+                                                           Ast.rec_binding Gram.Entry.t
 
-                                                                    val meth_decl :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val label_expr_list :
+                                                           Ast.rec_binding Gram.Entry.t
 
-                                                                    val module_binding :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                          val label_ipatt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val module_binding0 :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                          val label_ipatt_list :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val module_binding_quot :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                          val label_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val module_declaration :
-                                                                    Ast.module_type Gram.Entry.t
+                                                          val label_patt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val module_expr :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                          val label_patt_list :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val module_expr_quot :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                          val labeled_ipatt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val module_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val let_binding :
+                                                           Ast.binding Gram.Entry.t
 
-                                                                    val module_longident_with_app :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val meth_list :
+                                                           (Ast.ctyp *
+                                                            Ast.row_var_flag) Gram.Entry.t
 
-                                                                    val module_rec_declaration :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                          val meth_decl :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val module_type :
-                                                                    Ast.module_type Gram.Entry.t
+                                                          val module_binding :
+                                                           Ast.module_binding Gram.Entry.t
 
-                                                                    val package_type :
-                                                                    Ast.module_type Gram.Entry.t
+                                                          val module_binding0 :
+                                                           Ast.module_expr Gram.Entry.t
 
-                                                                    val module_type_quot :
-                                                                    Ast.module_type Gram.Entry.t
+                                                          val module_binding_quot :
+                                                           Ast.module_binding Gram.Entry.t
 
-                                                                    val more_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val module_declaration :
+                                                           Ast.module_type Gram.Entry.t
 
-                                                                    val name_tags :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val module_expr :
+                                                           Ast.module_expr Gram.Entry.t
 
-                                                                    val opt_as_lident :
-                                                                    string Gram.Entry.t
+                                                          val module_expr_quot :
+                                                           Ast.module_expr Gram.Entry.t
 
-                                                                    val opt_class_self_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val module_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val opt_class_self_type :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val module_longident_with_app :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val opt_comma_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val module_rec_declaration :
+                                                           Ast.module_binding Gram.Entry.t
 
-                                                                    val opt_dot_dot :
-                                                                    Ast.row_var_flag Gram.Entry.t
+                                                          val module_type :
+                                                           Ast.module_type Gram.Entry.t
 
-                                                                    val row_var_flag_quot :
-                                                                    Ast.row_var_flag Gram.Entry.t
+                                                          val package_type :
+                                                           Ast.module_type Gram.Entry.t
 
-                                                                    val opt_eq_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val module_type_quot :
+                                                           Ast.module_type Gram.Entry.t
 
-                                                                    val opt_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val more_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val opt_meth_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val name_tags :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val opt_mutable :
-                                                                    Ast.mutable_flag Gram.Entry.t
+                                                          val opt_as_lident :
+                                                           string Gram.Entry.t
 
-                                                                    val mutable_flag_quot :
-                                                                    Ast.mutable_flag Gram.Entry.t
+                                                          val opt_class_self_patt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val opt_override :
-                                                                    Ast.override_flag Gram.Entry.t
+                                                          val opt_class_self_type :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val override_flag_quot :
-                                                                    Ast.override_flag Gram.Entry.t
+                                                          val opt_comma_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val opt_polyt :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val opt_dot_dot :
+                                                           Ast.row_var_flag Gram.Entry.t
 
-                                                                    val opt_private :
-                                                                    Ast.private_flag Gram.Entry.t
+                                                          val row_var_flag_quot :
+                                                           Ast.row_var_flag Gram.Entry.t
 
-                                                                    val private_flag_quot :
-                                                                    Ast.private_flag Gram.Entry.t
+                                                          val opt_eq_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val opt_rec :
-                                                                    Ast.rec_flag Gram.Entry.t
+                                                          val opt_expr :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val rec_flag_quot :
-                                                                    Ast.rec_flag Gram.Entry.t
+                                                          val opt_meth_list :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val opt_virtual :
-                                                                    Ast.virtual_flag Gram.Entry.t
+                                                          val opt_mutable :
+                                                           Ast.mutable_flag Gram.Entry.t
 
-                                                                    val virtual_flag_quot :
-                                                                    Ast.virtual_flag Gram.Entry.t
+                                                          val mutable_flag_quot :
+                                                           Ast.mutable_flag Gram.Entry.t
 
-                                                                    val opt_when_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val opt_override :
+                                                           Ast.override_flag Gram.Entry.t
 
-                                                                    val patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val override_flag_quot :
+                                                           Ast.override_flag Gram.Entry.t
 
-                                                                    val patt_as_patt_opt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val opt_polyt :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val patt_eoi :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val opt_private :
+                                                           Ast.private_flag Gram.Entry.t
 
-                                                                    val patt_quot :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val private_flag_quot :
+                                                           Ast.private_flag Gram.Entry.t
 
-                                                                    val patt_tcon :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val opt_rec :
+                                                           Ast.rec_flag Gram.Entry.t
 
-                                                                    val phrase :
-                                                                    Ast.str_item Gram.Entry.t
+                                                          val rec_flag_quot :
+                                                           Ast.rec_flag Gram.Entry.t
 
-                                                                    val poly_type :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val opt_virtual :
+                                                           Ast.virtual_flag Gram.Entry.t
 
-                                                                    val row_field :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val virtual_flag_quot :
+                                                           Ast.virtual_flag Gram.Entry.t
 
-                                                                    val sem_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val opt_when_expr :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val sem_expr_for_list :
-                                                                    (Ast.expr
-                                                                    ->
-                                                                    Ast.expr) Gram.Entry.t
+                                                          val patt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val sem_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                          val patt_as_patt_opt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val sem_patt_for_list :
-                                                                    (Ast.patt
-                                                                    ->
-                                                                    Ast.patt) Gram.Entry.t
+                                                          val patt_eoi :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val semi :
-                                                                    unit Gram.Entry.t
+                                                          val patt_quot :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val sequence :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val patt_tcon :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val do_sequence :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val phrase :
+                                                           Ast.str_item Gram.Entry.t
 
-                                                                    val sig_item :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                          val poly_type :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val sig_item_quot :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                          val row_field :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val sig_items :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                          val sem_expr :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val star_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val sem_expr_for_list :
+                                                           (Ast.expr ->
+                                                            Ast.expr) Gram.Entry.t
 
-                                                                    val str_item :
-                                                                    Ast.str_item Gram.Entry.t
+                                                          val sem_patt :
+                                                           Ast.patt Gram.Entry.t
 
-                                                                    val str_item_quot :
-                                                                    Ast.str_item Gram.Entry.t
+                                                          val sem_patt_for_list :
+                                                           (Ast.patt ->
+                                                            Ast.patt) Gram.Entry.t
 
-                                                                    val str_items :
-                                                                    Ast.str_item Gram.Entry.t
+                                                          val semi :
+                                                           unit Gram.Entry.t
 
-                                                                    val type_constraint :
-                                                                    unit Gram.Entry.t
+                                                          val sequence :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val type_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val do_sequence :
+                                                           Ast.expr Gram.Entry.t
 
-                                                                    val type_ident_and_parameters :
-                                                                    (string *
-                                                                    Ast.ctyp list) Gram.Entry.t
+                                                          val sig_item :
+                                                           Ast.sig_item Gram.Entry.t
 
-                                                                    val type_kind :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val sig_item_quot :
+                                                           Ast.sig_item Gram.Entry.t
 
-                                                                    val type_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val sig_items :
+                                                           Ast.sig_item Gram.Entry.t
 
-                                                                    val type_longident_and_parameters :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val star_ctyp :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val type_parameter :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val str_item :
+                                                           Ast.str_item Gram.Entry.t
 
-                                                                    val type_parameters :
-                                                                    (Ast.ctyp
-                                                                    ->
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                          val str_item_quot :
+                                                           Ast.str_item Gram.Entry.t
 
-                                                                    val typevars :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                          val str_items :
+                                                           Ast.str_item Gram.Entry.t
 
-                                                                    val val_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                          val type_constraint :
+                                                           unit Gram.Entry.t
 
-                                                                    val value_let :
-                                                                    unit Gram.Entry.t
+                                                          val type_declaration :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val value_val :
-                                                                    unit Gram.Entry.t
+                                                          val type_ident_and_parameters :
+                                                           (string *
+                                                            Ast.ctyp list) Gram.Entry.t
 
-                                                                    val with_constr :
-                                                                    Ast.with_constr Gram.Entry.t
+                                                          val type_kind :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val with_constr_quot :
-                                                                    Ast.with_constr Gram.Entry.t
+                                                          val type_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val prefixop :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val type_longident_and_parameters :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val infixop0 :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val type_parameter :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val infixop1 :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val type_parameters :
+                                                           (Ast.ctyp ->
+                                                            Ast.ctyp) Gram.Entry.t
 
-                                                                    val infixop2 :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val typevars :
+                                                           Ast.ctyp Gram.Entry.t
 
-                                                                    val infixop3 :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val val_longident :
+                                                           Ast.ident Gram.Entry.t
 
-                                                                    val infixop4 :
-                                                                    Ast.expr Gram.Entry.t
+                                                          val value_let :
+                                                           unit Gram.Entry.t
 
-                                                                    end
+                                                          val value_val :
+                                                           unit Gram.Entry.t
 
+                                                          val with_constr :
+                                                           Ast.with_constr Gram.Entry.t
 
-                                                              module type SyntaxExtension =
+                                                          val with_constr_quot :
+                                                           Ast.with_constr Gram.Entry.t
+
+                                                          val prefixop :
+                                                           Ast.expr Gram.Entry.t
+
+                                                          val infixop0 :
+                                                           Ast.expr Gram.Entry.t
+
+                                                          val infixop1 :
+                                                           Ast.expr Gram.Entry.t
+
+                                                          val infixop2 :
+                                                           Ast.expr Gram.Entry.t
+
+                                                          val infixop3 :
+                                                           Ast.expr Gram.Entry.t
+
+                                                          val infixop4 :
+                                                           Ast.expr Gram.Entry.t
+
+                                                         end
+
+module type SyntaxExtension =
                                                                functor
                                                                 (Syn : Syntax) ->
                                                                 (Syntax with
@@ -5629,389 +5765,332 @@ module type Camlp4Syntax =
                                                                  Syn.Quotation)
 
 
-                                                              module type PLUGIN =
-                                                               functor
-                                                                (Unit : 
-                                                                sig
-                                                                end) ->
-                                                                sig end
+                                                        module type PLUGIN =
+                                                         functor
+                                                          (Unit : sig end) ->
+                                                          sig end
+
+module type OCAML_SYNTAX_EXTENSION =
+                                                                    functor
+                                                                    (Syn : Camlp4Syntax) ->
+                                                                    Camlp4Syntax
 
 
-                                                              module type OCAML_SYNTAX_EXTENSION =
-                                                               functor
-                                                                (Syn : Camlp4Syntax) ->
-                                                                Camlp4Syntax
+                                                        module type SYNTAX_PLUGIN =
+                                                         functor
+                                                          (Syn : Syntax) ->
+                                                          sig end
+
+module type PRINTER_PLUGIN =
+                                                                    functor
+                                                                    (Syn : Syntax) ->
+                                                                    Printer(Syn.Ast).S
 
 
-                                                              module type SYNTAX_PLUGIN =
-                                                               functor
-                                                                (Syn : Syntax) ->
-                                                                sig end
+                                                        module type OCAML_PRINTER_PLUGIN =
+                                                         functor
+                                                          (Syn : Camlp4Syntax) ->
+                                                          Printer(Syn.Ast).S
 
 
-                                                              module type PRINTER_PLUGIN =
-                                                               functor
-                                                                (Syn : Syntax) ->
-                                                                Printer(Syn.Ast).S
+                                                        module type PARSER =
+                                                         functor
+                                                          (Ast : Camlp4Ast) ->
+                                                          Parser(Ast).S
 
 
-                                                              module type OCAML_PRINTER_PLUGIN =
-                                                               functor
-                                                                (Syn : Camlp4Syntax) ->
-                                                                Printer(Syn.Ast).S
+                                                        module type OCAML_PARSER =
+                                                         functor
+                                                          (Ast : Camlp4Ast) ->
+                                                          Parser(Ast).S
 
 
-                                                              module type PARSER =
-                                                               functor
-                                                                (Ast : Camlp4Ast) ->
-                                                                Parser(Ast).S
+                                                        module type ASTFILTER_PLUGIN =
+                                                         functor
+                                                          (F : AstFilters) ->
+                                                          sig end
+
+module type LEXER =
+                                                                    functor
+                                                                    (Token : Camlp4Token) ->
+                                                                    (Lexer
+                                                                    with
+                                                                    module Loc =
+                                                                    Token.Loc
+                                                                    and module Loc =
+                                                                    Token.Loc
+                                                                    and module Token =
+                                                                    Token)
 
 
-                                                              module type OCAML_PARSER =
-                                                               functor
-                                                                (Ast : Camlp4Ast) ->
-                                                                Parser(Ast).S
+                                                        module type PRECAST =
+                                                         sig
+                                                          type token =
+                                                           camlp4_token
 
+                                                          module Loc : Loc
 
-                                                              module type ASTFILTER_PLUGIN =
-                                                               functor
-                                                                (F : AstFilters) ->
-                                                                sig end
+                                                          module Ast :
+                                                           (Camlp4Ast with
+                                                            module Loc = Loc)
 
+                                                          module Token :
+                                                           (Token with
+                                                            module Loc = Loc
+                                                            and module Loc =
+                                                            Loc and type  t =
+                                                            camlp4_token)
 
-                                                              module type LEXER =
-                                                               functor
-                                                                (Token : Camlp4Token) ->
-                                                                (Lexer with
-                                                                 module Loc =
-                                                                 Token.Loc
-                                                                 and module Loc =
-                                                                 Token.Loc
-                                                                 and module Token =
-                                                                 Token)
+                                                          module Lexer :
+                                                           (Lexer with
+                                                            module Loc = Loc
+                                                            and module Loc =
+                                                            Loc
+                                                            and module Token =
+                                                            Token)
 
+                                                          module Gram :
+                                                           (Grammar.Static
+                                                            with module Loc =
+                                                            Loc
+                                                            and module Loc =
+                                                            Loc
+                                                            and module Token =
+                                                            Token)
 
-                                                              module type PRECAST =
+                                                          module Quotation :
+                                                           (Quotation with
+                                                            module Ast =
+                                                            Camlp4AstToAst(Ast))
+
+                                                          module DynLoader :
+                                                           DynLoader
+
+                                                          module AstFilters :
+                                                           (AstFilters with
+                                                            module Ast = Ast)
+
+                                                          module Syntax :
+                                                           (Camlp4Syntax with
+                                                            module Loc = Loc
+                                                            and module Loc =
+                                                            Loc
+                                                            and module Token =
+                                                            Token
+                                                            and module Token =
+                                                            Token
+                                                            and module Ast =
+                                                            Ast
+                                                            and module Ast =
+                                                            Ast
+                                                            and module Gram =
+                                                            Gram
+                                                            and module Gram =
+                                                            Gram
+                                                            and module Quotation =
+                                                            Quotation)
+
+                                                          module Printers :
+                                                           sig
+                                                            module OCaml :
+                                                             Printer(Ast).S
+
+                                                            module
+                                                             DumpOCamlAst :
+                                                             Printer(Ast).S
+
+                                                            module
+                                                             DumpCamlp4Ast :
+                                                             Printer(Ast).S
+
+                                                            module Null :
+                                                             Printer(Ast).S
+
+                                                           end
+
+                                                          module MakeGram :
+                                                           functor
+                                                            (Lexer : 
+                                                            (Lexer with
+                                                             module Loc =
+                                                             Loc)) ->
+                                                            (Grammar.Static
+                                                             with
+                                                             module Loc = Loc
+                                                             and module Loc =
+                                                             Loc
+                                                             and module Token =
+                                                             Lexer.Token)
+
+                                                          module MakeSyntax :
+                                                           functor
+                                                            (U : sig end) ->
+                                                            Syntax
+
+                                                          type 'a parser_fun =
+                                                           (?directive_handler :
+                                                            ('a -> 'a option)
+                                                            ->
+                                                            (Loc.t ->
+                                                             (char Stream.t
+                                                              -> 'a)))
+
+                                                          type 'a printer_fun =
+                                                           (?input_file :
+                                                            string ->
+                                                            (?output_file :
+                                                             string ->
+                                                             ('a -> unit)))
+
+                                                          val loaded_modules :
+                                                           string list ref
+
+                                                          val iter_and_take_callbacks :
+                                                           (((string *
+                                                              (unit -> unit))
+                                                             -> unit) ->
+                                                            unit)
+
+                                                          val register_str_item_parser :
+                                                           (Ast.str_item parser_fun
+                                                            -> unit)
+
+                                                          val register_sig_item_parser :
+                                                           (Ast.sig_item parser_fun
+                                                            -> unit)
+
+                                                          val register_parser :
+                                                           (Ast.str_item parser_fun
+                                                            ->
+                                                            (Ast.sig_item parser_fun
+                                                             -> unit))
+
+                                                          val current_parser :
+                                                           (unit ->
+                                                            (Ast.str_item parser_fun *
+                                                             Ast.sig_item parser_fun))
+
+                                                          val plugin :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module PLUGIN 
+                                                             ) -> unit))
+
+                                                          val syntax_plugin :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module SYNTAX_PLUGIN
+                                                             ) -> unit))
+
+                                                          val syntax_extension :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module SyntaxExtension
+                                                             ) -> unit))
+
+                                                          val ocaml_syntax_extension :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module OCAML_SYNTAX_EXTENSION
+                                                             ) -> unit))
+
+                                                          val parser_plugin :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module PARSER 
+                                                             ) -> unit))
+
+                                                          val ocaml_parser_plugin :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module OCAML_PARSER
+                                                             ) -> unit))
+
+                                                          val ocaml_precast_parser_plugin :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module Parser(Syntax.Ast).S
+                                                             ) -> unit))
+
+                                                          val register_str_item_printer :
+                                                           (Ast.str_item printer_fun
+                                                            -> unit)
+
+                                                          val register_sig_item_printer :
+                                                           (Ast.sig_item printer_fun
+                                                            -> unit)
+
+                                                          val register_printer :
+                                                           (Ast.str_item printer_fun
+                                                            ->
+                                                            (Ast.sig_item printer_fun
+                                                             -> unit))
+
+                                                          val current_printer :
+                                                           (unit ->
+                                                            (Ast.str_item printer_fun *
+                                                             Ast.sig_item printer_fun))
+
+                                                          val printer :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module PRINTER_PLUGIN
+                                                             ) -> unit))
+
+                                                          val ocaml_printer :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module OCAML_PRINTER_PLUGIN
+                                                             ) -> unit))
+
+                                                          val ocaml_precast_printer :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module Printer(Syntax.Ast).S
+                                                             ) -> unit))
+
+                                                          val ast_filter :
+                                                           ((module Id 
+                                                            ) ->
+                                                            ((module ASTFILTER_PLUGIN
+                                                             ) -> unit))
+
+                                                          val declare_dyn_module :
+                                                           (string ->
+                                                            ((unit -> unit)
+                                                             -> unit))
+
+                                                          module
+                                                           CurrentParser :
+                                                           Parser(Ast).S
+
+                                                          module
+                                                           CurrentPrinter :
+                                                           Printer(Ast).S
+
+                                                          val enable_ocaml_printer :
+                                                           (unit -> unit)
+
+                                                          val enable_null_printer :
+                                                           (unit -> unit)
+
+                                                          val enable_dump_ocaml_ast_printer :
+                                                           (unit -> unit)
+
+                                                          val enable_dump_camlp4_ast_printer :
+                                                           (unit -> unit)
+
+                                                          val enable_auto :
+                                                           ((unit -> bool) ->
+                                                            unit)
+
+                                                         end
+
+module type PRECAST_PLUGIN =
                                                                sig
-                                                                type token =
-                                                                 camlp4_token
-
-                                                                module Loc :
-                                                                 Loc
-
-                                                                module Ast :
-                                                                 (Camlp4Ast
-                                                                  with
-                                                                  module Loc =
-                                                                  Loc)
-
-                                                                module
-                                                                 Token :
-                                                                 (Token with
-                                                                  module Loc =
-                                                                  Loc
-                                                                  and module Loc =
-                                                                  Loc
-                                                                  and type
-                                                                   t =
-                                                                  camlp4_token)
-
-                                                                module
-                                                                 Lexer :
-                                                                 (Lexer with
-                                                                  module Loc =
-                                                                  Loc
-                                                                  and module Loc =
-                                                                  Loc
-                                                                  and module Token =
-                                                                  Token)
-
-                                                                module Gram :
-                                                                 (Grammar.Static
-                                                                  with
-                                                                  module Loc =
-                                                                  Loc
-                                                                  and module Loc =
-                                                                  Loc
-                                                                  and module Token =
-                                                                  Token)
-
-                                                                module
-                                                                 Quotation :
-                                                                 (Quotation
-                                                                  with
-                                                                  module Ast =
-                                                                  Camlp4AstToAst(Ast))
-
-                                                                module
-                                                                 DynLoader :
-                                                                 DynLoader
-
-                                                                module
-                                                                 AstFilters :
-                                                                 (AstFilters
-                                                                  with
-                                                                  module Ast =
-                                                                  Ast)
-
-                                                                module
-                                                                 Syntax :
-                                                                 (Camlp4Syntax
-                                                                  with
-                                                                  module Loc =
-                                                                  Loc
-                                                                  and module Loc =
-                                                                  Loc
-                                                                  and module Token =
-                                                                  Token
-                                                                  and module Token =
-                                                                  Token
-                                                                  and module Ast =
-                                                                  Ast
-                                                                  and module Ast =
-                                                                  Ast
-                                                                  and module Gram =
-                                                                  Gram
-                                                                  and module Gram =
-                                                                  Gram
-                                                                  and module Quotation =
-                                                                  Quotation)
-
-                                                                module
-                                                                 Printers :
-                                                                 sig
-                                                                  module
-                                                                   OCaml :
-                                                                   Printer(Ast).S
-
-                                                                  module
-                                                                   DumpOCamlAst :
-                                                                   Printer(Ast).S
-
-                                                                  module
-                                                                   DumpCamlp4Ast :
-                                                                   Printer(Ast).S
-
-                                                                  module
-                                                                   Null :
-                                                                   Printer(Ast).S
-
-                                                                 end
-
-                                                                module
-                                                                 MakeGram :
-                                                                 functor
-                                                                  (Lexer : 
-                                                                  (Lexer with
-                                                                   module Loc =
-                                                                   Loc)) ->
-                                                                  (Grammar.Static
-                                                                   with
-                                                                   module Loc =
-                                                                   Loc
-                                                                   and module Loc =
-                                                                   Loc
-                                                                   and module Token =
-                                                                   Lexer.Token)
-
-                                                                module
-                                                                 MakeSyntax :
-                                                                 functor
-                                                                  (U : 
-                                                                  sig
-                                                                  end) ->
-                                                                  Syntax
-
-                                                                type 'a parser_fun =
-                                                                 (?directive_handler :
-                                                                  ('a ->
-                                                                   'a option)
-                                                                  ->
-                                                                  (Loc.t ->
-                                                                   (char Stream.t
-                                                                    -> 'a)))
-
-                                                                type 'a printer_fun =
-                                                                 (?input_file :
-                                                                  string ->
-                                                                  (?output_file :
-                                                                   string ->
-                                                                   ('a ->
-                                                                    unit)))
-
-                                                                val loaded_modules :
-                                                                 string list ref
-
-                                                                val iter_and_take_callbacks :
-                                                                 (((string *
-                                                                    (unit ->
-                                                                    unit)) ->
-                                                                   unit) ->
-                                                                  unit)
-
-                                                                val register_str_item_parser :
-                                                                 (Ast.str_item parser_fun
-                                                                  -> 
-                                                                  unit)
-
-                                                                val register_sig_item_parser :
-                                                                 (Ast.sig_item parser_fun
-                                                                  -> 
-                                                                  unit)
-
-                                                                val register_parser :
-                                                                 (Ast.str_item parser_fun
-                                                                  ->
-                                                                  (Ast.sig_item parser_fun
-                                                                   -> 
-                                                                   unit))
-
-                                                                val current_parser :
-                                                                 (unit ->
-                                                                  (Ast.str_item parser_fun *
-                                                                   Ast.sig_item parser_fun))
-
-                                                                val plugin :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module PLUGIN
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val syntax_plugin :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module SYNTAX_PLUGIN
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val syntax_extension :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module SyntaxExtension
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ocaml_syntax_extension :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module OCAML_SYNTAX_EXTENSION
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val parser_plugin :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module PARSER
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ocaml_parser_plugin :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module OCAML_PARSER
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ocaml_precast_parser_plugin :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module Parser(Syntax.Ast).S
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val register_str_item_printer :
-                                                                 (Ast.str_item printer_fun
-                                                                  -> 
-                                                                  unit)
-
-                                                                val register_sig_item_printer :
-                                                                 (Ast.sig_item printer_fun
-                                                                  -> 
-                                                                  unit)
-
-                                                                val register_printer :
-                                                                 (Ast.str_item printer_fun
-                                                                  ->
-                                                                  (Ast.sig_item printer_fun
-                                                                   -> 
-                                                                   unit))
-
-                                                                val current_printer :
-                                                                 (unit ->
-                                                                  (Ast.str_item printer_fun *
-                                                                   Ast.sig_item printer_fun))
-
-                                                                val printer :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module PRINTER_PLUGIN
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ocaml_printer :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module OCAML_PRINTER_PLUGIN
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ocaml_precast_printer :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module Printer(Syntax.Ast).S
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val ast_filter :
-                                                                 ((module Id
-                                                                  ) ->
-                                                                  ((module ASTFILTER_PLUGIN
-                                                                   ) -> 
-                                                                   unit))
-
-                                                                val declare_dyn_module :
-                                                                 (string ->
-                                                                  ((unit ->
-                                                                    unit) ->
-                                                                   unit))
-
-                                                                module
-                                                                 CurrentParser :
-                                                                 Parser(Ast).S
-
-                                                                module
-                                                                 CurrentPrinter :
-                                                                 Printer(Ast).S
-
-                                                                val enable_ocaml_printer :
-                                                                 (unit ->
-                                                                  unit)
-
-                                                                val enable_null_printer :
-                                                                 (unit ->
-                                                                  unit)
-
-                                                                val enable_dump_ocaml_ast_printer :
-                                                                 (unit ->
-                                                                  unit)
-
-                                                                val enable_dump_camlp4_ast_printer :
-                                                                 (unit ->
-                                                                  unit)
-
-                                                                val enable_auto :
-                                                                 ((unit ->
-                                                                   bool) ->
+                                                                val apply :
+                                                                 ((module PRECAST
+                                                                  ) -> 
                                                                   unit)
 
                                                                end
-
-module type PRECAST_PLUGIN =
-                                                                    sig
-                                                                    val apply :
-                                                                    ((module PRECAST
-                                                                    ) ->
-                                                                    unit)
-
-                                                                    end

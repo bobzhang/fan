@@ -292,10 +292,10 @@ value check x msg =
 
 exception Exc_located of t and exn;
 
-ErrorHandler.register
+FanUtil.ErrorHandler.register
   (fun ppf ->
     fun [ Exc_located loc exn ->
-            fprintf ppf "%a:@\n%a" print loc ErrorHandler.print exn
+            fprintf ppf "%a:@\n%a" print loc FanUtil.ErrorHandler.print exn
         | exn -> raise exn ]);
 
 value name = ref "_loc";
