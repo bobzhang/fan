@@ -21,7 +21,7 @@ open Sig.Grammar;
 
 module type S = sig
   module Loc          : FanSig.Loc;
-  module Token        : Sig.Token with module Loc = Loc;
+  module Token        : FanSig.Token with module Loc = Loc;
   module Lexer        : Sig.Lexer
                         with module Loc   = Loc
                          and module Token = Token;

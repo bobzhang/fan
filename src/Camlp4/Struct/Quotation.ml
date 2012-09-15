@@ -134,6 +134,7 @@ module Make (Ast : Sig.Camlp4Ast)
 
   value expand_quotation loc expander pos_tag quot =
     debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
+    let open FanSig in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
     try expander loc loc_name_opt quot.q_contents with
     [ Loc.Exc_located _ (Error.E _) as exc ->
@@ -146,6 +147,7 @@ module Make (Ast : Sig.Camlp4Ast)
         raise (Loc.Exc_located loc exc1) ];
 
   value parse_quotation_result parse loc quot pos_tag str =
+    let open FanSig in 
     try parse loc str with
     [ Loc.Exc_located iloc (Error.E (n, pos_tag, Expanding, exc)) ->
         let ctx = ParsingResult iloc quot.q_contents in
@@ -159,6 +161,7 @@ module Make (Ast : Sig.Camlp4Ast)
         raise (Loc.Exc_located iloc exc1) ];
 
   value expand loc quotation tag =
+    let open FanSig in 
     let pos_tag = DynAst.string_of_tag tag in
     let name = quotation.q_name in
     debug quot "handle_quotation: name: %s, str: %S@." name quotation.q_contents in

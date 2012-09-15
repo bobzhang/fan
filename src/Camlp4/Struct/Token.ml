@@ -19,10 +19,10 @@
 open Format;
 
 module Make (Loc : FanSig.Loc)
-: Sig.Camlp4Token with module Loc = Loc
+: FanSig.Camlp4Token with module Loc = Loc
 = struct
   module Loc  = Loc;
-  open Sig;
+  open FanSig;
   type t = camlp4_token;
   type token = t;
 

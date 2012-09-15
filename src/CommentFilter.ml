@@ -16,20 +16,41 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
+module Make (Token : FanSig.Camlp4Token) = struct
+  open Token;
 
-module Make (Loc : FanSig.Loc) : FanSig.Camlp4Token with module Loc = Loc;
+  type t = (Stream.t (string * Loc.t) * Queue.t (string * Loc.t));
 
-module Eval : sig
-  value char : string -> char;
-      (** Convert a char token, where the escape sequences (backslashes)
-          remain to be interpreted; raise [Failure] if an
-          incorrect backslash sequence is found; [Token.Eval.char (Char.escaped c)]
-          returns [c] *)
+  value mk () =
+    let q = Queue.create () in
+    let f _ =
+      debug comments "take...@\n" in
+      try Some (Queue.take q) with [ Queue.Empty -> None ]
+    in (Stream.from f, q);
 
-  value string : ?strict:unit -> string -> string;
-      (** [Taken.Eval.string strict s]
-          Convert a string token, where the escape sequences (backslashes)
-          remain to be interpreted; raise [Failure] if [strict] and an
-          incorrect backslash sequence is found;
-          [Token.Eval.string strict (String.escaped s)] returns [s] *)
+  value filter (_, q) =
+    let rec self =
+      parser
+      [ [: ` (FanSig.COMMENT x, loc); xs :] ->
+            do { Queue.add (x, loc) q;
+                 debug comments "add: %S at %a@\n" x Loc.dump loc in
+                 self xs }
+      | [: ` x; xs :] ->
+          (* debug comments "Found %a at %a@." Token.print x Loc.dump loc in *)
+          [: ` x; self xs :]
+      | [: :] -> [: :] ]
+    in self;
+
+  value take_list (_, q) =
+    let rec self accu =
+      if Queue.is_empty q then accu else self [Queue.take q :: accu]
+    in self [];
+
+  value take_stream = fst;
+
+  value define token_fiter comments_strm =
+    debug comments "Define a comment filter@\n" in
+    Token.Filter.define_filter token_fiter
+      (fun previous strm -> previous (filter comments_strm strm));
+
 end;

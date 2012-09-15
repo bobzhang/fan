@@ -18,7 +18,7 @@
 
 module Make (Ast     : Sig.Camlp4Ast)
             (Gram    : Sig.Grammar.Static with module Loc = Ast.Loc
-                                            with type Token.t = Sig.camlp4_token)
+                                            with type Token.t = FanSig.camlp4_token)
             (Quotation : Sig.Quotation with module Ast = Sig.Camlp4AstToAst Ast)
 : Sig.Camlp4Syntax with module Loc = Ast.Loc
                     and module Ast = Ast
@@ -32,7 +32,7 @@ module Make (Ast     : Sig.Camlp4Ast)
   module Gram    = Gram;
   module Token   = Gram.Token;
   open Sig;
-
+    
   (* Warnings *)
   type warning = Loc.t -> string -> unit;
   value default_warning loc txt = Format.eprintf "<W> %a: %s@." Loc.print loc txt;
@@ -210,6 +210,7 @@ module Make (Ast     : Sig.Camlp4Ast)
   value infixop3 = Gram.Entry.mk "infix operator (level 3) (start with '*', '/', '%')";
   value infixop4 = Gram.Entry.mk "infix operator (level 4) (start with \"**\") (right assoc)";
 
+  open FanSig;
   EXTEND Gram
     top_phrase:
       [ [ `EOI -> None ] ]

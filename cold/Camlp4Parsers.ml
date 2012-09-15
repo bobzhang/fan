@@ -1,165 +1,161 @@
 open Camlp4
 
+open FanSig
+
 module IdAstLoader =
-              struct
-               let name = "Camlp4AstLoader"
+                           struct
+                            let name = "Camlp4AstLoader"
 
-               let version = Sys.ocaml_version
+                            let version = Sys.ocaml_version
 
-              end
+                           end
 
 module MakeAstLoader =
-                    functor (Ast : Sig.Ast) ->
-                     (struct
-                       module Ast = Ast
+                                 functor (Ast : Sig.Ast) ->
+                                  (struct
+                                    module Ast = Ast
 
-                       let parse =
-                        fun ast_magic ->
-                         fun ?directive_handler:_ ->
-                          fun _loc ->
-                           fun strm ->
-                            let str =
-                             let buf = (Buffer.create 2047) in
-                             let () =
-                              (Stream.iter ( (Buffer.add_char buf) ) strm) in
-                             (Buffer.contents buf) in
-                            let magic_len = (String.length ast_magic) in
-                            let buffer = (String.create magic_len) in
-                            (
-                            (String.blit str 0 buffer 0 magic_len)
-                            );
-                            (
-                            if (buffer = ast_magic) then () 
-                            else
-                             (failwith (
-                               (Format.sprintf "Bad magic: %S vs %S" buffer
-                                 ast_magic) ))
-                            );
-                            (Marshal.from_string str magic_len)
+                                    let parse =
+                                     fun ast_magic ->
+                                      fun ?directive_handler:_ ->
+                                       fun _loc ->
+                                        fun strm ->
+                                         let str =
+                                          let buf = (Buffer.create 2047) in
+                                          let () =
+                                           (Stream.iter (
+                                             (Buffer.add_char buf) ) strm) in
+                                          (Buffer.contents buf) in
+                                         let magic_len =
+                                          (String.length ast_magic) in
+                                         let buffer =
+                                          (String.create magic_len) in
+                                         (
+                                         (String.blit str 0 buffer 0
+                                           magic_len)
+                                         );
+                                         (
+                                         if (buffer = ast_magic) then () 
+                                         else
+                                          (failwith (
+                                            (Format.sprintf
+                                              "Bad magic: %S vs %S" buffer
+                                              ast_magic) ))
+                                         );
+                                         (Marshal.from_string str magic_len)
 
-                       let parse_implem =
-                        (parse FanConfig.camlp4_ast_impl_magic_number)
+                                    let parse_implem =
+                                     (parse
+                                       FanConfig.camlp4_ast_impl_magic_number)
 
-                       let parse_interf =
-                        (parse FanConfig.camlp4_ast_intf_magic_number)
+                                    let parse_interf =
+                                     (parse
+                                       FanConfig.camlp4_ast_intf_magic_number)
 
-                      end : Sig.Parser(Ast).S)
+                                   end : Sig.Parser(Ast).S)
 
 module IdDebugParser =
-                                                 struct
-                                                  let name =
-                                                   "Camlp4DebugParser"
+                                                              struct
+                                                               let name =
+                                                                "Camlp4DebugParser"
 
-                                                  let version =
-                                                   Sys.ocaml_version
+                                                               let version =
+                                                                Sys.ocaml_version
 
-                                                 end
+                                                              end
 
 module MakeDebugParser =
-                                                       functor (Syntax : Sig.Camlp4Syntax) ->
-                                                        struct
-                                                         open Sig
+                                                                    functor (Syntax : Sig.Camlp4Syntax) ->
+                                                                    struct
+                                                                    open Sig
 
-                                                         include Syntax
+                                                                    include Syntax
 
-                                                         module StringSet =
-                                                          (Set.Make)(String)
+                                                                    module StringSet =
+                                                                    (Set.Make)
+                                                                    (String)
 
-                                                         let debug_mode =
-                                                          (try
-                                                            let str =
-                                                             (Sys.getenv
-                                                               "STATIC_CAMLP4_DEBUG") in
-                                                            let rec loop =
-                                                             fun acc ->
-                                                              fun i ->
-                                                               (try
-                                                                 let pos =
-                                                                  (String.index_from
+                                                                    let debug_mode =
+                                                                    (try
+                                                                    let str =
+                                                                    (Sys.getenv
+                                                                    "STATIC_CAMLP4_DEBUG") in
+                                                                    let rec loop =
+                                                                    fun acc ->
+                                                                    fun i ->
+                                                                    (
+                                                                    try
+                                                                    let pos =
+                                                                    (String.index_from
                                                                     str i
                                                                     ':') in
-                                                                 (loop (
-                                                                   (StringSet.add
+                                                                    (loop (
+                                                                    (StringSet.add
                                                                     (
                                                                     (String.sub
                                                                     str i (
                                                                     (pos - i)
                                                                     )) ) acc)
-                                                                   ) (
-                                                                   (pos + 1)
-                                                                   ))
-                                                                with
-                                                                Not_found ->
-                                                                 (StringSet.add
-                                                                   (
-                                                                   (String.sub
+                                                                    ) (
+                                                                    (pos + 1)
+                                                                    ))
+                                                                    with
+                                                                    Not_found ->
+                                                                    (StringSet.add
+                                                                    (
+                                                                    (String.sub
                                                                     str i (
                                                                     ((
                                                                     (String.length
                                                                     str) ) -
                                                                     i) )) )
-                                                                   acc)) in
-                                                            let sections =
-                                                             (loop
-                                                               StringSet.empty
-                                                               0) in
-                                                            if (StringSet.mem
-                                                                 "*"
-                                                                 sections) then
-                                                             (
-                                                             fun _ -> (true)
-                                                             )
-                                                            else
-                                                             fun x ->
-                                                              (StringSet.mem
-                                                                x sections)
-                                                           with
-                                                           Not_found ->
-                                                            fun _ -> (false))
+                                                                    acc)) in
+                                                                    let sections =
+                                                                    (loop
+                                                                    StringSet.empty
+                                                                    0) in
+                                                                    if 
+                                                                    (StringSet.mem
+                                                                    "*"
+                                                                    sections) then
+                                                                    (
+                                                                    fun _ ->
+                                                                    (true)
+                                                                    )
+                                                                    else
+                                                                    fun x ->
+                                                                    (StringSet.mem
+                                                                    x
+                                                                    sections)
+                                                                    with
+                                                                    Not_found ->
+                                                                    fun _ ->
+                                                                    (false))
 
-                                                         let rec apply =
-                                                          fun accu ->
-                                                           function
-                                                           | [] -> accu
-                                                           | (x :: xs) ->
-                                                              let _loc =
-                                                               (Ast.loc_of_expr
-                                                                 x) in
-                                                              (apply (
-                                                                (Ast.ExApp
-                                                                  (_loc,
-                                                                   accu, x))
-                                                                ) xs)
+                                                                    let rec apply =
+                                                                    fun accu ->
+                                                                    function
+                                                                    | [] ->
+                                                                    accu
+                                                                    | 
+                                                                    (x :: xs) ->
+                                                                    let _loc =
+                                                                    (Ast.loc_of_expr
+                                                                    x) in
+                                                                    (apply (
+                                                                    (Ast.ExApp
+                                                                    (_loc,
+                                                                    accu, x))
+                                                                    ) xs)
 
-                                                         let mk_debug_mode =
-                                                          fun _loc ->
-                                                           function
-                                                           | None ->
-                                                              (Ast.ExId
-                                                                (_loc, (
-                                                                 (Ast.IdAcc
-                                                                   (_loc, (
+                                                                    let mk_debug_mode =
+                                                                    fun _loc ->
+                                                                    function
+                                                                    | None ->
                                                                     (
-                                                                    Ast.IdUid
-                                                                    (_loc,
-                                                                    "Debug"))
-                                                                    ), (
-                                                                    (
-                                                                    Ast.IdLid
-                                                                    (_loc,
-                                                                    "mode"))
-                                                                    ))) )))
-                                                           | Some (m) ->
-                                                              (Ast.ExId
-                                                                (_loc, (
-                                                                 (Ast.IdAcc
-                                                                   (_loc, (
-                                                                    (
-                                                                    Ast.IdUid
-                                                                    (_loc, m))
-                                                                    ), (
-                                                                    (
-                                                                    Ast.IdAcc
+                                                                    Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc,
@@ -169,17 +165,37 @@ module MakeDebugParser =
                                                                     (_loc,
                                                                     "mode"))
                                                                     ))) )))
-                                                                 )))
+                                                                    | 
+                                                                    Some (m) ->
+                                                                    (
+                                                                    Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdAcc
+                                                                    (_loc, (
+                                                                    (Ast.IdUid
+                                                                    (_loc, m))
+                                                                    ), (
+                                                                    (Ast.IdAcc
+                                                                    (_loc, (
+                                                                    (Ast.IdUid
+                                                                    (_loc,
+                                                                    "Debug"))
+                                                                    ), (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "mode"))
+                                                                    ))) )))
+                                                                    )))
 
-                                                         let mk_debug =
-                                                          fun _loc ->
-                                                           fun m ->
-                                                            fun fmt ->
-                                                             fun section ->
-                                                              fun args ->
-                                                               let call =
-                                                                (apply (
-                                                                  (Ast.ExApp
+                                                                    let mk_debug =
+                                                                    fun _loc ->
+                                                                    fun m ->
+                                                                    fun fmt ->
+                                                                    fun section ->
+                                                                    fun args ->
+                                                                    let call =
+                                                                    (apply (
+                                                                    (Ast.ExApp
                                                                     (_loc, (
                                                                     (Ast.ExApp
                                                                     (_loc, (
@@ -203,10 +219,11 @@ module MakeDebugParser =
                                                                     (Ast.ExStr
                                                                     (_loc,
                                                                     fmt)) )))
-                                                                  ) args) in
-                                                               (Ast.ExIfe
-                                                                 (_loc, (
-                                                                  (Ast.ExApp
+                                                                    ) args) in
+                                                                    (
+                                                                    Ast.ExIfe
+                                                                    (_loc, (
+                                                                    (Ast.ExApp
                                                                     (_loc, (
                                                                     (mk_debug_mode
                                                                     _loc m)
@@ -215,34 +232,35 @@ module MakeDebugParser =
                                                                     (_loc,
                                                                     section))
                                                                     ))) ),
-                                                                  call, (
-                                                                  (Ast.ExId
+                                                                    call, (
+                                                                    (Ast.ExId
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc,
                                                                     "()")) )))
-                                                                  )))
+                                                                    )))
 
-                                                         let _ = let _ =
-                                                                  (expr :
+                                                                    let _ = 
+                                                                    let _ =
+                                                                    (expr :
                                                                     'expr Gram.Entry.t) in
-                                                                 let grammar_entry_create =
-                                                                  Gram.Entry.mk in
-                                                                 let end_or_in =
-                                                                  ((grammar_entry_create
+                                                                    let grammar_entry_create =
+                                                                    Gram.Entry.mk in
+                                                                    let end_or_in =
+                                                                    ((grammar_entry_create
                                                                     "end_or_in") :
                                                                     'end_or_in Gram.Entry.t)
-                                                                 and start_debug =
-                                                                  ((grammar_entry_create
+                                                                    and start_debug =
+                                                                    ((grammar_entry_create
                                                                     "start_debug") :
                                                                     'start_debug Gram.Entry.t) in
-                                                                 (
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (expr :
+                                                                    (
+                                                                    (Gram.extend
+                                                                    (
+                                                                    (expr :
                                                                     'expr Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
+                                                                    ) (
+                                                                    ((fun ()
                                                                      ->
                                                                     (None , (
                                                                     [(None ,
@@ -366,15 +384,15 @@ module MakeDebugParser =
                                                                     'expr) ))
                                                                     ))] ))]
                                                                     ))) () )
-                                                                   ))
-                                                                 );
-                                                                 (
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (end_or_in :
+                                                                    ))
+                                                                    );
+                                                                    (
+                                                                    (Gram.extend
+                                                                    (
+                                                                    (end_or_in :
                                                                     'end_or_in Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
+                                                                    ) (
+                                                                    ((fun ()
                                                                      ->
                                                                     (None , (
                                                                     [(None ,
@@ -416,14 +434,14 @@ module MakeDebugParser =
                                                                     'end_or_in)
                                                                     )) ))] ))]
                                                                     ))) () )
-                                                                   ))
-                                                                 );
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (start_debug :
+                                                                    ))
+                                                                    );
+                                                                    (Gram.extend
+                                                                    (
+                                                                    (start_debug :
                                                                     'start_debug Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
+                                                                    ) (
+                                                                    ((fun ()
                                                                      ->
                                                                     (None , (
                                                                     [(None ,
@@ -492,195 +510,77 @@ module MakeDebugParser =
                                                                     assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
-                                                                   ))
+                                                                    ))
 
-                                                        end
+                                                                    end
+
 
 module IdGrammarParser =
-                                                              struct
-                                                               let name =
-                                                                "Camlp4GrammarParser"
+ struct
+  let name = "Camlp4GrammarParser"
 
-                                                               let version =
-                                                                Sys.ocaml_version
+  let version = Sys.ocaml_version
 
-                                                              end
+ end
 
 module MakeGrammarParser =
-                                                                    functor (Syntax : Sig.Camlp4Syntax) ->
-                                                                    struct
-                                                                    open Sig
+       functor (Syntax : Sig.Camlp4Syntax) ->
+        struct
+         open Sig
 
-                                                                    include Syntax
+         include Syntax
 
-                                                                    module MetaLoc =
-                                                                    Ast.Meta.MetaGhostLoc
+         module MetaLoc = Ast.Meta.MetaGhostLoc
 
-                                                                    module MetaAst =
-                                                                    (Ast.Meta.Make)
-                                                                    (MetaLoc)
+         module MetaAst = (Ast.Meta.Make)(MetaLoc)
 
-                                                                    module Ast2pt =
-                                                                    (Camlp4.Struct.Camlp4Ast2OCamlAst.Make)
-                                                                    (Syntax.Ast)
+         module Ast2pt = (Camlp4.Struct.Camlp4Ast2OCamlAst.Make)(Syntax.Ast)
 
-                                                                    let string_of_patt =
-                                                                    fun patt ->
-                                                                    let buf =
-                                                                    (Buffer.create
-                                                                    42) in
-                                                                    let 
-                                                                    () =
-                                                                    (Format.bprintf
-                                                                    buf
-                                                                    "%a@?" (
-                                                                    fun fmt ->
-                                                                    fun p ->
-                                                                    (Pprintast.pattern
-                                                                    fmt (
-                                                                    (Ast2pt.patt
-                                                                    p) )) )
-                                                                    patt) in
-                                                                    let str =
-                                                                    (Buffer.contents
-                                                                    buf) in
-                                                                    if 
-                                                                    (str =
-                                                                    "") then
-                                                                    (
-                                                                    assert false
-                                                                    )
-                                                                    else str
+         let string_of_patt =
+          fun patt ->
+           let buf = (Buffer.create 42) in
+           let () =
+            (Format.bprintf buf "%a@?" (
+              fun fmt -> fun p -> (Pprintast.pattern fmt ( (Ast2pt.patt p) ))
+              ) patt) in
+           let str = (Buffer.contents buf) in
+           if (str = "") then ( assert false ) else str
 
-                                                                    let split_ext =
-                                                                    (ref
-                                                                    false )
+         let split_ext = (ref false )
 
-                                                                    type loc =
-                                                                    Loc.t
+         type loc = Loc.t
 
-                                                                    type 'e name = 
-                                                                    {
-                                                                    expr:'e;
-                                                                    tvar:
-                                                                    string;
-                                                                    loc:loc}
+         type 'e name = {expr:'e; tvar:string; loc:loc}
 
-                                                                    type styp =
-                                                                      
-                                                                    STlid of
-                                                                    loc *
-                                                                    string
-                                                                    | 
-                                                                    STapp of
-                                                                    loc *
-                                                                    styp *
-                                                                    styp
-                                                                    | 
-                                                                    STquo of
-                                                                    loc *
-                                                                    string
-                                                                    | 
-                                                                    STself of
-                                                                    loc *
-                                                                    string
-                                                                    | 
-                                                                    STtok of
-                                                                    loc
-                                                                    | 
-                                                                    STstring_tok
-                                                                    of 
-                                                                    loc
-                                                                    | 
-                                                                    STtyp of
-                                                                    Ast.ctyp
+         type styp =
+            STlid of loc * string
+          | STapp of loc * styp * styp
+          | STquo of loc * string
+          | STself of loc * string
+          | STtok of loc
+          | STstring_tok of loc
+          | STtyp of Ast.ctyp
 
-                                                                    type 
-                                                                    ('e, 'p) text =
-                                                                      
-                                                                    TXmeta of
-                                                                    loc *
-                                                                    string *
-                                                                    ('e,
-                                                                    'p) text list *
-                                                                    'e * 
-                                                                    styp
-                                                                    | 
-                                                                    TXlist of
-                                                                    loc *
-                                                                    bool *
-                                                                    ('e,
-                                                                    'p) symbol *
-                                                                    ('e,
-                                                                    'p) symbol option
-                                                                    | 
-                                                                    TXnext of
-                                                                    loc
-                                                                    | 
-                                                                    TXnterm
-                                                                    of 
-                                                                    loc *
-                                                                    'e name *
-                                                                    string option
-                                                                    | 
-                                                                    TXopt of
-                                                                    loc *
-                                                                    ('e,
-                                                                    'p) text
-                                                                    | 
-                                                                    TXtry of
-                                                                    loc *
-                                                                    ('e,
-                                                                    'p) text
-                                                                    | 
-                                                                    TXrules
-                                                                    of 
-                                                                    loc *
-                                                                    (('e,
-                                                                    'p) text list *
-                                                                    'e) list
-                                                                    | 
-                                                                    TXself of
-                                                                    loc
-                                                                    | 
-                                                                    TXkwd of
-                                                                    loc *
-                                                                    string
-                                                                    | 
-                                                                    TXtok of
-                                                                    loc *
-                                                                    'e *
-                                                                    string
-                                                                    and 
-                                                                    ('e, 'p) entry = 
-                                                                    {
-                                                                    name:
-                                                                    'e name;
-                                                                    pos:
-                                                                    'e option;
-                                                                    levels:
-                                                                    ('e,
-                                                                    'p) level list
-                                                                    }
-                                                                    and 
-                                                                    ('e, 'p) level = 
-                                                                    {
-                                                                    label:
-                                                                    string option;
-                                                                    assoc:
-                                                                    'e option;
-                                                                    rules:
-                                                                    ('e,
-                                                                    'p) rule list
-                                                                    }
-                                                                    and 
-                                                                    ('e, 'p) rule = 
-                                                                    {
-                                                                    prod:
-                                                                    ('e,
-                                                                    'p) symbol list;
-                                                                    action:
-                                                                    'e option}
+         type ('e, 'p) text =
+            TXmeta of loc * string * ('e, 'p) text list * 'e * styp
+          | TXlist of loc * bool * ('e, 'p) symbol * ('e, 'p) symbol option
+          | TXnext of loc
+          | TXnterm of loc * 'e name * string option
+          | TXopt of loc * ('e, 'p) text
+          | TXtry of loc * ('e, 'p) text
+          | TXrules of loc * (('e, 'p) text list * 'e) list
+          | TXself of loc
+          | TXkwd of loc * string
+          | TXtok of loc * 'e * string
+         and ('e, 'p) entry = {
+                                name:'e name;
+                                pos:'e option;
+                                levels:('e, 'p) level list}
+        and ('e, 'p) level = {
+                               label:string option;
+                               assoc:'e option;
+                               rules:('e, 'p) rule list}
+       and ('e, 'p) rule = {prod:('e, 'p) symbol list; action:'e option}
 and ('e, 'p) symbol = {
                         used:string list;
                         text:('e, 'p) text;

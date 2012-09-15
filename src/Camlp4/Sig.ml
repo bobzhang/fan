@@ -597,16 +597,6 @@ end;
 
 (** {6 Quotation operations} *)
 
-(** The generic quotation type.
-    To see how fields are used here is an example:
-       <:q_name@q_loc<q_contents>>
-    The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
-type quotation =
-  { q_name     : string ;
-    q_loc      : string ;
-    q_shift    : int    ;
-    q_contents : string };
-
 (** The signature for a quotation expander registery. *)
 module type Quotation = sig
   module Ast : Ast;
@@ -639,12 +629,12 @@ module type Quotation = sig
       It's a parser wrapper, this function handles the error reporting for you. *)
     
   value parse_quotation_result :
-    (loc -> string -> 'a) -> loc -> quotation -> string -> string -> 'a;
+    (loc -> string -> 'a) -> loc -> FanSig.quotation -> string -> string -> 'a;
 
   (** function translating quotation names; default = identity *)
   value translate : ref (string -> string);
 
-  value expand : loc -> quotation -> DynAst.tag 'a -> 'a;
+  value expand : loc -> FanSig.quotation -> DynAst.tag 'a -> 'a;
 
   (** [dump_file] optionally tells Camlp4 to dump the
       result of an expander if this result is syntactically incorrect.
@@ -658,110 +648,6 @@ end;
 
 (** {6 Tokens} *)
 
-(** A signature for tokens. *)
-module type Token = sig
-
-  module Loc : FanSig.Loc;
-
-  type t;
-
-  value to_string : t -> string;
-
-  value print : Format.formatter -> t -> unit;
-
-  value match_keyword : string -> t -> bool;
-
-  value extract_string : t -> string;
-
-  module Filter : sig
-
-    type token_filter = stream_filter t Loc.t;
-
-    (** The type for this filter chain.
-        A basic implementation just store the [is_keyword] function given
-        by [mk] and use it in the [filter] function. *)
-    type t;
-
-    (** The given predicate function returns true if the given string
-        is a keyword. This function can be used in filters to translate
-        identifier tokens to keyword tokens. *)
-    value mk : (string -> bool) -> t;
-
-    (** This function allows to register a new filter to the token filter chain.
-        You can choose to not support these and raise an exception. *)
-    value define_filter : t -> (token_filter -> token_filter) -> unit;
-
-    (** This function filter the given stream and return a filtered stream.
-        A basic implementation just match identifiers against the [is_keyword]
-        function to produce token keywords instead. *)
-    value filter : t -> token_filter;
-
-    (** Called by the grammar system when a keyword is used.
-        The boolean argument is True when it's the first time that keyword
-        is used. If you do not care about this information just return [()]. *)
-    value keyword_added : t -> string -> bool -> unit;
-
-    (** Called by the grammar system when a keyword is no longer used.
-        If you do not care about this information just return [()]. *)
-    value keyword_removed : t -> string -> unit;
-  end;
-
-  module Error : FanSig.Error;
-end;
-
-(** This signature describes tokens for the OCaml and the Revised
-    syntax lexing rules. For some tokens the data constructor holds two
-    representations with the evaluated one and the source one. For example
-    the INT data constructor holds an integer and a string, this string can
-    contains more information that's needed for a good pretty-printing
-    ("42", "4_2", "0000042", "0b0101010"...).
-
-    The meaning of the tokens are:
--      [KEYWORD s] is the keyword [s].
--      [LIDENT s] is the ident [s] starting with a lowercase letter.
--      [UIDENT s] is the ident [s] starting with an uppercase letter.
--      [INT i s] (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s])
-        the integer constant [i] whose string source is [s].
--      [FLOAT f s] is the float constant [f] whose string source is [s].
--      [STRING s s'] is the string constant [s] whose string source is [s'].
--      [CHAR c s] is the character constant [c] whose string source is [s].
--      [QUOTATION q] is a quotation [q], see {!Quotation.t} for more information.
--      [ANTIQUOT n s] is an antiquotation [n] holding the string [s].
--      [EOI] is the end of input.
-
-     Warning: the second string associated with the constructor [STRING] is
-     the string found in the source without any interpretation. In particular,
-     the backslashes are not interpreted. For example, if the input is ["\n"]
-     the string is *not* a string with one element containing the character
-     "return", but a string of two elements: the backslash and the character
-     ["n"]. To interpret a string use the first string of the [STRING]
-     constructor (or if you need to compute it use the module
-     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *)
-type camlp4_token =
-  [ KEYWORD       of string
-  | SYMBOL        of string
-  | LIDENT        of string
-  | UIDENT        of string
-  | ESCAPED_IDENT of string
-  | INT           of int and string
-  | INT32         of int32 and string
-  | INT64         of int64 and string
-  | NATIVEINT     of nativeint and string
-  | FLOAT         of float and string
-  | CHAR          of char and string
-  | STRING        of string and string
-  | LABEL         of string
-  | OPTLABEL      of string
-  | QUOTATION     of quotation
-  | ANTIQUOT      of string and string
-  | COMMENT       of string
-  | BLANKS        of string
-  | NEWLINE
-  | LINE_DIRECTIVE of int and option string
-  | EOI ];
-
-(** A signature for specialized tokens. *)
-module type Camlp4Token = Token with type t = camlp4_token;
 
 (** {6 Dynamic loaders} *)
 
@@ -824,7 +710,7 @@ module Grammar = struct
   module type Structure = sig
     module Loc    : FanSig.Loc;
     module Action : Action;
-    module Token  : Token with module Loc = Loc;
+    module Token  : FanSig.Token with module Loc = Loc;
 
     type gram =
         { gfilter         : Token.Filter.t;
@@ -1046,7 +932,7 @@ end;
 (** A signature for lexers. *)
 module type Lexer = sig
   module Loc : FanSig.Loc;
-  module Token : Token with module Loc = Loc;
+  module Token : FanSig.Token with module Loc = Loc;
   module Error : FanSig.Error;
 
   (** The constructor for a lexing function. The character stream is the input
@@ -1106,7 +992,7 @@ end;
 module type Syntax = sig
   module Loc            : FanSig.Loc;
   module Ast            : Ast with type loc = Loc.t;
-  module Token          : Token with module Loc = Loc;
+  module Token          : FanSig.Token with module Loc = Loc;
   module Gram           : Grammar.Static with module Loc = Loc and module Token = Token;
   module Quotation      : Quotation with module Ast = Ast;
 
@@ -1125,7 +1011,7 @@ module type Camlp4Syntax = sig
   module Loc            : FanSig.Loc;
 
   module Ast            : Camlp4Ast with module Loc = Loc;
-  module Token          : Camlp4Token with module Loc = Loc;
+  module Token          : FanSig.Camlp4Token with module Loc = Loc;
 
   module Gram           : Grammar.Static with module Loc = Loc and module Token = Token;
   module Quotation      : Quotation with module Ast = Camlp4AstToAst Ast;
@@ -1328,16 +1214,16 @@ module type OCAML_PRINTER_PLUGIN =
 module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
 module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
 module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
-module type LEXER = functor (Token: Camlp4Token) -> Lexer
+module type LEXER = functor (Token: FanSig.Camlp4Token) -> Lexer
   with module Loc = Token.Loc and module Token = Token;
 
 
 
 module type PRECAST = sig
-  type token = camlp4_token ;
+  type token = FanSig.camlp4_token ;
   module Loc        : FanSig.Loc;
   module Ast        : Camlp4Ast with module Loc = Loc;
-  module Token      : Token  with module Loc = Loc and type t = camlp4_token;
+  module Token      : FanSig.Token  with module Loc = Loc and type t = FanSig.camlp4_token;
   module Lexer      : Lexer  with module Loc = Loc and module Token = Token;
   module Gram       : Grammar.Static  with module Loc = Loc and module Token = Token;
   module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;

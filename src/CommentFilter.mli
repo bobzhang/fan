@@ -16,20 +16,18 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
+module Make (Token : FanSig.Camlp4Token) : sig
+  open Token;
 
-module Make (Loc : FanSig.Loc) : FanSig.Camlp4Token with module Loc = Loc;
+  type t;
 
-module Eval : sig
-  value char : string -> char;
-      (** Convert a char token, where the escape sequences (backslashes)
-          remain to be interpreted; raise [Failure] if an
-          incorrect backslash sequence is found; [Token.Eval.char (Char.escaped c)]
-          returns [c] *)
+  value mk : unit -> t;
 
-  value string : ?strict:unit -> string -> string;
-      (** [Taken.Eval.string strict s]
-          Convert a string token, where the escape sequences (backslashes)
-          remain to be interpreted; raise [Failure] if [strict] and an
-          incorrect backslash sequence is found;
-          [Token.Eval.string strict (String.escaped s)] returns [s] *)
+  value define : Token.Filter.t -> t -> unit;
+
+  value filter : t -> Stream.t (Token.t * Loc.t) -> Stream.t (Token.t * Loc.t);
+
+  value take_list : t -> list (string * Loc.t);
+
+  value take_stream : t -> Stream.t (string * Loc.t);
 end;

@@ -1,4 +1,5 @@
 open Camlp4;
+open FanSig;
 module IdAstLoader = struct
   value name = "Camlp4AstLoader";
   value version = Sys.ocaml_version;
@@ -65,6 +66,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   value mk_debug _loc m fmt section args =
     let call = apply <:expr< Debug.printf $str:section$ $str:fmt$ >> args in
       <:expr< if $mk_debug_mode _loc m$ $str:section$ then $call$ else () >>;
+
 
   EXTEND Gram
     GLOBAL: expr;

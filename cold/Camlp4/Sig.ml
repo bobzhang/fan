@@ -3389,14 +3389,6 @@ module type DynAst =
                                                                  end
 
 
-                                                          type quotation = 
-                                                          {
-                                                            q_name:string;
-                                                            q_loc:string;
-                                                            q_shift:int;
-                                                            q_contents:string}
-
-
                                                           module type Quotation =
                                                            sig
                                                             module Ast : Ast
@@ -3444,7 +3436,8 @@ module type DynAst =
                                                                (string -> 'a))
                                                               ->
                                                               (loc ->
-                                                               (quotation ->
+                                                               (FanSig.quotation
+                                                                ->
                                                                 (string ->
                                                                  (string ->
                                                                   'a)))))
@@ -3455,7 +3448,8 @@ module type DynAst =
 
                                                             val expand :
                                                              (loc ->
-                                                              (quotation ->
+                                                              (FanSig.quotation
+                                                               ->
                                                                ('a DynAst.tag
                                                                 -> 'a)))
 
@@ -3467,776 +3461,598 @@ module type DynAst =
 
                                                            end
 
-module type Token =
+module type DynLoader =
+                                                                 sig
+                                                                  type t
+
+                                                                  exception Error
+                                                                   of
+                                                                   string *
+                                                                   string
+
+                                                                  val mk :
+                                                                   (?ocaml_stdlib :
+                                                                    bool ->
+                                                                    (?camlp4_stdlib :
+                                                                    bool ->
+                                                                    (unit ->
+                                                                    t)))
+
+                                                                  val fold_load_path :
+                                                                   (t ->
+                                                                    ((string
+                                                                    ->
+                                                                    ('a ->
+                                                                    'a)) ->
+                                                                    ('a ->
+                                                                    'a)))
+
+                                                                  val load :
+                                                                   (t ->
+                                                                    (string
+                                                                    -> 
+                                                                    unit))
+
+                                                                  val include_dir :
+                                                                   (t ->
+                                                                    (string
+                                                                    -> 
+                                                                    unit))
+
+                                                                  val find_in_path :
+                                                                   (t ->
+                                                                    (string
+                                                                    ->
+                                                                    string))
+
+                                                                  val is_native :
+                                                                   bool
+
+                                                                 end
+
+
+                                                          module Grammar =
+                                                           struct
+                                                            module type Action =
+                                                             sig
+                                                              type t
+
+                                                              val mk :
+                                                               ('a -> t)
+
+                                                              val get :
+                                                               (t -> 'a)
+
+                                                              val getf :
+                                                               (t ->
+                                                                ('a -> 'b))
+
+                                                              val getf2 :
+                                                               (t ->
+                                                                ('a ->
+                                                                 ('b -> 'c)))
+
+                                                             end
+
+                                                            type assoc =
+                                                               NonA
+                                                             | RightA
+                                                             | LeftA
+
+                                                            type position =
+                                                               First
+                                                             | Last
+                                                             | Before of
+                                                                string
+                                                             | After of
+                                                                string
+                                                             | Level of
+                                                                string
+
+                                                            module type Structure =
+                                                             sig
+                                                              module Loc :
+                                                               FanSig.Loc
+
+                                                              module Action :
+                                                               Action
+
+                                                              module Token :
+                                                               (FanSig.Token
+                                                                with
+                                                                module Loc =
+                                                                Loc)
+
+                                                              type gram = 
+                                                              {
+                                                                gfilter:
+                                                                 Token.Filter.t;
+                                                                gkeywords:
+                                                                 (string,
+                                                                  int ref) Hashtbl.t;
+                                                                glexer:
+                                                                 (Loc.t ->
+                                                                  (char Stream.t
+                                                                   ->
+                                                                   (Token.t *
+                                                                    Loc.t) Stream.t));
+                                                                warning_verbose:
+                                                                 bool ref;
+                                                                error_verbose:
+                                                                 bool ref}
+
+                                                              type internal_entry
+                                                              
+ type tree
+
+                                                              type token_pattern =
+                                                               ((Token.t ->
+                                                                 bool) *
+                                                                string)
+
+                                                              type token_info
+
+                                                              type token_stream =
+                                                               (Token.t *
+                                                                token_info) Stream.t
+
+                                                              val token_location :
+                                                               (token_info ->
+                                                                Loc.t)
+
+                                                              type symbol =
+                                                                 Smeta of
+                                                                  string *
+                                                                  symbol list *
+                                                                  Action.t
+                                                               | Snterm of
+                                                                  internal_entry
+                                                               | Snterml of
+                                                                  internal_entry *
+                                                                  string
+                                                               | Slist0 of
+                                                                  symbol
+                                                               | Slist0sep of
+                                                                  symbol *
+                                                                  symbol
+                                                               | Slist1 of
+                                                                  symbol
+                                                               | Slist1sep of
+                                                                  symbol *
+                                                                  symbol
+                                                               | Sopt of
+                                                                  symbol
+                                                               | Stry of
+                                                                  symbol
+                                                               | Sself
+                                                               | Snext
+                                                               | Stoken of
+                                                                  token_pattern
+                                                               | Skeyword of
+                                                                  string
+                                                               | Stree of
+                                                                  tree
+
+                                                              type production_rule =
+                                                               (symbol list *
+                                                                Action.t)
+
+                                                              type single_extend_statment =
+                                                               (string option *
+                                                                assoc option *
+                                                                production_rule list)
+
+                                                              type extend_statment =
+                                                               (position option *
+                                                                single_extend_statment list)
+
+                                                              type delete_statment =
+                                                               symbol list
+
+                                                              type ('a, 'b,
+                                                                    'c) fold =
+                                                               (internal_entry
+                                                                ->
+                                                                (symbol list
+                                                                 ->
+                                                                 (('a Stream.t
+                                                                   -> 'b) ->
+                                                                  ('a Stream.t
+                                                                   -> 'c))))
+
+                                                              type ('a, 'b,
+                                                                    'c) foldsep =
+                                                               (internal_entry
+                                                                ->
+                                                                (symbol list
+                                                                 ->
+                                                                 (('a Stream.t
+                                                                   -> 'b) ->
+                                                                  (('a Stream.t
+                                                                    -> 
+                                                                    unit) ->
+                                                                   ('a Stream.t
+                                                                    -> 'c)))))
+
+                                                             end
+
+                                                            module type Dynamic =
+                                                             sig
+                                                              include
+                                                               Structure
+
+                                                              val mk :
+                                                               (unit -> gram)
+
+                                                              module Entry :
+                                                               sig
+                                                                type 'a t
+
+                                                                val mk :
+                                                                 (gram ->
+                                                                  (string ->
+                                                                   'a t))
+
+                                                                val of_parser :
+                                                                 (gram ->
+                                                                  (string ->
+                                                                   ((token_stream
+                                                                    -> 'a) ->
+                                                                    'a t)))
+
+                                                                val setup_parser :
+                                                                 ('a t ->
+                                                                  ((token_stream
+                                                                    -> 'a) ->
+                                                                   unit))
+
+                                                                val name :
+                                                                 ('a t ->
+                                                                  string)
+
+                                                                val print :
+                                                                 (Format.formatter
+                                                                  ->
+                                                                  ('a t ->
+                                                                   unit))
+
+                                                                val dump :
+                                                                 (Format.formatter
+                                                                  ->
+                                                                  ('a t ->
+                                                                   unit))
+
+                                                                val obj :
+                                                                 ('a t ->
+                                                                  internal_entry)
+
+                                                                val clear :
+                                                                 ('a t ->
+                                                                  unit)
+
+                                                               end
+
+                                                              val get_filter :
+                                                               (gram ->
+                                                                Token.Filter.t)
+
+                                                              type 'a not_filtered
+                                                              
+
+                                                              val extend :
+                                                               ('a Entry.t ->
+                                                                (extend_statment
+                                                                 -> unit))
+
+                                                              val delete_rule :
+                                                               ('a Entry.t ->
+                                                                (delete_statment
+                                                                 -> unit))
+
+                                                              val srules :
+                                                               ('a Entry.t ->
+                                                                ((symbol list *
+                                                                  Action.t) list
+                                                                 -> symbol))
+
+                                                              val sfold0 :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) fold))
+
+                                                              val sfold1 :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) fold))
+
+                                                              val sfold0sep :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) foldsep))
+
+                                                              val lex :
+                                                               (gram ->
+                                                                (Loc.t ->
+                                                                 (char Stream.t
+                                                                  ->
+                                                                  (Token.t *
+                                                                   Loc.t) Stream.t not_filtered)))
+
+                                                              val lex_string :
+                                                               (gram ->
+                                                                (Loc.t ->
+                                                                 (string ->
+                                                                  (Token.t *
+                                                                   Loc.t) Stream.t not_filtered)))
+
+                                                              val filter :
+                                                               (gram ->
+                                                                ((Token.t *
+                                                                  Loc.t) Stream.t not_filtered
+                                                                 ->
+                                                                 token_stream))
+
+                                                              val parse :
+                                                               ('a Entry.t ->
+                                                                (Loc.t ->
+                                                                 (char Stream.t
+                                                                  -> 'a)))
+
+                                                              val parse_string :
+                                                               ('a Entry.t ->
+                                                                (Loc.t ->
+                                                                 (string ->
+                                                                  'a)))
+
+                                                              val parse_tokens_before_filter :
+                                                               ('a Entry.t ->
+                                                                ((Token.t *
+                                                                  Loc.t) Stream.t not_filtered
+                                                                 -> 'a))
+
+                                                              val parse_tokens_after_filter :
+                                                               ('a Entry.t ->
+                                                                (token_stream
+                                                                 -> 'a))
+
+                                                             end
+
+                                                            module type Static =
+                                                             sig
+                                                              include
+                                                               Structure
+
+                                                              val trace_parser :
+                                                               bool ref
+
+                                                              val gram : gram
+
+                                                              module Entry :
+                                                               sig
+                                                                type 'a t
+
+                                                                val mk :
+                                                                 (string ->
+                                                                  'a t)
+
+                                                                val of_parser :
+                                                                 (string ->
+                                                                  ((token_stream
+                                                                    -> 'a) ->
+                                                                   'a t))
+
+                                                                val setup_parser :
+                                                                 ('a t ->
+                                                                  ((token_stream
+                                                                    -> 'a) ->
+                                                                   unit))
+
+                                                                val name :
+                                                                 ('a t ->
+                                                                  string)
+
+                                                                val print :
+                                                                 (Format.formatter
+                                                                  ->
+                                                                  ('a t ->
+                                                                   unit))
+
+                                                                val dump :
+                                                                 (Format.formatter
+                                                                  ->
+                                                                  ('a t ->
+                                                                   unit))
+
+                                                                val obj :
+                                                                 ('a t ->
+                                                                  internal_entry)
+
+                                                                val clear :
+                                                                 ('a t ->
+                                                                  unit)
+
+                                                               end
+
+                                                              val get_filter :
+                                                               (unit ->
+                                                                Token.Filter.t)
+
+                                                              type 'a not_filtered
+                                                              
+
+                                                              val extend :
+                                                               ('a Entry.t ->
+                                                                (extend_statment
+                                                                 -> unit))
+
+                                                              val delete_rule :
+                                                               ('a Entry.t ->
+                                                                (delete_statment
+                                                                 -> unit))
+
+                                                              val srules :
+                                                               ('a Entry.t ->
+                                                                ((symbol list *
+                                                                  Action.t) list
+                                                                 -> symbol))
+
+                                                              val sfold0 :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) fold))
+
+                                                              val sfold1 :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) fold))
+
+                                                              val sfold0sep :
+                                                               (('a ->
+                                                                 ('b -> 'b))
+                                                                ->
+                                                                ('b ->
+                                                                 (_, 'a,
+                                                                  'b) foldsep))
+
+                                                              val lex :
+                                                               (Loc.t ->
+                                                                (char Stream.t
+                                                                 ->
+                                                                 (Token.t *
+                                                                  Loc.t) Stream.t not_filtered))
+
+                                                              val lex_string :
+                                                               (Loc.t ->
+                                                                (string ->
+                                                                 (Token.t *
+                                                                  Loc.t) Stream.t not_filtered))
+
+                                                              val filter :
+                                                               ((Token.t *
+                                                                 Loc.t) Stream.t not_filtered
+                                                                ->
+                                                                token_stream)
+
+                                                              val parse :
+                                                               ('a Entry.t ->
+                                                                (Loc.t ->
+                                                                 (char Stream.t
+                                                                  -> 'a)))
+
+                                                              val parse_string :
+                                                               ('a Entry.t ->
+                                                                (Loc.t ->
+                                                                 (string ->
+                                                                  'a)))
+
+                                                              val parse_tokens_before_filter :
+                                                               ('a Entry.t ->
+                                                                ((Token.t *
+                                                                  Loc.t) Stream.t not_filtered
+                                                                 -> 'a))
+
+                                                              val parse_tokens_after_filter :
+                                                               ('a Entry.t ->
+                                                                (token_stream
+                                                                 -> 'a))
+
+                                                             end
+
+                                                           end
+
+module type Lexer =
                                                                  sig
                                                                   module
                                                                    Loc :
                                                                    FanSig.Loc
 
-                                                                  type t
-
-                                                                  val to_string :
-                                                                   (t ->
-                                                                    string)
-
-                                                                  val print :
-                                                                   (Format.formatter
-                                                                    ->
-                                                                    (t ->
-                                                                    unit))
-
-                                                                  val match_keyword :
-                                                                   (string ->
-                                                                    (t ->
-                                                                    bool))
-
-                                                                  val extract_string :
-                                                                   (t ->
-                                                                    string)
-
                                                                   module
-                                                                   Filter :
-                                                                   sig
-                                                                    type token_filter =
-                                                                    (t,
-                                                                    Loc.t) stream_filter
-
-                                                                    type t
-
-                                                                    val mk :
-                                                                    ((string
-                                                                    -> 
-                                                                    bool) ->
-                                                                    t)
-
-                                                                    val define_filter :
-                                                                    (t ->
-                                                                    ((token_filter
-                                                                    ->
-                                                                    token_filter)
-                                                                    -> 
-                                                                    unit))
-
-                                                                    val filter :
-                                                                    (t ->
-                                                                    token_filter)
-
-                                                                    val keyword_added :
-                                                                    (t ->
-                                                                    (string
-                                                                    ->
-                                                                    (bool ->
-                                                                    unit)))
-
-                                                                    val keyword_removed :
-                                                                    (t ->
-                                                                    (string
-                                                                    -> 
-                                                                    unit))
-
-                                                                   end
+                                                                   Token :
+                                                                   (FanSig.Token
+                                                                    with
+                                                                    module Loc =
+                                                                    Loc)
 
                                                                   module
                                                                    Error :
                                                                    FanSig.Error
 
-                                                                 end
-
-
-                                                          type camlp4_token =
-                                                             KEYWORD of
-                                                              string
-                                                           | SYMBOL of string
-                                                           | LIDENT of string
-                                                           | UIDENT of string
-                                                           | ESCAPED_IDENT of
-                                                              string
-                                                           | INT of int *
-                                                              string
-                                                           | INT32 of 
-                                                              int32 * 
-                                                              string
-                                                           | INT64 of 
-                                                              int64 * 
-                                                              string
-                                                           | NATIVEINT of
-                                                              nativeint *
-                                                              string
-                                                           | FLOAT of 
-                                                              float * 
-                                                              string
-                                                           | CHAR of 
-                                                              char * 
-                                                              string
-                                                           | STRING of
-                                                              string * 
-                                                              string
-                                                           | LABEL of string
-                                                           | OPTLABEL of
-                                                              string
-                                                           | QUOTATION of
-                                                              quotation
-                                                           | ANTIQUOT of
-                                                              string * 
-                                                              string
-                                                           | COMMENT of
-                                                              string
-                                                           | BLANKS of string
-                                                           | NEWLINE
-                                                           | LINE_DIRECTIVE
-                                                              of int *
-                                                              string option
-                                                           | EOI
-
-module type Camlp4Token =
-                                                                   (Token
-                                                                    with type
-                                                                     t =
-                                                                    camlp4_token)
-
-
-                                                          module type DynLoader =
-                                                           sig
-                                                            type t
-
-                                                            exception Error
-                                                             of string *
-                                                             string
-
-                                                            val mk :
-                                                             (?ocaml_stdlib :
-                                                              bool ->
-                                                              (?camlp4_stdlib :
-                                                               bool ->
-                                                               (unit -> t)))
-
-                                                            val fold_load_path :
-                                                             (t ->
-                                                              ((string ->
-                                                                ('a -> 'a))
-                                                               -> ('a -> 'a)))
-
-                                                            val load :
-                                                             (t ->
-                                                              (string ->
-                                                               unit))
-
-                                                            val include_dir :
-                                                             (t ->
-                                                              (string ->
-                                                               unit))
-
-                                                            val find_in_path :
-                                                             (t ->
-                                                              (string ->
-                                                               string))
-
-                                                            val is_native :
-                                                             bool
-
-                                                           end
-
-module Grammar =
-                                                                 struct
-                                                                  module type Action =
-                                                                   sig
-                                                                    type t
-
-                                                                    val mk :
-                                                                    ('a -> t)
-
-                                                                    val get :
-                                                                    (t -> 'a)
-
-                                                                    val getf :
-                                                                    (t ->
-                                                                    ('a ->
-                                                                    'b))
-
-                                                                    val getf2 :
-                                                                    (t ->
-                                                                    ('a ->
-                                                                    ('b ->
-                                                                    'c)))
-
-                                                                   end
-
-                                                                  type assoc =
-                                                                     
-                                                                   NonA
-                                                                   | 
-                                                                   RightA
-                                                                   | 
-                                                                   LeftA
-
-                                                                  type position =
-                                                                     
-                                                                   First
-                                                                   | 
-                                                                   Last
-                                                                   | 
-                                                                   Before of
-                                                                    string
-                                                                   | 
-                                                                   After of
-                                                                    string
-                                                                   | 
-                                                                   Level of
-                                                                    string
-
-                                                                  module type Structure =
-                                                                   sig
-                                                                    module
-                                                                    Loc :
-                                                                    FanSig.Loc
-
-                                                                    module
-                                                                    Action :
-                                                                    Action
-
-                                                                    module
-                                                                    Token :
-                                                                    (Token
-                                                                    with
-                                                                    module Loc =
-                                                                    Loc)
-
-                                                                    type gram = 
-                                                                    {
-                                                                    gfilter:
-                                                                    Token.Filter.t;
-                                                                    gkeywords:
-                                                                    (string,
-                                                                    int ref) Hashtbl.t;
-                                                                    glexer:
+                                                                  val mk :
+                                                                   (unit ->
                                                                     (Loc.t ->
                                                                     (char Stream.t
                                                                     ->
                                                                     (Token.t *
-                                                                    Loc.t) Stream.t));
-                                                                    warning_verbose:
-                                                                    bool ref;
-                                                                    error_verbose:
-                                                                    bool ref}
-
-                                                                    type internal_entry
-                                                                    
-
-                                                                    type tree
-
-                                                                    type token_pattern =
-                                                                    ((Token.t
-                                                                    -> 
-                                                                    bool) *
-                                                                    string)
-
-                                                                    type token_info
-                                                                    
-
-                                                                    type token_stream =
-                                                                    (Token.t *
-                                                                    token_info) Stream.t
-
-                                                                    val token_location :
-                                                                    (token_info
-                                                                    -> 
-                                                                    Loc.t)
-
-                                                                    type symbol =
-                                                                      
-                                                                    Smeta of
-                                                                    string *
-                                                                    symbol list *
-                                                                    Action.t
-                                                                    | 
-                                                                    Snterm of
-                                                                    internal_entry
-                                                                    | 
-                                                                    Snterml
-                                                                    of
-                                                                    internal_entry *
-                                                                    string
-                                                                    | 
-                                                                    Slist0 of
-                                                                    symbol
-                                                                    | 
-                                                                    Slist0sep
-                                                                    of
-                                                                    symbol *
-                                                                    symbol
-                                                                    | 
-                                                                    Slist1 of
-                                                                    symbol
-                                                                    | 
-                                                                    Slist1sep
-                                                                    of
-                                                                    symbol *
-                                                                    symbol
-                                                                    | 
-                                                                    Sopt of
-                                                                    symbol
-                                                                    | 
-                                                                    Stry of
-                                                                    symbol
-                                                                    | 
-                                                                    Sself
-                                                                    | 
-                                                                    Snext
-                                                                    | 
-                                                                    Stoken of
-                                                                    token_pattern
-                                                                    | 
-                                                                    Skeyword
-                                                                    of 
-                                                                    string
-                                                                    | 
-                                                                    Stree of
-                                                                    tree
-
-                                                                    type production_rule =
-                                                                    (symbol list *
-                                                                    Action.t)
-
-                                                                    type single_extend_statment =
-                                                                    (string option *
-                                                                    assoc option *
-                                                                    production_rule list)
-
-                                                                    type extend_statment =
-                                                                    (position option *
-                                                                    single_extend_statment list)
-
-                                                                    type delete_statment =
-                                                                    symbol list
-
-                                                                    type 
-                                                                    ('a, 'b,
-                                                                    'c) fold =
-                                                                    (internal_entry
-                                                                    ->
-                                                                    (symbol list
-                                                                    ->
-                                                                    (('a Stream.t
-                                                                    -> 'b) ->
-                                                                    ('a Stream.t
-                                                                    -> 'c))))
-
-                                                                    type 
-                                                                    ('a, 'b,
-                                                                    'c) foldsep =
-                                                                    (internal_entry
-                                                                    ->
-                                                                    (symbol list
-                                                                    ->
-                                                                    (('a Stream.t
-                                                                    -> 'b) ->
-                                                                    (('a Stream.t
-                                                                    -> 
-                                                                    unit) ->
-                                                                    ('a Stream.t
-                                                                    -> 'c)))))
-
-                                                                   end
-
-                                                                  module type Dynamic =
-                                                                   sig
-                                                                    include
-                                                                    Structure
-
-                                                                    val mk :
-                                                                    (unit ->
-                                                                    gram)
-
-                                                                    module
-                                                                    Entry :
-                                                                    sig
-                                                                    type 'a t
-
-                                                                    val mk :
-                                                                    (gram ->
-                                                                    (string
-                                                                    -> 
-                                                                    'a t))
-
-                                                                    val of_parser :
-                                                                    (gram ->
-                                                                    (string
-                                                                    ->
-                                                                    ((token_stream
-                                                                    -> 'a) ->
-                                                                    'a t)))
-
-                                                                    val setup_parser :
-                                                                    ('a t ->
-                                                                    ((token_stream
-                                                                    -> 'a) ->
-                                                                    unit))
-
-                                                                    val name :
-                                                                    ('a t ->
-                                                                    string)
-
-                                                                    val print :
-                                                                    (Format.formatter
-                                                                    ->
-                                                                    ('a t ->
-                                                                    unit))
-
-                                                                    val dump :
-                                                                    (Format.formatter
-                                                                    ->
-                                                                    ('a t ->
-                                                                    unit))
-
-                                                                    val obj :
-                                                                    ('a t ->
-                                                                    internal_entry)
-
-                                                                    val clear :
-                                                                    ('a t ->
-                                                                    unit)
-
-                                                                    end
-
-                                                                    val get_filter :
-                                                                    (gram ->
-                                                                    Token.Filter.t)
-
-                                                                    type 'a not_filtered
-                                                                    
-
-                                                                    val extend :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (extend_statment
-                                                                    -> 
-                                                                    unit))
-
-                                                                    val delete_rule :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (delete_statment
-                                                                    -> 
-                                                                    unit))
-
-                                                                    val srules :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    ((symbol list *
-                                                                    Action.t) list
-                                                                    ->
-                                                                    symbol))
-
-                                                                    val sfold0 :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) fold))
-
-                                                                    val sfold1 :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) fold))
-
-                                                                    val sfold0sep :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) foldsep))
-
-                                                                    val lex :
-                                                                    (gram ->
-                                                                    (Loc.t ->
-                                                                    (char Stream.t
-                                                                    ->
-                                                                    (Token.t *
-                                                                    Loc.t) Stream.t not_filtered)))
-
-                                                                    val lex_string :
-                                                                    (gram ->
-                                                                    (Loc.t ->
-                                                                    (string
-                                                                    ->
-                                                                    (Token.t *
-                                                                    Loc.t) Stream.t not_filtered)))
-
-                                                                    val filter :
-                                                                    (gram ->
-                                                                    ((Token.t *
-                                                                    Loc.t) Stream.t not_filtered
-                                                                    ->
-                                                                    token_stream))
-
-                                                                    val parse :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (Loc.t ->
-                                                                    (char Stream.t
-                                                                    -> 'a)))
-
-                                                                    val parse_string :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (Loc.t ->
-                                                                    (string
-                                                                    -> 'a)))
-
-                                                                    val parse_tokens_before_filter :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    ((Token.t *
-                                                                    Loc.t) Stream.t not_filtered
-                                                                    -> 'a))
-
-                                                                    val parse_tokens_after_filter :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (token_stream
-                                                                    -> 'a))
-
-                                                                   end
-
-                                                                  module type Static =
-                                                                   sig
-                                                                    include
-                                                                    Structure
-
-                                                                    val trace_parser :
-                                                                    bool ref
-
-                                                                    val gram :
-                                                                    gram
-
-                                                                    module
-                                                                    Entry :
-                                                                    sig
-                                                                    type 'a t
-
-                                                                    val mk :
-                                                                    (string
-                                                                    -> 
-                                                                    'a t)
-
-                                                                    val of_parser :
-                                                                    (string
-                                                                    ->
-                                                                    ((token_stream
-                                                                    -> 'a) ->
-                                                                    'a t))
-
-                                                                    val setup_parser :
-                                                                    ('a t ->
-                                                                    ((token_stream
-                                                                    -> 'a) ->
-                                                                    unit))
-
-                                                                    val name :
-                                                                    ('a t ->
-                                                                    string)
-
-                                                                    val print :
-                                                                    (Format.formatter
-                                                                    ->
-                                                                    ('a t ->
-                                                                    unit))
-
-                                                                    val dump :
-                                                                    (Format.formatter
-                                                                    ->
-                                                                    ('a t ->
-                                                                    unit))
-
-                                                                    val obj :
-                                                                    ('a t ->
-                                                                    internal_entry)
-
-                                                                    val clear :
-                                                                    ('a t ->
-                                                                    unit)
-
-                                                                    end
-
-                                                                    val get_filter :
-                                                                    (unit ->
-                                                                    Token.Filter.t)
-
-                                                                    type 'a not_filtered
-                                                                    
-
-                                                                    val extend :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (extend_statment
-                                                                    -> 
-                                                                    unit))
-
-                                                                    val delete_rule :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (delete_statment
-                                                                    -> 
-                                                                    unit))
-
-                                                                    val srules :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    ((symbol list *
-                                                                    Action.t) list
-                                                                    ->
-                                                                    symbol))
-
-                                                                    val sfold0 :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) fold))
-
-                                                                    val sfold1 :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) fold))
-
-                                                                    val sfold0sep :
-                                                                    (('a ->
-                                                                    ('b ->
-                                                                    'b)) ->
-                                                                    ('b ->
-                                                                    (_, 'a,
-                                                                    'b) foldsep))
-
-                                                                    val lex :
-                                                                    (Loc.t ->
-                                                                    (char Stream.t
-                                                                    ->
-                                                                    (Token.t *
-                                                                    Loc.t) Stream.t not_filtered))
-
-                                                                    val lex_string :
-                                                                    (Loc.t ->
-                                                                    (string
-                                                                    ->
-                                                                    (Token.t *
-                                                                    Loc.t) Stream.t not_filtered))
-
-                                                                    val filter :
-                                                                    ((Token.t *
-                                                                    Loc.t) Stream.t not_filtered
-                                                                    ->
-                                                                    token_stream)
-
-                                                                    val parse :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (Loc.t ->
-                                                                    (char Stream.t
-                                                                    -> 'a)))
-
-                                                                    val parse_string :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (Loc.t ->
-                                                                    (string
-                                                                    -> 'a)))
-
-                                                                    val parse_tokens_before_filter :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    ((Token.t *
-                                                                    Loc.t) Stream.t not_filtered
-                                                                    -> 'a))
-
-                                                                    val parse_tokens_after_filter :
-                                                                    ('a Entry.t
-                                                                    ->
-                                                                    (token_stream
-                                                                    -> 'a))
-
-                                                                   end
+                                                                    Loc.t) Stream.t)))
 
                                                                  end
 
 
-                                                  module type Lexer =
-                                                   sig
-                                                    module Loc : FanSig.Loc
+                                                          module Parser =
+                                                           functor (Ast : Ast) ->
+                                                            struct
+                                                             module type SIMPLE =
+                                                              sig
+                                                               val parse_expr :
+                                                                (Ast.loc ->
+                                                                 (string ->
+                                                                  Ast.expr))
 
-                                                    module Token :
-                                                     (Token with module Loc =
-                                                      Loc)
+                                                               val parse_patt :
+                                                                (Ast.loc ->
+                                                                 (string ->
+                                                                  Ast.patt))
 
-                                                    module Error :
-                                                     FanSig.Error
+                                                              end
 
-                                                    val mk :
-                                                     (unit ->
-                                                      (Loc.t ->
-                                                       (char Stream.t ->
-                                                        (Token.t * Loc.t) Stream.t)))
+                                                             module type S =
+                                                              sig
+                                                               val parse_implem :
+                                                                (?directive_handler :
+                                                                 (Ast.str_item
+                                                                  ->
+                                                                  Ast.str_item option)
+                                                                 ->
+                                                                 (Ast.loc ->
+                                                                  (char Stream.t
+                                                                   ->
+                                                                   Ast.str_item)))
 
-                                                   end
+                                                               val parse_interf :
+                                                                (?directive_handler :
+                                                                 (Ast.sig_item
+                                                                  ->
+                                                                  Ast.sig_item option)
+                                                                 ->
+                                                                 (Ast.loc ->
+                                                                  (char Stream.t
+                                                                   ->
+                                                                   Ast.sig_item)))
 
-module Parser =
-                                                         functor (Ast : Ast) ->
-                                                          struct
-                                                           module type SIMPLE =
-                                                            sig
-                                                             val parse_expr :
-                                                              (Ast.loc ->
-                                                               (string ->
-                                                                Ast.expr))
-
-                                                             val parse_patt :
-                                                              (Ast.loc ->
-                                                               (string ->
-                                                                Ast.patt))
+                                                              end
 
                                                             end
-
-                                                           module type S =
-                                                            sig
-                                                             val parse_implem :
-                                                              (?directive_handler :
-                                                               (Ast.str_item
-                                                                ->
-                                                                Ast.str_item option)
-                                                               ->
-                                                               (Ast.loc ->
-                                                                (char Stream.t
-                                                                 ->
-                                                                 Ast.str_item)))
-
-                                                             val parse_interf :
-                                                              (?directive_handler :
-                                                               (Ast.sig_item
-                                                                ->
-                                                                Ast.sig_item option)
-                                                               ->
-                                                               (Ast.loc ->
-                                                                (char Stream.t
-                                                                 ->
-                                                                 Ast.sig_item)))
-
-                                                            end
-
-                                                          end
 
 module Printer =
-                                                                functor (Ast : Ast) ->
-                                                                 struct
-                                                                  module type S =
-                                                                   sig
+                                                                  functor (Ast : Ast) ->
+                                                                   struct
+                                                                    module type S =
+                                                                    sig
                                                                     val print_interf :
                                                                     (?input_file :
                                                                     string ->
@@ -4255,905 +4071,991 @@ module Printer =
                                                                     -> 
                                                                     unit)))
 
+                                                                    end
+
                                                                    end
+
+
+                                                          module type Syntax =
+                                                           sig
+                                                            module Loc :
+                                                             FanSig.Loc
+
+                                                            module Ast :
+                                                             (Ast with type
+                                                               loc = 
+                                                              Loc.t)
+
+                                                            module Token :
+                                                             (FanSig.Token
+                                                              with
+                                                              module Loc =
+                                                              Loc)
+
+                                                            module Gram :
+                                                             (Grammar.Static
+                                                              with
+                                                              module Loc =
+                                                              Loc
+                                                              and module Loc =
+                                                              Loc
+                                                              and module Token =
+                                                              Token)
+
+                                                            module
+                                                             Quotation :
+                                                             (Quotation with
+                                                              module Ast =
+                                                              Ast)
+
+                                                            module
+                                                             AntiquotSyntax :
+                                                             Parser(Ast).SIMPLE
+
+                                                            include
+                                                             Warning(Loc).S
+
+                                                            include
+                                                             Parser(Ast).S
+
+                                                            include
+                                                             Printer(Ast).S
+
+                                                           end
+
+module type Camlp4Syntax =
+                                                                 sig
+                                                                  module
+                                                                   Loc :
+                                                                   FanSig.Loc
+
+                                                                  module
+                                                                   Ast :
+                                                                   (Camlp4Ast
+                                                                    with
+                                                                    module Loc =
+                                                                    Loc)
+
+                                                                  module
+                                                                   Token :
+                                                                   (FanSig.Camlp4Token
+                                                                    with
+                                                                    module Loc =
+                                                                    Loc)
+
+                                                                  module
+                                                                   Gram :
+                                                                   (Grammar.Static
+                                                                    with
+                                                                    module Loc =
+                                                                    Loc
+                                                                    and module Loc =
+                                                                    Loc
+                                                                    and module Token =
+                                                                    Token)
+
+                                                                  module
+                                                                   Quotation :
+                                                                   (Quotation
+                                                                    with
+                                                                    module Ast =
+                                                                    Camlp4AstToAst(Ast))
+
+                                                                  module
+                                                                   AntiquotSyntax :
+                                                                   Parser(Ast).SIMPLE
+
+                                                                  include
+                                                                   Warning(Loc).S
+
+                                                                  include
+                                                                   Parser(Ast).S
+
+                                                                  include
+                                                                   Printer(Ast).S
+
+                                                                  val interf :
+                                                                   (Ast.sig_item list *
+                                                                    Loc.t option) Gram.Entry.t
+
+                                                                  val implem :
+                                                                   (Ast.str_item list *
+                                                                    Loc.t option) Gram.Entry.t
+
+                                                                  val top_phrase :
+                                                                   Ast.str_item option Gram.Entry.t
+
+                                                                  val use_file :
+                                                                   (Ast.str_item list *
+                                                                    Loc.t option) Gram.Entry.t
+
+                                                                  val a_CHAR :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_FLOAT :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_INT :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_INT32 :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_INT64 :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_LABEL :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_LIDENT :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_NATIVEINT :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_OPTLABEL :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_STRING :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_UIDENT :
+                                                                   string Gram.Entry.t
+
+                                                                  val a_ident :
+                                                                   string Gram.Entry.t
+
+                                                                  val amp_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val and_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val match_case :
+                                                                   Ast.match_case Gram.Entry.t
+
+                                                                  val match_case0 :
+                                                                   Ast.match_case Gram.Entry.t
+
+                                                                  val match_case_quot :
+                                                                   Ast.match_case Gram.Entry.t
+
+                                                                  val binding :
+                                                                   Ast.binding Gram.Entry.t
+
+                                                                  val binding_quot :
+                                                                   Ast.binding Gram.Entry.t
+
+                                                                  val rec_binding_quot :
+                                                                   Ast.rec_binding Gram.Entry.t
+
+                                                                  val class_declaration :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_description :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_expr :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_expr_quot :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_fun_binding :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_fun_def :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_info_for_class_expr :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_info_for_class_type :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val class_longident_and_param :
+                                                                   Ast.class_expr Gram.Entry.t
+
+                                                                  val class_name_and_param :
+                                                                   (string *
+                                                                    Ast.ctyp) Gram.Entry.t
+
+                                                                  val class_sig_item :
+                                                                   Ast.class_sig_item Gram.Entry.t
+
+                                                                  val class_sig_item_quot :
+                                                                   Ast.class_sig_item Gram.Entry.t
+
+                                                                  val class_signature :
+                                                                   Ast.class_sig_item Gram.Entry.t
+
+                                                                  val class_str_item :
+                                                                   Ast.class_str_item Gram.Entry.t
+
+                                                                  val class_str_item_quot :
+                                                                   Ast.class_str_item Gram.Entry.t
+
+                                                                  val class_structure :
+                                                                   Ast.class_str_item Gram.Entry.t
+
+                                                                  val class_type :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_type_declaration :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_type_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val class_type_longident_and_param :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_type_plus :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val class_type_quot :
+                                                                   Ast.class_type Gram.Entry.t
+
+                                                                  val comma_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val comma_expr :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val comma_ipatt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val comma_patt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val comma_type_parameter :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val constrain :
+                                                                   (Ast.ctyp *
+                                                                    Ast.ctyp) Gram.Entry.t
+
+                                                                  val constructor_arg_list :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val constructor_declaration :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val constructor_declarations :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val ctyp_quot :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val cvalue_binding :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val direction_flag :
+                                                                   Ast.direction_flag Gram.Entry.t
+
+                                                                  val direction_flag_quot :
+                                                                   Ast.direction_flag Gram.Entry.t
+
+                                                                  val dummy :
+                                                                   unit Gram.Entry.t
+
+                                                                  val eq_expr :
+                                                                   (string ->
+                                                                    (Ast.patt
+                                                                    ->
+                                                                    Ast.patt)) Gram.Entry.t
+
+                                                                  val expr :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val expr_eoi :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val expr_quot :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val field_expr :
+                                                                   Ast.rec_binding Gram.Entry.t
+
+                                                                  val field_expr_list :
+                                                                   Ast.rec_binding Gram.Entry.t
+
+                                                                  val fun_binding :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val fun_def :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val ident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val ident_quot :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val ipatt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val ipatt_tcon :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val label :
+                                                                   string Gram.Entry.t
+
+                                                                  val label_declaration :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val label_declaration_list :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val label_expr :
+                                                                   Ast.rec_binding Gram.Entry.t
+
+                                                                  val label_expr_list :
+                                                                   Ast.rec_binding Gram.Entry.t
+
+                                                                  val label_ipatt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val label_ipatt_list :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val label_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val label_patt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val label_patt_list :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val labeled_ipatt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val let_binding :
+                                                                   Ast.binding Gram.Entry.t
+
+                                                                  val meth_list :
+                                                                   (Ast.ctyp *
+                                                                    Ast.row_var_flag) Gram.Entry.t
+
+                                                                  val meth_decl :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val module_binding :
+                                                                   Ast.module_binding Gram.Entry.t
+
+                                                                  val module_binding0 :
+                                                                   Ast.module_expr Gram.Entry.t
+
+                                                                  val module_binding_quot :
+                                                                   Ast.module_binding Gram.Entry.t
+
+                                                                  val module_declaration :
+                                                                   Ast.module_type Gram.Entry.t
+
+                                                                  val module_expr :
+                                                                   Ast.module_expr Gram.Entry.t
+
+                                                                  val module_expr_quot :
+                                                                   Ast.module_expr Gram.Entry.t
+
+                                                                  val module_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val module_longident_with_app :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val module_rec_declaration :
+                                                                   Ast.module_binding Gram.Entry.t
+
+                                                                  val module_type :
+                                                                   Ast.module_type Gram.Entry.t
+
+                                                                  val package_type :
+                                                                   Ast.module_type Gram.Entry.t
+
+                                                                  val module_type_quot :
+                                                                   Ast.module_type Gram.Entry.t
+
+                                                                  val more_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val name_tags :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_as_lident :
+                                                                   string Gram.Entry.t
+
+                                                                  val opt_class_self_patt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val opt_class_self_type :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_comma_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_dot_dot :
+                                                                   Ast.row_var_flag Gram.Entry.t
+
+                                                                  val row_var_flag_quot :
+                                                                   Ast.row_var_flag Gram.Entry.t
+
+                                                                  val opt_eq_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_expr :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val opt_meth_list :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_mutable :
+                                                                   Ast.mutable_flag Gram.Entry.t
+
+                                                                  val mutable_flag_quot :
+                                                                   Ast.mutable_flag Gram.Entry.t
+
+                                                                  val opt_override :
+                                                                   Ast.override_flag Gram.Entry.t
+
+                                                                  val override_flag_quot :
+                                                                   Ast.override_flag Gram.Entry.t
+
+                                                                  val opt_polyt :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val opt_private :
+                                                                   Ast.private_flag Gram.Entry.t
+
+                                                                  val private_flag_quot :
+                                                                   Ast.private_flag Gram.Entry.t
+
+                                                                  val opt_rec :
+                                                                   Ast.rec_flag Gram.Entry.t
+
+                                                                  val rec_flag_quot :
+                                                                   Ast.rec_flag Gram.Entry.t
+
+                                                                  val opt_virtual :
+                                                                   Ast.virtual_flag Gram.Entry.t
+
+                                                                  val virtual_flag_quot :
+                                                                   Ast.virtual_flag Gram.Entry.t
+
+                                                                  val opt_when_expr :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val patt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val patt_as_patt_opt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val patt_eoi :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val patt_quot :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val patt_tcon :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val phrase :
+                                                                   Ast.str_item Gram.Entry.t
+
+                                                                  val poly_type :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val row_field :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val sem_expr :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val sem_expr_for_list :
+                                                                   (Ast.expr
+                                                                    ->
+                                                                    Ast.expr) Gram.Entry.t
+
+                                                                  val sem_patt :
+                                                                   Ast.patt Gram.Entry.t
+
+                                                                  val sem_patt_for_list :
+                                                                   (Ast.patt
+                                                                    ->
+                                                                    Ast.patt) Gram.Entry.t
+
+                                                                  val semi :
+                                                                   unit Gram.Entry.t
+
+                                                                  val sequence :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val do_sequence :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val sig_item :
+                                                                   Ast.sig_item Gram.Entry.t
+
+                                                                  val sig_item_quot :
+                                                                   Ast.sig_item Gram.Entry.t
+
+                                                                  val sig_items :
+                                                                   Ast.sig_item Gram.Entry.t
+
+                                                                  val star_ctyp :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val str_item :
+                                                                   Ast.str_item Gram.Entry.t
+
+                                                                  val str_item_quot :
+                                                                   Ast.str_item Gram.Entry.t
+
+                                                                  val str_items :
+                                                                   Ast.str_item Gram.Entry.t
+
+                                                                  val type_constraint :
+                                                                   unit Gram.Entry.t
+
+                                                                  val type_declaration :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val type_ident_and_parameters :
+                                                                   (string *
+                                                                    Ast.ctyp list) Gram.Entry.t
+
+                                                                  val type_kind :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val type_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val type_longident_and_parameters :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val type_parameter :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val type_parameters :
+                                                                   (Ast.ctyp
+                                                                    ->
+                                                                    Ast.ctyp) Gram.Entry.t
+
+                                                                  val typevars :
+                                                                   Ast.ctyp Gram.Entry.t
+
+                                                                  val val_longident :
+                                                                   Ast.ident Gram.Entry.t
+
+                                                                  val value_let :
+                                                                   unit Gram.Entry.t
+
+                                                                  val value_val :
+                                                                   unit Gram.Entry.t
+
+                                                                  val with_constr :
+                                                                   Ast.with_constr Gram.Entry.t
+
+                                                                  val with_constr_quot :
+                                                                   Ast.with_constr Gram.Entry.t
+
+                                                                  val prefixop :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val infixop0 :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val infixop1 :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val infixop2 :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val infixop3 :
+                                                                   Ast.expr Gram.Entry.t
+
+                                                                  val infixop4 :
+                                                                   Ast.expr Gram.Entry.t
 
                                                                  end
 
 
-                                                  module type Syntax =
-                                                   sig
-                                                    module Loc : FanSig.Loc
-
-                                                    module Ast :
-                                                     (Ast with type  loc =
-                                                      Loc.t)
-
-                                                    module Token :
-                                                     (Token with module Loc =
-                                                      Loc)
-
-                                                    module Gram :
-                                                     (Grammar.Static with
-                                                      module Loc = Loc
-                                                      and module Loc = Loc
-                                                      and module Token =
-                                                      Token)
-
-                                                    module Quotation :
-                                                     (Quotation with
-                                                      module Ast = Ast)
-
-                                                    module AntiquotSyntax :
-                                                     Parser(Ast).SIMPLE
-
-                                                    include Warning(Loc).S
-
-                                                    include Parser(Ast).S
-
-                                                    include Printer(Ast).S
-
-                                                   end
-
-module type Camlp4Syntax =
-                                                         sig
-                                                          module Loc :
-                                                           FanSig.Loc
-
-                                                          module Ast :
-                                                           (Camlp4Ast with
-                                                            module Loc = Loc)
-
-                                                          module Token :
-                                                           (Camlp4Token with
-                                                            module Loc = Loc)
-
-                                                          module Gram :
-                                                           (Grammar.Static
-                                                            with module Loc =
-                                                            Loc
-                                                            and module Loc =
-                                                            Loc
-                                                            and module Token =
-                                                            Token)
-
-                                                          module Quotation :
-                                                           (Quotation with
-                                                            module Ast =
-                                                            Camlp4AstToAst(Ast))
-
-                                                          module
-                                                           AntiquotSyntax :
-                                                           Parser(Ast).SIMPLE
-
-                                                          include
-                                                           Warning(Loc).S
-
-                                                          include
-                                                           Parser(Ast).S
-
-                                                          include
-                                                           Printer(Ast).S
-
-                                                          val interf :
-                                                           (Ast.sig_item list *
-                                                            Loc.t option) Gram.Entry.t
-
-                                                          val implem :
-                                                           (Ast.str_item list *
-                                                            Loc.t option) Gram.Entry.t
-
-                                                          val top_phrase :
-                                                           Ast.str_item option Gram.Entry.t
-
-                                                          val use_file :
-                                                           (Ast.str_item list *
-                                                            Loc.t option) Gram.Entry.t
-
-                                                          val a_CHAR :
-                                                           string Gram.Entry.t
-
-                                                          val a_FLOAT :
-                                                           string Gram.Entry.t
-
-                                                          val a_INT :
-                                                           string Gram.Entry.t
-
-                                                          val a_INT32 :
-                                                           string Gram.Entry.t
-
-                                                          val a_INT64 :
-                                                           string Gram.Entry.t
-
-                                                          val a_LABEL :
-                                                           string Gram.Entry.t
-
-                                                          val a_LIDENT :
-                                                           string Gram.Entry.t
-
-                                                          val a_NATIVEINT :
-                                                           string Gram.Entry.t
-
-                                                          val a_OPTLABEL :
-                                                           string Gram.Entry.t
-
-                                                          val a_STRING :
-                                                           string Gram.Entry.t
-
-                                                          val a_UIDENT :
-                                                           string Gram.Entry.t
-
-                                                          val a_ident :
-                                                           string Gram.Entry.t
-
-                                                          val amp_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val and_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val match_case :
-                                                           Ast.match_case Gram.Entry.t
-
-                                                          val match_case0 :
-                                                           Ast.match_case Gram.Entry.t
-
-                                                          val match_case_quot :
-                                                           Ast.match_case Gram.Entry.t
-
-                                                          val binding :
-                                                           Ast.binding Gram.Entry.t
-
-                                                          val binding_quot :
-                                                           Ast.binding Gram.Entry.t
-
-                                                          val rec_binding_quot :
-                                                           Ast.rec_binding Gram.Entry.t
-
-                                                          val class_declaration :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_description :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_expr :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_expr_quot :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_fun_binding :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_fun_def :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_info_for_class_expr :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_info_for_class_type :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val class_longident_and_param :
-                                                           Ast.class_expr Gram.Entry.t
-
-                                                          val class_name_and_param :
-                                                           (string *
-                                                            Ast.ctyp) Gram.Entry.t
-
-                                                          val class_sig_item :
-                                                           Ast.class_sig_item Gram.Entry.t
-
-                                                          val class_sig_item_quot :
-                                                           Ast.class_sig_item Gram.Entry.t
-
-                                                          val class_signature :
-                                                           Ast.class_sig_item Gram.Entry.t
-
-                                                          val class_str_item :
-                                                           Ast.class_str_item Gram.Entry.t
-
-                                                          val class_str_item_quot :
-                                                           Ast.class_str_item Gram.Entry.t
-
-                                                          val class_structure :
-                                                           Ast.class_str_item Gram.Entry.t
-
-                                                          val class_type :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_type_declaration :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_type_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val class_type_longident_and_param :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_type_plus :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val class_type_quot :
-                                                           Ast.class_type Gram.Entry.t
-
-                                                          val comma_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val comma_expr :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val comma_ipatt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val comma_patt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val comma_type_parameter :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val constrain :
-                                                           (Ast.ctyp *
-                                                            Ast.ctyp) Gram.Entry.t
-
-                                                          val constructor_arg_list :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val constructor_declaration :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val constructor_declarations :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val ctyp_quot :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val cvalue_binding :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val direction_flag :
-                                                           Ast.direction_flag Gram.Entry.t
-
-                                                          val direction_flag_quot :
-                                                           Ast.direction_flag Gram.Entry.t
-
-                                                          val dummy :
-                                                           unit Gram.Entry.t
-
-                                                          val eq_expr :
-                                                           (string ->
-                                                            (Ast.patt ->
-                                                             Ast.patt)) Gram.Entry.t
-
-                                                          val expr :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val expr_eoi :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val expr_quot :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val field_expr :
-                                                           Ast.rec_binding Gram.Entry.t
-
-                                                          val field_expr_list :
-                                                           Ast.rec_binding Gram.Entry.t
-
-                                                          val fun_binding :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val fun_def :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val ident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val ident_quot :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val ipatt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val ipatt_tcon :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val label :
-                                                           string Gram.Entry.t
-
-                                                          val label_declaration :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val label_declaration_list :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val label_expr :
-                                                           Ast.rec_binding Gram.Entry.t
-
-                                                          val label_expr_list :
-                                                           Ast.rec_binding Gram.Entry.t
-
-                                                          val label_ipatt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val label_ipatt_list :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val label_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val label_patt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val label_patt_list :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val labeled_ipatt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val let_binding :
-                                                           Ast.binding Gram.Entry.t
-
-                                                          val meth_list :
-                                                           (Ast.ctyp *
-                                                            Ast.row_var_flag) Gram.Entry.t
-
-                                                          val meth_decl :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val module_binding :
-                                                           Ast.module_binding Gram.Entry.t
-
-                                                          val module_binding0 :
-                                                           Ast.module_expr Gram.Entry.t
-
-                                                          val module_binding_quot :
-                                                           Ast.module_binding Gram.Entry.t
-
-                                                          val module_declaration :
-                                                           Ast.module_type Gram.Entry.t
-
-                                                          val module_expr :
-                                                           Ast.module_expr Gram.Entry.t
-
-                                                          val module_expr_quot :
-                                                           Ast.module_expr Gram.Entry.t
-
-                                                          val module_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val module_longident_with_app :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val module_rec_declaration :
-                                                           Ast.module_binding Gram.Entry.t
-
-                                                          val module_type :
-                                                           Ast.module_type Gram.Entry.t
-
-                                                          val package_type :
-                                                           Ast.module_type Gram.Entry.t
-
-                                                          val module_type_quot :
-                                                           Ast.module_type Gram.Entry.t
-
-                                                          val more_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val name_tags :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_as_lident :
-                                                           string Gram.Entry.t
-
-                                                          val opt_class_self_patt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val opt_class_self_type :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_comma_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_dot_dot :
-                                                           Ast.row_var_flag Gram.Entry.t
-
-                                                          val row_var_flag_quot :
-                                                           Ast.row_var_flag Gram.Entry.t
-
-                                                          val opt_eq_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_expr :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val opt_meth_list :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_mutable :
-                                                           Ast.mutable_flag Gram.Entry.t
-
-                                                          val mutable_flag_quot :
-                                                           Ast.mutable_flag Gram.Entry.t
-
-                                                          val opt_override :
-                                                           Ast.override_flag Gram.Entry.t
-
-                                                          val override_flag_quot :
-                                                           Ast.override_flag Gram.Entry.t
-
-                                                          val opt_polyt :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val opt_private :
-                                                           Ast.private_flag Gram.Entry.t
-
-                                                          val private_flag_quot :
-                                                           Ast.private_flag Gram.Entry.t
-
-                                                          val opt_rec :
-                                                           Ast.rec_flag Gram.Entry.t
-
-                                                          val rec_flag_quot :
-                                                           Ast.rec_flag Gram.Entry.t
-
-                                                          val opt_virtual :
-                                                           Ast.virtual_flag Gram.Entry.t
-
-                                                          val virtual_flag_quot :
-                                                           Ast.virtual_flag Gram.Entry.t
-
-                                                          val opt_when_expr :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val patt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val patt_as_patt_opt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val patt_eoi :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val patt_quot :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val patt_tcon :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val phrase :
-                                                           Ast.str_item Gram.Entry.t
-
-                                                          val poly_type :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val row_field :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val sem_expr :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val sem_expr_for_list :
-                                                           (Ast.expr ->
-                                                            Ast.expr) Gram.Entry.t
-
-                                                          val sem_patt :
-                                                           Ast.patt Gram.Entry.t
-
-                                                          val sem_patt_for_list :
-                                                           (Ast.patt ->
-                                                            Ast.patt) Gram.Entry.t
-
-                                                          val semi :
-                                                           unit Gram.Entry.t
-
-                                                          val sequence :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val do_sequence :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val sig_item :
-                                                           Ast.sig_item Gram.Entry.t
-
-                                                          val sig_item_quot :
-                                                           Ast.sig_item Gram.Entry.t
-
-                                                          val sig_items :
-                                                           Ast.sig_item Gram.Entry.t
-
-                                                          val star_ctyp :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val str_item :
-                                                           Ast.str_item Gram.Entry.t
-
-                                                          val str_item_quot :
-                                                           Ast.str_item Gram.Entry.t
-
-                                                          val str_items :
-                                                           Ast.str_item Gram.Entry.t
-
-                                                          val type_constraint :
-                                                           unit Gram.Entry.t
-
-                                                          val type_declaration :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val type_ident_and_parameters :
-                                                           (string *
-                                                            Ast.ctyp list) Gram.Entry.t
-
-                                                          val type_kind :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val type_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val type_longident_and_parameters :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val type_parameter :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val type_parameters :
-                                                           (Ast.ctyp ->
-                                                            Ast.ctyp) Gram.Entry.t
-
-                                                          val typevars :
-                                                           Ast.ctyp Gram.Entry.t
-
-                                                          val val_longident :
-                                                           Ast.ident Gram.Entry.t
-
-                                                          val value_let :
-                                                           unit Gram.Entry.t
-
-                                                          val value_val :
-                                                           unit Gram.Entry.t
-
-                                                          val with_constr :
-                                                           Ast.with_constr Gram.Entry.t
-
-                                                          val with_constr_quot :
-                                                           Ast.with_constr Gram.Entry.t
-
-                                                          val prefixop :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val infixop0 :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val infixop1 :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val infixop2 :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val infixop3 :
-                                                           Ast.expr Gram.Entry.t
-
-                                                          val infixop4 :
-                                                           Ast.expr Gram.Entry.t
-
-                                                         end
-
-module type SyntaxExtension =
-                                                               functor
-                                                                (Syn : Syntax) ->
-                                                                (Syntax with
-                                                                 module Loc =
-                                                                 Syn.Loc
-                                                                 and module Loc =
-                                                                 Syn.Loc
-                                                                 and module Ast =
-                                                                 Syn.Ast
-                                                                 and module Ast =
-                                                                 Syn.Ast
-                                                                 and module Token =
-                                                                 Syn.Token
-                                                                 and module Token =
-                                                                 Syn.Token
-                                                                 and module Gram =
-                                                                 Syn.Gram
-                                                                 and module Gram =
-                                                                 Syn.Gram
-                                                                 and module Quotation =
-                                                                 Syn.Quotation)
-
-
-                                                  module type PLUGIN =
-                                                   functor
-                                                    (Unit : sig end) ->
-                                                    sig end
-
-module type OCAML_SYNTAX_EXTENSION =
-                                                              functor
-                                                               (Syn : Camlp4Syntax) ->
-                                                               Camlp4Syntax
-
-
-                                                  module type SYNTAX_PLUGIN =
-                                                   functor (Syn : Syntax) ->
-                                                    sig end
-
-module type PRINTER_PLUGIN =
-                                                              functor
-                                                               (Syn : Syntax) ->
-                                                               Printer(Syn.Ast).S
-
-
-                                                  module type OCAML_PRINTER_PLUGIN =
-                                                   functor
-                                                    (Syn : Camlp4Syntax) ->
-                                                    Printer(Syn.Ast).S
-
-
-                                                  module type PARSER =
-                                                   functor
-                                                    (Ast : Camlp4Ast) ->
-                                                    Parser(Ast).S
-
-module type OCAML_PARSER =
-                                                                    functor
-                                                                    (Ast : Camlp4Ast) ->
-                                                                    Parser(Ast).S
-
-
-                                                  module type ASTFILTER_PLUGIN =
-                                                   functor
-                                                    (F : AstFilters) ->
-                                                    sig end
-
-module type LEXER =
-                                                              functor
-                                                               (Token : Camlp4Token) ->
-                                                               (Lexer with
-                                                                module Loc =
-                                                                Token.Loc
-                                                                and module Loc =
-                                                                Token.Loc
-                                                                and module Token =
-                                                                Token)
-
-
-                                                  module type PRECAST =
-                                                   sig
-                                                    type token = camlp4_token
-
-                                                    module Loc : FanSig.Loc
-
-                                                    module Ast :
-                                                     (Camlp4Ast with
-                                                      module Loc = Loc)
-
-                                                    module Token :
-                                                     (Token with module Loc =
-                                                      Loc and module Loc =
-                                                      Loc and type  t =
-                                                      camlp4_token)
-
-                                                    module Lexer :
-                                                     (Lexer with module Loc =
-                                                      Loc and module Loc =
-                                                      Loc and module Token =
-                                                      Token)
-
-                                                    module Gram :
-                                                     (Grammar.Static with
-                                                      module Loc = Loc
-                                                      and module Loc = Loc
-                                                      and module Token =
-                                                      Token)
-
-                                                    module Quotation :
-                                                     (Quotation with
-                                                      module Ast =
-                                                      Camlp4AstToAst(Ast))
-
-                                                    module DynLoader :
-                                                     DynLoader
-
-                                                    module AstFilters :
-                                                     (AstFilters with
-                                                      module Ast = Ast)
-
-                                                    module Syntax :
-                                                     (Camlp4Syntax with
-                                                      module Loc = Loc
-                                                      and module Loc = Loc
-                                                      and module Token =
-                                                      Token
-                                                      and module Token =
-                                                      Token and module Ast =
-                                                      Ast and module Ast =
-                                                      Ast and module Gram =
-                                                      Gram and module Gram =
-                                                      Gram
-                                                      and module Quotation =
-                                                      Quotation)
-
-                                                    module Printers :
-                                                     sig
-                                                      module OCaml :
-                                                       Printer(Ast).S
-
-                                                      module DumpOCamlAst :
-                                                       Printer(Ast).S
-
-                                                      module DumpCamlp4Ast :
-                                                       Printer(Ast).S
-
-                                                      module Null :
-                                                       Printer(Ast).S
-
-                                                     end
-
-                                                    module MakeGram :
-                                                     functor
-                                                      (Lexer : (Lexer with
-                                                                module Loc =
-                                                                Loc)) ->
-                                                      (Grammar.Static with
-                                                       module Loc = Loc
-                                                       and module Loc = Loc
-                                                       and module Token =
-                                                       Lexer.Token)
-
-                                                    module MakeSyntax :
-                                                     functor (U : sig end) ->
-                                                      Syntax
-
-                                                    type 'a parser_fun =
-                                                     (?directive_handler :
-                                                      ('a -> 'a option) ->
-                                                      (Loc.t ->
-                                                       (char Stream.t -> 'a)))
-
-                                                    type 'a printer_fun =
-                                                     (?input_file : string ->
-                                                      (?output_file : 
-                                                       string ->
-                                                       ('a -> unit)))
-
-                                                    val loaded_modules :
-                                                     string list ref
-
-                                                    val iter_and_take_callbacks :
-                                                     (((string *
-                                                        (unit -> unit)) ->
-                                                       unit) -> unit)
-
-                                                    val register_str_item_parser :
-                                                     (Ast.str_item parser_fun
-                                                      -> unit)
-
-                                                    val register_sig_item_parser :
-                                                     (Ast.sig_item parser_fun
-                                                      -> unit)
-
-                                                    val register_parser :
-                                                     (Ast.str_item parser_fun
-                                                      ->
-                                                      (Ast.sig_item parser_fun
-                                                       -> unit))
-
-                                                    val current_parser :
-                                                     (unit ->
-                                                      (Ast.str_item parser_fun *
-                                                       Ast.sig_item parser_fun))
-
-                                                    val plugin :
-                                                     ((module Id ) ->
-                                                      ((module PLUGIN 
-                                                       ) -> unit))
-
-                                                    val syntax_plugin :
-                                                     ((module Id ) ->
-                                                      ((module SYNTAX_PLUGIN
-                                                       ) -> unit))
-
-                                                    val syntax_extension :
-                                                     ((module Id ) ->
-                                                      ((module SyntaxExtension
-                                                       ) -> unit))
-
-                                                    val ocaml_syntax_extension :
-                                                     ((module Id ) ->
-                                                      ((module OCAML_SYNTAX_EXTENSION
-                                                       ) -> unit))
-
-                                                    val parser_plugin :
-                                                     ((module Id ) ->
-                                                      ((module PARSER 
-                                                       ) -> unit))
-
-                                                    val ocaml_parser_plugin :
-                                                     ((module Id ) ->
-                                                      ((module OCAML_PARSER 
-                                                       ) -> unit))
-
-                                                    val ocaml_precast_parser_plugin :
-                                                     ((module Id ) ->
-                                                      ((module Parser(Syntax.Ast).S
-                                                       ) -> unit))
-
-                                                    val register_str_item_printer :
-                                                     (Ast.str_item printer_fun
-                                                      -> unit)
-
-                                                    val register_sig_item_printer :
-                                                     (Ast.sig_item printer_fun
-                                                      -> unit)
-
-                                                    val register_printer :
-                                                     (Ast.str_item printer_fun
-                                                      ->
-                                                      (Ast.sig_item printer_fun
-                                                       -> unit))
-
-                                                    val current_printer :
-                                                     (unit ->
-                                                      (Ast.str_item printer_fun *
-                                                       Ast.sig_item printer_fun))
-
-                                                    val printer :
-                                                     ((module Id ) ->
-                                                      ((module PRINTER_PLUGIN
-                                                       ) -> unit))
-
-                                                    val ocaml_printer :
-                                                     ((module Id ) ->
-                                                      ((module OCAML_PRINTER_PLUGIN
-                                                       ) -> unit))
-
-                                                    val ocaml_precast_printer :
-                                                     ((module Id ) ->
-                                                      ((module Printer(Syntax.Ast).S
-                                                       ) -> unit))
-
-                                                    val ast_filter :
-                                                     ((module Id ) ->
-                                                      ((module ASTFILTER_PLUGIN
-                                                       ) -> unit))
-
-                                                    val declare_dyn_module :
-                                                     (string ->
-                                                      ((unit -> unit) ->
-                                                       unit))
-
-                                                    module CurrentParser :
-                                                     Parser(Ast).S
-
-                                                    module CurrentPrinter :
-                                                     Printer(Ast).S
-
-                                                    val enable_ocaml_printer :
-                                                     (unit -> unit)
-
-                                                    val enable_null_printer :
-                                                     (unit -> unit)
-
-                                                    val enable_dump_ocaml_ast_printer :
-                                                     (unit -> unit)
-
-                                                    val enable_dump_camlp4_ast_printer :
-                                                     (unit -> unit)
-
-                                                    val enable_auto :
-                                                     ((unit -> bool) -> unit)
-
-                                                   end
+                                                          module type SyntaxExtension =
+                                                           functor
+                                                            (Syn : Syntax) ->
+                                                            (Syntax with
+                                                             module Loc =
+                                                             Syn.Loc
+                                                             and module Loc =
+                                                             Syn.Loc
+                                                             and module Ast =
+                                                             Syn.Ast
+                                                             and module Ast =
+                                                             Syn.Ast
+                                                             and module Token =
+                                                             Syn.Token
+                                                             and module Token =
+                                                             Syn.Token
+                                                             and module Gram =
+                                                             Syn.Gram
+                                                             and module Gram =
+                                                             Syn.Gram
+                                                             and module Quotation =
+                                                             Syn.Quotation)
+
+
+                                                          module type PLUGIN =
+                                                           functor
+                                                            (Unit : sig end) ->
+                                                            sig end
+
+
+                                                          module type OCAML_SYNTAX_EXTENSION =
+                                                           functor
+                                                            (Syn : Camlp4Syntax) ->
+                                                            Camlp4Syntax
+
+
+                                                          module type SYNTAX_PLUGIN =
+                                                           functor
+                                                            (Syn : Syntax) ->
+                                                            sig end
+
+
+                                                          module type PRINTER_PLUGIN =
+                                                           functor
+                                                            (Syn : Syntax) ->
+                                                            Printer(Syn.Ast).S
+
+
+                                                          module type OCAML_PRINTER_PLUGIN =
+                                                           functor
+                                                            (Syn : Camlp4Syntax) ->
+                                                            Printer(Syn.Ast).S
+
+
+                                                          module type PARSER =
+                                                           functor
+                                                            (Ast : Camlp4Ast) ->
+                                                            Parser(Ast).S
+
+
+                                                          module type OCAML_PARSER =
+                                                           functor
+                                                            (Ast : Camlp4Ast) ->
+                                                            Parser(Ast).S
+
+
+                                                          module type ASTFILTER_PLUGIN =
+                                                           functor
+                                                            (F : AstFilters) ->
+                                                            sig end
+
+
+                                                          module type LEXER =
+                                                           functor
+                                                            (Token : FanSig.Camlp4Token) ->
+                                                            (Lexer with
+                                                             module Loc =
+                                                             Token.Loc
+                                                             and module Loc =
+                                                             Token.Loc
+                                                             and module Token =
+                                                             Token)
+
+
+                                                          module type PRECAST =
+                                                           sig
+                                                            type token =
+                                                             FanSig.camlp4_token
+
+                                                            module Loc :
+                                                             FanSig.Loc
+
+                                                            module Ast :
+                                                             (Camlp4Ast with
+                                                              module Loc =
+                                                              Loc)
+
+                                                            module Token :
+                                                             (FanSig.Token
+                                                              with
+                                                              module Loc =
+                                                              Loc
+                                                              and module Loc =
+                                                              Loc and type
+                                                               t =
+                                                              FanSig.camlp4_token)
+
+                                                            module Lexer :
+                                                             (Lexer with
+                                                              module Loc =
+                                                              Loc
+                                                              and module Loc =
+                                                              Loc
+                                                              and module Token =
+                                                              Token)
+
+                                                            module Gram :
+                                                             (Grammar.Static
+                                                              with
+                                                              module Loc =
+                                                              Loc
+                                                              and module Loc =
+                                                              Loc
+                                                              and module Token =
+                                                              Token)
+
+                                                            module
+                                                             Quotation :
+                                                             (Quotation with
+                                                              module Ast =
+                                                              Camlp4AstToAst(Ast))
+
+                                                            module
+                                                             DynLoader :
+                                                             DynLoader
+
+                                                            module
+                                                             AstFilters :
+                                                             (AstFilters with
+                                                              module Ast =
+                                                              Ast)
+
+                                                            module Syntax :
+                                                             (Camlp4Syntax
+                                                              with
+                                                              module Loc =
+                                                              Loc
+                                                              and module Loc =
+                                                              Loc
+                                                              and module Token =
+                                                              Token
+                                                              and module Token =
+                                                              Token
+                                                              and module Ast =
+                                                              Ast
+                                                              and module Ast =
+                                                              Ast
+                                                              and module Gram =
+                                                              Gram
+                                                              and module Gram =
+                                                              Gram
+                                                              and module Quotation =
+                                                              Quotation)
+
+                                                            module Printers :
+                                                             sig
+                                                              module OCaml :
+                                                               Printer(Ast).S
+
+                                                              module
+                                                               DumpOCamlAst :
+                                                               Printer(Ast).S
+
+                                                              module
+                                                               DumpCamlp4Ast :
+                                                               Printer(Ast).S
+
+                                                              module Null :
+                                                               Printer(Ast).S
+
+                                                             end
+
+                                                            module MakeGram :
+                                                             functor
+                                                              (Lexer : 
+                                                              (Lexer with
+                                                               module Loc =
+                                                               Loc)) ->
+                                                              (Grammar.Static
+                                                               with
+                                                               module Loc =
+                                                               Loc
+                                                               and module Loc =
+                                                               Loc
+                                                               and module Token =
+                                                               Lexer.Token)
+
+                                                            module
+                                                             MakeSyntax :
+                                                             functor
+                                                              (U : sig end) ->
+                                                              Syntax
+
+                                                            type 'a parser_fun =
+                                                             (?directive_handler :
+                                                              ('a ->
+                                                               'a option) ->
+                                                              (Loc.t ->
+                                                               (char Stream.t
+                                                                -> 'a)))
+
+                                                            type 'a printer_fun =
+                                                             (?input_file :
+                                                              string ->
+                                                              (?output_file :
+                                                               string ->
+                                                               ('a -> unit)))
+
+                                                            val loaded_modules :
+                                                             string list ref
+
+                                                            val iter_and_take_callbacks :
+                                                             (((string *
+                                                                (unit ->
+                                                                 unit)) ->
+                                                               unit) -> 
+                                                              unit)
+
+                                                            val register_str_item_parser :
+                                                             (Ast.str_item parser_fun
+                                                              -> unit)
+
+                                                            val register_sig_item_parser :
+                                                             (Ast.sig_item parser_fun
+                                                              -> unit)
+
+                                                            val register_parser :
+                                                             (Ast.str_item parser_fun
+                                                              ->
+                                                              (Ast.sig_item parser_fun
+                                                               -> unit))
+
+                                                            val current_parser :
+                                                             (unit ->
+                                                              (Ast.str_item parser_fun *
+                                                               Ast.sig_item parser_fun))
+
+                                                            val plugin :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module PLUGIN
+                                                               ) -> unit))
+
+                                                            val syntax_plugin :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module SYNTAX_PLUGIN
+                                                               ) -> unit))
+
+                                                            val syntax_extension :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module SyntaxExtension
+                                                               ) -> unit))
+
+                                                            val ocaml_syntax_extension :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module OCAML_SYNTAX_EXTENSION
+                                                               ) -> unit))
+
+                                                            val parser_plugin :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module PARSER
+                                                               ) -> unit))
+
+                                                            val ocaml_parser_plugin :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module OCAML_PARSER
+                                                               ) -> unit))
+
+                                                            val ocaml_precast_parser_plugin :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module Parser(Syntax.Ast).S
+                                                               ) -> unit))
+
+                                                            val register_str_item_printer :
+                                                             (Ast.str_item printer_fun
+                                                              -> unit)
+
+                                                            val register_sig_item_printer :
+                                                             (Ast.sig_item printer_fun
+                                                              -> unit)
+
+                                                            val register_printer :
+                                                             (Ast.str_item printer_fun
+                                                              ->
+                                                              (Ast.sig_item printer_fun
+                                                               -> unit))
+
+                                                            val current_printer :
+                                                             (unit ->
+                                                              (Ast.str_item printer_fun *
+                                                               Ast.sig_item printer_fun))
+
+                                                            val printer :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module PRINTER_PLUGIN
+                                                               ) -> unit))
+
+                                                            val ocaml_printer :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module OCAML_PRINTER_PLUGIN
+                                                               ) -> unit))
+
+                                                            val ocaml_precast_printer :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module Printer(Syntax.Ast).S
+                                                               ) -> unit))
+
+                                                            val ast_filter :
+                                                             ((module Id 
+                                                              ) ->
+                                                              ((module ASTFILTER_PLUGIN
+                                                               ) -> unit))
+
+                                                            val declare_dyn_module :
+                                                             (string ->
+                                                              ((unit -> unit)
+                                                               -> unit))
+
+                                                            module
+                                                             CurrentParser :
+                                                             Parser(Ast).S
+
+                                                            module
+                                                             CurrentPrinter :
+                                                             Printer(Ast).S
+
+                                                            val enable_ocaml_printer :
+                                                             (unit -> unit)
+
+                                                            val enable_null_printer :
+                                                             (unit -> unit)
+
+                                                            val enable_dump_ocaml_ast_printer :
+                                                             (unit -> unit)
+
+                                                            val enable_dump_camlp4_ast_printer :
+                                                             (unit -> unit)
+
+                                                            val enable_auto :
+                                                             ((unit -> bool)
+                                                              -> unit)
+
+                                                           end
 
 module type PRECAST_PLUGIN =
-                                                         sig
-                                                          val apply :
-                                                           ((module PRECAST 
-                                                            ) -> unit)
+                                                                 sig
+                                                                  val apply :
+                                                                   ((module PRECAST
+                                                                    ) ->
+                                                                    unit)
 
-                                                         end
+                                                                 end

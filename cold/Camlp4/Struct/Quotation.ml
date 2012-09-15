@@ -145,6 +145,8 @@ module Make =
       fun expander ->
        fun pos_tag ->
         fun quot ->
+         let open
+         FanSig in
          let loc_name_opt =
           if (( quot.q_loc ) = "") then None  else (Some (quot.q_loc)) in
          (try (expander loc loc_name_opt ( quot.q_contents )) with
@@ -162,6 +164,8 @@ module Make =
        fun quot ->
         fun pos_tag ->
          fun str ->
+          let open
+          FanSig in
           (try (parse loc str) with
            | Loc.Exc_located (iloc, Error.E (n, pos_tag, Expanding, exc)) ->
               let ctx = (ParsingResult (iloc, ( quot.q_contents ))) in
@@ -178,6 +182,8 @@ module Make =
      fun loc ->
       fun quotation ->
        fun tag ->
+        let open
+        FanSig in
         let pos_tag = (DynAst.string_of_tag tag) in
         let name = quotation.q_name in
         let expander =

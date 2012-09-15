@@ -1,5 +1,5 @@
 module Make :
- functor (Loc : FanSig.Loc) -> (Sig.Camlp4Token with module Loc = Loc)
+ functor (Loc : FanSig.Loc) -> (FanSig.Camlp4Token with module Loc = Loc)
 
 
 module Eval :

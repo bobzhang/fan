@@ -2,7 +2,7 @@ module Make =
  functor (Loc : FanSig.Loc) ->
   functor (Lexer : Sig.LEXER) ->
    (struct
-     type token = Sig.camlp4_token
+     type token = FanSig.camlp4_token
 
      module Loc = Loc
 

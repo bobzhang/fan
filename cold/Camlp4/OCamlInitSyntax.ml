@@ -1,7 +1,7 @@
 module Make =
  functor (Ast : Sig.Camlp4Ast) ->
   functor (Gram : ((Sig.Grammar.Static with module Loc = Ast.Loc) with type
-                    Token.t = Sig.camlp4_token)) ->
+                    Token.t = FanSig.camlp4_token)) ->
    functor (Quotation : (Sig.Quotation with module Ast =
                          Sig.Camlp4AstToAst(Ast))) ->
     (struct
@@ -384,6 +384,8 @@ module Make =
       let infixop4 =
        (Gram.Entry.mk
          "infix operator (level 4) (start with \"**\") (right assoc)")
+
+      open FanSig
 
       let _ = (Gram.extend ( (top_phrase : 'top_phrase Gram.Entry.t) ) (
                 ((fun ()

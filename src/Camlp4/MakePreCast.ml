@@ -1,6 +1,6 @@
 module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   with module Loc = Loc  = struct
-  type token = Sig.camlp4_token ;
+  type token = FanSig.camlp4_token ;
   module Loc = Loc;      
   module Ast = Struct.Camlp4Ast.Make Loc;
   module Token = Struct.Token.Make Loc;

@@ -26,14 +26,14 @@ value mk' : context -> Stream.t char -> Stream.t (Token.t * Loc.t);             
  *)
 
 
-module Make (Token : Camlp4.Sig.Camlp4Token)
+module Make (Token : FanSig.Camlp4Token)
 = struct
   module Loc = Token.Loc
   module Token = Token
 
   open Lexing
   open Camlp4.Sig
-
+  open FanSig
   (* Error report *)
   module Error = struct
 
@@ -137,12 +137,13 @@ module Make (Token : Camlp4.Sig.Camlp4Token)
   let store_parse f c = store c ; f c c.lexbuf
   let parse f c = f c c.lexbuf
   let mk_quotation quotation c name loc shift =
-    let s = parse_nested quotation (update_loc c) in
-    let contents = String.sub s 0 (String.length s - 2) in
-    Camlp4.Sig.QUOTATION { Camlp4.Sig.q_name     = name     ;
-                q_loc      = loc      ;
-                q_shift    = shift    ;
-                q_contents = contents }
+   let s = parse_nested quotation (update_loc c) in
+   let contents = String.sub s 0 (String.length s - 2) in
+   FanSig.QUOTATION {
+   FanSig.q_name     = name     ;
+   q_loc      = loc      ;
+   q_shift    = shift    ;
+   q_contents = contents }
 
 
   (* Update the current location with file name and line number. *)
