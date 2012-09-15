@@ -18,7 +18,7 @@
 
 open Format;
 
-module Make (Loc : Sig.Loc)
+module Make (Loc : FanSig.Loc)
 : Sig.Camlp4Token with module Loc = Loc
 = struct
   module Loc  = Loc;

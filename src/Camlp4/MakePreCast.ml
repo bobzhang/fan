@@ -1,4 +1,4 @@
-module Make (Loc: Sig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
+module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   with module Loc = Loc  = struct
   type token = Sig.camlp4_token ;
   module Loc = Loc;      

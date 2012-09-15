@@ -13,21 +13,17 @@
 <{P4_util,*_ppo,Pprintast,tmp*,FanLexer,FanConfig,FanUtil,FanSig}.ml>: -camlp4boot
 
 <Camlp4/Struct/Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
-
-# <tmp*.ml> or <boot/*> or "fan_lexer.ml": -camlp4boot
-
-<Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
-
 <Camlp4Printers/**.ml>: use_unix
-
-# <Camlp4/**/*.ml*>:include_camlp4
-
-<Camlp4/Struct/DynLoader.ml> :pkg_dynlink
-
-<Camlp4Top/**>: pkg_compiler-libs.toplevel
-
-<Pprintast.ml> or <FanConfig.ml> or <Camlp4/Sig.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
-
 <Camlp4/{Debug,MakePreCast,OCamlInitSyntax,Options,Struct,Sig,Printers}.cmx>:for-pack(Camlp4)
+
+
+# shared with the cold tree
+<Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
+<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> : pkg_compiler-libs.common
+
+# <Camlp4/Struct/DynLoader.ml> :pkg_dynlink
+# <Camlp4Top/**>: pkg_compiler-libs.toplevel
 # <Camlp4>:include
+# <tmp*.ml> or <boot/*> or "fan_lexer.ml": -camlp4boot
+# <Camlp4/**/*.ml*>:include_camlp4
 

@@ -44,3 +44,11 @@
 
 ** cold
    The mirror of src, for distribute purpose 
+
+
+* For dev
+  the common practice is
+  #+BEGIN_SRC shell-script
+    hb Fan.byte # verify
+    cb # snapshot and verify again
+  #+END_SRC

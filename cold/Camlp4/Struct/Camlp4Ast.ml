@@ -1,5 +1,5 @@
 module Make =
- functor (Loc : Sig.Loc) ->
+ functor (Loc : FanSig.Loc) ->
   (struct
     module Loc = Loc
 

@@ -5,7 +5,6 @@ CleanAst
 CommentFilter
 DynLoader
 FreeVars
-Loc
 Quotation
 Token
 Grammar

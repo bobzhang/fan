@@ -18,7 +18,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Loc : Sig.Loc)
+module Make (Loc : FanSig.Loc)
 : Sig.Camlp4Ast with module Loc = Loc
 = struct
   module Loc = Loc;

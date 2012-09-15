@@ -2,7 +2,7 @@ open Sig.Grammar
 
 module type S =
                    sig
-                    module Loc : Sig.Loc
+                    module Loc : FanSig.Loc
 
                     module Token : (Sig.Token with module Loc = Loc)
 

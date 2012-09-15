@@ -10,7 +10,7 @@ open FanUtil
 
 
 module Camlp4Bin =
- functor (Loc : Sig.Loc) ->
+ functor (Loc : FanSig.Loc) ->
   functor (PreCast : (Sig.PRECAST with module Loc = Loc)) ->
    struct
     open PreCast

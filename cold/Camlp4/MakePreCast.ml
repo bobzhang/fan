@@ -1,5 +1,5 @@
 module Make =
- functor (Loc : Sig.Loc) ->
+ functor (Loc : FanSig.Loc) ->
   functor (Lexer : Sig.LEXER) ->
    (struct
      type token = Sig.camlp4_token

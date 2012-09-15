@@ -6,7 +6,7 @@ open Camlp4Parsers;
 open Camlp4Filters;
 open FanUtil;
 module Camlp4Bin
-    (Loc:Sig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
+    (Loc:FanSig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
     =struct
       open PreCast;
       module CleanAst = Struct.CleanAst.Make PreCast.Ast;

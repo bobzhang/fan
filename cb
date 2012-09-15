@@ -14,12 +14,13 @@ mkdir cold
 cp -rf _build/tmp/ cold
 
 # creat tag files
-cat <<EOF > cold/_tags
-<{Pprintast,FanConfig,Camlp4/ErrorHandler,Camlp4/Sig}.ml> or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Struct/Loc.ml>: pkg_compiler-libs.common
+cat > cold/_tags <<EOF
 <Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
+<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> : pkg_compiler-libs.common
 EOF
 
 echo "snapshop finished"
 echo "verifying it can be bootstrapped"
-ocamlbuild cold/Fan.byte
+
+ocamlbuild -quiet cold/Fan.byte # quiet
 reset_cold Fan.byte
