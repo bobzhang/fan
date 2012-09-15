@@ -1,0 +1,4 @@
+(* -*- Mode:caml; -*- *)
+#use "/Users/bobzhang1988/.ocamlinit";;
+#directory "_build/src";;
+#load_rec "FanLexer.cmo";;

@@ -34,11 +34,11 @@ module Make (Ast : Sig.Camlp4Ast) = struct
   value error loc str = Loc.raise loc (Failure str);
 
   value char_of_char_token loc s =
-    try Token.Eval.char s with [ Failure _ as exn -> Loc.raise loc exn ]
+    try TokenEval.char s with [ Failure _ as exn -> Loc.raise loc exn ]
   ;
 
   value string_of_string_token loc s =
-    try Token.Eval.string s
+    try TokenEval.string s
     with [ Failure _ as exn -> Loc.raise loc exn ]
   ;
 

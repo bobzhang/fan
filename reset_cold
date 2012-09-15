@@ -1,12 +1,9 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-set -e
-target=Fan.byte
-echo "cold start..."
-make cleancold
-ocamlbuild cold/$target
-echo "cold start finished.. now bootstrapping to verify it could reach a fix point"
 
+# when hot boootstrap failed, roll back to cold as the preprocessor
+target=$1
+set -e
 test _build/boot || mkdir _build/boot
 
 test _build/boot/$target && mv _build/boot/$target _build/boot/$target.old
@@ -14,5 +11,3 @@ cp _build/cold/$target _build/boot/
 test _build/boot/fan && rm _build/boot/fan
 
 ln -s $target _build/boot/fan
-
-hb $target

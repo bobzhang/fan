@@ -19,3 +19,7 @@ cat <<EOF > cold/_tags
 <Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
 EOF
 
+echo "snapshop finished"
+echo "verifying it can be bootstrapped"
+ocamlbuild cold/$target
+reset_cold Fan.byte

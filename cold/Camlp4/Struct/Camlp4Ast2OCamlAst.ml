@@ -18,13 +18,13 @@ module Make =
    let char_of_char_token =
     fun loc ->
      fun s ->
-      (try (Token.Eval.char s) with
+      (try (TokenEval.char s) with
        (Failure (_) as exn) -> (Loc.raise loc exn))
 
    let string_of_string_token =
     fun loc ->
      fun s ->
-      (try (Token.Eval.string s) with
+      (try (TokenEval.string s) with
        (Failure (_) as exn) -> (Loc.raise loc exn))
 
    let remove_underscores =

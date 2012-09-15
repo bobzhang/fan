@@ -1,4 +1,3 @@
-
 (* The lexer definition *)
 
 
@@ -26,7 +25,7 @@ value mk' : context -> Stream.t char -> Stream.t (Token.t * Loc.t);             
  * mk' { (default_context) with ... = ... } strm
  *)
 
-module TokenEval = Camlp4.Struct.Token.Eval
+
 module Make (Token : Camlp4.Sig.Camlp4Token)
 = struct
   module Loc = Token.Loc
@@ -471,5 +470,15 @@ module Make (Token : Camlp4.Sig.Camlp4Token)
 
   let mk () loc strm =
     from_stream ~quotations:!FanConfig.quotations loc strm
+  (* let from_string str = *)
+  (*   let l = mk () (Loc.mk "<tring>") in *)
+    
+      
 end
 }
+
+(*
+  let module M = FanLexer.Make
+  (Camlp4.Struct.Token.Make (Camlp4.Struct.Loc)) in M.from_string;;
+
+ *)
