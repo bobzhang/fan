@@ -1236,7 +1236,6 @@ module type PRECAST = sig
                        and module Quotation = Quotation;
   module Printers : sig
     module OCaml         : (Printer Ast).S;
-    (* module OCamlr        : (Printer Ast).S; *)
     module DumpOCamlAst  : (Printer Ast).S;
     module DumpCamlp4Ast : (Printer Ast).S;
     module Null          : (Printer Ast).S;

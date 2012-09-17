@@ -579,11 +579,15 @@ module Default = struct
   let before_options () = (
     Options.ocamlc     := ocamlfind & S[A"ocamlc";
                                         A"-annot";
+                                        (* A "-bin-annot"; *)
                                         (* A"-warn-error"; *)
                                         (* A"A" *)
                                         (* A" 4-6-7-9-27..29"; *)
                                       ];
-    Options.ocamlopt   := ocamlfind & S[A"ocamlopt";A"-annot"];
+    Options.ocamlopt   := ocamlfind & S[A"ocamlopt";
+                                        A"-annot";
+                                        (* A"-bin-annot" *)
+                                      ];
     Options.ocamldep   := ocamlfind & A"ocamldep";
     Options.ocamldoc   := ocamlfind & A"ocamldoc";
     Options.make_links := false;
@@ -663,13 +667,13 @@ module PackageLinkFix =  struct
       ~prod:"%.ml.depends"
       ~dep:"%.mlpack"
       (byte_dep_mlpack "%.mlpack" "%.ml.depends")
-  let mlpack_dirs = ["."]      
+  let mlpack_dirs = ["src";"cold"] (* *)      
   let after_rules () = 
         List.iter
-          (fun p ->  dep ["ocaml"; "byte"; "pack"; "extension:cmo"; "file:"^p^".cmo"]
+          (fun p ->
+            dep ["ocaml"; "byte"; "pack"; "extension:cmo"; "file:"^p^".cmo"]
               [p^".ml.depends"])
-          (List.concat (List.map packages_in_dir (List.map Pathname.mk mlpack_dirs)))
-
+      (List.concat (List.map packages_in_dir (List.map Pathname.mk mlpack_dirs)))
 end
 
 ;;    

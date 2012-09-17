@@ -224,27 +224,26 @@ module Make (Token : FanSig.Camlp4Token)
   let left_delimitor =
     (* At least a safe_delimchars *)
     left_delims delimchars* safe_delimchars (delimchars|left_delims)*
-
-  (* A '(' or a new super '(' without "(<" *)
-  | '(' (['|' ':'] delimchars*)?
-  (* Old brackets, no new brackets starting with "[|" or "[:" *)
-  | '[' ['|' ':']?
-  (* Old "[<","{<" and new ones *)
-  | ['[' '{'] delimchars* '<'
-  (* Old brace and new ones *)
-  | '{' (['|' ':'] delimchars*)?
+   (* A '(' or a new super '(' without "(<" *)
+   | '(' (['|' ':'] delimchars*)?
+   (* Old brackets, no new brackets starting with "[|" or "[:" *)
+   | '[' ['|' ':']?
+   (* Old "[<","{<" and new ones *)
+   | ['[' '{'] delimchars* '<'
+   (* Old brace and new ones *)
+   | '{' (['|' ':'] delimchars*)?
 
   let right_delimitor =
     (* At least a safe_delimchars *)
     (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-  (* A ')' or a new super ')' without ">)" *)
-  | (delimchars* ['|' ':'])? ')'
-  (* Old brackets, no new brackets ending with "|]" or ":]" *)
-  | ['|' ':']? ']'
-  (* Old ">]",">}" and new ones *)
-  | '>' delimchars* [']' '}']
-  (* Old brace and new ones *)
-  | (delimchars* ['|' ':'])? '}'
+      (* A ')' or a new super ')' without ">)" *)
+    | (delimchars* ['|' ':'])? ')'
+      (* Old brackets, no new brackets ending with "|]" or ":]" *)
+    | ['|' ':']? ']'
+      (* Old ">]",">}" and new ones *)
+    | '>' delimchars* [']' '}']
+      (* Old brace and new ones *)
+    | (delimchars* ['|' ':'])? '}'
 
 
   rule token c = parse
@@ -480,6 +479,6 @@ end
 
 (*
   let module M = FanLexer.Make
-  (Camlp4.Struct.Token.Make (Camlp4.Struct.Loc)) in M.from_string;;
+  (FanToken.Make Camlp4.Struct.Loc) in M.from_string;;
 
  *)

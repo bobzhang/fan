@@ -74,7 +74,110 @@
      val move_start_p : int -> context -> unit
      val with_curr_loc : (context -> Lexing.lexbuf -> 'a) -> context -> 'a
    #+END_SRC
-   
+
+*** state machine
+    #+BEGIN_SRC ocaml
+    val token : context -> Lexing.lexbuf -> FanSig.camlp4_token    
+    #+END_SRC
+
+**** when it meets '"'
+    #+BEGIN_SRC ocaml
+      { with_curr_loc string c;
+        let s = buff_contents c in STRING (TokenEval.string s, s)}
+    #+END_SRC
+
+**** when it meets "'"
+
+     #+BEGIN_SRC ocaml
+       | "'" (newline as x) "'"
+             { update_loc c None 1 false 1; CHAR (TokenEval.char x, x)               }
+       | "'" ( [^ '\\' '\010' '\013']
+             | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+                    |['0'-'9'] ['0'-'9'] ['0'-'9']
+                    |'x' hexa_char hexa_char)
+               as x) "'"                                { CHAR (TokenEval.char x, x) }
+       | "'\\" (_ as c)
+               { err (Illegal_escape (String.make 1 c)) (Loc.of_lexbuf lexbuf)         }     
+     #+END_SRC
+
+     
+
+**** when it meets "(*"
+
+     #+BEGIN_SRC ocaml
+       | "(*"
+           { store c; COMMENT(parse_nested comment (in_comment c))                 }
+       | "(*)"
+           { warn Comment_start (Loc.of_lexbuf lexbuf)                             ;
+             parse comment (in_comment c); COMMENT (buff_contents c)               }
+       | "*)"
+           { warn Comment_not_end (Loc.of_lexbuf lexbuf)                           ;
+             move_start_p (-1) c; SYMBOL "*"                                       }
+       
+     #+END_SRC     
+
+**** when it meets quotation
+     #+BEGIN_SRC ocaml
+       | "<<" (quotchar* as beginning)
+              { if quotations c
+                then (move_start_p (-String.length beginning) c; (* FIX partial application*)
+                      mk_quotation quotation c "" "" 2)
+                else parse (symbolchar_star ("<<" ^ beginning)) c                       }
+       | "<<>>"
+           { if quotations c
+             then QUOTATION { q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
+             else parse (symbolchar_star "<<>>") c                                   }
+       | "<@"
+           { if quotations c then with_curr_loc maybe_quotation_at c
+             else parse (symbolchar_star "<@") c                                     }
+       | "<:"
+           { if quotations c then with_curr_loc maybe_quotation_colon c
+             else parse (symbolchar_star "<:") c                                     }
+            
+     #+END_SRC
+     
+
+**** meets "#"
+
+     #+BEGIN_SRC ocaml
+       | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
+        ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
+        [^ '\010' '\013'] * newline
+       { let inum = int_of_string num in
+         update_loc c name inum true 0; LINE_DIRECTIVE(inum, name) }
+     #+END_SRC
+     
+
+**** ESCAPEd_INDENT
+     #+BEGIN_SRC ocaml
+       | '(' (not_star_symbolchar as op) ')'
+             { ESCAPED_IDENT (String.make 1 op) }
+       | '(' (not_star_symbolchar symbolchar* not_star_symbolchar as op) ')'
+             { ESCAPED_IDENT op }
+       | '(' (not_star_symbolchar symbolchar* as op) blank+ ')'
+                                                              { ESCAPED_IDENT op }
+       | '(' blank+ (symbolchar* not_star_symbolchar as op) ')'
+                                                            { ESCAPED_IDENT op }
+       | '(' blank+ (symbolchar+ as op) blank+ ')'
+                                                 { ESCAPED_IDENT op }
+            
+     #+END_SRC
+
+     
+
+**** symbol
+
+     #+BEGIN_SRC ocaml
+       | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
+           | ":=" | ":>" | ";"  | ";;" | "_"
+           | left_delimitor | right_delimitor ) as x  { SYMBOL x }
+       | '$' { if antiquots c
+               then with_curr_loc dollar (shift 1 c)
+               else parse (symbolchar_star "$") c }
+       | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
+         as x { SYMBOL x }
+            
+     #+END_SRC
 * ideas
   
 

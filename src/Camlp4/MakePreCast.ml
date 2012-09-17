@@ -3,7 +3,7 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   type token = FanSig.camlp4_token ;
   module Loc = Loc;      
   module Ast = Struct.Camlp4Ast.Make Loc;
-  module Token = Struct.Token.Make Loc;
+  module Token = FanToken.Make Loc;
   module Lexer = Lexer Token;
   module Gram = Struct.Grammar.Static.Make Lexer;
   module DynLoader = Struct.DynLoader;

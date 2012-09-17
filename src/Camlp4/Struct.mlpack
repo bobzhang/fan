@@ -5,6 +5,5 @@ CleanAst
 DynLoader
 FreeVars
 Quotation
-Token
 Grammar
 DynAst
