@@ -8,7 +8,7 @@ module Make =
 
      module Ast = (Struct.Camlp4Ast.Make)(Loc)
 
-     module Token = (Struct.Token.Make)(Loc)
+     module Token = (FanToken.Make)(Loc)
 
      module Lexer = (Lexer)(Token)
 

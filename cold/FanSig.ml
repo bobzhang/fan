@@ -167,57 +167,43 @@ type ('a, 'loc) stream_filter = ('a * 'loc) Stream.t -> ('a * 'loc) Stream.t
 
 
 (** A signature for tokens. *)
-module type Token =
-  sig
-    module Loc : Loc
-        
-    type t
-          
-    val to_string : t -> string
-        
-    val print : Format.formatter -> t -> unit
-        
-    val match_keyword : string -> t -> bool
-        
-    val extract_string : t -> string
-        
-    module Filter :
-        sig
-          type token_filter = (t, Loc.t) stream_filter
-                
-                (** The type for this filter chain.
-                    A basic implementation just store the [is_keyword] function given
-                    by [mk] and use it in the [filter] function. *)
-          type t
-                
-                (** The given predicate function returns true if the given string
-                    is a keyword. This function can be used in filters to translate
-                    identifier tokens to keyword tokens. *)
-          val mk : (string -> bool) -> t
+module type Token = sig
+  module Loc : Loc
+  type t
+  val to_string : t -> string
+  val print : Format.formatter -> t -> unit
+  val match_keyword : string -> t -> bool
+  val extract_string : t -> string
+  module Filter : sig
+    type token_filter = (t, Loc.t) stream_filter
+    (** The type for this filter chain.
+        A basic implementation just store the [is_keyword] function given
+        by [mk] and use it in the [filter] function. *)
+  type t
+  (** The given predicate function returns true if the given string
+      is a keyword. This function can be used in filters to translate
+      identifier tokens to keyword tokens. *)
+  val mk : (string -> bool) -> t
+  (** This function allows to register a new filter to the token filter chain.
+     You can choose to not support these and raise an exception. *)
+  val define_filter : t -> (token_filter -> token_filter) -> unit
               
-              (** This function allows to register a new filter to the token filter chain.
-                  You can choose to not support these and raise an exception. *)
-          val define_filter : t -> (token_filter -> token_filter) -> unit
+  (** This function filter the given stream and return a filtered stream.
+      A basic implementation just match identifiers against the [is_keyword]
+      function to produce token keywords instead. *)
+  val filter : t -> token_filter
               
-              (** This function filter the given stream and return a filtered stream.
-                  A basic implementation just match identifiers against the [is_keyword]
-                  function to produce token keywords instead. *)
-          val filter : t -> token_filter
+  (** Called by the grammar system when a keyword is used.
+      The boolean argument is True when it's the first time that keyword
+      is used. If you do not care about this information just return [()]. *)
+  val keyword_added : t -> string -> bool -> unit
               
-              (** Called by the grammar system when a keyword is used.
-                  The boolean argument is True when it's the first time that keyword
-                  is used. If you do not care about this information just return [()]. *)
-          val keyword_added : t -> string -> bool -> unit
-              
-              (** Called by the grammar system when a keyword is no longer used.
-                  If you do not care about this information just return [()]. *)
-          val keyword_removed : t -> string -> unit
-              
-        end
-        
-    module Error : Error
-        
+  (** Called by the grammar system when a keyword is no longer used.
+      If you do not care about this information just return [()]. *)
+  val keyword_removed : t -> string -> unit
   end
+  module Error : Error
+end
       
 (** This signature describes tokens for the OCaml and the Revised
     syntax lexing rules. For some tokens the data constructor holds two
