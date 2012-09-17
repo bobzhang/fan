@@ -135,7 +135,17 @@
              else parse (symbolchar_star "<:") c                                     }
             
      #+END_SRC
-     
+
+     The complexity appears here when we want to handle both
+     quotations and noquotations support.
+
+     #+BEGIN_SRC ocaml
+       mk_quotation: (context -> Lexing.lexbuf -> unit) ->
+         context -> string -> string -> int -> FanSig.camlp4_token     
+     #+END_SRC
+     #+BEGIN_SRC ocaml
+     maybe_quotation_at:context -> Lexing.lexbuf -> FanSig.camlp4_token
+     #+END_SRC
 
 **** meets "#"
 
