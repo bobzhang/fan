@@ -28,7 +28,16 @@ let float_repres f =
           then s2
           else Printf.sprintf "%.18g" f)
       in valid_float_lexeme float_val
-        
+
+let cvt_int_literal s =
+  - int_of_string ("-" ^ s)
+let cvt_int32_literal s =
+  Int32.neg (Int32.of_string ("-" ^ s))
+let cvt_int64_literal s =
+  Int64.neg (Int64.of_string ("-" ^ s))
+let cvt_nativeint_literal s =
+  Nativeint.neg (Nativeint.of_string ("-" ^ s))
+    
 module SSet = Set.Make (String)
 
 

@@ -1,4 +1,6 @@
 (* -*- Mode:caml; -*- *)
 #use "/Users/bobzhang1988/.ocamlinit";;
 #directory "_build/src";;
+#load_rec "FanLoc.cmo";;
 #load_rec "FanLexer.cmo";;
+#load_rec "FanToken.cmo";;

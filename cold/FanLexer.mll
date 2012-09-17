@@ -25,14 +25,15 @@ value mk' : context -> Stream.t char -> Stream.t (Token.t * Loc.t);             
  * mk' { (default_context) with ... = ... } strm
  *)
 
-
+open FanUtil
+open Format  
 module Make (Token : FanSig.Camlp4Token)
 = struct
   module Loc = Token.Loc
   module Token = Token
 
   open Lexing
-  open Camlp4.Sig
+  (* open Camlp4.Sig *)
   open FanSig
   (* Error report *)
   module Error = struct
@@ -83,6 +84,36 @@ module Make (Token : FanSig.Camlp4Token)
 
   let module M = FanUtil.ErrorHandler.Register(Error) in ()
 
+  let debug = ref false
+  let opt_char_len  = function
+      | Some _ -> 1
+      | None -> 0
+  let print_opt_char fmt = function
+    | Some c ->fprintf fmt "Some %c" c
+    | None -> fprintf fmt "None"
+  module Stack=struct
+    include Stack
+    let push v stk= begin 
+      if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
+      push v stk
+    end 
+    let pop stk = begin
+      if !debug then Format.eprintf "Pop %a@." print_opt_char (top stk);
+      pop stk
+    end 
+  end
+   (* the trailing char after "<<" *)    
+   let opt_char : char option Stack.t = Stack.create ()      
+   let show_stack () = begin
+     Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
+   end
+   (* the trailing char after "$" *)    
+   (* let anti_char : char Stack.t = Stack.create ()
+    * let show_anti_stack() = begin
+    *   Stack.iter (Format.eprintf "%c@." ) anti_char
+    * end  *)
+       
+
   open Error
 
   (* To store some context information:
@@ -127,18 +158,19 @@ module Make (Token : FanSig.Camlp4Token)
     let p = c.lexbuf.lex_start_p in
     c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift }
 
-  let update_loc c = { (c) with loc = Loc.of_lexbuf c.lexbuf }
-  let with_curr_loc f c = f (update_loc c) c.lexbuf
-  let parse_nested f c =
-    with_curr_loc f c;
+  (* update the [loc] to continue lexing *)      
+  let with_curr_loc lexer c =
+    lexer ({c with loc = Loc.of_lexbuf c.lexbuf}) c.lexbuf
+  let parse_nested ~lexer c =
+    with_curr_loc lexer c;
     set_start_p c;
     buff_contents c
   let shift n c = { (c) with loc = Loc.move `both n c.loc }
   let store_parse f c = store c ; f c c.lexbuf
   let parse f c = f c c.lexbuf
-  let mk_quotation quotation c name loc shift =
-   let s = parse_nested quotation (update_loc c) in
-   let contents = String.sub s 0 (String.length s - 2) in
+  let mk_quotation quotation c ~name ~loc ~shift ~retract =
+   let s = parse_nested quotation ({c with loc = Loc.of_lexbuf c.lexbuf}) in
+   let contents = String.sub s 0 (String.length s - retract) in
    FanSig.QUOTATION {
    FanSig.q_name     = name     ;
    q_loc      = loc      ;
@@ -148,29 +180,20 @@ module Make (Token : FanSig.Camlp4Token)
 
   (* Update the current location with file name and line number. *)
 
-  let update_loc c file line absolute chars =
+  let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
     let lexbuf = c.lexbuf in
     let pos = lexbuf.lex_curr_p in
     let new_file = match file with
-                  | None -> pos.pos_fname
-                  | Some s -> s
-    in
+    | None -> pos.pos_fname
+    | Some s -> s in
     lexbuf.lex_curr_p <- { pos with
       pos_fname = new_file;
       pos_lnum = if absolute then line else pos.pos_lnum + line;
-      pos_bol = pos.pos_cnum - chars;
+      pos_bol = pos.pos_cnum - retract;
     }
 	
     (* To convert integer literals, copied from "../parsing/lexer.mll" *)
 	
-    let cvt_int_literal s =
-      - int_of_string ("-" ^ s)
-    let cvt_int32_literal s =
-      Int32.neg (Int32.of_string ("-" ^ s))
-    let cvt_int64_literal s =
-      Int64.neg (Int64.of_string ("-" ^ s))
-    let cvt_nativeint_literal s =
-      Nativeint.neg (Nativeint.of_string ("-" ^ s))
 
 
   let err error loc =
@@ -194,6 +217,8 @@ module Make (Token : FanSig.Camlp4Token)
   let symbolchar = '*' | not_star_symbolchar
   let quotchar =
     ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
+  let extra_quot =
+    ['!' '%' '&' '+' '-' '.' '/' ':'  '='  '?' '@' '^' '|' '~' '\\']
   let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
   let decimal_literal =
     ['0'-'9'] ['0'-'9' '_']*
@@ -233,252 +258,305 @@ module Make (Token : FanSig.Camlp4Token)
    (* Old brace and new ones *)
    | '{' (['|' ':'] delimchars*)?
 
-  let right_delimitor =
-    (* At least a safe_delimchars *)
-    (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
-      (* A ')' or a new super ')' without ">)" *)
-    | (delimchars* ['|' ':'])? ')'
-      (* Old brackets, no new brackets ending with "|]" or ":]" *)
-    | ['|' ':']? ']'
-      (* Old ">]",">}" and new ones *)
-    | '>' delimchars* [']' '}']
-      (* Old brace and new ones *)
-    | (delimchars* ['|' ':'])? '}'
+let right_delimitor =
+  (* At least a safe_delimchars *)
+  (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
+    (* A ')' or a new super ')' without ">)" *)
+| (delimchars* ['|' ':'])? ')'
+    (* Old brackets, no new brackets ending with "|]" or ":]" *)
+| ['|' ':']? ']'
+    (* Old ">]",">}" and new ones *)
+| '>' delimchars* [']' '}']
+    (* Old brace and new ones *)
+| (delimchars* ['|' ':'])? '}'
 
 
-  rule token c = parse
-    | newline                            { update_loc c None 1 false 0; NEWLINE }
-    | blank + as x                                                   { BLANKS x }
-    | "~" (lowercase identchar * as x) ':'                            { LABEL x }
-    | "?" (lowercase identchar * as x) ':'                         { OPTLABEL x }
-    | lowercase identchar * as x                                     { LIDENT x }
-    | uppercase identchar * as x                                     { UIDENT x }
-    | int_literal as i
-        { try  INT(cvt_int_literal i, i)
-          with Failure _ -> err (Literal_overflow "int") (Loc.of_lexbuf lexbuf) }
-    | float_literal as f
-        { try  FLOAT(float_of_string f, f)
-          with Failure _ -> err (Literal_overflow "float") (Loc.of_lexbuf lexbuf) }
-    | (int_literal as i) "l"
-        { try INT32(cvt_int32_literal i, i)
-          with Failure _ -> err (Literal_overflow "int32") (Loc.of_lexbuf lexbuf) }
-    | (int_literal as i) "L"
-        { try  INT64(cvt_int64_literal i, i)
-          with Failure _ -> err (Literal_overflow "int64") (Loc.of_lexbuf lexbuf) }
-    | (int_literal as i) "n"
-        { try NATIVEINT(cvt_nativeint_literal i, i)
-          with Failure _ -> err (Literal_overflow "nativeint") (Loc.of_lexbuf lexbuf) }
-    | '"'
-        { with_curr_loc string c;
-          let s = buff_contents c in STRING (TokenEval.string s, s)             }
-    | "'" (newline as x) "'"
-        { update_loc c None 1 false 1; CHAR (TokenEval.char x, x)               }
-    | "'" ( [^ '\\' '\010' '\013']
-          | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
-                |['0'-'9'] ['0'-'9'] ['0'-'9']
-                |'x' hexa_char hexa_char)
-          as x) "'"                                { CHAR (TokenEval.char x, x) }
-    | "'\\" (_ as c)
-        { err (Illegal_escape (String.make 1 c)) (Loc.of_lexbuf lexbuf)         }
-    | "(*"
-        { store c; COMMENT(parse_nested comment (in_comment c))                 }
-    | "(*)"
-        { warn Comment_start (Loc.of_lexbuf lexbuf)                             ;
-          parse comment (in_comment c); COMMENT (buff_contents c)               }
-    | "*)"
-        { warn Comment_not_end (Loc.of_lexbuf lexbuf)                           ;
-          move_start_p (-1) c; SYMBOL "*"                                       }
-    | "<<" (quotchar* as beginning)
-      { if quotations c
-        then (move_start_p (-String.length beginning) c; (* FIX partial application*)
-              mk_quotation quotation c "" "" 2)
-        else parse (symbolchar_star ("<<" ^ beginning)) c                       }
-    | "<<>>"
-      { if quotations c
-        then QUOTATION { q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
-        else parse (symbolchar_star "<<>>") c                                   }
-    | "<@"
-      { if quotations c then with_curr_loc maybe_quotation_at c
-        else parse (symbolchar_star "<@") c                                     }
-    | "<:"
-      { if quotations c then with_curr_loc maybe_quotation_colon c
-        else parse (symbolchar_star "<:") c                                     }
-    | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
-          ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
-          [^ '\010' '\013'] * newline
-      { let inum = int_of_string num
-        in update_loc c name inum true 0; LINE_DIRECTIVE(inum, name)            }
-    | '(' (not_star_symbolchar as op) ')'
-                                             { ESCAPED_IDENT (String.make 1 op) }
-    | '(' (not_star_symbolchar symbolchar* not_star_symbolchar as op) ')'
-                                                             { ESCAPED_IDENT op }
-    | '(' (not_star_symbolchar symbolchar* as op) blank+ ')'
-                                                             { ESCAPED_IDENT op }
-    | '(' blank+ (symbolchar* not_star_symbolchar as op) ')'
-                                                             { ESCAPED_IDENT op }
-    | '(' blank+ (symbolchar+ as op) blank+ ')'
-                                                             { ESCAPED_IDENT op }
-    | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
-      | ":=" | ":>" | ";"  | ";;" | "_"
-      | left_delimitor | right_delimitor ) as x  { SYMBOL x }
-    | '$' { if antiquots c
+    rule token c = parse
+       | newline                            { update_loc c  ; NEWLINE }
+       | blank + as x                                                   { BLANKS x }
+       | "~" (lowercase identchar * as x) ':'                            { LABEL x }
+       | "?" (lowercase identchar * as x) ':'                         { OPTLABEL x }
+       | lowercase identchar * as x                                     { LIDENT x }
+       | uppercase identchar * as x                                     { UIDENT x }
+       | int_literal as i
+           { try  INT(cvt_int_literal i, i)
+           with Failure _ -> err (Literal_overflow "int") (Loc.of_lexbuf lexbuf) }
+       | float_literal as f
+           { try  FLOAT(float_of_string f, f)
+           with Failure _ -> err (Literal_overflow "float") (Loc.of_lexbuf lexbuf) }
+       | (int_literal as i) "l"
+           { try INT32(cvt_int32_literal i, i)
+           with Failure _ -> err (Literal_overflow "int32") (Loc.of_lexbuf lexbuf) }
+       | (int_literal as i) "L"
+           { try  INT64(cvt_int64_literal i, i)
+           with Failure _ -> err (Literal_overflow "int64") (Loc.of_lexbuf lexbuf) }
+       | (int_literal as i) "n"
+           { try NATIVEINT(cvt_nativeint_literal i, i)
+           with Failure _ -> err (Literal_overflow "nativeint") (Loc.of_lexbuf lexbuf) }
+       | '"'
+           { with_curr_loc string c;
+             let s = buff_contents c in STRING (TokenEval.string s, s)             }
+       | "'" (newline as x) "'"
+           { update_loc c  ~retract:1; CHAR (TokenEval.char x, x)               }
+       | "'" ( [^ '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
+               |['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
+           { CHAR (TokenEval.char x, x) }
+       | "'\\" (_ as c)
+           { err (Illegal_escape (String.make 1 c)) (Loc.of_lexbuf lexbuf)         }
+       | "(*"
+           { store c; COMMENT(parse_nested comment (in_comment c))                 }
+       | "(*)"
+           { warn Comment_start (Loc.of_lexbuf lexbuf)                             ;
+             parse comment (in_comment c); COMMENT (buff_contents c)               }
+       | "*)"
+           { warn Comment_not_end (Loc.of_lexbuf lexbuf)                           ;
+             move_start_p (-1) c; SYMBOL "*"                                       }
+       | "<<" (extra_quot as p)? (quotchar* as beginning)
+           { if quotations c  then
+             (move_start_p (-String.length beginning) c; (* FIX partial application*)
+              Stack.push p opt_char;
+              let len = 2 + opt_char_len p in 
+              mk_quotation quotation c ~name:"" ~loc:"" ~shift:len ~retract:len)
+           else parse
+               (symbolchar_star
+                  ("<<" ^
+                   (match p with Some x -> String.make 1 x | None -> "")
+                   ^ beginning))
+               c                       }
+       | "<<>>"
+           { if quotations c
+           then QUOTATION { q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
+           else parse (symbolchar_star "<<>>") c                                   }
+       | "<@"
+           { if quotations c then with_curr_loc maybe_quotation_at c
+           else parse (symbolchar_star "<@") c                                     }
+       | "<:"
+           { if quotations c then with_curr_loc maybe_quotation_colon c
+           else parse (symbolchar_star "<:") c                                     }
+       | "#" [' ' '\t']* (['0'-'9']+ as num) [' ' '\t']*
+           ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
+           [^ '\010' '\013'] * newline
+           { let inum = int_of_string num in
+           update_loc c ?file:name ~line:inum ~absolute:true ; LINE_DIRECTIVE(inum, name)            }
+       | '(' (not_star_symbolchar as op) ')'
+           { ESCAPED_IDENT (String.make 1 op) }
+       | '(' (not_star_symbolchar symbolchar* not_star_symbolchar as op) ')'
+           { ESCAPED_IDENT op }
+       | '(' (not_star_symbolchar symbolchar* as op) blank+ ')'
+           { ESCAPED_IDENT op }
+       | '(' blank+ (symbolchar* not_star_symbolchar as op) ')'
+           { ESCAPED_IDENT op }
+       | '(' blank+ (symbolchar+ as op) blank+ ')'
+           { ESCAPED_IDENT op }
+       | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
+           | ":=" | ":>" | ";"  | ";;" | "_"
+           | left_delimitor | right_delimitor ) as x  { SYMBOL x }
+       | '$'
+           {
+            if antiquots c
             then with_curr_loc dollar (shift 1 c)
             else parse (symbolchar_star "$") c }
-    | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
-                                                                as x { SYMBOL x }
-    | eof
-      { let pos = lexbuf.lex_curr_p in
-        lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
-                                        pos_cnum = pos.pos_cnum + 1 }; EOI      }
-    | _ as c                 { err (Illegal_character c) (Loc.of_lexbuf lexbuf) }
+       | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
+           as x { SYMBOL x }
+       | eof
+           { let pos = lexbuf.lex_curr_p in
+           lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
+                                  pos_cnum = pos.pos_cnum + 1 }; EOI      }
+       | _ as c                 { err (Illegal_character c) (Loc.of_lexbuf lexbuf) }
 
-  and comment c = parse
-      "(*"
-        { store c; with_curr_loc comment c; parse comment c                     }
-    | "*)"                                                            { store c }
-    | '<' (':' ident)? ('@' locname)? '<'
-        { store c;
-          if quotations c then with_curr_loc quotation c; parse comment c       }
-    | ident                                             { store_parse comment c }
-    | "\""
-        { store c;
-          begin try with_curr_loc string c
-          with Loc.Exc_located(_, Error.E Unterminated_string) ->
-            err Unterminated_string_in_comment (loc c)
-          end;
-          Buffer.add_char c.buffer '"';
-          parse comment c }
-    | "''"                                              { store_parse comment c }
-    | "'''"                                             { store_parse comment c }
-    | "'" newline "'"
-      { update_loc c None 1 false 1; store_parse comment c                      }
-    | "'" [^ '\\' '\'' '\010' '\013' ] "'"              { store_parse comment c }
-    | "'\\" ['\\' '"' '\'' 'n' 't' 'b' 'r' ' '] "'"     { store_parse comment c }
-    | "'\\" ['0'-'9'] ['0'-'9'] ['0'-'9'] "'"           { store_parse comment c }
-    | "'\\" 'x' hexa_char hexa_char "'"                 { store_parse comment c }
-    | eof
-      { err Unterminated_comment (loc c)                                        }
-    | newline
-      { update_loc c None 1 false 0; store_parse comment c                      }
-    | _                                                 { store_parse comment c }
+and comment c = parse
+    "(*"  { store c;
+            with_curr_loc comment c;
+            parse comment c
+          }
+     | "*)"   { store c }
+     | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)?
+         { store c;
+           if quotations c then begin
+             Stack.push p opt_char;
+             with_curr_loc quotation c;
+             parse comment c ;
+           end}
+     | ident                                             { store_parse comment c }
+     | "\""
+         { store c;
+      begin try with_curr_loc string c
+      with Loc.Exc_located(_, Error.E Unterminated_string) ->
+        err Unterminated_string_in_comment (loc c)
+      end;
+      Buffer.add_char c.buffer '"';
+      parse comment c }
+     | "''"                                              { store_parse comment c }
+     | "'''"                                             { store_parse comment c }
+     | "'" newline "'"
+         { update_loc c ~retract:1; store_parse comment c                      }
+     | "'" [^ '\\' '\'' '\010' '\013' ] "'"              { store_parse comment c }
+     | "'\\" ['\\' '"' '\'' 'n' 't' 'b' 'r' ' '] "'"     { store_parse comment c }
+     | "'\\" ['0'-'9'] ['0'-'9'] ['0'-'9'] "'"           { store_parse comment c }
+     | "'\\" 'x' hexa_char hexa_char "'"                 { store_parse comment c }
+     | eof
+         { err Unterminated_comment (loc c)                                        }
+     | newline
+         { update_loc c ; store_parse comment c                      }
+     | _                                                 { store_parse comment c }
 
-  and string c = parse
-      '"'                                                       { set_start_p c }
+and string c = parse
+    '"'                                                       { set_start_p c }
     | '\\' newline ([' ' '\t'] * as space)
-        { update_loc c None 1 false (String.length space);
+        { update_loc c  ~retract:(String.length space);
           store_parse string c                                                  }
     | '\\' ['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']           { store_parse string c }
     | '\\' ['0'-'9'] ['0'-'9'] ['0'-'9']                 { store_parse string c }
     | '\\' 'x' hexa_char hexa_char                       { store_parse string c }
     | '\\' (_ as x)
-        { if is_in_comment c
-          then store_parse string c
-          else begin
-            warn (Illegal_escape (String.make 1 x)) (Loc.of_lexbuf lexbuf);
-            store_parse string c
-          end }
+        {
+         if is_in_comment c then
+           store_parse string c
+         else begin
+           warn (Illegal_escape (String.make 1 x)) (Loc.of_lexbuf lexbuf);
+           store_parse string c
+         end }
     | newline
-      { update_loc c None 1 false 0; store_parse string c                       }
+        { update_loc c ; store_parse string c                       }
     | eof                                     { err Unterminated_string (loc c) }
     | _                                                  { store_parse string c }
 
-  and symbolchar_star beginning c = parse
+and symbolchar_star beginning c = parse
     | symbolchar* as tok            { move_start_p (-String.length beginning) c ;
-                                                        SYMBOL(beginning ^ tok) }
+                                  SYMBOL(beginning ^ tok) }
 
-  and maybe_quotation_at c = parse
-    | (ident as loc) '<'
-      { mk_quotation quotation c "" loc (1 + String.length loc)                 }
+(* <@loc< *)        
+and maybe_quotation_at c = parse
+    | (ident as loc) '<' (extra_quot as p)?     {
+         Stack.push p opt_char;
+         mk_quotation quotation c "" loc
+           (2 + 1 + String.length loc + (opt_char_len p))
+           (2 + opt_char_len p)
+       }
+        (* { mk_quotation quotation c "" loc (1 + String.length loc)                 } *)
     | symbolchar* as tok                                   { SYMBOL("<@" ^ tok) }
 
-  and maybe_quotation_colon c = parse
-    | (ident as name) '<'
-      { mk_quotation quotation c name "" (1 + String.length name)               }
-    | (ident as name) '@' (locname as loc) '<'
-      { mk_quotation quotation c name loc
-                     (2 + String.length loc + String.length name)               }
+(* <:name< *)        
+and maybe_quotation_colon c = parse
+    | (ident as name) '<' (extra_quot as p)?  { begin 
+        Stack.push p opt_char;
+        mk_quotation quotation c
+          ~name:name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
+          ~retract:(2 + opt_char_len p)
+    end
+    }
+        (* { mk_quotation quotation c name "" (1 + String.length name)               } *)
+    | (ident as name) '@' (locname as loc) '<' (extra_quot as p)? { begin 
+        Stack.push p opt_char;
+        mk_quotation quotation c name loc
+          (2 + 2 + String.length loc + String.length name + opt_char_len p)
+          (2 + opt_char_len p)
+      end}
+   
+        (* { mk_quotation quotation c name loc *)
+        (* (2 + String.length loc + String.length name)               } *)
     | symbolchar* as tok                                   { SYMBOL("<:" ^ tok) }
 
-  and quotation c = parse
-    | '<' (':' ident)? ('@' locname)? '<'    {                          store c ;
-                                                      with_curr_loc quotation c ;
-                                                              parse quotation c }
-    | ">>"                                                            { store c }
-    | eof                                  { err Unterminated_quotation (loc c) }
-    | newline                                     { update_loc c None 1 false 0 ;
-                                                        store_parse quotation c }
+and quotation c = parse
+    | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {begin
+        store c ;
+        with_curr_loc quotation c ;
+        Stack.push p opt_char;
+        parse quotation c
+    end}
+    | (extra_quot as p)? ">>"  {
+      if not (Stack.is_empty opt_char) then
+        let top = Stack.top opt_char in
+        if p <> top then
+          store_parse quotation c (*move on*)
+        else begin
+          ignore (Stack.pop opt_char);
+          store c
+        end
+      else
+        store_parse quotation c;
+    }
+    | eof {show_stack (); err Unterminated_quotation (loc c)}
+    (* | ">>"                                                            { store c } *)
+    (* | eof                                  { err Unterminated_quotation (loc c) } *)
+    | newline                                     { update_loc c ;
+                                                store_parse quotation c }
     | _                                               { store_parse quotation c }
 
-  and dollar c = parse
+and dollar c = parse
     | '$'                                     { set_start_p c; ANTIQUOT("", "") }
     | ('`'? (identchar*|['.' '!']+) as name) ':'
-      { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        }
+        { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        }
     | _                                           { store_parse (antiquot "") c }
 
-  and antiquot name c = parse
+and antiquot name c = parse
     | '$'                      { set_start_p c; ANTIQUOT(name, buff_contents c) }
     | eof                                   { err Unterminated_antiquot (loc c) }
     | newline
-      { update_loc c None 1 false 0; store_parse (antiquot name) c              }
-    | '<' (':' ident)? ('@' locname)? '<'
-      { store c; with_curr_loc quotation c; parse (antiquot name) c             }
+        { update_loc c ; store_parse (antiquot name) c              }
+    | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {
+      let () = Stack.push p opt_char in
+      let () = store c in
+      let () = with_curr_loc quotation c in
+      parse (antiquot name ) c 
+      }
+        
+        (* { store c; with_curr_loc quotation c; *)
+        (*   parse (antiquot name) c             } *)
     | _                                         { store_parse (antiquot name) c }
 
-  {
 
-  let lexing_store s buff max =
-    let rec self n s =
-      if n >= max then n
-      else
-        match Stream.peek s with
-        | Some x ->
-            Stream.junk s;
-            buff.[n] <- x;
-            succ n
-        | _ -> n
-    in
-    self 0 s
 
-  let from_context c =
-    let next _ =
-      let tok = with_curr_loc token c in
-      let loc = Loc.of_lexbuf c.lexbuf in
-      Some ((tok, loc))
-    in Stream.from next
 
-  let from_lexbuf ?(quotations = true) lb =
-    let c = { (default_context lb) with
-              loc        = Loc.of_lexbuf lb;
-              antiquots  = !FanConfig.antiquotations;
-              quotations = quotations      }
-    in from_context c
+{
+ let lexing_store s buff max =
+   let rec self n s =
+     if n >= max then n
+     else
+       match Stream.peek s with
+       | Some x ->
+           Stream.junk s;
+           buff.[n] <- x;
+           succ n
+       | _ -> n
+   in
+   self 0 s
 
-  let setup_loc lb loc =
-    let start_pos = Loc.start_pos loc in
-    lb.lex_abs_pos <- start_pos.pos_cnum;
-    lb.lex_curr_p  <- start_pos
+let from_context c =
+  let next _ =
+    let tok = with_curr_loc token c in
+    let loc = Loc.of_lexbuf c.lexbuf in
+    Some ((tok, loc))
+  in Stream.from next
 
-  let from_string ?quotations loc str =
-    let lb = Lexing.from_string str in
-    setup_loc lb loc;
-    from_lexbuf ?quotations lb
+let from_lexbuf ?(quotations = true) lb =
+  let c = { (default_context lb) with
+            loc        = Loc.of_lexbuf lb;
+            antiquots  = !FanConfig.antiquotations;
+            quotations = quotations      }
+  in from_context c
 
-  let from_stream ?quotations loc strm =
-    let lb = Lexing.from_function (lexing_store strm) in
-    setup_loc lb loc;
-    from_lexbuf ?quotations lb
+let setup_loc lb loc =
+  let start_pos = Loc.start_pos loc in
+  lb.lex_abs_pos <- start_pos.pos_cnum;
+  lb.lex_curr_p  <- start_pos
 
-  let mk () loc strm =
-    from_stream ~quotations:!FanConfig.quotations loc strm
-  (* let from_string str = *)
-  (*   let l = mk () (Loc.mk "<tring>") in *)
+let from_string ?quotations loc str =
+  let lb = Lexing.from_string str in
+  setup_loc lb loc;
+  from_lexbuf ?quotations lb
+
+let from_stream ?quotations loc strm =
+  let lb = Lexing.from_function (lexing_store strm) in
+  setup_loc lb loc;
+  from_lexbuf ?quotations lb
+
+let mk () loc strm =
+  from_stream ~quotations:!FanConfig.quotations loc strm
+    (* let from_string str = *)
+    (*   let l = mk () (Loc.mk "<tring>") in *)
     
-      
+    
 end
 }
 
-(*
-  let module M = FanLexer.Make
-  (FanToken.Make Camlp4.Struct.Loc) in M.from_string;;
-
- *)

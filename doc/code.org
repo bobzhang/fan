@@ -115,7 +115,7 @@
              move_start_p (-1) c; SYMBOL "*"                                       }
        
      #+END_SRC     
-
+     So we go into the comment state
 **** when it meets quotation
      #+BEGIN_SRC ocaml
        | "<<" (quotchar* as beginning)
@@ -157,7 +157,6 @@
          update_loc c name inum true 0; LINE_DIRECTIVE(inum, name) }
      #+END_SRC
      
-
 **** ESCAPEd_INDENT
      #+BEGIN_SRC ocaml
        | '(' (not_star_symbolchar as op) ')'
@@ -174,9 +173,7 @@
      #+END_SRC
 
      
-
 **** symbol
-
      #+BEGIN_SRC ocaml
        | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
            | ":=" | ":>" | ";"  | ";;" | "_"
@@ -188,6 +185,28 @@
          as x { SYMBOL x }
             
      #+END_SRC
+*** utilities
+    =store= store current lexeme into  =c.buffer=
+    =istore_char= stores ith char in the lexeme into =c.buffer=
+    =buffer_contents= return the buffer contents and reset the buffer
+    =loc= returns the current location(wider)
+    =in_comment= sets the =in_comment= state to true
+
+    =set_start_p= sets the =c.lexbuf.lex_start_p=
+
+    =move_start_p= moves the =start= shift in one line (if not in the
+    same line, may be buggy)
+
+    
+*** special case
+    #+BEGIN_SRC ocaml
+      '
+      ';;
+      - : char = '\n'
+      
+    #+END_SRC
+
+    
 * ideas
   
 
