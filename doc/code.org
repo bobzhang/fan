@@ -206,7 +206,25 @@
       
     #+END_SRC
 
-    
+
+*** bugs to be fixed
+
+**** quotation
+     - comment in quotation
+       we require comment quotation is also correct, so there's nothing
+       to be fixed here
+     - string in quotation
+       fixed 
+     - newline
+       no need to fix
+
+
+**** antiquotation
+     - string in antiquot
+     - quot in antiquot
+       
+
+     
 * ideas
   
 

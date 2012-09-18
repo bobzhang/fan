@@ -49,6 +49,7 @@ module Make (Token : FanSig.Camlp4Token)
       | Unterminated_quotation
       | Unterminated_antiquot
       | Unterminated_string_in_comment
+      | Unterminated_string_in_quotation
       | Comment_start
       | Comment_not_end
       | Literal_overflow of string
@@ -69,6 +70,8 @@ module Make (Token : FanSig.Camlp4Token)
           fprintf ppf "String literal not terminated"
       | Unterminated_string_in_comment ->
           fprintf ppf "This comment contains an unterminated string literal"
+      | Unterminated_string_in_quotation ->
+          fprintf ppf "This quotation contains an unterminated string literal"
       | Unterminated_quotation ->
           fprintf ppf "Quotation not terminated"
       | Unterminated_antiquot ->
@@ -283,16 +286,16 @@ let right_delimitor =
   (* At least a safe_delimchars *)
   (delimchars|right_delims)* safe_delimchars (delimchars|right_delims)* right_delims
     (* A ')' or a new super ')' without ">)" *)
-| (delimchars* ['|' ':'])? ')'
+   | (delimchars* ['|' ':'])? ')'
     (* Old brackets, no new brackets ending with "|]" or ":]" *)
-| ['|' ':']? ']'
+   | ['|' ':']? ']'
     (* Old ">]",">}" and new ones *)
-| '>' delimchars* [']' '}']
+   | '>' delimchars* [']' '}']
     (* Old brace and new ones *)
-| (delimchars* ['|' ':'])? '}'
+   | (delimchars* ['|' ':'])? '}'
 
 
-    rule token c = parse
+ rule token c = parse
        | newline                            { update_loc c  ; NEWLINE }
        | blank + as x                                                   { BLANKS x }
        | "~" (lowercase identchar * as x) ':'                            { LABEL x }
@@ -399,12 +402,12 @@ and comment c = parse
              parse comment c ;
            end}
      | ident                                             { store_parse comment c }
-     | "\""
-         { store c;
-      begin try with_curr_loc string c
-      with Loc.Exc_located(_, Error.E Unterminated_string) ->
-        err Unterminated_string_in_comment (loc c)
-      end;
+     | "\"" { store c;
+           begin
+             try with_curr_loc string c
+             with Loc.Exc_located(_, Error.E Unterminated_string) ->
+               err Unterminated_string_in_comment (loc c)
+           end;
       Buffer.add_char c.buffer '"';
       parse comment c }
      | "''"                                              { store_parse comment c }
@@ -497,13 +500,26 @@ and quotation c = parse
       else
         store_parse quotation c;
     }
+    | "\"" {store c;
+            begin
+              try with_curr_loc string c
+              with Loc.Exc_located(_,Error.E Unterminated_string) ->
+                err Unterminated_string_in_quotation (loc c)
+            end;
+            Buffer.add_char c.buffer '"';
+            parse quotation c
+          }
     | eof {show_stack (); err Unterminated_quotation (loc c)}
-    (* | ">>"                                                            { store c } *)
-    (* | eof                                  { err Unterminated_quotation (loc c) } *)
-    | newline                                     { update_loc c ;
-                                                store_parse quotation c }
-    | _                                               { store_parse quotation c }
-
+    | newline                                     {
+      update_loc c ;
+      store_parse quotation c }
+    | _                                               {
+      store_parse quotation c }
+(*
+  $lid:ident
+  $ident
+  $()
+ *)
 and dollar c = parse
     | '$'                                     { set_start_p c; ANTIQUOT("", "") }
     | ('`'? (identchar*|['.' '!']+) as name) ':'
