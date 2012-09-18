@@ -1,0 +1,22 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
+set -e
+make cleantmp
+ocamlbuild $(find src | grep ml$ | perl -pe 's|.*?/|tmp/|')
+# needs copy mll mlpack as well
+ocamlbuild $(find src | grep mll$ | perl -pe 's|.*?/|tmp/|')
+ocamlbuild $(find src | grep mli$ | perl -pe 's|.*?/|tmp/|')
+ocamlbuild $(find src | grep mlpack$ | perl -pe 's|.*?/|tmp/|')
+
+rm -rf cold # do the cleaning, in case some files are discarded 
+mkdir cold
+
+cp -rf _build/tmp/ cold
+
+# creat tag files
+cat > cold/_tags <<EOF
+<Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
+<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> : pkg_compiler-libs.common
+EOF
+
+echo "snapshop finished"

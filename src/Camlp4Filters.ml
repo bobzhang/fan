@@ -55,7 +55,7 @@ module MakeExceptionTracer (AstFilters : Camlp4.Sig.AstFilters) = struct
   value filter = object
     inherit Ast.map as super;
     method expr = fun
-    [ <:expr@_loc< fun [ $m$ ] >> -> <:expr< fun [ $map_match_case m$ ] >>
+    [ <:expr@_loc< fun [ $m$ ] >>  -> <:expr< fun [ $map_match_case m$ ] >>
     | x -> super#expr x ];
     method str_item = fun
     [ <:str_item< module Debug = $_$ >> as st -> st

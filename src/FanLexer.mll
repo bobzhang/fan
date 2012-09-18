@@ -1,5 +1,8 @@
 (* The lexer definition *)
 
+(* Know bugs:
+   quotation doesnot handle comment
+ *)
 
 {
 
@@ -88,10 +91,11 @@ module Make (Token : FanSig.Camlp4Token)
   let opt_char_len  = function
       | Some _ -> 1
       | None -> 0
+
   let print_opt_char fmt = function
     | Some c ->fprintf fmt "Some %c" c
     | None -> fprintf fmt "None"
-  module Stack=struct
+  module Stack=struct   
     include Stack
     let push v stk= begin 
       if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
@@ -103,8 +107,12 @@ module Make (Token : FanSig.Camlp4Token)
     end 
   end
    (* the trailing char after "<<" *)    
-   let opt_char : char option Stack.t = Stack.create ()      
+   let opt_char : char option Stack.t = Stack.create ()
+   let turn_on_quotation_debug () = debug:=true
+   let turn_off_quotation_debug () = debug:=false
+   let clear_stack () = Stack.clear opt_char 
    let show_stack () = begin
+     eprintf "stack expand to check the error message@.";
      Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
    end
    (* the trailing char after "$" *)    
@@ -153,21 +161,34 @@ module Make (Token : FanSig.Camlp4Token)
   let antiquots c = c.antiquots
   let is_in_comment c = c.in_comment
   let in_comment c = { (c) with in_comment = true }
+
+  (* update the lexing position to the loc *)    
   let set_start_p c = c.lexbuf.lex_start_p <- Loc.start_pos c.loc
+
+  (* shift the lexing buffer, usually shift back *)    
   let move_start_p shift c =
     let p = c.lexbuf.lex_start_p in
     c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift }
 
-  (* update the [loc] to continue lexing *)      
+  (* create a new context with  the location of the context for the lexer
+     the old context was kept
+   *)      
   let with_curr_loc lexer c =
     lexer ({c with loc = Loc.of_lexbuf c.lexbuf}) c.lexbuf
-  let parse_nested ~lexer c =
+
+  let parse_nested ~lexer c = begin 
     with_curr_loc lexer c;
     set_start_p c;
     buff_contents c
+  end
   let shift n c = { (c) with loc = Loc.move `both n c.loc }
-  let store_parse f c = store c ; f c c.lexbuf
-  let parse f c = f c c.lexbuf
+
+  let store_parse f c =  begin
+    store c ; f c c.lexbuf
+  end
+
+  let parse f c =
+    f c c.lexbuf
   let mk_quotation quotation c ~name ~loc ~shift ~retract =
    let s = parse_nested quotation ({c with loc = Loc.of_lexbuf c.lexbuf}) in
    let contents = String.sub s 0 (String.length s - retract) in
@@ -196,7 +217,7 @@ module Make (Token : FanSig.Camlp4Token)
 	
 
 
-  let err error loc =
+  let err (error:Error.t) (loc:Loc.t) =
     raise(Loc.Exc_located(loc, Error.E error))
 
   let warn error loc =
@@ -460,8 +481,8 @@ and maybe_quotation_colon c = parse
 and quotation c = parse
     | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {begin
         store c ;
+        Stack.push p opt_char; (* take care the order matters*)
         with_curr_loc quotation c ;
-        Stack.push p opt_char;
         parse quotation c
     end}
     | (extra_quot as p)? ">>"  {
@@ -541,21 +562,22 @@ let setup_loc lb loc =
   lb.lex_abs_pos <- start_pos.pos_cnum;
   lb.lex_curr_p  <- start_pos
 
+(* the stack is cleared to clear the previous error message *)          
 let from_string ?quotations loc str =
+  let () = clear_stack () in 
   let lb = Lexing.from_string str in
   setup_loc lb loc;
   from_lexbuf ?quotations lb
 
+(* the stack is cleared to clear the previous error message *)    
 let from_stream ?quotations loc strm =
+  let () = clear_stack () in 
   let lb = Lexing.from_function (lexing_store strm) in
   setup_loc lb loc;
   from_lexbuf ?quotations lb
 
 let mk () loc strm =
   from_stream ~quotations:!FanConfig.quotations loc strm
-    (* let from_string str = *)
-    (*   let l = mk () (Loc.mk "<tring>") in *)
-    
     
 end
 }
