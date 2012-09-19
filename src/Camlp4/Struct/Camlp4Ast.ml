@@ -55,10 +55,10 @@ module Make (Loc : FanSig.Loc)
 
   value rec is_module_longident =
     fun
-    [ <:ident< $_$.$i$ >> -> is_module_longident i
-    | <:ident< $i1$ $i2$ >> ->
+    [ <:ident< $_.$i >> -> is_module_longident i
+    | <:ident< $i1 $i2 >> ->
         is_module_longident i1 && is_module_longident i2
-    | <:ident< $uid:_$ >> -> True
+    | <:ident< $uid:_ >> -> True
     | _ -> False ];
 
   value ident_of_expr =
@@ -66,14 +66,14 @@ module Make (Loc : FanSig.Loc)
       invalid_arg "ident_of_expr: this expression is not an identifier" in
     let rec self =
       fun
-      [ <:expr@_loc< $e1$ $e2$ >> -> <:ident< $self e1$ $self e2$ >>
-      | <:expr@_loc< $e1$.$e2$ >> -> <:ident< $self e1$.$self e2$ >>
-      | <:expr< $lid:_$ >> -> error ()
-      | <:expr< $id:i$ >> -> if is_module_longident i then i else error ()
+      [ <:expr@_loc< $e1 $e2 >> -> <:ident< $(self e1) $(self e2) >>
+      | <:expr@_loc< $e1.$e2 >> -> <:ident< $(self e1).$(self e2) >>
+      | <:expr< $lid:_ >> -> error ()
+      | <:expr< $id:i >> -> if is_module_longident i then i else error ()
       | _ -> error () ] in
     fun
-    [ <:expr< $id:i$ >> -> i
-    | <:expr< $_$ $_$ >> -> error ()
+    [ <:expr< $id:i >> -> i
+    | <:expr< $_ $_ >> -> error ()
     | t -> self t ];
 
   value ident_of_ctyp =
@@ -81,12 +81,12 @@ module Make (Loc : FanSig.Loc)
       invalid_arg "ident_of_ctyp: this type is not an identifier" in
     let rec self =
       fun
-      [ <:ctyp@_loc< $t1$ $t2$ >> -> <:ident< $self t1$ $self t2$ >>
-      | <:ctyp< $lid:_$ >> -> error ()
-      | <:ctyp< $id:i$ >> -> if is_module_longident i then i else error ()
+      [ <:ctyp@_loc< $t1 $t2 >> -> <:ident< $(self t1) $(self t2) >>
+      | <:ctyp< $lid:_ >> -> error ()
+      | <:ctyp< $id:i >> -> if is_module_longident i then i else error ()
       | _ -> error () ] in
     fun
-    [ <:ctyp< $id:i$ >> -> i
+    [ <:ctyp< $id:i >> -> i
     | t -> self t ];
 
   value ident_of_patt =
@@ -94,61 +94,61 @@ module Make (Loc : FanSig.Loc)
       invalid_arg "ident_of_patt: this pattern is not an identifier" in
     let rec self =
       fun
-      [ <:patt@_loc< $p1$ $p2$ >> -> <:ident< $self p1$ $self p2$ >>
-      | <:patt< $lid:_$ >> -> error ()
-      | <:patt< $id:i$ >> -> if is_module_longident i then i else error ()
+      [ <:patt@_loc< $p1 $p2 >> -> <:ident< $(self p1) $(self p2) >>
+      | <:patt< $lid:_ >> -> error ()
+      | <:patt< $id:i >> -> if is_module_longident i then i else error ()
       | _ -> error () ] in
     fun
-    [ <:patt< $id:i$ >> -> i
+    [ <:patt< $id:i >> -> i
     | p -> self p ];
 
   value rec is_irrefut_patt =
     fun
-    [ <:patt< $lid:_$ >> -> True
+    [ <:patt< $lid:_ >> -> True
     | <:patt< () >> -> True
     | <:patt< _ >> -> True
     | <:patt<>> -> True (* why not *)
-    | <:patt< ($x$ as $y$) >> -> is_irrefut_patt x && is_irrefut_patt y
-    | <:patt< { $p$ } >> -> is_irrefut_patt p
-    | <:patt< $_$ = $p$ >> -> is_irrefut_patt p
-    | <:patt< $p1$; $p2$ >> -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | <:patt< $p1$, $p2$ >> -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | <:patt< $p1$ | $p2$ >> -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
-    | <:patt< $p1$ $p2$ >> -> is_irrefut_patt p1 && is_irrefut_patt p2
-    | <:patt< ($p$ : $_$) >> -> is_irrefut_patt p
-    | <:patt< ($tup:pl$) >> -> is_irrefut_patt pl
-    | <:patt< ? $_$ >> -> True
-    | <:patt< ? $_$ : ($p$) >> -> is_irrefut_patt p
-    | <:patt< ? $_$ : ($p$ = $_$) >> -> is_irrefut_patt p
-    | <:patt< ~ $_$ >> -> True
-    | <:patt< ~ $_$ : $p$ >> -> is_irrefut_patt p
-    | <:patt< lazy $p$ >> -> is_irrefut_patt p
-    | <:patt< $id:_$ >> -> False (* here one need to know the arity of constructors *)
-    | <:patt< (module $_$) >> -> True
-    | <:patt< `$_$ >> | <:patt< $str:_$ >> | <:patt< $_$ .. $_$ >> |
-      <:patt< $flo:_$ >> | <:patt< $nativeint:_$ >> | <:patt< $int64:_$ >> |
-      <:patt< $int32:_$ >> | <:patt< $int:_$ >> | <:patt< $chr:_$ >> |
-      <:patt< #$_$ >> | <:patt< [| $_$ |] >> | <:patt< $anti:_$ >> -> False
+    | <:patt< ($x as $y) >> -> is_irrefut_patt x && is_irrefut_patt y
+    | <:patt< { $p } >> -> is_irrefut_patt p
+    | <:patt< $_ = $p >> -> is_irrefut_patt p
+    | <:patt< $p1; $p2 >> -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | <:patt< $p1, $p2 >> -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | <:patt< $p1 | $p2 >> -> is_irrefut_patt p1 && is_irrefut_patt p2 (* could be more fine grained *)
+    | <:patt< $p1 $p2 >> -> is_irrefut_patt p1 && is_irrefut_patt p2
+    | <:patt< ($p : $_) >> -> is_irrefut_patt p
+    | <:patt< ($tup:pl) >> -> is_irrefut_patt pl
+    | <:patt< ? $_ >> -> True
+    | <:patt< ? $_ : ($p) >> -> is_irrefut_patt p
+    | <:patt< ? $_ : ($p = $_) >> -> is_irrefut_patt p
+    | <:patt< ~ $_ >> -> True
+    | <:patt< ~ $_ : $p >> -> is_irrefut_patt p
+    | <:patt< lazy $p >> -> is_irrefut_patt p
+    | <:patt< $id:_ >> -> False (* here one need to know the arity of constructors *)
+    | <:patt< (module $_) >> -> True
+    | <:patt< `$_ >> | <:patt< $str:_ >> | <:patt< $_ .. $_ >> |
+      <:patt< $flo:_ >> | <:patt< $nativeint:_ >> | <:patt< $int64:_ >> |
+      <:patt< $int32:_ >> | <:patt< $int:_ >> | <:patt< $chr:_ >> |
+      <:patt< #$_ >> | <:patt< [| $_ |] >> | <:patt< $anti:_ >> -> False
     ];
 
   value rec is_constructor =
     fun
-    [ <:ident< $_$.$i$ >> -> is_constructor i
-    | <:ident< $uid:_$ >> -> True
-    | <:ident< $lid:_$ >> | <:ident< $_$ $_$ >> -> False
-    | <:ident< $anti:_$ >> -> assert False ];
+    [ <:ident< $_.$i >> -> is_constructor i
+    | <:ident< $uid:_ >> -> True
+    | <:ident< $lid:_ >> | <:ident< $_ $_ >> -> False
+    | <:ident< $anti:_ >> -> assert False ];
 
   value is_patt_constructor =
     fun
-    [ <:patt< $id:i$ >> -> is_constructor i
-    | <:patt< `$_$ >> -> True
+    [ <:patt< $id:i >> -> is_constructor i
+    | <:patt< `$_ >> -> True
     | _ -> False ];
 
   value rec is_expr_constructor =
     fun
-    [ <:expr< $id:i$ >> -> is_constructor i
-    | <:expr< $e1$.$e2$ >> -> is_expr_constructor e1 && is_expr_constructor e2
-    | <:expr< `$_$ >> -> True
+    [ <:expr< $id:i >> -> is_constructor i
+    | <:expr< $e1.$e2 >> -> is_expr_constructor e1 && is_expr_constructor e2
+    | <:expr< `$_ >> -> True
     | _ -> False ];
 
   value rec tyOr_of_list =
@@ -156,63 +156,63 @@ module Make (Loc : FanSig.Loc)
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$ | $tyOr_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t | $(tyOr_of_list ts) >> ];
 
   value rec tyAnd_of_list =
     fun
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$ and $tyAnd_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t and $(tyAnd_of_list ts) >> ];
 
   value rec tySem_of_list =
     fun
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$ ; $tySem_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t ; $(tySem_of_list ts) >> ];
 
   value rec tyCom_of_list =
     fun
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$, $tyCom_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t, $(tyCom_of_list ts) >> ];
 
   value rec tyAmp_of_list =
     fun
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$ & $tyAmp_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t & $(tyAmp_of_list ts) >> ];
 
   value rec tySta_of_list =
     fun
     [ [] -> <:ctyp@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_ctyp t in <:ctyp< $t$ * $tySta_of_list ts$ >> ];
+        let _loc = loc_of_ctyp t in <:ctyp< $t * $(tySta_of_list ts) >> ];
 
   value rec stSem_of_list =
     fun
     [ [] -> <:str_item@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_str_item t in <:str_item< $t$ ; $stSem_of_list ts$ >> ];
+        let _loc = loc_of_str_item t in <:str_item< $t ; $(stSem_of_list ts) >> ];
 
   value rec sgSem_of_list =
     fun
     [ [] -> <:sig_item@ghost<>>
     | [t] -> t
     | [t::ts] ->
-        let _loc = loc_of_sig_item t in <:sig_item< $t$ ; $sgSem_of_list ts$ >> ];
+        let _loc = loc_of_sig_item t in <:sig_item< $t ; $(sgSem_of_list ts) >> ];
 
   value rec biAnd_of_list =
     fun
     [ [] -> <:binding@ghost<>>
     | [b] -> b
     | [b::bs] ->
-        let _loc = loc_of_binding b in <:binding< $b$ and $biAnd_of_list bs$ >> ];
+        let _loc = loc_of_binding b in <:binding< $b and $(biAnd_of_list bs) >> ];
 
   value rec rbSem_of_list =
     fun
@@ -220,7 +220,7 @@ module Make (Loc : FanSig.Loc)
     | [b] -> b
     | [b::bs] ->
         let _loc = loc_of_rec_binding b in
-        <:rec_binding< $b$; $rbSem_of_list bs$ >> ];
+        <:rec_binding< $b; $(rbSem_of_list bs) >> ];
 
   value rec wcAnd_of_list =
     fun
@@ -228,7 +228,7 @@ module Make (Loc : FanSig.Loc)
     | [w] -> w
     | [w::ws] ->
         let _loc = loc_of_with_constr w in
-        <:with_constr< $w$ and $wcAnd_of_list ws$ >> ];
+        <:with_constr< $w and $(wcAnd_of_list ws) >> ];
 
   value rec idAcc_of_list =
     fun
@@ -236,7 +236,7 @@ module Make (Loc : FanSig.Loc)
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
-        <:ident< $i$ . $idAcc_of_list is$ >> ];
+        <:ident< $i . $(idAcc_of_list is) >> ];
 
   value rec idApp_of_list =
     fun
@@ -244,7 +244,7 @@ module Make (Loc : FanSig.Loc)
     | [i] -> i
     | [i::is] ->
         let _loc = loc_of_ident i in
-        <:ident< $i$ $idApp_of_list is$ >> ];
+        <:ident< $i $(idApp_of_list is) >> ];
 
   value rec mcOr_of_list =
     fun
@@ -252,7 +252,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_match_case x in
-        <:match_case< $x$ | $mcOr_of_list xs$ >> ];
+        <:match_case< $x | $(mcOr_of_list xs) >> ];
 
   value rec mbAnd_of_list =
     fun
@@ -260,7 +260,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_module_binding x in
-        <:module_binding< $x$ and $mbAnd_of_list xs$ >> ];
+        <:module_binding< $x and $(mbAnd_of_list xs) >> ];
 
   value rec meApp_of_list =
     fun
@@ -268,7 +268,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_module_expr x in
-        <:module_expr< $x$ $meApp_of_list xs$ >> ];
+        <:module_expr< $x $(meApp_of_list xs) >> ];
 
   value rec ceAnd_of_list =
     fun
@@ -276,7 +276,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_expr x in
-        <:class_expr< $x$ and $ceAnd_of_list xs$ >> ];
+        <:class_expr< $x and $(ceAnd_of_list xs) >> ];
 
   value rec ctAnd_of_list =
     fun
@@ -284,7 +284,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_type x in
-        <:class_type< $x$ and $ctAnd_of_list xs$ >> ];
+        <:class_type< $x and $(ctAnd_of_list xs) >> ];
 
   value rec cgSem_of_list =
     fun
@@ -292,7 +292,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_sig_item x in
-        <:class_sig_item< $x$; $cgSem_of_list xs$ >> ];
+        <:class_sig_item< $x; $(cgSem_of_list xs) >> ];
 
   value rec crSem_of_list =
     fun
@@ -300,7 +300,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_class_str_item x in
-        <:class_str_item< $x$; $crSem_of_list xs$ >> ];
+        <:class_str_item< $x; $(crSem_of_list xs) >> ];
 
   value rec paSem_of_list =
     fun
@@ -308,7 +308,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_patt x in
-        <:patt< $x$; $paSem_of_list xs$ >> ];
+        <:patt< $x; $(paSem_of_list xs) >> ];
 
   value rec paCom_of_list =
     fun
@@ -316,7 +316,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_patt x in
-        <:patt< $x$, $paCom_of_list xs$ >> ];
+        <:patt< $x, $(paCom_of_list xs) >> ];
 
   value rec exSem_of_list =
     fun
@@ -324,7 +324,7 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_expr x in
-        <:expr< $x$; $exSem_of_list xs$ >> ];
+        <:expr< $x; $(exSem_of_list xs) >> ];
 
   value rec exCom_of_list =
     fun
@@ -332,132 +332,132 @@ module Make (Loc : FanSig.Loc)
     | [x] -> x
     | [x::xs] ->
         let _loc = loc_of_expr x in
-        <:expr< $x$, $exCom_of_list xs$ >> ];
+        <:expr< $x, $(exCom_of_list xs) >> ];
 
   value ty_of_stl =
     fun
-    [ (_loc, s, []) -> <:ctyp< $uid:s$ >>
-    | (_loc, s, tl) -> <:ctyp< $uid:s$ of $tyAnd_of_list tl$ >> ];
+    [ (_loc, s, []) -> <:ctyp< $uid:s >>
+    | (_loc, s, tl) -> <:ctyp< $uid:s of $(tyAnd_of_list tl) >> ];
 
   value ty_of_sbt =
     fun
-    [ (_loc, s, True, t) -> <:ctyp< $lid:s$ : mutable $t$ >>
-    | (_loc, s, False, t) -> <:ctyp< $lid:s$ : $t$ >> ];
+    [ (_loc, s, True, t) -> <:ctyp< $lid:s : mutable $t >>
+    | (_loc, s, False, t) -> <:ctyp< $lid:s : $t >> ];
 
-  value bi_of_pe (p, e) = let _loc = loc_of_patt p in <:binding< $p$ = $e$ >>;
+  value bi_of_pe (p, e) = let _loc = loc_of_patt p in <:binding< $p = $e >>;
   value sum_type_of_list l = tyOr_of_list (List.map ty_of_stl l);
   value record_type_of_list l = tySem_of_list (List.map ty_of_sbt l);
   value binding_of_pel l = biAnd_of_list (List.map bi_of_pe l);
 
   value rec pel_of_binding =
     fun
-    [ <:binding< $b1$ and $b2$ >> -> pel_of_binding b1 @ pel_of_binding b2
-    | <:binding< $p$ = $e$ >> -> [(p, e)]
+    [ <:binding< $b1 and $b2 >> -> pel_of_binding b1 @ pel_of_binding b2
+    | <:binding< $p = $e >> -> [(p, e)]
     | _ -> assert False ];
 
   value rec list_of_binding x acc =
     match x with
-    [ <:binding< $b1$ and $b2$ >> ->
+    [ <:binding< $b1 and $b2 >> ->
          list_of_binding b1 (list_of_binding b2 acc)
     | t -> [t :: acc] ];
 
   value rec list_of_rec_binding x acc =
     match x with
-    [ <:rec_binding< $b1$; $b2$ >> ->
+    [ <:rec_binding< $b1; $b2 >> ->
          list_of_rec_binding b1 (list_of_rec_binding b2 acc)
     | t -> [t :: acc] ];
 
   value rec list_of_with_constr x acc =
     match x with
-    [ <:with_constr< $w1$ and $w2$ >> ->
+    [ <:with_constr< $w1 and $w2 >> ->
          list_of_with_constr w1 (list_of_with_constr w2 acc)
     | t -> [t :: acc] ];
 
   value rec list_of_ctyp x acc =
     match x with
     [ <:ctyp<>> -> acc
-    | <:ctyp< $x$ & $y$ >> | <:ctyp< $x$, $y$ >> |
-      <:ctyp< $x$ * $y$ >> | <:ctyp< $x$; $y$ >> |
-      <:ctyp< $x$ and $y$ >> | <:ctyp< $x$ | $y$ >> ->
+    | <:ctyp< $x & $y >> | <:ctyp< $x, $y >> |
+      <:ctyp< $x * $y >> | <:ctyp< $x; $y >> |
+      <:ctyp< $x and $y >> | <:ctyp< $x | $y >> ->
         list_of_ctyp x (list_of_ctyp y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_patt x acc =
     match x with
     [ <:patt<>> -> acc
-    | <:patt< $x$, $y$ >> | <:patt< $x$; $y$ >> ->
+    | <:patt< $x, $y >> | <:patt< $x; $y >> ->
         list_of_patt x (list_of_patt y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_expr x acc =
     match x with
     [ <:expr<>> -> acc
-    | <:expr< $x$, $y$ >> | <:expr< $x$; $y$ >> ->
+    | <:expr< $x, $y >> | <:expr< $x; $y >> ->
         list_of_expr x (list_of_expr y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_str_item x acc =
     match x with
     [ <:str_item<>> -> acc
-    | <:str_item< $x$; $y$ >> ->
+    | <:str_item< $x; $y >> ->
         list_of_str_item x (list_of_str_item y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_sig_item x acc =
     match x with
     [ <:sig_item<>> -> acc
-    | <:sig_item< $x$; $y$ >> ->
+    | <:sig_item< $x; $y >> ->
         list_of_sig_item x (list_of_sig_item y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_class_sig_item x acc =
     match x with
     [ <:class_sig_item<>> -> acc
-    | <:class_sig_item< $x$; $y$ >> ->
+    | <:class_sig_item< $x; $y >> ->
         list_of_class_sig_item x (list_of_class_sig_item y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_class_str_item x acc =
     match x with
     [ <:class_str_item<>> -> acc
-    | <:class_str_item< $x$; $y$ >> ->
+    | <:class_str_item< $x; $y >> ->
         list_of_class_str_item x (list_of_class_str_item y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_class_type x acc =
     match x with
-    [ <:class_type< $x$ and $y$ >> ->
+    [ <:class_type< $x and $y >> ->
         list_of_class_type x (list_of_class_type y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_class_expr x acc =
     match x with
-    [ <:class_expr< $x$ and $y$ >> ->
+    [ <:class_expr< $x and $y >> ->
         list_of_class_expr x (list_of_class_expr y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_module_expr x acc =
     match x with
-    [ <:module_expr< $x$ $y$ >> ->
+    [ <:module_expr< $x $y >> ->
         list_of_module_expr x (list_of_module_expr y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_match_case x acc =
     match x with
     [ <:match_case<>> -> acc
-    | <:match_case< $x$ | $y$ >> ->
+    | <:match_case< $x | $y >> ->
         list_of_match_case x (list_of_match_case y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_ident x acc =
     match x with
-    [ <:ident< $x$ . $y$ >> | <:ident< $x$ $y$ >> ->
+    [ <:ident< $x . $y >> | <:ident< $x $y >> ->
         list_of_ident x (list_of_ident y acc)
     | x -> [x :: acc] ];
 
   value rec list_of_module_binding x acc =
     match x with
-    [ <:module_binding< $x$ and $y$ >> ->
+    [ <:module_binding< $x and $y >> ->
         list_of_module_binding x (list_of_module_binding y acc)
     | x -> [x :: acc] ];
 
@@ -482,15 +482,15 @@ module Make (Loc : FanSig.Loc)
       value meta_loc_patt _loc location =
         let (a, b, c, d, e, f, g, h) = Loc.to_tuple location in
         <:patt< Loc.of_tuple
-                  ($`str:a$, $`int:b$, $`int:c$, $`int:d$,
-                  $`int:e$, $`int:f$, $`int:g$,
-                  $if h then <:patt< True >> else <:patt< False >> $) >>;
+                  ($`str:a, $`int:b, $`int:c, $`int:d,
+                  $`int:e, $`int:f, $`int:g,
+                  $(if h then <:patt< True >> else <:patt< False >> )) >>;
       value meta_loc_expr _loc location =
         let (a, b, c, d, e, f, g, h) = Loc.to_tuple location in
         <:expr< Loc.of_tuple
-                  ($`str:a$, $`int:b$, $`int:c$, $`int:d$,
-                  $`int:e$, $`int:f$, $`int:g$,
-                  $if h then <:expr< True >> else <:expr< False >> $) >>;
+                  ($`str:a, $`int:b, $`int:c, $`int:d,
+                  $`int:e, $`int:f, $`int:g,
+                  $(if h then <:expr< True >> else <:expr< False >> )) >>;
     end;
 
     module MetaGhostLoc = struct
@@ -499,8 +499,8 @@ module Make (Loc : FanSig.Loc)
     end;
 
     module MetaLocVar = struct
-      value meta_loc_patt _loc _ = <:patt< $lid:Loc.name.val$ >>;
-      value meta_loc_expr _loc _ = <:expr< $lid:Loc.name.val$ >>;
+      value meta_loc_patt _loc _ = <:patt< $(lid:Loc.name.val) >>;
+      value meta_loc_expr _loc _ = <:expr< $(lid:Loc.name.val) >>;
     end;
 
     module Make (MetaLoc : META_LOC) = struct

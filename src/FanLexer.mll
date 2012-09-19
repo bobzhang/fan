@@ -50,6 +50,7 @@ module Make (Token : FanSig.Camlp4Token)
       | Unterminated_antiquot
       | Unterminated_string_in_comment
       | Unterminated_string_in_quotation
+      | Unterminated_string_in_antiquot
       | Comment_start
       | Comment_not_end
       | Literal_overflow of string
@@ -72,6 +73,8 @@ module Make (Token : FanSig.Camlp4Token)
           fprintf ppf "This comment contains an unterminated string literal"
       | Unterminated_string_in_quotation ->
           fprintf ppf "This quotation contains an unterminated string literal"
+      | Unterminated_string_in_antiquot ->
+          fprintf ppf "This antiquotaion contains an unterminated string literal"
       | Unterminated_quotation ->
           fprintf ppf "Quotation not terminated"
       | Unterminated_antiquot ->
@@ -236,6 +239,9 @@ module Make (Token : FanSig.Camlp4Token)
     ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
   let ident = (lowercase|uppercase) identchar*
   let locname = ident
+  let lident = lowercase identchar *
+  let uident = uppercase identchar *
+   
   let not_star_symbolchar =
     ['$' '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
   let symbolchar = '*' | not_star_symbolchar
@@ -294,8 +300,8 @@ let right_delimitor =
     (* Old brace and new ones *)
    | (delimchars* ['|' ':'])? '}'
 
-
- rule token c = parse
+    
+rule token c = parse
        | newline                            { update_loc c  ; NEWLINE }
        | blank + as x                                                   { BLANKS x }
        | "~" (lowercase identchar * as x) ':'                            { LABEL x }
@@ -518,29 +524,66 @@ and quotation c = parse
 (*
   $lid:ident
   $ident
-  $()
+  $(lid:ghohgosho)
+  $(....)
+  $(....)
  *)
 and dollar c = parse
-    | '$'                                     { set_start_p c; ANTIQUOT("", "") }
-    | ('`'? (identchar*|['.' '!']+) as name) ':'
-        { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        }
-    | _                                           { store_parse (antiquot "") c }
+    | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
+        {set_start_p c; ANTIQUOT(name,x)}
+        (* { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
+    | lident as x 
+        {set_start_p c; ANTIQUOT("",x)}
+    (* | '$' {store_parse (antiquot "") c} *)
+    | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
+      with_curr_loc (antiquot name 0) (shift (2 + String.length name) c)
+      }
+        
+    | '(' {
+      with_curr_loc (antiquot "" 0) (shift 1 c)
+     }
+    (* | '$'                                     { set_start_p c; ANTIQUOT("", "") } *)
+    (* | ('`'? (identchar*|['.' '!']+) as name) ':' *)
+    (*     { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
+    | _ as c {
+      err (Illegal_character c) (Loc.of_lexbuf lexbuf) (*unexpected char in antiquot*)
+     }
+        
+      (* { store_parse (antiquot "") c } *)
 
-and antiquot name c = parse
-    | '$'                      { set_start_p c; ANTIQUOT(name, buff_contents c) }
+(* depth makes sure the parentheses are balanced *)
+and antiquot name depth c  = parse
+    | ')'                      {
+      if depth = 0 then
+        let () = set_start_p c in
+        ANTIQUOT(name, buff_contents c)
+      else store_parse (antiquot name (depth-1)) c }
+    | '(' {
+      store_parse (antiquot name (depth+1)) c
+      }
+        
     | eof                                   { err Unterminated_antiquot (loc c) }
     | newline
-        { update_loc c ; store_parse (antiquot name) c              }
+        { update_loc c ; store_parse (antiquot name depth) c              }
     | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {
       let () = Stack.push p opt_char in
       let () = store c in
       let () = with_curr_loc quotation c in
-      parse (antiquot name ) c 
+      parse (antiquot name depth) c 
+      }
+    | "\"" { store c ;
+             begin
+               try with_curr_loc string c
+               with Loc.Exc_located (_,Error.E Unterminated_string) ->
+                 err Unterminated_string_in_antiquot (loc c)
+             end;
+             Buffer.add_char c.buffer '"';
+             parse (antiquot name depth) c 
       }
         
         (* { store c; with_curr_loc quotation c; *)
         (*   parse (antiquot name) c             } *)
-    | _                                         { store_parse (antiquot name) c }
+    | _                                         { store_parse (antiquot name depth) c }
 
 
 

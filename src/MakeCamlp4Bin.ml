@@ -222,12 +222,12 @@ module Camlp4Bin
       
       value gind =
         fun
-        [ <:sig_item@loc< # $n$ $str:s$ >> -> Some (loc, n, s)
+        [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
       value gimd =
         fun
-        [ <:str_item@loc< # $n$ $str:s$ >> -> Some (loc, n, s)
+        [ <:str_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
       value process_intf dyn_loader name =

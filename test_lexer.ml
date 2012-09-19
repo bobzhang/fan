@@ -43,7 +43,29 @@ let test_from_file file =
 (* test_from_string "( * )";; *)
 (* ESCAPED_IDENT "*" *)
 (* File "<string>", line 1, characters 0-5 *)
+FanConfig.antiquotations := true ;;
+(*
+  test_from_string "$lid";;
+ANTIQUOT : "lid"
+File "<string>", line 1, characters 0-4
+- : unit = ()
+test_from_string "$lid:go";;
+ANTIQUOT lid: "go"
+File "<string>", line 1, characters 0-7
+- : unit = ()
+test_from_string "$`lid:go";;
+ANTIQUOT `lid: "go"
+File "<string>", line 1, characters 0-8
+- : unit = ()
+test_from_string "$(`lid:go)";;
+ANTIQUOT `lid: "go"
+File "<string>", line 1, characters 1-10
+- : unit = ()
 
+test_from_string "$(`lid:(go:\")\"))";;
+ANTIQUOT `lid: "(go:\")\")"
+
+ *)
 
 
 

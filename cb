@@ -1,4 +1,4 @@
-cb
+snapshot
 echo "verifying it can be bootstrapped"
 
 ocamlbuild -quiet cold/Fan.byte # quiet

@@ -255,11 +255,11 @@ module Make (Ast     : Sig.Camlp4Ast)
 
   value parse_implem ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse implem) _loc cs in
-    <:str_item< $list:l$ >>;
+    <:str_item< $list:l >>;
 
   value parse_interf ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
-    <:sig_item< $list:l$ >>;
+    <:sig_item< $list:l >>;
 
   value print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
   value print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";

@@ -222,8 +222,10 @@
 **** antiquotation
      - string in antiquot
      - quot in antiquot
-       
 
+
+**** cautious
+     take care $(m.app) parenthesese is need
      
 * ideas
   
