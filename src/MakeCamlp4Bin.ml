@@ -22,22 +22,22 @@ module Camlp4Bin
           
       (* value plugins = Hashtbl.create 50;      *)
       value (objext,libext) =
-        if PreCast.DynLoader.is_native then (".cmxs",".cmxs")
+        if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");
       
       value rewrite_and_load n x =
         let dyn_loader = dyn_loader.val () in
-        let find_in_path = PreCast.DynLoader.find_in_path dyn_loader in
+        let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do {
           add_to_loaded_modules name;
-          PreCast.DynLoader.load dyn_loader name
+          DynLoader.load dyn_loader name
         } in
         let load =  begin fun n ->
           if SSet.mem n loaded_modules.val
           || List.mem n PreCast.loaded_modules.val then ()
           else begin
             add_to_loaded_modules n;
-            PreCast.DynLoader.load dyn_loader (n ^ objext);
+            DynLoader.load dyn_loader (n ^ objext);
           end
         end in
         do {
@@ -187,17 +187,18 @@ module Camlp4Bin
         };
       
       value print_warning = eprintf "%a:\n%s@." PreCast.Loc.print;
-      
+
+      (* camlp4 directive handler *)  
       value rec parse_file dyn_loader name pa getdir =
         let directive_handler = Some (fun ast ->
           match getdir ast with
           [ Some x ->
               match x with
               [ (_, "load", s) -> do { rewrite_and_load "" s; None }
-              | (_, "directory", s) -> do { PreCast.DynLoader.include_dir dyn_loader s; None }
+              | (_, "directory", s) -> do { DynLoader.include_dir dyn_loader s; None }
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
               | (_, "default_quotation", s) -> do { PreCast.Quotation.default.val := s; None }
-              | (loc, _, _) -> PreCast.Loc.raise loc (Stream.Error "bad directive") ]
+              | (loc, _, _) -> PreCast.Loc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
         let loc = PreCast.Loc.mk name
         in do {
@@ -215,11 +216,10 @@ module Camlp4Bin
       value output_file = ref None;
       
       value process dyn_loader name pa pr clean fold_filters getdir =
-        let ast = parse_file dyn_loader name pa getdir in
-        let ast = fold_filters (fun t filter -> filter t) ast in
-        let ast = clean ast in
-        pr ?input_file:(Some name) ?output_file:output_file.val ast;
-      
+          parse_file dyn_loader name pa getdir
+          |> fold_filters (fun t filter -> filter t )
+          |> clean
+          |> pr ?input_file:(Some name) ?output_file:output_file.val ;
       value gind =
         fun
         [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
@@ -360,7 +360,8 @@ module Camlp4Bin
       ];
       
       Options.init initial_spec_list;
-      
+
+      (* handle the file name *)  
       value anon_fun name =
         input_file
         (if Filename.check_suffix name ".mli" then Intf name

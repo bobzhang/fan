@@ -737,14 +737,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       | [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | i = UIDENT -> <:ident< $uid:i >> ] ]
     ;
-    qualuid:
-      [ [ [ LIDENT | UIDENT "GLOBAL" ] ->
-            Loc.raise _loc
-              (Stream.Error
-                    "Deprecated syntax, the grammar module is expected") ]
-      | [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >> ] ]
-    ;
     qualid:
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | i = UIDENT -> <:ident< $uid:i >>

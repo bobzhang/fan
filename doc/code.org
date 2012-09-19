@@ -207,6 +207,7 @@
     #+END_SRC
 
 
+
 *** bugs to be fixed
 
 **** quotation
@@ -226,7 +227,266 @@
 
 **** cautious
      take care $(m.app) parenthesese is need
+** Gramar
+
+   #+BEGIN_SRC ocaml
+     module type Action = sig
+         type t
+         val  mk: 'a -> t
+         val get: t -> 'a
+         val getf: t -> ('a->'b)
+         val getf2: t -> ('a->'b->'c)
+       end
+     type assoc = NonA | LeftA | RightA
+     type position =
+         First
+       | Last
+       | Before of string
+       | After of string
+       | Level of string
      
+     module type Structure =  sig
+         module Loc: FanSig.Loc
+         module Action:Action
+         module Token: FanSig.Token with module Loc = Loc
+     
+         (* more like global information related to lexer *)                                               
+         type gram = {
+           gfilter: Token>Filter.t;
+           gkeywords: Hashtbl.t string (ref int);
+           glexer: Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
+           waring_verbose: ref bool;
+           error_verbose: ref bool;
+         }
+         type efun = token_stream -> Action.t
+         type token_pattern = ((Token.t -> bool) * string)
+                                
+         type internal_array ={
+           egram: gram;
+           ename: string;
+           mutable estart: int -> efun ;
+           mutable econtinue: int -> Loc.t -> Action.t -> efun;
+           mutable edesc: desc }
+         and desc =
+            Dlevels of list level
+            | Dparser of token_stream -> Action.t
+         and level = {
+           assoc: assoc;
+           lname: string option;
+           lsuffix: tree;
+           lprefix: tree
+         }
+         and symbol = 
+             Smeta of string * list symbol * Action.t (* Action.t *)
+           | Snterm of internal_entry (* internal_array *)
+           | Snterml of internal_entry * string
+           | Slist0 of symbol
+           | Slist0sep of symbol * symbol
+           | Slist1 of symbol
+           | Slist1sep of symbol * symbol
+           | Sopt of symbol
+           | Stry of symbol
+           | Sself of symbol
+           | Snext
+           | Stoken of token_pattern (* a function *)
+           | Skeyword of string
+           | Stree of tree
+         and tree =
+           Node of node
+           | LocAct of Action.t * Action.t list
+           | DeadEnd
+         and node  ={
+           node: symbol;
+           son: tree;
+           brother: tree
+         }
+         type token_info = {
+           prev_loc: Loc.t;
+           cur_loc: Loc.t;
+           prev_loc_only: bool;
+         }
+         type production_rule = (list symbol * Action.t )
+         type signle_extend_statement =
+             (string option * assoc option * production_rule list )
+         type extend_statement = (position option * single_extend_statement list)
+         type delete_statement = list symbol
+                             
+         type token_stream = Stream.t (Token.t * token_info)
+         val token_location: token_info -> Loc.t
+     
+         type fold 'a 'b 'c =
+             internal_entry -> symbol list -> ('a Stream.t -> 'b) ->  'a Stream.t -> 'c
+         type foldsep 'a 'b 'c =
+             internal_entry -> symbol list -> ('a Stream.t -> 'b) -> ('a Stream.t -> unit) -> 'a Stream.t -> 'c
+       end
+     
+     (* Dynamic means that you can produce as many grammar values as needed with a signle grammar module
+        If you do not need many grammar values it's preferable to use a static one
+      *)                           
+     module type  Dynamic = sig
+         include Structure
+         val mk: unit -> gram
+         module Entry : sig
+           type 'a t
+           val mk : gram -> string -> 'a t
+           val of_parser: gram -> string -> (token_stream -> 'a ) -> 'a t
+     
+           (* clear the entry and setup this parser instead *)                                                                   
+           val setup_parser:
+             'a t -> (token_stream -> 'a) -> unit
+           val name: 'a t -> string
+           val print: Format.formatter -> 'a t -> unit
+     
+           (* same as {!print} but shows the left factorization
+                {[
+                 Gram.Entry.dump std_formatter Syntax.expr
+                ]}
+            *)                                         
+           val dump: Format.formatter -> 'a t -> unit
+           val obj: 'a t -> internal_entry
+           val clear: 'a t -> unit
+         end
+         val get_filter: gram -> Token.Filter.t
+         type not_filtered 'a
+     
+         val extend: 'a Entry.t -> extend_statement -> unit
+         val delete_rule: 'a Entry.t -> delete_statement -> unit
+         val srules: 'a Entry.t -> (symbol list * Action.t) list -> symbol
+         val sfold0: ('a->'b ->'b) -> 'b -> fold _ 'a 'b
+         val sfold1: ('a->'b -> 'b) -> 'b -> fold _ 'a 'b
+         val sfold0sep: ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b
+     
+         (* use the lexer to produce  a non filtered token stream from a char stream  *)                                                     
+         val lex: gram -> Loc.t -> char Stream.t -> ((Token.t * Loc.t) Stream.t) not_filtered 
+         val lex_string: gram - Loc.t -> string -> ((Token.t * Loc.t) Stream.t) not_filtered 
+                                                                
+         val filter: gram -> not_filtered ((Token.t * Loc.t)Stream.t)  -> token_stream
+     
+         val parse: 'a Entry.t -> Loc.t -> char Stream.t -> 'a
+         val parse_string: 'a Entry.t -> Loc.t -> string -> 'a
+     
+         val parse_tokens_before_filter: 'a Entry.t -> not_filtered ((Token.t*Loc.t) Stream.t) -> 'a
+         val parse_tokens_after_filter: 'a Entry.t -> token_stream -> 'a
+       end
+     
+     
+     (* There's only one grammar value by grammar module *)                         
+     module type Static = sig
+         include Structure
+         val trace_parser: ref bool
+         val gram: gram;
+         module Entry : sig
+           type 'a t
+           val mk:string -> t 'a
+           val of_parser:
+             string -> (token_stream -> 'a) -> 'a t
+           val setup_parser: 'a t -> (token_stream ->'a) -> unit
+           val name: 'a t -> string
+           val print: Format.formatter -> 'a t -> unit
+           val dump: Format.formatter -> 'a t -> unit
+           val obj: 'a t -> internal_entry
+           val clear: 'a t -> unit
+         end
+         val get_filter: unit -> Token.Filter.t
+         type 'a not_filtered
+         val extend: 'a Entry.t -> extend_statement -> unit
+         val delete_rule: 'a Entry.t -> delete_statement -> unit
+         val srules: 'a Entry.t -> (symbol list * Action.t) list -> symbol
+         val sfold0: ('a->'b ->'b) -> 'b -> fold _ 'a 'b
+         val sfold1: ('a->'b -> 'b) -> 'b -> fold _ 'a 'b
+         val sfold0sep: ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b
+     
+         (* use the lexer to produce  a non filtered token stream from a char stream  *)                                                     
+         val lex: gram -> Loc.t -> char Stream.t -> ((Token.t * Loc.t) Stream.t) not_filtered 
+         val lex_string: gram - Loc.t -> string -> ((Token.t * Loc.t) Stream.t) not_filtered 
+                                                                
+         val filter: gram -> not_filtered ((Token.t * Loc.t)Stream.t)  -> token_stream
+     
+         val parse: 'a Entry.t -> Loc.t -> char Stream.t -> 'a
+         val parse_string: 'a Entry.t -> Loc.t -> string -> 'a
+     
+         val parse_tokens_before_filter: 'a Entry.t -> not_filtered ((Token.t*Loc.t) Stream.t) -> 'a
+         val parse_tokens_after_filter: 'a Entry.t -> token_stream -> 'a
+       end
+   #+END_SRC
+
+**** grammar
+     #+BEGIN_SRC ocaml
+       expr: AFTER "top"
+         [ [ "EXTEND"; e = extend_body; "END" -> e
+           | "DELETE_RULE"; e = delete_rule_body; "END" -> e ]
+         ];
+       
+       extend_body:
+         [ [ (gram,g) = extend_header; global_list=OPT global;
+             el = LIST1 [e=entry; semi_sep -> e] ->
+                  text_of_functorial_extend _loc g gram global_list el
+         ]];
+       
+       extend_header:
+         [ [ "("; i= qualid; ":"; t = t_qualid; ")" -> (Some i,t)
+           | g = qualuid -> (None,g) (* Gram *) ]
+         ];
+       
+       qualuid:
+         [ [ x = UIDENT ; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+           | i = UIDENT -> <:ident< $uid:i >> 
+             
+           ]];
+       
+       qualid:
+         [ [  x = UIDENT; "."; xs = SELF  -> <:ident< $uid:x.$xs >>
+           |  i = UIDENT -> <:ident< $uid:i >>
+           |  u = LIDENT -> <:ident< $lid:i >> 
+         ]];
+       
+       t_qualid:
+         [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+           | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >>
+           | `(LIDENT _ | UIDENT _ ) ->
+              Loc.raise
+                _loc
+                (Stream.Error
+                   "Wrong EXTEND header, the grammar type must finish by 't' \
+                    like in EXTEND (g:Gram.t) ... END "
+                             )
+         ]];
+       global:
+         [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ]];
+       
+       name:
+         [ [ il = qualid -> mk_name _loc il ]];
+       
+       entry:
+         [ [ n = name; ":"; pos = OPT position; ll = level_list -> (* "entry" here is the name *)
+            {name=n;pos=pos; levels = ll} (* (Ast.expr,Ast.patt) entry entry was defined locally*)
+                                         
+         ]];
+       position:
+         [ [ UIDENT "FIRST"  -> <:expr< Camlp4.Sig.Grammar.First >>
+           | UIDENT "LAST"   -> <:expr< Camlp4.Sig.Grammar.Last >>
+           | UIDENT "BEFORE"; n = string -> <:expr< Camlp4.Sig.Grammar.Before $n >>
+           | UIDENT "AFTER";  n = string -> <:expr< Camlp4.Sig.Grammar.After $n >>
+           | UIDENT "LEVEL";  n = string -> <:expr< Camlp4.Sig.Grammar.Level $n >> 
+         ]];
+       level_list:
+         [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ]];
+       
+       level:
+         [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
+             {label = lab; assoc = ass; rules = rules} (* (Ast.expr, Ast.patt) level *) ]];
+       assoc:
+         [ [ UIDENT "LEFTA" -> <:expr< Camlp4.Sig.Grammar.LeftA >> ]];
+     #+END_SRC
+** TODO Register mechanism
+
+   (string,module Sig.PLUGIN) Hashtbl.t
+
+   -parsers
+   comman_or_blank_sep_strings [[file:~/ocaml/ocamlbuild/lexers.mli][lexer]]
+   delayed
+
+   
 * ideas
   
 

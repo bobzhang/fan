@@ -2,7 +2,6 @@ AstFilters
 Camlp4Ast
 Camlp4Ast2OCamlAst
 CleanAst
-DynLoader
 FreeVars
 Quotation
 Grammar

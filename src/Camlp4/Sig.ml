@@ -651,34 +651,6 @@ end;
 
 (** {6 Dynamic loaders} *)
 
-(** A signature for dynamic loaders. *)
-module type DynLoader = sig
-  type t;
-  exception Error of string and string;
-
-  (** [mk ?ocaml_stdlib ?camlp4_stdlib]
-      The stdlib flag is true by default.
-      To disable it use: [mk ~ocaml_stdlib:False] *)
-  value mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
-
-  (** Fold over the current load path list. *)
-  value fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
-
-  (** [load f] Load the file [f]. If [f] is not an absolute path name,
-      the load path list used to find the directory of [f]. *)
-  value load : t -> string -> unit;
-
-  (** [include_dir d] Add the directory [d] in the current load path
-      list (like the common -I option). *)
-  value include_dir : t -> string -> unit;
-
-  (** [find_in_path f] Returns the full path of the file [f] if
-      [f] is in the current load path, raises [Not_found] otherwise. *)
-  value find_in_path : t -> string -> string;
-
-  (** [is_native] [True] if we are in native code, [False] for bytecode. *)
-  value is_native : bool;
-end;
 
 (** A signature for grammars. *)
 module Grammar = struct
@@ -1227,7 +1199,7 @@ module type PRECAST = sig
   module Lexer      : Lexer  with module Loc = Loc and module Token = Token;
   module Gram       : Grammar.Static  with module Loc = Loc and module Token = Token;
   module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
-  module DynLoader  : DynLoader;
+  (* module DynLoader  : DynLoader; *)
   module AstFilters : AstFilters with module Ast = Ast;
   module Syntax     : Camlp4Syntax with module Loc     = Loc
                        and module Token   = Token

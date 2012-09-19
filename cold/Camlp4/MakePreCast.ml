@@ -14,8 +14,6 @@ module Make =
 
      module Gram = (Struct.Grammar.Static.Make)(Lexer)
 
-     module DynLoader = Struct.DynLoader
-
      module Quotation = (Struct.Quotation.Make)(Ast)
 
      module MakeSyntax =

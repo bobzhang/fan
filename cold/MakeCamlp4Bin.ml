@@ -30,20 +30,16 @@ module Camlp4Bin =
      fun name -> (loaded_modules := ( (SSet.add name ( !loaded_modules )) ))
 
     let (objext, libext) =
-     if PreCast.DynLoader.is_native then (".cmxs", ".cmxs")
-     else (".cmo", ".cma")
+     if DynLoader.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
 
     let rewrite_and_load =
      fun n ->
       fun x ->
        let dyn_loader = ((!dyn_loader) () ) in
-       let find_in_path = (PreCast.DynLoader.find_in_path dyn_loader) in
+       let find_in_path = (DynLoader.find_in_path dyn_loader) in
        let real_load =
         fun name ->
-         (
-         (add_to_loaded_modules name)
-         );
-         (PreCast.DynLoader.load dyn_loader name) in
+         ( (add_to_loaded_modules name) ); (DynLoader.load dyn_loader name) in
        let load =
         fun n ->
          if (( (SSet.mem n ( !loaded_modules )) ) || (
@@ -54,7 +50,7 @@ module Camlp4Bin =
           (
           (add_to_loaded_modules n)
           );
-          (PreCast.DynLoader.load dyn_loader ( (n ^ objext) ))
+          (DynLoader.load dyn_loader ( (n ^ objext) ))
          end in
        (
        (match (n, ( (String.lowercase x) )) with
@@ -204,17 +200,15 @@ module Camlp4Bin =
                   (match x with
                    | (_, "load", s) -> ( (rewrite_and_load "" s) ); (None)
                    | (_, "directory", s) ->
-                      (
-                      (PreCast.DynLoader.include_dir dyn_loader s)
-                      );
-                      (None)
+                      ( (DynLoader.include_dir dyn_loader s) ); (None)
                    | (_, "use", s) ->
                       (Some (parse_file dyn_loader s pa getdir))
                    | (_, "default_quotation", s) ->
                       ( (PreCast.Quotation.default := s) ); (None)
                    | (loc, _, _) ->
                       (PreCast.Loc.raise loc (
-                        (Stream.Error ("bad directive")) )))
+                        (Stream.Error
+                          ("bad directive camlp4 can not handled ")) )))
                | None -> (None)))) in
          let loc = (PreCast.Loc.mk name) in
          (
@@ -241,12 +235,13 @@ module Camlp4Bin =
          fun clean ->
           fun fold_filters ->
            fun getdir ->
-            let ast = (parse_file dyn_loader name pa getdir) in
-            let ast =
-             (fold_filters ( fun t -> fun filter -> (filter t) ) ast) in
-            let ast = (clean ast) in
-            (pr ?input_file:( (Some (name)) ) ?output_file:( !output_file )
-              ast)
+            ((
+              ((
+                (( (parse_file dyn_loader name pa getdir) ) |> (
+                  (fold_filters ( fun t -> fun filter -> (filter t) )) )) )
+                |> clean) ) |> (
+              (pr ?input_file:( (Some (name)) ) ?output_file:( !output_file
+                )) ))
 
     let gind =
      function

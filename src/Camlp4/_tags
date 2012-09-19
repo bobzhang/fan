@@ -1,4 +1,4 @@
 # -*- Mode:Shell-script -*-
 <Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Camlp4.Printers)
 
-<Struct/{AstFilters,Camlp4Ast,Camlp4Ast2OCamlAst,CleanAst,CommentFilter,DynLoader,FreeVars,Quotation,Grammar,DynAst,Loc,Token}.cmx>:for-pack(Camlp4.Struct)
+<Struct/{AstFilters,Camlp4Ast,Camlp4Ast2OCamlAst,CleanAst,CommentFilter,FreeVars,Quotation,Grammar,DynAst,Loc,Token}.cmx>:for-pack(Camlp4.Struct)
