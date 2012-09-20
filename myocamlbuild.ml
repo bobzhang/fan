@@ -741,7 +741,8 @@ let define_context_for_root r =
     def (r // "Camlp4/Printers") [ r //"Camlp4/Struct"; r // "Camlp4"; r] ;
     def (r // "Camlp4/Struct") [ r // "Camlp4"; r ];
     def (r // "Camlp4/Struct/Grammar")  [ r // "Camlp4"; r];
-    def (r // "Camlp4") [ r]
+    def (r // "Camlp4") [ r];
+    def (r // "Grammar") [r];
   end ;;
 define_context_for_root root1;;
 define_context_for_root root2;;
