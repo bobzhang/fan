@@ -17,8 +17,8 @@
  * - Nicolas Pouillard: refactoring
  *)
 module Make (Lexer : FanSig.Lexer)
-: FanSig.Grammar.Dynamic with module Loc = Lexer.Loc
-                         and module Token = Lexer.Token
+(* : Structure.Dynamic with module Loc = Lexer.Loc *)
+(*                          and module Token = Lexer.Token *)
 = struct
   module Structure = Structure.Make Lexer;
   module Delete    = Delete.Make    Structure;

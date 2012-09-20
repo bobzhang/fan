@@ -846,9 +846,7 @@ module Make =
                               (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("top"))))
+                                   (( (Some ((FanSig.Grammar.Level ("top"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1342,8 +1340,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("simple"))))
+                                    (Some ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((

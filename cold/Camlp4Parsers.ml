@@ -2615,8 +2615,8 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA)))
-                 ), (
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA))) ),
+                 (
                  [((
                    [(
                     (Gram.Stoken
@@ -3801,8 +3801,7 @@ module MakeListComprehension =
                       (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
                         ((fun ()
                             ->
-                           ((
-                            (Some ((FanSig.Grammar.Level ("simple"))))
+                           (( (Some ((FanSig.Grammar.Level ("simple"))))
                             ), (
                             [(None , None , (
                               [((
@@ -42352,8 +42351,7 @@ module MakeRevisedParserParser =
            (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
              ((fun ()
                  ->
-                (( (Some ((FanSig.Grammar.Level ("simple")))) ),
-                 (
+                (( (Some ((FanSig.Grammar.Level ("simple")))) ), (
                  [(None , None , (
                    [((
                      [(
@@ -43776,8 +43774,7 @@ module MakeParser =
                           ((fun ()
                               ->
                              ((
-                              (Some
-                                ((FanSig.Grammar.Before ("top"))))
+                              (Some ((FanSig.Grammar.Before ("top"))))
                               ), (
                               [(( (Some (";")) ), None , (
                                 [((
@@ -43801,8 +43798,7 @@ module MakeParser =
                           ((fun ()
                               ->
                              ((
-                              (Some
-                                ((FanSig.Grammar.Level ("top"))))
+                              (Some ((FanSig.Grammar.Level ("top"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -43975,8 +43971,7 @@ module MakeParser =
                           ((fun ()
                               ->
                              ((
-                              (Some
-                                ((FanSig.Grammar.Before ("||"))))
+                              (Some ((FanSig.Grammar.Before ("||"))))
                               ), (
                               [(( (Some (",")) ), None , (
                                 [((
@@ -44000,8 +43995,7 @@ module MakeParser =
                                             (Ast.ExCom (_loc, e1, e2))
                                             ))) : 'expr) )) ))] ));
                                (( (Some (":=")) ), (
-                                (Some ((FanSig.Grammar.NonA))) ),
-                                (
+                                (Some ((FanSig.Grammar.NonA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("<-")) ); (
@@ -44057,13 +44051,10 @@ module MakeParser =
                           (
                           ((fun ()
                               ->
-                             ((
-                              (Some
-                                ((FanSig.Grammar.After ("^"))))
+                             (( (Some ((FanSig.Grammar.After ("^"))))
                               ), (
                               [(( (Some ("::")) ), (
-                                (Some ((FanSig.Grammar.RightA)))
-                                ), (
+                                (Some ((FanSig.Grammar.RightA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("::")) );
@@ -44437,8 +44428,7 @@ module MakeParser =
                               ->
                              (None , (
                               [(( (Some ("as")) ), (
-                                (Some ((FanSig.Grammar.LeftA)))
-                                ), (
+                                (Some ((FanSig.Grammar.LeftA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("as")) ); (
@@ -44463,8 +44453,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("|")) ), (
-                                (Some ((FanSig.Grammar.LeftA)))
-                                ), (
+                                (Some ((FanSig.Grammar.LeftA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("|")) );
@@ -44503,8 +44492,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("::")) ), (
-                                (Some ((FanSig.Grammar.RightA)))
-                                ), (
+                                (Some ((FanSig.Grammar.RightA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("::")) );
@@ -44528,8 +44516,7 @@ module MakeParser =
                                                ), p1)) ), p2)) :
                                           'patt) )) ))] ));
                                (( (Some ("apply")) ), (
-                                (Some ((FanSig.Grammar.RightA)))
-                                ), (
+                                (Some ((FanSig.Grammar.RightA))) ), (
                                 [((
                                   [(
                                    (Gram.Snterm
@@ -45228,8 +45215,7 @@ module MakeParser =
                               ->
                              (None , (
                               [(None , (
-                                (Some ((FanSig.Grammar.LeftA)))
-                                ), (
+                                (Some ((FanSig.Grammar.LeftA))) ), (
                                 [((
                                   [( (Gram.Skeyword ("module")) ); (
                                    (Gram.Snterm
@@ -45951,8 +45937,7 @@ module MakeParser =
                                              (Ast.TyQuo (_loc, i)) ))) :
                                            'ctyp) )) ))] ));
                                (( (Some ("arrow")) ), (
-                                (Some ((FanSig.Grammar.RightA)))
-                                ), (
+                                (Some ((FanSig.Grammar.RightA))) ), (
                                 [((
                                   [( (Gram.Skeyword ("?")) ); (
                                    (Gram.Snterm

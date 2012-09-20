@@ -12,7 +12,7 @@ module Make =
 
      module Lexer = (Lexer)(Token)
 
-     module Gram = (Struct.Grammar.Static.Make)(Lexer)
+     module Gram = (Grammar.Static.Make)(Lexer)
 
      module Quotation = (Struct.Quotation.Make)(Ast)
 
@@ -24,7 +24,7 @@ module Make =
 
      module AstFilters = (Struct.AstFilters.Make)(Ast)
 
-     module MakeGram = Struct.Grammar.Static.Make
+     module MakeGram = Grammar.Static.Make
 
      type 'a parser_fun =
       (?directive_handler : ('a -> 'a option) ->

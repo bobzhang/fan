@@ -21,8 +21,8 @@ value uncurry f (x,y) = f x y;
 value flip f x y = f y x;
 
 module Make (Lexer : FanSig.Lexer)
-: FanSig.Grammar.Static with module Loc = Lexer.Loc
-                        and module Token = Lexer.Token
+(* : Sig.Grammar.Static with module Loc = Lexer.Loc *)
+(*                         and module Token = Lexer.Token *)
 = struct
   module Structure = Structure.Make Lexer;
   module Delete = Delete.Make Structure;

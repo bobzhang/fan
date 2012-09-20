@@ -1246,8 +1246,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Before ("top"))))
+                                    (Some ((FanSig.Grammar.Before ("top"))))
                                     ), (
                                     [(( (Some (";")) ), None , (
                                       [((
@@ -1269,9 +1268,7 @@ module Make =
                               (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("top"))))
+                                   (( (Some ((FanSig.Grammar.Level ("top"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1438,9 +1435,7 @@ module Make =
                               (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   ((
-                                    (Some
-                                      ((FanSig.Grammar.Before ("||"))))
+                                   (( (Some ((FanSig.Grammar.Before ("||"))))
                                     ), (
                                     [(( (Some (",")) ), None , (
                                       [((
@@ -1518,12 +1513,10 @@ module Make =
                               (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   ((
-                                    (Some ((FanSig.Grammar.After ("^"))))
+                                   (( (Some ((FanSig.Grammar.After ("^"))))
                                     ), (
                                     [(( (Some ("::")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.RightA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("::")) ); Gram.Sself
@@ -1552,8 +1545,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("apply"))))
+                                    (Some ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [(( [Gram.Sself ; Gram.Sself ] ), (
@@ -1585,8 +1577,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("simple"))))
+                                    (Some ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1884,8 +1875,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("as")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.LeftA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("as")) ); (
@@ -1909,8 +1899,7 @@ module Make =
                                                      (Ast.IdLid (_loc, i)) )))
                                                   ))) : 'patt) )) ))] ));
                                      (( (Some ("|")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.LeftA))) ), (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("|"))
                                          ); Gram.Sself ] ), (
@@ -1947,8 +1936,7 @@ module Make =
                                                      ))) ))) : 'patt) )) ))]
                                       ));
                                      (( (Some ("::")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.RightA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("::")) ); Gram.Sself
@@ -1972,8 +1960,7 @@ module Make =
                                                      ), p1)) ), p2)) : 'patt)
                                           )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.RightA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -2661,8 +2648,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.LeftA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("module")) ); (
                                          (Gram.Snterm
@@ -3377,8 +3363,7 @@ module Make =
                                                    (Ast.TyQuo (_loc, i)) ))) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ),
-                                      (
+                                      (Some ((FanSig.Grammar.RightA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("?")) ); (
                                          (Gram.Snterm
@@ -4751,8 +4736,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("apply"))))
+                                    (Some ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4778,8 +4762,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("apply"))))
+                                    (Some ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4807,8 +4790,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("apply"))))
+                                    (Some ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4835,8 +4817,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("apply"))))
+                                    (Some ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((

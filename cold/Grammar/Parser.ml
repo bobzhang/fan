@@ -17,12 +17,13 @@
  * - Nicolas Pouillard: refactoring
  *)
 
+(* module type S = module type of Structure;  *)
 module Make (Structure : Structure.S) = struct
   module Tools  = Tools.Make Structure;
   module Failed = Failed.Make Structure;
   module Print = Print.Make Structure;
   open Structure;
-  open FanSig.Grammar;
+  (* open Sig.Grammar; *)
 
   module StreamOrig = Stream;
 

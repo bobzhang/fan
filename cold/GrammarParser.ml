@@ -2138,8 +2138,8 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA)))
-                 ), (
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA))) ),
+                 (
                  [((
                    [(
                     (Gram.Stoken

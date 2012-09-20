@@ -200,8 +200,7 @@ module MakeMacroParser =
                                ((fun ()
                                    ->
                                   ((
-                                   (Some
-                                     ((FanSig.Grammar.Level ("simple"))))
+                                   (Some ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -230,8 +229,7 @@ module MakeMacroParser =
                                ((fun ()
                                    ->
                                   ((
-                                   (Some
-                                     ((FanSig.Grammar.Level ("simple"))))
+                                   (Some ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -262,8 +260,7 @@ module MakeMacroParser =
                                ((fun ()
                                    ->
                                   ((
-                                   (Some
-                                     ((FanSig.Grammar.Level ("apply"))))
+                                   (Some ((FanSig.Grammar.Level ("apply"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -309,8 +306,7 @@ module MakeMacroParser =
                                ((fun ()
                                    ->
                                   ((
-                                   (Some
-                                     ((FanSig.Grammar.Level ("simple"))))
+                                   (Some ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -559,8 +555,8 @@ module MakeMacroParser =
                                 (str_item : 'str_item Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   (( (Some ((FanSig.Grammar.First)))
-                                    ), (
+                                   (( (Some ((FanSig.Grammar.First))) ),
+                                    (
                                     [(None , None , (
                                       [((
                                         [(
@@ -587,8 +583,8 @@ module MakeMacroParser =
                                 (sig_item : 'sig_item Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   (( (Some ((FanSig.Grammar.First)))
-                                    ), (
+                                   (( (Some ((FanSig.Grammar.First))) ),
+                                    (
                                     [(None , None , (
                                       [((
                                         [(
@@ -1624,8 +1620,8 @@ module MakeMacroParser =
                                     ->
                                    ((
                                     (Some
-                                      ((FanSig.Grammar.Before
-                                         ("simple")))) ), (
+                                      ((FanSig.Grammar.Before ("simple"))))
+                                    ), (
                                     [(None , None , (
                                       [((
                                         [( (Gram.Skeyword ("`")) ); (
@@ -1744,8 +1740,8 @@ module MakeMacroParser =
                                     ->
                                    ((
                                     (Some
-                                      ((FanSig.Grammar.Before
-                                         ("simple")))) ), (
+                                      ((FanSig.Grammar.Before ("simple"))))
+                                    ), (
                                     [(None , None , (
                                       [((
                                         [( (Gram.Skeyword ("`")) ); (

@@ -318,8 +318,7 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some
-                                      ((FanSig.Grammar.Level ("simple"))))
+                                    (Some ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((

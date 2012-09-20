@@ -23,7 +23,7 @@ module Make (Structure : Structure.S) = struct
   module Parser = Parser.Make Structure;
   open Structure;
   open Format;
-  open FanSig.Grammar;
+  (* open Sig.Grammar; *)
 
   value is_before s1 s2 =
     match (s1, s2) with
