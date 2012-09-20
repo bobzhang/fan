@@ -848,7 +848,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("top"))))
+                                      ((FanSig.Grammar.Level ("top"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1343,7 +1343,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                      ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((

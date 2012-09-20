@@ -9,7 +9,7 @@ module Make =
 
    open Format
 
-   open Sig.Grammar
+   open FanSig.Grammar
 
    let is_before =
     fun s1 ->

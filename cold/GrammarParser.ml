@@ -1132,7 +1132,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
            ((fun ()
                ->
-              (( (Some ((Camlp4.Sig.Grammar.After ("top")))) ), (
+              (( (Some ((FanSig.Grammar.After ("top")))) ), (
                [(None , None , (
                  [(( [( (Gram.Skeyword ("GEXTEND")) )] ), (
                    (Gram.Action.mk (
@@ -2138,7 +2138,7 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((Camlp4.Sig.Grammar.NonA)))
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA)))
                  ), (
                  [((
                    [(
@@ -2840,7 +2840,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (symbol : 'symbol Gram.Entry.t) ) (
            ((fun ()
                ->
-              (( (Some ((Camlp4.Sig.Grammar.Level ("top")))) ), (
+              (( (Some ((FanSig.Grammar.Level ("top")))) ), (
                [(None , None , (
                  [((
                    [(

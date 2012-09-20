@@ -24,7 +24,7 @@ module Make (Structure : Structure.S) = struct
   open Format;
   module Parse = Parser.Make Structure;
   module Fail = Failed.Make Structure;
-  open Sig.Grammar;
+  open FanSig.Grammar;
 
   (* Prevent from implict usage. *)
   module Stream = struct

@@ -1,2 +1,2 @@
 <Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
-<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> : pkg_compiler-libs.common
+<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Struct/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Sig.ml> : pkg_compiler-libs.common

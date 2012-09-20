@@ -319,7 +319,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                      ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((

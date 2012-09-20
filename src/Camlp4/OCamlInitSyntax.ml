@@ -17,7 +17,7 @@
  *)
 
 module Make (Ast     : Sig.Camlp4Ast)
-            (Gram    : Sig.Grammar.Static with module Loc = Ast.Loc
+            (Gram    : FanSig.Grammar.Static with module Loc = Ast.Loc
                                             with type Token.t = FanSig.camlp4_token)
             (Quotation : Sig.Quotation with module Ast = Sig.Camlp4AstToAst Ast)
 : Sig.Camlp4Syntax with module Loc = Ast.Loc

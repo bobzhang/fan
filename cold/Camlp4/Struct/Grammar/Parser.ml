@@ -9,7 +9,7 @@ module Make =
 
    open Structure
 
-   open Sig.Grammar
+   open FanSig.Grammar
 
    module StreamOrig = Stream
 

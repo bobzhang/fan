@@ -1639,7 +1639,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
            ((fun ()
                ->
-              (( (Some ((Camlp4.Sig.Grammar.After ("top")))) ), (
+              (( (Some ((FanSig.Grammar.After ("top")))) ), (
                [(None , None , (
                  [(( [( (Gram.Skeyword ("GEXTEND")) )] ), (
                    (Gram.Action.mk (
@@ -2113,17 +2113,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "Level"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "Level")) )))
+                                      ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -2150,17 +2145,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "After"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "After")) )))
+                                      ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -2187,17 +2177,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "Before"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "Before"))
+                                         ))) ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -2216,16 +2201,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "Last")) )))
-                                     ))) ))) ))) : 'position)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "Last")) ))) )))
+                               ))) : 'position)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -2244,16 +2226,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "First")) )))
-                                     ))) ))) ))) : 'position)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "First")) ))) )))
+                               ))) : 'position)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -2344,16 +2323,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "NonA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "NonA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -2372,16 +2348,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "RightA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "RightA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -2400,16 +2373,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "LeftA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "LeftA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -2645,7 +2615,7 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((Camlp4.Sig.Grammar.NonA)))
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA)))
                  ), (
                  [((
                    [(
@@ -3347,7 +3317,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (symbol : 'symbol Gram.Entry.t) ) (
            ((fun ()
                ->
-              (( (Some ((Camlp4.Sig.Grammar.Level ("top")))) ), (
+              (( (Some ((FanSig.Grammar.Level ("top")))) ), (
                [(None , None , (
                  [((
                    [(
@@ -3832,7 +3802,7 @@ module MakeListComprehension =
                         ((fun ()
                             ->
                            ((
-                            (Some ((Camlp4.Sig.Grammar.Level ("simple"))))
+                            (Some ((FanSig.Grammar.Level ("simple"))))
                             ), (
                             [(None , None , (
                               [((
@@ -4345,7 +4315,7 @@ module MakeMacroParser =
                                         ->
                                        ((
                                         (Some
-                                          ((Camlp4.Sig.Grammar.Level
+                                          ((FanSig.Grammar.Level
                                              ("simple")))) ), (
                                         [(None , None , (
                                           [((
@@ -4376,7 +4346,7 @@ module MakeMacroParser =
                                         ->
                                        ((
                                         (Some
-                                          ((Camlp4.Sig.Grammar.Level
+                                          ((FanSig.Grammar.Level
                                              ("simple")))) ), (
                                         [(None , None , (
                                           [((
@@ -4410,7 +4380,7 @@ module MakeMacroParser =
                                         ->
                                        ((
                                         (Some
-                                          ((Camlp4.Sig.Grammar.Level
+                                          ((FanSig.Grammar.Level
                                              ("apply")))) ), (
                                         [(None , None , (
                                           [((
@@ -4466,7 +4436,7 @@ module MakeMacroParser =
                                         ->
                                        ((
                                         (Some
-                                          ((Camlp4.Sig.Grammar.Level
+                                          ((FanSig.Grammar.Level
                                              ("simple")))) ), (
                                         [(None , None , (
                                           [((
@@ -4757,7 +4727,7 @@ module MakeMacroParser =
                                          ->
                                         ((
                                          (Some
-                                           ((Camlp4.Sig.Grammar.First)))
+                                           ((FanSig.Grammar.First)))
                                          ), (
                                          [(None , None , (
                                            [((
@@ -4790,7 +4760,7 @@ module MakeMacroParser =
                                          ->
                                         ((
                                          (Some
-                                           ((Camlp4.Sig.Grammar.First)))
+                                           ((FanSig.Grammar.First)))
                                          ), (
                                          [(None , None , (
                                            [((
@@ -5744,7 +5714,7 @@ module MakeMacroParser =
                                          ->
                                         ((
                                          (Some
-                                           ((Camlp4.Sig.Grammar.Level
+                                           ((FanSig.Grammar.Level
                                               ("top")))) ), (
                                          [(None , None , (
                                            [((
@@ -5965,7 +5935,7 @@ module MakeMacroParser =
                                          ->
                                         ((
                                          (Some
-                                           ((Camlp4.Sig.Grammar.Before
+                                           ((FanSig.Grammar.Before
                                               ("simple")))) ), (
                                          [(None , None , (
                                            [((
@@ -6108,7 +6078,7 @@ module MakeMacroParser =
                                          ->
                                         ((
                                          (Some
-                                           ((Camlp4.Sig.Grammar.Before
+                                           ((FanSig.Grammar.Before
                                               ("simple")))) ), (
                                          [(None , None , (
                                            [((
@@ -6529,7 +6499,7 @@ module MakeReloadedParser =
                                                               ->
                                                              ((
                                                               (Some
-                                                                ((Camlp4.Sig.Grammar.Level
+                                                                ((FanSig.Grammar.Level
                                                                    ("top"))))
                                                               ), (
                                                               [(None
@@ -6763,7 +6733,7 @@ module MakeReloadedParser =
                                                              ->
                                                             ((
                                                              (Some
-                                                               ((Camlp4.Sig.Grammar.Level
+                                                               ((FanSig.Grammar.Level
                                                                   ("top"))))
                                                              ), (
                                                              [(None ,
@@ -10592,7 +10562,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -10741,7 +10711,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -12065,7 +12035,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -12170,7 +12140,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -12352,7 +12322,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -12823,7 +12793,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13453,7 +13423,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13509,7 +13479,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13556,7 +13526,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13603,7 +13573,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13650,7 +13620,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13697,7 +13667,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13744,7 +13714,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13951,7 +13921,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14118,7 +14088,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14174,7 +14144,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14278,7 +14248,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14514,7 +14484,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14701,7 +14671,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -17229,7 +17199,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -17523,7 +17493,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18778,7 +18748,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18991,7 +18961,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -19148,7 +19118,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -19185,7 +19155,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -19222,7 +19192,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -21055,7 +21025,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -22339,7 +22309,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -22837,7 +22807,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23924,7 +23894,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23961,7 +23931,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24002,7 +23972,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24039,7 +24009,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24087,7 +24057,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RightA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24124,7 +24094,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24266,7 +24236,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -24310,7 +24280,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -27613,7 +27583,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -28604,7 +28574,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NonA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -29299,7 +29269,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -31952,7 +31922,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -32899,7 +32869,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -33061,7 +33031,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((Camlp4.Sig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LeftA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -41935,7 +41905,7 @@ module MakeRevisedParserParser =
            (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
              ((fun ()
                  ->
-                (( (Some ((Camlp4.Sig.Grammar.Level ("top")))) ), (
+                (( (Some ((FanSig.Grammar.Level ("top")))) ), (
                  [(None , None , (
                    [((
                      [( (Gram.Skeyword ("match")) ); (
@@ -42382,7 +42352,7 @@ module MakeRevisedParserParser =
            (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
              ((fun ()
                  ->
-                (( (Some ((Camlp4.Sig.Grammar.Level ("simple")))) ),
+                (( (Some ((FanSig.Grammar.Level ("simple")))) ),
                  (
                  [(None , None , (
                    [((
@@ -43807,7 +43777,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Before ("top"))))
+                                ((FanSig.Grammar.Before ("top"))))
                               ), (
                               [(( (Some (";")) ), None , (
                                 [((
@@ -43832,7 +43802,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("top"))))
+                                ((FanSig.Grammar.Level ("top"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -44006,7 +43976,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Before ("||"))))
+                                ((FanSig.Grammar.Before ("||"))))
                               ), (
                               [(( (Some (",")) ), None , (
                                 [((
@@ -44030,7 +44000,7 @@ module MakeParser =
                                             (Ast.ExCom (_loc, e1, e2))
                                             ))) : 'expr) )) ))] ));
                                (( (Some (":=")) ), (
-                                (Some ((Camlp4.Sig.Grammar.NonA))) ),
+                                (Some ((FanSig.Grammar.NonA))) ),
                                 (
                                 [((
                                   [Gram.Sself ; (
@@ -44089,10 +44059,10 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.After ("^"))))
+                                ((FanSig.Grammar.After ("^"))))
                               ), (
                               [(( (Some ("::")) ), (
-                                (Some ((Camlp4.Sig.Grammar.RightA)))
+                                (Some ((FanSig.Grammar.RightA)))
                                 ), (
                                 [((
                                   [Gram.Sself ; (
@@ -44125,7 +44095,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                ((FanSig.Grammar.Level ("apply"))))
                               ), (
                               [(None , None , (
                                 [(( [Gram.Sself ; Gram.Sself ] ), (
@@ -44161,7 +44131,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                ((FanSig.Grammar.Level ("simple"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -44467,7 +44437,7 @@ module MakeParser =
                               ->
                              (None , (
                               [(( (Some ("as")) ), (
-                                (Some ((Camlp4.Sig.Grammar.LeftA)))
+                                (Some ((FanSig.Grammar.LeftA)))
                                 ), (
                                 [((
                                   [Gram.Sself ; (
@@ -44493,7 +44463,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("|")) ), (
-                                (Some ((Camlp4.Sig.Grammar.LeftA)))
+                                (Some ((FanSig.Grammar.LeftA)))
                                 ), (
                                 [((
                                   [Gram.Sself ; (
@@ -44533,7 +44503,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("::")) ), (
-                                (Some ((Camlp4.Sig.Grammar.RightA)))
+                                (Some ((FanSig.Grammar.RightA)))
                                 ), (
                                 [((
                                   [Gram.Sself ; (
@@ -44558,7 +44528,7 @@ module MakeParser =
                                                ), p1)) ), p2)) :
                                           'patt) )) ))] ));
                                (( (Some ("apply")) ), (
-                                (Some ((Camlp4.Sig.Grammar.RightA)))
+                                (Some ((FanSig.Grammar.RightA)))
                                 ), (
                                 [((
                                   [(
@@ -45258,7 +45228,7 @@ module MakeParser =
                               ->
                              (None , (
                               [(None , (
-                                (Some ((Camlp4.Sig.Grammar.LeftA)))
+                                (Some ((FanSig.Grammar.LeftA)))
                                 ), (
                                 [((
                                   [( (Gram.Skeyword ("module")) ); (
@@ -45981,7 +45951,7 @@ module MakeParser =
                                              (Ast.TyQuo (_loc, i)) ))) :
                                            'ctyp) )) ))] ));
                                (( (Some ("arrow")) ), (
-                                (Some ((Camlp4.Sig.Grammar.RightA)))
+                                (Some ((FanSig.Grammar.RightA)))
                                 ), (
                                 [((
                                   [( (Gram.Skeyword ("?")) ); (
@@ -47384,7 +47354,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                ((FanSig.Grammar.Level ("apply"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -47412,7 +47382,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                ((FanSig.Grammar.Level ("apply"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -47442,7 +47412,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                ((FanSig.Grammar.Level ("apply"))))
                               ), (
                               [(None , None , (
                                 [((
@@ -47471,7 +47441,7 @@ module MakeParser =
                               ->
                              ((
                               (Some
-                                ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                ((FanSig.Grammar.Level ("apply"))))
                               ), (
                               [(None , None , (
                                 [((

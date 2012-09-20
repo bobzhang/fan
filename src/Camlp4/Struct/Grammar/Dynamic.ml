@@ -16,8 +16,8 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-module Make (Lexer : Sig.Lexer)
-: Sig.Grammar.Dynamic with module Loc = Lexer.Loc
+module Make (Lexer : FanSig.Lexer)
+: FanSig.Grammar.Dynamic with module Loc = Lexer.Loc
                          and module Token = Lexer.Token
 = struct
   module Structure = Structure.Make Lexer;

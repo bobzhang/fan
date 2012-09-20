@@ -756,11 +756,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             {name = n; pos = pos; levels = ll} ] ]
     ;
     position:
-      [ [ UIDENT "FIRST" -> <:expr< Camlp4.Sig.Grammar.First >>
-        | UIDENT "LAST" -> <:expr< Camlp4.Sig.Grammar.Last >>
-        | UIDENT "BEFORE"; n = string -> <:expr< Camlp4.Sig.Grammar.Before $n >>
-        | UIDENT "AFTER"; n = string -> <:expr< Camlp4.Sig.Grammar.After $n >>
-        | UIDENT "LEVEL"; n = string -> <:expr< Camlp4.Sig.Grammar.Level $n >> ] ]
+      [ [ UIDENT "FIRST" -> <:expr< FanSig.Grammar.First >>
+        | UIDENT "LAST" -> <:expr< FanSig.Grammar.Last >>
+        | UIDENT "BEFORE"; n = string -> <:expr< FanSig.Grammar.Before $n >>
+        | UIDENT "AFTER"; n = string -> <:expr< FanSig.Grammar.After $n >>
+        | UIDENT "LEVEL"; n = string -> <:expr< FanSig.Grammar.Level $n >> ] ]
     ;
     level_list:
       [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
@@ -770,9 +770,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             {label = lab; assoc = ass; rules = rules} ] ]
     ;
     assoc:
-      [ [ UIDENT "LEFTA" -> <:expr< Camlp4.Sig.Grammar.LeftA >>
-        | UIDENT "RIGHTA" -> <:expr< Camlp4.Sig.Grammar.RightA >>
-        | UIDENT "NONA" -> <:expr< Camlp4.Sig.Grammar.NonA >> ] ]
+      [ [ UIDENT "LEFTA" -> <:expr< FanSig.Grammar.LeftA >>
+        | UIDENT "RIGHTA" -> <:expr< FanSig.Grammar.RightA >>
+        | UIDENT "NONA" -> <:expr< FanSig.Grammar.NonA >> ] ]
     ;
     rule_list:
       [ [ "["; "]" -> []

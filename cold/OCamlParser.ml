@@ -1247,7 +1247,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Before ("top"))))
+                                      ((FanSig.Grammar.Before ("top"))))
                                     ), (
                                     [(( (Some (";")) ), None , (
                                       [((
@@ -1271,7 +1271,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("top"))))
+                                      ((FanSig.Grammar.Level ("top"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1440,7 +1440,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Before ("||"))))
+                                      ((FanSig.Grammar.Before ("||"))))
                                     ), (
                                     [(( (Some (",")) ), None , (
                                       [((
@@ -1464,7 +1464,7 @@ module Make =
                                                   (Ast.ExCom (_loc, e1, e2))
                                                   ))) : 'expr) )) ))] ));
                                      (( (Some (":=")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("<-")) ); (
@@ -1519,10 +1519,10 @@ module Make =
                                 ((fun ()
                                     ->
                                    ((
-                                    (Some ((Camlp4.Sig.Grammar.After ("^"))))
+                                    (Some ((FanSig.Grammar.After ("^"))))
                                     ), (
                                     [(( (Some ("::")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -1553,7 +1553,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                      ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [(( [Gram.Sself ; Gram.Sself ] ), (
@@ -1586,7 +1586,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                      ((FanSig.Grammar.Level ("simple"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1884,7 +1884,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("as")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -1909,7 +1909,7 @@ module Make =
                                                      (Ast.IdLid (_loc, i)) )))
                                                   ))) : 'patt) )) ))] ));
                                      (( (Some ("|")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("|"))
@@ -1947,7 +1947,7 @@ module Make =
                                                      ))) ))) : 'patt) )) ))]
                                       ));
                                      (( (Some ("::")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -1972,7 +1972,7 @@ module Make =
                                                      ), p1)) ), p2)) : 'patt)
                                           )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [(
@@ -2661,7 +2661,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("module")) ); (
@@ -3377,7 +3377,7 @@ module Make =
                                                    (Ast.TyQuo (_loc, i)) ))) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("?")) ); (
@@ -4752,7 +4752,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                      ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4779,7 +4779,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                      ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4808,7 +4808,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                      ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -4836,7 +4836,7 @@ module Make =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                      ((FanSig.Grammar.Level ("apply"))))
                                     ), (
                                     [(None , None , (
                                       [((

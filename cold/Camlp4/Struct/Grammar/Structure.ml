@@ -1,30 +1,30 @@
-open Sig.Grammar
+open FanSig.Grammar
 
 module type S =
-                   sig
-                    module Loc : FanSig.Loc
+                      sig
+                       module Loc : FanSig.Loc
 
-                    module Token : (FanSig.Token with module Loc = Loc)
+                       module Token : (FanSig.Token with module Loc = Loc)
 
-                    module Lexer :
-                     (Sig.Lexer with module Loc = Loc and module Loc = Loc
-                      and module Token = Token)
+                       module Lexer :
+                        (FanSig.Lexer with module Loc = Loc and module Loc =
+                         Loc and module Token = Token)
 
-                    module Action : Sig.Grammar.Action
+                       module Action : FanSig.Grammar.Action
 
-                    type gram = {
-                                  gfilter:Token.Filter.t;
-                                  gkeywords:(string, int ref) Hashtbl.t;
-                                  glexer:(Loc.t ->
-                                          (char Stream.t ->
-                                           (Token.t * Loc.t) Stream.t));
-                                  warning_verbose:bool ref;
-                                  error_verbose:bool ref}
+                       type gram = {
+                                     gfilter:Token.Filter.t;
+                                     gkeywords:(string, int ref) Hashtbl.t;
+                                     glexer:(Loc.t ->
+                                             (char Stream.t ->
+                                              (Token.t * Loc.t) Stream.t));
+                                     warning_verbose:bool ref;
+                                     error_verbose:bool ref}
 
-                    type token_info = {
-                                        prev_loc:Loc.t;
-                                        cur_loc:Loc.t;
-                                        prev_loc_only:bool}
+                       type token_info = {
+                                           prev_loc:Loc.t;
+                                           cur_loc:Loc.t;
+                                           prev_loc_only:bool}
 
  type token_stream = (Token.t * token_info) Stream.t
 
@@ -88,13 +88,13 @@ and node = {node:symbol; son:tree; brother:tree}
 end
 
 module Make =
-      functor (Lexer : Sig.Lexer) ->
+      functor (Lexer : FanSig.Lexer) ->
        struct
         module Loc = Lexer.Loc
 
         module Token = Lexer.Token
 
-        module Action : Sig.Grammar.Action =
+        module Action : FanSig.Grammar.Action =
          struct
           type t = Obj.t
 

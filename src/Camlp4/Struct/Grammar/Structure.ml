@@ -17,15 +17,15 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-open Sig.Grammar;
+open FanSig.Grammar;
 
 module type S = sig
   module Loc          : FanSig.Loc;
   module Token        : FanSig.Token with module Loc = Loc;
-  module Lexer        : Sig.Lexer
+  module Lexer        : FanSig.Lexer
                         with module Loc   = Loc
                          and module Token = Token;
-  module Action       : Sig.Grammar.Action;
+  module Action       : FanSig.Grammar.Action;
 
   type gram =
     { gfilter         : Token.Filter.t;
@@ -106,10 +106,10 @@ module type S = sig
   value removing : gram -> string -> unit;
 end;
 
-module Make (Lexer  : Sig.Lexer) = struct
+module Make (Lexer  : FanSig.Lexer) = struct
   module Loc = Lexer.Loc;
   module Token = Lexer.Token;
-  module Action : Sig.Grammar.Action = struct
+  module Action : FanSig.Grammar.Action = struct
     type  t     = Obj.t   ;
     value mk    = Obj.repr;
     value get   = Obj.obj ;

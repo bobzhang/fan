@@ -1756,7 +1756,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("=")) ); (
@@ -1833,7 +1833,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -2494,7 +2494,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("(")) ); (
@@ -2547,7 +2547,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -2643,7 +2643,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("module")) ); (
@@ -2880,7 +2880,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("top")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("object")) ); (
@@ -3208,7 +3208,7 @@ module Make =
                                                ((Ast.ExLet (_loc, rf, lb, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (":=")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword (":=")) ); Gram.Sself
@@ -3233,7 +3233,7 @@ module Make =
                                                     (Ast.ExAss (_loc, e1, e2))) :
                                                  'expr) )) ))] ));
                                      (( (Some ("||")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3256,7 +3256,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("&&")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3279,7 +3279,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("<")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3302,7 +3302,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("^")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3325,7 +3325,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("+")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3348,7 +3348,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("*")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3459,7 +3459,7 @@ module Make =
                                                      ), e1)) ), e2)) : 'expr)
                                           )) ))] ));
                                      (( (Some ("**")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -3548,7 +3548,7 @@ module Make =
                                                      ), e1)) ), e2)) : 'expr)
                                           )) ))] ));
                                      (( (Some ("unary minus")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("-.")) );
                                          Gram.Sself ] ), (
@@ -3572,7 +3572,7 @@ module Make =
                                              ((mkumin _loc "-" e) : 'expr) ))
                                         ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("lazy")) );
@@ -3622,7 +3622,7 @@ module Make =
                                              ((Ast.ExApp (_loc, e1, e2)) :
                                                'expr) )) ))] ));
                                      (( (Some ("label")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("?")) ); (
                                          (Gram.Snterm
@@ -3736,7 +3736,7 @@ module Make =
                                                ((Ast.ExLab (_loc, i, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (".")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("#"))
@@ -3823,7 +3823,7 @@ module Make =
                                                 ((Ast.ExAre (_loc, e1, e2)) :
                                                   'expr) )) ))] ));
                                      (( (Some ("~-")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -5071,7 +5071,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -5219,7 +5219,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [(
@@ -5855,7 +5855,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("->")) ); (
@@ -5959,7 +5959,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("->")) ); (
@@ -6041,7 +6041,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("|")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("|"))
@@ -6057,7 +6057,7 @@ module Make =
                                               ((Ast.PaOrp (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("..")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("..")) ); Gram.Sself
@@ -6073,7 +6073,7 @@ module Make =
                                               ((Ast.PaRng (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("lazy")) );
@@ -6956,7 +6956,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -7589,7 +7589,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -7838,7 +7838,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -8388,7 +8388,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("==")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -8405,7 +8405,7 @@ module Make =
                                               ((Ast.TyMan (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("private")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("private")) ); (
                                          (Gram.Snterml
@@ -8422,7 +8422,7 @@ module Make =
                                              ((Ast.TyPrv (_loc, t)) : 'ctyp)
                                           )) ))] ));
                                      (( (Some ("alias")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -8439,7 +8439,7 @@ module Make =
                                               ((Ast.TyAli (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("forall")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("!")) ); (
@@ -8461,7 +8461,7 @@ module Make =
                                                ((Ast.TyPol (_loc, t1, t2)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.RightA))) ),
+                                      (Some ((FanSig.Grammar.RightA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; (
@@ -8478,7 +8478,7 @@ module Make =
                                               ((Ast.TyArr (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("label")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -8550,7 +8550,7 @@ module Make =
                                                ((Ast.TyLab (_loc, i, t)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [(( [Gram.Sself ; Gram.Sself ] ), (
                                         (Gram.Action.mk (
@@ -8570,7 +8570,7 @@ module Make =
                                                Invalid_argument (_) -> t) :
                                                'ctyp) )) ))] ));
                                      (( (Some (".")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("."))
@@ -10232,7 +10232,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -10738,7 +10738,7 @@ module Make =
                                               ((Ast.CeFun (_loc, p, ce)) :
                                                 'class_expr) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((Camlp4.Sig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NonA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterml
@@ -11091,7 +11091,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("initializer")) );
@@ -12490,7 +12490,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(
@@ -12968,7 +12968,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [( (Gram.Skeyword ("'")) ); (
@@ -13047,7 +13047,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(None , (
-                                      (Some ((Camlp4.Sig.Grammar.LeftA))) ),
+                                      (Some ((FanSig.Grammar.LeftA))) ),
                                       (
                                       [((
                                         [(

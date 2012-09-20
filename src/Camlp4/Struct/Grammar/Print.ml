@@ -20,7 +20,7 @@
 module Make (Structure : Structure.S) = struct
   open Structure;
   open Format;
-  open Sig.Grammar;
+  open FanSig.Grammar;
 
   value rec flatten_tree =
     fun
@@ -136,7 +136,7 @@ end;
 module MakeDump (Structure : Structure.S) = struct
   open Structure;
   open Format;
-  open Sig.Grammar;
+  open FanSig.Grammar;
 
   type brothers = [ Bro of symbol and list brothers ];
 

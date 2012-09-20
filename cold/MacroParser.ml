@@ -201,7 +201,7 @@ module MakeMacroParser =
                                    ->
                                   ((
                                    (Some
-                                     ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                     ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -231,7 +231,7 @@ module MakeMacroParser =
                                    ->
                                   ((
                                    (Some
-                                     ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                     ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -263,7 +263,7 @@ module MakeMacroParser =
                                    ->
                                   ((
                                    (Some
-                                     ((Camlp4.Sig.Grammar.Level ("apply"))))
+                                     ((FanSig.Grammar.Level ("apply"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -310,7 +310,7 @@ module MakeMacroParser =
                                    ->
                                   ((
                                    (Some
-                                     ((Camlp4.Sig.Grammar.Level ("simple"))))
+                                     ((FanSig.Grammar.Level ("simple"))))
                                    ), (
                                    [(None , None , (
                                      [((
@@ -559,7 +559,7 @@ module MakeMacroParser =
                                 (str_item : 'str_item Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   (( (Some ((Camlp4.Sig.Grammar.First)))
+                                   (( (Some ((FanSig.Grammar.First)))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -587,7 +587,7 @@ module MakeMacroParser =
                                 (sig_item : 'sig_item Gram.Entry.t) ) (
                                 ((fun ()
                                     ->
-                                   (( (Some ((Camlp4.Sig.Grammar.First)))
+                                   (( (Some ((FanSig.Grammar.First)))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1429,7 +1429,7 @@ module MakeMacroParser =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Level ("top"))))
+                                      ((FanSig.Grammar.Level ("top"))))
                                     ), (
                                     [(None , None , (
                                       [((
@@ -1624,7 +1624,7 @@ module MakeMacroParser =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Before
+                                      ((FanSig.Grammar.Before
                                          ("simple")))) ), (
                                     [(None , None , (
                                       [((
@@ -1744,7 +1744,7 @@ module MakeMacroParser =
                                     ->
                                    ((
                                     (Some
-                                      ((Camlp4.Sig.Grammar.Before
+                                      ((FanSig.Grammar.Before
                                          ("simple")))) ), (
                                     [(None , None , (
                                       [((

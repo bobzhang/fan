@@ -1,7 +1,7 @@
 module Make =
  functor (Ast : Sig.Camlp4Ast) ->
-  functor (Gram : ((Sig.Grammar.Static with module Loc = Ast.Loc) with type
-                    Token.t = FanSig.camlp4_token)) ->
+  functor (Gram : ((FanSig.Grammar.Static with module Loc = Ast.Loc) with
+                   type  Token.t = FanSig.camlp4_token)) ->
    functor (Quotation : (Sig.Quotation with module Ast =
                          Sig.Camlp4AstToAst(Ast))) ->
     (struct

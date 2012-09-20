@@ -5,7 +5,7 @@ module Make =
 
    open Format
 
-   open Sig.Grammar
+   open FanSig.Grammar
 
    let rec flatten_tree =
     function
@@ -158,7 +158,7 @@ module MakeDump =
 
           open Format
 
-          open Sig.Grammar
+          open FanSig.Grammar
 
           type brothers = Bro of symbol * brothers list
 

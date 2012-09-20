@@ -688,268 +688,19 @@ end;
 (** {6 Dynamic loaders} *)
 
 
-(** A signature for grammars. *)
-module Grammar = struct
+(* (\** A signature for lexers. *\) *)
+(* module type Lexer = sig *)
+(*   module Loc : FanSig.Loc; *)
+(*   module Token : FanSig.Token with module Loc = Loc; *)
+(*   module Error : FanSig.Error; *)
 
-  (** Internal signature for sematantic actions of grammars,
-      not for the casual user. These functions are unsafe. *)
-  module type Action = sig
-    type  t    ;
-
-    value mk    : 'a ->  t;
-    value get   :  t -> 'a;
-    value getf  :  t -> ('a -> 'b);
-    value getf2 :  t -> ('a -> 'b -> 'c);
-  end;
-
-  type assoc =
-    [ NonA
-    | RightA
-    | LeftA ];
-
-  type position =
-    [ First
-    | Last
-    | Before of string
-    | After of string
-    | Level of string ];
-
-  (** Common signature for {!Sig.Grammar.Static} and {!Sig.Grammar.Dynamic}. *)
-  module type Structure = sig
-    module Loc    : FanSig.Loc;
-    module Action : Action;
-    module Token  : FanSig.Token with module Loc = Loc;
-
-    type gram =
-        { gfilter         : Token.Filter.t;
-          gkeywords       : Hashtbl.t string (ref int);
-          glexer          : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
-          warning_verbose : ref bool;
-          error_verbose   : ref bool };
-      
-    type internal_entry;
-    type tree;
-
-    type token_pattern = ((Token.t -> bool) * string);
-    type token_info;
-    type token_stream = Stream.t (Token.t * token_info);
-
-    value token_location : token_info -> Loc.t;
-
-    type symbol =
-      [ Smeta of string and list symbol and Action.t
-      | Snterm of internal_entry
-      | Snterml of internal_entry and string
-      | Slist0 of symbol
-      | Slist0sep of symbol and symbol
-      | Slist1 of symbol
-      | Slist1sep of symbol and symbol
-      | Sopt of symbol
-      | Stry of symbol
-      | Sself
-      | Snext
-      | Stoken of token_pattern
-      | Skeyword of string
-      | Stree of tree ];
-
-    type production_rule = (list symbol * Action.t);
-    type single_extend_statment =
-      (option string * option assoc * list production_rule);
-    type extend_statment =
-      (option position * list single_extend_statment);
-    type delete_statment = list symbol;
-
-    type fold 'a 'b 'c =
-      internal_entry -> list symbol ->
-        (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
-
-    type foldsep 'a 'b 'c =
-      internal_entry -> list symbol ->
-        (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
-
-  end;
-
-  (** Signature for Camlp4 grammars. Here the dynamic means that you can produce as
-      many grammar values as needed with a single grammar module.
-      If you do not need many grammar values it's preferable to use a static one. *)
-  module type Dynamic = sig
-    include Structure;
-
-    (** Make a new grammar. *)
-    value mk : unit -> gram;
-
-    module Entry : sig
-      (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-      type t 'a;
-
-      (** Make a new entry from the given name. *)
-      value mk : gram -> string -> t 'a;
-
-      (** Make a new entry from a name and an hand made token parser. *)
-      value of_parser :
-        gram -> string -> (token_stream -> 'a) -> t 'a;
-
-      (** Clear the entry and setup this parser instead. *)
-      value setup_parser :
-        t 'a -> (token_stream -> 'a) -> unit;
-
-      (** Get the entry name. *)
-      value name : t 'a -> string;
-
-      (** Print the given entry into the given formatter. *)
-      value print : Format.formatter -> t 'a -> unit;
-
-      (** Same as {!print} but show the left-factorization. *)
-      value dump : Format.formatter -> t 'a -> unit;
-
-      (**/**)
-      value obj : t 'a -> internal_entry;
-      value clear : t 'a -> unit;
-      (**/**)
-    end;
-
-    (** [get_filter g] Get the {!Token.Filter} associated to the [g]. *)
-    value get_filter : gram -> Token.Filter.t;
-
-    type not_filtered 'a;
-
-    (** This function is called by the EXTEND ... END syntax. *)
-    value extend      : Entry.t 'a -> extend_statment -> unit;
-
-    (** The delete rule. *)
-    value delete_rule : Entry.t 'a -> delete_statment -> unit;
-
-    value srules      : Entry.t 'a -> list (list symbol * Action.t) -> symbol;
-    value sfold0      : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-    value sfold1      : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-    value sfold0sep   : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b;
-    (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
-
-    (** Use the lexer to produce a non filtered token stream from a char stream. *)
-    value lex : gram -> Loc.t -> Stream.t char -> not_filtered (Stream.t (Token.t * Loc.t));
-
-    (** Token stream from string. *)
-    value lex_string : gram -> Loc.t -> string -> not_filtered (Stream.t (Token.t * Loc.t));
-
-    (** Filter a token stream using the {!Token.Filter} module *)
-    value filter : gram -> not_filtered (Stream.t (Token.t * Loc.t)) -> token_stream;
-
-    (** Lex, filter and parse a stream of character. *)
-    value parse : Entry.t 'a -> Loc.t -> Stream.t char -> 'a;
-
-    (** Same as {!parse} but from a string. *)
-    value parse_string : Entry.t 'a -> Loc.t -> string -> 'a;
-
-    (** Parse a token stream that is not filtered yet. *)
-    value parse_tokens_before_filter :
-      Entry.t 'a -> not_filtered (Stream.t (Token.t * Loc.t)) -> 'a;
-
-    (** Parse a token stream that is already filtered. *)
-    value parse_tokens_after_filter :
-      Entry.t 'a -> token_stream -> 'a;
-
-  end;
-
-  (** Signature for Camlp4 grammars. Here the static means that there is only
-      one grammar value by grammar module. If you do not need to store the grammar
-      value it's preferable to use a static one. *)
-  module type Static = sig
-    include Structure;
-
-    (** Whether trace parser or not *)
-    value trace_parser: ref bool;
-
-    value gram: gram;
-
-    module Entry : sig
-      (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-      type t 'a;
-
-      (** Make a new entry from the given name. *)
-      value mk : string -> t 'a;
-
-
-      (** Make a new entry from a name and an hand made token parser. *)
-      value of_parser :
-        string -> (token_stream -> 'a) -> t 'a;
-
-      (** Clear the entry and setup this parser instead. *)
-      value setup_parser :
-        t 'a -> (token_stream -> 'a) -> unit;
-
-      (** Get the entry name. *)
-      value name : t 'a -> string;
-
-      (** Print the given entry into the given formatter. *)
-      value print : Format.formatter -> t 'a -> unit;
-
-      (** Same as {!print} but show the left-factorization. *)
-      value dump : Format.formatter -> t 'a -> unit;
-
-      (**/**)
-      value obj : t 'a -> internal_entry;
-      value clear : t 'a -> unit;
-      (**/**)
-    end;
-
-    (** Get the {!Token.Filter} associated to the grammar module. *)
-    value get_filter : unit -> Token.Filter.t;
-
-    type not_filtered 'a;
-
-    (** This function is called by the EXTEND ... END syntax. *)
-    value extend      : Entry.t 'a -> extend_statment -> unit;
-
-    (** The delete rule. *)
-    value delete_rule : Entry.t 'a -> delete_statment -> unit;
-    value srules      : Entry.t 'a -> list (list symbol * Action.t) -> symbol;
-    value sfold0      : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-    value sfold1      : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-    value sfold0sep   : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b;
-    (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
-
-    (** Use the lexer to produce a non filtered token stream from a char stream. *)
-    value lex : Loc.t -> Stream.t char -> not_filtered (Stream.t (Token.t * Loc.t));
-
-    (** Token stream from string. *)
-    value lex_string : Loc.t -> string -> not_filtered (Stream.t (Token.t * Loc.t));
-
-    (** Filter a token stream using the {!Token.Filter} module *)
-    value filter : not_filtered (Stream.t (Token.t * Loc.t)) -> token_stream;
-
-    (** Lex, filter and parse a stream of character. *)
-    value parse : Entry.t 'a -> Loc.t -> Stream.t char -> 'a;
-
-    (** Same as {!parse} but from a string. *)
-    value parse_string : Entry.t 'a -> Loc.t -> string -> 'a;
-
-    (** Parse a token stream that is not filtered yet. *)
-    value parse_tokens_before_filter :
-      Entry.t 'a -> not_filtered (Stream.t (Token.t * Loc.t)) -> 'a;
-
-    (** Parse a token stream that is already filtered. *)
-    value parse_tokens_after_filter :
-      Entry.t 'a -> token_stream -> 'a;
-
-  end;
-
-end;
-
-(** A signature for lexers. *)
-module type Lexer = sig
-  module Loc : FanSig.Loc;
-  module Token : FanSig.Token with module Loc = Loc;
-  module Error : FanSig.Error;
-
-  (** The constructor for a lexing function. The character stream is the input
-      stream to be lexed. The result is a stream of pairs of a token and
-      a location.
-      The lexer do not use global (mutable) variables: instantiations
-      of [Lexer.mk ()] do not perturb each other. *)
-  value mk : unit -> (Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t));
-end;
+(*   (\** The constructor for a lexing function. The character stream is the input *)
+(*       stream to be lexed. The result is a stream of pairs of a token and *)
+(*       a location. *)
+(*       The lexer do not use global (mutable) variables: instantiations *)
+(*       of [Lexer.mk ()] do not perturb each other. *\) *)
+(*   value mk : unit -> (Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t)); *)
+(* end; *)
 
 
 (** A signature for parsers abstract from ASTs. *)
@@ -1001,7 +752,7 @@ module type Syntax = sig
   module Loc            : FanSig.Loc;
   module Ast            : Ast with type loc = Loc.t;
   module Token          : FanSig.Token with module Loc = Loc;
-  module Gram           : Grammar.Static with module Loc = Loc and module Token = Token;
+  module Gram           : FanSig.Grammar.Static with module Loc = Loc and module Token = Token;
   module Quotation      : Quotation with module Ast = Ast;
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
@@ -1021,7 +772,7 @@ module type Camlp4Syntax = sig
   module Ast            : Camlp4Ast with module Loc = Loc;
   module Token          : FanSig.Camlp4Token with module Loc = Loc;
 
-  module Gram           : Grammar.Static with module Loc = Loc and module Token = Token;
+  module Gram           : FanSig.Grammar.Static with module Loc = Loc and module Token = Token;
   module Quotation      : Quotation with module Ast = Camlp4AstToAst Ast;
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
@@ -1229,7 +980,7 @@ module type OCAML_PRINTER_PLUGIN =
 module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
 module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
 module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
-module type LEXER = functor (Token: FanSig.Camlp4Token) -> Lexer
+module type LEXER = functor (Token: FanSig.Camlp4Token) -> FanSig.Lexer
   with module Loc = Token.Loc and module Token = Token;
 
 
@@ -1239,8 +990,8 @@ module type PRECAST = sig
   module Loc        : FanSig.Loc;
   module Ast        : Camlp4Ast with module Loc = Loc;
   module Token      : FanSig.Token  with module Loc = Loc and type t = FanSig.camlp4_token;
-  module Lexer      : Lexer  with module Loc = Loc and module Token = Token;
-  module Gram       : Grammar.Static  with module Loc = Loc and module Token = Token;
+  module Lexer      : FanSig.Lexer  with module Loc = Loc and module Token = Token;
+  module Gram       : FanSig.Grammar.Static  with module Loc = Loc and module Token = Token;
   module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
   (* module DynLoader  : DynLoader; *)
   module AstFilters : AstFilters with module Ast = Ast;
@@ -1256,8 +1007,8 @@ module type PRECAST = sig
     module DumpCamlp4Ast : (Printer Ast).S;
     module Null          : (Printer Ast).S;
   end;
-  module MakeGram (Lexer : Lexer with module Loc = Loc) :
-      Grammar.Static with module Loc = Loc and module Token = Lexer.Token;
+  module MakeGram (Lexer : FanSig.Lexer with module Loc = Loc) :
+      FanSig.Grammar.Static with module Loc = Loc and module Token = Lexer.Token;
 
   module MakeSyntax (U : sig end) : Syntax;
 

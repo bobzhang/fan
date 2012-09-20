@@ -22,7 +22,7 @@ module Make (Structure : Structure.S) = struct
   module Failed = Failed.Make Structure;
   module Print = Print.Make Structure;
   open Structure;
-  open Sig.Grammar;
+  open FanSig.Grammar;
 
   module StreamOrig = Stream;
 

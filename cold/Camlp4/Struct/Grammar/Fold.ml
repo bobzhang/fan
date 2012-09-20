@@ -9,7 +9,7 @@ module Make =
 
    module Fail = (Failed.Make)(Structure)
 
-   open Sig.Grammar
+   open FanSig.Grammar
 
    module Stream =
     struct

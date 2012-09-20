@@ -6,7 +6,7 @@ let flip =
 
 
 module Make =
- functor (Lexer : Sig.Lexer) ->
+ functor (Lexer : FanSig.Lexer) ->
   (struct
     module Structure = (Structure.Make)(Lexer)
 
@@ -98,5 +98,5 @@ module Make =
     let extend = Insert.extend
 
    end :
-    (Sig.Grammar.Static with module Loc = Lexer.Loc and module Loc =
+    (FanSig.Grammar.Static with module Loc = Lexer.Loc and module Loc =
      Lexer.Loc and module Token = Lexer.Token))

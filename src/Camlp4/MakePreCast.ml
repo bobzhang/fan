@@ -5,7 +5,7 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   module Ast = Struct.Camlp4Ast.Make Loc;
   module Token = FanToken.Make Loc;
   module Lexer = Lexer Token;
-  module Gram = Struct.Grammar.Static.Make Lexer;
+  module Gram =  Struct.Grammar.Static.Make Lexer;
   module Quotation = Struct.Quotation.Make Ast;
   module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
   module Syntax = MakeSyntax (struct end);
