@@ -13,6 +13,8 @@ module Make =
 
       module Token = Gram.Token
 
+      module Ast2pt = (Struct.Camlp4Ast2OCamlAst.Make)(Ast)
+
       open Sig
 
       type warning = (Loc.t -> (string -> unit))

@@ -6,7 +6,6 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   module Token = FanToken.Make Loc;
   module Lexer = Lexer Token;
   module Gram = Struct.Grammar.Static.Make Lexer;
-  (* module DynLoader = Struct.DynLoader; *)
   module Quotation = Struct.Quotation.Make Ast;
   module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
   module Syntax = MakeSyntax (struct end);
@@ -105,6 +104,8 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
       sig_item_parser.val ?directive_handler loc strm;
     value parse_implem ?directive_handler loc strm =
       str_item_parser.val ?directive_handler loc strm;
+    (* value parse_expr ?directive_handler loc expr = *)
+      
   end;
 
   module CurrentPrinter = struct
@@ -119,9 +120,6 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
     Format.eprintf "enable..";
     ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.Make);
   end;
-
-  (* value enable_ocamlr_printer () = *)
-  (*   ocaml_printer (module Printers.OCamlr.Id) (module Printers.OCamlr.MakeMore); *)
 
   value enable_dump_ocaml_ast_printer () =
     ocaml_printer (module Printers.DumpOCamlAst.Id)

@@ -9,13 +9,11 @@ module Id : Sig.Id =
 module Make =
        functor (Syntax : Sig.Camlp4Syntax) ->
         (struct
-          module Ast2pt = (Struct.Camlp4Ast2OCamlAst.Make)(Syntax.Ast)
-
           let print_interf =
            fun ?(input_file = "-") ->
             fun ?output_file ->
              fun ast ->
-              let pt = (Ast2pt.sig_item ast) in
+              let pt = (Syntax.Ast2pt.sig_item ast) in
               let open
               FanUtil in
               (with_open_out_file output_file (
@@ -26,7 +24,7 @@ module Make =
            fun ?(input_file = "-") ->
             fun ?output_file ->
              fun ast ->
-              let pt = (Ast2pt.str_item ast) in
+              let pt = (Syntax.Ast2pt.str_item ast) in
               let open
               FanUtil in
               (with_open_out_file output_file (

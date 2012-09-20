@@ -24,7 +24,8 @@ module Make (Camlp4Ast : Sig.Camlp4Ast) : sig
   open Camlp4Ast;
 
   (** {6 Useful functions} *)
-  value patt : patt -> Parsetree.pattern;
+  value patt: patt -> Parsetree.pattern;
+  value expr:  expr -> Parsetree.expression;
   value sig_item : sig_item -> Parsetree.signature;
   value str_item : str_item -> Parsetree.structure;
   value phrase : str_item -> Parsetree.toplevel_phrase;

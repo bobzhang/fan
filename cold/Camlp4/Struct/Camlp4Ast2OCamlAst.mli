@@ -5,6 +5,8 @@ module Make :
 
    val patt : (patt -> Parsetree.pattern)
 
+   val expr : (expr -> Parsetree.expression)
+
    val sig_item : (sig_item -> Parsetree.signature)
 
    val str_item : (str_item -> Parsetree.structure)

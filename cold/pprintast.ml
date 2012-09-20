@@ -2193,7 +2193,9 @@ let toplevel_phrase ppf x =
   fprintf ppf ";;" ;
   pp_print_newline ppf ();;
 
-let print_structure : Format.formatter ->
+let print_structure: Format.formatter ->
   Parsetree.structure -> unit = structure
 let print_signature : Format.formatter ->
   Parsetree.signature -> unit = signature
+let print_expression: Format.formatter ->
+  Parsetree.expression -> unit = expression

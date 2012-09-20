@@ -411,6 +411,7 @@
    #+END_SRC
 
 **** grammar
+
      #+BEGIN_SRC ocaml
        expr: AFTER "top"
          [ [ "EXTEND"; e = extend_body; "END" -> e
@@ -476,7 +477,128 @@
          [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
              {label = lab; assoc = ass; rules = rules} (* (Ast.expr, Ast.patt) level *) ]];
        assoc:
-         [ [ UIDENT "LEFTA" -> <:expr< Camlp4.Sig.Grammar.LeftA >> ]];
+         [ [ UIDENT "LEFTA" -> <:expr< Camlp4.Sig.Grammar.LeftA >>
+           | UIDENT "RIGHTA" -> <:expr< Camlp4.Sig.Grammar.RightA >>
+           | UIDENT "NONA"  -> <:expr< Camlp4.Sig.Grammar.NonA >>
+         ] ];
+       
+       rule_list:
+         [ ["["; "]" -> []
+           | "["; rules = LIST1 rule SEP "|"; "]" ->
+              retype_rule_list_without_patterns _loc rules
+         ]];
+       
+       rule:
+         [ [ ps1 = LIST0 psymbol SEP semi_sep; "->"; act = expr ->
+             {prod = psl; action = Some act }
+           | psl = LIST0 psymbol SEP semi_sep -> (* none action allowed actually *)
+             {prod = psl; action = None} (* (Ast.expr,Ast.patt) rule *)
+         ]];
+       
+       psymbol:
+         [ [ p = LIDENT; "=" s = symbol ->
+             match s.pattern with
+             [ Some (<:patt<  $uid:u $(tup:<:patt< _ >> ) >>  as p') ->
+               let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
+               let p' = <:patt< ($p' as $lid:p) >> in
+               let descr = u ^ "_" in
+               let text = TXtok _loc match_fun descr in
+               { (s) with pattern =  Some <:patt< $lid:p >> }
+             | i = LIDENT; lev = OPT [UIDENT "LEVEL"; s = STRING -> s] ->
+                let name = mk_name _loc <:ident< $lid:i >> in
+                let text = TXnterm _loc name lev in
+                let styp = STquo _loc i in
+                {used=[i]; text =text; styp=styp; pattern = None }
+             | p = pattern; "="; s = symbol ->
+                match s.pattern with
+                [ Some <:patt< $uid:u $(tup: <:patt< _ >> ) >> ->
+                  mk_tok _loc <:patt< $uid:u $p >> s.styp
+                | _ -> { (s) with pattern = Some p }]
+             | s = symbol -> s
+             ]
+         ]];
+       
+       symbol
+         [ "top" NONA
+            [UIDENT "LIST0"; s = SELF ; sep = OPT [UIDENT "SEP"; t = symbol -> t] ->
+             let () = check_not_tok s in
+             let used = match sep with
+                 [ Some symb -> symb.used @ s.used
+                 | None -> s.used] in
+             let styp = STapp _loc (STlid _loc "list") s.styp in
+             let text = slist _loc False sep s in 
+             {used=s.used; text = text; styp=s.styp; pattern = None}
+            | UIDENT "LIST1"; s=SELF; sep = OPT [UIDENT "SEP"; t=symbol -> t] ->
+               let () = check_not_tok s in
+               let used = match sep with
+                   [ Some symb -> symb.used @ s.used
+                   | None -> s.used ] in
+               let styp = STapp _loc (STlid _loc "list") s.styp in
+               let text = slist _loc True sep in
+               {used=s.used; text = text; styp=s.styp; pattern = None}
+            | UIDENT "TRY"; s = SELF ->
+               let text = TXtry _loc s.text in
+               {used=s.used; text = text; styp=s.styp; pattern = None} ]
+            
+          | [  UIDENT "SELF" ->
+               {used=[]; text = TXnext _loc; styp = STself _loc "SELF"; pattern = None }
+            |  UIDENT "NEXT" ->
+               {used= []; text = TXnext _loc; styp = STself _loc "NEXT"; pattern = None}
+       
+            | "[";  r1 = LIST0 rule SEP "|"; "]" ->
+               let r1 = retype_rule_list_without_patterns _loc r1 in
+               let t = new_type_var () in
+               {used = used_of_rule_list rl;
+                text = TXrules _loc (srules _loc t rl "");
+                styp = STquo _loc t;
+                pattern = None
+               }
+       
+            | "`"; p=patt -> mk_tok _loc p (STtok _loc)
+       
+            | x = UIDENT -> mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >> ) >>
+            | x = UIDENT; s=STRING -> mk_tok _loc <:patt< $uid:x $str:x >> (STtok _loc)
+       
+            (* A $v *)                                                                 
+            | x = UIDENT; `ANTIQUOT "" s ->
+               let e = AntiquotSyntax.parse_expr _loc s in
+               let match_fun = <:expr< fun [$uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in
+               let descr = "$" ^ x ^ " " ^ s in
+               let text = TXtok _loc match_fun descr in
+               let p = <:patt< $uid:x $(tup:<:patt< _ >> ) in
+               {used=[]; text=text;styp=STtok _loc; pattern=Some p}
+            | s = STRING -> { used=[]; text= TXkwd _loc s ; styp= STtok _loc ; pattern = None }
+            | i = UIDENT; "."; il = qualid ;  lev = OPT [UIDENT "LEVEL"; s=STRING -> s] ->
+               let n = mk_name _loc <:ident< $uid:i.$il >> in
+               {used=[n.tvar]; text = TXnterm _loc n lev; styp = STquo _loc n.tvar; pattern = None }
+                 
+            | n = name; lev = OPT [UIDENT "LEVEL"; s=STRING -> s] ->
+               {used = [n.tvar]; text = TXnterm _loc n lev; styp = STquo _loc n.tvar; pattern  = None}
+       
+            | "("; s_t = SELF; ")" -> s_t ]
+            ];  (* symbol is the key to understand *)
+       
+       pattern:
+         [ [ i=LIDENT -> <:patt< $lid:i >>
+           | "_" -> <:patt< _ >>
+           | "("; p=pattern; ")" -> <:patt< $p >>
+           | "("; p1=pattern; ","; p2= comma_patt; ")" -> <:patt< ($p1,$p2) >>                                
+           | p = pattern -> p ]];
+       
+       comma_patt:
+         [ [ p1=SELF; ","; p2=SELF -> <:patt< $p1,$p2 >>
+           | p = pattern -> p 
+         ]];
+       
+       name:
+         [[ il = qualid -> mk_name _loc il ]];
+       
+       string:
+         [[ s = STRING -> <:expr< $str:s >>
+          | `ANTIQUOT "" s -> AntiquotSyntax.parse_expr _loc s ]];
+       
+       semi_sep:
+         [[ ";" -> ()]];
      #+END_SRC
 ** TODO Register mechanism
 

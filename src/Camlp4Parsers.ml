@@ -102,14 +102,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   module MetaLoc = Ast.Meta.MetaGhostLoc;
   module MetaAst = Ast.Meta.Make MetaLoc;
-  (* module PP = Camlp4.Printers.OCaml.Make Syntax; *)
-  (* value pp = new PP.printer ~comments:False (); *)
-  module Ast2pt = Camlp4.Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast;
   value string_of_patt patt =
     let buf = Buffer.create 42 in
     let () =
       Format.bprintf buf "%a@?"
-        (fun fmt p -> Pprintast.pattern fmt (Ast2pt.patt p)) patt in
+        (fun fmt p -> Pprintast.pattern fmt (Syntax.Ast2pt.patt p)) patt in
     (* let () = Format.bprintf buf "%a@?" pp#patt patt in *)
     let str = Buffer.contents buf in
     if str = "" then assert False else str;

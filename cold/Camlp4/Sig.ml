@@ -1926,297 +1926,434 @@ module type Camlp4Ast =
                                                                  'self_type)
                                                              end
 
-                                                             val map_expr :
-                                                              ((expr -> expr)
-                                                               -> map)
+                                                             class clean_ast :
+                                                              object ('c)
+                                                               method binding :
+                                                                (binding ->
+                                                                 binding)
+                                                               method class_expr :
+                                                                (class_expr
+                                                                 ->
+                                                                 class_expr)
+                                                               method class_sig_item :
+                                                                (class_sig_item
+                                                                 ->
+                                                                 class_sig_item)
+                                                               method class_str_item :
+                                                                (class_str_item
+                                                                 ->
+                                                                 class_str_item)
+                                                               method class_type :
+                                                                (class_type
+                                                                 ->
+                                                                 class_type)
+                                                               method ctyp :
+                                                                (ctyp ->
+                                                                 ctyp)
+                                                               method direction_flag :
+                                                                (direction_flag
+                                                                 ->
+                                                                 direction_flag)
+                                                               method expr :
+                                                                (expr ->
+                                                                 expr)
+                                                               method ident :
+                                                                (ident ->
+                                                                 ident)
+                                                               method list :
+                                                                (('c ->
+                                                                  ('a -> 'b))
+                                                                 ->
+                                                                 ('a list ->
+                                                                  'b list))
+                                                               method loc :
+                                                                (loc -> loc)
+                                                               method match_case :
+                                                                (match_case
+                                                                 ->
+                                                                 match_case)
+                                                               method meta_bool :
+                                                                (meta_bool ->
+                                                                 meta_bool)
+                                                               method meta_list :
+                                                                (('c ->
+                                                                  ('a -> 'b))
+                                                                 ->
+                                                                 ('a meta_list
+                                                                  ->
+                                                                  'b meta_list))
+                                                               method meta_option :
+                                                                (('c ->
+                                                                  ('a -> 'b))
+                                                                 ->
+                                                                 ('a meta_option
+                                                                  ->
+                                                                  'b meta_option))
+                                                               method module_binding :
+                                                                (module_binding
+                                                                 ->
+                                                                 module_binding)
+                                                               method module_expr :
+                                                                (module_expr
+                                                                 ->
+                                                                 module_expr)
+                                                               method module_type :
+                                                                (module_type
+                                                                 ->
+                                                                 module_type)
+                                                               method mutable_flag :
+                                                                (mutable_flag
+                                                                 ->
+                                                                 mutable_flag)
+                                                               method override_flag :
+                                                                (override_flag
+                                                                 ->
+                                                                 override_flag)
+                                                               method patt :
+                                                                (patt ->
+                                                                 patt)
+                                                               method private_flag :
+                                                                (private_flag
+                                                                 ->
+                                                                 private_flag)
+                                                               method rec_binding :
+                                                                (rec_binding
+                                                                 ->
+                                                                 rec_binding)
+                                                               method rec_flag :
+                                                                (rec_flag ->
+                                                                 rec_flag)
+                                                               method row_var_flag :
+                                                                (row_var_flag
+                                                                 ->
+                                                                 row_var_flag)
+                                                               method sig_item :
+                                                                (sig_item ->
+                                                                 sig_item)
+                                                               method str_item :
+                                                                (str_item ->
+                                                                 str_item)
+                                                               method string :
+                                                                (string ->
+                                                                 string)
+                                                               method unknown :
+                                                                ('a -> 'a)
+                                                               method virtual_flag :
+                                                                (virtual_flag
+                                                                 ->
+                                                                 virtual_flag)
+                                                               method with_constr :
+                                                                (with_constr
+                                                                 ->
+                                                                 with_constr)
+                                                              end
 
-                                                             val map_patt :
-                                                              ((patt -> patt)
-                                                               -> map)
+                                                              val map_expr :
+                                                               ((expr ->
+                                                                 expr) ->
+                                                                map)
 
-                                                             val map_ctyp :
-                                                              ((ctyp -> ctyp)
-                                                               -> map)
+                                                              val map_patt :
+                                                               ((patt ->
+                                                                 patt) ->
+                                                                map)
 
-                                                             val map_str_item :
-                                                              ((str_item ->
-                                                                str_item) ->
-                                                               map)
+                                                              val map_ctyp :
+                                                               ((ctyp ->
+                                                                 ctyp) ->
+                                                                map)
 
-                                                             val map_sig_item :
-                                                              ((sig_item ->
-                                                                sig_item) ->
-                                                               map)
+                                                              val map_str_item :
+                                                               ((str_item ->
+                                                                 str_item) ->
+                                                                map)
 
-                                                             val map_loc :
-                                                              ((loc -> loc)
-                                                               -> map)
+                                                              val map_sig_item :
+                                                               ((sig_item ->
+                                                                 sig_item) ->
+                                                                map)
 
-                                                             val ident_of_expr :
-                                                              (expr -> ident)
+                                                              val map_loc :
+                                                               ((loc -> loc)
+                                                                -> map)
 
-                                                             val ident_of_patt :
-                                                              (patt -> ident)
+                                                              val ident_of_expr :
+                                                               (expr ->
+                                                                ident)
 
-                                                             val ident_of_ctyp :
-                                                              (ctyp -> ident)
+                                                              val ident_of_patt :
+                                                               (patt ->
+                                                                ident)
 
-                                                             val biAnd_of_list :
-                                                              (binding list
-                                                               -> binding)
+                                                              val ident_of_ctyp :
+                                                               (ctyp ->
+                                                                ident)
 
-                                                             val rbSem_of_list :
-                                                              (rec_binding list
-                                                               ->
-                                                               rec_binding)
-
-                                                             val paSem_of_list :
-                                                              (patt list ->
-                                                               patt)
-
-                                                             val paCom_of_list :
-                                                              (patt list ->
-                                                               patt)
-
-                                                             val tyOr_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val tyAnd_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val tyAmp_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val tySem_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val tyCom_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val tySta_of_list :
-                                                              (ctyp list ->
-                                                               ctyp)
-
-                                                             val stSem_of_list :
-                                                              (str_item list
-                                                               -> str_item)
-
-                                                             val sgSem_of_list :
-                                                              (sig_item list
-                                                               -> sig_item)
-
-                                                             val crSem_of_list :
-                                                              (class_str_item list
-                                                               ->
-                                                               class_str_item)
-
-                                                             val cgSem_of_list :
-                                                              (class_sig_item list
-                                                               ->
-                                                               class_sig_item)
-
-                                                             val ctAnd_of_list :
-                                                              (class_type list
-                                                               -> class_type)
-
-                                                             val ceAnd_of_list :
-                                                              (class_expr list
-                                                               -> class_expr)
-
-                                                             val wcAnd_of_list :
-                                                              (with_constr list
-                                                               ->
-                                                               with_constr)
-
-                                                             val meApp_of_list :
-                                                              (module_expr list
-                                                               ->
-                                                               module_expr)
-
-                                                             val mbAnd_of_list :
-                                                              (module_binding list
-                                                               ->
-                                                               module_binding)
-
-                                                             val mcOr_of_list :
-                                                              (match_case list
-                                                               -> match_case)
-
-                                                             val idAcc_of_list :
-                                                              (ident list ->
-                                                               ident)
-
-                                                             val idApp_of_list :
-                                                              (ident list ->
-                                                               ident)
-
-                                                             val exSem_of_list :
-                                                              (expr list ->
-                                                               expr)
-
-                                                             val exCom_of_list :
-                                                              (expr list ->
-                                                               expr)
-
-                                                             val list_of_ctyp :
-                                                              (ctyp ->
-                                                               (ctyp list ->
-                                                                ctyp list))
-
-                                                             val list_of_binding :
-                                                              (binding ->
+                                                              val biAnd_of_list :
                                                                (binding list
-                                                                ->
-                                                                binding list))
+                                                                -> binding)
 
-                                                             val list_of_rec_binding :
-                                                              (rec_binding ->
+                                                              val rbSem_of_list :
                                                                (rec_binding list
                                                                 ->
-                                                                rec_binding list))
+                                                                rec_binding)
 
-                                                             val list_of_with_constr :
-                                                              (with_constr ->
-                                                               (with_constr list
-                                                                ->
-                                                                with_constr list))
-
-                                                             val list_of_patt :
-                                                              (patt ->
+                                                              val paSem_of_list :
                                                                (patt list ->
-                                                                patt list))
+                                                                patt)
 
-                                                             val list_of_expr :
-                                                              (expr ->
-                                                               (expr list ->
-                                                                expr list))
+                                                              val paCom_of_list :
+                                                               (patt list ->
+                                                                patt)
 
-                                                             val list_of_str_item :
-                                                              (str_item ->
+                                                              val tyOr_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val tyAnd_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val tyAmp_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val tySem_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val tyCom_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val tySta_of_list :
+                                                               (ctyp list ->
+                                                                ctyp)
+
+                                                              val stSem_of_list :
                                                                (str_item list
-                                                                ->
-                                                                str_item list))
+                                                                -> str_item)
 
-                                                             val list_of_sig_item :
-                                                              (sig_item ->
+                                                              val sgSem_of_list :
                                                                (sig_item list
-                                                                ->
-                                                                sig_item list))
+                                                                -> sig_item)
 
-                                                             val list_of_class_sig_item :
-                                                              (class_sig_item
-                                                               ->
-                                                               (class_sig_item list
-                                                                ->
-                                                                class_sig_item list))
-
-                                                             val list_of_class_str_item :
-                                                              (class_str_item
-                                                               ->
+                                                              val crSem_of_list :
                                                                (class_str_item list
                                                                 ->
-                                                                class_str_item list))
+                                                                class_str_item)
 
-                                                             val list_of_class_type :
-                                                              (class_type ->
+                                                              val cgSem_of_list :
+                                                               (class_sig_item list
+                                                                ->
+                                                                class_sig_item)
+
+                                                              val ctAnd_of_list :
                                                                (class_type list
                                                                 ->
-                                                                class_type list))
+                                                                class_type)
 
-                                                             val list_of_class_expr :
-                                                              (class_expr ->
+                                                              val ceAnd_of_list :
                                                                (class_expr list
                                                                 ->
-                                                                class_expr list))
+                                                                class_expr)
 
-                                                             val list_of_module_expr :
-                                                              (module_expr ->
+                                                              val wcAnd_of_list :
+                                                               (with_constr list
+                                                                ->
+                                                                with_constr)
+
+                                                              val meApp_of_list :
                                                                (module_expr list
                                                                 ->
-                                                                module_expr list))
+                                                                module_expr)
 
-                                                             val list_of_module_binding :
-                                                              (module_binding
-                                                               ->
+                                                              val mbAnd_of_list :
                                                                (module_binding list
                                                                 ->
-                                                                module_binding list))
+                                                                module_binding)
 
-                                                             val list_of_match_case :
-                                                              (match_case ->
+                                                              val mcOr_of_list :
                                                                (match_case list
                                                                 ->
-                                                                match_case list))
+                                                                match_case)
 
-                                                             val list_of_ident :
-                                                              (ident ->
+                                                              val idAcc_of_list :
                                                                (ident list ->
-                                                                ident list))
+                                                                ident)
 
-                                                             val safe_string_escaped :
-                                                              (string ->
-                                                               string)
+                                                              val idApp_of_list :
+                                                               (ident list ->
+                                                                ident)
 
-                                                             val is_irrefut_patt :
-                                                              (patt -> bool)
+                                                              val exSem_of_list :
+                                                               (expr list ->
+                                                                expr)
 
-                                                             val is_constructor :
-                                                              (ident -> bool)
+                                                              val exCom_of_list :
+                                                               (expr list ->
+                                                                expr)
 
-                                                             val is_patt_constructor :
-                                                              (patt -> bool)
+                                                              val list_of_ctyp :
+                                                               (ctyp ->
+                                                                (ctyp list ->
+                                                                 ctyp list))
 
-                                                             val is_expr_constructor :
-                                                              (expr -> bool)
+                                                              val list_of_binding :
+                                                               (binding ->
+                                                                (binding list
+                                                                 ->
+                                                                 binding list))
 
-                                                             val ty_of_stl :
-                                                              ((Loc.t *
-                                                                string *
-                                                                ctyp list) ->
-                                                               ctyp)
+                                                              val list_of_rec_binding :
+                                                               (rec_binding
+                                                                ->
+                                                                (rec_binding list
+                                                                 ->
+                                                                 rec_binding list))
 
-                                                             val ty_of_sbt :
-                                                              ((Loc.t *
-                                                                string *
-                                                                bool * 
-                                                                ctyp) ->
-                                                               ctyp)
+                                                              val list_of_with_constr :
+                                                               (with_constr
+                                                                ->
+                                                                (with_constr list
+                                                                 ->
+                                                                 with_constr list))
 
-                                                             val bi_of_pe :
-                                                              ((patt * expr)
-                                                               -> binding)
+                                                              val list_of_patt :
+                                                               (patt ->
+                                                                (patt list ->
+                                                                 patt list))
 
-                                                             val pel_of_binding :
-                                                              (binding ->
-                                                               (patt * expr) list)
+                                                              val list_of_expr :
+                                                               (expr ->
+                                                                (expr list ->
+                                                                 expr list))
 
-                                                             val binding_of_pel :
-                                                              ((patt * expr) list
-                                                               -> binding)
+                                                              val list_of_str_item :
+                                                               (str_item ->
+                                                                (str_item list
+                                                                 ->
+                                                                 str_item list))
 
-                                                             val sum_type_of_list :
-                                                              ((Loc.t *
-                                                                string *
-                                                                ctyp list) list
-                                                               -> ctyp)
+                                                              val list_of_sig_item :
+                                                               (sig_item ->
+                                                                (sig_item list
+                                                                 ->
+                                                                 sig_item list))
 
-                                                             val record_type_of_list :
-                                                              ((Loc.t *
-                                                                string *
-                                                                bool * 
-                                                                ctyp) list ->
-                                                               ctyp)
+                                                              val list_of_class_sig_item :
+                                                               (class_sig_item
+                                                                ->
+                                                                (class_sig_item list
+                                                                 ->
+                                                                 class_sig_item list))
 
-                                                            end
+                                                              val list_of_class_str_item :
+                                                               (class_str_item
+                                                                ->
+                                                                (class_str_item list
+                                                                 ->
+                                                                 class_str_item list))
+
+                                                              val list_of_class_type :
+                                                               (class_type ->
+                                                                (class_type list
+                                                                 ->
+                                                                 class_type list))
+
+                                                              val list_of_class_expr :
+                                                               (class_expr ->
+                                                                (class_expr list
+                                                                 ->
+                                                                 class_expr list))
+
+                                                              val list_of_module_expr :
+                                                               (module_expr
+                                                                ->
+                                                                (module_expr list
+                                                                 ->
+                                                                 module_expr list))
+
+                                                              val list_of_module_binding :
+                                                               (module_binding
+                                                                ->
+                                                                (module_binding list
+                                                                 ->
+                                                                 module_binding list))
+
+                                                              val list_of_match_case :
+                                                               (match_case ->
+                                                                (match_case list
+                                                                 ->
+                                                                 match_case list))
+
+                                                              val list_of_ident :
+                                                               (ident ->
+                                                                (ident list
+                                                                 ->
+                                                                 ident list))
+
+                                                              val safe_string_escaped :
+                                                               (string ->
+                                                                string)
+
+                                                              val is_irrefut_patt :
+                                                               (patt -> bool)
+
+                                                              val is_constructor :
+                                                               (ident ->
+                                                                bool)
+
+                                                              val is_patt_constructor :
+                                                               (patt -> bool)
+
+                                                              val is_expr_constructor :
+                                                               (expr -> bool)
+
+                                                              val ty_of_stl :
+                                                               ((Loc.t *
+                                                                 string *
+                                                                 ctyp list)
+                                                                -> ctyp)
+
+                                                              val ty_of_sbt :
+                                                               ((Loc.t *
+                                                                 string *
+                                                                 bool * 
+                                                                 ctyp) ->
+                                                                ctyp)
+
+                                                              val bi_of_pe :
+                                                               ((patt * expr)
+                                                                -> binding)
+
+                                                              val pel_of_binding :
+                                                               (binding ->
+                                                                (patt * expr) list)
+
+                                                              val binding_of_pel :
+                                                               ((patt * expr) list
+                                                                -> binding)
+
+                                                              val sum_type_of_list :
+                                                               ((Loc.t *
+                                                                 string *
+                                                                 ctyp list) list
+                                                                -> ctyp)
+
+                                                              val record_type_of_list :
+                                                               ((Loc.t *
+                                                                 string *
+                                                                 bool * 
+                                                                 ctyp) list
+                                                                -> ctyp)
+
+                                                             end
 
 module Camlp4AstToAst =
-                                                                  functor (M : Camlp4Ast) ->
-                                                                   (M :
+                                                                   functor (M : Camlp4Ast) ->
+                                                                    (
+                                                                    M :
                                                                     (Ast with
                                                                     type
                                                                      loc =
@@ -2385,978 +2522,1003 @@ module Camlp4AstToAst =
                                                                     M.override_flag))
 
 
-                                                          module MakeCamlp4Ast =
-                                                           functor (Loc : Type) ->
-                                                            struct
-                                                             type loc = Loc.t
-                                                             and meta_bool =
-                                                                 BTrue
-                                                               | BFalse
-                                                               | BAnt of
-                                                                  string
-                                                             and rec_flag =
-                                                                 ReRecursive
-                                                               | ReNil
-                                                               | ReAnt of
-                                                                  string
-                                                             and direction_flag =
-                                                                 DiTo
-                                                               | DiDownto
-                                                               | DiAnt of
-                                                                  string
-                                                             and mutable_flag =
-                                                                 MuMutable
-                                                               | MuNil
-                                                               | MuAnt of
-                                                                  string
-                                                             and private_flag =
-                                                                 PrPrivate
-                                                               | PrNil
-                                                               | PrAnt of
-                                                                  string
-                                                             and virtual_flag =
-                                                                 ViVirtual
-                                                               | ViNil
-                                                               | ViAnt of
-                                                                  string
-                                                             and override_flag =
-                                                                 OvOverride
-                                                               | OvNil
-                                                               | OvAnt of
-                                                                  string
-                                                             and row_var_flag =
-                                                                 RvRowVar
-                                                               | RvNil
-                                                               | RvAnt of
-                                                                  string
-                                                             and 'a meta_option =
-                                                                 ONone
-                                                               | OSome of 'a
-                                                               | OAnt of
-                                                                  string
-                                                             and 'a meta_list =
-                                                                 LNil
-                                                               | LCons of
-                                                                  'a *
-                                                                  'a meta_list
-                                                               | LAnt of
-                                                                  string
-                                                             and ident =
-                                                                 IdAcc of
-                                                                  loc *
-                                                                  ident *
-                                                                  ident
-                                                               | IdApp of
-                                                                  loc *
-                                                                  ident *
-                                                                  ident
-                                                               | IdLid of
-                                                                  loc *
-                                                                  string
-                                                               | IdUid of
-                                                                  loc *
-                                                                  string
-                                                               | IdAnt of
-                                                                  loc *
-                                                                  string
-                                                             and ctyp =
-                                                                 TyNil of loc
-                                                               | TyAli of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyAny of loc
-                                                               | TyApp of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyArr of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyCls of
-                                                                  loc * 
-                                                                  ident
-                                                               | TyLab of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp
-                                                               | TyId of
-                                                                  loc * 
-                                                                  ident
-                                                               | TyMan of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyDcl of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp list *
-                                                                  ctyp *
-                                                                  (ctyp *
-                                                                   ctyp) list
-                                                               | TyObj of
-                                                                  loc *
-                                                                  ctyp *
-                                                                  row_var_flag
-                                                               | TyOlb of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp
-                                                               | TyPol of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyTypePol of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyQuo of
-                                                                  loc *
-                                                                  string
-                                                               | TyQuP of
-                                                                  loc *
-                                                                  string
-                                                               | TyQuM of
-                                                                  loc *
-                                                                  string
-                                                               | TyAnP of loc
-                                                               | TyAnM of loc
-                                                               | TyVrn of
-                                                                  loc *
-                                                                  string
-                                                               | TyRec of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyCol of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TySem of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyCom of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TySum of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyOf of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyAnd of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyOr of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyPrv of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyMut of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyTup of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TySta of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyVrnEq of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyVrnSup of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyVrnInf of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | TyVrnInfSup
-                                                                  of 
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyAmp of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyOfAmp of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | TyPkg of
-                                                                  loc *
-                                                                  module_type
-                                                               | TyAnt of
-                                                                  loc *
-                                                                  string
-                                                             and patt =
-                                                                 PaNil of loc
-                                                               | PaId of
-                                                                  loc * 
-                                                                  ident
-                                                               | PaAli of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaAnt of
-                                                                  loc *
-                                                                  string
-                                                               | PaAny of loc
-                                                               | PaApp of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaArr of
-                                                                  loc * 
-                                                                  patt
-                                                               | PaCom of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaSem of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaChr of
-                                                                  loc *
-                                                                  string
-                                                               | PaInt of
-                                                                  loc *
-                                                                  string
-                                                               | PaInt32 of
-                                                                  loc *
-                                                                  string
-                                                               | PaInt64 of
-                                                                  loc *
-                                                                  string
-                                                               | PaNativeInt
-                                                                  of 
-                                                                  loc *
-                                                                  string
-                                                               | PaFlo of
-                                                                  loc *
-                                                                  string
-                                                               | PaLab of
-                                                                  loc *
-                                                                  string *
-                                                                  patt
-                                                               | PaOlb of
-                                                                  loc *
-                                                                  string *
-                                                                  patt
-                                                               | PaOlbi of
-                                                                  loc *
-                                                                  string *
-                                                                  patt * 
-                                                                  expr
-                                                               | PaOrp of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaRng of
-                                                                  loc *
-                                                                  patt * 
-                                                                  patt
-                                                               | PaRec of
-                                                                  loc * 
-                                                                  patt
-                                                               | PaEq of
-                                                                  loc *
-                                                                  ident *
-                                                                  patt
-                                                               | PaStr of
-                                                                  loc *
-                                                                  string
-                                                               | PaTup of
-                                                                  loc * 
-                                                                  patt
-                                                               | PaTyc of
-                                                                  loc *
-                                                                  patt * 
-                                                                  ctyp
-                                                               | PaTyp of
-                                                                  loc * 
-                                                                  ident
-                                                               | PaVrn of
-                                                                  loc *
-                                                                  string
-                                                               | PaLaz of
-                                                                  loc * 
-                                                                  patt
-                                                               | PaMod of
-                                                                  loc *
-                                                                  string
-                                                             and expr =
-                                                                 ExNil of loc
-                                                               | ExId of
-                                                                  loc * 
-                                                                  ident
-                                                               | ExAcc of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExAnt of
-                                                                  loc *
-                                                                  string
-                                                               | ExApp of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExAre of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExArr of
-                                                                  loc * 
-                                                                  expr
-                                                               | ExSem of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExAsf of loc
-                                                               | ExAsr of
-                                                                  loc * 
-                                                                  expr
-                                                               | ExAss of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExChr of
-                                                                  loc *
-                                                                  string
-                                                               | ExCoe of
-                                                                  loc *
-                                                                  expr *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | ExFlo of
-                                                                  loc *
-                                                                  string
-                                                               | ExFor of
-                                                                  loc *
-                                                                  string *
-                                                                  expr *
-                                                                  expr *
-                                                                  direction_flag *
-                                                                  expr
-                                                               | ExFun of
-                                                                  loc *
-                                                                  match_case
-                                                               | ExIfe of
-                                                                  loc *
-                                                                  expr *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExInt of
-                                                                  loc *
-                                                                  string
-                                                               | ExInt32 of
-                                                                  loc *
-                                                                  string
-                                                               | ExInt64 of
-                                                                  loc *
-                                                                  string
-                                                               | ExNativeInt
-                                                                  of 
-                                                                  loc *
-                                                                  string
-                                                               | ExLab of
-                                                                  loc *
-                                                                  string *
-                                                                  expr
-                                                               | ExLaz of
-                                                                  loc * 
-                                                                  expr
-                                                               | ExLet of
-                                                                  loc *
-                                                                  rec_flag *
-                                                                  binding *
-                                                                  expr
-                                                               | ExLmd of
-                                                                  loc *
-                                                                  string *
-                                                                  module_expr *
-                                                                  expr
-                                                               | ExMat of
-                                                                  loc *
-                                                                  expr *
-                                                                  match_case
-                                                               | ExNew of
-                                                                  loc * 
-                                                                  ident
-                                                               | ExObj of
-                                                                  loc *
-                                                                  patt *
-                                                                  class_str_item
-                                                               | ExOlb of
-                                                                  loc *
-                                                                  string *
-                                                                  expr
-                                                               | ExOvr of
-                                                                  loc *
-                                                                  rec_binding
-                                                               | ExRec of
-                                                                  loc *
-                                                                  rec_binding *
-                                                                  expr
-                                                               | ExSeq of
-                                                                  loc * 
-                                                                  expr
-                                                               | ExSnd of
-                                                                  loc *
-                                                                  expr *
-                                                                  string
-                                                               | ExSte of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExStr of
-                                                                  loc *
-                                                                  string
-                                                               | ExTry of
-                                                                  loc *
-                                                                  expr *
-                                                                  match_case
-                                                               | ExTup of
-                                                                  loc * 
-                                                                  expr
-                                                               | ExCom of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExTyc of
-                                                                  loc *
-                                                                  expr * 
-                                                                  ctyp
-                                                               | ExVrn of
-                                                                  loc *
-                                                                  string
-                                                               | ExWhi of
-                                                                  loc *
-                                                                  expr * 
-                                                                  expr
-                                                               | ExOpI of
-                                                                  loc *
-                                                                  ident *
-                                                                  expr
-                                                               | ExFUN of
-                                                                  loc *
-                                                                  string *
-                                                                  expr
-                                                               | ExPkg of
-                                                                  loc *
-                                                                  module_expr
-                                                             and module_type =
-                                                                 MtNil of loc
-                                                               | MtId of
-                                                                  loc * 
-                                                                  ident
-                                                               | MtFun of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type *
-                                                                  module_type
-                                                               | MtQuo of
-                                                                  loc *
-                                                                  string
-                                                               | MtSig of
-                                                                  loc *
-                                                                  sig_item
-                                                               | MtWit of
-                                                                  loc *
-                                                                  module_type *
-                                                                  with_constr
-                                                               | MtOf of
-                                                                  loc *
-                                                                  module_expr
-                                                               | MtAnt of
-                                                                  loc *
-                                                                  string
-                                                             and sig_item =
-                                                                 SgNil of loc
-                                                               | SgCls of
-                                                                  loc *
-                                                                  class_type
-                                                               | SgClt of
-                                                                  loc *
-                                                                  class_type
-                                                               | SgSem of
-                                                                  loc *
-                                                                  sig_item *
-                                                                  sig_item
-                                                               | SgDir of
-                                                                  loc *
-                                                                  string *
-                                                                  expr
-                                                               | SgExc of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | SgExt of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp *
-                                                                  string meta_list
-                                                               | SgInc of
-                                                                  loc *
-                                                                  module_type
-                                                               | SgMod of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type
-                                                               | SgRecMod of
-                                                                  loc *
-                                                                  module_binding
-                                                               | SgMty of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type
-                                                               | SgOpn of
-                                                                  loc * 
-                                                                  ident
-                                                               | SgTyp of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | SgVal of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp
-                                                               | SgAnt of
-                                                                  loc *
-                                                                  string
-                                                             and with_constr =
-                                                                 WcNil of loc
-                                                               | WcTyp of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | WcMod of
-                                                                  loc *
-                                                                  ident *
-                                                                  ident
-                                                               | WcTyS of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | WcMoS of
-                                                                  loc *
-                                                                  ident *
-                                                                  ident
-                                                               | WcAnd of
-                                                                  loc *
-                                                                  with_constr *
-                                                                  with_constr
-                                                               | WcAnt of
-                                                                  loc *
-                                                                  string
-                                                             and binding =
-                                                                 BiNil of loc
-                                                               | BiAnd of
-                                                                  loc *
-                                                                  binding *
-                                                                  binding
-                                                               | BiEq of
-                                                                  loc *
-                                                                  patt * 
-                                                                  expr
-                                                               | BiAnt of
-                                                                  loc *
-                                                                  string
-                                                             and rec_binding =
-                                                                 RbNil of loc
-                                                               | RbSem of
-                                                                  loc *
-                                                                  rec_binding *
-                                                                  rec_binding
-                                                               | RbEq of
-                                                                  loc *
-                                                                  ident *
-                                                                  expr
-                                                               | RbAnt of
-                                                                  loc *
-                                                                  string
-                                                             and module_binding =
-                                                                 MbNil of loc
-                                                               | MbAnd of
-                                                                  loc *
-                                                                  module_binding *
-                                                                  module_binding
-                                                               | MbColEq of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type *
-                                                                  module_expr
-                                                               | MbCol of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type
-                                                               | MbAnt of
-                                                                  loc *
-                                                                  string
-                                                             and match_case =
-                                                                 McNil of loc
-                                                               | McOr of
-                                                                  loc *
-                                                                  match_case *
-                                                                  match_case
-                                                               | McArr of
-                                                                  loc *
-                                                                  patt *
-                                                                  expr * 
-                                                                  expr
-                                                               | McAnt of
-                                                                  loc *
-                                                                  string
-                                                             and module_expr =
-                                                                 MeNil of loc
-                                                               | MeId of
-                                                                  loc * 
-                                                                  ident
-                                                               | MeApp of
-                                                                  loc *
-                                                                  module_expr *
-                                                                  module_expr
-                                                               | MeFun of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type *
-                                                                  module_expr
-                                                               | MeStr of
-                                                                  loc *
-                                                                  str_item
-                                                               | MeTyc of
-                                                                  loc *
-                                                                  module_expr *
-                                                                  module_type
-                                                               | MePkg of
-                                                                  loc * 
-                                                                  expr
-                                                               | MeAnt of
-                                                                  loc *
-                                                                  string
-                                                             and str_item =
-                                                                 StNil of loc
-                                                               | StCls of
-                                                                  loc *
-                                                                  class_expr
-                                                               | StClt of
-                                                                  loc *
-                                                                  class_type
-                                                               | StSem of
-                                                                  loc *
-                                                                  str_item *
-                                                                  str_item
-                                                               | StDir of
-                                                                  loc *
-                                                                  string *
-                                                                  expr
-                                                               | StExc of
-                                                                  loc *
-                                                                  ctyp *
-                                                                  ident meta_option
-                                                               | StExp of
-                                                                  loc * 
-                                                                  expr
-                                                               | StExt of
-                                                                  loc *
-                                                                  string *
-                                                                  ctyp *
-                                                                  string meta_list
-                                                               | StInc of
-                                                                  loc *
-                                                                  module_expr
-                                                               | StMod of
-                                                                  loc *
-                                                                  string *
-                                                                  module_expr
-                                                               | StRecMod of
-                                                                  loc *
-                                                                  module_binding
-                                                               | StMty of
-                                                                  loc *
-                                                                  string *
-                                                                  module_type
-                                                               | StOpn of
-                                                                  loc * 
-                                                                  ident
-                                                               | StTyp of
-                                                                  loc * 
-                                                                  ctyp
-                                                               | StVal of
-                                                                  loc *
-                                                                  rec_flag *
-                                                                  binding
-                                                               | StAnt of
-                                                                  loc *
-                                                                  string
-                                                             and class_type =
-                                                                 CtNil of loc
-                                                               | CtCon of
-                                                                  loc *
-                                                                  virtual_flag *
-                                                                  ident *
-                                                                  ctyp
-                                                               | CtFun of
-                                                                  loc *
-                                                                  ctyp *
-                                                                  class_type
-                                                               | CtSig of
-                                                                  loc *
-                                                                  ctyp *
-                                                                  class_sig_item
-                                                               | CtAnd of
-                                                                  loc *
-                                                                  class_type *
-                                                                  class_type
-                                                               | CtCol of
-                                                                  loc *
-                                                                  class_type *
-                                                                  class_type
-                                                               | CtEq of
-                                                                  loc *
-                                                                  class_type *
-                                                                  class_type
-                                                               | CtAnt of
-                                                                  loc *
-                                                                  string
-                                                             and class_sig_item =
-                                                                 CgNil of loc
-                                                               | CgCtr of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | CgSem of
-                                                                  loc *
-                                                                  class_sig_item *
-                                                                  class_sig_item
-                                                               | CgInh of
-                                                                  loc *
-                                                                  class_type
-                                                               | CgMth of
-                                                                  loc *
-                                                                  string *
-                                                                  private_flag *
-                                                                  ctyp
-                                                               | CgVal of
-                                                                  loc *
-                                                                  string *
-                                                                  mutable_flag *
-                                                                  virtual_flag *
-                                                                  ctyp
-                                                               | CgVir of
-                                                                  loc *
-                                                                  string *
-                                                                  private_flag *
-                                                                  ctyp
-                                                               | CgAnt of
-                                                                  loc *
-                                                                  string
-                                                             and class_expr =
-                                                                 CeNil of loc
-                                                               | CeApp of
-                                                                  loc *
-                                                                  class_expr *
-                                                                  expr
-                                                               | CeCon of
-                                                                  loc *
-                                                                  virtual_flag *
-                                                                  ident *
-                                                                  ctyp
-                                                               | CeFun of
-                                                                  loc *
-                                                                  patt *
-                                                                  class_expr
-                                                               | CeLet of
-                                                                  loc *
-                                                                  rec_flag *
-                                                                  binding *
-                                                                  class_expr
-                                                               | CeStr of
-                                                                  loc *
-                                                                  patt *
-                                                                  class_str_item
-                                                               | CeTyc of
-                                                                  loc *
-                                                                  class_expr *
-                                                                  class_type
-                                                               | CeAnd of
-                                                                  loc *
-                                                                  class_expr *
-                                                                  class_expr
-                                                               | CeEq of
-                                                                  loc *
-                                                                  class_expr *
-                                                                  class_expr
-                                                               | CeAnt of
-                                                                  loc *
-                                                                  string
-                                                             and class_str_item =
-                                                                 CrNil of loc
-                                                               | CrSem of
-                                                                  loc *
-                                                                  class_str_item *
-                                                                  class_str_item
-                                                               | CrCtr of
-                                                                  loc *
-                                                                  ctyp * 
-                                                                  ctyp
-                                                               | CrInh of
-                                                                  loc *
-                                                                  override_flag *
-                                                                  class_expr *
-                                                                  string
-                                                               | CrIni of
-                                                                  loc * 
-                                                                  expr
-                                                               | CrMth of
-                                                                  loc *
-                                                                  string *
-                                                                  override_flag *
-                                                                  private_flag *
-                                                                  expr * 
-                                                                  ctyp
-                                                               | CrVal of
-                                                                  loc *
-                                                                  string *
-                                                                  override_flag *
-                                                                  mutable_flag *
-                                                                  expr
-                                                               | CrVir of
-                                                                  loc *
-                                                                  string *
-                                                                  private_flag *
-                                                                  ctyp
-                                                               | CrVvr of
-                                                                  loc *
-                                                                  string *
-                                                                  mutable_flag *
-                                                                  ctyp
-                                                               | CrAnt of
-                                                                  loc *
-                                                                  string
+                                                           module MakeCamlp4Ast =
+                                                            functor (Loc : Type) ->
+                                                             struct
+                                                              type loc =
+                                                               Loc.t
+                                                              and meta_bool =
+                                                                  BTrue
+                                                                | BFalse
+                                                                | BAnt of
+                                                                   string
+                                                              and rec_flag =
+                                                                  ReRecursive
+                                                                | ReNil
+                                                                | ReAnt of
+                                                                   string
+                                                              and direction_flag =
+                                                                  DiTo
+                                                                | DiDownto
+                                                                | DiAnt of
+                                                                   string
+                                                              and mutable_flag =
+                                                                  MuMutable
+                                                                | MuNil
+                                                                | MuAnt of
+                                                                   string
+                                                              and private_flag =
+                                                                  PrPrivate
+                                                                | PrNil
+                                                                | PrAnt of
+                                                                   string
+                                                              and virtual_flag =
+                                                                  ViVirtual
+                                                                | ViNil
+                                                                | ViAnt of
+                                                                   string
+                                                              and override_flag =
+                                                                  OvOverride
+                                                                | OvNil
+                                                                | OvAnt of
+                                                                   string
+                                                              and row_var_flag =
+                                                                  RvRowVar
+                                                                | RvNil
+                                                                | RvAnt of
+                                                                   string
+                                                              and 'a meta_option =
+                                                                  ONone
+                                                                | OSome of 'a
+                                                                | OAnt of
+                                                                   string
+                                                              and 'a meta_list =
+                                                                  LNil
+                                                                | LCons of
+                                                                   'a *
+                                                                   'a meta_list
+                                                                | LAnt of
+                                                                   string
+                                                              and ident =
+                                                                  IdAcc of
+                                                                   loc *
+                                                                   ident *
+                                                                   ident
+                                                                | IdApp of
+                                                                   loc *
+                                                                   ident *
+                                                                   ident
+                                                                | IdLid of
+                                                                   loc *
+                                                                   string
+                                                                | IdUid of
+                                                                   loc *
+                                                                   string
+                                                                | IdAnt of
+                                                                   loc *
+                                                                   string
+                                                              and ctyp =
+                                                                  TyNil of
+                                                                   loc
+                                                                | TyAli of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyAny of
+                                                                   loc
+                                                                | TyApp of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyArr of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyCls of
+                                                                   loc *
+                                                                   ident
+                                                                | TyLab of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp
+                                                                | TyId of
+                                                                   loc *
+                                                                   ident
+                                                                | TyMan of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyDcl of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp list *
+                                                                   ctyp *
+                                                                   (ctyp *
+                                                                    ctyp) list
+                                                                | TyObj of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   row_var_flag
+                                                                | TyOlb of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp
+                                                                | TyPol of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyTypePol
+                                                                   of 
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyQuo of
+                                                                   loc *
+                                                                   string
+                                                                | TyQuP of
+                                                                   loc *
+                                                                   string
+                                                                | TyQuM of
+                                                                   loc *
+                                                                   string
+                                                                | TyAnP of
+                                                                   loc
+                                                                | TyAnM of
+                                                                   loc
+                                                                | TyVrn of
+                                                                   loc *
+                                                                   string
+                                                                | TyRec of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyCol of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TySem of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyCom of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TySum of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyOf of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyAnd of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyOr of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyPrv of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyMut of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyTup of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TySta of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyVrnEq of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyVrnSup of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyVrnInf of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | TyVrnInfSup
+                                                                   of 
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyAmp of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyOfAmp of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | TyPkg of
+                                                                   loc *
+                                                                   module_type
+                                                                | TyAnt of
+                                                                   loc *
+                                                                   string
+                                                              and patt =
+                                                                  PaNil of
+                                                                   loc
+                                                                | PaId of
+                                                                   loc *
+                                                                   ident
+                                                                | PaAli of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaAnt of
+                                                                   loc *
+                                                                   string
+                                                                | PaAny of
+                                                                   loc
+                                                                | PaApp of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaArr of
+                                                                   loc * 
+                                                                   patt
+                                                                | PaCom of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaSem of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaChr of
+                                                                   loc *
+                                                                   string
+                                                                | PaInt of
+                                                                   loc *
+                                                                   string
+                                                                | PaInt32 of
+                                                                   loc *
+                                                                   string
+                                                                | PaInt64 of
+                                                                   loc *
+                                                                   string
+                                                                | PaNativeInt
+                                                                   of 
+                                                                   loc *
+                                                                   string
+                                                                | PaFlo of
+                                                                   loc *
+                                                                   string
+                                                                | PaLab of
+                                                                   loc *
+                                                                   string *
+                                                                   patt
+                                                                | PaOlb of
+                                                                   loc *
+                                                                   string *
+                                                                   patt
+                                                                | PaOlbi of
+                                                                   loc *
+                                                                   string *
+                                                                   patt *
+                                                                   expr
+                                                                | PaOrp of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaRng of
+                                                                   loc *
+                                                                   patt *
+                                                                   patt
+                                                                | PaRec of
+                                                                   loc * 
+                                                                   patt
+                                                                | PaEq of
+                                                                   loc *
+                                                                   ident *
+                                                                   patt
+                                                                | PaStr of
+                                                                   loc *
+                                                                   string
+                                                                | PaTup of
+                                                                   loc * 
+                                                                   patt
+                                                                | PaTyc of
+                                                                   loc *
+                                                                   patt *
+                                                                   ctyp
+                                                                | PaTyp of
+                                                                   loc *
+                                                                   ident
+                                                                | PaVrn of
+                                                                   loc *
+                                                                   string
+                                                                | PaLaz of
+                                                                   loc * 
+                                                                   patt
+                                                                | PaMod of
+                                                                   loc *
+                                                                   string
+                                                              and expr =
+                                                                  ExNil of
+                                                                   loc
+                                                                | ExId of
+                                                                   loc *
+                                                                   ident
+                                                                | ExAcc of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExAnt of
+                                                                   loc *
+                                                                   string
+                                                                | ExApp of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExAre of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExArr of
+                                                                   loc * 
+                                                                   expr
+                                                                | ExSem of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExAsf of
+                                                                   loc
+                                                                | ExAsr of
+                                                                   loc * 
+                                                                   expr
+                                                                | ExAss of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExChr of
+                                                                   loc *
+                                                                   string
+                                                                | ExCoe of
+                                                                   loc *
+                                                                   expr *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | ExFlo of
+                                                                   loc *
+                                                                   string
+                                                                | ExFor of
+                                                                   loc *
+                                                                   string *
+                                                                   expr *
+                                                                   expr *
+                                                                   direction_flag *
+                                                                   expr
+                                                                | ExFun of
+                                                                   loc *
+                                                                   match_case
+                                                                | ExIfe of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr *
+                                                                   expr
+                                                                | ExInt of
+                                                                   loc *
+                                                                   string
+                                                                | ExInt32 of
+                                                                   loc *
+                                                                   string
+                                                                | ExInt64 of
+                                                                   loc *
+                                                                   string
+                                                                | ExNativeInt
+                                                                   of 
+                                                                   loc *
+                                                                   string
+                                                                | ExLab of
+                                                                   loc *
+                                                                   string *
+                                                                   expr
+                                                                | ExLaz of
+                                                                   loc * 
+                                                                   expr
+                                                                | ExLet of
+                                                                   loc *
+                                                                   rec_flag *
+                                                                   binding *
+                                                                   expr
+                                                                | ExLmd of
+                                                                   loc *
+                                                                   string *
+                                                                   module_expr *
+                                                                   expr
+                                                                | ExMat of
+                                                                   loc *
+                                                                   expr *
+                                                                   match_case
+                                                                | ExNew of
+                                                                   loc *
+                                                                   ident
+                                                                | ExObj of
+                                                                   loc *
+                                                                   patt *
+                                                                   class_str_item
+                                                                | ExOlb of
+                                                                   loc *
+                                                                   string *
+                                                                   expr
+                                                                | ExOvr of
+                                                                   loc *
+                                                                   rec_binding
+                                                                | ExRec of
+                                                                   loc *
+                                                                   rec_binding *
+                                                                   expr
+                                                                | ExSeq of
+                                                                   loc * 
+                                                                   expr
+                                                                | ExSnd of
+                                                                   loc *
+                                                                   expr *
+                                                                   string
+                                                                | ExSte of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExStr of
+                                                                   loc *
+                                                                   string
+                                                                | ExTry of
+                                                                   loc *
+                                                                   expr *
+                                                                   match_case
+                                                                | ExTup of
+                                                                   loc * 
+                                                                   expr
+                                                                | ExCom of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExTyc of
+                                                                   loc *
+                                                                   expr *
+                                                                   ctyp
+                                                                | ExVrn of
+                                                                   loc *
+                                                                   string
+                                                                | ExWhi of
+                                                                   loc *
+                                                                   expr *
+                                                                   expr
+                                                                | ExOpI of
+                                                                   loc *
+                                                                   ident *
+                                                                   expr
+                                                                | ExFUN of
+                                                                   loc *
+                                                                   string *
+                                                                   expr
+                                                                | ExPkg of
+                                                                   loc *
+                                                                   module_expr
+                                                              and module_type =
+                                                                  MtNil of
+                                                                   loc
+                                                                | MtId of
+                                                                   loc *
+                                                                   ident
+                                                                | MtFun of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type *
+                                                                   module_type
+                                                                | MtQuo of
+                                                                   loc *
+                                                                   string
+                                                                | MtSig of
+                                                                   loc *
+                                                                   sig_item
+                                                                | MtWit of
+                                                                   loc *
+                                                                   module_type *
+                                                                   with_constr
+                                                                | MtOf of
+                                                                   loc *
+                                                                   module_expr
+                                                                | MtAnt of
+                                                                   loc *
+                                                                   string
+                                                              and sig_item =
+                                                                  SgNil of
+                                                                   loc
+                                                                | SgCls of
+                                                                   loc *
+                                                                   class_type
+                                                                | SgClt of
+                                                                   loc *
+                                                                   class_type
+                                                                | SgSem of
+                                                                   loc *
+                                                                   sig_item *
+                                                                   sig_item
+                                                                | SgDir of
+                                                                   loc *
+                                                                   string *
+                                                                   expr
+                                                                | SgExc of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | SgExt of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp *
+                                                                   string meta_list
+                                                                | SgInc of
+                                                                   loc *
+                                                                   module_type
+                                                                | SgMod of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type
+                                                                | SgRecMod of
+                                                                   loc *
+                                                                   module_binding
+                                                                | SgMty of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type
+                                                                | SgOpn of
+                                                                   loc *
+                                                                   ident
+                                                                | SgTyp of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | SgVal of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp
+                                                                | SgAnt of
+                                                                   loc *
+                                                                   string
+                                                              and with_constr =
+                                                                  WcNil of
+                                                                   loc
+                                                                | WcTyp of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | WcMod of
+                                                                   loc *
+                                                                   ident *
+                                                                   ident
+                                                                | WcTyS of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | WcMoS of
+                                                                   loc *
+                                                                   ident *
+                                                                   ident
+                                                                | WcAnd of
+                                                                   loc *
+                                                                   with_constr *
+                                                                   with_constr
+                                                                | WcAnt of
+                                                                   loc *
+                                                                   string
+                                                              and binding =
+                                                                  BiNil of
+                                                                   loc
+                                                                | BiAnd of
+                                                                   loc *
+                                                                   binding *
+                                                                   binding
+                                                                | BiEq of
+                                                                   loc *
+                                                                   patt *
+                                                                   expr
+                                                                | BiAnt of
+                                                                   loc *
+                                                                   string
+                                                              and rec_binding =
+                                                                  RbNil of
+                                                                   loc
+                                                                | RbSem of
+                                                                   loc *
+                                                                   rec_binding *
+                                                                   rec_binding
+                                                                | RbEq of
+                                                                   loc *
+                                                                   ident *
+                                                                   expr
+                                                                | RbAnt of
+                                                                   loc *
+                                                                   string
+                                                              and module_binding =
+                                                                  MbNil of
+                                                                   loc
+                                                                | MbAnd of
+                                                                   loc *
+                                                                   module_binding *
+                                                                   module_binding
+                                                                | MbColEq of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type *
+                                                                   module_expr
+                                                                | MbCol of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type
+                                                                | MbAnt of
+                                                                   loc *
+                                                                   string
+                                                              and match_case =
+                                                                  McNil of
+                                                                   loc
+                                                                | McOr of
+                                                                   loc *
+                                                                   match_case *
+                                                                   match_case
+                                                                | McArr of
+                                                                   loc *
+                                                                   patt *
+                                                                   expr *
+                                                                   expr
+                                                                | McAnt of
+                                                                   loc *
+                                                                   string
+                                                              and module_expr =
+                                                                  MeNil of
+                                                                   loc
+                                                                | MeId of
+                                                                   loc *
+                                                                   ident
+                                                                | MeApp of
+                                                                   loc *
+                                                                   module_expr *
+                                                                   module_expr
+                                                                | MeFun of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type *
+                                                                   module_expr
+                                                                | MeStr of
+                                                                   loc *
+                                                                   str_item
+                                                                | MeTyc of
+                                                                   loc *
+                                                                   module_expr *
+                                                                   module_type
+                                                                | MePkg of
+                                                                   loc * 
+                                                                   expr
+                                                                | MeAnt of
+                                                                   loc *
+                                                                   string
+                                                              and str_item =
+                                                                  StNil of
+                                                                   loc
+                                                                | StCls of
+                                                                   loc *
+                                                                   class_expr
+                                                                | StClt of
+                                                                   loc *
+                                                                   class_type
+                                                                | StSem of
+                                                                   loc *
+                                                                   str_item *
+                                                                   str_item
+                                                                | StDir of
+                                                                   loc *
+                                                                   string *
+                                                                   expr
+                                                                | StExc of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ident meta_option
+                                                                | StExp of
+                                                                   loc * 
+                                                                   expr
+                                                                | StExt of
+                                                                   loc *
+                                                                   string *
+                                                                   ctyp *
+                                                                   string meta_list
+                                                                | StInc of
+                                                                   loc *
+                                                                   module_expr
+                                                                | StMod of
+                                                                   loc *
+                                                                   string *
+                                                                   module_expr
+                                                                | StRecMod of
+                                                                   loc *
+                                                                   module_binding
+                                                                | StMty of
+                                                                   loc *
+                                                                   string *
+                                                                   module_type
+                                                                | StOpn of
+                                                                   loc *
+                                                                   ident
+                                                                | StTyp of
+                                                                   loc * 
+                                                                   ctyp
+                                                                | StVal of
+                                                                   loc *
+                                                                   rec_flag *
+                                                                   binding
+                                                                | StAnt of
+                                                                   loc *
+                                                                   string
+                                                              and class_type =
+                                                                  CtNil of
+                                                                   loc
+                                                                | CtCon of
+                                                                   loc *
+                                                                   virtual_flag *
+                                                                   ident *
+                                                                   ctyp
+                                                                | CtFun of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   class_type
+                                                                | CtSig of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   class_sig_item
+                                                                | CtAnd of
+                                                                   loc *
+                                                                   class_type *
+                                                                   class_type
+                                                                | CtCol of
+                                                                   loc *
+                                                                   class_type *
+                                                                   class_type
+                                                                | CtEq of
+                                                                   loc *
+                                                                   class_type *
+                                                                   class_type
+                                                                | CtAnt of
+                                                                   loc *
+                                                                   string
+                                                              and class_sig_item =
+                                                                  CgNil of
+                                                                   loc
+                                                                | CgCtr of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | CgSem of
+                                                                   loc *
+                                                                   class_sig_item *
+                                                                   class_sig_item
+                                                                | CgInh of
+                                                                   loc *
+                                                                   class_type
+                                                                | CgMth of
+                                                                   loc *
+                                                                   string *
+                                                                   private_flag *
+                                                                   ctyp
+                                                                | CgVal of
+                                                                   loc *
+                                                                   string *
+                                                                   mutable_flag *
+                                                                   virtual_flag *
+                                                                   ctyp
+                                                                | CgVir of
+                                                                   loc *
+                                                                   string *
+                                                                   private_flag *
+                                                                   ctyp
+                                                                | CgAnt of
+                                                                   loc *
+                                                                   string
+                                                              and class_expr =
+                                                                  CeNil of
+                                                                   loc
+                                                                | CeApp of
+                                                                   loc *
+                                                                   class_expr *
+                                                                   expr
+                                                                | CeCon of
+                                                                   loc *
+                                                                   virtual_flag *
+                                                                   ident *
+                                                                   ctyp
+                                                                | CeFun of
+                                                                   loc *
+                                                                   patt *
+                                                                   class_expr
+                                                                | CeLet of
+                                                                   loc *
+                                                                   rec_flag *
+                                                                   binding *
+                                                                   class_expr
+                                                                | CeStr of
+                                                                   loc *
+                                                                   patt *
+                                                                   class_str_item
+                                                                | CeTyc of
+                                                                   loc *
+                                                                   class_expr *
+                                                                   class_type
+                                                                | CeAnd of
+                                                                   loc *
+                                                                   class_expr *
+                                                                   class_expr
+                                                                | CeEq of
+                                                                   loc *
+                                                                   class_expr *
+                                                                   class_expr
+                                                                | CeAnt of
+                                                                   loc *
+                                                                   string
+                                                              and class_str_item =
+                                                                  CrNil of
+                                                                   loc
+                                                                | CrSem of
+                                                                   loc *
+                                                                   class_str_item *
+                                                                   class_str_item
+                                                                | CrCtr of
+                                                                   loc *
+                                                                   ctyp *
+                                                                   ctyp
+                                                                | CrInh of
+                                                                   loc *
+                                                                   override_flag *
+                                                                   class_expr *
+                                                                   string
+                                                                | CrIni of
+                                                                   loc * 
+                                                                   expr
+                                                                | CrMth of
+                                                                   loc *
+                                                                   string *
+                                                                   override_flag *
+                                                                   private_flag *
+                                                                   expr *
+                                                                   ctyp
+                                                                | CrVal of
+                                                                   loc *
+                                                                   string *
+                                                                   override_flag *
+                                                                   mutable_flag *
+                                                                   expr
+                                                                | CrVir of
+                                                                   loc *
+                                                                   string *
+                                                                   private_flag *
+                                                                   ctyp
+                                                                | CrVvr of
+                                                                   loc *
+                                                                   string *
+                                                                   mutable_flag *
+                                                                   ctyp
+                                                                | CrAnt of
+                                                                   loc *
+                                                                   string
 
-                                                            end
+                                                             end
 
 type 
-                                                                 ('a, 'loc) stream_filter =
-                                                                  (('a *
+                                                                  ('a, 'loc) stream_filter =
+                                                                   (('a *
                                                                     'loc) Stream.t
-                                                                   ->
-                                                                   ('a *
+                                                                    ->
+                                                                    ('a *
                                                                     'loc) Stream.t)
 
 
-                                                          module type AstFilters =
-                                                           sig
-                                                            module Ast :
-                                                             Camlp4Ast
+                                                           module type AstFilters =
+                                                            sig
+                                                             module Ast :
+                                                              Camlp4Ast
 
-                                                            type 'a filter =
-                                                             ('a -> 'a)
+                                                             type 'a filter =
+                                                              ('a -> 'a)
 
-                                                            val register_sig_item_filter :
-                                                             (Ast.sig_item filter
-                                                              -> unit)
+                                                             val register_sig_item_filter :
+                                                              (Ast.sig_item filter
+                                                               -> unit)
 
-                                                            val register_str_item_filter :
-                                                             (Ast.str_item filter
-                                                              -> unit)
+                                                             val register_str_item_filter :
+                                                              (Ast.str_item filter
+                                                               -> unit)
 
-                                                            val register_topphrase_filter :
-                                                             (Ast.str_item filter
-                                                              -> unit)
+                                                             val register_topphrase_filter :
+                                                              (Ast.str_item filter
+                                                               -> unit)
 
-                                                            val fold_interf_filters :
-                                                             (('a ->
-                                                               (Ast.sig_item filter
-                                                                -> 'a)) ->
-                                                              ('a -> 'a))
+                                                             val fold_interf_filters :
+                                                              (('a ->
+                                                                (Ast.sig_item filter
+                                                                 -> 'a)) ->
+                                                               ('a -> 'a))
 
-                                                            val fold_implem_filters :
-                                                             (('a ->
-                                                               (Ast.str_item filter
-                                                                -> 'a)) ->
-                                                              ('a -> 'a))
+                                                             val fold_implem_filters :
+                                                              (('a ->
+                                                                (Ast.str_item filter
+                                                                 -> 'a)) ->
+                                                               ('a -> 'a))
 
-                                                            val fold_topphrase_filters :
-                                                             (('a ->
-                                                               (Ast.str_item filter
-                                                                -> 'a)) ->
-                                                              ('a -> 'a))
+                                                             val fold_topphrase_filters :
+                                                              (('a ->
+                                                                (Ast.str_item filter
+                                                                 -> 'a)) ->
+                                                               ('a -> 'a))
 
-                                                           end
+                                                            end
 
 module type DynAst =
-                                                                 sig
-                                                                  module
-                                                                   Ast : Ast
+                                                                  sig
+                                                                   module
+                                                                    Ast : Ast
 
-                                                                  type 'a tag
+                                                                   type 'a tag
+                                                                   
 
-                                                                  val ctyp_tag :
-                                                                   Ast.ctyp tag
+                                                                   val ctyp_tag :
+                                                                    Ast.ctyp tag
 
-                                                                  val patt_tag :
-                                                                   Ast.patt tag
+                                                                   val patt_tag :
+                                                                    Ast.patt tag
 
-                                                                  val expr_tag :
-                                                                   Ast.expr tag
+                                                                   val expr_tag :
+                                                                    Ast.expr tag
 
-                                                                  val module_type_tag :
-                                                                   Ast.module_type tag
+                                                                   val module_type_tag :
+                                                                    Ast.module_type tag
 
-                                                                  val sig_item_tag :
-                                                                   Ast.sig_item tag
+                                                                   val sig_item_tag :
+                                                                    Ast.sig_item tag
 
-                                                                  val with_constr_tag :
-                                                                   Ast.with_constr tag
+                                                                   val with_constr_tag :
+                                                                    Ast.with_constr tag
 
-                                                                  val module_expr_tag :
-                                                                   Ast.module_expr tag
+                                                                   val module_expr_tag :
+                                                                    Ast.module_expr tag
 
-                                                                  val str_item_tag :
-                                                                   Ast.str_item tag
+                                                                   val str_item_tag :
+                                                                    Ast.str_item tag
 
-                                                                  val class_type_tag :
-                                                                   Ast.class_type tag
+                                                                   val class_type_tag :
+                                                                    Ast.class_type tag
 
-                                                                  val class_sig_item_tag :
-                                                                   Ast.class_sig_item tag
+                                                                   val class_sig_item_tag :
+                                                                    Ast.class_sig_item tag
 
-                                                                  val class_expr_tag :
-                                                                   Ast.class_expr tag
+                                                                   val class_expr_tag :
+                                                                    Ast.class_expr tag
 
-                                                                  val class_str_item_tag :
-                                                                   Ast.class_str_item tag
+                                                                   val class_str_item_tag :
+                                                                    Ast.class_str_item tag
 
-                                                                  val match_case_tag :
-                                                                   Ast.match_case tag
+                                                                   val match_case_tag :
+                                                                    Ast.match_case tag
 
-                                                                  val ident_tag :
-                                                                   Ast.ident tag
+                                                                   val ident_tag :
+                                                                    Ast.ident tag
 
-                                                                  val binding_tag :
-                                                                   Ast.binding tag
+                                                                   val binding_tag :
+                                                                    Ast.binding tag
 
-                                                                  val rec_binding_tag :
-                                                                   Ast.rec_binding tag
+                                                                   val rec_binding_tag :
+                                                                    Ast.rec_binding tag
 
-                                                                  val module_binding_tag :
-                                                                   Ast.module_binding tag
+                                                                   val module_binding_tag :
+                                                                    Ast.module_binding tag
 
-                                                                  val string_of_tag :
-                                                                   ('a tag ->
+                                                                   val string_of_tag :
+                                                                    ('a tag
+                                                                    ->
                                                                     string)
 
-                                                                  module
-                                                                   Pack :
-                                                                   functor
+                                                                   module
+                                                                    Pack :
+                                                                    functor
                                                                     (X : 
                                                                     sig
                                                                     type 'a t
@@ -3386,85 +3548,86 @@ module type DynAst =
 
                                                                     end
 
-                                                                 end
+                                                                  end
 
 
-                                                          module type Quotation =
-                                                           sig
-                                                            module Ast : Ast
+                                                           module type Quotation =
+                                                            sig
+                                                             module Ast : Ast
 
-                                                            module DynAst :
-                                                             (DynAst with
-                                                              module Ast =
-                                                              Ast)
+                                                             module DynAst :
+                                                              (DynAst with
+                                                               module Ast =
+                                                               Ast)
 
-                                                            open Ast
+                                                             open Ast
 
-                                                            type 'a expand_fun =
-                                                             (loc ->
-                                                              (string option
-                                                               ->
-                                                               (string -> 'a)))
+                                                             type 'a expand_fun =
+                                                              (loc ->
+                                                               (string option
+                                                                ->
+                                                                (string ->
+                                                                 'a)))
 
-                                                            val add :
-                                                             (string ->
-                                                              ('a DynAst.tag
-                                                               ->
-                                                               ('a expand_fun
-                                                                -> unit)))
-
-                                                            val find :
-                                                             (string ->
-                                                              ('a DynAst.tag
-                                                               ->
-                                                               'a expand_fun))
-
-                                                            val default :
-                                                             string ref
-
-                                                            val default_tbl :
-                                                             (string,
-                                                              string) Hashtbl.t
-
-                                                            val default_at_pos :
-                                                             (string ->
+                                                             val add :
                                                               (string ->
-                                                               unit))
+                                                               ('a DynAst.tag
+                                                                ->
+                                                                ('a expand_fun
+                                                                 -> unit)))
 
-                                                            val parse_quotation_result :
-                                                             ((loc ->
-                                                               (string -> 'a))
-                                                              ->
+                                                             val find :
+                                                              (string ->
+                                                               ('a DynAst.tag
+                                                                ->
+                                                                'a expand_fun))
+
+                                                             val default :
+                                                              string ref
+
+                                                             val default_tbl :
+                                                              (string,
+                                                               string) Hashtbl.t
+
+                                                             val default_at_pos :
+                                                              (string ->
+                                                               (string ->
+                                                                unit))
+
+                                                             val parse_quotation_result :
+                                                              ((loc ->
+                                                                (string ->
+                                                                 'a)) ->
+                                                               (loc ->
+                                                                (FanSig.quotation
+                                                                 ->
+                                                                 (string ->
+                                                                  (string ->
+                                                                   'a)))))
+
+                                                             val translate :
+                                                              (string ->
+                                                               string) ref
+
+                                                             val expand :
                                                               (loc ->
                                                                (FanSig.quotation
                                                                 ->
-                                                                (string ->
-                                                                 (string ->
-                                                                  'a)))))
+                                                                ('a DynAst.tag
+                                                                 -> 'a)))
 
-                                                            val translate :
-                                                             (string ->
-                                                              string) ref
+                                                             val dump_file :
+                                                              string option ref
 
-                                                            val expand :
-                                                             (loc ->
-                                                              (FanSig.quotation
-                                                               ->
-                                                               ('a DynAst.tag
-                                                                -> 'a)))
+                                                             module Error :
+                                                              FanSig.Error
 
-                                                            val dump_file :
-                                                             string option ref
-
-                                                            module Error :
-                                                             FanSig.Error
-
-                                                           end
+                                                            end
 
 module Grammar =
-                                                                 struct
-                                                                  module type Action =
-                                                                   sig
+                                                                  struct
+                                                                   module type Action =
+                                                                    sig
                                                                     type t
 
                                                                     val mk :
@@ -3484,33 +3647,33 @@ module Grammar =
                                                                     ('b ->
                                                                     'c)))
 
-                                                                   end
+                                                                    end
 
-                                                                  type assoc =
-                                                                     
-                                                                   NonA
-                                                                   | 
-                                                                   RightA
-                                                                   | 
-                                                                   LeftA
+                                                                   type assoc =
+                                                                      
+                                                                    NonA
+                                                                    | 
+                                                                    RightA
+                                                                    | 
+                                                                    LeftA
 
-                                                                  type position =
-                                                                     
-                                                                   First
-                                                                   | 
-                                                                   Last
-                                                                   | 
-                                                                   Before of
+                                                                   type position =
+                                                                      
+                                                                    First
+                                                                    | 
+                                                                    Last
+                                                                    | 
+                                                                    Before of
                                                                     string
-                                                                   | 
-                                                                   After of
+                                                                    | 
+                                                                    After of
                                                                     string
-                                                                   | 
-                                                                   Level of
+                                                                    | 
+                                                                    Level of
                                                                     string
 
-                                                                  module type Structure =
-                                                                   sig
+                                                                   module type Structure =
+                                                                    sig
                                                                     module
                                                                     Loc :
                                                                     FanSig.Loc
@@ -3661,10 +3824,10 @@ module Grammar =
                                                                     ('a Stream.t
                                                                     -> 'c)))))
 
-                                                                   end
+                                                                    end
 
-                                                                  module type Dynamic =
-                                                                   sig
+                                                                   module type Dynamic =
+                                                                    sig
                                                                     include
                                                                     Structure
 
@@ -3826,10 +3989,10 @@ module Grammar =
                                                                     (token_stream
                                                                     -> 'a))
 
-                                                                   end
+                                                                    end
 
-                                                                  module type Static =
-                                                                   sig
+                                                                   module type Static =
+                                                                    sig
                                                                     include
                                                                     Structure
 
@@ -3988,9 +4151,9 @@ module Grammar =
                                                                     (token_stream
                                                                     -> 'a))
 
-                                                                   end
+                                                                    end
 
-                                                                 end
+                                                                  end
 
 
                                                           module type Lexer =
@@ -4185,6 +4348,33 @@ module type Syntax =
                                                             module
                                                              AntiquotSyntax :
                                                              Parser(Ast).SIMPLE
+
+                                                            module Ast2pt :
+                                                             sig
+                                                              val patt :
+                                                               (Ast.patt ->
+                                                                Parsetree.pattern)
+
+                                                              val expr :
+                                                               (Ast.expr ->
+                                                                Parsetree.expression)
+
+                                                              val sig_item :
+                                                               (Ast.sig_item
+                                                                ->
+                                                                Parsetree.signature)
+
+                                                              val str_item :
+                                                               (Ast.str_item
+                                                                ->
+                                                                Parsetree.structure)
+
+                                                              val phrase :
+                                                               (Ast.str_item
+                                                                ->
+                                                                Parsetree.toplevel_phrase)
+
+                                                             end
 
                                                             include
                                                              Warning(Loc).S

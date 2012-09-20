@@ -15,8 +15,6 @@ module Camlp4Bin =
    struct
     open PreCast
 
-    module CleanAst = (Struct.CleanAst.Make)(PreCast.Ast)
-
     let printers =
      ((Hashtbl.create 30) : (string, (module Sig.PRECAST_PLUGIN )) Hashtbl.t)
 
@@ -258,16 +256,16 @@ module Camlp4Bin =
       fun name ->
        (process dyn_loader name PreCast.CurrentParser.parse_interf
          PreCast.CurrentPrinter.print_interf (
-         ((new CleanAst.clean_ast)#sig_item) ) AstFilters.fold_interf_filters
-         gind)
+         ((new PreCast.Syntax.Ast.clean_ast)#sig_item) )
+         AstFilters.fold_interf_filters gind)
 
     let process_impl =
      fun dyn_loader ->
       fun name ->
        (process dyn_loader name PreCast.CurrentParser.parse_implem
          PreCast.CurrentPrinter.print_implem (
-         ((new CleanAst.clean_ast)#str_item) ) AstFilters.fold_implem_filters
-         gimd)
+         ((new PreCast.Syntax.Ast.clean_ast)#str_item) )
+         AstFilters.fold_implem_filters gimd)
 
     let just_print_the_version =
      fun ()  -> ( (printf "%s@." FanConfig.version) ); (exit 0)

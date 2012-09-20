@@ -420,6 +420,42 @@ module type Camlp4Ast = sig
 
     method unknown : ! 'a. 'a -> 'self_type;
   end;
+  class clean_ast :  object ('c)
+    method binding : binding -> binding;
+    method class_expr : class_expr -> class_expr;
+    method class_sig_item : class_sig_item -> class_sig_item;
+    method class_str_item : class_str_item -> class_str_item;
+    method class_type : class_type -> class_type;
+    method ctyp : ctyp -> ctyp;
+    method direction_flag : direction_flag -> direction_flag;
+    method expr : expr -> expr;
+    method ident : ident -> ident;
+    method list : ('c -> 'a -> 'b) -> list 'a -> list 'b;
+    method loc : loc -> loc;
+    method match_case : match_case -> match_case;
+    method meta_bool : meta_bool -> meta_bool;
+    method meta_list :
+      ('c -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
+    method meta_option :
+      ('c -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
+    method module_binding : module_binding -> module_binding;
+    method module_expr : module_expr -> module_expr;
+    method module_type : module_type -> module_type;
+    method mutable_flag : mutable_flag -> mutable_flag;
+    method override_flag : override_flag -> override_flag;
+    method patt : patt -> patt;
+    method private_flag : private_flag -> private_flag;
+    method rec_binding : rec_binding -> rec_binding;
+    method rec_flag : rec_flag -> rec_flag;
+    method row_var_flag : row_var_flag -> row_var_flag;
+    method sig_item : sig_item -> sig_item;
+    method str_item : str_item -> str_item;
+    method string : string -> string;
+    method unknown : 'a -> 'a;
+    method virtual_flag : virtual_flag -> virtual_flag;
+    method with_constr : with_constr -> with_constr;
+  end;
+
 
   value map_expr : (expr -> expr) -> map;
   value map_patt : (patt -> patt) -> map;
@@ -990,6 +1026,13 @@ module type Camlp4Syntax = sig
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
 
+  module Ast2pt         : sig
+    value patt: Ast.patt -> Parsetree.pattern;
+    value expr:  Ast.expr -> Parsetree.expression;
+    value sig_item : Ast.sig_item -> Parsetree.signature;
+    value str_item : Ast.str_item -> Parsetree.structure;
+    value phrase : Ast.str_item -> Parsetree.toplevel_phrase;
+  end;
   include (Warning Loc).S;
   include (Parser  Ast).S;
   include (Printer Ast).S;
@@ -1206,6 +1249,7 @@ module type PRECAST = sig
                        and module Ast     = Ast
                        and module Gram    = Gram
                        and module Quotation = Quotation;
+      
   module Printers : sig
     module OCaml         : (Printer Ast).S;
     module DumpOCamlAst  : (Printer Ast).S;

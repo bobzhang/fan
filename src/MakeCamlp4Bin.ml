@@ -9,7 +9,7 @@ module Camlp4Bin
     (Loc:FanSig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
     =struct
       open PreCast;
-      module CleanAst = Struct.CleanAst.Make PreCast.Ast;
+      (* module CleanAst = Struct.CleanAst.Make PreCast.Ast; *)
 
 
       value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
@@ -220,25 +220,53 @@ module Camlp4Bin
           |> fold_filters (fun t filter -> filter t )
           |> clean
           |> pr ?input_file:(Some name) ?output_file:output_file.val ;
-      value gind =
-        fun
+      value gind = fun
         [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
-      value gimd =
-        fun
+      value gimd = fun
         [ <:str_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
       value process_intf dyn_loader name =
         process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (new CleanAst.clean_ast)#sig_item
+                (new PreCast.Syntax.Ast.clean_ast)#sig_item
                 AstFilters.fold_interf_filters gind;
       value process_impl dyn_loader name =
-        process dyn_loader name PreCast.CurrentParser.parse_implem PreCast.CurrentPrinter.print_implem
-                (new CleanAst.clean_ast)#str_item
-                AstFilters.fold_implem_filters gimd;
-      
+        process
+          dyn_loader
+          name
+          PreCast.CurrentParser.parse_implem
+          PreCast.CurrentPrinter.print_implem
+          (new PreCast.Syntax.Ast.clean_ast)#str_item
+          AstFilters.fold_implem_filters
+          gimd;
+
+      (*be careful, since you can register your own [str_item_parser],
+        if you do it in-consistently, this may result in an
+        in-consistent behavior
+       *)  
+      (* value process_expr dyn_loader name = *)
+      (*   let parse_expr ?directive_handler _loc stream = *)
+      (*     PreCast.Gram.parse PreCast.Syntax.expr _loc stream in *)
+
+      (*   (\* see [Printers/OCaml] *\) *)
+      (*   let print_expr ?input_file:(_) ?output_file ast = *)
+      (*     (\* let module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast in *\) *)
+      (*     let pt = Syntax.Ast2pt.expr ast in *)
+      (*     FanUtil.with_open_out_file output_file (fun oc -> *)
+      (*       let fmt = Format.formatter_of_out_channel oc in *)
+      (*       let () = Pprintast.print_expression fmt pt in  *)
+      (*       pp_print_flush fmt ();) in  *)
+      (*   process *)
+      (*     dyn_loader *)
+      (*     name *)
+      (*     parse_expr *)
+      (*     print_expr *)
+      (*     (new clean_ast)#expr *)
+      (*     AstFilters.fold_implem_filters *)
+      (*     gimd; *)
+        
       value just_print_the_version () =
         do { printf "%s@." FanConfig.version; exit 0 };
       
