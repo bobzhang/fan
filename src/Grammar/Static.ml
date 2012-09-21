@@ -17,9 +17,7 @@
  * - Nicolas Pouillard: refactoring
 *)
 
-value uncurry f (x,y) = f x y;
-value flip f x y = f y x;
-
+open FanUtil;
 module Make (Lexer : FanSig.Lexer)
 : FanSig.Grammar.Static with module Loc = Lexer.Loc
                         and module Token = Lexer.Token

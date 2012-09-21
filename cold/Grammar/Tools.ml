@@ -66,9 +66,7 @@ module Make =
      result
 
    let is_level_labelled =
-    fun n ->
-     fun lev ->
-      (match lev.lname with | Some (n1) -> (n = n1) | None -> (false))
+    fun n -> function | {lname = Some (n1)_ } -> (n = n1) | _ -> (false)
 
    let warning_verbose = (ref true )
 
@@ -76,15 +74,14 @@ module Make =
     fun entry ->
      fun tokl ->
       fun last_tok ->
-       fun tree ->
-        (match tree with
-         | Node ({node = ((Stoken (_) | Skeyword (_)) as tok); son = son;
-            brother = DeadEnd}) ->
-            (get_token_list entry ( ( last_tok ) :: tokl  ) tok son)
-         | _ ->
-            if (tokl = [] ) then None 
-            else
-             (Some (( (List.rev ( ( last_tok ) :: tokl  )) ), last_tok, tree)))
+       function
+       | Node ({node = ((Stoken (_) | Skeyword (_)) as tok); son = son;
+          brother = DeadEnd}) ->
+          (get_token_list entry ( ( last_tok ) :: tokl  ) tok son)
+       | tree ->
+          if (tokl = [] ) then None 
+          else
+           (Some (( (List.rev ( ( last_tok ) :: tokl  )) ), last_tok, tree))
 
    let is_antiquot =
     fun s ->

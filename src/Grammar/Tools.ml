@@ -65,18 +65,14 @@ module Make (Structure : Structure.S) = struct
       result
     end;
 
-  value is_level_labelled n lev =
-    match lev.lname with
-    [ Some n1 -> n = n1
-    | None -> False ];
+  value is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> False ];
 
   value warning_verbose = ref True;
 
-  value rec get_token_list entry tokl last_tok tree =
-    match tree with
+  value rec get_token_list entry tokl last_tok  = fun 
     [ Node {node = (Stoken _ | Skeyword _ as tok); son = son; brother = DeadEnd} ->
         get_token_list entry [last_tok :: tokl] tok son
-    | _ ->
+    | tree ->
         if tokl = [] then None
         else Some (List.rev [last_tok :: tokl], last_tok, tree) ];
 

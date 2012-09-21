@@ -747,6 +747,7 @@
        #+END_SRC
 ***** [[file:~/camlp4/src/Grammar/Tools.ml][Tools]]
       Utilities on top of =Structure.S=
+
       #+BEGIN_SRC ocaml
         val get_prev_loc_only : bool ref
         module Make :
@@ -760,20 +761,24 @@
               val keep_prev_loc :
                 ('a * Loc.t) Stream.t ->
                 ('a * token_info) Stream.t
+              (* transform a stream to another stream with [prev_loc]
+                kept *)
+
               val drop_prev_loc :
                 ('a * Structure.token_info) Stream.t ->
                 ('a * Structure.Loc.t) Stream.t
+              (* drop previous location information *)
               val get_cur_loc :
                 ('a * token_info) Stream.t -> Loc.t
               val get_prev_loc :
                 ('a * Structure.token_info) Stream.t -> Structure.Loc.t
-              val is_level_labelled : string -> Structure.level -> bool
+              val is_level_labelled : string ->level -> bool
               val warning_verbose : bool ref
               val get_token_list :
                 'a ->
                 symbol list ->
                 symbol ->
-                Structure.tree ->
+                tree ->
                 (symbol list * symbol * tree) option
               val is_antiquot : string -> bool
               (* s.[0]='$'*)
@@ -786,6 +791,249 @@
               val eq_symbol : symbol -> symbol -> bool
             end
       #+END_SRC
+      
+
+***** [[file:~/camlp4/src/Grammar/Print.ml][Print]]
+
+****** Make
+      #+BEGIN_SRC ocaml
+        val flatten_tree : tree -> symbol list list
+        val print_symbol : formatter -> symbol -> unit
+        val print_meta : formatter -> string -> symbol list -> unit
+        val print_symbol1 : formatter -> symbol -> unit
+        val print_rule : formatter -> symbol list -> unit
+        val print_level : formatter ->
+                          (formatter -> unit -> unit) ->
+                          symbol list list -> unit
+        val levels : formatter -> level list -> unit
+        val entry : formatter -> internal_entry -> unit
+        
+      #+END_SRC
+       
+
+****** MakeDump
+
+       #+BEGIN_SRC ocaml
+         type brothers = Bro of Structure.symbol * brothers list
+         val print_tree :formatter ->tree -> unit
+         val print_symbol :formatter ->symbol -> unit
+         val print_meta :
+          formatter -> string ->symbol list -> unit
+         val print_symbol1 :formatter ->symbol -> unit
+         val print_rule :formatter ->symbol list -> unit
+         val print_level :
+          formatter ->
+           (formatter -> unit -> unit) ->
+          symbol list list -> unit
+         val levels :formatter ->level list -> unit
+         val entry :formatter ->internal_entry -> unit
+                
+       #+END_SRC
+
+***** [[file:~/camlp4/src/Grammar/Entry.ml][Entry]]
+
+      #+BEGIN_SRC ocaml
+        type 'a t = internal_entry
+        (* phantom type *)              
+        val name : internal_entry -> string
+        val print : formatter -> internal_entry -> unit
+        val dump : formatter -> internal_entry -> unit
+        val trace_parser : bool ref
+        val mk : gram -> string -> internal_entry
+        val action_parse : internal_entry -> token_stream -> Action.t
+        val lex : internal_entry -> Loc.t ->
+                  char Stream.t -> (Token.t * Loc.t) Stream.t
+        val lex_string : internal_entry -> Loc.t ->
+                         string -> (Token.t * Loc.t) Stream.t
+        val filter : internal_entry -> (Token.t * Token.Loc.t) Stream.t ->
+                     (Token.t * token_info) Stream.t
+        val parse_tokens_after_filter :
+          internal_entry -> token_stream -> 'a
+        val parse_tokens_before_filter :
+          internal_entry ->
+          (Token.t * Token.Loc.t) Stream.t -> 'a
+        val parse :
+          internal_entry -> Loc.t -> char Stream.t -> 'a
+        val parse_string :
+          internal_entry -> Loc.t -> string -> 'a
+        val of_parser :  gram ->  string ->
+                         ((Token.t * token_info) Stream.t -> 'a) -> 'a t
+        val setup_parser :
+          internal_entry ->
+          ((Token.t * token_info) Stream.t -> 'a) -> unit
+        val clear : internal_entry -> unit
+        val obj : 'a -> 'a
+              
+      #+END_SRC
+      
+***** [[file:~/camlp4/src/Grammar/Search.ml][Search]]
+
+      #+BEGIN_SRC ocaml
+        val tree_in_entry: symbol -> tree -> desc -> tree      
+      #+END_SRC
+      
+***** [[file:~/camlp4/src/Grammar/Failed.ml][Failed]]
+
+      #+BEGIN_SRC ocaml
+        val name_of_symbol :
+          internal_entry -> symbol -> string
+        val name_of_symbol_failed :
+          internal_entry -> symbol -> string
+        val name_of_tree_failed :
+          internal_entry -> tree -> string
+        val magic : 'a -> 'b -> 'c
+        val tree_failed :
+          internal_entry ->
+          'a -> symbol -> tree -> string
+        val symb_failed :
+          internal_entry ->
+          'a -> symbol -> symbol -> string
+        val symb_failed_txt :
+          internal_entry ->
+          symbol -> symbol -> string
+      #+END_SRC
+      
+***** [[file:~/camlp4/src/Grammar/Parser.ml][Parser]]
+
+      #+BEGIN_SRC ocaml
+        val add_loc: Loc.t -> (token_stream -> 'b) -> token_stream -> 'b * Loc.t
+        val level_number: internal_entry -> string -> int
+        val strict_parsing: bool ref
+        val strict_parsing_warning: bool ref
+        val top_symb: internal_entry -> symbol -> symbol
+        val top_tree: internal_entry -> tree -> tree
+        val entry_of_symb: internal_entry -> symbol -> internal_entry
+        val continue: internal_entry -> Loc.t -> Action.t -> symbol -> tree -> efun -> efun
+        val do_recover:
+          (internal_entry -> 'a -> 'b -> tree -> efun ) ->
+          internal_entry -> 'a -> 'b -> Loc.t -> Action.t -> symbol -> tree -> efun
+        val recover:
+          (internal_entry -> 'a -> 'b -> tree -> efun ) -> internal_entry -> 'a -> 'b ->
+          Loc.t -> Action.t -> symbol -> tree -> efun
+        val parser_of_tree :
+          internal_entry ->
+          int -> int -> tree -> Structure.efun
+        val parser_cont :
+          efun -> internal_entry ->  int -> int ->
+          symbol ->tree -> Loc.t -> Action.t -> efun
+        val parser_of_token_list :
+          (Loc.t -> Action.t -> efun) ->
+          symbol list -> efun
+        val parser_of_symbol :
+          internal_entry ->  int -> symbol -> efun
+        val parse_top_symb :
+          internal_entry -> symbol -> efun
+        val start_parser_of_levels :
+          internal_entry ->
+          int -> level list -> int -> efun
+        
+        val start_parser_of_entry :
+          internal_entry -> int -> efun
+        val continue_parser_of_levels :
+          internal_entry -> int -> level list ->
+          int -> Loc.t -> 'a -> efun
+        val continue_parser_of_entry :
+          internal_entry -> int -> Loc.t -> Action.t -> efun
+      #+END_SRC
+
+***** [[file:~/camlp4/src/Grammar/Insert.ml][Insert]]
+
+      #+BEGIN_SRC ocaml
+        val is_before : Structure.symbol -> Structure.symbol -> bool
+        val derive_eps : Structure.symbol -> bool
+        val tree_derive_eps : Structure.tree -> bool
+        val empty_lev :
+          string option -> FanSig.Grammar.assoc option -> Structure.level
+        val change_lev :
+          Structure.internal_entry ->
+          Structure.level ->
+          string ->
+          string option -> FanSig.Grammar.assoc option -> Structure.level
+        val change_to_self :
+          Structure.internal_entry -> Structure.symbol -> Structure.symbol
+        val get_level :
+          Structure.internal_entry ->
+          FanSig.Grammar.position option ->
+          Structure.level list ->
+          Structure.level list *
+            (string option -> FanSig.Grammar.assoc option -> Structure.level) *
+              Structure.level list
+        val check_gram : Structure.internal_entry -> Structure.symbol -> unit
+        val tree_check_gram :
+          Structure.internal_entry -> Structure.tree -> unit
+        val get_initial : Structure.symbol list -> bool * Structure.symbol list
+        val insert_tokens : Structure.gram -> Structure.symbol list -> unit
+        val insert_tree :
+          Structure.internal_entry ->
+          Structure.symbol list ->
+          Structure.Action.t -> Structure.tree -> Structure.tree
+        val insert_level :
+          Structure.internal_entry ->
+          bool ->
+          Structure.symbol list ->
+          Structure.Action.t -> Structure.level -> Structure.level
+        val levels_of_rules :
+          Structure.internal_entry ->
+          FanSig.Grammar.position option ->
+          (string option * FanSig.Grammar.assoc option *
+             (Structure.symbol list * Structure.Action.t) list)
+            list -> Structure.level list
+        val extend :
+          Structure.internal_entry ->
+          FanSig.Grammar.position option *
+            (string option * FanSig.Grammar.assoc option *
+               (Structure.symbol list * Structure.Action.t) list)
+                list -> unit
+              
+      #+END_SRC
+
+***** [[file:~/camlp4/src/Grammar/Fold.ml][Fold]]
+
+      #+BEGIN_SRC ocaml
+        value sfold0 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
+        value sfold1 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
+        value sfold0sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b;
+      #+END_SRC
+      
+***** [[file:~/camlp4/src/Grammar/Delete.ml][Delete]]
+
+      #+BEGIN_SRC ocaml
+        val delete_rule_in_tree: internal_entry -> symbol list -> tree -> (symbol list option * tree) option
+        val decr_keyw_use: gram -> symbol -> unit
+        (* given the input [symbol], have side effect on gram *)
+        val decr_keyw_use_in_tree: gram -> tree -> unit
+        val delete_rule_in_suffix: internal_entry -> symbol list -> level list -> level list
+        val delete_rule_in_prefix: internal_entry -> symbol list ->
+                                   level list -> level list
+        val delete_rule_in_level_list: internal_entry -> symbol list -> level list -> level list 
+        val delete_rule: internal_entry -> symbol list -> unit                                                                                
+      #+END_SRC
+
+***** [[file:~/camlp4/src/Grammar/Static.ml][Static]]
+
+      Re-export the APIs of all previous modules
+      The difference between Static and Dynamic is that in static,
+      gram is fixed.
+
+      #+BEGIN_SRC ocaml
+        module Entry = struct
+          module E = Entry.Make Structure;
+          type t 'a = E.t 'a;
+          value mk = E.mk gram;
+          value of_parser name strm = E.of_parser gram name strm;
+          value setup_parser = E.setup_parser;
+          value name = E.name;
+          value print = E.print;
+          value clear = E.clear;
+          value dump = E.dump;
+        
+          value obj x = x;
+        end;
+        
+      #+END_SRC
+***** [[file:~/camlp4/src/Grammar/Dynamic.ml][Dynamic]]
+      
+      
 ** TODO Register mechanism
 
    (string,module Sig.PLUGIN) Hashtbl.t

@@ -83,8 +83,8 @@ and decr_keyw_use_in_tree gram =
         decr_keyw_use_in_tree gram n.brother
       } ]
 ;
-value rec delete_rule_in_suffix entry symbols =
-  fun
+
+value rec delete_rule_in_suffix entry symbols = fun
   [ [lev :: levs] ->
       match delete_rule_in_tree entry symbols lev.lsuffix with
       [ Some (dsl, t) ->
@@ -121,8 +121,7 @@ value rec delete_rule_in_prefix entry symbols =
             | _ ->
                 let lev =
                   {assoc = lev.assoc; lname = lev.lname;
-                   lsuffix = lev.lsuffix; lprefix = t}
-                in
+                   lsuffix = lev.lsuffix; lprefix = t} in
                 [lev :: levs] ]
           }
       | None ->
