@@ -18,7 +18,7 @@
  *)
 
 (* PR#5090: don't do lookahead on get_prev_loc. *)
-value get_prev_loc_only = ref False;
+(* value get_prev_loc_only = ref False; *)
 
 module Make (Structure : Structure.S) = struct
   open Structure;
@@ -35,10 +35,10 @@ module Make (Structure : Structure.S) = struct
     [ None -> [: :]
     | Some (tok0,init_loc) ->
       let rec go prev_loc strm1 =
-        if get_prev_loc_only.val then
-          [: `(tok0, {prev_loc; cur_loc = prev_loc; prev_loc_only = True});
-             go prev_loc strm1 :]
-        else
+        (* if get_prev_loc_only.val then *)
+        (*   [: `(tok0, {prev_loc; cur_loc = prev_loc; prev_loc_only = True}); *)
+        (*      go prev_loc strm1 :] *)
+        (* else *)
           match strm1 with parser
           [ [: `(tok,cur_loc); strm :] ->
               [: `(tok, {prev_loc; cur_loc; prev_loc_only = False});
@@ -55,13 +55,13 @@ module Make (Structure : Structure.S) = struct
 
   value get_prev_loc strm =
     begin
-      get_prev_loc_only.val := True;
+      (* get_prev_loc_only.val := True; *)
       let result = match Stream.peek strm with
         [ Some (_, {prev_loc; prev_loc_only = True}) ->
             begin Stream.junk strm; prev_loc end
         | Some (_, {prev_loc; prev_loc_only = False}) -> prev_loc
         | None -> Loc.ghost ];
-      get_prev_loc_only.val := False;
+      (* get_prev_loc_only.val := False; *)
       result
     end;
 

@@ -600,6 +600,192 @@
        semi_sep:
          [[ ";" -> ()]];
      #+END_SRC
+**** grammar code
+     
+***** [[file:~/camlp4/src/Grammar/Structure.ml][Structure]]
+      Type definitions
+
+      #+BEGIN_SRC ocaml
+        val using: gram -> string -> unit (* the second argument is
+        kwd*)
+        val removing: gram -> string -> unit
+      #+END_SRC
+      
+      let's take a look at the definition of =symbol=
+****** symbol
+       #+BEGIN_SRC ocaml
+         and symbol =
+           | Smeta of string * symbol list * Action.t (* FOLD0 and FOLD1 *)
+           | Snterm of internal_entry (* non-terminal *)
+           | Snterml of internal_entry * string (* non-terminal at given level *)
+           | Slist0 of symbol (* LIST0 *)
+           | Slist0sep of symbol * symbol (* LIST0 SEP *)
+           | Slist1 of symbol
+           | Slist1 of symbol * symbol
+           | Sopt of symbol
+           | Stry of symbol
+           | Sself
+           | Snext
+           | Stoken of token_pattern (* representation of a token pattern *)
+           | Skeyword of string
+           | Stree of tree
+         (*did not see it in grammar, the representation of an anonymous rule list *)
+                          
+         and tree =
+           | Node of node
+           | LocAct of Action.t * Action.t list
+           | DeadEnd
+         and node = {
+           node: symbol;
+           son: tree;
+           brother: tree;
+         }
+         and token_pattern = ((Token.t -> bool) * string)
+         
+         
+         (* mark it as global, so you don't need to create it once again
+          *)                      
+         (*
+         
+         Stoken for LIDENT or UIDENT or STRING
+         ((Gram.Stoken
+            (( function | LIDENT ("debug") -> (true) | _ -> (false)),
+          "LIDENT (\"debug\")")) )
+         
+         (Gram.Stoken
+           (( function | STRING (_) -> (true) | _ -> (false) ),
+                                  "STRING _"))
+          *)
+                               
+         (* Gram.Entry.obj : 'a t -> string *)
+         
+         
+         (*
+         
+             end_or_in:
+             [ [ "end" -> None
+               | "in"; e = expr -> Some e
+             ] ];
+         
+         ==> 
+         (
+                    (Gram.extend ( (end_or_in : 'end_or_in Gram.Entry.t) ) (
+                      ((fun ()
+                          ->
+                         (None , (
+                          [(None , None , (
+                            [((
+                              [( (Gram.Skeyword ("in")) ); (
+                               (Gram.Snterm
+                                 (Gram.Entry.obj ( (expr : 'expr Gram.Entry.t) ))) )]
+                              ), (
+                              (Gram.Action.mk (
+                                fun (e :
+                                  'expr) ->
+                                 fun _ ->
+                                  fun (_loc : Gram.Loc.t) -> ((Some (e)) : 'end_or_in)
+                                )) ));
+                             (( [( (Gram.Skeyword ("end")) )] ), (
+                              (Gram.Action.mk (
+                                fun _ ->
+                                 fun (_loc : Gram.Loc.t) -> ((None) : 'end_or_in) ))
+                              ))] ))] ))) () ) ))
+                    )
+          *)
+         (*
+             start_debug:
+             [ [ LIDENT "debug" -> None
+               | LIDENT "camlp4_debug" -> Some "Camlp4"
+             ] ];
+         ===========>
+         (Gram.extend ( (start_debug : 'start_debug Gram.Entry.t) ) (
+                      ((fun ()
+                          ->
+                         (None , (
+                          [(None , None , (
+                            [((
+                              [(
+                               (Gram.Stoken
+                                 ((
+                                  function
+                                  | LIDENT ("camlp4_debug") -> (true)
+                                  | _ -> (false) ), "LIDENT (\"camlp4_debug\")")) )]
+                              ), (
+                              (Gram.Action.mk (
+                                fun (__camlp4_0 :
+                                  Gram.Token.t) ->
+                                 fun (_loc :
+                                   Gram.Loc.t) ->
+                                  (match __camlp4_0 with
+                                   | LIDENT ("camlp4_debug") ->
+                                      ((Some ("Camlp4")) : 'start_debug)
+                                   | _ -> assert false) )) ));
+                             ((
+                              [(
+                               (Gram.Stoken
+                                 ((
+                                  function | LIDENT ("debug") -> (true) | _ -> (false)
+                                  ), "LIDENT (\"debug\")")) )] ), (
+                              (Gram.Action.mk (
+                                fun (__camlp4_0 :
+                                  Gram.Token.t) ->
+                                 fun (_loc :
+                                   Gram.Loc.t) ->
+                                  (match __camlp4_0 with
+                                   | LIDENT ("debug") -> ((None) : 'start_debug)
+                                   | _ -> assert false) )) ))] ))] ))) () ) ))
+          *)                      
+       #+END_SRC
+
+****** token_info
+       #+BEGIN_SRC ocaml
+         type token_info = {
+           prev_loc: Loc.t;
+           cur_loc: Loc.t;
+           prev_loc_only: bool
+         }
+       #+END_SRC
+***** [[file:~/camlp4/src/Grammar/Tools.ml][Tools]]
+      Utilities on top of =Structure.S=
+      #+BEGIN_SRC ocaml
+        val get_prev_loc_only : bool ref
+        module Make :
+          functor (Structure : Structure.S) ->
+            sig
+              val empty_entry : string -> 'a -> 'b
+              val stream_map :
+                ('a -> 'b) -> 'a Stream.t
+                -> 'b Stream.t (* utility should be removed *)
+        
+              val keep_prev_loc :
+                ('a * Loc.t) Stream.t ->
+                ('a * token_info) Stream.t
+              val drop_prev_loc :
+                ('a * Structure.token_info) Stream.t ->
+                ('a * Structure.Loc.t) Stream.t
+              val get_cur_loc :
+                ('a * token_info) Stream.t -> Loc.t
+              val get_prev_loc :
+                ('a * Structure.token_info) Stream.t -> Structure.Loc.t
+              val is_level_labelled : string -> Structure.level -> bool
+              val warning_verbose : bool ref
+              val get_token_list :
+                'a ->
+                symbol list ->
+                symbol ->
+                Structure.tree ->
+                (symbol list * symbol * tree) option
+              val is_antiquot : string -> bool
+              (* s.[0]='$'*)
+              val eq_Stoken_ids : string -> string -> bool
+              (* none antiquot and equal  *)                                          
+              val logically_eq_symbols :
+                internal_entry ->
+                symbol -> symbol -> bool
+              (* *)                        
+              val eq_symbol : symbol -> symbol -> bool
+            end
+      #+END_SRC
 ** TODO Register mechanism
 
    (string,module Sig.PLUGIN) Hashtbl.t

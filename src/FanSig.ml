@@ -1,5 +1,7 @@
-(** Signature for errors modules, an Error modules can be registred with
-the {!ErrorHandler.Register} functor in order to be well printed. *)
+
+(** An Error modules can be registred with
+    the {!ErrorHandler.Register}
+    functor in order to be well printed. *)
 module type Error = sig
   type t
   exception E of t
@@ -8,9 +10,11 @@ module type Error = sig
 end
 
 
+
 (** A signature for locations. *)
 module type Loc =  sig
-    (** The type of locations.  Note that, as for OCaml locations,
+
+  (** The type of locations.  Note that, as for OCaml locations,
         character numbers in locations refer to character numbers in the
         parsed character stream, while line numbers refer to line
         numbers in the source file. The source file and the parsed
@@ -22,16 +26,16 @@ module type Loc =  sig
         contain line number directives. *)
     type t
           
-          (** Return a start location for the given file name.
-              This location starts at the begining of the file. *)
+    (** Return a start location for the given file name.
+        This location starts at the begining of the file. *)
     val mk : string -> t
         
-        (** The [ghost] location can be used when no location
-            information is available. *)
+    (** The [ghost] location can be used when no location
+        information is available. *)
     val ghost : t
         
-        (** {6 Conversion functions} *)
-        (** Return a location where both positions are set the given position. *)
+    (** {6 Conversion functions} *)
+    (** Return a location where both positions are set the given position. *)
     val of_lexing_position : Lexing.position -> t
         
         (** Return an OCaml location. *)
@@ -233,6 +237,7 @@ end
     ["n"]. To interpret a string use the first string of the [STRING]
     constructor (or if you need to compute it use the module
     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *)
+
 type camlp4_token =
   | KEYWORD of string
   | SYMBOL of string

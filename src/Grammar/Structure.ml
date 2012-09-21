@@ -34,10 +34,11 @@ module type S = sig
       warning_verbose : ref bool;
       error_verbose   : ref bool };
 
-  type token_info = { prev_loc : Loc.t
-                    ; cur_loc : Loc.t
-                    ; prev_loc_only : bool
-                    };
+  type token_info = {
+      prev_loc : Loc.t;
+      cur_loc : Loc.t;
+      prev_loc_only : bool
+    };
 
   type token_stream = Stream.t (Token.t * token_info);
 
