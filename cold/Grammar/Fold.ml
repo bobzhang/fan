@@ -1,95 +1,135 @@
-(* camlp4r *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
+module Make =
+ functor (Structure : Structure.S) ->
+  struct
+   open Structure
 
+   open Format
 
+   module Parse = (Parser.Make)(Structure)
 
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-module Make (Structure : Structure.S) = struct
-  open Structure;
-  open Format;
-  module Parse = Parser.Make Structure;
-  module Fail = Failed.Make Structure;
-  (* open Sig.Grammar; *)
+   module Fail = (Failed.Make)(Structure)
 
-  (* Prevent from implict usage. *)
-  module Stream = struct
-    type t 'a = Stream.t 'a;
-    exception Failure = Stream.Failure;
-    exception Error = Stream.Error;
-  end;
+   open FanSig.Grammar
 
-  value sfold0 f e _entry _symbl psymb =
-    let rec fold accu =
-      parser
-      [ [: a = psymb; s :] -> fold (f a accu) s
-      | [: :] -> accu ]
-    in
-    parser [: a = fold e :] -> a
-  ;
+   module Stream =
+    struct
+     type 'a t = 'a Stream.t
 
-  value sfold1 f e _entry _symbl psymb =
-    let rec fold accu =
-      parser
-      [ [: a = psymb; s :] -> fold (f a accu) s
-      | [: :] -> accu ]
-    in
-    parser [: a = psymb; a = fold (f a e) :] -> a
-  ;
+     exception Failure = Stream.Failure
 
-  value sfold0sep f e entry symbl psymb psep =
-    let failed =
-      fun
-      [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
-      | _ -> "failed" ]
-    in
-    let rec kont accu =
-      parser
-      [ [: () = psep; a = psymb ?? failed symbl; s :] -> kont (f a accu) s
-      | [: :] -> accu ]
-    in
-    parser
-    [ [: a = psymb; s :] -> kont (f a e) s
-    | [: :] -> e ]
-  ;
+     exception Error = Stream.Error
 
-  value sfold1sep f e entry symbl psymb psep =
-    let failed =
-      fun
-      [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
-      | _ -> "failed" ]
-    in
-    let parse_top =
-      fun
-      [ [symb; _] -> Parse.parse_top_symb entry symb (* FIXME context *)
-      | _ -> raise Stream.Failure ]
-    in
-    let rec kont accu =
-      parser
-      [ [: () = psep;
-          a =
-            parser
-            [ [: a = psymb :] -> a
-            | [: a = parse_top symbl :] -> Obj.magic a
-            | [: :] -> raise (Stream.Error (failed symbl)) ];
-          s :] ->
-            kont (f a accu) s
-      | [: :] -> accu ]
-    in
-    parser [: a = psymb; s :] -> kont (f a e) s
-  ;
-end;
+    end
+
+   let sfold0 =
+    fun f ->
+     fun e ->
+      fun _entry ->
+       fun _symbl ->
+        fun psymb ->
+         let rec fold =
+          fun accu ->
+           fun (__strm :
+             _ Stream.t) ->
+            (match
+               (try (Some (psymb __strm)) with
+                Stream.Failure -> (None)) with
+             | Some (a) -> (fold ( (f a accu) ) __strm)
+             | _ -> accu) in
+         fun (__strm : _ Stream.t) -> (fold e __strm)
+
+   let sfold1 =
+    fun f ->
+     fun e ->
+      fun _entry ->
+       fun _symbl ->
+        fun psymb ->
+         let rec fold =
+          fun accu ->
+           fun (__strm :
+             _ Stream.t) ->
+            (match
+               (try (Some (psymb __strm)) with
+                Stream.Failure -> (None)) with
+             | Some (a) -> (fold ( (f a accu) ) __strm)
+             | _ -> accu) in
+         fun (__strm :
+           _ Stream.t) ->
+          let a = (psymb __strm) in
+          (try (fold ( (f a e) ) __strm) with
+           Stream.Failure -> (raise ( (Stream.Error ("")) )))
+
+   let sfold0sep =
+    fun f ->
+     fun e ->
+      fun entry ->
+       fun symbl ->
+        fun psymb ->
+         fun psep ->
+          let failed =
+           function
+           | (symb :: sep :: []) -> (Fail.symb_failed_txt entry sep symb)
+           | _ -> "failed" in
+          let rec kont =
+           fun accu ->
+            fun (__strm :
+              _ Stream.t) ->
+             (match
+                (try (Some (psep __strm)) with
+                 Stream.Failure -> (None)) with
+              | Some (()) ->
+                 let a =
+                  (try (psymb __strm) with
+                   Stream.Failure ->
+                    (raise ( (Stream.Error (failed symbl)) ))) in
+                 (kont ( (f a accu) ) __strm)
+              | _ -> accu) in
+          fun (__strm :
+            _ Stream.t) ->
+           (match
+              (try (Some (psymb __strm)) with
+               Stream.Failure -> (None)) with
+            | Some (a) -> (kont ( (f a e) ) __strm)
+            | _ -> e)
+
+   let sfold1sep =
+    fun f ->
+     fun e ->
+      fun entry ->
+       fun symbl ->
+        fun psymb ->
+         fun psep ->
+          let failed =
+           function
+           | (symb :: sep :: []) -> (Fail.symb_failed_txt entry sep symb)
+           | _ -> "failed" in
+          let parse_top =
+           function
+           | (symb :: _ :: []) -> (Parse.parse_top_symb entry symb)
+           | _ -> (raise Stream.Failure ) in
+          let rec kont =
+           fun accu ->
+            fun (__strm :
+              _ Stream.t) ->
+             (match
+                (try (Some (psep __strm)) with
+                 Stream.Failure -> (None)) with
+              | Some (()) ->
+                 let a =
+                  (try
+                    (try (psymb __strm) with
+                     Stream.Failure ->
+                      let a =
+                       (try (parse_top symbl __strm) with
+                        Stream.Failure ->
+                         (raise ( (Stream.Error (failed symbl)) ))) in
+                      (Obj.magic a))
+                   with
+                   Stream.Failure -> (raise ( (Stream.Error ("")) ))) in
+                 (kont ( (f a accu) ) __strm)
+              | _ -> accu) in
+          fun (__strm :
+            _ Stream.t) ->
+           let a = (psymb __strm) in (kont ( (f a e) ) __strm)
+
+  end

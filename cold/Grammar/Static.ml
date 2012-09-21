@@ -1,86 +1,102 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
+let uncurry = fun f -> fun (x, y) -> (f x y)
 
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
-*)
+let flip =
+                                               fun f ->
+                                                fun x -> fun y -> (f y x)
 
-value uncurry f (x,y) = f x y;
-value flip f x y = f y x;
 
-module Make (Lexer : FanSig.Lexer)
-(* : Sig.Grammar.Static with module Loc = Lexer.Loc *)
-(*                         and module Token = Lexer.Token *)
-= struct
-  module Structure = Structure.Make Lexer;
-  module Delete = Delete.Make Structure;
-  module Insert = Insert.Make Structure;
-  module Fold = Fold.Make Structure;
-  module Tools = Tools.Make Structure;
-  include Structure;
+module Make =
+ functor (Lexer : FanSig.Lexer) ->
+  (struct
+    module Structure = (Structure.Make)(Lexer)
 
-  value gram =
-    let gkeywords = Hashtbl.create 301 in
-    {
-      gkeywords = gkeywords;
-      gfilter = Token.Filter.mk (Hashtbl.mem gkeywords);
-      glexer = Lexer.mk ();
-      warning_verbose = ref True; (* FIXME *)
-      error_verbose = FanConfig.verbose
-    };
+    module Delete = (Delete.Make)(Structure)
 
-  module Entry = struct
-    module E = Entry.Make Structure;
-    type t 'a = E.t 'a;
-    value mk = E.mk gram;
-    value of_parser name strm = E.of_parser gram name strm;
-    value setup_parser = E.setup_parser;
-    value name = E.name;
-    value print = E.print;
-    value clear = E.clear;
-    value dump = E.dump;
+    module Insert = (Insert.Make)(Structure)
 
-    value obj x = x;
-  end;
-  value trace_parser = Entry.E.trace_parser;
-    
-  value get_filter () = gram.gfilter;
+    module Fold = (Fold.Make)(Structure)
 
-  value lex loc cs = gram.glexer loc cs;
+    module Tools = (Tools.Make)(Structure)
 
-  value lex_string loc str = lex loc (Stream.of_string str);
+    include Structure
 
-  value filter ts = Tools.keep_prev_loc (Token.Filter.filter gram.gfilter ts);
+    let gram =
+     let gkeywords = (Hashtbl.create 301) in
+     {gkeywords = gkeywords;
+      gfilter = ( (Token.Filter.mk ( (Hashtbl.mem gkeywords) )) );
+      glexer = ( (Lexer.mk () ) ); warning_verbose = ( (ref true ) );
+      error_verbose = FanConfig.verbose}
 
-  value parse_tokens_after_filter entry ts = Entry.E.parse_tokens_after_filter entry ts;
+    module Entry =
+     struct
+      module E = (Entry.Make)(Structure)
 
-  value parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter ts);
+      type 'a t = 'a E.t
 
-  value parse entry loc cs = parse_tokens_before_filter entry (lex loc cs);
+      let mk = (E.mk gram)
 
-  value parse_string entry loc str = parse_tokens_before_filter entry (lex_string loc str);
+      let of_parser = fun name -> fun strm -> (E.of_parser gram name strm)
 
-  value delete_rule = Delete.delete_rule;
+      let setup_parser = E.setup_parser
 
-  value srules e rl =
-    Stree (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl);
-  value sfold0 = Fold.sfold0;
-  value sfold1 = Fold.sfold1;
-  value sfold0sep = Fold.sfold0sep;
-  (* value sfold1sep = Fold.sfold1sep; *)
+      let name = E.name
 
-  value extend = Insert.extend;
+      let print = E.print
 
-end;
+      let clear = E.clear
+
+      let dump = E.dump
+
+      let obj = fun x -> x
+
+     end
+
+    let trace_parser = Entry.E.trace_parser
+
+    let get_filter = fun ()  -> gram.gfilter
+
+    let lex = fun loc -> fun cs -> ((gram.glexer) loc cs)
+
+    let lex_string =
+     fun loc -> fun str -> (lex loc ( (Stream.of_string str) ))
+
+    let filter =
+     fun ts ->
+      (Tools.keep_prev_loc ( (Token.Filter.filter ( gram.gfilter ) ts) ))
+
+    let parse_tokens_after_filter =
+     fun entry -> fun ts -> (Entry.E.parse_tokens_after_filter entry ts)
+
+    let parse_tokens_before_filter =
+     fun entry -> fun ts -> (parse_tokens_after_filter entry ( (filter ts) ))
+
+    let parse =
+     fun entry ->
+      fun loc ->
+       fun cs -> (parse_tokens_before_filter entry ( (lex loc cs) ))
+
+    let parse_string =
+     fun entry ->
+      fun loc ->
+       fun str -> (parse_tokens_before_filter entry ( (lex_string loc str) ))
+
+    let delete_rule = Delete.delete_rule
+
+    let srules =
+     fun e ->
+      fun rl ->
+       (Stree
+         (List.fold_left ( (flip ( (uncurry ( (Insert.insert_tree e) )) )) )
+           DeadEnd  rl))
+
+    let sfold0 = Fold.sfold0
+
+    let sfold1 = Fold.sfold1
+
+    let sfold0sep = Fold.sfold0sep
+
+    let extend = Insert.extend
+
+   end :
+    (FanSig.Grammar.Static with module Loc = Lexer.Loc and module Loc =
+     Lexer.Loc and module Token = Lexer.Token))

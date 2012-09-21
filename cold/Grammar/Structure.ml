@@ -1,247 +1,221 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
+open FanSig.Grammar
 
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
+module type S =
+                      sig
+                       module Loc : FanSig.Loc
 
+                       module Token : (FanSig.Token with module Loc = Loc)
 
-module type S = sig
-  type assoc =
-  [ NonA
-  | RightA
-  | LeftA ];
+                       module Lexer :
+                        (FanSig.Lexer with module Loc = Loc and module Loc =
+                         Loc and module Token = Token)
 
-  type position =
-  [ First
-  | Last
-  | Before of string
-  | After of string
-  | Level of string ];
-  
-  module Loc          : FanSig.Loc;
-  module Token        : FanSig.Token with module Loc = Loc;
-  module Lexer        : FanSig.Lexer
-                        with module Loc   = Loc
-                         and module Token = Token;
-  module Action       : sig
-    type t;
-    value mk    : 'a ->  t;
-    value get   :  t -> 'a;
-    value getf  :  t -> ('a -> 'b);
-    value getf2 :  t -> ('a -> 'b -> 'c);
-  end;
+                       module Action : FanSig.Grammar.Action
 
-  type gram =
-    { gfilter         : Token.Filter.t;
-      gkeywords       : Hashtbl.t string (ref int);
-      glexer          : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
-      warning_verbose : ref bool;
-      error_verbose   : ref bool };
+                       type gram = {
+                                     gfilter:Token.Filter.t;
+                                     gkeywords:(string, int ref) Hashtbl.t;
+                                     glexer:(Loc.t ->
+                                             (char Stream.t ->
+                                              (Token.t * Loc.t) Stream.t));
+                                     warning_verbose:bool ref;
+                                     error_verbose:bool ref}
 
-  type token_info = { prev_loc : Loc.t
-                    ; cur_loc : Loc.t
-                    ; prev_loc_only : bool
-                    };
+                       type token_info = {
+                                           prev_loc:Loc.t;
+                                           cur_loc:Loc.t;
+                                           prev_loc_only:bool}
 
-  type token_stream = Stream.t (Token.t * token_info);
+ type token_stream = (Token.t * token_info) Stream.t
 
-  type efun = token_stream -> Action.t;
+ type efun = (token_stream -> Action.t)
 
-  type token_pattern = ((Token.t -> bool) * string);
+ type token_pattern = ((Token.t -> bool) * string)
 
-  type internal_entry =
-    { egram     : gram;
-      ename     : string;
-      estart    : mutable int -> efun;
-      econtinue : mutable int -> Loc.t -> Action.t -> efun;
-      edesc     : mutable desc }
-  and desc =
-    [ Dlevels of list level
-    | Dparser of token_stream -> Action.t ]
-  and level =
-    { assoc   : assoc         ;
-      lname   : option string ;
-      lsuffix : tree          ;
-      lprefix : tree          }
-  and symbol =
-    [ Smeta of string and list symbol and Action.t
-    | Snterm of internal_entry
-    | Snterml of internal_entry and string
-    | Slist0 of symbol
-    | Slist0sep of symbol and symbol
-    | Slist1 of symbol
-    | Slist1sep of symbol and symbol
-    | Sopt of symbol
-    | Stry of symbol
-    | Sself
-    | Snext
-    | Stoken of token_pattern
-    | Skeyword of string
-    | Stree of tree ]
-  and tree =
-    [ Node of node
-    | LocAct of Action.t and list Action.t
-    | DeadEnd ]
-  and node =
-    { node    : symbol ;
-      son     : tree   ;
-      brother : tree   };
+ type internal_entry = {
+                         egram:gram;
+                         ename:string;
+                         mutable estart:(int -> efun);
+                         mutable econtinue:(int ->
+                                            (Loc.t -> (Action.t -> efun)));
+                         mutable edesc:desc}
+and desc = Dlevels of level list | Dparser of (token_stream -> Action.t)
+and level = {assoc:assoc; lname:string option; lsuffix:tree; lprefix:tree}
+and symbol =
+    Smeta of string * symbol list * Action.t
+  | Snterm of internal_entry
+  | Snterml of internal_entry * string
+  | Slist0 of symbol
+  | Slist0sep of symbol * symbol
+  | Slist1 of symbol
+  | Slist1sep of symbol * symbol
+  | Sopt of symbol
+  | Stry of symbol
+  | Sself
+  | Snext
+  | Stoken of token_pattern
+  | Skeyword of string
+  | Stree of tree
+and tree = Node of node | LocAct of Action.t * Action.t list | DeadEnd
+and node = {node:symbol; son:tree; brother:tree}
 
-  type production_rule = (list symbol * Action.t);
-  type single_extend_statment =
-    (option string * option assoc * list production_rule);
-  type extend_statment =
-    (option position * list single_extend_statment);
-  type delete_statment = list symbol;
+ type production_rule = (symbol list * Action.t)
 
-  type fold 'a 'b 'c =
-    internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
+ type single_extend_statment =
+  (string option * assoc option * production_rule list)
 
-  type foldsep 'a 'b 'c =
-    internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
+ type extend_statment =
+  (position option * single_extend_statment list)
 
-  (* Accessors *)
-  value get_filter : gram -> Token.Filter.t;
+ type delete_statment = symbol list
 
-  (* Useful functions *)
-  value using : gram -> string -> unit;
-  value removing : gram -> string -> unit;
-end;
+ type ('a, 'b, 'c) fold =
+  (internal_entry ->
+   (symbol list -> (('a Stream.t -> 'b) -> ('a Stream.t -> 'c))))
 
-  
-module Make (Lexer  : FanSig.Lexer) = struct
+ type ('a, 'b, 'c) foldsep =
+  (internal_entry ->
+   (symbol list ->
+    (('a Stream.t -> 'b) ->
+     (('a Stream.t -> unit) -> ('a Stream.t -> 'c)))))
 
-  type assoc =
-    [ NonA
-    | RightA
-    | LeftA ];
+ val get_filter : (gram -> Token.Filter.t)
 
-  type position =
-    [ First
-    | Last
-    | Before of string
-    | After of string
-    | Level of string ];
+ val using : (gram -> (string -> unit))
 
-  module Loc = Lexer.Loc;
-  module Token = Lexer.Token;
-  module Action  = struct
-    type  t     = Obj.t   ;
-    value mk    = Obj.repr;
-    value get   = Obj.obj ;
-    value getf  = Obj.obj ;
-    value getf2 = Obj.obj ;
-  end;
-  module Lexer = Lexer;
+ val removing : (gram -> (string -> unit))
 
-  type gram = {
-      gfilter         : Token.Filter.t;
-      gkeywords       : Hashtbl.t string (ref int);
-      glexer          : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
-      warning_verbose : ref bool;
-      error_verbose   : ref bool };
+end
 
-  type token_info = {
-      prev_loc : Loc.t;
-      cur_loc : Loc.t ;
-      prev_loc_only : bool;
-    };
+module Make =
+      functor (Lexer : FanSig.Lexer) ->
+       struct
+        module Loc = Lexer.Loc
 
-  type token_stream =
-      Stream.t (Token.t * token_info);
+        module Token = Lexer.Token
 
-  type efun =
-      token_stream -> Action.t;
+        module Action : FanSig.Grammar.Action =
+         struct
+          type t = Obj.t
 
-  type token_pattern =
-      ((Token.t -> bool) * string);
+          let mk = Obj.repr
 
-  type internal_entry = {
-      egram     : gram;
-      ename     : string;
-      estart    : mutable int -> efun;
-      econtinue : mutable int -> Loc.t -> Action.t -> efun;
-      edesc     : mutable desc }
-  and desc =
-    [ Dlevels of list level
-    | Dparser of token_stream -> Action.t ]
-  and level =
-    { assoc   : assoc         ;
-      lname   : option string ;
-      lsuffix : tree          ;
-      lprefix : tree          }
-  and symbol =
-    [ Smeta of string and list symbol and Action.t
-    | Snterm of internal_entry
-    | Snterml of internal_entry and string
-    | Slist0 of symbol
-    | Slist0sep of symbol and symbol
-    | Slist1 of symbol
-    | Slist1sep of symbol and symbol
-    | Sopt of symbol
-    | Stry of symbol
-    | Sself
-    | Snext
-    | Stoken of token_pattern
-    | Skeyword of string
-    | Stree of tree ]
-  and tree =
-    [ Node of node
-    | LocAct of Action.t and list Action.t
-    | DeadEnd ]
-  and node =
-    { node    : symbol ;
-      son     : tree   ;
-      brother : tree   };
+          let get = Obj.obj
 
-  type production_rule = (list symbol * Action.t);
-  type single_extend_statment =
-    (option string * option assoc * list production_rule);
-  type extend_statment =
-    (option position * list single_extend_statment);
-  type delete_statment = list symbol;
+          let getf = Obj.obj
 
-  type fold 'a 'b 'c =
-    internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
+          let getf2 = Obj.obj
 
-  type foldsep 'a 'b 'c =
-    internal_entry -> list symbol ->
-      (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
+         end
 
-  value get_filter g = g.gfilter;
-  value token_location r = r.cur_loc;
+        module Lexer = Lexer
 
-  type not_filtered 'a = 'a;
-  value using { gkeywords = table; gfilter = filter } kwd =
-    let r = try Hashtbl.find table kwd with
-            [ Not_found ->
-                let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
-    in do { Token.Filter.keyword_added filter kwd (r.val = 0);
-            incr r };
+        type gram = {
+                      gfilter:Token.Filter.t;
+                      gkeywords:(string, int ref) Hashtbl.t;
+                      glexer:(Loc.t ->
+                              (char Stream.t ->
+                               (Token.t * Loc.t) Stream.t));
+                      warning_verbose:bool ref;
+                      error_verbose:bool ref}
 
-  value removing { gkeywords = table; gfilter = filter } kwd =
-    let r = Hashtbl.find table kwd in
-    let () = decr r in
-    if r.val = 0 then do {
-      Token.Filter.keyword_removed filter kwd;
-      Hashtbl.remove table kwd
-    } else ();
-end;
+        type token_info = {
+                            prev_loc:Loc.t;
+                            cur_loc:Loc.t;
+                            prev_loc_only:bool}
 
+       type token_stream = (Token.t * token_info) Stream.t
 
+       type efun = (token_stream -> Action.t)
+
+       type token_pattern = ((Token.t -> bool) * string)
+
+       type internal_entry = {
+                               egram:gram;
+                               ename:string;
+                               mutable estart:(int -> efun);
+                               mutable econtinue:(int ->
+                                                  (Loc.t ->
+                                                   (Action.t -> efun)));
+                               mutable edesc:desc}
+      and desc =
+          Dlevels of level list
+        | Dparser of (token_stream -> Action.t)
+      and level = {
+                    assoc:assoc;
+                    lname:string option;
+                    lsuffix:tree;
+                    lprefix:tree}
+and symbol =
+    Smeta of string * symbol list * Action.t
+  | Snterm of internal_entry
+  | Snterml of internal_entry * string
+  | Slist0 of symbol
+  | Slist0sep of symbol * symbol
+  | Slist1 of symbol
+  | Slist1sep of symbol * symbol
+  | Sopt of symbol
+  | Stry of symbol
+  | Sself
+  | Snext
+  | Stoken of token_pattern
+  | Skeyword of string
+  | Stree of tree
+and tree =
+    Node of node | LocAct of Action.t * Action.t list | DeadEnd
+and node = {node:symbol; son:tree; brother:tree}
+
+ type production_rule = (symbol list * Action.t)
+
+ type single_extend_statment =
+  (string option * assoc option * production_rule list)
+
+ type extend_statment =
+  (position option * single_extend_statment list)
+
+ type delete_statment = symbol list
+
+ type ('a, 'b, 'c) fold =
+  (internal_entry ->
+   (symbol list -> (('a Stream.t -> 'b) -> ('a Stream.t -> 'c))))
+
+ type ('a, 'b, 'c) foldsep =
+  (internal_entry ->
+   (symbol list ->
+    (('a Stream.t -> 'b) ->
+     (('a Stream.t -> unit) -> ('a Stream.t -> 'c)))))
+
+ let get_filter = fun g -> g.gfilter
+
+ let token_location = fun r -> r.cur_loc
+ type 'a not_filtered = 'a
+
+ let using =
+  fun {gkeywords = table;
+   gfilter = filter} ->
+   fun kwd ->
+    let r =
+     (try (Hashtbl.find table kwd) with
+      Not_found ->
+       let r = (ref 0) in ( (Hashtbl.add table kwd r) ); r) in
+    (
+    (Token.Filter.keyword_added filter kwd ( (( !r ) = 0) ))
+    );
+    (incr r)
+
+ let removing =
+  fun {gkeywords = table;
+   gfilter = filter} ->
+   fun kwd ->
+    let r = (Hashtbl.find table kwd) in
+    let () = (decr r) in
+    if (( !r ) = 0)
+    then
+     begin
+     (
+     (Token.Filter.keyword_removed filter kwd)
+     );
+     (Hashtbl.remove table kwd)
+    end else ()
+
+end

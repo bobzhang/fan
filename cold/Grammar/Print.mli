@@ -1,28 +1,50 @@
-module Make (Structure : Structure.S) : sig
-  value flatten_tree : Structure.tree -> list (list Structure.symbol);
-  value print_symbol : Format.formatter -> Structure.symbol -> unit;
-  value print_meta :
-    Format.formatter -> string -> list Structure.symbol -> unit;
-  value print_symbol1 : Format.formatter -> Structure.symbol -> unit;
-  value print_rule : Format.formatter -> list Structure.symbol -> unit;
-  value print_level :
-    Format.formatter ->
-    (Format.formatter -> unit -> unit) ->
-    list (list Structure.symbol) -> unit;
-  value levels : Format.formatter -> list Structure.level -> unit;
-  value entry : Format.formatter -> Structure.internal_entry -> unit;
-end;
+module Make :
+ functor (Structure : Structure.S) ->
+  sig
+   val flatten_tree : (Structure.tree -> Structure.symbol list list)
 
-module MakeDump (Structure : Structure.S) : sig
-  value print_symbol : Format.formatter -> Structure.symbol -> unit;
-  value print_meta :
-    Format.formatter -> string -> list Structure.symbol -> unit;
-  value print_symbol1 : Format.formatter -> Structure.symbol -> unit;
-  value print_rule : Format.formatter -> list Structure.symbol -> unit;
-  value print_level :
-    Format.formatter ->
-    (Format.formatter -> unit -> unit) ->
-    list (list Structure.symbol) -> unit;
-  value levels : Format.formatter -> list Structure.level -> unit;
-  value entry : Format.formatter -> Structure.internal_entry -> unit;
-end;
+   val print_symbol : (Format.formatter -> (Structure.symbol -> unit))
+
+   val print_meta :
+    (Format.formatter -> (string -> (Structure.symbol list -> unit)))
+
+   val print_symbol1 : (Format.formatter -> (Structure.symbol -> unit))
+
+   val print_rule : (Format.formatter -> (Structure.symbol list -> unit))
+
+   val print_level :
+    (Format.formatter ->
+     ((Format.formatter -> (unit -> unit)) ->
+      (Structure.symbol list list -> unit)))
+
+   val levels : (Format.formatter -> (Structure.level list -> unit))
+
+   val entry : (Format.formatter -> (Structure.internal_entry -> unit))
+
+  end
+
+module MakeDump :
+        functor (Structure : Structure.S) ->
+         sig
+          val print_symbol : (Format.formatter -> (Structure.symbol -> unit))
+
+          val print_meta :
+           (Format.formatter -> (string -> (Structure.symbol list -> unit)))
+
+          val print_symbol1 :
+           (Format.formatter -> (Structure.symbol -> unit))
+
+          val print_rule :
+           (Format.formatter -> (Structure.symbol list -> unit))
+
+          val print_level :
+           (Format.formatter ->
+            ((Format.formatter -> (unit -> unit)) ->
+             (Structure.symbol list list -> unit)))
+
+          val levels : (Format.formatter -> (Structure.level list -> unit))
+
+          val entry :
+           (Format.formatter -> (Structure.internal_entry -> unit))
+
+         end
