@@ -90,23 +90,23 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr comprehension_or_sem_expr_for_list;
 
-    expr: LEVEL "simple"
+    expr: Level "simple"
       [ [ "["; e = comprehension_or_sem_expr_for_list; "]" -> e ] ]
     ;
 
     comprehension_or_sem_expr_for_list:
-      [ [ e = expr LEVEL "top"; ";"; mk = sem_expr_for_list ->
+      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list ->
             <:expr< [ $e :: $(mk <:expr< [] >>) ] >>
-        | e = expr LEVEL "top"; ";" -> <:expr< [$e] >>
-        | e = expr LEVEL "top"; "|"; l = LIST1 item SEP ";" -> compr _loc e l
-        | e = expr LEVEL "top" -> <:expr< [$e] >> ] ]
+        | e = expr Level "top"; ";" -> <:expr< [$e] >>
+        | e = expr Level "top"; "|"; l = LIST1 item SEP ";" -> compr _loc e l
+        | e = expr Level "top" -> <:expr< [$e] >> ] ]
     ;
 
     item:
       (* NP: These rules rely on being on this particular order. Which should
              be improved. *)
-      [ [ p = TRY [p = patt; "<-" -> p] ; e = expr LEVEL "top" -> `gen (p, e)
-        | e = expr LEVEL "top" -> `cond e ] ]
+      [ [ p = TRY [p = patt; "<-" -> p] ; e = expr Level "top" -> `gen (p, e)
+        | e = expr Level "top" -> `cond e ] ]
     ;
 
   END;
@@ -116,9 +116,9 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       GLOBAL: expr comprehension_or_sem_expr_for_list;
 
       comprehension_or_sem_expr_for_list:
-      [ [ e = expr LEVEL "top"; ";"; mk = sem_expr_for_list; "::"; last = expr ->
+      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list; "::"; last = expr ->
             <:expr< [ $e :: $(mk last) ] >>
-        | e = expr LEVEL "top"; "::"; last = expr ->
+        | e = expr Level "top"; "::"; last = expr ->
             <:expr< [ $e :: $last ] >> ] ]
       ;
     END

@@ -694,7 +694,7 @@ Grammars, EXTEND, DELETE_RULE
   completed in this version).
 * Added statements GEXTEND and GDELETE_RULE in pa_extend.cmo for functorial
   version.
-* EXTEND statement is added AFTER "top" instead of LEVEL "top" (because
+* EXTEND statement is added After "top" instead of Level "top" (because
   of problems parsing "a; EXTEND...")
 * Added ability to have expressions (in antiquotation form) of type string in
   EXTEND after keywords "LIDENT", "UIDENT", "IDENT", "ANTIQUOT", "INT" as
@@ -771,7 +771,7 @@ Camlp4 Version 1.06:
 * Fixed bug "open A.B.C" was interpreted as "open B.A.C"
 * Modified behavior of "DELETE_RULE": the complete rule must be provided
 * Completed quotations MLast ("expr", "patt", etc) to accept whole language
-* Renamed "LIKE" into "LEVEL" in grammar EXTEND
+* Renamed "LIKE" into "Level" in grammar EXTEND
 * Added "NEXT" as grammar symbol in grammar EXTEND
 * Added command "mkcamlp4" to make camlp4 executables linked with C code
 * Added "pr_extend.cmo" to reconstitute EXTEND instructions

@@ -298,7 +298,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr stream_expr stream_begin stream_end stream_quot
       parser_case parser_case_list;
-    expr: LEVEL "top"
+    expr: Level "top"
       [ [ "parser"; po = OPT parser_ipatt; pcl = parser_case_list ->
             cparser _loc po pcl
         | "match"; e = sequence; "with"; "parser"; po = OPT parser_ipatt;
@@ -353,7 +353,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | "_" -> <:patt< _ >>
       ] ]
     ;
-    expr: LEVEL "simple"
+    expr: Level "simple"
       [ [ stream_begin; stream_end -> <:expr< $(cstream _loc []) >>
         | stream_begin; sel = stream_expr_comp_list; stream_end ->
             <:expr< $(cstream _loc sel) >> ] ]

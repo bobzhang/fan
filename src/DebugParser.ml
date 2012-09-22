@@ -45,7 +45,7 @@ module MakeDebugParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     GLOBAL: expr;
     expr:
     [ [ m = start_debug; section = LIDENT; fmt = STRING;
-        args = LIST0 expr LEVEL "."; x = end_or_in ->
+        args = LIST0 expr Level "."; x = end_or_in ->
       match (x, debug_mode section) with
       [ (None,   False) -> <:expr< () >>
       | (Some e, False) -> e

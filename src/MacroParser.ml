@@ -168,10 +168,10 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       match eo with
       [ Some ([], e) ->
           EXTEND Gram
-            expr: LEVEL "simple"
+            expr: Level "simple"
               [ [ UIDENT $x -> (new reloc _loc)#expr e ]]
             ;
-            patt: LEVEL "simple"
+            patt: Level "simple"
               [ [ UIDENT $x ->
                     let p = substp _loc [] e
                     in (new reloc _loc)#patt p ]]
@@ -179,7 +179,7 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
           END
       | Some (sl, e) ->
           EXTEND Gram
-            expr: LEVEL "apply"
+            expr: Level "apply"
               [ [ UIDENT $x; param = SELF ->
                     let el =
                       match param with
@@ -192,7 +192,7 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
                     else
                       incorrect_number _loc el sl ] ]
             ;
-            patt: LEVEL "simple"
+            patt: Level "simple"
               [ [ UIDENT $x; param = SELF ->
                     let pl =
                       match param with
@@ -300,11 +300,11 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
 
   EXTEND Gram
     GLOBAL: expr patt str_item sig_item;
-    str_item: FIRST
+    str_item: First
       [ [ x = macro_def ->
             execute_macro <:str_item<>> (fun a b -> <:str_item< $a; $b >>) x ] ]
     ;
-    sig_item: FIRST
+    sig_item: First
       [ [ x = macro_def_sig ->
             execute_macro <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) x ] ]
     ;
@@ -375,7 +375,7 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | "="; e = expr -> Some ([], e)
         | -> None ] ]
     ;
-    expr: LEVEL "top"
+    expr: Level "top"
       [ [ "IFDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
             if is_defined i then e1 else e2
         | "IFNDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
@@ -393,13 +393,13 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       [ [ i = UIDENT -> i ] ]
     ;
     (* dirty hack to allow polymorphic variants using the introduced keywords. *)
-    expr: BEFORE "simple"
+    expr: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
                      | "DEFINE" | "IN" ] -> <:expr< `$uid:kwd >>
         | "`"; s = a_ident -> <:expr< ` $s >> ] ]
     ;
     (* idem *)
-    patt: BEFORE "simple"
+    patt: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ] ->
             <:patt< `$uid:kwd >>
         | "`"; s = a_ident -> <:patt< ` $s >> ] ]

@@ -40,7 +40,7 @@ module Make (Structure : Structure.S) = struct
         fprintf ppf "LIST1 %a SEP %a" print_symbol1 s print_symbol1 t
     | Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
     | Stry s -> fprintf ppf "TRY %a" print_symbol1 s
-    | Snterml e l -> fprintf ppf "%s@ LEVEL@ %S" e.ename l
+    | Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
     | Snterm _ | Snext | Sself | Stree _ | Stoken _ | Skeyword _ as s ->
         print_symbol1 ppf s ]
   and print_meta ppf n sl =
@@ -176,7 +176,7 @@ module MakeDump (Structure : Structure.S) = struct
         fprintf ppf "LIST1 %a SEP %a" print_symbol1 s print_symbol1 t
     | Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
     | Stry s -> fprintf ppf "TRY %a" print_symbol1 s
-    | Snterml e l -> fprintf ppf "%s@ LEVEL@ %S" e.ename l
+    | Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
     | Snterm _ | Snext | Sself | Stree _ | Stoken _ | Skeyword _ as s ->
         print_symbol1 ppf s ]
   and print_meta ppf n sl =

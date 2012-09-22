@@ -732,7 +732,7 @@ New syntax:\
     comma_expr:
       [ [ e1 = SELF; ","; e2 = SELF -> <:expr< $e1, $e2 >>
         | `ANTIQUOT ("list" as n) s -> <:expr< $(anti:mk_anti ~c:"expr," n s) >>
-        | e = expr LEVEL "top" -> e ] ]
+        | e = expr Level "top" -> e ] ]
     ;
     dummy:
       [ [ -> () ] ]
@@ -1054,7 +1054,7 @@ New syntax:\
       [ "==" LA
         [ t1 = SELF; "=="; t2 = SELF -> <:ctyp< $t1 == $t2 >> ]
       | "private" NA
-        [ "private"; t = ctyp LEVEL "alias" -> <:ctyp< private $t >> ]
+        [ "private"; t = ctyp Level "alias" -> <:ctyp< private $t >> ]
       | "alias" LA
         [ t1 = SELF; "as"; t2 = SELF ->
           <:ctyp< $t1 as $t2 >> ]
@@ -1305,7 +1305,7 @@ New syntax:\
         | "let"; rf = opt_rec; bi = binding; "in"; ce = SELF ->
             <:class_expr< let $rec:rf $bi in $ce >> ]
       | "apply" NA
-        [ ce = SELF; e = expr LEVEL "label" ->
+        [ ce = SELF; e = expr Level "label" ->
             <:class_expr< $ce $e >> ]
       | "simple"
         [ `ANTIQUOT (""|"cexp"|"anti" as n) s ->
@@ -1498,7 +1498,7 @@ New syntax:\
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
-        | l = label; "="; e = expr LEVEL "top" ->
+        | l = label; "="; e = expr Level "top" ->
             <:rec_binding< $lid:l = $e >> ] ]
     ;
     meth_list:

@@ -23,14 +23,14 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     try
       (DELETE_RULE Gram expr: "if"; SELF; "then"; SELF; "else"; SELF END; True)
     with [ Not_found -> begin
-      DELETE_RULE Gram expr: "if"; SELF; "then"; expr LEVEL "top"; "else"; expr LEVEL "top" END;
-      DELETE_RULE Gram expr: "if"; SELF; "then"; expr LEVEL "top" END; False
+      DELETE_RULE Gram expr: "if"; SELF; "then"; expr Level "top"; "else"; expr Level "top" END;
+      DELETE_RULE Gram expr: "if"; SELF; "then"; expr Level "top" END; False
     end ];
 
   if revised then begin
     DELETE_RULE Gram expr: "fun"; "["; LIST0 match_case0 SEP "|"; "]" END;
     EXTEND Gram
-      expr: LEVEL "top"
+      expr: Level "top"
       [ [ "function"; a = match_case -> <:expr< fun [ $a ] >> ] ];
     END;
     DELETE_RULE Gram value_let: "value" END;
@@ -53,7 +53,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:match_case< $p when $w -> $(mkseq _loc e) >> ] ]
     ;
 
-    expr: LEVEL "top"
+    expr: Level "top"
       [ [ "if"; e1 = sequence; "then"; e2 = sequence; "else"; e3 = sequence; "end" ->
             <:expr< if $(mkseq _loc e1) then $(mkseq _loc e2) else $(mkseq _loc e3) >>
         | "if"; e1 = sequence; "then"; e2 = sequence; "end" ->

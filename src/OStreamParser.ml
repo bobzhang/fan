@@ -19,7 +19,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
 
   EXTEND Gram
     stream_expr:
-      [ [ e = expr LEVEL "top" -> e ] ]
+      [ [ e = expr Level "top" -> e ] ]
     ;
     stream_begin:
       [ [ "[<" -> () ] ]

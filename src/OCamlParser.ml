@@ -207,9 +207,9 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       infixop0 infixop1 infixop2 infixop3 infixop4 do_sequence package_type
     ;
     sem_expr:
-      [ [ e1 = expr LEVEL "top"; ";"; e2 = SELF -> <:expr< $e1; $e2 >>
-        | e = expr LEVEL "top"; ";" -> e
-        | e = expr LEVEL "top" -> e ] ]
+      [ [ e1 = expr Level "top"; ";"; e2 = SELF -> <:expr< $e1; $e2 >>
+        | e = expr Level "top"; ";" -> e
+        | e = expr Level "top" -> e ] ]
     ;
     sequence:
       [ [ e = sem_expr -> e ] ]
@@ -219,10 +219,10 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       ] ]
     ;
     sem_expr_for_list:
-      [ [ e = expr LEVEL "top"; ";"; el = SELF -> fun acc ->
+      [ [ e = expr Level "top"; ";"; el = SELF -> fun acc ->
         <:expr< [ $e :: $(el acc) ] >>
-        | e = expr LEVEL "top"; ";" -> fun acc -> <:expr< [ $e :: $acc ] >>
-        | e = expr LEVEL "top" -> fun acc -> <:expr< [ $e :: $acc ] >>
+        | e = expr Level "top"; ";" -> fun acc -> <:expr< [ $e :: $acc ] >>
+        | e = expr Level "top" -> fun acc -> <:expr< [ $e :: $acc ] >>
       ] ]
     ;
     str_item:
@@ -240,46 +240,46 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       ] ]
     ;
     seq_expr:
-      [ [ e1 = expr LEVEL "top"; ";"; e2 = SELF ->
+      [ [ e1 = expr Level "top"; ";"; e2 = SELF ->
             conc_seq e1 e2
-        | e1 = expr LEVEL "top"; ";" -> e1
-        | e1 = expr LEVEL "top" -> e1 ] ];
-    expr: BEFORE "top"
+        | e1 = expr Level "top"; ";" -> e1
+        | e1 = expr Level "top" -> e1 ] ];
+    expr: Before "top"
       [ ";" [ e = seq_expr -> e ] ];
-    expr: LEVEL "top"
+    expr: Level "top"
       [ [ "let"; r = opt_rec; bi = binding; "in";
-          x = expr LEVEL ";" ->
+          x = expr Level ";" ->
             <:expr< let $rec:r $bi in $x >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in";
-          e = expr LEVEL ";" ->
+          e = expr Level ";" ->
             <:expr< let module $m = $mb in $e >>
-        | "let"; "open"; i = module_longident; "in"; e = expr LEVEL ";" ->
+        | "let"; "open"; i = module_longident; "in"; e = expr Level ";" ->
             <:expr< let open $id:i in $e >>
         | "function"; a = match_case ->
             <:expr< fun [ $a ] >>
-        | "if"; e1 = SELF; "then"; e2 = expr LEVEL "top";
-          "else"; e3 = expr LEVEL "top" ->
+        | "if"; e1 = SELF; "then"; e2 = expr Level "top";
+          "else"; e3 = expr Level "top" ->
             <:expr< if $e1 then $e2 else $e3 >>
-        | "if"; e1 = SELF; "then"; e2 = expr LEVEL "top" ->
+        | "if"; e1 = SELF; "then"; e2 = expr Level "top" ->
             <:expr< if $e1 then $e2 else () >>
       ] ];
-    expr: BEFORE "||"
+    expr: Before "||"
       [ ","
         [ e1 = SELF; ","; e2 = comma_expr ->
             <:expr< ( $e1, $e2 ) >> ]
       | ":=" NA
-        [ e1 = SELF; ":="; e2 = expr LEVEL "top" ->
+        [ e1 = SELF; ":="; e2 = expr Level "top" ->
             <:expr< $e1.val := $e2 >>
-        | e1 = SELF; "<-"; e2 = expr LEVEL "top" ->
+        | e1 = SELF; "<-"; e2 = expr Level "top" ->
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> <:expr< $e1 := $e2 >> ]
       ] ];
-    expr: AFTER "^"
+    expr: After "^"
       [ "::" RA
         [ e1 = SELF; "::"; e2 = SELF -> <:expr< [$e1 :: $e2] >> ]
       ];
-    expr: LEVEL "apply" (* LA *)
+    expr: Level "apply" (* LA *)
       [ [ e1 = SELF; e2 = SELF ->
             match (is_expr_constr_call e1, e2) with
             [ (True, <:expr< ( $tup:e ) >>) ->
@@ -287,12 +287,12 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
                                 (Ast.list_of_expr e [])
             | _ -> <:expr< $e1 $e2 >> ]
       ] ];
-    expr: LEVEL "simple" (* LA *)
+    expr: Level "simple" (* LA *)
       [ [ "false" -> <:expr< False >>
         | "true" -> <:expr< True >>
         | "{"; lel = TRY [lel = label_expr_list; "}" -> lel] ->
             <:expr< { $lel } >>
-        | "{"; e = TRY [e = expr LEVEL "."; "with" -> e]; lel = label_expr_list; "}" ->
+        | "{"; e = TRY [e = expr Level "."; "with" -> e]; lel = label_expr_list; "}" ->
             <:expr< { ($e) with $lel } >>
         | "new"; i = class_longident -> <:expr< new $i >>
       ] ]
@@ -376,12 +376,12 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | "#"; i = type_longident -> <:patt< # $i >> ] ]
     ;
     comma_expr:
-      [ [ e1 = expr LEVEL ":="; ","; e2 = SELF -> <:expr< $e1, $e2 >>
-        | e1 = expr LEVEL ":=" -> e1 ] ]
+      [ [ e1 = expr Level ":="; ","; e2 = SELF -> <:expr< $e1, $e2 >>
+        | e1 = expr Level ":=" -> e1 ] ]
     ;
     (* comma_patt:
       [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1$, $p2$ >>
-        | p = patt LEVEL ".." -> p ] ]
+        | p = patt Level ".." -> p ] ]
     ;                                                           *)
     type_constraint:
       [ [ "constraint" -> () ] ]
@@ -427,13 +427,13 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | t = ctyp -> t ] ]
     ;
     class_type_plus:
-      [ [ i = lident_colon; t = ctyp LEVEL "star"; "->"; ct = SELF ->
+      [ [ i = lident_colon; t = ctyp Level "star"; "->"; ct = SELF ->
             <:class_type< [ ~ $i : $t ] -> $ct >>
-        | "?"; i = a_LIDENT; ":"; t = ctyp LEVEL "star"; "->"; ct = SELF ->
+        | "?"; i = a_LIDENT; ":"; t = ctyp Level "star"; "->"; ct = SELF ->
             <:class_type< [ ? $i : $t ] -> $ct >>
-        | i = OPTLABEL (* FIXME inline a_OPTLABEL *); t = ctyp LEVEL "star"; "->"; ct = SELF ->
+        | i = OPTLABEL (* FIXME inline a_OPTLABEL *); t = ctyp Level "star"; "->"; ct = SELF ->
             <:class_type< [ ? $i : $t ] -> $ct >>
-        | test_ctyp_minusgreater; t = ctyp LEVEL "star"; "->"; ct = SELF ->
+        | test_ctyp_minusgreater; t = ctyp Level "star"; "->"; ct = SELF ->
             <:class_type< [ $t ] -> $ct >>
         | ct = class_type -> ct ] ]
     ;
@@ -457,11 +457,11 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       [ [ t1 = SELF; "as"; "'"; i = a_ident -> <:ctyp< $t1 as '$i >> ]
       | "arrow" RA
         [ t1 = SELF; "->"; t2 = SELF -> <:ctyp< $t1 -> $t2 >>
-        | i = TRY [i = a_LIDENT; ":" -> i]; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+        | i = TRY [i = a_LIDENT; ":" -> i]; t1 = ctyp Level "star"; "->"; t2 = SELF ->
             <:ctyp< ( ~ $i : $t1 ) -> $t2 >>
-        | i = a_OPTLABEL; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+        | i = a_OPTLABEL; t1 = ctyp Level "star"; "->"; t2 = SELF ->
             <:ctyp< ( ? $i : $t1 ) -> $t2 >>
-        | "?"; i = a_LIDENT; ":"; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
+        | "?"; i = a_LIDENT; ":"; t1 = ctyp Level "star"; "->"; t2 = SELF ->
             <:ctyp< ( ? $i : $t1 ) -> $t2 >> ]
       | "star"
         [ t = SELF; "*"; tl = star_ctyp ->
@@ -489,7 +489,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:ctyp< $(id:<:ident< $(anti:mk_anti ~c:"ident" n s) >>) >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
         | "("; t = SELF; ","; mk = comma_ctyp_app; ")";
-          i = ctyp LEVEL "ctyp2" ->
+          i = ctyp Level "ctyp2" ->
             mk <:ctyp< $i $t >>
         | "("; t = SELF; ")" -> <:ctyp< $t >>
         | "#"; i = class_longident -> <:ctyp< # $i >>
@@ -518,9 +518,9 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp*" n s) >>
-        | t1 = ctyp LEVEL "ctyp1"; "*"; t2 = SELF ->
+        | t1 = ctyp Level "ctyp1"; "*"; t2 = SELF ->
             <:ctyp< $t1 * $t2 >>
-        | t = ctyp LEVEL "ctyp1" -> t
+        | t = ctyp Level "ctyp1" -> t
       ] ]
     ;
     constructor_declarations:
@@ -599,21 +599,21 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | "{"; t = label_declaration_list; "}" -> <:ctyp< { $t } >>
       ] ]
     ;
-    module_expr: LEVEL "apply"
+    module_expr: Level "apply"
       [ [ i = SELF; "("; j = SELF; ")" -> <:module_expr< $i $j >> ] ]
     ;
-    ident_quot: LEVEL "apply"
+    ident_quot: Level "apply"
       [ [ i = SELF; "("; j = SELF; ")" -> <:ident< $i $j >> ] ]
     ;
-    module_longident_with_app: LEVEL "apply"
+    module_longident_with_app: Level "apply"
       [ [ i = SELF; "("; j = SELF; ")" -> <:ident< $i $j >> ] ]
     ;
-    type_longident: LEVEL "apply"
+    type_longident: Level "apply"
       [ [ i = SELF; "("; j = SELF; ")" -> <:ident< $i $j >> ] ]
     ;
     constructor_arg_list:
       [ [ t1 = SELF; "*"; t2 = SELF -> <:ctyp< $t1 and $t2 >>
-        | t = ctyp LEVEL "ctyp1" -> t
+        | t = ctyp Level "ctyp1" -> t
       ] ]
     ;
     value_let:
@@ -637,7 +637,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | t = TRY ctyp -> t ] ]
     ;
     labeled_ipatt:
-      [ [ i = a_LABEL; p = patt LEVEL "simple" ->
+      [ [ i = a_LABEL; p = patt Level "simple" ->
             <:patt< ~ $i : $p >>
         | "~"; i = a_LIDENT -> <:patt< ~ $i >>
         | "~"; "("; i = a_LIDENT; ")" ->
@@ -666,11 +666,11 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:patt< ? $i >>
         | "?"; "("; i = a_LIDENT; ":"; t = ctyp; ")" ->
             <:patt< ? ( $lid:i : $t ) >>
-        | p = patt LEVEL "simple" -> p
+        | p = patt Level "simple" -> p
       ] ]
     ;
     label_expr:
-      [ [ i = label_longident; "="; e = expr LEVEL "top" ->
+      [ [ i = label_longident; "="; e = expr Level "top" ->
             <:rec_binding< $i = $e >> ] ]
     ;
     a_UIDENT:
