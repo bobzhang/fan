@@ -1,78 +1,71 @@
 open FanSig
 
-module Id =
-              struct
-               let name = "Camlp4GrammarParser"
+open FanUtil
 
-               let version = Sys.ocaml_version
+module MakeGrammarParser =
+                            functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                             struct
+                              open Camlp4.Sig
 
-              end
+                              include Syntax
 
-module Make =
-                    functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-                     struct
-                      open Camlp4.Sig
+                              module MetaLoc = Ast.Meta.MetaGhostLoc
 
-                      include Syntax
+                              module MetaAst = (Ast.Meta.Make)(MetaLoc)
 
-                      module MetaLoc = Ast.Meta.MetaGhostLoc
+                              let string_of_patt =
+                               fun patt ->
+                                let buf = (Buffer.create 42) in
+                                let () =
+                                 (Format.bprintf buf "%a@?" (
+                                   fun fmt ->
+                                    fun p ->
+                                     (Pprintast.pattern fmt (
+                                       (Syntax.Ast2pt.patt p) )) ) patt) in
+                                let str = (Buffer.contents buf) in
+                                if (str = "") then ( assert false ) else str
 
-                      module MetaAst = (Ast.Meta.Make)(MetaLoc)
+                              let split_ext = (ref false )
 
-                      module Ast2pt =
-                       (Camlp4.Struct.Camlp4Ast2OCamlAst.Make)(Syntax.Ast)
+                              type loc = Loc.t
 
-                      let string_of_patt =
-                       fun patt ->
-                        let buf = (Buffer.create 42) in
-                        let () =
-                         (Format.bprintf buf "%a@?" (
-                           fun fmt ->
-                            fun p ->
-                             (Pprintast.pattern fmt ( (Ast2pt.patt p) )) )
-                           patt) in
-                        let str = (Buffer.contents buf) in
-                        if (str = "") then ( assert false ) else str
+                              type 'e name = {expr:'e; tvar:string; loc:loc}
 
-                      let split_ext = (ref false )
+                              type styp =
+                                 STlid of loc * string
+                               | STapp of loc * styp * styp
+                               | STquo of loc * string
+                               | STself of loc * string
+                               | STtok of loc
+                               | STstring_tok of loc
+                               | STtyp of Ast.ctyp
 
-                      type loc = Loc.t
-
-                      type 'e name = {expr:'e; tvar:string; loc:loc}
-
-                      type styp =
-                         STlid of loc * string
-                       | STapp of loc * styp * styp
-                       | STquo of loc * string
-                       | STself of loc * string
-                       | STtok of loc
-                       | STstring_tok of loc
-                       | STtyp of Ast.ctyp
-
-                      type ('e, 'p) text =
-                         TXmeta of loc * string * ('e, 'p) text list * 'e *
-                          styp
-                       | TXlist of loc * bool * ('e, 'p) symbol *
-                          ('e, 'p) symbol option
-                       | TXnext of loc
-                       | TXnterm of loc * 'e name * string option
-                       | TXopt of loc * ('e, 'p) text
-                       | TXtry of loc * ('e, 'p) text
-                       | TXrules of loc * (('e, 'p) text list * 'e) list
-                       | TXself of loc
-                       | TXkwd of loc * string
-                       | TXtok of loc * 'e * string
-                      and ('e, 'p) entry = {
-                                             name:'e name;
-                                             pos:'e option;
-                                             levels:('e, 'p) level list}
-                     and ('e, 'p) level = {
-                                            label:string option;
-                                            assoc:'e option;
-                                            rules:('e, 'p) rule list}
-                    and ('e, 'p) rule = {
-                                          prod:('e, 'p) symbol list;
-                                          action:'e option}
+                              type ('e, 'p) text =
+                                 TXmeta of loc * string *
+                                  ('e, 'p) text list * 'e * styp
+                               | TXlist of loc * bool * ('e, 'p) symbol *
+                                  ('e, 'p) symbol option
+                               | TXnext of loc
+                               | TXnterm of loc * 'e name * string option
+                               | TXopt of loc * ('e, 'p) text
+                               | TXtry of loc * ('e, 'p) text
+                               | TXrules of loc *
+                                  (('e, 'p) text list * 'e) list
+                               | TXself of loc
+                               | TXkwd of loc * string
+                               | TXtok of loc * 'e * string
+                              and ('e, 'p) entry = {
+                                                     name:'e name;
+                                                     pos:'e option;
+                                                     levels:('e, 'p) level list
+                                                    }
+                             and ('e, 'p) level = {
+                                                    label:string option;
+                                                    assoc:'e option;
+                                                    rules:('e, 'p) rule list}
+                            and ('e, 'p) rule = {
+                                                  prod:('e, 'p) symbol list;
+                                                  action:'e option}
 and ('e, 'p) symbol = {
                         used:string list;
                         text:('e, 'p) text;
@@ -91,12 +84,10 @@ and ('e, 'p) symbol = {
      (try
        let rll = (Hashtbl.find_all ht n) in
        (List.iter (
-         fun (r, _) ->
-          if (( !r ) == Unused )
-          then
-           begin
-           ( (r := UsedNotScanned ) ); (modif := true )
-          end else () ) rll)
+         function
+         | (({contents = Unused} as r), _) ->
+            ( (r := UsedNotScanned ) ); (modif := true )
+         | _ -> () ) rll)
       with
       Not_found -> ())
 
@@ -321,8 +312,9 @@ and ('e, 'p) symbol = {
         (List.fold_left (
           fun ((tok_match_pl, act, i) as accu) ->
            function
-           | {pattern = None} -> accu
-           | {pattern = Some (p)} when (Ast.is_irrefut_patt p) -> accu
+           | {pattern = None; _ } -> accu
+           | {pattern = Some (p); _ } when (Ast.is_irrefut_patt p) ->
+              accu
            | {pattern =
                Some
                 (Ast.PaAli
@@ -849,35 +841,33 @@ and ('e, 'p) symbol = {
                     else ( ( e.name ) ) :: ll 
                  | _ -> ll) ) el [] ) in
            let local_binding_of_name =
-            fun {expr = e;
-             tvar = x;
-             loc = _loc} ->
-             let i =
-              (match e with
-               | Ast.ExId (_, Ast.IdLid (_, i)) -> i
-               | _ ->
-                  (failwith "internal error in the Grammar extension")) in
-             (Ast.BiEq
-               (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) ), (
-                (Ast.ExTyc
-                  (_loc, (
-                   (Ast.ExApp
-                     (_loc, (
-                      (Ast.ExId
-                        (_loc, (
-                         (Ast.IdLid (_loc, "grammar_entry_create")) )))
-                      ), ( (Ast.ExStr (_loc, i)) ))) ), (
-                   (Ast.TyApp
-                     (_loc, (
-                      (Ast.TyId
-                        (_loc, (
-                         (Ast.IdAcc
-                           (_loc, (
-                            (Ast.IdAcc
-                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                               (Ast.IdUid (_loc, "Entry")) ))) ), (
-                            (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                      (Ast.TyQuo (_loc, x)) ))) ))) ))) in
+            function
+            | {expr = Ast.ExId (_, Ast.IdLid (_, i));
+               tvar = x;
+               loc = _loc} ->
+               (Ast.BiEq
+                 (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) ),
+                  (
+                  (Ast.ExTyc
+                    (_loc, (
+                     (Ast.ExApp
+                       (_loc, (
+                        (Ast.ExId
+                          (_loc, (
+                           (Ast.IdLid (_loc, "grammar_entry_create")) )))
+                        ), ( (Ast.ExStr (_loc, i)) ))) ), (
+                     (Ast.TyApp
+                       (_loc, (
+                        (Ast.TyId
+                          (_loc, (
+                           (Ast.IdAcc
+                             (_loc, (
+                              (Ast.IdAcc
+                                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                                 (Ast.IdUid (_loc, "Entry")) ))) ), (
+                              (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                        (Ast.TyQuo (_loc, x)) ))) ))) )))
+            | _ -> (failwith "internal error in the Grammar extension") in
            let expr_of_name =
             fun {expr = e;
              tvar = x;
@@ -975,48 +965,29 @@ and ('e, 'p) symbol = {
          (List.map (
            fun e ->
             let (ent, pos, txt) = (text_of_entry ( (e.name).loc ) e) in
-            let e =
-             (Ast.ExApp
-               (_loc, (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExId
-                     (_loc, (
-                      (Ast.IdAcc
-                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                         (Ast.IdLid (_loc, "extend")) ))) ))) ), ent)) ),
-                (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExFun
-                     (_loc, (
-                      (Ast.McArr
-                        (_loc, (
-                         (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-                         ), ( (Ast.ExNil (_loc)) ), (
-                         (Ast.ExTup
-                           (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) )))
-                      ))) ), (
-                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) ))) in
-            if !split_ext then
-             (
-             (Ast.ExLet
-               (_loc, Ast.ReNil , (
-                (Ast.BiEq
-                  (_loc, (
-                   (Ast.PaId (_loc, ( (Ast.IdLid (_loc, "aux")) ))) ), (
-                   (Ast.ExFun
-                     (_loc, (
-                      (Ast.McArr
-                        (_loc, (
-                         (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-                         ), ( (Ast.ExNil (_loc)) ), e)) ))) ))) ), (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "aux")) ))) ), (
-                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) )))
-             )
-            else e ) el) in
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExId
+                    (_loc, (
+                     (Ast.IdAcc
+                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                        (Ast.IdLid (_loc, "extend")) ))) ))) ), ent)) ),
+               (
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExFun
+                    (_loc, (
+                     (Ast.McArr
+                       (_loc, (
+                        (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
+                        ), ( (Ast.ExNil (_loc)) ), (
+                        (Ast.ExTup
+                          (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) )))
+                     ))) ), (
+                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) )))
+           ) el) in
         (match el with
          | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
          | (e :: []) -> e
@@ -1134,25 +1105,7 @@ and ('e, 'p) symbol = {
                ->
               (( (Some ((FanSig.Grammar.After ("top")))) ), (
                [(None , None , (
-                 [(( [( (Gram.Skeyword ("GEXTEND")) )] ), (
-                   (Gram.Action.mk (
-                     fun _ ->
-                      fun (_loc :
-                        Gram.Loc.t) ->
-                       ((Loc.raise _loc (
-                          (Stream.Error
-                            ("Deprecated syntax, use EXTEND MyGramModule ... END instead"))
-                          )) : 'expr) )) ));
-                  (( [( (Gram.Skeyword ("GDELETE_RULE")) )] ), (
-                   (Gram.Action.mk (
-                     fun _ ->
-                      fun (_loc :
-                        Gram.Loc.t) ->
-                       ((Loc.raise _loc (
-                          (Stream.Error
-                            ("Deprecated syntax, use DELETE_RULE MyGramModule ... END instead"))
-                          )) : 'expr) )) ));
-                  ((
+                 [((
                    [( (Gram.Skeyword ("DELETE_RULE")) ); (
                     (Gram.Snterm
                       (Gram.Entry.obj (
@@ -1320,49 +1273,6 @@ and ('e, 'p) symbol = {
                [(None , None , (
                  [((
                    [(
-                    (Gram.srules qualuid (
-                      [((
-                        [(
-                         (Gram.Stoken
-                           ((
-                            function
-                            | UIDENT ("GLOBAL") -> (true)
-                            | _ -> (false) ), "UIDENT (\"GLOBAL\")")) )]
-                        ), (
-                        (Gram.Action.mk (
-                          fun (__camlp4_0 :
-                            Gram.Token.t) ->
-                           fun (_loc :
-                             Gram.Loc.t) ->
-                            (match __camlp4_0 with
-                             | UIDENT ("GLOBAL") -> (() : 'e__2)
-                             | _ -> assert false) )) ));
-                       ((
-                        [(
-                         (Gram.Stoken
-                           ((
-                            function
-                            | LIDENT (_) -> (true)
-                            | _ -> (false) ), "LIDENT (_)")) )] ), (
-                        (Gram.Action.mk (
-                          fun (__camlp4_0 :
-                            Gram.Token.t) ->
-                           fun (_loc :
-                             Gram.Loc.t) ->
-                            (match __camlp4_0 with
-                             | LIDENT (_) -> (() : 'e__2)
-                             | _ -> assert false) )) ))] )) )] ), (
-                   (Gram.Action.mk (
-                     fun _ ->
-                      fun (_loc :
-                        Gram.Loc.t) ->
-                       ((Loc.raise _loc (
-                          (Stream.Error
-                            ("Deprecated syntax, the grammar module is expected"))
-                          )) : 'qualuid) )) ))] ));
-                (None , None , (
-                 [((
-                   [(
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) )] ), (
@@ -1448,28 +1358,6 @@ and ('e, 'p) symbol = {
               (None , (
                [(None , None , (
                  [((
-                   [(
-                    (Gram.Stoken
-                      ((
-                       function
-                       | (LIDENT (_) | UIDENT (_)) -> (true)
-                       | _ -> (false) ), "(LIDENT (_) | UIDENT (_))")) )]
-                   ), (
-                   (Gram.Action.mk (
-                     fun (__camlp4_0 :
-                       Gram.Token.t) ->
-                      fun (_loc :
-                        Gram.Loc.t) ->
-                       (match __camlp4_0 with
-                        | (LIDENT (_) | UIDENT (_)) ->
-                           ((Loc.raise _loc (
-                              (Stream.Error
-                                ("Wrong EXTEND header, the grammar type must finish by 't', "
-                                  ^
-                                  "like in EXTEND (g : Gram.t) ... END"))
-                              )) : 't_qualid)
-                        | _ -> assert false) )) ));
-                  ((
                    [(
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
@@ -1606,17 +1494,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "Level"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "Level")) )))
+                                      ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -1643,17 +1526,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "After"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "After")) )))
+                                      ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -1680,17 +1558,12 @@ and ('e, 'p) symbol = {
                                   (_loc, (
                                    (Ast.IdAcc
                                      (_loc, (
-                                      (Ast.IdUid (_loc, "Camlp4")) ), (
+                                      (Ast.IdUid (_loc, "FanSig")) ), (
                                       (Ast.IdAcc
                                         (_loc, (
-                                         (Ast.IdUid (_loc, "Sig")) ), (
-                                         (Ast.IdAcc
-                                           (_loc, (
-                                            (Ast.IdUid (_loc, "Grammar"))
-                                            ), (
-                                            (Ast.IdUid (_loc, "Before"))
-                                            ))) ))) ))) ))) ), n)) :
-                              'position)
+                                         (Ast.IdUid (_loc, "Grammar")) ),
+                                         ( (Ast.IdUid (_loc, "Before"))
+                                         ))) ))) ))) ), n)) : 'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -1709,16 +1582,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "Last")) )))
-                                     ))) ))) ))) : 'position)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "Last")) ))) )))
+                               ))) : 'position)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -1737,16 +1607,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "First")) )))
-                                     ))) ))) ))) : 'position)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "First")) ))) )))
+                               ))) : 'position)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -1794,7 +1661,7 @@ and ('e, 'p) symbol = {
                              fun (_loc :
                                Gram.Loc.t) ->
                               (let x = (Gram.Token.extract_string x) in x :
-                                'e__3) )) ))] ))) ); (
+                                'e__2) )) ))] ))) ); (
                     (Gram.Sopt
                       ((Gram.Snterm
                          (Gram.Entry.obj ( (assoc : 'assoc Gram.Entry.t)
@@ -1808,7 +1675,7 @@ and ('e, 'p) symbol = {
                       fun (ass :
                         'assoc option) ->
                        fun (lab :
-                         'e__3 option) ->
+                         'e__2 option) ->
                         fun (_loc :
                           Gram.Loc.t) ->
                          ({label = lab; assoc = ass; rules = rules} :
@@ -1837,16 +1704,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "NonA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "NonA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -1865,16 +1729,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "RightA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "RightA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
@@ -1893,16 +1754,13 @@ and ('e, 'p) symbol = {
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "Camlp4")) ),
+                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
                                   (
                                   (Ast.IdAcc
-                                    (_loc, ( (Ast.IdUid (_loc, "Sig")) ),
-                                     (
-                                     (Ast.IdAcc
-                                       (_loc, (
-                                        (Ast.IdUid (_loc, "Grammar")) ),
-                                        ( (Ast.IdUid (_loc, "LeftA")) )))
-                                     ))) ))) ))) : 'assoc)
+                                    (_loc, (
+                                     (Ast.IdUid (_loc, "Grammar")) ), (
+                                     (Ast.IdUid (_loc, "LeftA")) ))) )))
+                               ))) : 'assoc)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -2059,11 +1917,11 @@ and ('e, 'p) symbol = {
                                (match __camlp4_0 with
                                 | UIDENT ("LEVEL") ->
                                    (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__4)
+                                    s : 'e__3)
                                 | _ -> assert false) )) ))] ))) )] ), (
                    (Gram.Action.mk (
                      fun (lev :
-                       'e__4 option) ->
+                       'e__3 option) ->
                       fun (i :
                         Gram.Token.t) ->
                        fun (_loc :
@@ -2213,11 +2071,11 @@ and ('e, 'p) symbol = {
                               fun (_loc :
                                 Gram.Loc.t) ->
                                (match __camlp4_0 with
-                                | UIDENT ("SEP") -> (t : 'e__6)
+                                | UIDENT ("SEP") -> (t : 'e__5)
                                 | _ -> assert false) )) ))] ))) )] ), (
                    (Gram.Action.mk (
                      fun (sep :
-                       'e__6 option) ->
+                       'e__5 option) ->
                       fun (s :
                         'symbol) ->
                        fun (__camlp4_0 :
@@ -2269,11 +2127,11 @@ and ('e, 'p) symbol = {
                               fun (_loc :
                                 Gram.Loc.t) ->
                                (match __camlp4_0 with
-                                | UIDENT ("SEP") -> (t : 'e__5)
+                                | UIDENT ("SEP") -> (t : 'e__4)
                                 | _ -> assert false) )) ))] ))) )] ), (
                    (Gram.Action.mk (
                      fun (sep :
-                       'e__5 option) ->
+                       'e__4 option) ->
                       fun (s :
                         'symbol) ->
                        fun (__camlp4_0 :
@@ -2336,11 +2194,11 @@ and ('e, 'p) symbol = {
                                (match __camlp4_0 with
                                 | UIDENT ("LEVEL") ->
                                    (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__8)
+                                    s : 'e__7)
                                 | _ -> assert false) )) ))] ))) )] ), (
                    (Gram.Action.mk (
                      fun (lev :
-                       'e__8 option) ->
+                       'e__7 option) ->
                       fun (n :
                         'name) ->
                        fun (_loc :
@@ -2382,11 +2240,11 @@ and ('e, 'p) symbol = {
                                (match __camlp4_0 with
                                 | UIDENT ("LEVEL") ->
                                    (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__7)
+                                    s : 'e__6)
                                 | _ -> assert false) )) ))] ))) )] ), (
                    (Gram.Action.mk (
                      fun (lev :
-                       'e__7 option) ->
+                       'e__6 option) ->
                       fun (il :
                         'qualid) ->
                        fun _ ->
@@ -3013,13 +2871,13 @@ and ('e, 'p) symbol = {
                        ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'simple_expr) )) ))] ))] ))) () ) ))
 
- let _ = (Camlp4.Options.add "-split_ext" ( (Arg.Set (split_ext)) )
+ let _ = (Options.add "-split_ext" ( (Arg.Set (split_ext)) )
            "Split EXTEND by functions to turn around a PowerPC problem.")
 
- let _ = (Camlp4.Options.add "-split_gext" ( (Arg.Set (split_ext)) )
+ let _ = (Options.add "-split_gext" ( (Arg.Set (split_ext)) )
            "Old name for the option -split_ext.")
 
- let _ = (Camlp4.Options.add "-meta_action" ( (Arg.Set (meta_action)) )
+ let _ = (Options.add "-meta_action" ( (Arg.Set (meta_action)) )
            "Undocumented")
 
 end

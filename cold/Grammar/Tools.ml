@@ -66,7 +66,7 @@ module Make =
      result
 
    let is_level_labelled =
-    fun n -> function | {lname = Some (n1)_ } -> (n = n1) | _ -> (false)
+    fun n -> function | {lname = Some (n1); _ } -> (n = n1) | _ -> (false)
 
    let warning_verbose = (ref true )
 

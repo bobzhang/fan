@@ -63,3 +63,29 @@ module MakeDebugParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   END;
 
 end;
+
+
+(*   EXTEND Gram GLOBAL: expr; *)
+(*     expr: *)
+(*     [ [  `(XY  ("a"|"b"))  ]]; *)
+(*   END *)
+  
+(* let _ = let _ = (expr : 'expr Gram.Entry.t) in *)
+(*         (Gram.extend ( (expr : 'expr Gram.Entry.t) ) ( *)
+(*           ((fun () *)
+(*               -> *)
+(*              (None , ( *)
+(*               [(None , None , ( *)
+(*                 [(( *)
+(*                   [( *)
+(*                    (Gram.Stoken *)
+(*                      (( function | XY ("a" | "b") -> (true) | _ -> (false) ), *)
+(*                       "XY (\"a\" | \"b\")")) )] ), ( *)
+(*                   (Gram.Action.mk ( *)
+(*                     fun (__camlp4_0 : *)
+(*                       Gram.Token.t) -> *)
+(*                      fun (_loc : *)
+(*                        Gram.Loc.t) -> *)
+(*                       (match __camlp4_0 with *)
+(*                        | XY ("a" | "b") -> (() : 'expr) *)
+(*                        | _ -> assert false) )) ))] ))] ))) () ) )) *)

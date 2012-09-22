@@ -406,11 +406,11 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     ;
   END;
 
-  Camlp4.Options.add "-D" (Arg.String parse_def)
+  Options.add "-D" (Arg.String parse_def)
     "<string> Define for IFDEF instruction.";
-  Camlp4.Options.add "-U" (Arg.String undef)
+  Options.add "-U" (Arg.String undef)
     "<string> Undefine for IFDEF instruction.";
-  Camlp4.Options.add "-I" (Arg.String add_include_dir)
+  Options.add "-I" (Arg.String add_include_dir)
     "<string> Add a directory to INCLUDE search path.";
 
 end;

@@ -1,5 +1,6 @@
 open Camlp4;
 open FanSig;
+open FanUtil;
 module IdAstLoader = struct
   value name = "Camlp4AstLoader";
   value version = Sys.ocaml_version;
@@ -95,9 +96,8 @@ module IdGrammarParser = struct
   value name = "Camlp4GrammarParser";
   value version = Sys.ocaml_version;
 end;
-
-module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
+  open Camlp4.Sig;
   include Syntax;
 
   module MetaLoc = Ast.Meta.MetaGhostLoc;
@@ -161,11 +161,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     try
       let rll = Hashtbl.find_all ht n in
       List.iter
-        (fun (r, _) ->
-          if r.val == Unused then do {
+        (fun [ (({val=Unused} as r), _)   ->  begin 
             r.val := UsedNotScanned; modif.val := True;
-          }
-          else ())
+          end
+          |  _ -> () ])
         rll
     with
     [ Not_found -> () ]
@@ -257,6 +256,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   value meta_action = ref False;
 
+  (*
+    {[
+    
+    ]}
+   *)  
   value mklistexp _loc =
     loop True where rec loop top =
       fun
@@ -268,6 +272,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           <:expr< [$e1 :: $(loop False el)] >> ]
   ;
 
+  (*
+    {[
+    
+    ]}
+   *)      
   value mklistpat _loc =
     loop True where rec loop top =
       fun
@@ -278,7 +287,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           in
           <:patt< [$p1 :: $(loop False pl)] >> ]
   ;
-
+  (*
+    expand function application 
+   *)
   value rec expr_fa al =
     fun
     [ <:expr< $f $a >> -> expr_fa [a :: al] f
@@ -322,8 +333,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       List.fold_left
         (fun ((tok_match_pl, act, i) as accu) ->
           fun
-          [ { pattern = None } -> accu
-          | { pattern = Some p } when Ast.is_irrefut_patt p -> accu
+          [ { pattern = None; _ } -> accu
+          | { pattern = Some p ; _} when Ast.is_irrefut_patt p -> accu
           | { pattern = Some <:patt< ($_ $(tup:<:patt< _ >>) as $lid:s) >> } ->
               (tok_match_pl,
                <:expr< let $lid:s = $uid:gm.Token.extract_string $lid:s
@@ -463,169 +474,69 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   value mk_name _loc i =
     {expr = <:expr< $id:i >>; tvar = tvar_of_ident i; loc = _loc};
 
-  value slist loc min sep symb =
-    TXlist loc min symb sep
-  ;
-
-  (*
-  value sstoken _loc s =
-    let n = mk_name _loc <:ident< $lid:"a_" ^ s$ >> in
-    TXnterm _loc n None
-  ;
-
-  value mk_symbol p s t =
-    {used = []; text = s; styp = t; pattern=Some p};
-
-  value sslist _loc min sep s =
-    let rl =
-      let r1 =
-        let prod =
-          let n = mk_name _loc <:ident< a_list >> in
-          [mk_symbol <:patt< a >> (TXnterm _loc n None) (STquo _loc "a_list")]
-        in
-        let act = <:expr< a >> in
-        {prod = prod; action = Some act}
-      in
-      let r2 =
-        let prod =
-          [mk_symbol <:patt< a >> (slist _loc min sep s)
-            (STapp _loc (STlid _loc "list") s.styp)]
-        in
-        let act = <:expr< Qast.List a >> in
-        {prod = prod; action = Some act}
-      in
-      [r1; r2]
-    in
-    let used =
-      match sep with
-      [ Some symb -> symb.used @ s.used
-      | None -> s.used ]
-    in
-    let used = ["a_list" :: used] in
-    let text = TXrules _loc (srules _loc "a_list" rl "") in
-    let styp = STquo _loc "a_list" in
-    {used = used; text = text; styp = styp; pattern = None}
-  ;
-
-  value ssopt _loc s =
-    let rl =
-      let r1 =
-        let prod =
-          let n = mk_name _loc <:ident< a_opt >> in
-          [mk_symbol <:patt< a >> (TXnterm _loc n None) (STquo _loc "a_opt")]
-        in
-        let act = <:expr< a >> in
-        {prod = prod; action = Some act}
-      in
-      let r2 =
-        let s =
-          match s.text with
-          [ TXkwd _loc _ | TXtok _loc _ _ ->
-              let rl =
-                [{prod = [{ (s) with pattern = Some <:patt< x >> }];
-                  action = Some <:expr< Qast.Str (Token.extract_string x) >>}]
-              in
-              let t = new_type_var () in
-              {used = []; text = TXrules _loc (srules _loc t rl "");
-              styp = STquo _loc t; pattern = None}
-          | _ -> s ]
-        in
-        let prod =
-          [mk_symbol <:patt< a >> (TXopt _loc s.text)
-            (STapp _loc (STlid _loc "option") s.styp)]
-        in
-        let act = <:expr< Qast.Option a >> in
-        {prod = prod; action = Some act}
-      in
-      [r1; r2]
-    in
-    let used = ["a_opt" :: s.used] in
-    let text = TXrules _loc (srules _loc "a_opt" rl "") in
-    let styp = STquo _loc "a_opt" in
-    {used = used; text = text; styp = styp; pattern = None}
-  ;
-  *)
-
+  value slist loc min sep symb = TXlist loc min symb sep ;
   value text_of_entry _loc e =
     let ent =
       let x = e.name in
       let _loc = e.name.loc in
-      <:expr< ($(x.expr) : $uid:gm.Entry.t '$(x.tvar)) >>
-    in
+      <:expr< ($(x.expr) : $uid:gm.Entry.t '$(x.tvar)) >>   in
     let pos =
       match e.pos with
       [ Some pos -> <:expr< Some $pos >>
-      | None -> <:expr< None >> ]
-    in
+      | None -> <:expr< None >> ] in
     let txt =
       List.fold_right
         (fun level txt ->
           let lab =
             match level.label with
             [ Some lab -> <:expr< Some $str:lab >>
-            | None -> <:expr< None >> ]
-          in
+            | None -> <:expr< None >> ]  in
           let ass =
             match level.assoc with
             [ Some ass -> <:expr< Some $ass >>
-            | None -> <:expr< None >> ]
-          in
+            | None -> <:expr< None >> ]  in
           let txt =
             let rl = srules _loc e.name.tvar level.rules e.name.tvar in
             let e = make_expr_rules _loc e.name rl e.name.tvar in
-            <:expr< [($lab, $ass, $e) :: $txt] >>
-          in
+            <:expr< [($lab, $ass, $e) :: $txt] >> in
           txt)
-        e.levels <:expr< [] >>
-    in
+        e.levels <:expr< [] >> in
     (ent, pos, txt)
   ;
-
+  (* [gl] is the name  list option *)   
   value let_in_of_extend _loc gram gl el args =
     match gl with
     [ None -> args
-    | Some nl ->
-        do {
-          check_use nl el;
-          let ll =
-            let same_tvar e n = e.name.tvar = n.tvar in
-            List.fold_right
-              (fun e ll ->
-                match e.name.expr with
-                [ <:expr< $lid:_ >> ->
+    | Some nl -> begin
+        check_use nl el;
+        let ll =
+          let same_tvar e n = e.name.tvar = n.tvar in
+          List.fold_right
+            (fun e ll -> match e.name.expr with
+              [ <:expr< $lid:_ >> ->
                     if List.exists (same_tvar e) nl then ll
                     else if List.exists (same_tvar e) ll then ll
                     else [e.name :: ll]
-                | _ -> ll ])
-              el []
-          in
-          let local_binding_of_name {expr = e; tvar = x; loc = _loc} =
-            let i =
-              match e with
-              [ <:expr< $lid:i >> -> i
-              | _ -> failwith "internal error in the Grammar extension" ]
-            in <:binding< $lid:i =
-                 (grammar_entry_create $str:i : $uid:gm.Entry.t '$x) >> in
-          let expr_of_name {expr = e; tvar = x; loc = _loc} =
-            <:expr< ($e : $uid:gm.Entry.t '$x) >> in
-          let e =
-            match ll with
-            [ [] -> args
-            | [x::xs] ->
-                let locals =
-                  List.fold_right
-                    (fun name acc ->
-                      <:binding< $acc and $(local_binding_of_name name) >>)
-                    xs (local_binding_of_name x)
-                in
-                let entry_mk =
-                  match gram with
-                  [ Some g -> <:expr< $uid:gm.Entry.mk $id:g >>
-                  | None   -> <:expr< $uid:gm.Entry.mk >> ]
-                in <:expr<
-                      let grammar_entry_create = $entry_mk in
-                      let $locals in $args >> ]
-          in
+              | _ -> ll ])  el [] in
+        let local_binding_of_name = fun
+          [ {expr = <:expr< $lid:i >> ; tvar = x; loc = _loc} ->
+            <:binding< $lid:i =  (grammar_entry_create $str:i : $uid:gm.Entry.t '$x) >>
+          | _ -> failwith "internal error in the Grammar extension" ]  in
+        let expr_of_name {expr = e; tvar = x; loc = _loc} =
+          <:expr< ($e : $uid:gm.Entry.t '$x) >> in
+        let e = match ll with
+          [ [] -> args
+          | [x::xs] ->
+              let locals =
+                List.fold_right
+                  (fun name acc ->
+                    <:binding< $acc and $(local_binding_of_name name) >>)
+                  xs (local_binding_of_name x) in
+              let entry_mk =  match gram with
+              [ Some g -> <:expr< $uid:gm.Entry.mk $id:g >>
+              | None   -> <:expr< $uid:gm.Entry.mk >> ] in <:expr<
+              let grammar_entry_create = $entry_mk in
+              let $locals in $args >> ] in
           match nl with
           [ [] -> e
           | [x::xs] ->
@@ -635,7 +546,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                     <:binding< $acc and _ = $(expr_of_name name) >>)
                   xs <:binding< _ = $(expr_of_name x) >>
               in <:expr< let $globals in $e >> ]
-        } ]
+        end ]
   ;
 
   class subst gmod =
@@ -647,25 +558,23 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | x -> super#ident x ];
     end;
 
+ (* replace ast [Camlp4Grammar__] with [gmod]  *)   
   value subst_gmod ast gmod = (new subst gmod)#expr ast;
 
+  (* the [gl] is global entry name list, [el] is entry list
+     [gram] is the grammar, [gmod] is the [Gram] module
+   *)
   value text_of_functorial_extend _loc gmod gram gl el =
     let args =
       let el =
         List.map
           (fun e ->
             let (ent, pos, txt) = text_of_entry e.name.loc e in
-            let e = <:expr< $uid:gm.extend $ent ((fun () -> ($pos, $txt)) ()) >> in
-            if split_ext.val then <:expr< let aux () = $e in aux () >> else e)
-          el
-      in
+            <:expr< $uid:gm.extend $ent ((fun () -> ($pos, $txt)) ()) >> ) el  in
       match el with
       [ [] -> <:expr< () >>
       | [e] -> e
-      | [e::el] ->
-          <:expr< do { $(List.fold_left
-                          (fun acc x -> <:expr< $acc; $x >>) e el) } >>  ]
-    in
+      | [e::el] -> <:expr< do { $(List.fold_left (fun acc x -> <:expr< $acc; $x >>) e el) } >>  ]  in
     subst_gmod (let_in_of_extend _loc gram gl el args) gmod;
 
   value wildcarder = object (self)
@@ -700,54 +609,31 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   FanConfig.antiquotations.val := True;
 
-  EXTEND Gram
-    GLOBAL: expr symbol;
+  EXTEND Gram GLOBAL: expr symbol;
     expr: AFTER "top"
       [ [ "EXTEND"; e = extend_body; "END" -> e
-        | "DELETE_RULE"; e = delete_rule_body; "END" -> e
-        | "GDELETE_RULE" ->
-            Loc.raise _loc (Stream.Error
-              "Deprecated syntax, use DELETE_RULE MyGramModule ... END instead")
-        | "GEXTEND" ->
-            Loc.raise _loc (Stream.Error
-              "Deprecated syntax, use EXTEND MyGramModule ... END instead") ] ]
-    ;
+        | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] ;
     extend_header:
       [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> (Some i, t)
-        | g = qualuid -> (None, g) ] ]
-    ;
+        | g = qualuid -> (None, g) ] ];
     extend_body:
       [ [ (gram, g) = extend_header; global_list = OPT global;
           el = LIST1 [ e = entry; semi_sep -> e ] ->
-            text_of_functorial_extend _loc g gram global_list el ] ]
-    ;
+            text_of_functorial_extend _loc g gram global_list el ] ] ;
     delete_rule_body:
       [ [ g = qualuid; n = name; ":"; sl = LIST0 symbol SEP semi_sep ->
             let (e, b) = expr_of_delete_rule _loc n sl in
-            subst_gmod <:expr< $uid:gm.delete_rule $e $b >> g ] ]
-    ;
+            subst_gmod <:expr< $uid:gm.delete_rule $e $b >> g ] ] ;
     qualuid:
-      [ [ [ LIDENT | UIDENT "GLOBAL" ] ->
-            Loc.raise _loc
-              (Stream.Error
-                    "Deprecated syntax, the grammar module is expected") ]
-      | [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >> ] ]
-    ;
+      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+        | i = UIDENT -> <:ident< $uid:i >> ] ] ;
     qualid:
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | i = UIDENT -> <:ident< $uid:i >>
-        | i = LIDENT -> <:ident< $lid:i >>
-      ] ]
-    ;
+        | i = LIDENT -> <:ident< $lid:i >> ] ];
     t_qualid:
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >>
-        | `(LIDENT _ | UIDENT _) ->
-              Loc.raise _loc (Stream.Error
-                ("Wrong EXTEND header, the grammar type must finish by 't', "^
-                  "like in EXTEND (g : Gram.t) ... END")) ] ]
-    ;
+        | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] ;
     global:
       [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
     ;
@@ -850,9 +736,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             text = TXrules _loc (srules _loc t rl "");
             styp = STquo _loc t; pattern = None}
         | "`"; p = patt -> mk_tok _loc p (STtok _loc)
+
+        (* parsing UIDENT *)      
         | x = UIDENT -> mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>
                                (STstring_tok _loc)
         | x = UIDENT; s = STRING -> mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc)
+              
         | x = UIDENT; `ANTIQUOT "" s ->
             let e = AntiquotSyntax.parse_expr _loc s in
             let match_fun = <:expr< fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in

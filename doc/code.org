@@ -415,32 +415,35 @@
      #+BEGIN_SRC ocaml
        expr: AFTER "top"
          [ [ "EXTEND"; e = extend_body; "END" -> e
-           | "DELETE_RULE"; e = delete_rule_body; "END" -> e ]
-         ];
+           | "DELETE_RULE"; e = delete_rule_body; "END" -> e ]];
        
        extend_body:
          [ [ (gram,g) = extend_header; global_list=OPT global;
              el = LIST1 [e=entry; semi_sep -> e] ->
-                  text_of_functorial_extend _loc g gram global_list el
-         ]];
+                  text_of_functorial_extend _loc g gram global_list el ]];
+       (*[text_of_functorial_extend: Ast.loc -> Ast.ident -> Ast.ident option ->
+          Ast.expr name list option -> (Ast.expr, Ast.patt) entry list -> Ast.expr ]
+         it emits a subcall [text_of_entry], pos is pattern, txt is the action
+         [let_in_of_extend]
+         [gm] is [Camlp4Grammar__]
+         One is for module [Dynamic], the other is for the module [Static]
        
+         [srules]
+         [make_expr_rules]
+        *)
        extend_header:
          [ [ "("; i= qualid; ":"; t = t_qualid; ")" -> (Some i,t)
-           | g = qualuid -> (None,g) (* Gram *) ]
-         ];
+           | g = qualuid -> (None,g) (* Gram *) ]];
+          (* return either [(None,Gram)] or [(Some g, Gram.t)]*)
        
        qualuid:
          [ [ x = UIDENT ; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-           | i = UIDENT -> <:ident< $uid:i >> 
-             
-           ]];
+           | i = UIDENT -> <:ident< $uid:i >> ]];
        
        qualid:
          [ [  x = UIDENT; "."; xs = SELF  -> <:ident< $uid:x.$xs >>
            |  i = UIDENT -> <:ident< $uid:i >>
-           |  u = LIDENT -> <:ident< $lid:i >> 
-         ]];
-       
+           |  u = LIDENT -> <:ident< $lid:i >> ]];
        t_qualid:
          [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
            | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >>
@@ -1031,9 +1034,77 @@
         end;
         
       #+END_SRC
+
 ***** [[file:~/camlp4/src/Grammar/Dynamic.ml][Dynamic]]
       
-      
+
+
+**** grammar parser
+
+     #+BEGIN_SRC ocaml
+       type 'e name ={
+         expr: 'e;
+         tvar: string;
+         loc: loc
+       }
+       type styp =
+         | STlid of loc * string
+         | STapp of loc * styp * styp
+         | STquo of loc * string
+         | STself of loc * string
+         | STtok of loc
+         | STstring_tok of loc
+         | STtyp of Ast.ctyp
+       
+       type ('e,'p) text =
+         | TXmeta of loc * string * ('e,'p) text list * 'e * styp
+         | TXlist of loc * bool * ('e,'p) symbol * ('e,'p) symbol option
+         | TXnext of loc
+         | TXnterm of loc * 'e name * string option
+         | TXopt o f loc * ('e,'p) text
+         | TXtry of loc * ('e,'p) text
+         | TXrules of loc * (('e,'p)text list *'e) list
+         | TXself of loc
+         | TXkwd of loc * string
+         | TXtok of loc * 'e * string
+         (* the second should be normalized and  well comparable *)
+        and ('e,'p) entry = {
+          name: 'e name;
+          pos: 'e option;
+          levels: (('e,'p) level) list;
+        }
+        and ('e,'p) level = {
+          label: string option;
+          assoc: 'e option;
+          levels: (('e,'p) rule) list
+        }
+        and ('e,'p) rule = {
+          prod: (('e,'p) symbol) list;
+          action: 'e option
+        }
+        and ('e,'p) symbol = {
+          used: string list;
+          text: ('e,'p) text;
+          styp: styp;
+          pattern: 'p option
+        }
+       
+       val mark_used : bool ref -> ('a, used ref * 'b) Hashtbl.t -> 'a -> unit
+       val mark_symbol :
+         bool ref ->
+         (string, used ref * 'a) Hashtbl.t -> ('b, 'c) symbol -> unit
+       val check_use : 'a name list -> (Ast.expr, 'b) entry list -> unit
+       val new_type_var : unit -> string
+       val used_of_rule_list : ('a, 'b) rule list -> string list
+       val make_ctyp: styp -> string -> Ast.ctyp                        
+       val make_ctyp_patt: styp -> string -> Ast.patt -> Ast.patt 
+       val make_ctyp_expr: styp -> string -> Ast.expr -> Ast.expr 
+       val text_of_action: Ast.loc -> ('a,Ast.patt) symbol list ->
+                           string -> Ast.expr option -> string -> Ast.expr
+       val srules: Ast.loc -> string -> (Ast.expr,Ast.patt) rule list ->
+                   string -> ( (Ast.expr,Ast.patt)text list * Ast.expr) list
+       
+     #+END_SRC
 ** TODO Register mechanism
 
    (string,module Sig.PLUGIN) Hashtbl.t

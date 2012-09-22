@@ -1833,15 +1833,14 @@ module MakeMacroParser =
                                                'patt) )) ))] ))] ))) () )
                                 ))
 
-                      let _ = (Camlp4.Options.add "-D" (
+                      let _ = (Options.add "-D" (
                                 (Arg.String (parse_def)) )
                                 "<string> Define for IFDEF instruction.")
 
-                      let _ = (Camlp4.Options.add "-U" (
-                                (Arg.String (undef)) )
+                      let _ = (Options.add "-U" ( (Arg.String (undef)) )
                                 "<string> Undefine for IFDEF instruction.")
 
-                      let _ = (Camlp4.Options.add "-I" (
+                      let _ = (Options.add "-I" (
                                 (Arg.String (add_include_dir)) )
                                 "<string> Add a directory to INCLUDE search path.")
 

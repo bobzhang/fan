@@ -517,7 +517,7 @@ and simple_pattern ppf x =
       fprintf ppf "{" ;
       list2 longident_x_pattern ppf l ";" ;
       begin match closed with
-          Open -> fprintf ppf "_ ";
+          Open -> fprintf ppf "; _ "; (* bug fix *)
         | Closed -> ()
       end;
       fprintf ppf "}" ;
