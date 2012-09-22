@@ -123,9 +123,9 @@ module Make =
            );
            (
            (match lev.assoc with
-            | LeftA -> (fprintf ppf "LEFTA")
-            | RightA -> (fprintf ppf "RIGHTA")
-            | NonA -> (fprintf ppf "NONA"))
+            | LA -> (fprintf ppf "LA")
+            | RA -> (fprintf ppf "RA")
+            | NA -> (fprintf ppf "NA"))
            );
            (
            (fprintf ppf "@]@;<1 2>")
@@ -312,9 +312,9 @@ module MakeDump =
                   );
                   (
                   (match lev.assoc with
-                   | LeftA -> (fprintf ppf "LEFTA")
-                   | RightA -> (fprintf ppf "RIGHTA")
-                   | NonA -> (fprintf ppf "NONA"))
+                   | LA -> (fprintf ppf "LA")
+                   | RA -> (fprintf ppf "RA")
+                   | NA -> (fprintf ppf "NA"))
                   );
                   (
                   (fprintf ppf "@]@;<1 2>")

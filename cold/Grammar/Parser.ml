@@ -508,9 +508,7 @@ module Make =
           | DeadEnd -> p1
           | tree ->
              let alevn =
-              (match lev.assoc with
-               | (LeftA | NonA) -> (succ clevn)
-               | RightA -> clevn) in
+              (match lev.assoc with | (LA | NA) -> (succ clevn) | RA -> clevn) in
              let p2 = (parser_of_tree entry ( (succ clevn) ) alevn tree) in
              (match levs with
               | [] ->
@@ -558,9 +556,7 @@ module Make =
           | DeadEnd -> p1
           | tree ->
              let alevn =
-              (match lev.assoc with
-               | (LeftA | NonA) -> (succ clevn)
-               | RightA -> clevn) in
+              (match lev.assoc with | (LA | NA) -> (succ clevn) | RA -> clevn) in
              let p2 = (parser_of_tree entry ( (succ clevn) ) alevn tree) in
              fun levn ->
               fun bp ->

@@ -1974,42 +1974,34 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Stoken
-                      ((
-                       function
-                       | UIDENT ("NONA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"NONA\")")) )] ), (
+                      (( function | UIDENT (_) -> (true) | _ -> (false)
+                       ), "UIDENT (_)")) )] ), (
                    (Gram.Action.mk (
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
                         Gram.Loc.t) ->
                        (match __camlp4_0 with
-                        | UIDENT ("NONA") ->
-                           ((Ast.ExId
-                              (_loc, (
-                               (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
-                                  (
-                                  (Ast.IdAcc
-                                    (_loc, (
-                                     (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "NonA")) ))) )))
-                               ))) : 'assoc)
+                        | UIDENT (x) ->
+                           ((failwithf
+                              "%s is not a correct associativity:(LA|RA|NA)"
+                              x) : 'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
                     (Gram.Stoken
                       ((
                        function
-                       | UIDENT ("RIGHTA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"RIGHTA\")")) )] ), (
+                       | UIDENT (("LA" | "RA") | "NA") -> (true)
+                       | _ -> (false) ),
+                       "UIDENT ((\"LA\" | \"RA\") | \"NA\")")) )] ), (
                    (Gram.Action.mk (
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
                         Gram.Loc.t) ->
                        (match __camlp4_0 with
-                        | UIDENT ("RIGHTA") ->
+                        | UIDENT ((("LA" | "RA") | "NA") as x) ->
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
@@ -2018,33 +2010,8 @@ and ('e, 'p) symbol = {
                                   (Ast.IdAcc
                                     (_loc, (
                                      (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "RightA")) ))) )))
-                               ))) : 'assoc)
-                        | _ -> assert false) )) ));
-                  ((
-                   [(
-                    (Gram.Stoken
-                      ((
-                       function
-                       | UIDENT ("LEFTA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"LEFTA\")")) )] ), (
-                   (Gram.Action.mk (
-                     fun (__camlp4_0 :
-                       Gram.Token.t) ->
-                      fun (_loc :
-                        Gram.Loc.t) ->
-                       (match __camlp4_0 with
-                        | UIDENT ("LEFTA") ->
-                           ((Ast.ExId
-                              (_loc, (
-                               (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
-                                  (
-                                  (Ast.IdAcc
-                                    (_loc, (
-                                     (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "LeftA")) ))) )))
-                               ))) : 'assoc)
+                                     (Ast.IdUid (_loc, x)) ))) ))) ))) :
+                             'assoc)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -2280,8 +2247,7 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA))) ),
-                 (
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NA))) ), (
                  [((
                    [(
                     (Gram.Stoken
@@ -10226,7 +10192,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -10375,7 +10341,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -11699,7 +11665,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -11804,7 +11770,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -11986,7 +11952,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -12457,7 +12423,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13087,7 +13053,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13143,7 +13109,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13190,7 +13156,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13237,7 +13203,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13284,7 +13250,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13331,7 +13297,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13378,7 +13344,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13585,7 +13551,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13752,7 +13718,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13808,7 +13774,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -13912,7 +13878,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14148,7 +14114,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -14335,7 +14301,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -16863,7 +16829,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -17157,7 +17123,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18412,7 +18378,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18625,7 +18591,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18782,7 +18748,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18819,7 +18785,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -18856,7 +18822,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -20689,7 +20655,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -21973,7 +21939,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -22471,7 +22437,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23558,7 +23524,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23595,7 +23561,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23636,7 +23602,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23673,7 +23639,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23721,7 +23687,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.RightA)))
+                                                                    ((FanSig.Grammar.RA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23758,7 +23724,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23900,7 +23866,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -23944,7 +23910,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -27247,7 +27213,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -28238,7 +28204,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.NonA)))
+                                                                    ((FanSig.Grammar.NA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -28933,7 +28899,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -31586,7 +31552,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -32533,7 +32499,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -32695,7 +32661,7 @@ module MakeRevisedParser =
                                                                     ,
                                                                     (
                                                                     (Some
-                                                                    ((FanSig.Grammar.LeftA)))
+                                                                    ((FanSig.Grammar.LA)))
                                                                     ),
                                                                     (
                                                                     [((
@@ -43660,7 +43626,7 @@ module MakeParser =
                                             (Ast.ExCom (_loc, e1, e2))
                                             ))) : 'expr) )) ))] ));
                                (( (Some (":=")) ), (
-                                (Some ((FanSig.Grammar.NonA))) ), (
+                                (Some ((FanSig.Grammar.NA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("<-")) ); (
@@ -43719,7 +43685,7 @@ module MakeParser =
                              (( (Some ((FanSig.Grammar.After ("^"))))
                               ), (
                               [(( (Some ("::")) ), (
-                                (Some ((FanSig.Grammar.RightA))) ), (
+                                (Some ((FanSig.Grammar.RA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("::")) );
@@ -44093,7 +44059,7 @@ module MakeParser =
                               ->
                              (None , (
                               [(( (Some ("as")) ), (
-                                (Some ((FanSig.Grammar.LeftA))) ), (
+                                (Some ((FanSig.Grammar.LA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("as")) ); (
@@ -44118,7 +44084,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("|")) ), (
-                                (Some ((FanSig.Grammar.LeftA))) ), (
+                                (Some ((FanSig.Grammar.LA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("|")) );
@@ -44157,7 +44123,7 @@ module MakeParser =
                                                ))) ))) : 'patt) )) ))]
                                 ));
                                (( (Some ("::")) ), (
-                                (Some ((FanSig.Grammar.RightA))) ), (
+                                (Some ((FanSig.Grammar.RA))) ), (
                                 [((
                                   [Gram.Sself ; (
                                    (Gram.Skeyword ("::")) );
@@ -44181,7 +44147,7 @@ module MakeParser =
                                                ), p1)) ), p2)) :
                                           'patt) )) ))] ));
                                (( (Some ("apply")) ), (
-                                (Some ((FanSig.Grammar.RightA))) ), (
+                                (Some ((FanSig.Grammar.RA))) ), (
                                 [((
                                   [(
                                    (Gram.Snterm
@@ -44879,8 +44845,8 @@ module MakeParser =
                           ((fun ()
                               ->
                              (None , (
-                              [(None , (
-                                (Some ((FanSig.Grammar.LeftA))) ), (
+                              [(None , ( (Some ((FanSig.Grammar.LA)))
+                                ), (
                                 [((
                                   [( (Gram.Skeyword ("module")) ); (
                                    (Gram.Snterm
@@ -45602,7 +45568,7 @@ module MakeParser =
                                              (Ast.TyQuo (_loc, i)) ))) :
                                            'ctyp) )) ))] ));
                                (( (Some ("arrow")) ), (
-                                (Some ((FanSig.Grammar.RightA))) ), (
+                                (Some ((FanSig.Grammar.RA))) ), (
                                 [((
                                   [( (Gram.Skeyword ("?")) ); (
                                    (Gram.Snterm

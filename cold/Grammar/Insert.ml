@@ -40,7 +40,7 @@ module Make =
    let empty_lev =
     fun lname ->
      fun assoc ->
-      let assoc = (match assoc with | Some (a) -> a | None -> (LeftA)) in
+      let assoc = (match assoc with | Some (a) -> a | None -> (LA)) in
       {assoc = assoc; lname = lname; lsuffix = DeadEnd ; lprefix = DeadEnd }
 
    let change_lev =

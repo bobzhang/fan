@@ -324,7 +324,7 @@ module Grammar =
           
       end
       
-    type assoc = | NonA | RightA | LeftA
+    type assoc = | NA | RA | LA
     
     type position =
       | First | Last | Before of string | After of string | Level of string

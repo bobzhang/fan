@@ -267,7 +267,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       [ ","
         [ e1 = SELF; ","; e2 = comma_expr ->
             <:expr< ( $e1, $e2 ) >> ]
-      | ":=" NONA
+      | ":=" NA
         [ e1 = SELF; ":="; e2 = expr LEVEL "top" ->
             <:expr< $e1.val := $e2 >>
         | e1 = SELF; "<-"; e2 = expr LEVEL "top" ->
@@ -276,10 +276,10 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             | None -> <:expr< $e1 := $e2 >> ]
       ] ];
     expr: AFTER "^"
-      [ "::" RIGHTA
+      [ "::" RA
         [ e1 = SELF; "::"; e2 = SELF -> <:expr< [$e1 :: $e2] >> ]
       ];
-    expr: LEVEL "apply" (* LEFTA *)
+    expr: LEVEL "apply" (* LA *)
       [ [ e1 = SELF; e2 = SELF ->
             match (is_expr_constr_call e1, e2) with
             [ (True, <:expr< ( $tup:e ) >>) ->
@@ -287,7 +287,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
                                 (Ast.list_of_expr e [])
             | _ -> <:expr< $e1 $e2 >> ]
       ] ];
-    expr: LEVEL "simple" (* LEFTA *)
+    expr: LEVEL "simple" (* LA *)
       [ [ "false" -> <:expr< False >>
         | "true" -> <:expr< True >>
         | "{"; lel = TRY [lel = label_expr_list; "}" -> lel] ->
@@ -315,16 +315,16 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     ;
     (* Patterns *)
     patt:
-      [ "as" LEFTA
+      [ "as" LA
         [ p1 = SELF; "as"; i = a_LIDENT -> <:patt< ($p1 as $lid:i) >> ]
-      | "|" LEFTA
+      | "|" LA
         [ p1 = SELF; "|"; p2 = SELF -> <:patt< $p1 | $p2 >> ]
       | ","
         [ p = SELF; ","; pl = (*FIXME comma_patt*) LIST1 NEXT SEP "," ->
             <:patt< ( $p, $(Ast.paCom_of_list pl) ) >> ]
-      | "::" RIGHTA
+      | "::" RA
         [ p1 = SELF; "::"; p2 = SELF -> <:patt< [$p1 :: $p2] >> ]
-      | "apply" RIGHTA
+      | "apply" RA
         [ p1 = patt_constr; p2 = SELF ->
             match p2 with
             [ <:patt< ( $tup:p ) >> ->
@@ -387,7 +387,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       [ [ "constraint" -> () ] ]
     ;
     with_constr:
-      [ LEFTA
+      [ LA
         [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
@@ -455,7 +455,7 @@ module Make (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     ;
     ctyp:
       [ [ t1 = SELF; "as"; "'"; i = a_ident -> <:ctyp< $t1 as '$i >> ]
-      | "arrow" RIGHTA
+      | "arrow" RA
         [ t1 = SELF; "->"; t2 = SELF -> <:ctyp< $t1 -> $t2 >>
         | i = TRY [i = a_LIDENT; ":" -> i]; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
             <:ctyp< ( ~ $i : $t1 ) -> $t2 >>

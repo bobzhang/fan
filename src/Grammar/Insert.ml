@@ -54,7 +54,7 @@ module Make (Structure : Structure.S) = struct
     let assoc =
       match assoc with
       [ Some a -> a
-      | None -> LeftA ]
+      | None -> LA ]
     in
     {assoc = assoc; lname = lname; lsuffix = DeadEnd; lprefix = DeadEnd}
   ;

@@ -1459,7 +1459,7 @@ module Make =
                                                   (Ast.ExCom (_loc, e1, e2))
                                                   ))) : 'expr) )) ))] ));
                                      (( (Some (":=")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("<-")) ); (
@@ -1516,7 +1516,7 @@ module Make =
                                    (( (Some ((FanSig.Grammar.After ("^"))))
                                     ), (
                                     [(( (Some ("::")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("::")) ); Gram.Sself
@@ -1875,7 +1875,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("as")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("as")) ); (
@@ -1899,7 +1899,7 @@ module Make =
                                                      (Ast.IdLid (_loc, i)) )))
                                                   ))) : 'patt) )) ))] ));
                                      (( (Some ("|")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("|"))
                                          ); Gram.Sself ] ), (
@@ -1936,7 +1936,7 @@ module Make =
                                                      ))) ))) : 'patt) )) ))]
                                       ));
                                      (( (Some ("::")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("::")) ); Gram.Sself
@@ -1960,7 +1960,7 @@ module Make =
                                                      ), p1)) ), p2)) : 'patt)
                                           )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -2647,8 +2647,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("module")) ); (
                                          (Gram.Snterm
@@ -3363,7 +3363,7 @@ module Make =
                                                    (Ast.TyQuo (_loc, i)) ))) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("?")) ); (
                                          (Gram.Snterm

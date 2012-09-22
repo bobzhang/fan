@@ -1691,16 +1691,15 @@ and ('e, 'p) symbol = {
                    [(
                     (Gram.Stoken
                       ((
-                       function
-                       | UIDENT ("NONA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"NONA\")")) )] ), (
+                       function | UIDENT ("NA") -> (true) | _ -> (false)
+                       ), "UIDENT (\"NA\")")) )] ), (
                    (Gram.Action.mk (
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
                         Gram.Loc.t) ->
                        (match __camlp4_0 with
-                        | UIDENT ("NONA") ->
+                        | UIDENT ("NA") ->
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
@@ -1709,23 +1708,22 @@ and ('e, 'p) symbol = {
                                   (Ast.IdAcc
                                     (_loc, (
                                      (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "NonA")) ))) )))
-                               ))) : 'assoc)
+                                     (Ast.IdUid (_loc, "NA")) ))) ))) ))) :
+                             'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
                     (Gram.Stoken
                       ((
-                       function
-                       | UIDENT ("RIGHTA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"RIGHTA\")")) )] ), (
+                       function | UIDENT ("RA") -> (true) | _ -> (false)
+                       ), "UIDENT (\"RA\")")) )] ), (
                    (Gram.Action.mk (
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
                         Gram.Loc.t) ->
                        (match __camlp4_0 with
-                        | UIDENT ("RIGHTA") ->
+                        | UIDENT ("RA") ->
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
@@ -1734,23 +1732,22 @@ and ('e, 'p) symbol = {
                                   (Ast.IdAcc
                                     (_loc, (
                                      (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "RightA")) ))) )))
-                               ))) : 'assoc)
+                                     (Ast.IdUid (_loc, "RA")) ))) ))) ))) :
+                             'assoc)
                         | _ -> assert false) )) ));
                   ((
                    [(
                     (Gram.Stoken
                       ((
-                       function
-                       | UIDENT ("LEFTA") -> (true)
-                       | _ -> (false) ), "UIDENT (\"LEFTA\")")) )] ), (
+                       function | UIDENT ("LA") -> (true) | _ -> (false)
+                       ), "UIDENT (\"LA\")")) )] ), (
                    (Gram.Action.mk (
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
                         Gram.Loc.t) ->
                        (match __camlp4_0 with
-                        | UIDENT ("LEFTA") ->
+                        | UIDENT ("LA") ->
                            ((Ast.ExId
                               (_loc, (
                                (Ast.IdAcc
@@ -1759,8 +1756,8 @@ and ('e, 'p) symbol = {
                                   (Ast.IdAcc
                                     (_loc, (
                                      (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, "LeftA")) ))) )))
-                               ))) : 'assoc)
+                                     (Ast.IdUid (_loc, "LA")) ))) ))) ))) :
+                             'assoc)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -1996,8 +1993,7 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NonA))) ),
-                 (
+               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NA))) ), (
                  [((
                    [(
                     (Gram.Stoken

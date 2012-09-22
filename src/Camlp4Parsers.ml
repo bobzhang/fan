@@ -656,9 +656,11 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             {label = lab; assoc = ass; rules = rules} ] ]
     ;
     assoc:
-      [ [ UIDENT "LEFTA" -> <:expr< FanSig.Grammar.LeftA >>
-        | UIDENT "RIGHTA" -> <:expr< FanSig.Grammar.RightA >>
-        | UIDENT "NONA" -> <:expr< FanSig.Grammar.NonA >> ] ]
+      [
+       [ `UIDENT ("LA"|"RA"|"NA" as x) -> <:expr< FanSig.Grammar.$uid:x >>
+       | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x 
+        (* | UIDENT "RA" -> <:expr< FanSig.Grammar.RA >> *)
+        (* | UIDENT "NA" -> <:expr< FanSig.Grammar.NA >> *) ] ]
     ;
     rule_list:
       [ [ "["; "]" -> []
@@ -694,7 +696,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | s = symbol -> s ] ]
     ;
     symbol:
-      [ "top" NONA
+      [ "top" NA
         [ UIDENT "LIST0"; s = SELF;
           sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
             let () = check_not_tok s in
@@ -790,7 +792,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   (*
   EXTEND Gram
     symbol: LEVEL "top"
-      [ NONA
+      [ NA
         [ min = [ UIDENT "SLIST0" -> False | UIDENT "SLIST1" -> True ];
           s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
             sslist _loc min sep s
@@ -1956,7 +1958,7 @@ New syntax:\
         | e = expr -> <:str_item< $exp:e >> ] ]
     ;
     module_binding0:
-      [ RIGHTA
+      [ RA
         [ "("; m = a_UIDENT; ":"; mt = module_type; ")"; mb = SELF ->
             <:module_expr< functor ( $m : $mt ) -> $mb >>
         | ":"; mt = module_type; "="; me = module_expr ->
@@ -1964,7 +1966,7 @@ New syntax:\
         | "="; me = module_expr -> <:module_expr< $me >> ] ]
     ;
     module_binding:
-      [ LEFTA
+      [ LA
         [ b1 = SELF; "and"; b2 = SELF ->
             <:module_binding< $b1 and $b2 >>
         | `ANTIQUOT ("module_binding"|"anti"|"list" as n) s ->
@@ -2030,13 +2032,13 @@ New syntax:\
             <:sig_item< class type $ctd >> ] ]
     ;
     module_declaration:
-      [ RIGHTA
+      [ RA
         [ ":"; mt = module_type -> <:module_type< $mt >>
         | "("; i = a_UIDENT; ":"; t = module_type; ")"; mt = SELF ->
             <:module_type< functor ( $i : $t ) -> $mt >> ] ]
     ;
     module_rec_declaration:
-      [ LEFTA
+      [ LA
         [ m1 = SELF; "and"; m2 = SELF -> <:module_binding< $m1 and $m2 >>
         | `ANTIQUOT (""|"module_binding"|"anti"|"list" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
@@ -2045,7 +2047,7 @@ New syntax:\
       ] ]
     ;
     with_constr:
-      [ LEFTA
+      [ LA
         [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
@@ -2064,7 +2066,7 @@ New syntax:\
             <:with_constr< module $i1 := $i2 >> ] ]
     ;
     expr:
-      [ "top" RIGHTA
+      [ "top" RA
         [ "let"; r = opt_rec; bi = binding; "in"; x = SELF ->
             <:expr< let $rec:r $bi in $x >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = SELF ->
@@ -2092,41 +2094,41 @@ New syntax:\
       | "where"
         [ e = SELF; "where"; rf = opt_rec; lb = let_binding ->
             <:expr< let $rec:rf $lb in $e >> ]
-      | ":=" NONA
+      | ":=" NA
         [ e1 = SELF; ":="; e2 = SELF; dummy ->
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> <:expr< $e1 := $e2 >> ] ]
-      | "||" RIGHTA
+      | "||" RA
         [ e1 = SELF; op = infixop6; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "&&" RIGHTA
+      | "&&" RA
         [ e1 = SELF; op = infixop5; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "<" LEFTA
+      | "<" LA
         [ e1 = SELF; op = infixop0; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "^" RIGHTA
+      | "^" RA
         [ e1 = SELF; op = infixop1; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "+" LEFTA
+      | "+" LA
         [ e1 = SELF; op = infixop2; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "*" LEFTA
+      | "*" LA
         [ e1 = SELF; "land"; e2 = SELF -> <:expr< $e1 land $e2 >>
         | e1 = SELF; "lor"; e2 = SELF -> <:expr< $e1 lor $e2 >>
         | e1 = SELF; "lxor"; e2 = SELF -> <:expr< $e1 lxor $e2 >>
         | e1 = SELF; "mod"; e2 = SELF -> <:expr< $e1 mod $e2 >>
         | e1 = SELF; op = infixop3; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "**" RIGHTA
+      | "**" RA
         [ e1 = SELF; "asr"; e2 = SELF -> <:expr< $e1 asr $e2 >>
         | e1 = SELF; "lsl"; e2 = SELF -> <:expr< $e1 lsl $e2 >>
         | e1 = SELF; "lsr"; e2 = SELF -> <:expr< $e1 lsr $e2 >>
         | e1 = SELF; op = infixop4; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
-      | "unary minus" NONA
+      | "unary minus" NA
         [ "-"; e = SELF -> mkumin _loc "-" e
         | "-."; e = SELF -> mkumin _loc "-." e ]
-      | "apply" LEFTA
+      | "apply" LA
         [ e1 = SELF; e2 = SELF -> <:expr< $e1 $e2 >>
         | "assert"; e = SELF -> mkassert _loc e
         | "new"; i = class_longident -> <:expr< new $i >>
         | "lazy"; e = SELF -> <:expr< lazy $e >> ]
-      | "label" NONA
+      | "label" NA
         [ "~"; i = a_LIDENT; ":"; e = SELF -> <:expr< ~ $i : $e >>
         | "~"; i = a_LIDENT -> <:expr< ~ $i >>
 
@@ -2138,13 +2140,13 @@ New syntax:\
 
         | "?"; i = a_LIDENT; ":"; e = SELF -> <:expr< ? $i : $e >>
         | "?"; i = a_LIDENT -> <:expr< ? $i >> ]
-      | "." LEFTA
+      | "." LA
         [ e1 = SELF; "."; "("; e2 = SELF; ")" -> <:expr< $e1 .( $e2 ) >>
         | e1 = SELF; "."; "["; e2 = SELF; "]" -> <:expr< $e1 .[ $e2 ] >>
         | e1 = SELF; "."; "{"; e2 = comma_expr; "}" -> bigarray_get _loc e1 e2
         | e1 = SELF; "."; e2 = SELF -> <:expr< $e1 . $e2 >>
         | e = SELF; "#"; lab = label -> <:expr< $e # $lab >> ]
-      | "~-" NONA
+      | "~-" NA
         [ "!"; e = SELF -> <:expr< $e.val >>
         | f = prefixop; e = SELF -> <:expr< $f $e >> ]
       | "simple"
@@ -2244,7 +2246,7 @@ New syntax:\
         | e = expr; k = sequence' -> k e ] ]
     ;
     binding:
-      [ LEFTA
+      [ LA
         [ `ANTIQUOT ("binding"|"list" as n) s ->
             <:binding< $(anti:mk_anti ~c:"binding" n s) >>
         | `ANTIQUOT (""|"anti" as n) s; "="; e = expr ->
@@ -2258,7 +2260,7 @@ New syntax:\
       [ [ p = ipatt; e = fun_binding -> <:binding< $p = $e >> ] ]
     ;
     fun_binding:
-      [ RIGHTA
+      [ RA
         [ TRY ["("; "type"]; i = a_LIDENT; ")"; e = SELF ->
             <:expr< fun (type $i) -> $e >>
         | p = TRY labeled_ipatt; e = SELF ->
@@ -2319,7 +2321,7 @@ New syntax:\
             <:expr< fun [ $p when $w -> $e ] >> ] ]
     ;
     fun_def_cont:
-      [ RIGHTA
+      [ RA
         [ TRY ["("; "type"]; i = a_LIDENT; ")";
           e = fun_def_cont_no_when ->
             (<:expr<>>, <:expr< fun (type $i) -> $e >>)
@@ -2329,7 +2331,7 @@ New syntax:\
         | "->"; e = expr -> (<:expr<>>, e) ] ]
     ;
     fun_def_cont_no_when:
-      [ RIGHTA
+      [ RA
         [ TRY ["("; "type"]; i = a_LIDENT; ")";
           e = fun_def_cont_no_when -> <:expr< fun (type $i) -> $e >>
         | p = TRY labeled_ipatt; (w,e) = fun_def_cont ->
@@ -2337,11 +2339,11 @@ New syntax:\
         | "->"; e = expr -> e ] ]
     ;
     patt:
-      [ "|" LEFTA
+      [ "|" LA
         [ p1 = SELF; "|"; p2 = SELF -> <:patt< $p1 | $p2 >> ]
-      | ".." NONA
+      | ".." NA
         [ p1 = SELF; ".."; p2 = SELF -> <:patt< $p1 .. $p2 >> ]
-      | "apply" LEFTA
+      | "apply" LA
         [ p1 = SELF; p2 = SELF -> <:patt< $p1 $p2 >>
         | "lazy"; p = SELF -> <:patt< lazy $p >>  ]
       | "simple"
@@ -2407,7 +2409,7 @@ New syntax:\
         | p = patt -> p ] ]
     ;
     sem_patt:
-      [ LEFTA
+      [ LA
         [ p1 = patt; ";"; p2 = SELF -> <:patt< $p1; $p2 >>
         | `ANTIQUOT ("list" as n) s -> <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
         | p = patt; ";" -> p
@@ -2458,7 +2460,7 @@ New syntax:\
       [ [ p = ipatt -> p ] ]
     ;
     comma_ipatt:
-      [ LEFTA
+      [ LA
         [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1, $p2 >>
         | `ANTIQUOT ("list" as n) s -> <:patt< $(anti:mk_anti ~c:"patt," n s) >>
         | p = ipatt -> p ] ]
@@ -2481,7 +2483,7 @@ New syntax:\
       ] ]
     ;
     type_declaration:
-      [ LEFTA
+      [ LA
         [ `ANTIQUOT (""|"typ"|"anti" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
@@ -2538,20 +2540,20 @@ New syntax:\
 
 
     ctyp:
-      [ "==" LEFTA
+      [ "==" LA
         [ t1 = SELF; "=="; t2 = SELF -> <:ctyp< $t1 == $t2 >> ]
-      | "private" NONA
+      | "private" NA
         [ "private"; t = ctyp LEVEL "alias" -> <:ctyp< private $t >> ]
-      | "alias" LEFTA
+      | "alias" LA
         [ t1 = SELF; "as"; t2 = SELF ->
           <:ctyp< $t1 as $t2 >> ]
-      | "forall" LEFTA
+      | "forall" LA
         [ "!"; t1 = typevars; "."; t2 = ctyp ->
           <:ctyp< ! $t1 . $t2 >> ]
-      | "arrow" RIGHTA
+      | "arrow" RA
         [ t1 = SELF; "->"; t2 = SELF ->
           <:ctyp< $t1 -> $t2 >> ]
-      | "label" NONA
+      | "label" NA
         [ "~"; i = a_LIDENT; ":"; t = SELF ->
           <:ctyp< ~ $i : $t >>
         | i = a_LABEL; t =  SELF  ->
@@ -2560,12 +2562,12 @@ New syntax:\
             <:ctyp< ? $i : $t >>
         | i = a_OPTLABEL; t = SELF ->
             <:ctyp< ? $i : $t >> ]
-      | "apply" LEFTA
+      | "apply" LA
         [ t1 = SELF; t2 = SELF ->
             let t = <:ctyp< $t1 $t2 >> in
             try <:ctyp< $(id:Ast.ident_of_ctyp t) >>
             with [ Invalid_argument _ -> t ] ]
-      | "." LEFTA
+      | "." LA
         [ t1 = SELF; "."; t2 = SELF ->
             try <:ctyp< $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) >>
             with [ Invalid_argument s -> raise (Stream.Error s) ] ]
@@ -2731,7 +2733,7 @@ New syntax:\
       [ [ x = label_longident -> x ] ]
     ;
     class_declaration:
-      [ LEFTA
+      [ LA
         [ c1 = SELF; "and"; c2 = SELF ->
             <:class_expr< $c1 and $c2 >>
         | `ANTIQUOT (""|"cdcl"|"anti"|"list" as n) s ->
@@ -2791,7 +2793,7 @@ New syntax:\
             <:class_expr< fun $p -> $ce >>
         | "let"; rf = opt_rec; bi = binding; "in"; ce = SELF ->
             <:class_expr< let $rec:rf $bi in $ce >> ]
-      | "apply" NONA
+      | "apply" NA
         [ ce = SELF; e = expr LEVEL "label" ->
             <:class_expr< $ce $e >> ]
       | "simple"
@@ -2825,7 +2827,7 @@ New syntax:\
         | -> <:patt<>> ] ]
     ;
     class_str_item:
-      [ LEFTA
+      [ LA
         [ `ANTIQUOT (""|"cst"|"anti"|"list" as n) s ->
             <:class_str_item< $(anti:mk_anti ~c:"class_str_item" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_str_item_tag
@@ -2965,7 +2967,7 @@ New syntax:\
       ] ]
     ;
     class_type_declaration:
-      [ LEFTA
+      [ LA
         [ cd1 = SELF; "and"; cd2 = SELF ->
           <:class_type< $cd1 and $cd2 >>
         | `ANTIQUOT (""|"typ"|"anti"|"list" as n) s ->
@@ -3012,7 +3014,7 @@ New syntax:\
       [ [ p = module_type -> p ] ]
     ;
     typevars:
-      [ LEFTA
+      [ LA
         [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
@@ -3021,7 +3023,7 @@ New syntax:\
       ] ]
     ;
     unquoted_typevars:
-      [ LEFTA
+      [ LA
         [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
@@ -4061,7 +4063,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
       [ ","
         [ e1 = SELF; ","; e2 = comma_expr ->
             <:expr< ( $e1, $e2 ) >> ]
-      | ":=" NONA
+      | ":=" NA
         [ e1 = SELF; ":="; e2 = expr LEVEL "top" ->
             <:expr< $e1.val := $e2 >>
         | e1 = SELF; "<-"; e2 = expr LEVEL "top" ->
@@ -4070,10 +4072,10 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
             | None -> <:expr< $e1 := $e2 >> ]
       ] ];
     expr: AFTER "^"
-      [ "::" RIGHTA
+      [ "::" RA
         [ e1 = SELF; "::"; e2 = SELF -> <:expr< [$e1 :: $e2] >> ]
       ];
-    expr: LEVEL "apply" (* LEFTA *)
+    expr: LEVEL "apply" (* LA *)
       [ [ e1 = SELF; e2 = SELF ->
             match (is_expr_constr_call e1, e2) with
             [ (True, <:expr< ( $tup:e ) >>) ->
@@ -4081,7 +4083,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
                                 (Ast.list_of_expr e [])
             | _ -> <:expr< $e1 $e2 >> ]
       ] ];
-    expr: LEVEL "simple" (* LEFTA *)
+    expr: LEVEL "simple" (* LA *)
       [ [ "false" -> <:expr< False >>
         | "true" -> <:expr< True >>
         | "{"; lel = TRY [lel = label_expr_list; "}" -> lel] ->
@@ -4109,16 +4111,16 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
     ;
     (* Patterns *)
     patt:
-      [ "as" LEFTA
+      [ "as" LA
         [ p1 = SELF; "as"; i = a_LIDENT -> <:patt< ($p1 as $lid:i) >> ]
-      | "|" LEFTA
+      | "|" LA
         [ p1 = SELF; "|"; p2 = SELF -> <:patt< $p1 | $p2 >> ]
       | ","
         [ p = SELF; ","; pl = (*FIXME comma_patt*) LIST1 NEXT SEP "," ->
             <:patt< ( $p, $(Ast.paCom_of_list pl) ) >> ]
-      | "::" RIGHTA
+      | "::" RA
         [ p1 = SELF; "::"; p2 = SELF -> <:patt< [$p1 :: $p2] >> ]
-      | "apply" RIGHTA
+      | "apply" RA
         [ p1 = patt_constr; p2 = SELF ->
             match p2 with
             [ <:patt< ( $tup:p ) >> ->
@@ -4181,7 +4183,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ "constraint" -> () ] ]
     ;
     with_constr:
-      [ LEFTA
+      [ LA
         [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
@@ -4249,7 +4251,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
     ;
     ctyp:
       [ [ t1 = SELF; "as"; "'"; i = a_ident -> <:ctyp< $t1 as '$i >> ]
-      | "arrow" RIGHTA
+      | "arrow" RA
         [ t1 = SELF; "->"; t2 = SELF -> <:ctyp< $t1 -> $t2 >>
         | i = TRY [i = a_LIDENT; ":" -> i]; t1 = ctyp LEVEL "star"; "->"; t2 = SELF ->
             <:ctyp< ( ~ $i : $t1 ) -> $t2 >>

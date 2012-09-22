@@ -1755,8 +1755,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.RA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("=")) ); (
                                          (Gram.Snterm
@@ -1831,8 +1831,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -2491,8 +2491,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.RA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("(")) ); (
                                          (Gram.Snterm
@@ -2543,8 +2543,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -2638,8 +2638,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("module")) ); (
                                          (Gram.Snterm
@@ -2875,7 +2875,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("top")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("object")) ); (
                                          (Gram.Snterm
@@ -3202,7 +3202,7 @@ module Make =
                                                ((Ast.ExLet (_loc, rf, lb, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (":=")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword (":=")) ); Gram.Sself
@@ -3227,7 +3227,7 @@ module Make =
                                                     (Ast.ExAss (_loc, e1, e2))) :
                                                  'expr) )) ))] ));
                                      (( (Some ("||")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3249,7 +3249,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("&&")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3271,7 +3271,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("<")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3293,7 +3293,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("^")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3315,7 +3315,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("+")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3337,7 +3337,7 @@ module Make =
                                                   (Ast.ExApp (_loc, op, e1))
                                                   ), e2)) : 'expr) )) ))] ));
                                      (( (Some ("*")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3447,7 +3447,7 @@ module Make =
                                                      ), e1)) ), e2)) : 'expr)
                                           )) ))] ));
                                      (( (Some ("**")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterm
@@ -3535,7 +3535,7 @@ module Make =
                                                      ), e1)) ), e2)) : 'expr)
                                           )) ))] ));
                                      (( (Some ("unary minus")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("-.")) );
                                          Gram.Sself ] ), (
@@ -3559,7 +3559,7 @@ module Make =
                                              ((mkumin _loc "-" e) : 'expr) ))
                                         ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("lazy")) );
                                          Gram.Sself ] ), (
@@ -3608,7 +3608,7 @@ module Make =
                                              ((Ast.ExApp (_loc, e1, e2)) :
                                                'expr) )) ))] ));
                                      (( (Some ("label")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("?")) ); (
                                          (Gram.Snterm
@@ -3722,7 +3722,7 @@ module Make =
                                                ((Ast.ExLab (_loc, i, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (".")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("#"))
                                          ); (
@@ -3808,7 +3808,7 @@ module Make =
                                                 ((Ast.ExAre (_loc, e1, e2)) :
                                                   'expr) )) ))] ));
                                      (( (Some ("~-")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -5055,8 +5055,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -5202,8 +5202,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.RA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -5837,8 +5837,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.RA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("->")) ); (
                                          (Gram.Snterm
@@ -5940,8 +5940,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.RA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("->")) ); (
                                          (Gram.Snterm
@@ -6022,7 +6022,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("|")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("|"))
                                          ); Gram.Sself ] ), (
@@ -6037,7 +6037,7 @@ module Make =
                                               ((Ast.PaOrp (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("..")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("..")) ); Gram.Sself
@@ -6053,7 +6053,7 @@ module Make =
                                               ((Ast.PaRng (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("lazy")) );
                                          Gram.Sself ] ), (
@@ -6934,8 +6934,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -7566,8 +7566,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -7814,8 +7814,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -8364,7 +8364,7 @@ module Make =
                                     ->
                                    (None , (
                                     [(( (Some ("==")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("==")) ); Gram.Sself
@@ -8380,7 +8380,7 @@ module Make =
                                               ((Ast.TyMan (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("private")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("private")) ); (
                                          (Gram.Snterml
@@ -8397,7 +8397,7 @@ module Make =
                                              ((Ast.TyPrv (_loc, t)) : 'ctyp)
                                           )) ))] ));
                                      (( (Some ("alias")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("as")) ); Gram.Sself
@@ -8413,7 +8413,7 @@ module Make =
                                               ((Ast.TyAli (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("forall")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [( (Gram.Skeyword ("!")) ); (
                                          (Gram.Snterm
@@ -8434,7 +8434,7 @@ module Make =
                                                ((Ast.TyPol (_loc, t1, t2)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
-                                      (Some ((FanSig.Grammar.RightA))) ), (
+                                      (Some ((FanSig.Grammar.RA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Skeyword ("->")) ); Gram.Sself
@@ -8450,7 +8450,7 @@ module Make =
                                               ((Ast.TyArr (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("label")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -8522,7 +8522,7 @@ module Make =
                                                ((Ast.TyLab (_loc, i, t)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [(( [Gram.Sself ; Gram.Sself ] ), (
                                         (Gram.Action.mk (
                                           fun (t2 :
@@ -8541,7 +8541,7 @@ module Make =
                                                Invalid_argument (_) -> t) :
                                                'ctyp) )) ))] ));
                                      (( (Some (".")) ), (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                      (Some ((FanSig.Grammar.LA))) ), (
                                       [((
                                         [Gram.Sself ; ( (Gram.Skeyword ("."))
                                          ); Gram.Sself ] ), (
@@ -10201,8 +10201,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -10707,7 +10707,7 @@ module Make =
                                               ((Ast.CeFun (_loc, p, ce)) :
                                                 'class_expr) )) ))] ));
                                      (( (Some ("apply")) ), (
-                                      (Some ((FanSig.Grammar.NonA))) ), (
+                                      (Some ((FanSig.Grammar.NA))) ), (
                                       [((
                                         [Gram.Sself ; (
                                          (Gram.Snterml
@@ -11059,8 +11059,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("initializer")) );
                                          (
@@ -12457,8 +12457,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm
@@ -12934,8 +12934,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [( (Gram.Skeyword ("'")) ); (
                                          (Gram.Snterm
@@ -13012,8 +13012,8 @@ module Make =
                                 ((fun ()
                                     ->
                                    (None , (
-                                    [(None , (
-                                      (Some ((FanSig.Grammar.LeftA))) ), (
+                                    [(None , ( (Some ((FanSig.Grammar.LA)))
+                                      ), (
                                       [((
                                         [(
                                          (Gram.Snterm

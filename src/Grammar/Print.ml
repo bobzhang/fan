@@ -111,9 +111,9 @@ module Make (Structure : Structure.S) = struct
             [ Some n -> fprintf ppf "%S@;<1 2>" n
             | None -> () ];
             match lev.assoc with
-            [ LeftA -> fprintf ppf "LEFTA"
-            | RightA -> fprintf ppf "RIGHTA"
-            | NonA -> fprintf ppf "NONA" ];
+            [ LA -> fprintf ppf "LA"
+            | RA -> fprintf ppf "RA"
+            | NA -> fprintf ppf "NA" ];
             fprintf ppf "@]@;<1 2>";
             print_level ppf pp_force_newline rules;
             fun ppf -> fprintf ppf "@,| "
@@ -243,9 +243,9 @@ module MakeDump (Structure : Structure.S) = struct
             [ Some n -> fprintf ppf "%S@;<1 2>" n
             | None -> () ];
             match lev.assoc with
-            [ LeftA -> fprintf ppf "LEFTA"
-            | RightA -> fprintf ppf "RIGHTA"
-            | NonA -> fprintf ppf "NONA" ];
+            [ LA -> fprintf ppf "LA"
+            | RA -> fprintf ppf "RA"
+            | NA -> fprintf ppf "NA" ];
             fprintf ppf "@]@;<1 2>";
             fprintf ppf "@[<v2>suffix:@ ";
             print_tree ppf lev.lsuffix;

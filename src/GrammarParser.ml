@@ -560,9 +560,9 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             {label = lab; assoc = ass; rules = rules} ] ]
     ;
     assoc:
-      [ [ UIDENT "LEFTA" -> <:expr< FanSig.Grammar.LeftA >>
-        | UIDENT "RIGHTA" -> <:expr< FanSig.Grammar.RightA >>
-        | UIDENT "NONA" -> <:expr< FanSig.Grammar.NonA >> ] ]
+      [ [ UIDENT "LA" -> <:expr< FanSig.Grammar.LA >>
+        | UIDENT "RA" -> <:expr< FanSig.Grammar.RA >>
+        | UIDENT "NA" -> <:expr< FanSig.Grammar.NA >> ] ]
     ;
     rule_list:
       [ [ "["; "]" -> []
@@ -598,7 +598,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         | s = symbol -> s ] ]
     ;
     symbol:
-      [ "top" NONA
+      [ "top" NA
         [ UIDENT "LIST0"; s = SELF;
           sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
             let () = check_not_tok s in
@@ -694,7 +694,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   (*
   EXTEND Gram
     symbol: LEVEL "top"
-      [ NONA
+      [ NA
         [ min = [ UIDENT "SLIST0" -> False | UIDENT "SLIST1" -> True ];
           s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
             sslist _loc min sep s

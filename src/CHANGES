@@ -866,7 +866,7 @@ Camlp4 Version 0.6:
        EXTEND e: [[ LIDENT "a" -> "xxx" ] | [ i = LIDENT -> i ]]; END;
   Now, parsing the entry e with the string "a" returns "xxx" instead of "a"
 
-* Less keywords in instruction EXTEND (LEFTA, LIDENT, etc), which can be
+* Less keywords in instruction EXTEND (LA, LIDENT, etc), which can be
   used now as normal identifiers.
 
 * When inserting a new rule, a warning appears if a rule with the
