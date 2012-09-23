@@ -38,3 +38,4 @@ astdefs
 tmp/*
 tmp*
 *.patch
+stats
