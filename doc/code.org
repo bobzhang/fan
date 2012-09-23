@@ -1051,13 +1051,13 @@
          | STlid of loc * string
          | STapp of loc * styp * styp
          | STquo of loc * string
-         | STself of loc * string
-         | STtok of loc
-         | STstring_tok of loc
-         | STtyp of Ast.ctyp
+         | STself of loc * string  (* type variable *)
+         | STtok of loc (* <:ctyp< $uid:gm.Token.t >> *)
+         | STstring_tok of loc (* string type *)
+         | STtyp of Ast.ctyp (* specified by the user *)
        
        type ('e,'p) text =
-         | TXmeta of loc * string * ('e,'p) text list * 'e * styp
+         | TXmeta of loc * string * ('e,'p) text list * 'e * styp (* ==> Smeta ==> FOLD0 , FOLD1 *)
          | TXlist of loc * bool * ('e,'p) symbol * ('e,'p) symbol option
          | TXnext of loc
          | TXnterm of loc * 'e name * string option
@@ -1113,7 +1113,150 @@
    comman_or_blank_sep_strings [[file:~/ocaml/ocamlbuild/lexers.mli][lexer]]
    delayed
 
-   
+**** debugging
+     Faild module tree_failed will print the error message, since
+     [TRY] introduces backtracking
+
+     #+BEGIN_SRC ocaml
+       [ [ t1 = SELF; "as"; "'"; i = a_ident -> <:ctyp< $t1 as '$i >> ]
+       | "arrow" RA
+         [ t1 = SELF; "->"; t2 = SELF -> <:ctyp< $t1 -> $t2 >>
+         | i = TRY [i = a_LIDENT; ":" -> i]; t1 = ctyp Level "star"; "->"; t2 = SELF
+                ->  <:ctyp< ( ~ $i : $t1 ) -> $t2 >>
+         | i = a_OPTLABEL; t1 = ctyp Level "star"; "->"; t2 = SELF ->
+            <:ctyp< ( ? $i : $t1 ) -> $t2 >>
+         | "?"; i = a_LIDENT; ":"; t1 = ctyp Level "star"; "->"; t2 = SELF ->
+            <:ctyp< ( ? $i : $t1 ) -> $t2 >> ]
+       | "star"
+           [ t = SELF; "*"; tl = star_ctyp -> <:ctyp< ( $t * $tl ) >> ]
+       | "ctyp1"
+           [ t1 = SELF; t2 = SELF -> <:ctyp< $t2 $t1 >> ]
+       | "ctyp2"
+           [ t1 = SELF; "."; t2 = SELF ->
+              try <:ctyp< $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) >>
+              with [ Invalid_argument s -> raise (Stream.Error s) ]
+           | t1 = SELF; "("; t2 = SELF; ")" ->
+              let t = <:ctyp< $t1 $t2 >> in
+              try <:ctyp< $(id:Ast.ident_of_ctyp t) >>
+              with [ Invalid_argument s -> raise (Stream.Error s) ] ]
+       | "simple"
+           [ "'"; i = a_ident -> <:ctyp< '$i >>
+           | "_" -> <:ctyp< _ >>
+           | i = a_LIDENT -> <:ctyp< $lid:i >>
+           | i = a_UIDENT -> <:ctyp< $uid:i >>
+           | `ANTIQUOT (""|"typ"|"anti" as n) s ->
+              <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
+           | `ANTIQUOT ("tup" as n) s ->
+              <:ctyp< ($(tup:<:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>)) >>
+           | `ANTIQUOT ("id" as n) s ->
+              <:ctyp< $(id:<:ident< $(anti:mk_anti ~c:"ident" n s) >>) >>
+           | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+           | "("; t = SELF; ","; mk = comma_ctyp_app; ")";
+             i = ctyp Level "ctyp2" ->
+              mk <:ctyp< $i $t >>
+           | "("; t = SELF; ")" -> <:ctyp< $t >>
+           | "#"; i = class_longident -> <:ctyp< # $i >>
+           | "<"; t = opt_meth_list; ">" -> t
+           | "["; OPT "|"; rfl = row_field; "]" ->
+              <:ctyp< [ = $rfl ] >>
+           | "["; ">"; "]" -> <:ctyp< [ > $(<:ctyp<>>) ] >>
+           | "["; ">"; OPT "|"; rfl = row_field; "]" ->
+              <:ctyp< [ > $rfl ] >>
+           | "[<"; OPT "|"; rfl = row_field; "]" ->
+              <:ctyp< [ < $rfl ] >>
+           | "[<"; OPT "|"; rfl = row_field; ">"; ntl = name_tags; "]" ->
+              <:ctyp< [ < $rfl > $ntl ] >>
+           | "("; "module"; p = package_type; ")" -> <:ctyp< (module $p) >> ] ]
+         
+     #+END_SRC
+
+     #+BEGIN_SRC ocaml
+       fun_binding:
+         [ RA
+           [ TRY ["("; "type"]; i = a_LIDENT; ")"; e = SELF
+             -> <:expr< fun (type $i) -> $e >>
+           | p = TRY labeled_ipatt; e = SELF ->
+              <:expr< fun $p -> $e >>
+           | bi = cvalue_binding -> bi
+             ] ];
+     #+END_SRC
+
+     #+BEGIN_SRC ocaml
+       cvalue_binding:
+         [ [ "="; e = expr -> e
+           | ":"; "type"; t1 = unquoted_typevars; "." ; t2 = ctyp ; "="; e = expr -> 
+              let u = Ast.TyTypePol _loc t1 t2 in
+              <:expr< ($e : $u) >>
+           | ":"; t = poly_type; "="; e = expr -> <:expr< ($e : $t) >>
+           | ":"; t = poly_type; ":>"; t2 = ctyp; "="; e = expr ->
+              match t with
+                [ <:ctyp< ! $_ . $_ >> -> raise (Stream.Error "unexpected polytype here")
+                | _ -> <:expr< ($e : $t :> $t2) >> ]
+           | ":>"; t = ctyp; "="; e = expr -> <:expr< ($e :> $t) >> ] ]
+       fun_binding:
+       [ RA
+       [ TRY ["("; "type"]; i = a_LIDENT; ")"; e = SELF
+          ->  <:expr< fun (type $i) -> $e >>
+       | p = TRY labeled_ipatt; e = SELF ->
+          <:expr< fun $p -> $e >>
+       | bi = cvalue_binding -> bi ] ]
+       let_binding:
+       [ [ p = ipatt; e = fun_binding -> <:binding< $p = $e >> ] ]
+       binding:
+       [ LA
+        `ANTIQUOT ("binding"|"list" as n) s ->
+         <:binding< $(anti:mk_anti ~c:"binding" n s) >>
+       | `ANTIQUOT (""|"anti" as n) s; "="; e = expr ->
+          <:binding< $(anti:mk_anti ~c:"patt" n s) = $e >>
+       | `ANTIQUOT (""|"anti" as n) s -> <:binding< $(anti:mk_anti ~c:"binding" n s) >>
+       | b1 = SELF; "and"; b2 = SELF -> <:binding< $b1 and $b2 >>
+       | b = let_binding -> b ] 
+
+       [ "let"; r = opt_rec; bi = binding; "in"; x = SELF ->
+            <:expr< let $rec:r $bi in $x >> ]
+
+       | o = value_val_opt_override; mf = opt_mutable; lab = label; e = cvalue_binding 
+          ->
+            <:class_str_item< value $override:o $mutable:mf $lab = $e >>
+
+     #+END_SRC
+
+     #+BEGIN_SRC ocaml
+Error: Syntax error
+let f : ('a . 'a -> 'a ) = fun x -> x;;
+Characters 12-13:
+  let f : ('a . 'a -> 'a ) = fun x -> x;;
+              ^
+Error: Syntax error
+let f : 'a . 'a -> 'a  = fun x -> x;;
+val f : 'a -> 'a = <fun>
+
+let_binding:
+    val_ident fun_binding
+      { (mkpatvar $1 1, $2) }
+  | val_ident COLON typevar_list DOT core_type EQUAL seq_expr
+      { (ghpat(Ppat_constraint(mkpatvar $1 1, ghtyp(Ptyp_poly($3,$5)))), $7) }
+  | val_ident COLON TYPE lident_list DOT core_type EQUAL seq_expr
+      { let exp, poly = wrap_type_annotation $4 $6 $8 in
+        (ghpat(Ppat_constraint(mkpatvar $1 1, poly)), exp) }
+  | pattern EQUAL seq_expr
+      { ($1, $3) }
+     
+     #+END_SRC
+
+     #+BEGIN_SRC ocaml
+value f : ! a. a -> a  = fun [x -> x];
+Characters 10-11:
+  value f : ! a. a -> a  = fun [x -> x];
+            ^
+Error: Parse error: [typevars] expected after "!" (in [ctyp])
+value f : ! 'a. 'a -> 'a  = fun [x -> x];
+value f : ! 'a. 'a -> 'a  = fun [x -> x];
+value f : 'a -> 'a = <fun>
+value f : (! 'a. 'a -> 'a)  = fun [x -> x];
+value f : (! 'a. 'a -> 'a)  = fun [x -> x];
+value f : 'a -> 'a = <fun>
+     #+END_SRC
 * ideas
   
 

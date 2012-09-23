@@ -311,10 +311,15 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     | STtyp t -> t ]
   ;
 
+  (*
+    {[
+    styp generates type constraints which are used to constrain patt
+    ]}
+   *)    
   value make_ctyp_patt styp tvar patt =
     let styp = match styp with [ STstring_tok _loc -> STtok _loc | t -> t ] in
     match make_ctyp styp tvar with
-    [ <:ctyp< _ >> -> patt
+    [ <:ctyp< _ >> -> patt (* FIXME *)
     | t -> let _loc = Ast.loc_of_patt patt in <:patt< ($patt : $t) >> ];
 
   value make_ctyp_expr styp tvar expr =
@@ -322,13 +327,16 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     [ <:ctyp< _ >> -> expr
     | t -> let _loc = Ast.loc_of_expr expr in <:expr< ($expr : $t) >> ];
 
-  value text_of_action _loc psl rtvar act tvar =
-    let locid = <:patt< $(lid:Loc.name.val) >> in
-    let act =
-      match act with
+  (*
+    {[
+    ('j, Ast.patt) symbol list
+    ]}
+   *)    
+  value text_of_action _loc (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
+    let locid = <:patt< $(lid: Loc.name.val) >> in (* default is [_loc]*)
+    let act = match act with
       [ Some act -> act
-      | None -> <:expr< () >> ]
-    in
+      | None -> <:expr< () >> ] in
     let (tok_match_pl, act, _) =
       List.fold_left
         (fun ((tok_match_pl, act, i) as accu) ->
@@ -586,6 +594,19 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
       | p -> super#patt p ];
   end;
 
+
+    (*
+    {[
+      match s.pattern with
+      [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
+      mk_tok _loc <:patt< $uid:u $p >> s.styp
+      | _ -> { (s) with pattern = Some p } ]
+
+      | "`"; p = patt -> mk_tok _loc p (STtok _loc)
+      | x = UIDENT -> mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>  (STstring_tok _loc)
+      | x = UIDENT; s = STRING -> mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc)
+    ]}
+   *)  
   value mk_tok _loc p t =
     let p' = wildcarder#patt p in
     let match_fun =
@@ -599,6 +620,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
 
   value symbol = Gram.Entry.mk "symbol";
 
+  (* FIXME why deprecate such syntax *)  
   value check_not_tok s =
     match s with
     [ {text = TXtok _loc _ _ } ->
@@ -2874,8 +2896,9 @@ New syntax:\
     cvalue_binding:
       [ [ "="; e = expr -> e
         | ":"; "type"; t1 = unquoted_typevars; "." ; t2 = ctyp ; "="; e = expr -> 
-	let u = Ast.TyTypePol _loc t1 t2 in
-	<:expr< ($e : $u) >>
+	(* let u = Ast.TyTypePol _loc t1 t2 in *)
+         let u = <:ctyp< ! $t1 . $t2 >> in   
+         <:expr< ($e : $u) >>
         | ":"; t = poly_type; "="; e = expr -> <:expr< ($e : $t) >>
         | ":"; t = poly_type; ":>"; t2 = ctyp; "="; e = expr ->
             match t with
