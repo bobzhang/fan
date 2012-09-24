@@ -20,12 +20,9 @@
 open FanSig.Grammar;
 
 module type S = sig
-  (* module Loc          : FanSig.Loc; *)
-  module Token        : FanSig.Token; (* with module Loc = Loc; *)
-  module Lexer        : FanSig.Lexer
-                        with (* module Loc   = Loc *)
-                         (* and *)
-                         module Token = Token;
+
+  module Token        : FanSig.Token; 
+  module Lexer        : FanSig.Lexer  with  module Token = Token;
   module Action       : FanSig.Grammar.Action;
 
   type gram =

@@ -31,7 +31,7 @@ module MakeExceptionTracer (AstFilters : Camlp4.Sig.AstFilters) = struct
   open Ast;
 
   value add_debug_expr e =
-    (* let _loc = Loc.make_absolute (MLast.loc_of_expr e) in *)
+
     let _loc = Ast.loc_of_expr e in
     let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
     <:expr<

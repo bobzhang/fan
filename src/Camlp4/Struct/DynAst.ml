@@ -17,7 +17,7 @@
  * - Nicolas Pouillard: initial version
  *)
 
-module Make (Ast : Sig.Ast) : Sig.DynAst with module Ast = Ast = struct
+module Make (Ast : Sig.Camlp4Ast) : Sig.DynAst with module Ast = Ast = struct
   module Ast = Ast;
   type tag 'a =
     [ Tag_ctyp

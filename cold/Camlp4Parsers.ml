@@ -9,7 +9,7 @@ module IdAstLoader =
                end
 
 module MakeAstLoader =
-                     functor (Ast : Camlp4.Sig.Ast) ->
+                     functor (Ast : Camlp4.Sig.Camlp4Ast) ->
                       (struct
                         module Ast = Ast
 

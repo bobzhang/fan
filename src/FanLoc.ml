@@ -86,7 +86,7 @@ value dump_pos f x =
           x.line x.bol x.off;
 value dump_long f x =
   fprintf f
-    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : Loc.t@]"
+    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
     x.file_name dump_pos x.start (x.start.off - x.start.bol)
     (x.stop.off - x.start.bol) dump_pos x.stop
     (x.stop.off - x.stop.bol) x.ghost;

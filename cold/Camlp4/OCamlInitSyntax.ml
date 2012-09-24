@@ -2,8 +2,7 @@ module Make =
  functor (Ast : Sig.Camlp4Ast) ->
   functor (Gram : (FanSig.Grammar.Static with type  Token.t =
                    FanSig.camlp4_token)) ->
-   functor (Quotation : (Sig.Quotation with module Ast =
-                         Sig.Camlp4AstToAst(Ast))) ->
+   functor (Quotation : (Sig.Quotation with module Ast = Ast)) ->
     (struct
       module Ast = Ast
 
@@ -408,7 +407,7 @@ module Make =
 
       module AntiquotSyntax =
        struct
-        module Ast = (Sig.Camlp4AstToAst)(Ast)
+        module Ast = Ast
 
         module Gram = Gram
 

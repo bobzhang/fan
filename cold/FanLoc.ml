@@ -32,7 +32,7 @@ let dump_long =
                                                                  fun f ->
                                                                   fun x ->
                                                                    (fprintf f
-                                                                    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : Loc.t@]"
+                                                                    "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
                                                                     (
                                                                     x.file_name
                                                                     )

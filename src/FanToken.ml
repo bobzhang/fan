@@ -1,12 +1,8 @@
 open Format;
 
-(* module Make (Loc : FanSig.Loc) *)
-(* : FanSig.Camlp4Token (\* with module Loc = Loc *\) *)
-(* = struct *)
-  (* module Loc  = Loc; *)
   open FanSig;
   type t = camlp4_token;
-  (* type token = t; *)
+
 
   value to_string =
     fun
@@ -138,7 +134,7 @@ open Format;
         if error_on_unknown_keywords.val
         then check_unknown_keywords tok loc else ();
         debug token "@[<hov 2>Lexer before filter:@ %a@ at@ %a@]@."
-                    print tok Loc.dump loc in
+                    print tok FanLoc.dump loc in
         (tok, loc)
       } in
       let rec filter =
@@ -161,5 +157,5 @@ open Format;
     value keyword_removed _ _ = ();
   end;
 
-(* end; *)
+
 

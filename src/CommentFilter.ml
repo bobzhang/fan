@@ -19,7 +19,7 @@
 module Make (Token : FanSig.Camlp4Token) = struct
   open Token;
 
-  type t = (Stream.t (string * Loc.t) * Queue.t (string * Loc.t));
+  type t = (Stream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
 
   value mk () =
     let q = Queue.create () in
@@ -33,10 +33,10 @@ module Make (Token : FanSig.Camlp4Token) = struct
       parser
       [ [: ` (FanSig.COMMENT x, loc); xs :] ->
             do { Queue.add (x, loc) q;
-                 debug comments "add: %S at %a@\n" x Loc.dump loc in
+                 debug comments "add: %S at %a@\n" x FanLoc.dump loc in
                  self xs }
       | [: ` x; xs :] ->
-          (* debug comments "Found %a at %a@." Token.print x Loc.dump loc in *)
+          (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
           [: ` x; self xs :]
       | [: :] -> [: :] ]
     in self;

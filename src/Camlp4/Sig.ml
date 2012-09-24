@@ -41,15 +41,6 @@ module type Id = sig
 
 end;
 
-(** A signature for warnings abstract from locations. *)
-(* module Warning (Loc : Type) = struct *)
-(*   module type S = sig *)
-(*     type warning = Loc.t -> string -> unit; *)
-(*     value default_warning : warning; *)
-(*     value current_warning : ref warning; *)
-(*     value print_warning   : warning; *)
-(*   end; *)
-(* end; *)
 module type Warning = sig
   type warning = FanLoc.t -> string -> unit;
   value default_warning: warning;
@@ -62,150 +53,150 @@ end;
 (** Abstract syntax tree minimal signature.
     Types of this signature are abstract.
     See the {!Camlp4Ast} signature for a concrete definition. *)
-module type Ast = sig
+(* module type Ast = sig *)
 
-  (** {6 Syntactic categories as abstract types} *)
+(*   (\** {6 Syntactic categories as abstract types} *\) *)
 
-  type loc;
-  type meta_bool;
-  type meta_option 'a;
-  type meta_list 'a;
-  type ctyp;
-  type patt;
-  type expr;
-  type module_type;
-  type sig_item;
-  type with_constr;
-  type module_expr;
-  type str_item;
-  type class_type;
-  type class_sig_item;
-  type class_expr;
-  type class_str_item;
-  type match_case;
-  type ident;
-  type binding;
-  type rec_binding;
-  type module_binding;
-  type rec_flag;
-  type direction_flag;
-  type mutable_flag;
-  type private_flag;
-  type virtual_flag;
-  type row_var_flag;
-  type override_flag;
+(*   type loc; *)
+(*   type meta_bool; *)
+(*   type meta_option 'a; *)
+(*   type meta_list 'a; *)
+(*   type ctyp; *)
+(*   type patt; *)
+(*   type expr; *)
+(*   type module_type; *)
+(*   type sig_item; *)
+(*   type with_constr; *)
+(*   type module_expr; *)
+(*   type str_item; *)
+(*   type class_type; *)
+(*   type class_sig_item; *)
+(*   type class_expr; *)
+(*   type class_str_item; *)
+(*   type match_case; *)
+(*   type ident; *)
+(*   type binding; *)
+(*   type rec_binding; *)
+(*   type module_binding; *)
+(*   type rec_flag; *)
+(*   type direction_flag; *)
+(*   type mutable_flag; *)
+(*   type private_flag; *)
+(*   type virtual_flag; *)
+(*   type row_var_flag; *)
+(*   type override_flag; *)
 
-  (** {6 Location accessors} *)
+(*   (\** {6 Location accessors} *\) *)
 
-  value loc_of_ctyp : ctyp -> loc;
-  value loc_of_patt : patt -> loc;
-  value loc_of_expr : expr -> loc;
-  value loc_of_module_type : module_type -> loc;
-  value loc_of_module_expr : module_expr -> loc;
-  value loc_of_sig_item : sig_item -> loc;
-  value loc_of_str_item : str_item -> loc;
-  value loc_of_class_type : class_type -> loc;
-  value loc_of_class_sig_item : class_sig_item -> loc;
-  value loc_of_class_expr : class_expr -> loc;
-  value loc_of_class_str_item : class_str_item -> loc;
-  value loc_of_with_constr : with_constr -> loc;
-  value loc_of_binding : binding -> loc;
-  value loc_of_rec_binding : rec_binding -> loc;
-  value loc_of_module_binding : module_binding -> loc;
-  value loc_of_match_case : match_case -> loc;
-  value loc_of_ident : ident -> loc;
+(*   value loc_of_ctyp : ctyp -> loc; *)
+(*   value loc_of_patt : patt -> loc; *)
+(*   value loc_of_expr : expr -> loc; *)
+(*   value loc_of_module_type : module_type -> loc; *)
+(*   value loc_of_module_expr : module_expr -> loc; *)
+(*   value loc_of_sig_item : sig_item -> loc; *)
+(*   value loc_of_str_item : str_item -> loc; *)
+(*   value loc_of_class_type : class_type -> loc; *)
+(*   value loc_of_class_sig_item : class_sig_item -> loc; *)
+(*   value loc_of_class_expr : class_expr -> loc; *)
+(*   value loc_of_class_str_item : class_str_item -> loc; *)
+(*   value loc_of_with_constr : with_constr -> loc; *)
+(*   value loc_of_binding : binding -> loc; *)
+(*   value loc_of_rec_binding : rec_binding -> loc; *)
+(*   value loc_of_module_binding : module_binding -> loc; *)
+(*   value loc_of_match_case : match_case -> loc; *)
+(*   value loc_of_ident : ident -> loc; *)
 
-  (** {6 Traversals} *)
+(*   (\** {6 Traversals} *\) *)
 
-  (** This class is the base class for map traversal on the Ast.
-      To make a custom traversal class one just extend it like that:
+(*   (\** This class is the base class for map traversal on the Ast. *)
+(*       To make a custom traversal class one just extend it like that: *)
 
-      This example swap pairs expression contents:
-      open Camlp4.PreCast;
-      [class swap = object
-        inherit Ast.map as super;
-        method expr e =
-          match super#expr e with
-          \[ <:expr\@_loc< ($e1$, $e2$) >> -> <:expr< ($e2$, $e1$) >>
-          | e -> e \];
-      end;
-      value _loc = Loc.ghost;
-      value map = (new swap)#expr;
-      assert (map <:expr< fun x -> (x, 42) >> = <:expr< fun x -> (42, x) >>);]
-  *)
-  class map : object ('self_type)
-    method string : string -> string;
-    method list : ! 'a 'b . ('self_type -> 'a -> 'b) -> list 'a -> list 'b;
-    method meta_bool : meta_bool -> meta_bool;
-    method meta_option : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
-    method meta_list : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
-    method loc : loc -> loc;
-    method expr : expr -> expr;
-    method patt : patt -> patt;
-    method ctyp : ctyp -> ctyp;
-    method str_item : str_item -> str_item;
-    method sig_item : sig_item -> sig_item;
+(*       This example swap pairs expression contents: *)
+(*       open Camlp4.PreCast; *)
+(*       [class swap = object *)
+(*         inherit Ast.map as super; *)
+(*         method expr e = *)
+(*           match super#expr e with *)
+(*           \[ <:expr\@_loc< ($e1$, $e2$) >> -> <:expr< ($e2$, $e1$) >> *)
+(*           | e -> e \]; *)
+(*       end; *)
+(*       value _loc = Loc.ghost; *)
+(*       value map = (new swap)#expr; *)
+(*       assert (map <:expr< fun x -> (x, 42) >> = <:expr< fun x -> (42, x) >>);] *)
+(*   *\) *)
+(*   class map : object ('self_type) *)
+(*     method string : string -> string; *)
+(*     method list : ! 'a 'b . ('self_type -> 'a -> 'b) -> list 'a -> list 'b; *)
+(*     method meta_bool : meta_bool -> meta_bool; *)
+(*     method meta_option : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_option 'a -> meta_option 'b; *)
+(*     method meta_list : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_list 'a -> meta_list 'b; *)
+(*     method loc : loc -> loc; *)
+(*     method expr : expr -> expr; *)
+(*     method patt : patt -> patt; *)
+(*     method ctyp : ctyp -> ctyp; *)
+(*     method str_item : str_item -> str_item; *)
+(*     method sig_item : sig_item -> sig_item; *)
 
-    method module_expr : module_expr -> module_expr;
-    method module_type : module_type -> module_type;
-    method class_expr : class_expr -> class_expr;
-    method class_type : class_type -> class_type;
-    method class_sig_item : class_sig_item -> class_sig_item;
-    method class_str_item : class_str_item -> class_str_item;
-    method with_constr : with_constr -> with_constr;
-    method binding : binding -> binding;
-    method rec_binding : rec_binding -> rec_binding;
-    method module_binding : module_binding -> module_binding;
-    method match_case : match_case -> match_case;
-    method ident : ident -> ident;
-    method override_flag : override_flag -> override_flag;
-    method mutable_flag : mutable_flag -> mutable_flag;
-    method private_flag : private_flag -> private_flag;
-    method virtual_flag : virtual_flag -> virtual_flag;
-    method direction_flag : direction_flag -> direction_flag;
-    method rec_flag : rec_flag -> rec_flag;
-    method row_var_flag : row_var_flag -> row_var_flag;
+(*     method module_expr : module_expr -> module_expr; *)
+(*     method module_type : module_type -> module_type; *)
+(*     method class_expr : class_expr -> class_expr; *)
+(*     method class_type : class_type -> class_type; *)
+(*     method class_sig_item : class_sig_item -> class_sig_item; *)
+(*     method class_str_item : class_str_item -> class_str_item; *)
+(*     method with_constr : with_constr -> with_constr; *)
+(*     method binding : binding -> binding; *)
+(*     method rec_binding : rec_binding -> rec_binding; *)
+(*     method module_binding : module_binding -> module_binding; *)
+(*     method match_case : match_case -> match_case; *)
+(*     method ident : ident -> ident; *)
+(*     method override_flag : override_flag -> override_flag; *)
+(*     method mutable_flag : mutable_flag -> mutable_flag; *)
+(*     method private_flag : private_flag -> private_flag; *)
+(*     method virtual_flag : virtual_flag -> virtual_flag; *)
+(*     method direction_flag : direction_flag -> direction_flag; *)
+(*     method rec_flag : rec_flag -> rec_flag; *)
+(*     method row_var_flag : row_var_flag -> row_var_flag; *)
 
-    method unknown : ! 'a. 'a -> 'a;
-  end;
+(*     method unknown : ! 'a. 'a -> 'a; *)
+(*   end; *)
 
-  (** Fold style traversal *)
-  class fold : object ('self_type)
-    method string : string -> 'self_type;
-    method list : ! 'a . ('self_type -> 'a -> 'self_type) -> list 'a -> 'self_type;
-    method meta_bool : meta_bool -> 'self_type;
-    method meta_option : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_option 'a -> 'self_type;
-    method meta_list : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_list 'a -> 'self_type;
-    method loc : loc -> 'self_type;
-    method expr : expr -> 'self_type;
-    method patt : patt -> 'self_type;
-    method ctyp : ctyp -> 'self_type;
-    method str_item : str_item -> 'self_type;
-    method sig_item : sig_item -> 'self_type;
-    method module_expr : module_expr -> 'self_type;
-    method module_type : module_type -> 'self_type;
-    method class_expr : class_expr -> 'self_type;
-    method class_type : class_type -> 'self_type;
-    method class_sig_item : class_sig_item -> 'self_type;
-    method class_str_item : class_str_item -> 'self_type;
-    method with_constr : with_constr -> 'self_type;
-    method binding : binding -> 'self_type;
-    method rec_binding : rec_binding -> 'self_type;
-    method module_binding : module_binding -> 'self_type;
-    method match_case : match_case -> 'self_type;
-    method ident : ident -> 'self_type;
-    method rec_flag : rec_flag -> 'self_type;
-    method direction_flag : direction_flag -> 'self_type;
-    method mutable_flag : mutable_flag -> 'self_type;
-    method private_flag : private_flag -> 'self_type;
-    method virtual_flag : virtual_flag -> 'self_type;
-    method row_var_flag : row_var_flag -> 'self_type;
-    method override_flag : override_flag -> 'self_type;
+(*   (\** Fold style traversal *\) *)
+(*   class fold : object ('self_type) *)
+(*     method string : string -> 'self_type; *)
+(*     method list : ! 'a . ('self_type -> 'a -> 'self_type) -> list 'a -> 'self_type; *)
+(*     method meta_bool : meta_bool -> 'self_type; *)
+(*     method meta_option : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_option 'a -> 'self_type; *)
+(*     method meta_list : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_list 'a -> 'self_type; *)
+(*     method loc : loc -> 'self_type; *)
+(*     method expr : expr -> 'self_type; *)
+(*     method patt : patt -> 'self_type; *)
+(*     method ctyp : ctyp -> 'self_type; *)
+(*     method str_item : str_item -> 'self_type; *)
+(*     method sig_item : sig_item -> 'self_type; *)
+(*     method module_expr : module_expr -> 'self_type; *)
+(*     method module_type : module_type -> 'self_type; *)
+(*     method class_expr : class_expr -> 'self_type; *)
+(*     method class_type : class_type -> 'self_type; *)
+(*     method class_sig_item : class_sig_item -> 'self_type; *)
+(*     method class_str_item : class_str_item -> 'self_type; *)
+(*     method with_constr : with_constr -> 'self_type; *)
+(*     method binding : binding -> 'self_type; *)
+(*     method rec_binding : rec_binding -> 'self_type; *)
+(*     method module_binding : module_binding -> 'self_type; *)
+(*     method match_case : match_case -> 'self_type; *)
+(*     method ident : ident -> 'self_type; *)
+(*     method rec_flag : rec_flag -> 'self_type; *)
+(*     method direction_flag : direction_flag -> 'self_type; *)
+(*     method mutable_flag : mutable_flag -> 'self_type; *)
+(*     method private_flag : private_flag -> 'self_type; *)
+(*     method virtual_flag : virtual_flag -> 'self_type; *)
+(*     method row_var_flag : row_var_flag -> 'self_type; *)
+(*     method override_flag : override_flag -> 'self_type; *)
 
-    method unknown : ! 'a. 'a -> 'self_type;
-  end;
+(*     method unknown : ! 'a. 'a -> 'self_type; *)
+(*   end; *)
 
-end;
+(* end; *)
 
 
 (** Signature for OCaml syntax trees. *) (*
@@ -540,43 +531,37 @@ end;
     It takes a Camlp4Ast module and gives the Ast one.
     Typical use is for [with] constraints.
     Example: ... with module Ast = Camlp4.Sig.Camlp4AstToAst Camlp4Ast *)
-module Camlp4AstToAst (M : Camlp4Ast) : Ast
-  with type loc = M.loc
-   and type meta_bool = M.meta_bool
-   and type meta_option 'a = M.meta_option 'a
-   and type meta_list 'a = M.meta_list 'a
-   and type ctyp = M.ctyp
-   and type patt = M.patt
-   and type expr = M.expr
-   and type module_type = M.module_type
-   and type sig_item = M.sig_item
-   and type with_constr = M.with_constr
-   and type module_expr = M.module_expr
-   and type str_item = M.str_item
-   and type class_type = M.class_type
-   and type class_sig_item = M.class_sig_item
-   and type class_expr = M.class_expr
-   and type class_str_item = M.class_str_item
-   and type binding = M.binding
-   and type rec_binding = M.rec_binding
-   and type module_binding = M.module_binding
-   and type match_case = M.match_case
-   and type ident = M.ident
-   and type rec_flag = M.rec_flag
-   and type direction_flag = M.direction_flag
-   and type mutable_flag = M.mutable_flag
-   and type private_flag = M.private_flag
-   and type virtual_flag = M.virtual_flag
-   and type row_var_flag = M.row_var_flag
-   and type override_flag = M.override_flag
-= M;
+(* module Camlp4AstToAst (M : Camlp4Ast) : Ast *)
+(*   with type loc = M.loc *)
+(*    and type meta_bool = M.meta_bool *)
+(*    and type meta_option 'a = M.meta_option 'a *)
+(*    and type meta_list 'a = M.meta_list 'a *)
+(*    and type ctyp = M.ctyp *)
+(*    and type patt = M.patt *)
+(*    and type expr = M.expr *)
+(*    and type module_type = M.module_type *)
+(*    and type sig_item = M.sig_item *)
+(*    and type with_constr = M.with_constr *)
+(*    and type module_expr = M.module_expr *)
+(*    and type str_item = M.str_item *)
+(*    and type class_type = M.class_type *)
+(*    and type class_sig_item = M.class_sig_item *)
+(*    and type class_expr = M.class_expr *)
+(*    and type class_str_item = M.class_str_item *)
+(*    and type binding = M.binding *)
+(*    and type rec_binding = M.rec_binding *)
+(*    and type module_binding = M.module_binding *)
+(*    and type match_case = M.match_case *)
+(*    and type ident = M.ident *)
+(*    and type rec_flag = M.rec_flag *)
+(*    and type direction_flag = M.direction_flag *)
+(*    and type mutable_flag = M.mutable_flag *)
+(*    and type private_flag = M.private_flag *)
+(*    and type virtual_flag = M.virtual_flag *)
+(*    and type row_var_flag = M.row_var_flag *)
+(*    and type override_flag = M.override_flag *)
+(* = M; *)
 
-(** Concrete definition of Camlp4 ASTs abstracted from locations.
-    Since the Ast contains locations, this functor produces Ast types
-    for a given location type. *)
-module MakeCamlp4Ast (Loc : Type) = struct
-  INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
-end;
 
 (** {6 Filters} *)
 
@@ -589,7 +574,7 @@ type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
       - Interface filters: sig_item -> sig_item. *)
 module type AstFilters = sig
 
-  module Ast : Camlp4Ast (* with module Loc = FanLoc*);
+  module Ast : Camlp4Ast ;
 
   type filter 'a = 'a -> 'a;
 
@@ -605,7 +590,7 @@ end;
 
 (** ASTs as one single dynamic type *)
 module type DynAst = sig
-  module Ast : Ast;
+  module Ast : Camlp4Ast; (* remove Ast,  Camlp4Ast *)
   type tag 'a;
 
   value ctyp_tag : tag Ast.ctyp;
@@ -641,7 +626,7 @@ end;
 
 (** The signature for a quotation expander registery. *)
 module type Quotation = sig
-  module Ast : Ast;
+  module Ast : Camlp4Ast;
   module DynAst : DynAst with module Ast = Ast;
   open Ast;
 
@@ -710,7 +695,7 @@ end;
 
 
 (** A signature for parsers abstract from ASTs. *)
-module Parser (Ast : Ast) = struct
+module Parser (Ast : Camlp4Ast) = struct
   module type SIMPLE = sig
     (** The parse function for expressions.
         The underlying expression grammar entry is generally "expr; EOI". *)
@@ -739,7 +724,7 @@ module Parser (Ast : Ast) = struct
 end;
 
 (** A signature for printers abstract from ASTs. *)
-module Printer (Ast : Ast) = struct
+module Printer (Ast : Camlp4Ast) = struct
   module type S = sig
 
     value print_interf : ?input_file:string -> ?output_file:string ->
@@ -755,16 +740,15 @@ end;
    locations, syntax trees, tokens, grammars, quotations, anti-quotations.
    There is also the main grammar entries. *)
 module type Syntax = sig
-  (* module Loc            : FanSig.Loc; *)
-  module Ast            : Ast (* with type loc = Loc.t *) ;
-  module Token          : FanSig.Token (* with module Loc = Loc *);
-  module Gram           : FanSig.Grammar.Static with (* module Loc = Loc and *)
+  module Ast            : Camlp4Ast  ;
+  module Token          : FanSig.Token ;
+  module Gram           : FanSig.Grammar.Static with 
                           module Token = Token;
   module Quotation      : Quotation with module Ast = Ast;
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
 
-  (* include (Warning FanLoc).S; *)
+
   include Warning;
   include (Parser  Ast).S;
   include (Printer Ast).S;
@@ -775,14 +759,14 @@ end;
     locations, syntax trees, tokens, grammars, quotations, anti-quotations.
     There is also the main grammar entries. *)
 module type Camlp4Syntax = sig
-  (* module Loc            : FanSig.Loc; *)
 
-  module Ast            : Camlp4Ast (* with module Loc = FanLoc*) ;
-  module Token          : FanSig.Camlp4Token (* with module Loc = Loc *);
 
-  module Gram           : FanSig.Grammar.Static with  (* module Loc = Ast.Loc and *)
+  module Ast            : Camlp4Ast ;
+  module Token          : FanSig.Camlp4Token ;
+
+  module Gram           : FanSig.Grammar.Static with  
                           module Token = Token;
-  module Quotation      : Quotation with module Ast = Camlp4AstToAst Ast;
+  module Quotation      : Quotation with module Ast = Ast ; 
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
 
@@ -793,7 +777,7 @@ module type Camlp4Syntax = sig
     value str_item : Ast.str_item -> Parsetree.structure;
     value phrase : Ast.str_item -> Parsetree.toplevel_phrase;
   end;
-  (* include (Warning FanLoc).S; *)
+
   include Warning;  
   include (Parser  Ast).S;
   include (Printer Ast).S;
@@ -967,8 +951,7 @@ end;
 
 (** A signature for syntax extension (syntax -> syntax functors). *)
 module type SyntaxExtension = functor (Syn : Syntax)
-                    -> (Syntax with (* module Loc            = Syn.Loc
-                                and *) module Ast            = Syn.Ast
+                    -> (Syntax with  module Ast            = Syn.Ast
                                 and module Token          = Syn.Token
                                 and module Gram           = Syn.Gram
                                 and module Quotation      = Syn.Quotation);
@@ -991,24 +974,24 @@ module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
 module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
 module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
 module type LEXER = functor (Token: FanSig.Camlp4Token) -> FanSig.Lexer
-  with (* module Loc = Token.Loc and *) module Token = Token;
+  with  module Token = Token;
 
 
 
 module type PRECAST = sig
   type token = FanSig.camlp4_token ;
-  (* module Loc        : FanSig.Loc; *)
-  module Ast        : Camlp4Ast (* with  module Loc = FanLoc *);
-  module Token      : FanSig.Token  with (* module Loc = Loc and *)
+
+  module Ast        : Camlp4Ast ;
+  module Token      : FanSig.Token  with 
                       type t = FanSig.camlp4_token;
-  module Lexer      : FanSig.Lexer  with (* module Loc = Loc and *)
+  module Lexer      : FanSig.Lexer  with 
                       module Token = Token;
-  module Gram       : FanSig.Grammar.Static  with (* module Loc = FanLoc and*)
+  module Gram       : FanSig.Grammar.Static  with
                       module Token = Token;
-  module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
-  (* module DynLoader  : DynLoader; *)
+  module Quotation  : Quotation with module Ast = Ast;
+
   module AstFilters : AstFilters with module Ast = Ast;
-  module Syntax     : Camlp4Syntax with (* module Loc = Loc and *)
+  module Syntax     : Camlp4Syntax with 
                        module Token   = Token
                        and module Ast     = Ast
                        and module Gram    = Gram
@@ -1020,8 +1003,6 @@ module type PRECAST = sig
     module DumpCamlp4Ast : (Printer Ast).S;
     module Null          : (Printer Ast).S;
   end;
-  (* module MakeGram (Lexer : FanSig.Lexer (\* with module Loc = Loc *\) ) : *)
-  (*     FanSig.Grammar.Static with (\* module Loc = Loc and *\) module Token = Lexer.Token; *)
 
   module MakeSyntax (U : sig end) : Syntax;
 
@@ -1071,7 +1052,6 @@ module type PRECAST = sig
   module CurrentPrinter : (Printer Ast).S;
 
   value enable_ocaml_printer : unit -> unit;
-  (* value enable_ocamlr_printer : unit -> unit; *)
   value enable_null_printer : unit -> unit;
   value enable_dump_ocaml_ast_printer : unit -> unit;
   value enable_dump_camlp4_ast_printer : unit -> unit;

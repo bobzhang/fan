@@ -12,7 +12,7 @@ end
 
 
 (** A signature for locations. *)
-module type Loc =  sig
+module type Loc =  sig (* FIXME should be removed*)
 
   (** The type of locations.  Note that, as for OCaml locations,
         character numbers in locations refer to character numbers in the

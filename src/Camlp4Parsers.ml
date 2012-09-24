@@ -6,7 +6,7 @@ module IdAstLoader = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeAstLoader (Ast : Camlp4.Sig.Ast) : (Camlp4.Sig.Parser Ast).S= struct
+module MakeAstLoader (Ast : Camlp4.Sig.Camlp4Ast) : (Camlp4.Sig.Parser Ast).S= struct
   module Ast = Ast;
 
   value parse ast_magic ?directive_handler:(_) _loc strm =

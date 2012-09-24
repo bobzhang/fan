@@ -85,7 +85,7 @@ end;
 (*                     fun (__camlp4_0 : *)
 (*                       Gram.Token.t) -> *)
 (*                      fun (_loc : *)
-(*                        Gram.Loc.t) -> *)
+(*                        Gram.FanLoc.t) -> *)
 (*                       (match __camlp4_0 with *)
 (*                        | XY ("a" | "b") -> (() : 'expr) *)
 (*                        | _ -> assert false) )) ))] ))] ))) () ) )) *)

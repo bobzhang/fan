@@ -19,10 +19,10 @@
  *)
 
 
-  module Loc = FanLoc;
+  (* module FanLoc = FanLoc; *)
   module Ast = struct
-  include Sig.MakeCamlp4Ast FanLoc;
-
+  (* include Sig.MakeCamlp4Ast FanLoc; *)
+     INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
   value safe_string_escaped s =
     if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
     else String.escaped s;
@@ -30,25 +30,25 @@
 
   include Ast;
 
-  external loc_of_ctyp : ctyp -> Loc.t = "%field0";
-  external loc_of_patt : patt -> Loc.t = "%field0";
-  external loc_of_expr : expr -> Loc.t = "%field0";
-  external loc_of_module_type : module_type -> Loc.t = "%field0";
-  external loc_of_module_expr : module_expr -> Loc.t = "%field0";
-  external loc_of_sig_item : sig_item -> Loc.t = "%field0";
-  external loc_of_str_item : str_item -> Loc.t = "%field0";
-  external loc_of_class_type : class_type -> Loc.t = "%field0";
-  external loc_of_class_sig_item : class_sig_item -> Loc.t = "%field0";
-  external loc_of_class_expr : class_expr -> Loc.t = "%field0";
-  external loc_of_class_str_item : class_str_item -> Loc.t = "%field0";
-  external loc_of_with_constr : with_constr -> Loc.t = "%field0";
-  external loc_of_binding : binding -> Loc.t = "%field0";
-  external loc_of_rec_binding : rec_binding -> Loc.t = "%field0";
-  external loc_of_module_binding : module_binding -> Loc.t = "%field0";
-  external loc_of_match_case : match_case -> Loc.t = "%field0";
-  external loc_of_ident : ident -> Loc.t = "%field0";
+  external loc_of_ctyp : ctyp -> FanLoc.t = "%field0";
+  external loc_of_patt : patt -> FanLoc.t = "%field0";
+  external loc_of_expr : expr -> FanLoc.t = "%field0";
+  external loc_of_module_type : module_type -> FanLoc.t = "%field0";
+  external loc_of_module_expr : module_expr -> FanLoc.t = "%field0";
+  external loc_of_sig_item : sig_item -> FanLoc.t = "%field0";
+  external loc_of_str_item : str_item -> FanLoc.t = "%field0";
+  external loc_of_class_type : class_type -> FanLoc.t = "%field0";
+  external loc_of_class_sig_item : class_sig_item -> FanLoc.t = "%field0";
+  external loc_of_class_expr : class_expr -> FanLoc.t = "%field0";
+  external loc_of_class_str_item : class_str_item -> FanLoc.t = "%field0";
+  external loc_of_with_constr : with_constr -> FanLoc.t = "%field0";
+  external loc_of_binding : binding -> FanLoc.t = "%field0";
+  external loc_of_rec_binding : rec_binding -> FanLoc.t = "%field0";
+  external loc_of_module_binding : module_binding -> FanLoc.t = "%field0";
+  external loc_of_match_case : match_case -> FanLoc.t = "%field0";
+  external loc_of_ident : ident -> FanLoc.t = "%field0";
 
-  value ghost = Loc.ghost;
+  value ghost = FanLoc.ghost;
 
   value rec is_module_longident =
     fun
@@ -468,36 +468,36 @@
       (** The first location is where to put the returned pattern.
           Generally it's _loc to match with <:patt< ... >> quotations.
           The second location is the one to treat. *)
-      value meta_loc_patt : Loc.t -> Loc.t -> Ast.patt;
+      value meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
       (** The first location is where to put the returned expression.
           Generally it's _loc to match with <:expr< ... >> quotations.
           The second location is the one to treat. *)
-      value meta_loc_expr : Loc.t -> Loc.t -> Ast.expr;
+      value meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
     end;
 
     module MetaLoc = struct
       value meta_loc_patt _loc location =
-        let (a, b, c, d, e, f, g, h) = Loc.to_tuple location in
-        <:patt< Loc.of_tuple
+        let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
+        <:patt< FanLoc.of_tuple
                   ($`str:a, $`int:b, $`int:c, $`int:d,
                   $`int:e, $`int:f, $`int:g,
                   $(if h then <:patt< True >> else <:patt< False >> )) >>;
       value meta_loc_expr _loc location =
-        let (a, b, c, d, e, f, g, h) = Loc.to_tuple location in
-        <:expr< Loc.of_tuple
+        let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
+        <:expr< FanLoc.of_tuple
                   ($`str:a, $`int:b, $`int:c, $`int:d,
                   $`int:e, $`int:f, $`int:g,
                   $(if h then <:expr< True >> else <:expr< False >> )) >>;
     end;
 
     module MetaGhostLoc = struct
-      value meta_loc_patt _loc _ = <:patt< Loc.ghost >>;
-      value meta_loc_expr _loc _ = <:expr< Loc.ghost >>;
+      value meta_loc_patt _loc _ = <:patt< FanLoc.ghost >>; (* FIXME *)
+      value meta_loc_expr _loc _ = <:expr< FanLoc.ghost >>;
     end;
 
     module MetaLocVar = struct
-      value meta_loc_patt _loc _ = <:patt< $(lid:Loc.name.val) >>;
-      value meta_loc_expr _loc _ = <:expr< $(lid:Loc.name.val) >>;
+      value meta_loc_patt _loc _ = <:patt< $(lid:FanLoc.name.val) >>;
+      value meta_loc_expr _loc _ = <:expr< $(lid:FanLoc.name.val) >>;
     end;
 
     module Make (MetaLoc : META_LOC) = struct

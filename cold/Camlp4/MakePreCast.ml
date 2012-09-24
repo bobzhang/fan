@@ -3,18 +3,13 @@ module Make =
   (struct
     type token = FanSig.camlp4_token
 
-    module Loc = FanLoc
-
     module Ast = Struct.Camlp4Ast
 
     module Token = FanToken
 
     module Lexer = (Lexer)(Token)
 
-    module Gram =
-     struct module Loc = FanLoc
- include (Grammar.Static.Make)(Lexer)
- end
+    module Gram = (Grammar.Static.Make)(Lexer)
 
     module Quotation = (Struct.Quotation.Make)(Ast)
 

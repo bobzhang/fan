@@ -16,18 +16,18 @@
  * - Nicolas Pouillard: initial version
  *)
 
-module Make (Ast     : Sig.Camlp4Ast (*with module Loc = FanLoc *))
-            (Gram    : FanSig.Grammar.Static with (* module Loc = Ast.Loc and *)
+module Make (Ast     : Sig.Camlp4Ast )
+            (Gram    : FanSig.Grammar.Static with 
                                              type Token.t = FanSig.camlp4_token)
-            (Quotation : Sig.Quotation with module Ast = Sig.Camlp4AstToAst Ast)
-: Sig.Camlp4Syntax with (* module Loc = Ast.Loc  and *)
+            (Quotation : Sig.Quotation with module Ast = Ast )
+: Sig.Camlp4Syntax with 
                     module Ast = Ast
                     and module Token = Gram.Token
                     and module Gram = Gram
                     and module Quotation = Quotation
 = struct
 
-  (* module Loc     = Ast.Loc; *)
+
   module Ast     = Ast;
   module Gram    = Gram;
   module Token   = Gram.Token;
@@ -219,8 +219,8 @@ module Make (Ast     : Sig.Camlp4Ast (*with module Loc = FanLoc *))
   END;
 
   module AntiquotSyntax = struct
-    (* module Loc  = Ast.Loc; *)
-    module Ast  = Sig.Camlp4AstToAst Ast;
+
+    module Ast  = Ast; (* Sig.Camlp4AstToAst Ast;*)
     module Gram = Gram;
     value antiquot_expr = Gram.Entry.mk "antiquot_expr";
     value antiquot_patt = Gram.Entry.mk "antiquot_patt";

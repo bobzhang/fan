@@ -3,7 +3,7 @@ module Make =
   struct
    open Token
 
-   type t = ((string * Loc.t) Stream.t * (string * Loc.t) Queue.t)
+   type t = ((string * FanLoc.t) Stream.t * (string * FanLoc.t) Queue.t)
 
    let mk =
     fun ()

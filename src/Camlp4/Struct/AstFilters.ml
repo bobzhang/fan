@@ -16,7 +16,7 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-module Make (Ast : Sig.Camlp4Ast (* with module Loc = FanLoc*) )
+module Make (Ast : Sig.Camlp4Ast  )
 : Sig.AstFilters with module Ast = Ast
 = struct
 

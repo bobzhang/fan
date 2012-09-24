@@ -25,9 +25,9 @@ module Make (Token : FanSig.Camlp4Token) : sig
 
   value define : Token.Filter.t -> t -> unit;
 
-  value filter : t -> Stream.t (Token.t * Loc.t) -> Stream.t (Token.t * Loc.t);
+  value filter : t -> Stream.t (Token.t * FanLoc.t) -> Stream.t (Token.t * FanLoc.t);
 
-  value take_list : t -> list (string * Loc.t);
+  value take_list : t -> list (string * FanLoc.t);
 
-  value take_stream : t -> Stream.t (string * Loc.t);
+  value take_stream : t -> Stream.t (string * FanLoc.t);
 end;

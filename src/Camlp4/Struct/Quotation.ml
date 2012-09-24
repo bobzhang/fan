@@ -25,7 +25,6 @@ module Make (Ast : Sig.Camlp4Ast)
 = struct
   module Ast = Ast;
   module DynAst = DynAst.Make Ast;
-  (* module Loc = Ast.Loc; *)
   open Format;
   open Sig;
 

@@ -1,5 +1,5 @@
 module Make =
- functor (Ast : Sig.Ast) ->
+ functor (Ast : Sig.Camlp4Ast) ->
   (struct
     module Ast = Ast
 
