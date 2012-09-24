@@ -43,10 +43,10 @@ module Make =
          let () = (p Format.err_formatter "@]@.") in res
         with
         | Stream.Failure ->
-           (Loc.raise ( (get_prev_loc ts) ) (
+           (FanLoc.raise ( (get_prev_loc ts) ) (
              (Stream.Error ("illegal begin of " ^ ( entry.ename ))) ))
-        | (Loc.Exc_located (_, _) as exc) -> (raise exc)
-        | exc -> (Loc.raise ( (get_prev_loc ts) ) exc)) : Action.t)
+        | (FanLoc.Exc_located (_, _) as exc) -> (raise exc)
+        | exc -> (FanLoc.raise ( (get_prev_loc ts) ) exc)) : Action.t)
 
    let lex =
     fun entry -> fun loc -> fun cs -> (((entry.egram).glexer) loc cs)

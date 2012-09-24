@@ -16,18 +16,18 @@
  * - Nicolas Pouillard: initial version
  *)
 
-module Make (Ast     : Sig.Camlp4Ast)
-            (Gram    : FanSig.Grammar.Static with module Loc = Ast.Loc
-                                            with type Token.t = FanSig.camlp4_token)
+module Make (Ast     : Sig.Camlp4Ast with module Loc = FanLoc)
+            (Gram    : FanSig.Grammar.Static with module Loc = Ast.Loc and
+                                             type Token.t = FanSig.camlp4_token)
             (Quotation : Sig.Quotation with module Ast = Sig.Camlp4AstToAst Ast)
-: Sig.Camlp4Syntax with module Loc = Ast.Loc
-                    and module Ast = Ast
+: Sig.Camlp4Syntax with (* module Loc = Ast.Loc  and *)
+                    module Ast = Ast
                     and module Token = Gram.Token
                     and module Gram = Gram
                     and module Quotation = Quotation
 = struct
 
-  module Loc     = Ast.Loc;
+  (* module Loc     = Ast.Loc; *)
   module Ast     = Ast;
   module Gram    = Gram;
   module Token   = Gram.Token;
@@ -35,8 +35,8 @@ module Make (Ast     : Sig.Camlp4Ast)
   open Sig;
     
   (* Warnings *)
-  type warning = Loc.t -> string -> unit;
-  value default_warning loc txt = Format.eprintf "<W> %a: %s@." Loc.print loc txt;
+  type warning = FanLoc.t -> string -> unit;
+  value default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
   value current_warning = ref default_warning;
   value print_warning loc txt = current_warning.val loc txt;
 
@@ -219,7 +219,7 @@ module Make (Ast     : Sig.Camlp4Ast)
   END;
 
   module AntiquotSyntax = struct
-    module Loc  = Ast.Loc;
+    (* module Loc  = Ast.Loc; *)
     module Ast  = Sig.Camlp4AstToAst Ast;
     module Gram = Gram;
     value antiquot_expr = Gram.Entry.mk "antiquot_expr";

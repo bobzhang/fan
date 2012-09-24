@@ -1,9 +1,9 @@
 open Format;
 
-module Make (Loc : FanSig.Loc)
-: FanSig.Camlp4Token with module Loc = Loc
-= struct
-  module Loc  = Loc;
+(* module Make (Loc : FanSig.Loc) *)
+(* : FanSig.Camlp4Token (\* with module Loc = Loc *\) *)
+(* = struct *)
+  (* module Loc  = Loc; *)
   open FanSig;
   type t = camlp4_token;
   (* type token = t; *)
@@ -78,14 +78,14 @@ module Make (Loc : FanSig.Loc)
   let module M = FanUtil.ErrorHandler.Register Error in ();
 
   module Filter = struct
-    type token_filter = stream_filter t Loc.t;
+    type token_filter = stream_filter t FanLoc.t;
 
     type t =
       { is_kwd : string -> bool;
         filter : mutable token_filter };
 
     value err error loc =
-      raise (Loc.Exc_located loc (Error.E error));
+      raise (FanLoc.Exc_located loc (Error.E error));
 
     value keyword_conversion tok is_kwd =
       match tok with
@@ -161,5 +161,5 @@ module Make (Loc : FanSig.Loc)
     value keyword_removed _ _ = ();
   end;
 
-end;
+(* end; *)
 

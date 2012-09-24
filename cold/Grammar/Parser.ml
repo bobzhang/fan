@@ -28,11 +28,11 @@ module Make =
        let x = (parse_fun strm) in
        let ep = (loc_ep strm) in
        let loc =
-        if (( (Loc.start_off bp) ) > ( (Loc.stop_off ep) )) then
+        if (( (FanLoc.start_off bp) ) > ( (FanLoc.stop_off ep) )) then
          (
-         (Loc.join bp)
+         (FanLoc.join bp)
          )
-        else (Loc.merge bp ep) in
+        else (FanLoc.merge bp ep) in
        (x, loc)
 
    let stream_peek_nth =
@@ -79,7 +79,7 @@ module Make =
       let strm' = (Stream.dup strm) in
       let r =
        (try (ps strm') with
-        | (Stream.Error (_) | Loc.Exc_located (_, Stream.Error (_))) ->
+        | (Stream.Error (_) | FanLoc.Exc_located (_, Stream.Error (_))) ->
            (raise Stream.Failure )
         | exc -> (raise exc)) in
       (
@@ -204,7 +204,7 @@ module Make =
                  )
                 else ()
                 );
-                (Format.eprintf "\n%s%a@." msg Loc.print loc)
+                (Format.eprintf "\n%s%a@." msg FanLoc.print loc)
                 )
                else () in
               (do_recover parser_of_tree entry nlevn alevn loc a s son strm)

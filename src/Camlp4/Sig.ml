@@ -42,15 +42,21 @@ module type Id = sig
 end;
 
 (** A signature for warnings abstract from locations. *)
-module Warning (Loc : Type) = struct
-  module type S = sig
-    type warning = Loc.t -> string -> unit;
-    value default_warning : warning;
-    value current_warning : ref warning;
-    value print_warning   : warning;
-  end;
+(* module Warning (Loc : Type) = struct *)
+(*   module type S = sig *)
+(*     type warning = Loc.t -> string -> unit; *)
+(*     value default_warning : warning; *)
+(*     value current_warning : ref warning; *)
+(*     value print_warning   : warning; *)
+(*   end; *)
+(* end; *)
+module type Warning = sig
+  type warning = FanLoc.t -> string -> unit;
+  value default_warning: warning;
+  value current_warning: ref warning;
+  value print_warning: warning;  
 end;
-
+  
 (** {6 Advanced signatures} *)
 
 (** Abstract syntax tree minimal signature.
@@ -235,7 +241,7 @@ end;
 module type Camlp4Ast = sig
 
   (** The inner module for locations *)
-  module Loc : FanSig.Loc;
+  module Loc : module type of FanLoc;
 
   INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
 
@@ -583,7 +589,7 @@ type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
       - Interface filters: sig_item -> sig_item. *)
 module type AstFilters = sig
 
-  module Ast : Camlp4Ast;
+  module Ast : Camlp4Ast with module Loc = FanLoc;
 
   type filter 'a = 'a -> 'a;
 
@@ -708,11 +714,11 @@ module Parser (Ast : Ast) = struct
   module type SIMPLE = sig
     (** The parse function for expressions.
         The underlying expression grammar entry is generally "expr; EOI". *)
-    value parse_expr : Ast.loc -> string -> Ast.expr;
+    value parse_expr : FanLoc.t -> string -> Ast.expr;
 
     (** The parse function for patterns.
         The underlying pattern grammar entry is generally "patt; EOI". *)
-    value parse_patt : Ast.loc -> string -> Ast.patt;
+    value parse_patt : FanLoc.t -> string -> Ast.patt;
   end;
 
   module type S = sig
@@ -724,11 +730,11 @@ module Parser (Ast : Ast) = struct
         syntax), the given [directive_handler] function  evaluates  it  and
         the parsing starts again. *)
     value parse_implem : ?directive_handler:(Ast.str_item -> option Ast.str_item) ->
-                        Ast.loc -> Stream.t char -> Ast.str_item;
+                        FanLoc.t -> Stream.t char -> Ast.str_item;
 
     (** Same as {!parse_implem} but for interface (mli file). *)
     value parse_interf : ?directive_handler:(Ast.sig_item -> option Ast.sig_item) ->
-                        Ast.loc -> Stream.t char -> Ast.sig_item;
+                        FanLoc.t -> Stream.t char -> Ast.sig_item;
   end;
 end;
 
@@ -749,15 +755,17 @@ end;
    locations, syntax trees, tokens, grammars, quotations, anti-quotations.
    There is also the main grammar entries. *)
 module type Syntax = sig
-  module Loc            : FanSig.Loc;
-  module Ast            : Ast with type loc = Loc.t;
-  module Token          : FanSig.Token with module Loc = Loc;
-  module Gram           : FanSig.Grammar.Static with module Loc = Loc and module Token = Token;
+  (* module Loc            : FanSig.Loc; *)
+  module Ast            : Ast (* with type loc = Loc.t *) ;
+  module Token          : FanSig.Token (* with module Loc = Loc *);
+  module Gram           : FanSig.Grammar.Static with (* module Loc = Loc and *)
+                          module Token = Token;
   module Quotation      : Quotation with module Ast = Ast;
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
 
-  include (Warning Loc).S;
+  (* include (Warning FanLoc).S; *)
+  include Warning;
   include (Parser  Ast).S;
   include (Printer Ast).S;
 end;
@@ -767,12 +775,13 @@ end;
     locations, syntax trees, tokens, grammars, quotations, anti-quotations.
     There is also the main grammar entries. *)
 module type Camlp4Syntax = sig
-  module Loc            : FanSig.Loc;
+  (* module Loc            : FanSig.Loc; *)
 
-  module Ast            : Camlp4Ast with module Loc = Loc;
-  module Token          : FanSig.Camlp4Token with module Loc = Loc;
+  module Ast            : Camlp4Ast with module Loc = FanLoc;
+  module Token          : FanSig.Camlp4Token (* with module Loc = Loc *);
 
-  module Gram           : FanSig.Grammar.Static with module Loc = Loc and module Token = Token;
+  module Gram           : FanSig.Grammar.Static with  module Loc = Ast.Loc and 
+                          module Token = Token;
   module Quotation      : Quotation with module Ast = Camlp4AstToAst Ast;
 
   module AntiquotSyntax : (Parser Ast).SIMPLE;
@@ -784,14 +793,15 @@ module type Camlp4Syntax = sig
     value str_item : Ast.str_item -> Parsetree.structure;
     value phrase : Ast.str_item -> Parsetree.toplevel_phrase;
   end;
-  include (Warning Loc).S;
+  (* include (Warning FanLoc).S; *)
+  include Warning;  
   include (Parser  Ast).S;
   include (Printer Ast).S;
 
-  value interf : Gram.Entry.t (list Ast.sig_item * option Loc.t);
-  value implem : Gram.Entry.t (list Ast.str_item * option Loc.t);
+  value interf : Gram.Entry.t (list Ast.sig_item * option FanLoc.t);
+  value implem : Gram.Entry.t (list Ast.str_item * option FanLoc.t);
   value top_phrase : Gram.Entry.t (option Ast.str_item);
-  value use_file : Gram.Entry.t (list Ast.str_item * option Loc.t);
+  value use_file : Gram.Entry.t (list Ast.str_item * option FanLoc.t);
   value a_CHAR : Gram.Entry.t string;
   value a_FLOAT : Gram.Entry.t string;
   value a_INT : Gram.Entry.t string;
@@ -957,8 +967,8 @@ end;
 
 (** A signature for syntax extension (syntax -> syntax functors). *)
 module type SyntaxExtension = functor (Syn : Syntax)
-                    -> (Syntax with module Loc            = Syn.Loc
-                                and module Ast            = Syn.Ast
+                    -> (Syntax with (* module Loc            = Syn.Loc
+                                and *) module Ast            = Syn.Ast
                                 and module Token          = Syn.Token
                                 and module Gram           = Syn.Gram
                                 and module Quotation      = Syn.Quotation);
@@ -981,22 +991,25 @@ module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
 module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
 module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
 module type LEXER = functor (Token: FanSig.Camlp4Token) -> FanSig.Lexer
-  with module Loc = Token.Loc and module Token = Token;
+  with (* module Loc = Token.Loc and *) module Token = Token;
 
 
 
 module type PRECAST = sig
   type token = FanSig.camlp4_token ;
-  module Loc        : FanSig.Loc;
-  module Ast        : Camlp4Ast with module Loc = Loc;
-  module Token      : FanSig.Token  with module Loc = Loc and type t = FanSig.camlp4_token;
-  module Lexer      : FanSig.Lexer  with module Loc = Loc and module Token = Token;
-  module Gram       : FanSig.Grammar.Static  with module Loc = Loc and module Token = Token;
+  (* module Loc        : FanSig.Loc; *)
+  module Ast        : Camlp4Ast with  module Loc = FanLoc ;
+  module Token      : FanSig.Token  with (* module Loc = Loc and *)
+                      type t = FanSig.camlp4_token;
+  module Lexer      : FanSig.Lexer  with (* module Loc = Loc and *)
+                      module Token = Token;
+  module Gram       : FanSig.Grammar.Static  with module Loc = FanLoc and
+                      module Token = Token;
   module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
   (* module DynLoader  : DynLoader; *)
   module AstFilters : AstFilters with module Ast = Ast;
-  module Syntax     : Camlp4Syntax with module Loc     = Loc
-                       and module Token   = Token
+  module Syntax     : Camlp4Syntax with (* module Loc = Loc and *)
+                       module Token   = Token
                        and module Ast     = Ast
                        and module Gram    = Gram
                        and module Quotation = Quotation;
@@ -1007,14 +1020,14 @@ module type PRECAST = sig
     module DumpCamlp4Ast : (Printer Ast).S;
     module Null          : (Printer Ast).S;
   end;
-  module MakeGram (Lexer : FanSig.Lexer with module Loc = Loc) :
-      FanSig.Grammar.Static with module Loc = Loc and module Token = Lexer.Token;
+  (* module MakeGram (Lexer : FanSig.Lexer (\* with module Loc = Loc *\) ) : *)
+  (*     FanSig.Grammar.Static with (\* module Loc = Loc and *\) module Token = Lexer.Token; *)
 
   module MakeSyntax (U : sig end) : Syntax;
 
   (* parser signature *)  
   type parser_fun 'a =
-      ?directive_handler:('a -> option 'a) -> Loc.t -> Stream.t char -> 'a;
+      ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
   type printer_fun 'a =
       ?input_file:string -> ?output_file:string -> 'a -> unit;
   value loaded_modules : ref (list string);

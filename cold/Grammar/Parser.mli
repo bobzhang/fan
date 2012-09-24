@@ -4,7 +4,7 @@ module Make :
    open Structure
 
    val add_loc :
-    (Loc.t -> ((token_stream -> 'b) -> (token_stream -> ('b * Loc.t))))
+    (FanLoc.t -> ((token_stream -> 'b) -> (token_stream -> ('b * FanLoc.t))))
 
    val level_number : (internal_entry -> (string -> int))
 
@@ -20,27 +20,28 @@ module Make :
 
    val continue :
     (internal_entry ->
-     (Loc.t -> (Action.t -> (symbol -> (tree -> (efun -> efun))))))
+     (FanLoc.t -> (Action.t -> (symbol -> (tree -> (efun -> efun))))))
 
    val do_recover :
     ((internal_entry -> ('a -> ('b -> (tree -> efun)))) ->
      (internal_entry ->
-      ('a -> ('b -> (Loc.t -> (Action.t -> (symbol -> (tree -> efun))))))))
+      ('a -> ('b -> (FanLoc.t -> (Action.t -> (symbol -> (tree -> efun))))))))
 
    val recover :
     ((internal_entry -> ('a -> ('b -> (tree -> efun)))) ->
      (internal_entry ->
-      ('a -> ('b -> (Loc.t -> (Action.t -> (symbol -> (tree -> efun))))))))
+      ('a -> ('b -> (FanLoc.t -> (Action.t -> (symbol -> (tree -> efun))))))))
 
    val parser_of_tree : (internal_entry -> (int -> (int -> (tree -> efun))))
 
    val parser_cont :
     (efun ->
      (internal_entry ->
-      (int -> (int -> (symbol -> (tree -> (Loc.t -> (Action.t -> efun))))))))
+      (int ->
+       (int -> (symbol -> (tree -> (FanLoc.t -> (Action.t -> efun))))))))
 
    val parser_of_token_list :
-    ((Loc.t -> (Action.t -> efun)) -> (symbol list -> efun))
+    ((FanLoc.t -> (Action.t -> efun)) -> (symbol list -> efun))
 
    val parser_of_symbol : (internal_entry -> (int -> (symbol -> efun)))
 
@@ -53,9 +54,9 @@ module Make :
 
    val continue_parser_of_levels :
     (internal_entry ->
-     (int -> (level list -> (int -> (Loc.t -> ('a -> efun))))))
+     (int -> (level list -> (int -> (FanLoc.t -> ('a -> efun))))))
 
    val continue_parser_of_entry :
-    (internal_entry -> (int -> (Loc.t -> (Action.t -> efun))))
+    (internal_entry -> (int -> (FanLoc.t -> (Action.t -> efun))))
 
   end

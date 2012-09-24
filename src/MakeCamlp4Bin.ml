@@ -6,7 +6,7 @@ open Camlp4Parsers;
 open Camlp4Filters;
 open FanUtil;
 module Camlp4Bin
-    (Loc:FanSig.Loc) (PreCast:Sig.PRECAST with module Loc = Loc )
+     (PreCast:Sig.PRECAST)
     =struct
       open PreCast;
       (* module CleanAst = Struct.CleanAst.Make PreCast.Ast; *)
@@ -19,6 +19,13 @@ module Camlp4Bin
       value loaded_modules = ref SSet.empty;
       value add_to_loaded_modules name =
         loaded_modules.val := SSet.add name loaded_modules.val;
+
+      FanUtil.ErrorHandler.register
+            (fun ppf ->
+              fun [ FanLoc.Exc_located loc exn ->
+                fprintf ppf "%a:@\n%a" FanLoc.print loc FanUtil.ErrorHandler.print exn
+                  | exn -> raise exn ]);
+
           
       (* value plugins = Hashtbl.create 50;      *)
       value (objext,libext) =
@@ -186,7 +193,7 @@ module Camlp4Bin
           rcall_callback.val ();
         };
       
-      value print_warning = eprintf "%a:\n%s@." PreCast.Loc.print;
+      value print_warning = eprintf "%a:\n%s@." FanLoc.print;
 
       (* camlp4 directive handler *)  
       value rec parse_file dyn_loader name pa getdir =
@@ -198,9 +205,9 @@ module Camlp4Bin
               | (_, "directory", s) -> do { DynLoader.include_dir dyn_loader s; None }
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
               | (_, "default_quotation", s) -> do { PreCast.Quotation.default.val := s; None }
-              | (loc, _, _) -> PreCast.Loc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
+              | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
-        let loc = PreCast.Loc.mk name
+        let loc = FanLoc.mk name
         in do {
           PreCast.Syntax.current_warning.val := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
@@ -362,8 +369,8 @@ module Camlp4Bin
           "Obsolete, do not use this option.");
         ("-verbose", Arg.Set FanConfig.verbose,
           "More verbose in parsing errors.");
-        ("-loc", Arg.Set_string Loc.name,
-          "<name>   Name of the location variable (default: " ^ Loc.name.val ^ ").");
+        ("-loc", Arg.Set_string FanLoc.name,
+          "<name>   Name of the location variable (default: " ^ FanLoc.name.val ^ ").");
         ("-QD", Arg.String (fun x -> Quotation.dump_file.val := Some x),
           "<file> Dump quotation expander result in case of syntax error.");
         ("-o", Arg.String (fun x -> output_file.val := Some x),

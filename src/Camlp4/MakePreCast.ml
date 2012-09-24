@@ -1,17 +1,20 @@
-module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
-  with module Loc = Loc  = struct
+module Make (* (Loc: FanSig.Loc) *)  (Lexer: Sig.LEXER) : Sig.PRECAST
+  (* with module Loc = Loc *) = struct
   type token = FanSig.camlp4_token ;
-  module Loc = Loc;      
-  module Ast = Struct.Camlp4Ast.Make Loc;
-  module Token = FanToken.Make Loc;
+  module Loc = FanLoc;      
+  module Ast = Struct.Camlp4Ast; (* Ast.Loc.pos *)
+  module Token = FanToken;
   module Lexer = Lexer Token;
-  module Gram =  Grammar.Static.Make Lexer;
+  module Gram =  struct
+    module Loc = FanLoc;
+    include Grammar.Static.Make Lexer;
+  end ; (* Lexer.Loc.pos *)
   module Quotation = Struct.Quotation.Make Ast;
   module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
   module Syntax = MakeSyntax (struct end);
   module AstFilters = Struct.AstFilters.Make Ast;
-  module MakeGram = Grammar.Static.Make;
-  type parser_fun 'a = ?directive_handler:('a -> option 'a) -> Syntax.Loc.t -> Stream.t char -> 'a;
+  (* module MakeGram = Grammar.Static.Make; *)
+  type parser_fun 'a = ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
   type printer_fun 'a = ?input_file:string -> ?output_file:string -> 'a -> unit;
   value sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
@@ -117,7 +120,7 @@ module Make (Loc: FanSig.Loc)  (Lexer: Sig.LEXER) : Sig.PRECAST
   end;
 
   value enable_ocaml_printer () = begin
-    Format.eprintf "enable..";
+    (* Format.eprintf "enable.."; *)
     ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.Make);
   end;
 

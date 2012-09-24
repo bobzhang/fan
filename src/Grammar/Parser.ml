@@ -37,11 +37,11 @@ module Make (Structure : Structure.S) = struct
     let x = parse_fun strm in
     let ep = loc_ep strm in
     let loc =
-      if Loc.start_off bp > Loc.stop_off ep then
+      if FanLoc.start_off bp > FanLoc.stop_off ep then
         (* If nothing has been consumed, create a 0-length location. *)
-        Loc.join bp
+        FanLoc.join bp
       else
-        Loc.merge bp ep
+        FanLoc.merge bp ep
     in
     (x, loc);
 
@@ -77,7 +77,7 @@ module Make (Structure : Structure.S) = struct
     let r =
       try ps strm'
       with
-      [ Stream.Error _ | Loc.Exc_located _ (Stream.Error _) ->
+      [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
           raise Stream.Failure
       | exc -> raise exc ]
     in do {
@@ -157,7 +157,7 @@ module Make (Structure : Structure.S) = struct
             let msg = Failed.tree_failed entry a s son;
             Format.eprintf "Warning: trying to recover from syntax error";
             if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();
-            Format.eprintf "\n%s%a@." msg Loc.print loc;
+            Format.eprintf "\n%s%a@." msg FanLoc.print loc;
         end else () in
       do_recover parser_of_tree entry nlevn alevn loc a s son strm
   ;

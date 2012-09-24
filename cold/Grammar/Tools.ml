@@ -53,7 +53,7 @@ module Make =
     fun strm ->
      (match (Stream.peek strm) with
       | Some (_, r) -> r.cur_loc
-      | None -> Loc.ghost)
+      | None -> FanLoc.ghost)
 
    let get_prev_loc =
     fun strm ->
@@ -62,7 +62,7 @@ module Make =
        | Some (_, {prev_loc = prev_loc; prev_loc_only = true}) ->
           ( (Stream.junk strm) ); prev_loc
        | Some (_, {prev_loc = prev_loc; prev_loc_only = false}) -> prev_loc
-       | None -> Loc.ghost) in
+       | None -> FanLoc.ghost) in
      result
 
    let is_level_labelled =

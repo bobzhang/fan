@@ -24,7 +24,20 @@ module type Loc =  sig
         line-number field of the position. It makes therefore no sense
         to use character numbers with the source file if the sources
         contain line number directives. *)
-    type t
+  type pos = {
+      line : int;
+      bol  : int;
+      off  : int
+    }
+
+  type t = {
+      file_name : string;
+      start     : pos;
+      stop      : pos;
+      ghost     : bool
+    }
+
+    (* type t *)
           
     (** Return a start location for the given file name.
         This location starts at the begining of the file. *)
@@ -152,7 +165,7 @@ module type Loc =  sig
     val name : string ref
         
   end
-
+(* module type Loc = module type of FanLoc *)
 
 (** The generic quotation type.
     To see how fields are used here is an example:
@@ -172,14 +185,14 @@ type ('a, 'loc) stream_filter = ('a * 'loc) Stream.t -> ('a * 'loc) Stream.t
 
 (** A signature for tokens. *)
 module type Token = sig
-  module Loc : Loc
+  (* module Loc : Loc *)
   type t
   val to_string : t -> string
   val print : Format.formatter -> t -> unit
   val match_keyword : string -> t -> bool
   val extract_string : t -> string
   module Filter : sig
-    type token_filter = (t, Loc.t) stream_filter
+    type token_filter = (t, FanLoc.t) stream_filter
     (** The type for this filter chain.
         A basic implementation just store the [is_keyword] function given
         by [mk] and use it in the [filter] function. *)
@@ -332,16 +345,16 @@ module Grammar =
     (** Common signature for {!Sig.Grammar.Static} and {!Sig.Grammar.Dynamic}. *)
     module type Structure =
       sig
-        module Loc : Loc
+        module Loc : module type of FanLoc
           
         module Action : Action
           
-        module Token : Token with module Loc = Loc
+        module Token : Token (* with module Loc = Loc *)
           
         type gram =
           { gfilter : Token.Filter.t;
             gkeywords : (string, int ref) Hashtbl.t;
-            glexer : Loc.t -> char Stream.t -> (Token.t * Loc.t) Stream.t;
+            glexer : FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t;
             warning_verbose : bool ref; error_verbose : bool ref
           }
         
@@ -355,7 +368,7 @@ module Grammar =
         
         type token_stream = (Token.t * token_info) Stream.t
         
-        val token_location : token_info -> Loc.t
+        val token_location : token_info -> FanLoc.t
           
         type symbol =
           | Smeta of string * symbol list * Action.t
@@ -460,27 +473,27 @@ module Grammar =
         (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
           gram ->
-            Loc.t ->
-              char Stream.t -> ((Token.t * Loc.t) Stream.t) not_filtered
+            FanLoc.t ->
+              char Stream.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered
           
         (** Token stream from string. *)
         val lex_string :
           gram ->
-            Loc.t -> string -> ((Token.t * Loc.t) Stream.t) not_filtered
+            FanLoc.t -> string -> ((Token.t * FanLoc.t) Stream.t) not_filtered
           
         (** Filter a token stream using the {!Token.Filter} module *)
         val filter :
-          gram -> ((Token.t * Loc.t) Stream.t) not_filtered -> token_stream
+          gram -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> token_stream
           
         (** Lex, filter and parse a stream of character. *)
-        val parse : 'a Entry.t -> Loc.t -> char Stream.t -> 'a
+        val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
           
         (** Same as {!parse} but from a string. *)
-        val parse_string : 'a Entry.t -> Loc.t -> string -> 'a
+        val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
           
         (** Parse a token stream that is not filtered yet. *)
         val parse_tokens_before_filter :
-          'a Entry.t -> ((Token.t * Loc.t) Stream.t) not_filtered -> 'a
+          'a Entry.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> 'a
           
         (** Parse a token stream that is already filtered. *)
         val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a
@@ -553,25 +566,25 @@ module Grammar =
         (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
         (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
-          Loc.t -> char Stream.t -> ((Token.t * Loc.t) Stream.t) not_filtered
+          FanLoc.t -> char Stream.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered
           
         (** Token stream from string. *)
         val lex_string :
-          Loc.t -> string -> ((Token.t * Loc.t) Stream.t) not_filtered
+          FanLoc.t -> string -> ((Token.t * FanLoc.t) Stream.t) not_filtered
           
         (** Filter a token stream using the {!Token.Filter} module *)
         val filter :
-          ((Token.t * Loc.t) Stream.t) not_filtered -> token_stream
+          ((Token.t * FanLoc.t) Stream.t) not_filtered -> token_stream
           
         (** Lex, filter and parse a stream of character. *)
-        val parse : 'a Entry.t -> Loc.t -> char Stream.t -> 'a
+        val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
           
         (** Same as {!parse} but from a string. *)
-        val parse_string : 'a Entry.t -> Loc.t -> string -> 'a
+        val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
           
         (** Parse a token stream that is not filtered yet. *)
         val parse_tokens_before_filter :
-          'a Entry.t -> ((Token.t * Loc.t) Stream.t) not_filtered -> 'a
+          'a Entry.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> 'a
           
         (** Parse a token stream that is already filtered. *)
         val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a
@@ -589,9 +602,9 @@ module Grammar =
 (** A signature for lexers. *)
 module type Lexer =
   sig
-    module Loc : Loc
+    (* module FanLoc : FanLoc *)
       
-    module Token : Token with module Loc = Loc
+    module Token : Token (* with module FanLoc = FanLoc *)
       
     module Error : Error
       
@@ -600,7 +613,7 @@ module type Lexer =
       a location.
       The lexer do not use global (mutable) variables: instantiations
       of [Lexer.mk ()] do not perturb each other. *)
-    val mk : unit -> Loc.t -> char Stream.t -> (Token.t * Loc.t) Stream.t
+    val mk : unit -> FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t
       
   end
   

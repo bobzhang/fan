@@ -1,12 +1,11 @@
 module Make =
- functor (Ast : Sig.Camlp4Ast) ->
-  functor (Gram : ((FanSig.Grammar.Static with module Loc = Ast.Loc) with
-                   type  Token.t = FanSig.camlp4_token)) ->
+ functor (Ast : (Sig.Camlp4Ast with module Loc = FanLoc)) ->
+  functor (Gram : (FanSig.Grammar.Static with module Loc = Ast.Loc
+                   and module Loc = Ast.Loc and type  Token.t =
+                   FanSig.camlp4_token)) ->
    functor (Quotation : (Sig.Quotation with module Ast =
                          Sig.Camlp4AstToAst(Ast))) ->
     (struct
-      module Loc = Ast.Loc
-
       module Ast = Ast
 
       module Gram = Gram
@@ -17,11 +16,11 @@ module Make =
 
       open Sig
 
-      type warning = (Loc.t -> (string -> unit))
+      type warning = (FanLoc.t -> (string -> unit))
 
       let default_warning =
        fun loc ->
-        fun txt -> (Format.eprintf "<W> %a: %s@." Loc.print loc txt)
+        fun txt -> (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt)
 
       let current_warning = (ref default_warning)
 
@@ -410,8 +409,6 @@ module Make =
 
       module AntiquotSyntax =
        struct
-        module Loc = Ast.Loc
-
         module Ast = (Sig.Camlp4AstToAst)(Ast)
 
         module Gram = Gram
@@ -521,7 +518,7 @@ module Make =
         fun ?output_file:_ -> fun _ -> (failwith "No implementation printer")
 
      end :
-      (Sig.Camlp4Syntax with module Loc = Ast.Loc and module Loc = Ast.Loc
-       and module Ast = Ast and module Ast = Ast and module Token =
-       Gram.Token and module Token = Gram.Token and module Gram = Gram
-       and module Gram = Gram and module Quotation = Quotation))
+      (Sig.Camlp4Syntax with module Ast = Ast and module Ast = Ast
+       and module Token = Gram.Token and module Token = Gram.Token
+       and module Gram = Gram and module Gram = Gram and module Quotation =
+       Quotation))

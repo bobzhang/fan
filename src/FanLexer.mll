@@ -9,10 +9,10 @@
 (** A lexical analyzer. *)
 
 (* FIXME interface module Make (Token : Token) |+ Note that this Token sig is not in Sig +| *)
-(* : Sig.Lexer. S with module Loc = Token.Loc and module Token = Token; *)
+(* : Sig.Lexer. S with module FanLoc = Token.FanLoc and module Token = Token; *)
 
 (* type context =
-{ loc        : Loc.t    ;
+{ loc        : FanLoc.t    ;
   in_comment : bool     ;
    |+* FIXME When True, all lexers built by [Plexer.make ()] do not lex the
        quotation syntax any more. Default is False (quotations are
@@ -21,9 +21,9 @@
 
 value default_context : context;
 
-value mk : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
+value mk : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
 
-value mk' : context -> Stream.t char -> Stream.t (Token.t * Loc.t);              *)
+value mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);              *)
 (* FIXME Beware the context argument must be given like that:
  * mk' { (default_context) with ... = ... } strm
  *)
@@ -32,7 +32,7 @@ open FanUtil
 open Format  
 module Make (Token : FanSig.Camlp4Token)
 = struct
-  module Loc = Token.Loc
+  (* module FanLoc = Token.FanLoc *)
   module Token = Token
 
   open Lexing
@@ -139,7 +139,7 @@ module Make (Token : FanSig.Camlp4Token)
   *)
 
   type context =
-  { loc        : Loc.t    ;
+  { loc        : FanLoc.t    ;
     in_comment : bool     ;
     quotations : bool     ;
     antiquots  : bool     ;
@@ -147,7 +147,7 @@ module Make (Token : FanSig.Camlp4Token)
     buffer     : Buffer.t }
 
   let default_context lb =
-  { loc        = Loc.ghost ;
+  { loc        = FanLoc.ghost ;
     in_comment = false     ;
     quotations = true      ;
     antiquots  = false     ;
@@ -162,14 +162,14 @@ module Make (Token : FanSig.Camlp4Token)
     let contents = Buffer.contents c.buffer in
     Buffer.reset c.buffer; contents
 
-  let loc c = Loc.merge c.loc (Loc.of_lexbuf c.lexbuf)
+  let loc c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
   let quotations c = c.quotations
   let antiquots c = c.antiquots
   let is_in_comment c = c.in_comment
   let in_comment c = { (c) with in_comment = true }
 
   (* update the lexing position to the loc *)    
-  let set_start_p c = c.lexbuf.lex_start_p <- Loc.start_pos c.loc
+  let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
 
   (* shift the lexing buffer, usually shift back *)    
   let move_start_p shift c =
@@ -180,14 +180,14 @@ module Make (Token : FanSig.Camlp4Token)
      the old context was kept
    *)      
   let with_curr_loc lexer c =
-    lexer ({c with loc = Loc.of_lexbuf c.lexbuf}) c.lexbuf
+    lexer ({c with loc = FanLoc.of_lexbuf c.lexbuf}) c.lexbuf
 
   let parse_nested ~lexer c = begin 
     with_curr_loc lexer c;
     set_start_p c;
     buff_contents c
   end
-  let shift n c = { (c) with loc = Loc.move `both n c.loc }
+  let shift n c = { (c) with loc = FanLoc.move `both n c.loc }
 
   let store_parse f c =  begin
     store c ; f c c.lexbuf
@@ -196,7 +196,7 @@ module Make (Token : FanSig.Camlp4Token)
   let parse f c =
     f c c.lexbuf
   let mk_quotation quotation c ~name ~loc ~shift ~retract =
-   let s = parse_nested quotation ({c with loc = Loc.of_lexbuf c.lexbuf}) in
+   let s = parse_nested quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
    let contents = String.sub s 0 (String.length s - retract) in
    FanSig.QUOTATION {
    FanSig.q_name     = name     ;
@@ -223,11 +223,11 @@ module Make (Token : FanSig.Camlp4Token)
 	
 
 
-  let err (error:Error.t) (loc:Loc.t) =
-    raise(Loc.Exc_located(loc, Error.E error))
+  let err (error:Error.t) (loc:FanLoc.t) =
+    raise(FanLoc.Exc_located(loc, Error.E error))
 
   let warn error loc =
-    Format.eprintf "Warning: %a: %a@." Loc.print loc Error.print error
+    Format.eprintf "Warning: %a: %a@." FanLoc.print loc Error.print error
 
   }
 
@@ -310,19 +310,19 @@ rule token c = parse
        | uppercase identchar * as x                                     { UIDENT x }
        | int_literal as i
            { try  INT(cvt_int_literal i, i)
-           with Failure _ -> err (Literal_overflow "int") (Loc.of_lexbuf lexbuf) }
+           with Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf) }
        | float_literal as f
            { try  FLOAT(float_of_string f, f)
-           with Failure _ -> err (Literal_overflow "float") (Loc.of_lexbuf lexbuf) }
+           with Failure _ -> err (Literal_overflow "float") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "l"
            { try INT32(cvt_int32_literal i, i)
-           with Failure _ -> err (Literal_overflow "int32") (Loc.of_lexbuf lexbuf) }
+           with Failure _ -> err (Literal_overflow "int32") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "L"
            { try  INT64(cvt_int64_literal i, i)
-           with Failure _ -> err (Literal_overflow "int64") (Loc.of_lexbuf lexbuf) }
+           with Failure _ -> err (Literal_overflow "int64") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "n"
            { try NATIVEINT(cvt_nativeint_literal i, i)
-           with Failure _ -> err (Literal_overflow "nativeint") (Loc.of_lexbuf lexbuf) }
+           with Failure _ -> err (Literal_overflow "nativeint") (FanLoc.of_lexbuf lexbuf) }
        | '"'
            { with_curr_loc string c;
              let s = buff_contents c in STRING (TokenEval.string s, s)             }
@@ -332,14 +332,14 @@ rule token c = parse
                |['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
            { CHAR (TokenEval.char x, x) }
        | "'\\" (_ as c)
-           { err (Illegal_escape (String.make 1 c)) (Loc.of_lexbuf lexbuf)         }
+           { err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)         }
        | "(*"
            { store c; COMMENT(parse_nested comment (in_comment c))                 }
        | "(*)"
-           { warn Comment_start (Loc.of_lexbuf lexbuf)                             ;
+           { warn Comment_start (FanLoc.of_lexbuf lexbuf)                             ;
              parse comment (in_comment c); COMMENT (buff_contents c)               }
        | "*)"
-           { warn Comment_not_end (Loc.of_lexbuf lexbuf)                           ;
+           { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
              move_start_p (-1) c; SYMBOL "*"                                       }
        | "<<" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
@@ -392,7 +392,7 @@ rule token c = parse
            { let pos = lexbuf.lex_curr_p in
            lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
                                   pos_cnum = pos.pos_cnum + 1 }; EOI      }
-       | _ as c                 { err (Illegal_character c) (Loc.of_lexbuf lexbuf) }
+       | _ as c                 { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
 
 and comment c = parse
     "(*"  { store c;
@@ -411,7 +411,7 @@ and comment c = parse
      | "\"" { store c;
            begin
              try with_curr_loc string c
-             with Loc.Exc_located(_, Error.E Unterminated_string) ->
+             with FanLoc.Exc_located(_, Error.E Unterminated_string) ->
                err Unterminated_string_in_comment (loc c)
            end;
       Buffer.add_char c.buffer '"';
@@ -443,7 +443,7 @@ and string c = parse
          if is_in_comment c then
            store_parse string c
          else begin
-           warn (Illegal_escape (String.make 1 x)) (Loc.of_lexbuf lexbuf);
+           warn (Illegal_escape (String.make 1 x)) (FanLoc.of_lexbuf lexbuf);
            store_parse string c
          end }
     | newline
@@ -509,7 +509,7 @@ and quotation c = parse
     | "\"" {store c;
             begin
               try with_curr_loc string c
-              with Loc.Exc_located(_,Error.E Unterminated_string) ->
+              with FanLoc.Exc_located(_,Error.E Unterminated_string) ->
                 err Unterminated_string_in_quotation (loc c)
             end;
             Buffer.add_char c.buffer '"';
@@ -546,7 +546,7 @@ and dollar c = parse
     (* | ('`'? (identchar*|['.' '!']+) as name) ':' *)
     (*     { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | _ as c {
-      err (Illegal_character c) (Loc.of_lexbuf lexbuf) (*unexpected char in antiquot*)
+      err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) (*unexpected char in antiquot*)
      }
         
       (* { store_parse (antiquot "") c } *)
@@ -574,7 +574,7 @@ and antiquot name depth c  = parse
     | "\"" { store c ;
              begin
                try with_curr_loc string c
-               with Loc.Exc_located (_,Error.E Unterminated_string) ->
+               with FanLoc.Exc_located (_,Error.E Unterminated_string) ->
                  err Unterminated_string_in_antiquot (loc c)
              end;
              Buffer.add_char c.buffer '"';
@@ -605,19 +605,19 @@ and antiquot name depth c  = parse
 let from_context c =
   let next _ =
     let tok = with_curr_loc token c in
-    let loc = Loc.of_lexbuf c.lexbuf in
+    let loc = FanLoc.of_lexbuf c.lexbuf in
     Some ((tok, loc))
   in Stream.from next
 
 let from_lexbuf ?(quotations = true) lb =
   let c = { (default_context lb) with
-            loc        = Loc.of_lexbuf lb;
+            loc        = FanLoc.of_lexbuf lb;
             antiquots  = !FanConfig.antiquotations;
             quotations = quotations      }
   in from_context c
 
 let setup_loc lb loc =
-  let start_pos = Loc.start_pos loc in
+  let start_pos = FanLoc.start_pos loc in
   lb.lex_abs_pos <- start_pos.pos_cnum;
   lb.lex_curr_p  <- start_pos
 

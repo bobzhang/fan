@@ -20,23 +20,24 @@
 open FanSig.Grammar;
 
 module type S = sig
-  module Loc          : FanSig.Loc;
-  module Token        : FanSig.Token with module Loc = Loc;
+  (* module Loc          : FanSig.Loc; *)
+  module Token        : FanSig.Token; (* with module Loc = Loc; *)
   module Lexer        : FanSig.Lexer
-                        with module Loc   = Loc
-                         and module Token = Token;
+                        with (* module Loc   = Loc *)
+                         (* and *)
+                         module Token = Token;
   module Action       : FanSig.Grammar.Action;
 
   type gram =
     { gfilter         : Token.Filter.t;
       gkeywords       : Hashtbl.t string (ref int);
-      glexer          : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
+      glexer          : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
       warning_verbose : ref bool;
       error_verbose   : ref bool };
 
   type token_info = {
-      prev_loc : Loc.t;
-      cur_loc : Loc.t;
+      prev_loc : FanLoc.t;
+      cur_loc : FanLoc.t;
       prev_loc_only : bool
     };
 
@@ -50,7 +51,7 @@ module type S = sig
     { egram     : gram;
       ename     : string;
       estart    : mutable int -> efun;
-      econtinue : mutable int -> Loc.t -> Action.t -> efun;
+      econtinue : mutable int -> FanLoc.t -> Action.t -> efun;
       edesc     : mutable desc }
   and desc =
     [ Dlevels of list level
@@ -107,8 +108,8 @@ module type S = sig
   value removing : gram -> string -> unit;
 end;
 
+
 module Make (Lexer  : FanSig.Lexer) = struct
-  module Loc = Lexer.Loc;
   module Token = Lexer.Token;
   module Action : FanSig.Grammar.Action = struct
     type  t     = Obj.t   ;
@@ -122,12 +123,12 @@ module Make (Lexer  : FanSig.Lexer) = struct
   type gram =
     { gfilter         : Token.Filter.t;
       gkeywords       : Hashtbl.t string (ref int);
-      glexer          : Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t);
+      glexer          : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
       warning_verbose : ref bool;
       error_verbose   : ref bool };
 
-  type token_info = { prev_loc : Loc.t
-                    ; cur_loc : Loc.t
+  type token_info = { prev_loc : FanLoc.t
+                    ; cur_loc : FanLoc.t
                     ; prev_loc_only : bool
                     };
 
@@ -141,7 +142,7 @@ module Make (Lexer  : FanSig.Lexer) = struct
     { egram     : gram;
       ename     : string;
       estart    : mutable int -> efun;
-      econtinue : mutable int -> Loc.t -> Action.t -> efun;
+      econtinue : mutable int -> FanLoc.t -> Action.t -> efun;
       edesc     : mutable desc }
   and desc =
     [ Dlevels of list level

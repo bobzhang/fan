@@ -382,28 +382,12 @@ let check =
 
 exception Exc_located of t * exn
 
-let _ = (FanUtil.ErrorHandler.register
-                                                                (
-                                                                fun ppf ->
-                                                                 function
-                                                                 | Exc_located
-                                                                    (loc, exn) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "%a:@\n%a"
-                                                                    print loc
-                                                                    FanUtil.ErrorHandler.print
-                                                                    exn)
-                                                                 | exn ->
-                                                                    (raise
-                                                                    exn) ))
-
-
 let name = (ref "_loc")
 
+
 let raise =
-                          fun loc ->
-                           fun exc ->
-                            (match exc with
-                             | Exc_located (_, _) -> (raise exc)
-                             | _ -> (raise ( (Exc_located (loc, exc)) )))
+ fun loc ->
+  fun exc ->
+   (match exc with
+    | Exc_located (_, _) -> (raise exc)
+    | _ -> (raise ( (Exc_located (loc, exc)) )))

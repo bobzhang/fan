@@ -2,28 +2,25 @@ open FanSig.Grammar
 
 module type S =
                       sig
-                       module Loc : FanSig.Loc
-
-                       module Token : (FanSig.Token with module Loc = Loc)
+                       module Token : FanSig.Token
 
                        module Lexer :
-                        (FanSig.Lexer with module Loc = Loc and module Loc =
-                         Loc and module Token = Token)
+                        (FanSig.Lexer with module Token = Token)
 
                        module Action : FanSig.Grammar.Action
 
                        type gram = {
                                      gfilter:Token.Filter.t;
                                      gkeywords:(string, int ref) Hashtbl.t;
-                                     glexer:(Loc.t ->
+                                     glexer:(FanLoc.t ->
                                              (char Stream.t ->
-                                              (Token.t * Loc.t) Stream.t));
+                                              (Token.t * FanLoc.t) Stream.t));
                                      warning_verbose:bool ref;
                                      error_verbose:bool ref}
 
                        type token_info = {
-                                           prev_loc:Loc.t;
-                                           cur_loc:Loc.t;
+                                           prev_loc:FanLoc.t;
+                                           cur_loc:FanLoc.t;
                                            prev_loc_only:bool}
 
  type token_stream = (Token.t * token_info) Stream.t
@@ -37,7 +34,7 @@ module type S =
                          ename:string;
                          mutable estart:(int -> efun);
                          mutable econtinue:(int ->
-                                            (Loc.t -> (Action.t -> efun)));
+                                            (FanLoc.t -> (Action.t -> efun)));
                          mutable edesc:desc}
 and desc = Dlevels of level list | Dparser of (token_stream -> Action.t)
 and level = {assoc:assoc; lname:string option; lsuffix:tree; lprefix:tree}
@@ -90,8 +87,6 @@ end
 module Make =
       functor (Lexer : FanSig.Lexer) ->
        struct
-        module Loc = Lexer.Loc
-
         module Token = Lexer.Token
 
         module Action : FanSig.Grammar.Action =
@@ -113,15 +108,15 @@ module Make =
         type gram = {
                       gfilter:Token.Filter.t;
                       gkeywords:(string, int ref) Hashtbl.t;
-                      glexer:(Loc.t ->
+                      glexer:(FanLoc.t ->
                               (char Stream.t ->
-                               (Token.t * Loc.t) Stream.t));
+                               (Token.t * FanLoc.t) Stream.t));
                       warning_verbose:bool ref;
                       error_verbose:bool ref}
 
         type token_info = {
-                            prev_loc:Loc.t;
-                            cur_loc:Loc.t;
+                            prev_loc:FanLoc.t;
+                            cur_loc:FanLoc.t;
                             prev_loc_only:bool}
 
        type token_stream = (Token.t * token_info) Stream.t
@@ -135,7 +130,7 @@ module Make =
                                ename:string;
                                mutable estart:(int -> efun);
                                mutable econtinue:(int ->
-                                                  (Loc.t ->
+                                                  (FanLoc.t ->
                                                    (Action.t -> efun)));
                                mutable edesc:desc}
       and desc =

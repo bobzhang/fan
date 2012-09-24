@@ -51,7 +51,7 @@ module Make (Structure : Structure.S) = struct
   value get_cur_loc strm =
     match Stream.peek strm with
     [ Some (_,r) -> r.cur_loc
-    | None -> Loc.ghost ];
+    | None -> FanLoc.ghost ];
 
   value get_prev_loc strm =
     begin
@@ -60,7 +60,7 @@ module Make (Structure : Structure.S) = struct
         [ Some (_, {prev_loc; prev_loc_only = True}) ->
             begin Stream.junk strm; prev_loc end
         | Some (_, {prev_loc; prev_loc_only = False}) -> prev_loc
-        | None -> Loc.ghost ];
+        | None -> FanLoc.ghost ];
       (* get_prev_loc_only.val := False; *)
       result
     end;
