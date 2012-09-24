@@ -131,7 +131,7 @@ module MakeDebugParser =
                            fun (m :
                              'start_debug) ->
                             fun (_loc :
-                              Gram.Loc.t) ->
+                              FanLoc.t) ->
                              (let fmt = (Gram.Token.extract_string fmt) in
                               let section =
                                (Gram.Token.extract_string section) in
@@ -168,13 +168,13 @@ module MakeDebugParser =
                        fun (e :
                          'expr) ->
                         fun _ ->
-                         fun (_loc : Gram.Loc.t) -> ((Some (e)) : 'end_or_in)
+                         fun (_loc : FanLoc.t) -> ((Some (e)) : 'end_or_in)
                        )) ));
                     (( [( (Gram.Skeyword ("end")) )] ), (
                      (Gram.Action.mk (
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> ((None) : 'end_or_in) ))
-                     ))] ))] ))) () ) ))
+                        fun (_loc : FanLoc.t) -> ((None) : 'end_or_in) )) ))]
+                   ))] ))) () ) ))
            );
            (Gram.extend ( (start_debug : 'start_debug Gram.Entry.t) ) (
              ((fun ()
@@ -193,7 +193,7 @@ module MakeDebugParser =
                        fun (__camlp4_0 :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | LIDENT ("camlp4_debug") ->
                              ((Some ("Camlp4")) : 'start_debug)
@@ -208,7 +208,7 @@ module MakeDebugParser =
                        fun (__camlp4_0 :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | LIDENT ("debug") -> ((None) : 'start_debug)
                           | _ -> assert false) )) ))] ))] ))) () ) ))

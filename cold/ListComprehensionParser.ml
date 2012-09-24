@@ -335,7 +335,7 @@ module Make =
                                              'comprehension_or_sem_expr_for_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (e : 'expr) )) ))] ))] ))) () )
                                 ))
                               );
@@ -359,7 +359,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExApp
                                                (_loc, (
                                                 (Ast.ExApp
@@ -396,7 +396,7 @@ module Make =
                                             fun (e :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((compr _loc e l) :
                                                 'comprehension_or_sem_expr_for_list)
                                           )) ));
@@ -413,7 +413,7 @@ module Make =
                                            fun (e :
                                              'expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExApp
                                                 (_loc, (
                                                  (Ast.ExApp
@@ -449,7 +449,7 @@ module Make =
                                             fun (e :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -484,7 +484,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (`cond e : 'item) )) ));
                                        ((
                                         [(
@@ -503,7 +503,7 @@ module Make =
                                                   fun (p :
                                                     'patt) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (p : 'e__1) )) ))] ))) );
                                          (
                                          (Gram.Snterml
@@ -517,7 +517,7 @@ module Make =
                                            fun (p :
                                              'e__1) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (`gen (p, e) : 'item) )) ))] ))]
                                     ))) () ) ))
 
@@ -554,7 +554,7 @@ module Make =
                                              fun (e :
                                                'expr) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExApp
                                                   (_loc, (
                                                    (Ast.ExApp
@@ -594,7 +594,7 @@ module Make =
                                                fun (e :
                                                  'expr) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExApp
                                                     (_loc, (
                                                      (Ast.ExApp

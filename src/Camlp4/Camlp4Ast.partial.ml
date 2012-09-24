@@ -15,7 +15,7 @@
 (* Note: when you modify these types you must increment
    ast magic numbers defined in FanConfig.ml. *)
 
-  type loc = Loc.t
+  type loc = FanLoc.t
    and meta_bool =
     [ BTrue
     | BFalse

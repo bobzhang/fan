@@ -345,7 +345,7 @@ module Grammar =
     (** Common signature for {!Sig.Grammar.Static} and {!Sig.Grammar.Dynamic}. *)
     module type Structure =
       sig
-        module Loc : module type of FanLoc
+        (* module Loc : module type of FanLoc *)
           
         module Action : Action
           

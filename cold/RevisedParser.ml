@@ -1245,7 +1245,7 @@ module Make =
                                              'str_items) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MeStr (_loc, st)) :
                                                 'module_expr) )) ));
                                        ((
@@ -1276,7 +1276,7 @@ module Make =
                                                 fun _ ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    ((Ast.MeFun
                                                       (_loc, i, t, me)) :
                                                      'module_expr) )) ))] ));
@@ -1288,7 +1288,7 @@ module Make =
                                            fun (me1 :
                                              'module_expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.MeApp (_loc, me1, me2)) :
                                                'module_expr) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -1318,7 +1318,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.MePkg
                                                     (_loc, (
                                                      (Ast.ExTyc
@@ -1344,7 +1344,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.MePkg (_loc, e)) :
                                                  'module_expr) )) ));
                                        ((
@@ -1357,7 +1357,7 @@ module Make =
                                              'module_expr) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (me : 'module_expr) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) );
@@ -1377,7 +1377,7 @@ module Make =
                                                'module_expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.MeTyc (_loc, me, mt)) :
                                                   'module_expr) )) ));
                                        ((
@@ -1391,7 +1391,7 @@ module Make =
                                           fun (i :
                                             'module_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.MeId (_loc, i)) :
                                               'module_expr) )) ));
                                        ((
@@ -1406,7 +1406,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -1429,7 +1429,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "mexp") | "anti")
@@ -1459,7 +1459,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.StExp (_loc, e)) :
                                               'str_item) )) ));
                                        ((
@@ -1474,7 +1474,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -1497,7 +1497,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "stri") | "anti")
@@ -1521,7 +1521,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.StClt (_loc, ctd)) :
                                                 'str_item) )) ));
                                        ((
@@ -1536,7 +1536,7 @@ module Make =
                                             'class_declaration) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.StCls (_loc, cd)) :
                                                'str_item) )) ));
                                        ((
@@ -1563,7 +1563,7 @@ module Make =
                                              'opt_rec) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.StVal (_loc, r, bi)) :
                                                 'str_item) )) ));
                                        ((
@@ -1578,7 +1578,7 @@ module Make =
                                             'type_declaration) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.StTyp (_loc, td)) :
                                                'str_item) )) ));
                                        ((
@@ -1593,7 +1593,7 @@ module Make =
                                             'module_longident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.StOpn (_loc, i)) :
                                                'str_item) )) ));
                                        ((
@@ -1618,7 +1618,7 @@ module Make =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.StMty (_loc, i, mt)) :
                                                   'str_item) )) ));
                                        ((
@@ -1635,7 +1635,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.StRecMod (_loc, mb)) :
                                                 'str_item) )) ));
                                        ((
@@ -1657,7 +1657,7 @@ module Make =
                                              'a_UIDENT) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.StMod (_loc, i, mb)) :
                                                 'str_item) )) ));
                                        ((
@@ -1672,7 +1672,7 @@ module Make =
                                             'module_expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.StInc (_loc, me)) :
                                                'str_item) )) ));
                                        ((
@@ -1702,7 +1702,7 @@ module Make =
                                                 'a_LIDENT) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.StExt (_loc, i, t, sl)) :
                                                    'str_item) )) ));
                                        ((
@@ -1726,7 +1726,7 @@ module Make =
                                               'constructor_declaration) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.StExc
                                                   (_loc, t, ( (Ast.OSome (i))
                                                    ))) : 'str_item) )) ));
@@ -1742,7 +1742,7 @@ module Make =
                                             'constructor_declaration) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.StExc
                                                 (_loc, t, Ast.ONone )) :
                                                'str_item) )) ))] ))] ))) () )
@@ -1769,7 +1769,7 @@ module Make =
                                             'module_expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (me : 'module_binding0) )) ));
                                        ((
                                         [( (Gram.Skeyword (":")) ); (
@@ -1791,7 +1791,7 @@ module Make =
                                               'module_type) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.MeTyc (_loc, me, mt)) :
                                                  'module_binding0) )) ));
                                        ((
@@ -1818,7 +1818,7 @@ module Make =
                                                 'a_UIDENT) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.MeFun
                                                     (_loc, m, mt, mb)) :
                                                    'module_binding0) )) ))]
@@ -1860,7 +1860,7 @@ module Make =
                                               fun (m :
                                                 'a_UIDENT) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.MbColEq
                                                    (_loc, m, mt, me)) :
                                                   'module_binding) )) ));
@@ -1876,7 +1876,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -1912,7 +1912,7 @@ module Make =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | ANTIQUOT (("" as n), m) ->
                                                     ((Ast.MbColEq
@@ -1932,7 +1932,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("" as n), s) ->
                                                 ((Ast.MbAnt
@@ -1958,7 +1958,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("module_binding"
@@ -1982,7 +1982,7 @@ module Make =
                                             fun (b1 :
                                               'module_binding) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MbAnd (_loc, b1, b2)) :
                                                 'module_binding) )) ))] ))]
                                     ))) () ) ))
@@ -2018,7 +2018,7 @@ module Make =
                                                 fun _ ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    ((Ast.MtFun
                                                       (_loc, i, t, mt)) :
                                                      'module_type) )) ))] ));
@@ -2038,7 +2038,7 @@ module Make =
                                             fun (mt :
                                               'module_type) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MtWit (_loc, mt, wc)) :
                                                 'module_type) )) ))] ));
                                      (( (Some ("apply")) ), None , (
@@ -2055,7 +2055,7 @@ module Make =
                                             fun (mt1 :
                                               'module_type) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((module_type_app mt1 mt2) :
                                                 'module_type) )) ))] ));
                                      (( (Some (".")) ), None , (
@@ -2069,7 +2069,7 @@ module Make =
                                             fun (mt1 :
                                               'module_type) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((module_type_acc mt1 mt2) :
                                                 'module_type) )) ))] ));
                                      (( (Some ("sig")) ), None , (
@@ -2086,7 +2086,7 @@ module Make =
                                              'sig_items) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MtSig (_loc, sg)) :
                                                 'module_type) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -2106,7 +2106,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.MtOf (_loc, me)) :
                                                  'module_type) )) ));
                                        ((
@@ -2119,7 +2119,7 @@ module Make =
                                              'module_type) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (mt : 'module_type) )) ));
                                        ((
                                         [( (Gram.Skeyword ("'")) ); (
@@ -2133,7 +2133,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.MtQuo (_loc, i)) :
                                                'module_type) )) ));
                                        ((
@@ -2147,7 +2147,7 @@ module Make =
                                           fun (i :
                                             'module_longident_with_app) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.MtId (_loc, i)) :
                                               'module_type) )) ));
                                        ((
@@ -2162,7 +2162,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -2185,7 +2185,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "mtyp") | "anti")
@@ -2219,7 +2219,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.SgClt (_loc, ctd)) :
                                                 'sig_item) )) ));
                                        ((
@@ -2234,7 +2234,7 @@ module Make =
                                             'class_description) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.SgCls (_loc, cd)) :
                                                'sig_item) )) ));
                                        ((
@@ -2261,7 +2261,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.SgVal (_loc, i, t)) :
                                                  'sig_item) )) ));
                                        ((
@@ -2276,7 +2276,7 @@ module Make =
                                             'type_declaration) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.SgTyp (_loc, t)) :
                                                'sig_item) )) ));
                                        ((
@@ -2291,7 +2291,7 @@ module Make =
                                             'module_longident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.SgOpn (_loc, i)) :
                                                'sig_item) )) ));
                                        ((
@@ -2308,7 +2308,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.SgMty
                                                  (_loc, i, (
                                                   (Ast.MtNil (_loc)) ))) :
@@ -2335,7 +2335,7 @@ module Make =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.SgMty (_loc, i, mt)) :
                                                   'sig_item) )) ));
                                        ((
@@ -2352,7 +2352,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.SgRecMod (_loc, mb)) :
                                                 'sig_item) )) ));
                                        ((
@@ -2374,7 +2374,7 @@ module Make =
                                              'a_UIDENT) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.SgMod (_loc, i, mt)) :
                                                 'sig_item) )) ));
                                        ((
@@ -2389,7 +2389,7 @@ module Make =
                                             'module_type) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.SgInc (_loc, mt)) :
                                                'sig_item) )) ));
                                        ((
@@ -2419,7 +2419,7 @@ module Make =
                                                 'a_LIDENT) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.SgExt (_loc, i, t, sl)) :
                                                    'sig_item) )) ));
                                        ((
@@ -2434,7 +2434,7 @@ module Make =
                                             'constructor_declaration) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.SgExc (_loc, t)) :
                                                'sig_item) )) ));
                                        ((
@@ -2449,7 +2449,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -2472,7 +2472,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "sigi") | "anti")
@@ -2517,7 +2517,7 @@ module Make =
                                                 'a_UIDENT) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.MtFun (_loc, i, t, mt)) :
                                                    'module_declaration) )) ));
                                        ((
@@ -2532,7 +2532,7 @@ module Make =
                                             'module_type) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (mt : 'module_declaration) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -2564,7 +2564,7 @@ module Make =
                                             fun (m :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MbCol (_loc, m, mt)) :
                                                 'module_rec_declaration) ))
                                         ));
@@ -2580,7 +2580,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -2603,7 +2603,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "module_binding")
@@ -2627,7 +2627,7 @@ module Make =
                                             fun (m1 :
                                               'module_rec_declaration) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MbAnd (_loc, m1, m2)) :
                                                 'module_rec_declaration) ))
                                         ))] ))] ))) () ) ))
@@ -2661,7 +2661,7 @@ module Make =
                                               'module_longident) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.WcMoS (_loc, i1, i2)) :
                                                  'with_constr) )) ));
                                        ((
@@ -2684,7 +2684,7 @@ module Make =
                                               'type_longident_and_parameters) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.WcTyS (_loc, t1, t2)) :
                                                  'with_constr) )) ));
                                        ((
@@ -2710,7 +2710,7 @@ module Make =
                                               Gram.Token.t) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (match __camlp4_0 with
                                                 | ANTIQUOT
                                                    (((("" | "typ") | "anti") as
@@ -2744,7 +2744,7 @@ module Make =
                                               'module_longident) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.WcMod (_loc, i1, i2)) :
                                                  'with_constr) )) ));
                                        ((
@@ -2767,7 +2767,7 @@ module Make =
                                               'type_longident_and_parameters) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.WcTyp (_loc, t1, t2)) :
                                                  'with_constr) )) ));
                                        ((
@@ -2793,7 +2793,7 @@ module Make =
                                               Gram.Token.t) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (match __camlp4_0 with
                                                 | ANTIQUOT
                                                    (((("" | "typ") | "anti") as
@@ -2818,7 +2818,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -2841,7 +2841,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "with_constr")
@@ -2864,7 +2864,7 @@ module Make =
                                             fun (wc1 :
                                               'with_constr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.WcAnd (_loc, wc1, wc2)) :
                                                 'with_constr) )) ))] ))] )))
                                   () ) ))
@@ -2897,7 +2897,7 @@ module Make =
                                               'opt_class_self_patt) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExObj (_loc, csp, cst)) :
                                                  'expr) )) ));
                                        ((
@@ -2920,7 +2920,7 @@ module Make =
                                               'sequence) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExWhi
                                                   (_loc, (
                                                    (mksequence' _loc e) ),
@@ -2967,7 +2967,7 @@ module Make =
                                                   'a_LIDENT) ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    ((Ast.ExFor
                                                       (_loc, i, (
                                                        (mksequence' _loc e1)
@@ -2987,7 +2987,7 @@ module Make =
                                             'do_sequence) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((mksequence _loc seq) : 'expr)
                                           )) ));
                                        ((
@@ -3008,7 +3008,7 @@ module Make =
                                                 'expr) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExIfe
                                                     (_loc, e1, e2, e3)) :
                                                    'expr) )) ));
@@ -3032,7 +3032,7 @@ module Make =
                                               'sequence) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExTry
                                                   (_loc, (
                                                    (mksequence' _loc e) ), a)) :
@@ -3057,7 +3057,7 @@ module Make =
                                               'sequence) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExMat
                                                   (_loc, (
                                                    (mksequence' _loc e) ), a)) :
@@ -3074,7 +3074,7 @@ module Make =
                                             'fun_def) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (e : 'expr) )) ));
                                        ((
                                         [( (Gram.Skeyword ("fun")) ); (
@@ -3095,7 +3095,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExFun
                                                   (_loc, (
                                                    (Ast.mcOr_of_list a) ))) :
@@ -3118,7 +3118,7 @@ module Make =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExOpI (_loc, i, e)) :
                                                   'expr) )) ));
                                        ((
@@ -3146,7 +3146,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExLmd (_loc, m, mb, e)) :
                                                    'expr) )) ));
                                        ((
@@ -3172,7 +3172,7 @@ module Make =
                                                'opt_rec) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExLet (_loc, r, bi, x)) :
                                                   'expr) )) ))] ));
                                      (( (Some ("where")) ), None , (
@@ -3198,7 +3198,7 @@ module Make =
                                              fun (e :
                                                'expr) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExLet (_loc, rf, lb, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (":=")) ), (
@@ -3219,7 +3219,7 @@ module Make =
                                              fun (e1 :
                                                'expr) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((match
                                                    (bigarray_set _loc e1 e2) with
                                                  | Some (e) -> e
@@ -3243,7 +3243,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3265,7 +3265,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3287,7 +3287,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3309,7 +3309,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3331,7 +3331,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3353,7 +3353,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3369,7 +3369,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3391,7 +3391,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3413,7 +3413,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3435,7 +3435,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3463,7 +3463,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp (_loc, op, e1))
@@ -3479,7 +3479,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3501,7 +3501,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3523,7 +3523,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExApp
                                                  (_loc, (
                                                   (Ast.ExApp
@@ -3544,7 +3544,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((mkumin _loc "-." e) : 'expr)
                                           )) ));
                                        ((
@@ -3555,7 +3555,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((mkumin _loc "-" e) : 'expr) ))
                                         ))] ));
                                      (( (Some ("apply")) ), (
@@ -3568,7 +3568,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExLaz (_loc, e)) : 'expr)
                                           )) ));
                                        ((
@@ -3583,7 +3583,7 @@ module Make =
                                             'class_longident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExNew (_loc, i)) : 'expr)
                                           )) ));
                                        ((
@@ -3594,7 +3594,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((mkassert _loc e) : 'expr) ))
                                         ));
                                        (( [Gram.Sself ; Gram.Sself ] ), (
@@ -3604,7 +3604,7 @@ module Make =
                                            fun (e1 :
                                              'expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExApp (_loc, e1, e2)) :
                                                'expr) )) ))] ));
                                      (( (Some ("label")) ), (
@@ -3621,7 +3621,7 @@ module Make =
                                             'a_LIDENT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExOlb
                                                 (_loc, i, (
                                                  (Ast.ExNil (_loc)) ))) :
@@ -3642,7 +3642,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExOlb (_loc, i, e)) :
                                                  'expr) )) ));
                                        ((
@@ -3659,7 +3659,7 @@ module Make =
                                            fun (__camlp4_0 :
                                              Gram.Token.t) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | OPTLABEL (i) ->
                                                  ((Ast.ExOlb (_loc, i, e)) :
@@ -3679,7 +3679,7 @@ module Make =
                                            fun (__camlp4_0 :
                                              Gram.Token.t) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LABEL (i) ->
                                                  ((Ast.ExLab (_loc, i, e)) :
@@ -3697,7 +3697,7 @@ module Make =
                                             'a_LIDENT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExLab
                                                 (_loc, i, (
                                                  (Ast.ExNil (_loc)) ))) :
@@ -3718,7 +3718,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExLab (_loc, i, e)) :
                                                  'expr) )) ))] ));
                                      (( (Some (".")) ), (
@@ -3737,7 +3737,7 @@ module Make =
                                             fun (e :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExSnd (_loc, e, lab)) :
                                                 'expr) )) ));
                                        ((
@@ -3750,7 +3750,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExAcc (_loc, e1, e2)) :
                                                 'expr) )) ));
                                        ((
@@ -3770,7 +3770,7 @@ module Make =
                                               fun (e1 :
                                                 'expr) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((bigarray_get _loc e1 e2) :
                                                   'expr) )) ));
                                        ((
@@ -3787,7 +3787,7 @@ module Make =
                                               fun (e1 :
                                                 'expr) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExSte (_loc, e1, e2)) :
                                                   'expr) )) ));
                                        ((
@@ -3804,7 +3804,7 @@ module Make =
                                               fun (e1 :
                                                 'expr) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExAre (_loc, e1, e2)) :
                                                   'expr) )) ))] ));
                                      (( (Some ("~-")) ), (
@@ -3822,7 +3822,7 @@ module Make =
                                            fun (f :
                                              'prefixop) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExApp (_loc, f, e)) :
                                                'expr) )) ));
                                        ((
@@ -3833,7 +3833,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExAcc
                                                 (_loc, e, (
                                                  (Ast.ExId
@@ -3865,7 +3865,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExPkg
                                                     (_loc, (
                                                      (Ast.MeTyc
@@ -3886,7 +3886,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExPkg (_loc, me)) :
                                                  'expr) )) ));
                                        ((
@@ -3896,7 +3896,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "()")) ))) :
@@ -3914,7 +3914,7 @@ module Make =
                                              'sequence) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((mksequence _loc seq) : 'expr)
                                           )) ));
                                        ((
@@ -3927,7 +3927,7 @@ module Make =
                                              'expr) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (e : 'expr) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) );
@@ -3946,7 +3946,7 @@ module Make =
                                                'expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExCoe
                                                    (_loc, e, (
                                                     (Ast.TyNil (_loc)) ), t)) :
@@ -3975,7 +3975,7 @@ module Make =
                                                  'expr) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.ExCoe
                                                      (_loc, e, t, t2)) :
                                                     'expr) )) ));
@@ -3990,7 +3990,7 @@ module Make =
                                               'expr) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((mksequence _loc e) : 'expr)
                                           )) ));
                                        ((
@@ -4011,7 +4011,7 @@ module Make =
                                                'expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((mksequence _loc (
                                                    (Ast.ExSem (_loc, e, seq))
                                                    )) : 'expr) )) ));
@@ -4033,7 +4033,7 @@ module Make =
                                                'expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExTup
                                                    (_loc, (
                                                     (Ast.ExCom (_loc, e, el))
@@ -4055,7 +4055,7 @@ module Make =
                                                'expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExTyc (_loc, e, t)) :
                                                   'expr) )) ));
                                        ((
@@ -4065,7 +4065,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "()")) ))) :
@@ -4084,7 +4084,7 @@ module Make =
                                              'field_expr_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExOvr (_loc, fel)) :
                                                 'expr) )) ));
                                        ((
@@ -4094,7 +4094,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExOvr
                                                 (_loc, ( (Ast.RbNil (_loc))
                                                  ))) : 'expr) )) ));
@@ -4120,7 +4120,7 @@ module Make =
                                                fun _ ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.ExRec (_loc, el, e)) :
                                                     'expr) )) ));
                                        ((
@@ -4137,7 +4137,7 @@ module Make =
                                              'label_expr_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExRec
                                                  (_loc, el, (
                                                   (Ast.ExNil (_loc)) ))) :
@@ -4155,7 +4155,7 @@ module Make =
                                              'sem_expr) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExArr (_loc, el)) :
                                                 'expr) )) ));
                                        ((
@@ -4165,7 +4165,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExArr
                                                 (_loc, ( (Ast.ExNil (_loc))
                                                  ))) : 'expr) )) ));
@@ -4183,7 +4183,7 @@ module Make =
                                              'sem_expr_for_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((mk_list (
                                                  (Ast.ExId
                                                    (_loc, (
@@ -4207,7 +4207,7 @@ module Make =
                                                'sem_expr_for_list) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((mk_list last) : 'expr) ))
                                         ));
                                        ((
@@ -4217,7 +4217,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "[]")) ))) :
@@ -4234,7 +4234,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExVrn (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4249,7 +4249,7 @@ module Make =
                                           fun (i :
                                             'val_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId (_loc, i)) : 'expr) ))
                                         ));
                                        ((
@@ -4272,7 +4272,7 @@ module Make =
                                             fun (i :
                                               'module_longident_dot_lparen) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExOpI (_loc, i, e)) :
                                                 'expr) )) ));
                                        ((
@@ -4285,7 +4285,7 @@ module Make =
                                           fun (s :
                                             'a_CHAR) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExChr (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4299,7 +4299,7 @@ module Make =
                                           fun (s :
                                             'a_STRING) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExStr (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4313,7 +4313,7 @@ module Make =
                                           fun (s :
                                             'a_FLOAT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExFlo (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4327,7 +4327,7 @@ module Make =
                                           fun (s :
                                             'a_NATIVEINT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExNativeInt (_loc, s)) :
                                               'expr) )) ));
                                        ((
@@ -4341,7 +4341,7 @@ module Make =
                                           fun (s :
                                             'a_INT64) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExInt64 (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4355,7 +4355,7 @@ module Make =
                                           fun (s :
                                             'a_INT32) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExInt32 (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4368,7 +4368,7 @@ module Make =
                                           fun (s :
                                             'a_INT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExInt (_loc, s)) : 'expr)
                                           )) ));
                                        ((
@@ -4383,7 +4383,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("seq" as n), s) ->
                                                 ((Ast.ExSeq
@@ -4405,7 +4405,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("tup" as n), s) ->
                                                 ((Ast.ExTup
@@ -4428,7 +4428,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("`bool" as n), s) ->
                                                 ((Ast.ExId
@@ -4452,7 +4452,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("exp" | "") | "anti") as
@@ -4474,7 +4474,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -4494,7 +4494,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId
                                                (_loc, (
                                                 (Ast.IdUid (_loc, "()")) ))) :
@@ -4517,14 +4517,14 @@ module Make =
                                                   fun (seq :
                                                     'sequence) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (seq : 'e__3) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (seq :
                                             'e__3) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (seq : 'do_sequence) )) ));
                                        ((
                                         [(
@@ -4537,13 +4537,13 @@ module Make =
                                                  fun _ ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (() : 'e__2) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId
                                                (_loc, (
                                                 (Ast.IdUid (_loc, "()")) ))) :
@@ -4566,14 +4566,14 @@ module Make =
                                                     'sequence) ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      (seq : 'e__1) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (seq :
                                             'e__1) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (seq : 'do_sequence) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -4593,7 +4593,7 @@ module Make =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__4) )) ));
                                             (( [( (Gram.Skeyword ("&")) )] ),
@@ -4602,7 +4602,7 @@ module Make =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__4) )) ))] )) )]
                                         ), (
@@ -4610,7 +4610,7 @@ module Make =
                                           fun (x :
                                             'e__4) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId
                                                (_loc, ( (Ast.IdLid (_loc, x))
                                                 ))) : 'infixop5) )) ))] ))]
@@ -4632,7 +4632,7 @@ module Make =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__5) )) ));
                                             (( [( (Gram.Skeyword ("or")) )]
@@ -4641,7 +4641,7 @@ module Make =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__5) )) ))] )) )]
                                         ), (
@@ -4649,7 +4649,7 @@ module Make =
                                           fun (x :
                                             'e__5) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId
                                                (_loc, ( (Ast.IdLid (_loc, x))
                                                 ))) : 'infixop6) )) ))] ))]
@@ -4673,7 +4673,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (fun acc ->
                                               (Ast.ExApp
                                                 (_loc, (
@@ -4696,7 +4696,7 @@ module Make =
                                            fun (e :
                                              'expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (fun acc ->
                                                (Ast.ExApp
                                                  (_loc, (
@@ -4722,7 +4722,7 @@ module Make =
                                             fun (e :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (fun acc ->
                                                 (Ast.ExApp
                                                   (_loc, (
@@ -4754,7 +4754,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (e : 'comma_expr) )) ));
                                        ((
                                         [(
@@ -4769,7 +4769,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.ExAnt
@@ -4787,7 +4787,7 @@ module Make =
                                             fun (e1 :
                                               'comma_expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExCom (_loc, e1, e2)) :
                                                 'comma_expr) )) ))] ))] )))
                                   () ) ))
@@ -4802,7 +4802,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (() : 'dummy) )) ))] ))] ))) () )
                                 ))
                               );
@@ -4825,7 +4825,7 @@ module Make =
                                             'sequence) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (fun e ->
                                                (Ast.ExSem (_loc, e, el)) :
                                                'sequence') )) ));
@@ -4833,12 +4833,12 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (fun e -> e : 'sequence') )) ));
                                        ([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (fun e -> e : 'sequence') )) ))]
                                       ))] ))) () ) ))
                               );
@@ -4866,7 +4866,7 @@ module Make =
                                            fun (e :
                                              'expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((k e) : 'sequence) )) ));
                                        ((
                                         [(
@@ -4881,7 +4881,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.ExAnt
@@ -4907,7 +4907,7 @@ module Make =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExOpI (_loc, i, e)) :
                                                   'sequence) )) ));
                                        ((
@@ -4935,7 +4935,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExLmd
                                                     (_loc, m, mb, (
                                                      (mksequence _loc el) ))) :
@@ -4976,7 +4976,7 @@ module Make =
                                                fun _ ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((k (
                                                      (Ast.ExLmd
                                                        (_loc, m, mb, e)) )) :
@@ -5004,7 +5004,7 @@ module Make =
                                                'opt_rec) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExLet
                                                    (_loc, rf, bi, (
                                                     (mksequence _loc el) ))) :
@@ -5042,7 +5042,7 @@ module Make =
                                                 'opt_rec) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((k (
                                                     (Ast.ExLet
                                                       (_loc, rf, bi, e)) )) :
@@ -5068,7 +5068,7 @@ module Make =
                                           fun (b :
                                             'let_binding) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (b : 'binding) )) ));
                                        ((
                                         [Gram.Sself ; (
@@ -5081,7 +5081,7 @@ module Make =
                                             fun (b1 :
                                               'binding) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.BiAnd (_loc, b1, b2)) :
                                                 'binding) )) ));
                                        ((
@@ -5098,7 +5098,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "anti") as n), s) ->
@@ -5128,7 +5128,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((("" | "anti") as n), s) ->
@@ -5155,7 +5155,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("binding" | "list") as n),
@@ -5191,7 +5191,7 @@ module Make =
                                            fun (p :
                                              'ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.BiEq (_loc, p, e)) :
                                                'let_binding) )) ))] ))] )))
                                   () ) ))
@@ -5215,7 +5215,7 @@ module Make =
                                           fun (bi :
                                             'cvalue_binding) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (bi : 'fun_binding) )) ));
                                        ((
                                         [(
@@ -5231,7 +5231,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExFun
                                                 (_loc, (
                                                  (Ast.McArr
@@ -5250,7 +5250,7 @@ module Make =
                                                  fun _ ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (() : 'e__6) )) ))] )))
                                          ); (
                                          (Gram.Snterm
@@ -5267,7 +5267,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExFUN (_loc, i, e)) :
                                                  'fun_binding) )) ))] ))] )))
                                   () ) ))
@@ -5296,7 +5296,7 @@ module Make =
                                             fun (p :
                                               'ipatt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.McArr
                                                  (_loc, p, (
                                                   (Ast.ExNil (_loc)) ), e)) :
@@ -5318,7 +5318,7 @@ module Make =
                                              'match_case0 list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.mcOr_of_list l) :
                                                 'match_case) )) ))] ))] )))
                                   () ) ))
@@ -5356,7 +5356,7 @@ module Make =
                                              fun (p :
                                                'patt_as_patt_opt) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.McArr (_loc, p, w, e)) :
                                                  'match_case0) )) ));
                                        ((
@@ -5387,7 +5387,7 @@ module Make =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | ANTIQUOT
                                                     ((("" | "anti") as n), s) ->
@@ -5420,7 +5420,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((("" | "anti") as n), s) ->
@@ -5447,7 +5447,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "anti") as n), s) ->
@@ -5472,7 +5472,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("match_case" | "list") as
@@ -5496,7 +5496,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ExNil (_loc)) :
                                              'opt_when_expr) )) ));
                                        ((
@@ -5510,7 +5510,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (w : 'opt_when_expr) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -5532,7 +5532,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'patt_as_patt_opt) )) ));
                                        ((
                                         [(
@@ -5551,7 +5551,7 @@ module Make =
                                             fun (p1 :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaAli (_loc, p1, p2)) :
                                                 'patt_as_patt_opt) )) ))] ))]
                                     ))) () ) ))
@@ -5575,7 +5575,7 @@ module Make =
                                           fun (b1 :
                                             'label_expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (b1 : 'label_expr_list) )) ));
                                        ((
                                         [(
@@ -5589,7 +5589,7 @@ module Make =
                                            fun (b1 :
                                              'label_expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (b1 : 'label_expr_list) )) ));
                                        ((
                                         [(
@@ -5606,7 +5606,7 @@ module Make =
                                             fun (b1 :
                                               'label_expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.RbSem (_loc, b1, b2)) :
                                                 'label_expr_list) )) ))] ))]
                                     ))) () ) ))
@@ -5629,7 +5629,7 @@ module Make =
                                           fun (i :
                                             'label_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.RbEq
                                                (_loc, i, (
                                                 (Ast.ExId
@@ -5656,7 +5656,7 @@ module Make =
                                            fun (i :
                                              'label_longident) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.RbEq (_loc, i, e)) :
                                                'label_expr) )) ));
                                        ((
@@ -5672,7 +5672,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.RbAnt
@@ -5701,7 +5701,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((("" | "anti") as n), s) ->
@@ -5727,7 +5727,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "anti") as n), s) ->
@@ -5750,7 +5750,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (("rec_binding" as n), s) ->
@@ -5787,7 +5787,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExFun
                                                 (_loc, (
                                                  (Ast.McArr (_loc, p, w, e))
@@ -5804,7 +5804,7 @@ module Make =
                                                  fun _ ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (() : 'e__7) )) ))] )))
                                          ); (
                                          (Gram.Snterm
@@ -5825,7 +5825,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExFUN (_loc, i, e)) :
                                                  'fun_def) )) ))] ))] ))) ()
                                   ) ))
@@ -5850,7 +5850,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((( (Ast.ExNil (_loc)) ), e) :
                                                'fun_def_cont) )) ));
                                        ((
@@ -5871,7 +5871,7 @@ module Make =
                                               'expr) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((w, e) : 'fun_def_cont) )) ));
                                        ((
                                         [(
@@ -5887,7 +5887,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((( (Ast.ExNil (_loc)) ), (
                                                (Ast.ExFun
                                                  (_loc, (
@@ -5906,7 +5906,7 @@ module Make =
                                                  fun _ ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (() : 'e__8) )) ))] )))
                                          ); (
                                          (Gram.Snterm
@@ -5927,7 +5927,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((( (Ast.ExNil (_loc)) ), (
                                                  (Ast.ExFUN (_loc, i, e)) )) :
                                                  'fun_def_cont) )) ))] ))] )))
@@ -5953,7 +5953,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (e : 'fun_def_cont_no_when) ))
                                         ));
                                        ((
@@ -5975,7 +5975,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExFun
                                                 (_loc, (
                                                  (Ast.McArr (_loc, p, w, e))
@@ -5994,7 +5994,7 @@ module Make =
                                                  fun _ ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (() : 'e__9) )) ))] )))
                                          ); (
                                          (Gram.Snterm
@@ -6011,7 +6011,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExFUN (_loc, i, e)) :
                                                  'fun_def_cont_no_when) )) ))]
                                       ))] ))) () ) ))
@@ -6033,7 +6033,7 @@ module Make =
                                             fun (p1 :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaOrp (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("..")) ), (
@@ -6049,7 +6049,7 @@ module Make =
                                             fun (p1 :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaRng (_loc, p1, p2)) :
                                                 'patt) )) ))] ));
                                      (( (Some ("apply")) ), (
@@ -6062,7 +6062,7 @@ module Make =
                                             'patt) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaLaz (_loc, p)) : 'patt)
                                           )) ));
                                        (( [Gram.Sself ; Gram.Sself ] ), (
@@ -6072,7 +6072,7 @@ module Make =
                                            fun (p1 :
                                              'patt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaApp (_loc, p1, p2)) :
                                                'patt) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -6098,7 +6098,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.PaOlbi
                                                     (_loc, "", p, e)) :
                                                    'patt) )) ));
@@ -6117,7 +6117,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaOlb (_loc, "", p)) :
                                                  'patt) )) ));
                                        ((
@@ -6135,7 +6135,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  ((("" | "lid") as n), i) ->
@@ -6157,7 +6157,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LIDENT (i) ->
                                                  ((Ast.PaOlb
@@ -6198,7 +6198,7 @@ module Make =
                                                  Gram.Token.t) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (match __camlp4_0 with
                                                    | ANTIQUOT
                                                       ((("" | "lid") as n), i) ->
@@ -6233,7 +6233,7 @@ module Make =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | OPTLABEL (i) ->
                                                     ((f i p) : 'patt)
@@ -6251,7 +6251,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LIDENT (i) ->
                                                  ((Ast.PaLab
@@ -6274,7 +6274,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  ((("" | "lid") as n), i) ->
@@ -6302,7 +6302,7 @@ module Make =
                                               Gram.Token.t) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (match __camlp4_0 with
                                                 | ANTIQUOT
                                                    ((("" | "lid") as n), i) ->
@@ -6324,7 +6324,7 @@ module Make =
                                            fun (__camlp4_0 :
                                              Gram.Token.t) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LABEL (i) ->
                                                  ((Ast.PaLab (_loc, i, p)) :
@@ -6342,7 +6342,7 @@ module Make =
                                             'type_longident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaTyp (_loc, i)) : 'patt)
                                           )) ));
                                        ((
@@ -6357,7 +6357,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaVrn (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6372,7 +6372,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -6383,7 +6383,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaAny (_loc)) : 'patt) ))
                                         ));
                                        ((
@@ -6404,7 +6404,7 @@ module Make =
                                                'patt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaTup
                                                    (_loc, (
                                                     (Ast.PaCom (_loc, p, pl))
@@ -6423,7 +6423,7 @@ module Make =
                                                'patt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaAli (_loc, p, p2)) :
                                                   'patt) )) ));
                                        ((
@@ -6443,7 +6443,7 @@ module Make =
                                                'patt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaTyc (_loc, p, t)) :
                                                   'patt) )) ));
                                        ((
@@ -6456,7 +6456,7 @@ module Make =
                                              'patt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (p : 'patt) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) ); (
@@ -6481,7 +6481,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.PaTyc
                                                     (_loc, (
                                                      (Ast.PaMod (_loc, m)) ),
@@ -6502,7 +6502,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaMod (_loc, m)) :
                                                  'patt) )) ));
                                        ((
@@ -6512,7 +6512,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "()")) ))) :
@@ -6531,7 +6531,7 @@ module Make =
                                              'label_patt_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaRec (_loc, pl)) :
                                                 'patt) )) ));
                                        ((
@@ -6547,7 +6547,7 @@ module Make =
                                              'sem_patt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaArr (_loc, pl)) :
                                                 'patt) )) ));
                                        ((
@@ -6557,7 +6557,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaArr
                                                 (_loc, ( (Ast.PaNil (_loc))
                                                  ))) : 'patt) )) ));
@@ -6575,7 +6575,7 @@ module Make =
                                              'sem_patt_for_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((mk_list (
                                                  (Ast.PaId
                                                    (_loc, (
@@ -6599,7 +6599,7 @@ module Make =
                                                'sem_patt_for_list) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((mk_list last) : 'patt) ))
                                         ));
                                        ((
@@ -6609,7 +6609,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "[]")) ))) :
@@ -6626,7 +6626,7 @@ module Make =
                                             'a_FLOAT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaFlo
                                                 (_loc, ( (neg_string s) ))) :
                                                'patt) )) ));
@@ -6642,7 +6642,7 @@ module Make =
                                             'a_NATIVEINT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaNativeInt
                                                 (_loc, ( (neg_string s) ))) :
                                                'patt) )) ));
@@ -6658,7 +6658,7 @@ module Make =
                                             'a_INT64) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaInt64
                                                 (_loc, ( (neg_string s) ))) :
                                                'patt) )) ));
@@ -6674,7 +6674,7 @@ module Make =
                                             'a_INT32) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaInt32
                                                 (_loc, ( (neg_string s) ))) :
                                                'patt) )) ));
@@ -6689,7 +6689,7 @@ module Make =
                                             'a_INT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaInt
                                                 (_loc, ( (neg_string s) ))) :
                                                'patt) )) ));
@@ -6703,7 +6703,7 @@ module Make =
                                           fun (s :
                                             'a_CHAR) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaChr (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6717,7 +6717,7 @@ module Make =
                                           fun (s :
                                             'a_STRING) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaStr (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6731,7 +6731,7 @@ module Make =
                                           fun (s :
                                             'a_FLOAT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaFlo (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6745,7 +6745,7 @@ module Make =
                                           fun (s :
                                             'a_NATIVEINT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaNativeInt (_loc, s)) :
                                               'patt) )) ));
                                        ((
@@ -6759,7 +6759,7 @@ module Make =
                                           fun (s :
                                             'a_INT64) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaInt64 (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6773,7 +6773,7 @@ module Make =
                                           fun (s :
                                             'a_INT32) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaInt32 (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6786,7 +6786,7 @@ module Make =
                                           fun (s :
                                             'a_INT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaInt (_loc, s)) : 'patt)
                                           )) ));
                                        ((
@@ -6799,7 +6799,7 @@ module Make =
                                           fun (i :
                                             'ident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaId (_loc, i)) : 'patt) ))
                                         ));
                                        ((
@@ -6815,7 +6815,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("`bool" as n), s) ->
                                                 ((Ast.PaId
@@ -6836,7 +6836,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("tup" as n), s) ->
                                                 ((Ast.PaTup
@@ -6861,7 +6861,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "pat") | "anti") as
@@ -6890,7 +6890,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'comma_patt) )) ));
                                        ((
                                         [(
@@ -6905,7 +6905,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.PaAnt
@@ -6923,7 +6923,7 @@ module Make =
                                             fun (p1 :
                                               'comma_patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaCom (_loc, p1, p2)) :
                                                 'comma_patt) )) ))] ))] )))
                                   () ) ))
@@ -6946,7 +6946,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'sem_patt) )) ));
                                        ((
                                         [(
@@ -6959,7 +6959,7 @@ module Make =
                                            fun (p :
                                              'patt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (p : 'sem_patt) )) ));
                                        ((
                                         [(
@@ -6974,7 +6974,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.PaAnt
@@ -6996,7 +6996,7 @@ module Make =
                                             fun (p1 :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem (_loc, p1, p2)) :
                                                 'sem_patt) )) ))] ))] ))) ()
                                   ) ))
@@ -7019,7 +7019,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (fun acc ->
                                               (Ast.PaApp
                                                 (_loc, (
@@ -7042,7 +7042,7 @@ module Make =
                                            fun (p :
                                              'patt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (fun acc ->
                                                (Ast.PaApp
                                                  (_loc, (
@@ -7068,7 +7068,7 @@ module Make =
                                             fun (p :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (fun acc ->
                                                 (Ast.PaApp
                                                   (_loc, (
@@ -7101,7 +7101,7 @@ module Make =
                                           fun (p1 :
                                             'label_patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p1 : 'label_patt_list) )) ));
                                        ((
                                         [(
@@ -7115,7 +7115,7 @@ module Make =
                                            fun (p1 :
                                              'label_patt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (p1 : 'label_patt_list) )) ));
                                        ((
                                         [(
@@ -7133,7 +7133,7 @@ module Make =
                                              fun (p1 :
                                                'label_patt) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaSem
                                                   (_loc, p1, (
                                                    (Ast.PaAny (_loc)) ))) :
@@ -7152,7 +7152,7 @@ module Make =
                                             fun (p1 :
                                               'label_patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem
                                                  (_loc, p1, (
                                                   (Ast.PaAny (_loc)) ))) :
@@ -7172,7 +7172,7 @@ module Make =
                                             fun (p1 :
                                               'label_patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem (_loc, p1, p2)) :
                                                 'label_patt_list) )) ))] ))]
                                     ))) () ) ))
@@ -7195,7 +7195,7 @@ module Make =
                                           fun (i :
                                             'label_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaEq
                                                (_loc, i, (
                                                 (Ast.PaId
@@ -7223,7 +7223,7 @@ module Make =
                                             fun (i :
                                               'label_longident) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaEq (_loc, i, p)) :
                                                 'label_patt) )) ));
                                        ((
@@ -7239,7 +7239,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.PaAnt
@@ -7259,7 +7259,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -7281,7 +7281,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "pat") | "anti") as
@@ -7304,7 +7304,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaAny (_loc)) : 'ipatt) ))
                                         ));
                                        ((
@@ -7318,7 +7318,7 @@ module Make =
                                           fun (s :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaId
                                                (_loc, ( (Ast.IdLid (_loc, s))
                                                 ))) : 'ipatt) )) ));
@@ -7340,7 +7340,7 @@ module Make =
                                                'ipatt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaTup
                                                    (_loc, (
                                                     (Ast.PaCom (_loc, p, pl))
@@ -7359,7 +7359,7 @@ module Make =
                                                'ipatt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaAli (_loc, p, p2)) :
                                                   'ipatt) )) ));
                                        ((
@@ -7379,7 +7379,7 @@ module Make =
                                                'ipatt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaTyc (_loc, p, t)) :
                                                   'ipatt) )) ));
                                        ((
@@ -7392,7 +7392,7 @@ module Make =
                                              'ipatt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (p : 'ipatt) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) ); (
@@ -7417,7 +7417,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.PaTyc
                                                     (_loc, (
                                                      (Ast.PaMod (_loc, m)) ),
@@ -7438,7 +7438,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaMod (_loc, m)) :
                                                  'ipatt) )) ));
                                        ((
@@ -7448,7 +7448,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaId
                                                 (_loc, (
                                                  (Ast.IdUid (_loc, "()")) ))) :
@@ -7465,7 +7465,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -7484,7 +7484,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("tup" as n), s) ->
                                                 ((Ast.PaTup
@@ -7509,7 +7509,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "pat") | "anti") as
@@ -7533,7 +7533,7 @@ module Make =
                                              'label_ipatt_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaRec (_loc, pl)) :
                                                 'ipatt) )) ))] ))] ))) () )
                                 ))
@@ -7556,7 +7556,7 @@ module Make =
                                           fun (p :
                                             'ipatt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'labeled_ipatt) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -7578,7 +7578,7 @@ module Make =
                                           fun (p :
                                             'ipatt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'comma_ipatt) )) ));
                                        ((
                                         [(
@@ -7593,7 +7593,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.PaAnt
@@ -7611,7 +7611,7 @@ module Make =
                                             fun (p1 :
                                               'comma_ipatt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaCom (_loc, p1, p2)) :
                                                 'comma_ipatt) )) ))] ))] )))
                                   () ) ))
@@ -7635,7 +7635,7 @@ module Make =
                                           fun (p1 :
                                             'label_ipatt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p1 : 'label_ipatt_list) )) ));
                                        ((
                                         [(
@@ -7649,7 +7649,7 @@ module Make =
                                            fun (p1 :
                                              'label_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (p1 : 'label_ipatt_list) )) ));
                                        ((
                                         [(
@@ -7667,7 +7667,7 @@ module Make =
                                              fun (p1 :
                                                'label_ipatt) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaSem
                                                   (_loc, p1, (
                                                    (Ast.PaAny (_loc)) ))) :
@@ -7686,7 +7686,7 @@ module Make =
                                             fun (p1 :
                                               'label_ipatt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem
                                                  (_loc, p1, (
                                                   (Ast.PaAny (_loc)) ))) :
@@ -7706,7 +7706,7 @@ module Make =
                                             fun (p1 :
                                               'label_ipatt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem (_loc, p1, p2)) :
                                                 'label_ipatt_list) )) ))] ))]
                                     ))) () ) ))
@@ -7737,7 +7737,7 @@ module Make =
                                             fun (i :
                                               'label_longident) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaEq (_loc, i, p)) :
                                                 'label_ipatt) )) ));
                                        ((
@@ -7752,7 +7752,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -7772,7 +7772,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.PaAnt
@@ -7795,7 +7795,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "pat") | "anti") as
@@ -7842,7 +7842,7 @@ module Make =
                                             fun ((n, tpl) :
                                               'type_ident_and_parameters) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyDcl
                                                  (_loc, n, tpl, tk, cl)) :
                                                 'type_declaration) )) ));
@@ -7857,7 +7857,7 @@ module Make =
                                             fun (t1 :
                                               'type_declaration) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAnd (_loc, t1, t2)) :
                                                 'type_declaration) )) ));
                                        ((
@@ -7872,7 +7872,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -7892,7 +7892,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -7916,7 +7916,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "typ") | "anti") as
@@ -7954,7 +7954,7 @@ module Make =
                                               'ctyp) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((t1, t2) : 'constrain) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -7968,7 +7968,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyNil (_loc)) :
                                              'opt_eq_ctyp) )) ));
                                        ((
@@ -7983,7 +7983,7 @@ module Make =
                                             'type_kind) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (tk : 'opt_eq_ctyp) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -8004,7 +8004,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'type_kind) )) ))] ))] )))
                                   () ) ))
                               );
@@ -8036,7 +8036,7 @@ module Make =
                                            fun (i :
                                              'a_LIDENT) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((i, tpl) :
                                                'type_ident_and_parameters) ))
                                         ))] ))] ))) () ) ))
@@ -8068,7 +8068,7 @@ module Make =
                                            fun (i :
                                              'type_longident) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((tpl ( (Ast.TyId (_loc, i)) )) :
                                                'type_longident_and_parameters)
                                           )) ))] ))] ))) () ) ))
@@ -8084,7 +8084,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (fun t -> t : 'type_parameters) ))
                                         ));
                                        ((
@@ -8098,7 +8098,7 @@ module Make =
                                           fun (t :
                                             'type_parameter) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (fun acc ->
                                               (Ast.TyApp (_loc, acc, t)) :
                                               'type_parameters) )) ));
@@ -8115,7 +8115,7 @@ module Make =
                                            fun (t1 :
                                              'type_parameter) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (fun acc ->
                                                (t2 (
                                                  (Ast.TyApp (_loc, acc, t1))
@@ -8144,7 +8144,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyQuM (_loc, i)) :
                                                 'type_parameter) )) ));
                                        ((
@@ -8161,7 +8161,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyQuP (_loc, i)) :
                                                 'type_parameter) )) ));
                                        ((
@@ -8176,7 +8176,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyQuo (_loc, i)) :
                                                'type_parameter) )) ));
                                        ((
@@ -8191,7 +8191,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -8213,7 +8213,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "typ") | "anti") as
@@ -8236,7 +8236,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyAny (_loc)) :
                                               'optional_type_parameter) )) ));
                                        ((
@@ -8246,7 +8246,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyAnM (_loc)) :
                                                'optional_type_parameter) ))
                                         ));
@@ -8257,7 +8257,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyAnP (_loc)) :
                                                'optional_type_parameter) ))
                                         ));
@@ -8275,7 +8275,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyQuM (_loc, i)) :
                                                 'optional_type_parameter) ))
                                         ));
@@ -8293,7 +8293,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyQuP (_loc, i)) :
                                                 'optional_type_parameter) ))
                                         ));
@@ -8309,7 +8309,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyQuo (_loc, i)) :
                                                'optional_type_parameter) ))
                                         ));
@@ -8325,7 +8325,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -8347,7 +8347,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "typ") | "anti") as
@@ -8376,7 +8376,7 @@ module Make =
                                             fun (t1 :
                                               'ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyMan (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("private")) ), (
@@ -8393,7 +8393,7 @@ module Make =
                                             'ctyp) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyPrv (_loc, t)) : 'ctyp)
                                           )) ))] ));
                                      (( (Some ("alias")) ), (
@@ -8409,7 +8409,7 @@ module Make =
                                             fun (t1 :
                                               'ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAli (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("forall")) ), (
@@ -8430,7 +8430,7 @@ module Make =
                                               'typevars) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyPol (_loc, t1, t2)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("arrow")) ), (
@@ -8446,7 +8446,7 @@ module Make =
                                             fun (t1 :
                                               'ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyArr (_loc, t1, t2)) :
                                                 'ctyp) )) ))] ));
                                      (( (Some ("label")) ), (
@@ -8464,7 +8464,7 @@ module Make =
                                            fun (i :
                                              'a_OPTLABEL) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyOlb (_loc, i, t)) :
                                                'ctyp) )) ));
                                        ((
@@ -8483,7 +8483,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyOlb (_loc, i, t)) :
                                                  'ctyp) )) ));
                                        ((
@@ -8499,7 +8499,7 @@ module Make =
                                            fun (i :
                                              'a_LABEL) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyLab (_loc, i, t)) :
                                                'ctyp) )) ));
                                        ((
@@ -8518,7 +8518,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyLab (_loc, i, t)) :
                                                  'ctyp) )) ))] ));
                                      (( (Some ("apply")) ), (
@@ -8530,7 +8530,7 @@ module Make =
                                            fun (t1 :
                                              'ctyp) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (let t =
                                                (Ast.TyApp (_loc, t1, t2)) in
                                               (try
@@ -8552,7 +8552,7 @@ module Make =
                                             fun (t1 :
                                               'ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((try
                                                  (Ast.TyId
                                                    (_loc, (
@@ -8582,7 +8582,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyPkg (_loc, p)) :
                                                  'ctyp) )) ));
                                        ((
@@ -8599,7 +8599,7 @@ module Make =
                                              'opt_meth_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (t : 'ctyp) )) ));
                                        ((
                                         [( (Gram.Skeyword ("#")) ); (
@@ -8613,7 +8613,7 @@ module Make =
                                             'class_longident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyCls (_loc, i)) : 'ctyp)
                                           )) ));
                                        ((
@@ -8630,7 +8630,7 @@ module Make =
                                              'label_declaration_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyRec (_loc, t)) : 'ctyp)
                                           )) ));
                                        ((
@@ -8654,7 +8654,7 @@ module Make =
                                                'row_field) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.TyVrnInfSup
                                                    (_loc, rfl, ntl)) : 'ctyp)
                                           )) ));
@@ -8671,7 +8671,7 @@ module Make =
                                              'row_field) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyVrnInf (_loc, rfl)) :
                                                 'ctyp) )) ));
                                        ((
@@ -8697,7 +8697,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.TyVrnInfSup
                                                     (_loc, rfl, ntl)) :
                                                    'ctyp) )) ));
@@ -8716,7 +8716,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyVrnInf (_loc, rfl)) :
                                                  'ctyp) )) ));
                                        ((
@@ -8734,7 +8734,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyVrnSup (_loc, rfl)) :
                                                  'ctyp) )) ));
                                        ((
@@ -8746,7 +8746,7 @@ module Make =
                                            fun _ ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyVrnSup
                                                  (_loc, ( (Ast.TyNil (_loc))
                                                   ))) : 'ctyp) )) ));
@@ -8765,7 +8765,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyVrnEq (_loc, rfl)) :
                                                  'ctyp) )) ));
                                        ((
@@ -8782,7 +8782,7 @@ module Make =
                                              'constructor_declarations) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TySum (_loc, t)) : 'ctyp)
                                           )) ));
                                        ((
@@ -8792,7 +8792,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TySum
                                                 (_loc, ( (Ast.TyNil (_loc))
                                                  ))) : 'ctyp) )) ));
@@ -8806,7 +8806,7 @@ module Make =
                                              'ctyp) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (t : 'ctyp) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) );
@@ -8826,7 +8826,7 @@ module Make =
                                                'ctyp) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.TyTup
                                                    (_loc, (
                                                     (Ast.TySta (_loc, t, tl))
@@ -8842,7 +8842,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyId
                                                (_loc, ( (Ast.IdUid (_loc, i))
                                                 ))) : 'ctyp) )) ));
@@ -8857,7 +8857,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyId
                                                (_loc, ( (Ast.IdLid (_loc, i))
                                                 ))) : 'ctyp) )) ));
@@ -8873,7 +8873,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -8892,7 +8892,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("id" as n), s) ->
                                                 ((Ast.TyId
@@ -8914,7 +8914,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("tup" as n), s) ->
                                                 ((Ast.TyTup
@@ -8939,7 +8939,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "typ") | "anti") as
@@ -8953,7 +8953,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyAny (_loc)) : 'ctyp) ))
                                         ));
                                        ((
@@ -8968,7 +8968,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyQuo (_loc, i)) : 'ctyp)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -8989,7 +8989,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'star_ctyp) )) ));
                                        ((
                                         [Gram.Sself ; ( (Gram.Skeyword ("*"))
@@ -9001,7 +9001,7 @@ module Make =
                                             fun (t1 :
                                               'star_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TySta (_loc, t1, t2)) :
                                                 'star_ctyp) )) ));
                                        ((
@@ -9017,7 +9017,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -9039,7 +9039,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -9069,7 +9069,7 @@ module Make =
                                           fun (s :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyId
                                                (_loc, ( (Ast.IdUid (_loc, s))
                                                 ))) :
@@ -9093,7 +9093,7 @@ module Make =
                                             fun (s :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (let (tl, rt) =
                                                 (generalized_type_of_type t) in
                                                (Ast.TyCol
@@ -9127,7 +9127,7 @@ module Make =
                                             fun (s :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOf
                                                  (_loc, (
                                                   (Ast.TyId
@@ -9146,7 +9146,7 @@ module Make =
                                             fun (t1 :
                                               'constructor_declarations) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOr (_loc, t1, t2)) :
                                                 'constructor_declarations) ))
                                         ));
@@ -9162,7 +9162,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -9182,7 +9182,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -9205,7 +9205,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -9236,7 +9236,7 @@ module Make =
                                           fun (s :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyId
                                                (_loc, ( (Ast.IdUid (_loc, s))
                                                 ))) :
@@ -9260,7 +9260,7 @@ module Make =
                                             fun (s :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOf
                                                  (_loc, (
                                                   (Ast.TyId
@@ -9281,7 +9281,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -9302,7 +9302,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -9332,7 +9332,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'constructor_arg_list) )) ));
                                        ((
                                         [Gram.Sself ; (
@@ -9345,7 +9345,7 @@ module Make =
                                             fun (t1 :
                                               'constructor_arg_list) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAnd (_loc, t1, t2)) :
                                                 'constructor_arg_list) )) ));
                                        ((
@@ -9361,7 +9361,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -9391,7 +9391,7 @@ module Make =
                                           fun (t1 :
                                             'label_declaration) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t1 : 'label_declaration_list) ))
                                         ));
                                        ((
@@ -9407,7 +9407,7 @@ module Make =
                                            fun (t1 :
                                              'label_declaration) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (t1 : 'label_declaration_list)
                                           )) ));
                                        ((
@@ -9425,7 +9425,7 @@ module Make =
                                             fun (t1 :
                                               'label_declaration) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TySem (_loc, t1, t2)) :
                                                 'label_declaration_list) ))
                                         ))] ))] ))) () ) ))
@@ -9459,7 +9459,7 @@ module Make =
                                              fun (s :
                                                'a_LIDENT) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyCol
                                                   (_loc, (
                                                    (Ast.TyId
@@ -9487,7 +9487,7 @@ module Make =
                                             fun (s :
                                               'a_LIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCol
                                                  (_loc, (
                                                   (Ast.TyId
@@ -9507,7 +9507,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -9527,7 +9527,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -9549,7 +9549,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -9578,7 +9578,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (i : 'a_ident) )) ));
                                        ((
                                         [(
@@ -9591,7 +9591,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (i : 'a_ident) )) ))] ))] ))) ()
                                   ) ))
                               );
@@ -9617,7 +9617,7 @@ module Make =
                                             fun (i :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc
                                                  (_loc, (
                                                   (Ast.IdUid (_loc, i)) ), j)) :
@@ -9642,7 +9642,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "id") | "anti")
@@ -9666,7 +9666,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdLid (_loc, i)) : 'ident)
                                           )) ));
                                        ((
@@ -9680,7 +9680,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdUid (_loc, i)) : 'ident)
                                           )) ));
                                        ((
@@ -9699,7 +9699,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -9730,7 +9730,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdUid (_loc, i)) :
                                               'module_longident) )) ));
                                        ((
@@ -9748,7 +9748,7 @@ module Make =
                                             fun (m :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc
                                                  (_loc, (
                                                   (Ast.IdUid (_loc, m)) ), l)) :
@@ -9769,7 +9769,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -9797,7 +9797,7 @@ module Make =
                                            fun (i :
                                              'module_longident_with_app) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.IdApp (_loc, i, j)) :
                                                'module_longident_with_app) ))
                                         ))] ));
@@ -9812,7 +9812,7 @@ module Make =
                                             fun (i :
                                               'module_longident_with_app) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc (_loc, i, j)) :
                                                 'module_longident_with_app)
                                           )) ))] ));
@@ -9827,7 +9827,7 @@ module Make =
                                              'module_longident_with_app) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (i :
                                                 'module_longident_with_app)
                                           )) ));
@@ -9842,7 +9842,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdUid (_loc, i)) :
                                               'module_longident_with_app) ))
                                         ));
@@ -9862,7 +9862,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -9898,7 +9898,7 @@ module Make =
                                             fun (i :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdUid (_loc, i)) :
                                                 'module_longident_dot_lparen)
                                           )) ));
@@ -9917,7 +9917,7 @@ module Make =
                                             fun (m :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc
                                                  (_loc, (
                                                   (Ast.IdUid (_loc, m)) ), l)) :
@@ -9942,7 +9942,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "id") | "anti")
@@ -9970,7 +9970,7 @@ module Make =
                                            fun (i :
                                              'type_longident) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.IdApp (_loc, i, j)) :
                                                'type_longident) )) ))] ));
                                      (( (Some (".")) ), None , (
@@ -9984,7 +9984,7 @@ module Make =
                                             fun (i :
                                               'type_longident) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc (_loc, i, j)) :
                                                 'type_longident) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -9998,7 +9998,7 @@ module Make =
                                              'type_longident) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (i : 'type_longident) )) ));
                                        ((
                                         [(
@@ -10011,7 +10011,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdUid (_loc, i)) :
                                               'type_longident) )) ));
                                        ((
@@ -10025,7 +10025,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdLid (_loc, i)) :
                                               'type_longident) )) ));
                                        ((
@@ -10044,7 +10044,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -10075,7 +10075,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdLid (_loc, i)) :
                                               'label_longident) )) ));
                                        ((
@@ -10093,7 +10093,7 @@ module Make =
                                             fun (m :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc
                                                  (_loc, (
                                                   (Ast.IdUid (_loc, m)) ), l)) :
@@ -10114,7 +10114,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -10145,7 +10145,7 @@ module Make =
                                           fun (x :
                                             'type_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_type_longident) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -10167,7 +10167,7 @@ module Make =
                                           fun (x :
                                             'ident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'val_longident) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -10190,7 +10190,7 @@ module Make =
                                           fun (x :
                                             'label_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_longident) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -10221,7 +10221,7 @@ module Make =
                                            fun (ci :
                                              'class_info_for_class_expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeEq (_loc, ci, ce)) :
                                                'class_declaration) )) ));
                                        ((
@@ -10236,7 +10236,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -10259,7 +10259,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "cdcl") | "anti")
@@ -10281,7 +10281,7 @@ module Make =
                                             fun (c1 :
                                               'class_declaration) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CeAnd (_loc, c1, c2)) :
                                                 'class_declaration) )) ))] ))]
                                     ))) () ) ))
@@ -10307,7 +10307,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeFun (_loc, p, cfb)) :
                                                'class_fun_binding) )) ));
                                        ((
@@ -10331,7 +10331,7 @@ module Make =
                                               'class_type_plus) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CeTyc (_loc, ce, ct)) :
                                                  'class_fun_binding) )) ));
                                        ((
@@ -10346,7 +10346,7 @@ module Make =
                                             'class_expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (ce : 'class_fun_binding) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -10377,7 +10377,7 @@ module Make =
                                            fun (mv :
                                              'opt_virtual) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CtCon
                                                 (_loc, mv, (
                                                  (Ast.IdLid (_loc, i)) ), ot)) :
@@ -10411,7 +10411,7 @@ module Make =
                                            fun (mv :
                                              'opt_virtual) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeCon
                                                 (_loc, mv, (
                                                  (Ast.IdLid (_loc, i)) ), ot)) :
@@ -10437,7 +10437,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((i, ( (Ast.TyNil (_loc)) )) :
                                               'class_name_and_param) )) ));
                                        ((
@@ -10461,7 +10461,7 @@ module Make =
                                              fun (i :
                                                'a_LIDENT) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((i, x) :
                                                  'class_name_and_param) )) ))]
                                       ))] ))) () ) ))
@@ -10485,7 +10485,7 @@ module Make =
                                           fun (t :
                                             'type_parameter) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'comma_type_parameter) )) ));
                                        ((
                                         [(
@@ -10500,7 +10500,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -10519,7 +10519,7 @@ module Make =
                                             fun (t1 :
                                               'comma_type_parameter) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCom (_loc, t1, t2)) :
                                                 'comma_type_parameter) )) ))]
                                       ))] ))) () ) ))
@@ -10535,7 +10535,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyNil (_loc)) :
                                              'opt_comma_ctyp) )) ));
                                        ((
@@ -10551,7 +10551,7 @@ module Make =
                                              'comma_ctyp) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (x : 'opt_comma_ctyp) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -10572,7 +10572,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'comma_ctyp) )) ));
                                        ((
                                         [(
@@ -10587,7 +10587,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -10605,7 +10605,7 @@ module Make =
                                             fun (t1 :
                                               'comma_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCom (_loc, t1, t2)) :
                                                 'comma_ctyp) )) ))] ))] )))
                                   () ) ))
@@ -10630,7 +10630,7 @@ module Make =
                                             'class_expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (ce : 'class_fun_def) )) ));
                                        ((
                                         [(
@@ -10645,7 +10645,7 @@ module Make =
                                            fun (p :
                                              'labeled_ipatt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeFun (_loc, p, ce)) :
                                                'class_fun_def) )) ))] ))] )))
                                   () ) ))
@@ -10680,7 +10680,7 @@ module Make =
                                                'opt_rec) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.CeLet
                                                    (_loc, rf, bi, ce)) :
                                                   'class_expr) )) ));
@@ -10703,7 +10703,7 @@ module Make =
                                              'labeled_ipatt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CeFun (_loc, p, ce)) :
                                                 'class_expr) )) ))] ));
                                      (( (Some ("apply")) ), (
@@ -10721,7 +10721,7 @@ module Make =
                                            fun (ce :
                                              'class_expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeApp (_loc, ce, e)) :
                                                'class_expr) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -10735,7 +10735,7 @@ module Make =
                                              'class_expr) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (ce : 'class_expr) )) ));
                                        ((
                                         [( (Gram.Skeyword ("(")) );
@@ -10755,7 +10755,7 @@ module Make =
                                                'class_expr) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.CeTyc (_loc, ce, ct)) :
                                                   'class_expr) )) ));
                                        ((
@@ -10779,7 +10779,7 @@ module Make =
                                               'opt_class_self_patt) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CeStr (_loc, csp, cst)) :
                                                  'class_expr) )) ));
                                        ((
@@ -10793,7 +10793,7 @@ module Make =
                                           fun (ce :
                                             'class_longident_and_param) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (ce : 'class_expr) )) ));
                                        ((
                                         [(
@@ -10807,7 +10807,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -10829,7 +10829,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "cexp") | "anti") as
@@ -10861,7 +10861,7 @@ module Make =
                                           fun (ci :
                                             'class_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.CeCon
                                                (_loc, Ast.ViNil , ci, (
                                                 (Ast.TyNil (_loc)) ))) :
@@ -10888,7 +10888,7 @@ module Make =
                                              fun (ci :
                                                'class_longident) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CeCon
                                                   (_loc, Ast.ViNil , ci, t)) :
                                                  'class_longident_and_param)
@@ -10923,14 +10923,14 @@ module Make =
                                                   fun (cst :
                                                     'class_str_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (cst : 'e__10) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (l :
                                             'e__10 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.crSem_of_list l) :
                                               'class_structure) )) ));
                                        ((
@@ -10956,7 +10956,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "cst") | "anti")
@@ -10986,7 +10986,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "cst") | "anti")
@@ -11011,7 +11011,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaNil (_loc)) :
                                              'opt_class_self_patt) )) ));
                                        ((
@@ -11033,7 +11033,7 @@ module Make =
                                                'patt) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.PaTyc (_loc, p, t)) :
                                                   'opt_class_self_patt) )) ));
                                        ((
@@ -11048,7 +11048,7 @@ module Make =
                                              'patt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (p : 'opt_class_self_patt) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -11073,7 +11073,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CrIni (_loc, se)) :
                                                'class_str_item) )) ));
                                        ((
@@ -11099,7 +11099,7 @@ module Make =
                                               'ctyp) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CrCtr (_loc, t1, t2)) :
                                                  'class_str_item) )) ));
                                        ((
@@ -11136,7 +11136,7 @@ module Make =
                                                fun (o :
                                                  'method_opt_override) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (if (o <> Ast.OvNil ) then
                                                    (
                                                    (raise (
@@ -11186,7 +11186,7 @@ module Make =
                                               fun (o :
                                                 'method_opt_override) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.CrMth
                                                    (_loc, l, o, pf, e, topt)) :
                                                   'class_str_item) )) ));
@@ -11224,7 +11224,7 @@ module Make =
                                                fun (o :
                                                  'method_opt_override) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (if (o <> Ast.OvNil ) then
                                                    (
                                                    (raise (
@@ -11270,7 +11270,7 @@ module Make =
                                                fun (o :
                                                  'value_val_opt_override) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (if (o <> Ast.OvNil ) then
                                                    (
                                                    (raise (
@@ -11316,7 +11316,7 @@ module Make =
                                                fun (o :
                                                  'value_val_opt_override) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (if (o <> Ast.OvNil ) then
                                                    (
                                                    (raise (
@@ -11359,7 +11359,7 @@ module Make =
                                              fun (o :
                                                'value_val_opt_override) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CrVal
                                                   (_loc, lab, o, mf, e)) :
                                                  'class_str_item) )) ));
@@ -11389,7 +11389,7 @@ module Make =
                                               'opt_override) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CrInh (_loc, o, ce, pb)) :
                                                  'class_str_item) )) ));
                                        ((
@@ -11404,7 +11404,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -11427,7 +11427,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "cst") | "anti")
@@ -11454,7 +11454,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.OvNil) :
                                               'method_opt_override) )) ));
                                        ((
@@ -11474,7 +11474,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  (((("!" | "override")
@@ -11489,7 +11489,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.OvOverride) :
                                                'method_opt_override) )) ))]
                                       ))] ))) () ) ))
@@ -11512,7 +11512,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.OvNil) :
                                               'value_val_opt_override) )) ));
                                        ((
@@ -11537,7 +11537,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  (((("!" | "override")
@@ -11556,7 +11556,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.OvOverride) :
                                                'value_val_opt_override) )) ))]
                                       ))] ))) () ) ))
@@ -11572,7 +11572,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ("" : 'opt_as_lident) )) ));
                                        ((
                                         [( (Gram.Skeyword ("as")) ); (
@@ -11586,7 +11586,7 @@ module Make =
                                             'a_LIDENT) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (i : 'opt_as_lident) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -11600,7 +11600,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyNil (_loc)) : 'opt_polyt)
                                           )) ));
                                        ((
@@ -11615,7 +11615,7 @@ module Make =
                                             'poly_type) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (t : 'opt_polyt) )) ))] ))] )))
                                   () ) ))
                               );
@@ -11645,7 +11645,7 @@ module Make =
                                               'ctyp) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExCoe
                                                   (_loc, e, (
                                                    (Ast.TyNil (_loc)) ), t)) :
@@ -11676,7 +11676,7 @@ module Make =
                                                 'poly_type) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((match t with
                                                    | Ast.TyPol (_, _, _) ->
                                                       (raise (
@@ -11706,7 +11706,7 @@ module Make =
                                               'poly_type) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.ExTyc (_loc, e, t)) :
                                                  'cvalue_binding) )) ));
                                        ((
@@ -11738,7 +11738,7 @@ module Make =
                                                fun _ ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (let u =
                                                     (Ast.TyTypePol
                                                       (_loc, t1, t2)) in
@@ -11755,7 +11755,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (e : 'cvalue_binding) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -11777,7 +11777,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (i : 'label) )) ))] ))] ))) () )
                                 ))
                               );
@@ -11809,7 +11809,7 @@ module Make =
                                               'opt_class_self_type) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CtSig (_loc, cst, csg)) :
                                                  'class_type) )) ));
                                        ((
@@ -11823,7 +11823,7 @@ module Make =
                                           fun (ct :
                                             'class_type_longident_and_param) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (ct : 'class_type) )) ));
                                        ((
                                         [(
@@ -11837,7 +11837,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -11859,7 +11859,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "ctyp") | "anti") as
@@ -11891,7 +11891,7 @@ module Make =
                                           fun (i :
                                             'class_type_longident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.CtCon
                                                (_loc, Ast.ViNil , i, (
                                                 (Ast.TyNil (_loc)) ))) :
@@ -11918,7 +11918,7 @@ module Make =
                                              fun (i :
                                                'class_type_longident) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CtCon
                                                   (_loc, Ast.ViNil , i, t)) :
                                                  'class_type_longident_and_param)
@@ -11943,7 +11943,7 @@ module Make =
                                           fun (ct :
                                             'class_type) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (ct : 'class_type_plus) )) ));
                                        ((
                                         [( (Gram.Skeyword ("[")) ); (
@@ -11962,7 +11962,7 @@ module Make =
                                                'ctyp) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.CtFun (_loc, t, ct)) :
                                                   'class_type_plus) )) ))] ))]
                                     ))) () ) ))
@@ -11978,7 +11978,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyNil (_loc)) :
                                              'opt_class_self_type) )) ));
                                        ((
@@ -11993,7 +11993,7 @@ module Make =
                                              'ctyp) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (t : 'opt_class_self_type) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -12026,14 +12026,14 @@ module Make =
                                                   fun (csg :
                                                     'class_sig_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (csg : 'e__11) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (l :
                                             'e__11 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.cgSem_of_list l) :
                                               'class_signature) )) ));
                                        ((
@@ -12059,7 +12059,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "csg") | "anti")
@@ -12089,7 +12089,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "csg") | "anti")
@@ -12134,7 +12134,7 @@ module Make =
                                               'ctyp) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.CgCtr (_loc, t1, t2)) :
                                                  'class_sig_item) )) ));
                                        ((
@@ -12165,7 +12165,7 @@ module Make =
                                                 'opt_private) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.CgVir (_loc, l, pf, t)) :
                                                    'class_sig_item) )) ));
                                        ((
@@ -12194,7 +12194,7 @@ module Make =
                                                'opt_private) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.CgMth (_loc, l, pf, t)) :
                                                   'class_sig_item) )) ));
                                        ((
@@ -12225,7 +12225,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.CgVir (_loc, l, pf, t)) :
                                                    'class_sig_item) )) ));
                                        ((
@@ -12265,7 +12265,7 @@ module Make =
                                                 'opt_mutable) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.CgVal
                                                     (_loc, l, mf, mv, t)) :
                                                    'class_sig_item) )) ));
@@ -12281,7 +12281,7 @@ module Make =
                                             'class_type) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CgInh (_loc, cs)) :
                                                'class_sig_item) )) ));
                                        ((
@@ -12296,7 +12296,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -12319,7 +12319,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "csg") | "anti")
@@ -12347,13 +12347,13 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'type_constraint) )) ));
                                        (( [( (Gram.Skeyword ("type")) )] ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'type_constraint) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -12385,7 +12385,7 @@ module Make =
                                             fun (ci :
                                               'class_info_for_class_type) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtCol (_loc, ci, ct)) :
                                                 'class_description) )) ));
                                        ((
@@ -12400,7 +12400,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -12423,7 +12423,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "typ") | "anti")
@@ -12445,7 +12445,7 @@ module Make =
                                             fun (cd1 :
                                               'class_description) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtAnd (_loc, cd1, cd2)) :
                                                 'class_description) )) ))] ))]
                                     ))) () ) ))
@@ -12479,7 +12479,7 @@ module Make =
                                             fun (ci :
                                               'class_info_for_class_type) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtEq (_loc, ci, ct)) :
                                                 'class_type_declaration) ))
                                         ));
@@ -12495,7 +12495,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -12518,7 +12518,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "typ") | "anti")
@@ -12540,7 +12540,7 @@ module Make =
                                             fun (cd1 :
                                               'class_type_declaration) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtAnd (_loc, cd1, cd2)) :
                                                 'class_type_declaration) ))
                                         ))] ))] ))) () ) ))
@@ -12564,7 +12564,7 @@ module Make =
                                           fun (b1 :
                                             'field_expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (b1 : 'field_expr_list) )) ));
                                        ((
                                         [(
@@ -12578,7 +12578,7 @@ module Make =
                                            fun (b1 :
                                              'field_expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (b1 : 'field_expr_list) )) ));
                                        ((
                                         [(
@@ -12595,7 +12595,7 @@ module Make =
                                             fun (b1 :
                                               'field_expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.RbSem (_loc, b1, b2)) :
                                                 'field_expr_list) )) ))] ))]
                                     ))) () ) ))
@@ -12625,7 +12625,7 @@ module Make =
                                             fun (l :
                                               'label) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.RbEq
                                                  (_loc, (
                                                   (Ast.IdLid (_loc, l)) ), e)) :
@@ -12643,7 +12643,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.RbAnt
@@ -12666,7 +12666,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "bi") | "anti") as
@@ -12703,7 +12703,7 @@ module Make =
                                            fun (m :
                                              'meth_decl) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((m, v) : 'meth_list) )) ));
                                        ((
                                         [(
@@ -12724,7 +12724,7 @@ module Make =
                                             fun (m :
                                               'meth_decl) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((m, v) : 'meth_list) )) ));
                                        ((
                                         [(
@@ -12741,7 +12741,7 @@ module Make =
                                             fun (m :
                                               'meth_decl) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((( (Ast.TySem (_loc, m, ml))
                                                 ), v) : 'meth_list) )) ))] ))]
                                     ))) () ) ))
@@ -12772,7 +12772,7 @@ module Make =
                                             fun (lab :
                                               'a_LIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCol
                                                  (_loc, (
                                                   (Ast.TyId
@@ -12792,7 +12792,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -12812,7 +12812,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -12834,7 +12834,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -12864,7 +12864,7 @@ module Make =
                                           fun (v :
                                             'opt_dot_dot) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyObj
                                                (_loc, ( (Ast.TyNil (_loc)) ),
                                                 v)) : 'opt_meth_list) )) ));
@@ -12879,7 +12879,7 @@ module Make =
                                           fun ((ml, v) :
                                             'meth_list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyObj (_loc, ml, v)) :
                                               'opt_meth_list) )) ))] ))] )))
                                   () ) ))
@@ -12901,7 +12901,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'poly_type) )) ))] ))] )))
                                   () ) ))
                               );
@@ -12924,7 +12924,7 @@ module Make =
                                           fun (p :
                                             'module_type) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'package_type) )) ))] ))] )))
                                   () ) ))
                               );
@@ -12948,7 +12948,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyQuo (_loc, i)) :
                                                'typevars) )) ));
                                        ((
@@ -12963,7 +12963,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -12984,7 +12984,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -13000,7 +13000,7 @@ module Make =
                                            fun (t1 :
                                              'typevars) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyApp (_loc, t1, t2)) :
                                                'typevars) )) ))] ))] ))) () )
                                 ))
@@ -13025,7 +13025,7 @@ module Make =
                                           fun (i :
                                             'a_ident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.TyId
                                                (_loc, ( (Ast.IdLid (_loc, i))
                                                 ))) : 'unquoted_typevars) ))
@@ -13042,7 +13042,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | QUOTATION (x) ->
                                                 ((Quotation.expand _loc x
@@ -13063,7 +13063,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -13079,7 +13079,7 @@ module Make =
                                            fun (t1 :
                                              'unquoted_typevars) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyApp (_loc, t1, t2)) :
                                                'unquoted_typevars) )) ))] ))]
                                     ))) () ) ))
@@ -13101,7 +13101,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'row_field) )) ));
                                        ((
                                         [( (Gram.Skeyword ("`")) ); (
@@ -13123,7 +13123,7 @@ module Make =
                                               'a_ident) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyOf
                                                   (_loc, (
                                                    (Ast.TyVrn (_loc, i)) ),
@@ -13150,7 +13150,7 @@ module Make =
                                                'a_ident) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.TyOfAmp
                                                    (_loc, (
                                                     (Ast.TyVrn (_loc, i)) ),
@@ -13167,7 +13167,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyVrn (_loc, i)) :
                                                'row_field) )) ));
                                        ((
@@ -13180,7 +13180,7 @@ module Make =
                                             fun (t1 :
                                               'row_field) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOr (_loc, t1, t2)) :
                                                 'row_field) )) ));
                                        ((
@@ -13196,7 +13196,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -13218,7 +13218,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -13246,7 +13246,7 @@ module Make =
                                           fun (t :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (t : 'amp_ctyp) )) ));
                                        ((
                                         [(
@@ -13261,7 +13261,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("list" as n), s) ->
                                                 ((Ast.TyAnt
@@ -13279,7 +13279,7 @@ module Make =
                                             fun (t1 :
                                               'amp_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAmp (_loc, t1, t2)) :
                                                 'amp_ctyp) )) ))] ))] ))) ()
                                   ) ))
@@ -13303,7 +13303,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyVrn (_loc, i)) :
                                                'name_tags) )) ));
                                        (( [Gram.Sself ; Gram.Sself ] ), (
@@ -13313,7 +13313,7 @@ module Make =
                                            fun (t1 :
                                              'name_tags) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyApp (_loc, t1, t2)) :
                                                'name_tags) )) ));
                                        ((
@@ -13330,7 +13330,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "typ") as n), s) ->
@@ -13351,7 +13351,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (fun i ->
                                              fun p ->
                                               (Ast.PaOlb (_loc, i, p)) :
@@ -13367,7 +13367,7 @@ module Make =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (fun i ->
                                                fun p ->
                                                 (Ast.PaOlbi (_loc, i, p, e)) :
@@ -13391,7 +13391,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'patt_tcon) )) ));
                                        ((
                                         [(
@@ -13410,7 +13410,7 @@ module Make =
                                             fun (p :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaTyc (_loc, p, t)) :
                                                 'patt_tcon) )) ))] ))] ))) ()
                                   ) ))
@@ -13444,7 +13444,7 @@ module Make =
                                               fun _ ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.PaOlbi
                                                     (_loc, "", p, e)) :
                                                    'ipatt) )) ));
@@ -13463,7 +13463,7 @@ module Make =
                                             fun _ ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.PaOlb (_loc, "", p)) :
                                                  'ipatt) )) ));
                                        ((
@@ -13481,7 +13481,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  ((("" | "lid") as n), i) ->
@@ -13503,7 +13503,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LIDENT (i) ->
                                                  ((Ast.PaOlb
@@ -13544,7 +13544,7 @@ module Make =
                                                  Gram.Token.t) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (match __camlp4_0 with
                                                    | ANTIQUOT
                                                       ((("" | "lid") as n), i) ->
@@ -13579,7 +13579,7 @@ module Make =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | OPTLABEL (i) ->
                                                     ((f i p) : 'ipatt)
@@ -13597,7 +13597,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LIDENT (i) ->
                                                  ((Ast.PaLab
@@ -13620,7 +13620,7 @@ module Make =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | ANTIQUOT
                                                  ((("" | "lid") as n), i) ->
@@ -13648,7 +13648,7 @@ module Make =
                                               Gram.Token.t) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (match __camlp4_0 with
                                                 | ANTIQUOT
                                                    ((("" | "lid") as n), i) ->
@@ -13670,7 +13670,7 @@ module Make =
                                            fun (__camlp4_0 :
                                              Gram.Token.t) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | LABEL (i) ->
                                                  ((Ast.PaLab (_loc, i, p)) :
@@ -13695,7 +13695,7 @@ module Make =
                                           fun (p :
                                             'ipatt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'ipatt_tcon) )) ));
                                        ((
                                         [(
@@ -13714,7 +13714,7 @@ module Make =
                                             fun (p :
                                               'ipatt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaTyc (_loc, p, t)) :
                                                 'ipatt_tcon) )) ))] ))] )))
                                   () ) ))
@@ -13741,7 +13741,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("to" | "anti") as n), s) ->
@@ -13753,14 +13753,14 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.DiDownto) :
                                               'direction_flag) )) ));
                                        (( [( (Gram.Skeyword ("to")) )] ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.DiTo) : 'direction_flag) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -13774,7 +13774,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PrNil) : 'opt_private) )) ));
                                        ((
                                         [(
@@ -13791,7 +13791,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("private" | "anti") as n),
@@ -13804,7 +13804,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PrPrivate) : 'opt_private)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -13818,7 +13818,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.MuNil) : 'opt_mutable) )) ));
                                        ((
                                         [(
@@ -13835,7 +13835,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("mutable" | "anti") as n),
@@ -13848,7 +13848,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.MuMutable) : 'opt_mutable)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -13862,7 +13862,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ViNil) : 'opt_virtual) )) ));
                                        ((
                                         [(
@@ -13879,7 +13879,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("virtual" | "anti") as n),
@@ -13892,7 +13892,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ViVirtual) : 'opt_virtual)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -13906,7 +13906,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.RvNil) : 'opt_dot_dot) )) ));
                                        ((
                                         [(
@@ -13922,7 +13922,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((".." | "anti") as n), s) ->
@@ -13933,7 +13933,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.RvRowVar) : 'opt_dot_dot)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -13947,7 +13947,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ReNil) : 'opt_rec) )) ));
                                        ((
                                         [(
@@ -13963,7 +13963,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("rec" | "anti") as n), s) ->
@@ -13974,7 +13974,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ReRecursive) : 'opt_rec) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -13989,7 +13989,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.OvNil) : 'opt_override) ))
                                         ));
                                        ((
@@ -14008,7 +14008,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("!" | "override")
@@ -14020,7 +14020,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.OvOverride) :
                                               'opt_override) )) ))] ))] )))
                                   () ) ))
@@ -14035,7 +14035,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ExNil (_loc)) : 'opt_expr)
                                           )) ));
                                        ((
@@ -14048,7 +14048,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (e : 'opt_expr) )) ))] ))] ))) ()
                                   ) ))
                               );
@@ -14070,7 +14070,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | EOI ->
                                                 (([] , None ) : 'interf)
@@ -14093,7 +14093,7 @@ module Make =
                                             fun (si :
                                               'sig_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((( ( si ) :: sil  ), stopped) :
                                                 'interf) )) ));
                                        ((
@@ -14120,7 +14120,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (((
                                                  [( (Ast.SgDir (_loc, n, dp))
                                                   )] ), ( (stopped_at _loc)
@@ -14155,14 +14155,14 @@ module Make =
                                                   fun (sg :
                                                     'sig_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (sg : 'e__12) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (l :
                                             'e__12 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.sgSem_of_list l) :
                                               'sig_items) )) ));
                                        ((
@@ -14188,7 +14188,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "sigi") | "anti")
@@ -14218,7 +14218,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "sigi") | "anti")
@@ -14248,7 +14248,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | EOI ->
                                                 (([] , None ) : 'implem)
@@ -14271,7 +14271,7 @@ module Make =
                                             fun (si :
                                               'str_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((( ( si ) :: sil  ), stopped) :
                                                 'implem) )) ));
                                        ((
@@ -14298,7 +14298,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (((
                                                  [( (Ast.StDir (_loc, n, dp))
                                                   )] ), ( (stopped_at _loc)
@@ -14333,14 +14333,14 @@ module Make =
                                                   fun (st :
                                                     'str_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (st : 'e__13) )) ))] )))
                                          )] ), (
                                         (Gram.Action.mk (
                                           fun (l :
                                             'e__13 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.stSem_of_list l) :
                                               'str_items) )) ));
                                        ((
@@ -14366,7 +14366,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "stri") | "anti")
@@ -14396,7 +14396,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "stri") | "anti")
@@ -14426,7 +14426,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | EOI -> ((None) : 'top_phrase)
                                              | _ -> assert false) )) ));
@@ -14440,7 +14440,7 @@ module Make =
                                           fun (ph :
                                             'phrase) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Some (ph)) : 'top_phrase) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -14462,7 +14462,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | EOI ->
                                                 (([] , None ) : 'use_file)
@@ -14485,7 +14485,7 @@ module Make =
                                             fun (si :
                                               'str_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((( ( si ) :: sil  ), stopped) :
                                                 'use_file) )) ));
                                        ((
@@ -14512,7 +14512,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                (((
                                                  [( (Ast.StDir (_loc, n, dp))
                                                   )] ), ( (stopped_at _loc)
@@ -14542,7 +14542,7 @@ module Make =
                                            fun (st :
                                              'str_item) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (st : 'phrase) )) ));
                                        ((
                                         [( (Gram.Skeyword ("#")) ); (
@@ -14568,7 +14568,7 @@ module Make =
                                               'a_LIDENT) ->
                                              fun _ ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.StDir (_loc, n, dp)) :
                                                  'phrase) )) ))] ))] ))) () )
                                 ))
@@ -14592,7 +14592,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | INT (_, s) -> (s : 'a_INT)
                                              | _ -> assert false) )) ));
@@ -14611,7 +14611,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "int") | "`int") as
@@ -14639,7 +14639,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | INT32 (_, s) -> (s : 'a_INT32)
                                              | _ -> assert false) )) ));
@@ -14659,7 +14659,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "int32") | "`int32") as
@@ -14687,7 +14687,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | INT64 (_, s) -> (s : 'a_INT64)
                                              | _ -> assert false) )) ));
@@ -14707,7 +14707,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "int64") | "`int64") as
@@ -14735,7 +14735,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | NATIVEINT (_, s) ->
                                                 (s : 'a_NATIVEINT)
@@ -14756,7 +14756,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "nativeint")
@@ -14785,7 +14785,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | FLOAT (_, s) -> (s : 'a_FLOAT)
                                              | _ -> assert false) )) ));
@@ -14804,7 +14804,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "flo") | "`flo") as
@@ -14832,7 +14832,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | CHAR (_, s) -> (s : 'a_CHAR)
                                              | _ -> assert false) )) ));
@@ -14851,7 +14851,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "chr") | "`chr") as
@@ -14879,7 +14879,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | UIDENT (s) -> (s : 'a_UIDENT)
                                              | _ -> assert false) )) ));
@@ -14897,7 +14897,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "uid") as n), s) ->
@@ -14924,7 +14924,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | LIDENT (s) -> (s : 'a_LIDENT)
                                              | _ -> assert false) )) ));
@@ -14942,7 +14942,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("" | "lid") as n), s) ->
@@ -14969,7 +14969,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | LABEL (s) -> (s : 'a_LABEL)
                                              | _ -> assert false) )) ));
@@ -14988,7 +14988,7 @@ module Make =
                                              Gram.Token.t) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT (("" as n), s) ->
                                                   ((mk_anti n s) : 'a_LABEL)
@@ -15014,7 +15014,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | OPTLABEL (s) ->
                                                 (s : 'a_OPTLABEL)
@@ -15034,7 +15034,7 @@ module Make =
                                              Gram.Token.t) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT (("" as n), s) ->
                                                   ((mk_anti n s) :
@@ -15061,7 +15061,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | STRING (_, s) ->
                                                 (s : 'a_STRING)
@@ -15081,7 +15081,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (((("" | "str") | "`str") as
@@ -15109,7 +15109,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | STRING (_, x) ->
                                                 ((Ast.LCons (x, Ast.LNil )) :
@@ -15130,7 +15130,7 @@ module Make =
                                            fun (__camlp4_0 :
                                              Gram.Token.t) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | STRING (_, x) ->
                                                  ((Ast.LCons (x, xs)) :
@@ -15150,7 +15150,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 (("" | "str_list"), s) ->
@@ -15172,7 +15172,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'value_let) )) ))] ))] )))
                                   () ) ))
                               );
@@ -15188,7 +15188,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'value_val) )) ))] ))] )))
                                   () ) ))
                               );
@@ -15202,7 +15202,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'semi) )) ))] ))] ))) () )
                                 ))
                               );
@@ -15216,7 +15216,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ExNil (_loc)) : 'expr_quot)
                                           )) ));
                                        ((
@@ -15229,7 +15229,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (e : 'expr_quot) )) ));
                                        ((
                                         [(
@@ -15249,7 +15249,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExSem (_loc, e1, e2)) :
                                                 'expr_quot) )) ));
                                        ((
@@ -15270,7 +15270,7 @@ module Make =
                                             fun (e1 :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExCom (_loc, e1, e2)) :
                                                 'expr_quot) )) ))] ))] ))) ()
                                   ) ))
@@ -15285,7 +15285,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaNil (_loc)) : 'patt_quot)
                                           )) ));
                                        ((
@@ -15298,7 +15298,7 @@ module Make =
                                           fun (x :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'patt_quot) )) ));
                                        ((
                                         [(
@@ -15317,7 +15317,7 @@ module Make =
                                             fun (x :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (let i =
                                                 (match x with
                                                  | Ast.PaAnt (loc, s) ->
@@ -15343,7 +15343,7 @@ module Make =
                                             fun (x :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaSem (_loc, x, y)) :
                                                 'patt_quot) )) ));
                                        ((
@@ -15364,7 +15364,7 @@ module Make =
                                             fun (x :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.PaCom (_loc, x, y)) :
                                                 'patt_quot) )) ))] ))] ))) ()
                                   ) ))
@@ -15379,7 +15379,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyNil (_loc)) : 'ctyp_quot)
                                           )) ));
                                        ((
@@ -15393,7 +15393,7 @@ module Make =
                                           fun (x :
                                             'more_ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'ctyp_quot) )) ));
                                        ((
                                         [(
@@ -15414,7 +15414,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAnd (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15436,7 +15436,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyAmp (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15458,7 +15458,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TySta (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15488,7 +15488,7 @@ module Make =
                                               fun (x :
                                                 'more_ctyp) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.TySem
                                                    (_loc, (
                                                     (Ast.TyCol (_loc, x, y))
@@ -15513,7 +15513,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCol (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15545,7 +15545,7 @@ module Make =
                                                fun (x :
                                                  'more_ctyp) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.TyOr
                                                     (_loc, (
                                                      (Ast.TyOfAmp
@@ -15572,7 +15572,7 @@ module Make =
                                              fun (x :
                                                'more_ctyp) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.TyOfAmp (_loc, x, y)) :
                                                  'ctyp_quot) )) ));
                                        ((
@@ -15603,7 +15603,7 @@ module Make =
                                               fun (x :
                                                 'more_ctyp) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.TyOr
                                                    (_loc, (
                                                     (Ast.TyOf (_loc, x, y))
@@ -15628,7 +15628,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOf (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15650,7 +15650,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyOr (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15672,7 +15672,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TySem (_loc, x, y)) :
                                                 'ctyp_quot) )) ));
                                        ((
@@ -15694,7 +15694,7 @@ module Make =
                                             fun (x :
                                               'more_ctyp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.TyCom (_loc, x, y)) :
                                                 'ctyp_quot) )) ))] ))] ))) ()
                                   ) ))
@@ -15717,7 +15717,7 @@ module Make =
                                           fun (x :
                                             'type_parameter) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'more_ctyp) )) ));
                                        ((
                                         [(
@@ -15729,7 +15729,7 @@ module Make =
                                           fun (x :
                                             'ctyp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'more_ctyp) )) ));
                                        ((
                                         [( (Gram.Skeyword ("`")) ); (
@@ -15743,7 +15743,7 @@ module Make =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyVrn (_loc, x)) :
                                                'more_ctyp) )) ));
                                        ((
@@ -15754,7 +15754,7 @@ module Make =
                                             'more_ctyp) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.TyMut (_loc, x)) :
                                                'more_ctyp) )) ))] ))] ))) ()
                                   ) ))
@@ -15770,7 +15770,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.StNil (_loc)) :
                                              'str_item_quot) )) ));
                                        ((
@@ -15784,7 +15784,7 @@ module Make =
                                           fun (st :
                                             'str_item) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (st : 'str_item_quot) )) ));
                                        ((
                                         [(
@@ -15804,7 +15804,7 @@ module Make =
                                             fun (st1 :
                                               'str_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((match st2 with
                                                 | Ast.StNil (_) -> st1
                                                 | _ ->
@@ -15830,7 +15830,7 @@ module Make =
                                              'a_LIDENT) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.StDir (_loc, n, dp)) :
                                                 'str_item_quot) )) ))] ))] )))
                                   () ) ))
@@ -15846,7 +15846,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.SgNil (_loc)) :
                                              'sig_item_quot) )) ));
                                        ((
@@ -15860,7 +15860,7 @@ module Make =
                                           fun (sg :
                                             'sig_item) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (sg : 'sig_item_quot) )) ));
                                        ((
                                         [(
@@ -15880,7 +15880,7 @@ module Make =
                                             fun (sg1 :
                                               'sig_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((match sg2 with
                                                 | Ast.SgNil (_) -> sg1
                                                 | _ ->
@@ -15906,7 +15906,7 @@ module Make =
                                              'a_LIDENT) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.SgDir (_loc, n, dp)) :
                                                 'sig_item_quot) )) ))] ))] )))
                                   () ) ))
@@ -15922,7 +15922,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.MtNil (_loc)) :
                                              'module_type_quot) )) ));
                                        ((
@@ -15936,7 +15936,7 @@ module Make =
                                           fun (x :
                                             'module_type) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'module_type_quot) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -15951,7 +15951,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.MeNil (_loc)) :
                                              'module_expr_quot) )) ));
                                        ((
@@ -15965,7 +15965,7 @@ module Make =
                                           fun (x :
                                             'module_expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'module_expr_quot) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -15980,7 +15980,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.McNil (_loc)) :
                                              'match_case_quot) )) ));
                                        ((
@@ -15997,7 +15997,7 @@ module Make =
                                           fun (x :
                                             'match_case0 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.mcOr_of_list x) :
                                               'match_case_quot) )) ))] ))] )))
                                   () ) ))
@@ -16013,7 +16013,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.BiNil (_loc)) :
                                              'binding_quot) )) ));
                                        ((
@@ -16027,7 +16027,7 @@ module Make =
                                           fun (x :
                                             'binding) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'binding_quot) )) ))] ))] )))
                                   () ) ))
                               );
@@ -16042,7 +16042,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.RbNil (_loc)) :
                                              'rec_binding_quot) )) ));
                                        ((
@@ -16056,7 +16056,7 @@ module Make =
                                           fun (x :
                                             'label_expr_list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'rec_binding_quot) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -16071,7 +16071,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.MbNil (_loc)) :
                                              'module_binding_quot) )) ));
                                        ((
@@ -16101,7 +16101,7 @@ module Make =
                                               fun (m :
                                                 'a_UIDENT) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.MbColEq
                                                    (_loc, m, mt, me)) :
                                                   'module_binding_quot) )) ));
@@ -16124,7 +16124,7 @@ module Make =
                                             fun (m :
                                               'a_UIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MbCol (_loc, m, mt)) :
                                                 'module_binding_quot) )) ));
                                        ((
@@ -16156,7 +16156,7 @@ module Make =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | ANTIQUOT (("" as n), m) ->
                                                     ((Ast.MbColEq
@@ -16185,7 +16185,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT (("" as n), m) ->
                                                   ((Ast.MbCol
@@ -16205,7 +16205,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT (("" as n), s) ->
                                                 ((Ast.MbAnt
@@ -16231,7 +16231,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((("module_binding" | "anti") as
@@ -16254,7 +16254,7 @@ module Make =
                                             fun (b1 :
                                               'module_binding_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.MbAnd (_loc, b1, b2)) :
                                                 'module_binding_quot) )) ))]
                                       ))] ))) () ) ))
@@ -16273,7 +16273,7 @@ module Make =
                                            fun (i :
                                              'ident_quot) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.IdApp (_loc, i, j)) :
                                                'ident_quot) )) ))] ));
                                      (( (Some (".")) ), None , (
@@ -16287,7 +16287,7 @@ module Make =
                                             fun (i :
                                               'ident_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.IdAcc (_loc, i, j)) :
                                                 'ident_quot) )) ))] ));
                                      (( (Some ("simple")) ), None , (
@@ -16301,7 +16301,7 @@ module Make =
                                              'ident_quot) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (i : 'ident_quot) )) ));
                                        ((
                                         [(
@@ -16323,7 +16323,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   ((((("" | "id") | "anti")
@@ -16347,7 +16347,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdLid (_loc, i)) :
                                               'ident_quot) )) ));
                                        ((
@@ -16361,7 +16361,7 @@ module Make =
                                           fun (i :
                                             'a_UIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.IdUid (_loc, i)) :
                                               'ident_quot) )) ));
                                        ((
@@ -16380,7 +16380,7 @@ module Make =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | ANTIQUOT
                                                 ((((("" | "id") | "anti")
@@ -16403,7 +16403,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.CeNil (_loc)) :
                                              'class_expr_quot) )) ));
                                        ((
@@ -16417,7 +16417,7 @@ module Make =
                                           fun (x :
                                             'class_expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_expr_quot) )) ));
                                        ((
                                         [(
@@ -16446,7 +16446,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   (("virtual" as n), s) ->
@@ -16470,7 +16470,7 @@ module Make =
                                             'class_name_and_param) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CeCon
                                                 (_loc, Ast.ViVirtual , (
                                                  (Ast.IdLid (_loc, i)) ), ot)) :
@@ -16485,7 +16485,7 @@ module Make =
                                             fun (ce1 :
                                               'class_expr_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CeEq (_loc, ce1, ce2)) :
                                                 'class_expr_quot) )) ));
                                        ((
@@ -16499,7 +16499,7 @@ module Make =
                                             fun (ce1 :
                                               'class_expr_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CeAnd (_loc, ce1, ce2)) :
                                                 'class_expr_quot) )) ))] ))]
                                     ))) () ) ))
@@ -16515,7 +16515,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.CtNil (_loc)) :
                                              'class_type_quot) )) ));
                                        ((
@@ -16529,7 +16529,7 @@ module Make =
                                           fun (x :
                                             'class_type_plus) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_type_quot) )) ));
                                        ((
                                         [(
@@ -16558,7 +16558,7 @@ module Make =
                                             fun (__camlp4_0 :
                                               Gram.Token.t) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (match __camlp4_0 with
                                                | ANTIQUOT
                                                   (("virtual" as n), s) ->
@@ -16582,7 +16582,7 @@ module Make =
                                             'class_name_and_param) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.CtCon
                                                 (_loc, Ast.ViVirtual , (
                                                  (Ast.IdLid (_loc, i)) ), ot)) :
@@ -16597,7 +16597,7 @@ module Make =
                                             fun (ct1 :
                                               'class_type_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtCol (_loc, ct1, ct2)) :
                                                 'class_type_quot) )) ));
                                        ((
@@ -16610,7 +16610,7 @@ module Make =
                                             fun (ct1 :
                                               'class_type_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtEq (_loc, ct1, ct2)) :
                                                 'class_type_quot) )) ));
                                        ((
@@ -16624,7 +16624,7 @@ module Make =
                                             fun (ct1 :
                                               'class_type_quot) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.CtAnd (_loc, ct1, ct2)) :
                                                 'class_type_quot) )) ))] ))]
                                     ))) () ) ))
@@ -16640,7 +16640,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.CrNil (_loc)) :
                                              'class_str_item_quot) )) ));
                                        ((
@@ -16654,7 +16654,7 @@ module Make =
                                           fun (x :
                                             'class_str_item) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_str_item_quot) )) ));
                                        ((
                                         [(
@@ -16674,7 +16674,7 @@ module Make =
                                             fun (x1 :
                                               'class_str_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((match x2 with
                                                 | Ast.CrNil (_) -> x1
                                                 | _ ->
@@ -16693,7 +16693,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.CgNil (_loc)) :
                                              'class_sig_item_quot) )) ));
                                        ((
@@ -16707,7 +16707,7 @@ module Make =
                                           fun (x :
                                             'class_sig_item) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'class_sig_item_quot) )) ));
                                        ((
                                         [(
@@ -16727,7 +16727,7 @@ module Make =
                                             fun (x1 :
                                               'class_sig_item) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((match x2 with
                                                 | Ast.CgNil (_) -> x1
                                                 | _ ->
@@ -16746,7 +16746,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.WcNil (_loc)) :
                                              'with_constr_quot) )) ));
                                        ((
@@ -16760,7 +16760,7 @@ module Make =
                                           fun (x :
                                             'with_constr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'with_constr_quot) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -16783,7 +16783,7 @@ module Make =
                                           fun (x :
                                             'opt_rec) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'rec_flag_quot) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -16806,7 +16806,7 @@ module Make =
                                           fun (x :
                                             'direction_flag) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'direction_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16829,7 +16829,7 @@ module Make =
                                           fun (x :
                                             'opt_mutable) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'mutable_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16852,7 +16852,7 @@ module Make =
                                           fun (x :
                                             'opt_private) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'private_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16875,7 +16875,7 @@ module Make =
                                           fun (x :
                                             'opt_virtual) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'virtual_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16898,7 +16898,7 @@ module Make =
                                           fun (x :
                                             'opt_dot_dot) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'row_var_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16921,7 +16921,7 @@ module Make =
                                           fun (x :
                                             'opt_override) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (x : 'override_flag_quot) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -16949,7 +16949,7 @@ module Make =
                                            fun (x :
                                              'patt) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | EOI -> (x : 'patt_eoi)
                                               | _ -> assert false) )) ))] ))]
@@ -16978,7 +16978,7 @@ module Make =
                                            fun (x :
                                              'expr) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (match __camlp4_0 with
                                               | EOI -> (x : 'expr_eoi)
                                               | _ -> assert false) )) ))] ))]

@@ -25,11 +25,11 @@ module Make (Ast : Sig.Camlp4Ast)
 = struct
   module Ast = Ast;
   module DynAst = DynAst.Make Ast;
-  module Loc = Ast.Loc;
+  (* module Loc = Ast.Loc; *)
   open Format;
   open Sig;
 
-  type expand_fun 'a = Loc.t -> option string -> string -> 'a;
+  type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
 
   module Exp_key = DynAst.Pack(struct
     type t 'a = unit;
@@ -74,7 +74,7 @@ module Make (Ast : Sig.Camlp4Ast)
     type error =
       [ Finding
       | Expanding
-      | ParsingResult of Loc.t and string
+      | ParsingResult of FanLoc.t and string
       | Locating ];
     type t = (string * string * error * exn);
     exception E of t;
@@ -112,7 +112,7 @@ module Make (Ast : Sig.Camlp4Ast)
                   output_string oc "\n";
                   flush oc;
                   close_out oc;
-                  fprintf ppf "%a:" Loc.print (Loc.set_file_name dump_file loc);
+                  fprintf ppf "%a:" FanLoc.print (FanLoc.set_file_name dump_file loc);
                 end
               with _ ->
                 fprintf ppf
@@ -137,28 +137,28 @@ module Make (Ast : Sig.Camlp4Ast)
     let open FanSig in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
     try expander loc loc_name_opt quot.q_contents with
-    [ Loc.Exc_located _ (Error.E _) as exc ->
+    [ FanLoc.Exc_located _ (Error.E _) as exc ->
         raise exc
-    | Loc.Exc_located iloc exc ->
+    | FanLoc.Exc_located iloc exc ->
         let exc1 = Error.E (quot.q_name, pos_tag, Expanding, exc) in
-        raise (Loc.Exc_located iloc exc1)
+        raise (FanLoc.Exc_located iloc exc1)
     | exc ->
         let exc1 = Error.E (quot.q_name, pos_tag, Expanding, exc) in
-        raise (Loc.Exc_located loc exc1) ];
+        raise (FanLoc.Exc_located loc exc1) ];
 
   value parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in 
     try parse loc str with
-    [ Loc.Exc_located iloc (Error.E (n, pos_tag, Expanding, exc)) ->
+    [ FanLoc.Exc_located iloc (Error.E (n, pos_tag, Expanding, exc)) ->
         let ctx = ParsingResult iloc quot.q_contents in
         let exc1 = Error.E (n, pos_tag, ctx, exc) in
-        raise (Loc.Exc_located iloc exc1)
-    | Loc.Exc_located iloc (Error.E _ as exc) ->
-        raise (Loc.Exc_located iloc exc)
-    | Loc.Exc_located iloc exc ->
+        raise (FanLoc.Exc_located iloc exc1)
+    | FanLoc.Exc_located iloc (Error.E _ as exc) ->
+        raise (FanLoc.Exc_located iloc exc)
+    | FanLoc.Exc_located iloc exc ->
         let ctx = ParsingResult iloc quot.q_contents in
         let exc1 = Error.E (quot.q_name, pos_tag, ctx, exc) in
-        raise (Loc.Exc_located iloc exc1) ];
+        raise (FanLoc.Exc_located iloc exc1) ];
 
   value expand loc quotation tag =
     let open FanSig in 
@@ -168,13 +168,13 @@ module Make (Ast : Sig.Camlp4Ast)
     let expander =
       try find name tag
       with
-      [ Loc.Exc_located _ (Error.E _) as exc -> raise exc
-      | Loc.Exc_located qloc exc ->
-          raise (Loc.Exc_located qloc (Error.E (name, pos_tag, Finding, exc)))
+      [ FanLoc.Exc_located _ (Error.E _) as exc -> raise exc
+      | FanLoc.Exc_located qloc exc ->
+          raise (FanLoc.Exc_located qloc (Error.E (name, pos_tag, Finding, exc)))
       | exc ->
-          raise (Loc.Exc_located loc (Error.E (name, pos_tag, Finding, exc))) ]
+          raise (FanLoc.Exc_located loc (Error.E (name, pos_tag, Finding, exc))) ]
     in
-    let loc = Loc.join (Loc.move `start quotation.q_shift loc) in
+    let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
     expand_quotation loc expander pos_tag quotation;
 
 end;

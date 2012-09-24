@@ -320,7 +320,7 @@ module MakeDebugParser =
                                                                     fun (m :
                                                                     'start_debug) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (let fmt =
                                                                     (Gram.Token.extract_string
                                                                     fmt) in
@@ -408,7 +408,7 @@ module MakeDebugParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Some
                                                                     (e)) :
                                                                     'end_or_in)
@@ -422,7 +422,7 @@ module MakeDebugParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((None) :
                                                                     'end_or_in)
                                                                     )) ))] ))]
@@ -458,7 +458,7 @@ module MakeDebugParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -490,7 +490,7 @@ module MakeDebugParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -906,10 +906,7 @@ and ('e, 'p) symbol = {
                  (Ast.TyId
                    (_loc, (
                     (Ast.IdAcc
-                      (_loc, (
-                       (Ast.IdAcc
-                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                          (Ast.IdUid (_loc, "Loc")) ))) ), (
+                      (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
                        (Ast.IdLid (_loc, "t")) ))) ))) ))) ), (
               (Ast.ExNil (_loc)) ), e2)) ))) in
        let (txt, _) =
@@ -1630,7 +1627,7 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (e :
                         'delete_rule_body) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (e : 'expr) ))
+                       fun _ -> fun (_loc : FanLoc.t) -> (e : 'expr) ))
                    ));
                   ((
                    [( (Gram.Skeyword ("EXTEND")) ); (
@@ -1642,7 +1639,7 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (e :
                         'extend_body) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (e : 'expr) ))
+                       fun _ -> fun (_loc : FanLoc.t) -> (e : 'expr) ))
                    ))] ))] ))) () ) ))
          );
          (
@@ -1660,7 +1657,7 @@ and ('e, 'p) symbol = {
                      fun (g :
                        'qualuid) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((None , g) : 'extend_header) )) ));
                   ((
                    [( (Gram.Skeyword ("(")) ); (
@@ -1680,7 +1677,7 @@ and ('e, 'p) symbol = {
                           'qualid) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((( (Some (i)) ), t) : 'extend_header) )) ))]
                  ))] ))) () ) ))
          );
@@ -1715,8 +1712,8 @@ and ('e, 'p) symbol = {
                             fun _ ->
                              fun (e :
                                'entry) ->
-                              fun (_loc : Gram.Loc.t) -> (e : 'e__1) ))
-                          ))] ))) )] ), (
+                              fun (_loc : FanLoc.t) -> (e : 'e__1) )) ))]
+                        ))) )] ), (
                    (Gram.Action.mk (
                      fun (el :
                        'e__1 list) ->
@@ -1725,7 +1722,7 @@ and ('e, 'p) symbol = {
                        fun ((gram, g) :
                          'extend_header) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((text_of_functorial_extend _loc g gram
                             global_list el) : 'extend_body) )) ))] ))] )))
              () ) ))
@@ -1763,7 +1760,7 @@ and ('e, 'p) symbol = {
                         fun (g :
                           'qualuid) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (let (e, b) = (expr_of_delete_rule _loc n sl) in
                            (subst_gmod (
                              (Ast.ExApp
@@ -1794,7 +1791,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdUid (_loc, i)) : 'qualuid) )) ));
                   ((
@@ -1810,7 +1807,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1831,7 +1828,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdLid (_loc, i)) : 'qualid) )) ));
                   ((
@@ -1843,7 +1840,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdUid (_loc, i)) : 'qualid) )) ));
                   ((
@@ -1859,7 +1856,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1886,7 +1883,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | LIDENT ("t") ->
                              (let x = (Gram.Token.extract_string x) in
@@ -1905,7 +1902,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1940,7 +1937,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("GLOBAL") -> (sl : 'global)
                            | _ -> assert false) )) ))] ))] ))) () ) ))
@@ -1973,7 +1970,7 @@ and ('e, 'p) symbol = {
                         fun (n :
                           'name) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ({name = n; pos = pos; levels = ll} : 'entry)
                      )) ))] ))] ))) () ) ))
          );
@@ -2002,7 +1999,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ((("Before" | "After") | "Level") as x) ->
                             ((Ast.ExApp
@@ -2030,7 +2027,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT (("First" | "Last") as x) ->
                            ((Ast.ExId
@@ -2064,8 +2061,8 @@ and ('e, 'p) symbol = {
                       fun (ll :
                         'level list) ->
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (ll : 'level_list) ))
-                   ))] ))] ))) () ) ))
+                        fun (_loc : FanLoc.t) -> (ll : 'level_list) )) ))]
+                 ))] ))) () ) ))
          );
          (
          (Gram.extend ( (level : 'level Gram.Entry.t) ) (
@@ -2088,7 +2085,7 @@ and ('e, 'p) symbol = {
                             fun (x :
                               Gram.Token.t) ->
                              fun (_loc :
-                               Gram.Loc.t) ->
+                               FanLoc.t) ->
                               (let x = (Gram.Token.extract_string x) in x :
                                 'e__2) )) ))] ))) ); (
                     (Gram.Sopt
@@ -2106,7 +2103,7 @@ and ('e, 'p) symbol = {
                        fun (lab :
                          'e__2 option) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ({label = lab; assoc = ass; rules = rules} :
                            'level) )) ))] ))] ))) () ) ))
          );
@@ -2125,7 +2122,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT (x) ->
                            ((failwithf
@@ -2144,7 +2141,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ((("LA" | "RA") | "NA") as x) ->
                            ((Ast.ExId
@@ -2179,7 +2176,7 @@ and ('e, 'p) symbol = {
                         'rule list) ->
                        fun _ ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((retype_rule_list_without_patterns _loc rules) :
                            'rule_list) )) ));
                   ((
@@ -2188,8 +2185,8 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun _ ->
                       fun _ ->
-                       fun (_loc : Gram.Loc.t) -> (([]) : 'rule_list) ))
-                   ))] ))] ))) () ) ))
+                       fun (_loc : FanLoc.t) -> (([]) : 'rule_list) )) ))]
+                 ))] ))) () ) ))
          );
          (
          (Gram.extend ( (rule : 'rule Gram.Entry.t) ) (
@@ -2212,7 +2209,7 @@ and ('e, 'p) symbol = {
                      fun (psl :
                        'psymbol list) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ({prod = psl; action = None } : 'rule) )) ));
                   ((
                    [(
@@ -2235,7 +2232,7 @@ and ('e, 'p) symbol = {
                        fun (psl :
                          'psymbol list) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ({prod = psl; action = ( (Some (act)) )} :
                            'rule) )) ))] ))] ))) () ) ))
          );
@@ -2253,7 +2250,7 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
-                      fun (_loc : Gram.Loc.t) -> (s : 'psymbol) )) ));
+                      fun (_loc : FanLoc.t) -> (s : 'psymbol) )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -2269,7 +2266,7 @@ and ('e, 'p) symbol = {
                        fun (p :
                          'pattern) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((match s.pattern with
                            | Some
                               (Ast.PaApp
@@ -2309,7 +2306,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -2321,7 +2318,7 @@ and ('e, 'p) symbol = {
                       fun (i :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (let i = (Gram.Token.extract_string i) in
                          let name =
                           (mk_name _loc ( (Ast.IdLid (_loc, i)) )) in
@@ -2344,7 +2341,7 @@ and ('e, 'p) symbol = {
                        fun (p :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let p = (Gram.Token.extract_string p) in
                           (match s.pattern with
                            | Some
@@ -2405,7 +2402,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ("TRY") ->
                             (let text = (TXtry (_loc, ( s.text ))) in
@@ -2425,7 +2422,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ("OPT") ->
                             (let () = (check_not_tok s) in
@@ -2465,7 +2462,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("SEP") -> (t : 'e__4)
                                 | _ -> assert false) )) ))] ))) )] ), (
@@ -2477,7 +2474,7 @@ and ('e, 'p) symbol = {
                        fun (__camlp4_0 :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | UIDENT (("LIST0" | "LIST1") as x) ->
                              (let () = (check_not_tok s) in
@@ -2510,8 +2507,8 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (s_t :
                         'symbol) ->
-                       fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (s_t : 'symbol) )) ));
+                       fun _ -> fun (_loc : FanLoc.t) -> (s_t : 'symbol)
+                     )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -2538,7 +2535,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -2550,7 +2547,7 @@ and ('e, 'p) symbol = {
                       fun (n :
                         'name) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         ({used = ( [( n.tvar )] );
                           text = ( (TXnterm (_loc, n, lev)) );
                           styp = ( (STquo (_loc, ( n.tvar ))) );
@@ -2584,7 +2581,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -2599,7 +2596,7 @@ and ('e, 'p) symbol = {
                         fun (i :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (let i = (Gram.Token.extract_string i) in
                            let n =
                             (mk_name _loc (
@@ -2618,7 +2615,7 @@ and ('e, 'p) symbol = {
                      fun (s :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let s = (Gram.Token.extract_string s) in
                         {used = [] ; text = ( (TXkwd (_loc, s)) );
                          styp = ( (STtok (_loc)) ); pattern = None } :
@@ -2639,7 +2636,7 @@ and ('e, 'p) symbol = {
                       fun (x :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | ANTIQUOT ("", s) ->
                             (let x = (Gram.Token.extract_string x) in
@@ -2714,7 +2711,7 @@ and ('e, 'p) symbol = {
                       fun (x :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (let s = (Gram.Token.extract_string s) in
                          let x = (Gram.Token.extract_string x) in
                          (mk_tok _loc (
@@ -2732,7 +2729,7 @@ and ('e, 'p) symbol = {
                      fun (x :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let x = (Gram.Token.extract_string x) in
                         (mk_tok _loc (
                           (Ast.PaApp
@@ -2752,7 +2749,7 @@ and ('e, 'p) symbol = {
                        'patt) ->
                       fun _ ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         ((mk_tok _loc p ( (STtok (_loc)) )) : 'symbol) ))
                    ));
                   ((
@@ -2769,7 +2766,7 @@ and ('e, 'p) symbol = {
                         'rule list) ->
                        fun _ ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let rl =
                            (retype_rule_list_without_patterns _loc rl) in
                           let t = (new_type_var () ) in
@@ -2789,7 +2786,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ("NEXT") ->
                            ({used = [] ; text = ( (TXnext (_loc)) );
@@ -2807,7 +2804,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ("SELF") ->
                            ({used = [] ; text = ( (TXself (_loc)) );
@@ -2837,7 +2834,7 @@ and ('e, 'p) symbol = {
                           'pattern) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((Ast.PaTup
                               (_loc, ( (Ast.PaCom (_loc, p1, p2)) ))) :
                              'pattern) )) ));
@@ -2848,13 +2845,13 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (p :
                         'pattern) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (p : 'pattern)
+                       fun _ -> fun (_loc : FanLoc.t) -> (p : 'pattern)
                      )) ));
                   (( [( (Gram.Skeyword ("_")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((Ast.PaAny (_loc)) : 'pattern) )) ));
                   ((
                    [(
@@ -2865,7 +2862,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'pattern) )) ))] ))] ))) () ) ))
@@ -2884,7 +2881,7 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun (p :
                        'pattern) ->
-                      fun (_loc : Gram.Loc.t) -> (p : 'comma_patt) )) ));
+                      fun (_loc : FanLoc.t) -> (p : 'comma_patt) )) ));
                   ((
                    [Gram.Sself ; ( (Gram.Skeyword (",")) ); Gram.Sself ]
                    ), (
@@ -2895,7 +2892,7 @@ and ('e, 'p) symbol = {
                        fun (p1 :
                          'comma_patt) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((Ast.PaCom (_loc, p1, p2)) : 'comma_patt) )) ))]
                  ))] ))) () ) ))
          );
@@ -2914,7 +2911,7 @@ and ('e, 'p) symbol = {
                      fun (il :
                        'qualid) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((mk_name _loc il) : 'name) )) ))] ))] ))) () ) ))
          );
          (
@@ -2934,7 +2931,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | ANTIQUOT ("", s) ->
                            ((AntiquotSyntax.parse_expr _loc s) : 'string)
@@ -2948,7 +2945,7 @@ and ('e, 'p) symbol = {
                      fun (s :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let s = (Gram.Token.extract_string s) in
                         (Ast.ExStr (_loc, s)) : 'string) )) ))] ))] )))
              () ) ))
@@ -2960,7 +2957,7 @@ and ('e, 'p) symbol = {
                [(None , None , (
                  [(( [( (Gram.Skeyword (";")) )] ), (
                    (Gram.Action.mk (
-                     fun _ -> fun (_loc : Gram.Loc.t) -> (() : 'semi_sep)
+                     fun _ -> fun (_loc : FanLoc.t) -> (() : 'semi_sep)
                      )) ))] ))] ))) () ) ))
 
  let sfold =
@@ -3081,7 +3078,7 @@ and ('e, 'p) symbol = {
                           fun (__camlp4_0 :
                             Gram.Token.t) ->
                            fun (_loc :
-                             Gram.Loc.t) ->
+                             FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
                              | (UIDENT ("SEP"), UIDENT ("FOLD1")) ->
                                 ((sfoldsep _loc "FOLD1 SEP" "sfold1sep" f
@@ -3120,7 +3117,7 @@ and ('e, 'p) symbol = {
                           fun (__camlp4_0 :
                             Gram.Token.t) ->
                            fun (_loc :
-                             Gram.Loc.t) ->
+                             FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
                              | (UIDENT ("SEP"), UIDENT ("FOLD0")) ->
                                 ((sfoldsep _loc "FOLD0 SEP" "sfold0sep" f
@@ -3151,7 +3148,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("FOLD1") ->
                               ((sfold _loc "FOLD1" "sfold1" f e s) :
@@ -3182,7 +3179,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("FOLD0") ->
                               ((sfold _loc "FOLD0" "sfold0" f e s) :
@@ -3204,8 +3201,7 @@ and ('e, 'p) symbol = {
                       fun (e :
                         'expr) ->
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (e : 'simple_expr) ))
-                   ));
+                        fun (_loc : FanLoc.t) -> (e : 'simple_expr) )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -3215,7 +3211,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        'a_LIDENT) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'simple_expr) )) ))] ))] ))) () ) ))
 
@@ -3548,9 +3544,8 @@ module MakeListComprehension =
                                    fun (e :
                                      'comprehension_or_sem_expr_for_list) ->
                                     fun _ ->
-                                     fun (_loc :
-                                       Gram.Loc.t) ->
-                                      (e : 'expr) )) ))] ))] ))) () ) ))
+                                     fun (_loc : FanLoc.t) -> (e : 'expr)
+                                  )) ))] ))] ))) () ) ))
                       );
                       (
                       (Gram.extend (
@@ -3572,7 +3567,7 @@ module MakeListComprehension =
                                   fun (e :
                                     'expr) ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     ((Ast.ExApp
                                        (_loc, (
                                         (Ast.ExApp
@@ -3609,7 +3604,7 @@ module MakeListComprehension =
                                     fun (e :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((compr _loc e l) :
                                         'comprehension_or_sem_expr_for_list)
                                   )) ));
@@ -3626,7 +3621,7 @@ module MakeListComprehension =
                                    fun (e :
                                      'expr) ->
                                     fun (_loc :
-                                      Gram.Loc.t) ->
+                                      FanLoc.t) ->
                                      ((Ast.ExApp
                                         (_loc, (
                                          (Ast.ExApp
@@ -3661,7 +3656,7 @@ module MakeListComprehension =
                                     fun (e :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.ExApp
                                          (_loc, (
                                           (Ast.ExApp
@@ -3694,7 +3689,7 @@ module MakeListComprehension =
                                   fun (e :
                                     'expr) ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     (`cond e : 'item) )) ));
                                ((
                                 [(
@@ -3712,7 +3707,7 @@ module MakeListComprehension =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (p : 'e__7) )) ))] ))) ); (
                                  (Gram.Snterml
                                    ((
@@ -3725,7 +3720,7 @@ module MakeListComprehension =
                                    fun (p :
                                      'e__7) ->
                                     fun (_loc :
-                                      Gram.Loc.t) ->
+                                      FanLoc.t) ->
                                      (`gen (p, e) : 'item) )) ))] ))] )))
                           () ) ))
 
@@ -3762,7 +3757,7 @@ module MakeListComprehension =
                                      fun (e :
                                        'expr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.ExApp
                                           (_loc, (
                                            (Ast.ExApp
@@ -3801,7 +3796,7 @@ module MakeListComprehension =
                                        fun (e :
                                          'expr) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.ExApp
                                             (_loc, (
                                              (Ast.ExApp
@@ -4064,7 +4059,7 @@ module MakeMacroParser =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | UIDENT (_) ->
                                                     (((((new reloc) _loc)
@@ -4095,7 +4090,7 @@ module MakeMacroParser =
                                               fun (__camlp4_0 :
                                                 Gram.Token.t) ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (match __camlp4_0 with
                                                  | UIDENT (_) ->
                                                     (let p =
@@ -4132,7 +4127,7 @@ module MakeMacroParser =
                                                fun (__camlp4_0 :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (match __camlp4_0 with
                                                   | UIDENT (_) ->
                                                      (let el =
@@ -4188,7 +4183,7 @@ module MakeMacroParser =
                                                fun (__camlp4_0 :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (match __camlp4_0 with
                                                   | UIDENT (_) ->
                                                      (let pl =
@@ -4473,7 +4468,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  'macro_def) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((execute_macro (
                                                     (Ast.StNil (_loc))
                                                     ) (
@@ -4506,7 +4501,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  'macro_def_sig) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((execute_macro (
                                                     (Ast.SgNil (_loc))
                                                     ) (
@@ -4541,7 +4536,7 @@ module MakeMacroParser =
                                                  Gram.Token.t) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (let fname =
                                                     (Gram.Token.extract_string
                                                       fname) in
@@ -4581,7 +4576,7 @@ module MakeMacroParser =
                                                   fun _ ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      ((make_SdITE_result
                                                         st1 st2) :
                                                        'macro_def) ))
@@ -4616,7 +4611,7 @@ module MakeMacroParser =
                                                   fun _ ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      ((make_SdITE_result
                                                         st1 st2) :
                                                        'macro_def) ))
@@ -4635,7 +4630,7 @@ module MakeMacroParser =
                                                  'uident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((SdUnd (i)) :
                                                     'macro_def) )) ));
                                             ((
@@ -4659,7 +4654,7 @@ module MakeMacroParser =
                                                   'uident) ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    ((SdDef (i, def)) :
                                                      'macro_def) ))
                                              ))] ))] ))) () ) ))
@@ -4689,7 +4684,7 @@ module MakeMacroParser =
                                                  Gram.Token.t) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (let fname =
                                                     (Gram.Token.extract_string
                                                       fname) in
@@ -4730,7 +4725,7 @@ module MakeMacroParser =
                                                   fun _ ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      ((make_SdITE_result
                                                         sg1 sg2) :
                                                        'macro_def_sig)
@@ -4765,7 +4760,7 @@ module MakeMacroParser =
                                                   fun _ ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      ((make_SdITE_result
                                                         sg1 sg2) :
                                                        'macro_def_sig)
@@ -4784,7 +4779,7 @@ module MakeMacroParser =
                                                  'uident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((SdUnd (i)) :
                                                     'macro_def_sig)
                                                )) ));
@@ -4802,7 +4797,7 @@ module MakeMacroParser =
                                                  'uident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((SdDef (i, None )) :
                                                     'macro_def_sig)
                                                )) ))] ))] ))) () ) ))
@@ -4827,7 +4822,7 @@ module MakeMacroParser =
                                                fun (i :
                                                  'uident) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Stack.push (
                                                     (is_defined i) )
                                                     stack) :
@@ -4854,7 +4849,7 @@ module MakeMacroParser =
                                                fun (i :
                                                  'uident) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Stack.push (
                                                     (not (
                                                       (is_defined i)
@@ -4881,7 +4876,7 @@ module MakeMacroParser =
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (([]) :
                                                    'else_macro_def)
                                                )) ));
@@ -4905,7 +4900,7 @@ module MakeMacroParser =
                                                   'smlist_else) ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    (st :
                                                      'else_macro_def)
                                                )) ))] ))] ))) () ) ))
@@ -4929,7 +4924,7 @@ module MakeMacroParser =
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (([]) :
                                                    'else_macro_def_sig)
                                                )) ));
@@ -4953,7 +4948,7 @@ module MakeMacroParser =
                                                   'sglist_else) ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    (st :
                                                      'else_macro_def_sig)
                                                )) ))] ))] ))) () ) ))
@@ -4976,7 +4971,7 @@ module MakeMacroParser =
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Ast.ExId
                                                     (_loc, (
                                                      (Ast.IdUid
@@ -5003,7 +4998,7 @@ module MakeMacroParser =
                                                   'expr) ->
                                                  fun _ ->
                                                   fun (_loc :
-                                                    Gram.Loc.t) ->
+                                                    FanLoc.t) ->
                                                    (e : 'else_expr)
                                                )) ))] ))] ))) () ) ))
                                    );
@@ -5039,7 +5034,7 @@ module MakeMacroParser =
                                                        fun (si :
                                                          'str_item) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((SdStr (si)) :
                                                            'e__8) ))
                                                     ));
@@ -5062,7 +5057,7 @@ module MakeMacroParser =
                                                        fun (d :
                                                          'macro_def) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((execute_macro_if_active_branch
                                                             _loc (
                                                             (Ast.StNil
@@ -5082,7 +5077,7 @@ module MakeMacroParser =
                                                fun (sml :
                                                  'e__8 list) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (sml : 'smlist_then)
                                                )) ))] ))] ))) () ) ))
                                    );
@@ -5118,7 +5113,7 @@ module MakeMacroParser =
                                                        fun (si :
                                                          'str_item) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((SdStr (si)) :
                                                            'e__9) ))
                                                     ));
@@ -5141,7 +5136,7 @@ module MakeMacroParser =
                                                        fun (d :
                                                          'macro_def) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((execute_macro_if_active_branch
                                                             _loc (
                                                             (Ast.StNil
@@ -5161,7 +5156,7 @@ module MakeMacroParser =
                                                fun (sml :
                                                  'e__9 list) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (sml : 'smlist_else)
                                                )) ))] ))] ))) () ) ))
                                    );
@@ -5197,7 +5192,7 @@ module MakeMacroParser =
                                                        fun (si :
                                                          'sig_item) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((SdStr (si)) :
                                                            'e__10) ))
                                                     ));
@@ -5220,7 +5215,7 @@ module MakeMacroParser =
                                                        fun (d :
                                                          'macro_def_sig) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((execute_macro_if_active_branch
                                                             _loc (
                                                             (Ast.SgNil
@@ -5240,7 +5235,7 @@ module MakeMacroParser =
                                                fun (sgl :
                                                  'e__10 list) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (sgl : 'sglist_then)
                                                )) ))] ))] ))) () ) ))
                                    );
@@ -5276,7 +5271,7 @@ module MakeMacroParser =
                                                        fun (si :
                                                          'sig_item) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((SdStr (si)) :
                                                            'e__11) ))
                                                     ));
@@ -5299,7 +5294,7 @@ module MakeMacroParser =
                                                        fun (d :
                                                          'macro_def_sig) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          ((execute_macro_if_active_branch
                                                             _loc (
                                                             (Ast.SgNil
@@ -5319,7 +5314,7 @@ module MakeMacroParser =
                                                fun (sgl :
                                                  'e__11 list) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (sgl : 'sglist_else)
                                                )) ))] ))] ))) () ) ))
                                    );
@@ -5338,7 +5333,7 @@ module MakeMacroParser =
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (() : 'endif) )) ));
                                             ((
                                              [(
@@ -5347,7 +5342,7 @@ module MakeMacroParser =
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (() : 'endif) )) ))]
                                            ))] ))) () ) ))
                                    );
@@ -5363,7 +5358,7 @@ module MakeMacroParser =
                                            [([] , (
                                              (Gram.Action.mk (
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((None) :
                                                   'opt_macro_value)
                                                )) ));
@@ -5380,7 +5375,7 @@ module MakeMacroParser =
                                                  'expr) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Some ([] , e)) :
                                                     'opt_macro_value)
                                                )) ));
@@ -5408,7 +5403,7 @@ module MakeMacroParser =
                                                        fun (x :
                                                          Gram.Token.t) ->
                                                         fun (_loc :
-                                                          Gram.Loc.t) ->
+                                                          FanLoc.t) ->
                                                          (let x =
                                                            (Gram.Token.extract_string
                                                              x) in
@@ -5434,7 +5429,7 @@ module MakeMacroParser =
                                                     'e__12 list) ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      ((Some (pl, e)) :
                                                        'opt_macro_value)
                                                )) ))] ))] ))) () ) ))
@@ -5475,7 +5470,7 @@ module MakeMacroParser =
                                                      Gram.Token.t) ->
                                                     fun _ ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       (let i =
                                                         (Gram.Token.extract_string
                                                           i) in
@@ -5511,7 +5506,7 @@ module MakeMacroParser =
                                                     'uident) ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      (if (is_defined
                                                            i) then
                                                        e2
@@ -5543,7 +5538,7 @@ module MakeMacroParser =
                                                     'uident) ->
                                                    fun _ ->
                                                     fun (_loc :
-                                                      Gram.Loc.t) ->
+                                                      FanLoc.t) ->
                                                      (if (is_defined
                                                            i) then
                                                        e1
@@ -5588,7 +5583,7 @@ module MakeMacroParser =
                                                       'uident) ->
                                                      fun _ ->
                                                       fun (_loc :
-                                                        Gram.Loc.t) ->
+                                                        FanLoc.t) ->
                                                        (if (is_defined
                                                              i) then
                                                          p2
@@ -5624,7 +5619,7 @@ module MakeMacroParser =
                                                       'uident) ->
                                                      fun _ ->
                                                       fun (_loc :
-                                                        Gram.Loc.t) ->
+                                                        FanLoc.t) ->
                                                        (if (is_defined
                                                              i) then
                                                          p1
@@ -5653,7 +5648,7 @@ module MakeMacroParser =
                                                fun (i :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (let i =
                                                    (Gram.Token.extract_string
                                                      i) in
@@ -5683,7 +5678,7 @@ module MakeMacroParser =
                                                  'a_ident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.ExVrn
                                                      (_loc, s)) :
                                                     'expr) )) ));
@@ -5699,7 +5694,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5712,7 +5707,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5725,7 +5720,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5737,7 +5732,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5750,7 +5745,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5763,7 +5758,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5776,7 +5771,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ));
@@ -5789,7 +5784,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__13)
                                                     )) ))] )) )] ), (
@@ -5798,7 +5793,7 @@ module MakeMacroParser =
                                                  'e__13) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.ExVrn
                                                      (_loc, kwd)) :
                                                     'expr) )) ))] ))]
@@ -5826,7 +5821,7 @@ module MakeMacroParser =
                                                  'a_ident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.PaVrn
                                                      (_loc, s)) :
                                                     'patt) )) ));
@@ -5843,7 +5838,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ));
@@ -5855,7 +5850,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ));
@@ -5868,7 +5863,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ));
@@ -5881,7 +5876,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ));
@@ -5894,7 +5889,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ));
@@ -5907,7 +5902,7 @@ module MakeMacroParser =
                                                     fun (x :
                                                       Gram.Token.t) ->
                                                      fun (_loc :
-                                                       Gram.Loc.t) ->
+                                                       FanLoc.t) ->
                                                       ((Gram.Token.extract_string
                                                          x) : 'e__14)
                                                     )) ))] )) )] ), (
@@ -5916,7 +5911,7 @@ module MakeMacroParser =
                                                  'e__14) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.PaVrn
                                                      (_loc, kwd)) :
                                                     'patt) )) ))] ))]
@@ -6263,7 +6258,7 @@ module MakeReloadedParser =
                                                                     'match_case) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFun
                                                                     (_loc,
                                                                     a)) :
@@ -6344,7 +6339,7 @@ module MakeReloadedParser =
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.McNil
                                                                     (_loc)) :
                                                                     'match_case)
@@ -6384,7 +6379,7 @@ module MakeReloadedParser =
                                                                     'match_case0 list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.mcOr_of_list
                                                                     l) :
                                                                     'match_case)
@@ -6444,7 +6439,7 @@ module MakeReloadedParser =
                                                                     fun (p :
                                                                     'patt_as_patt_opt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.McArr
                                                                     (_loc,
                                                                     p,
@@ -6515,7 +6510,7 @@ module MakeReloadedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExIfe
                                                                     (_loc,
                                                                     (
@@ -6595,7 +6590,7 @@ module MakeReloadedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExIfe
                                                                     (_loc,
                                                                     (
@@ -6640,7 +6635,7 @@ module MakeReloadedParser =
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'value_let)
                                                                    ))
@@ -6669,7 +6664,7 @@ module MakeReloadedParser =
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'value_val)
                                                                    ))
@@ -6692,7 +6687,7 @@ module MakeReloadedParser =
                                                                  (Gram.Action.mk
                                                                    (
                                                                    fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'semi)
                                                                    ))
@@ -6707,7 +6702,7 @@ module MakeReloadedParser =
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'semi)
                                                                    ))
@@ -6722,7 +6717,7 @@ module MakeReloadedParser =
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'semi)
                                                                    ))
@@ -9294,7 +9289,7 @@ module MakeRevisedParser =
                                                                     'str_items) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeStr
                                                                     (_loc,
                                                                     st)) :
@@ -9356,7 +9351,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeFun
                                                                     (_loc,
                                                                     i,
@@ -9387,7 +9382,7 @@ module MakeRevisedParser =
                                                                     fun (me1 :
                                                                     'module_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeApp
                                                                     (_loc,
                                                                     me1,
@@ -9453,7 +9448,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MePkg
                                                                     (_loc,
                                                                     (
@@ -9504,7 +9499,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MePkg
                                                                     (_loc,
                                                                     e)) :
@@ -9531,7 +9526,7 @@ module MakeRevisedParser =
                                                                     'module_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (me :
                                                                     'module_expr)
                                                                     ))
@@ -9571,7 +9566,7 @@ module MakeRevisedParser =
                                                                     'module_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeTyc
                                                                     (_loc,
                                                                     me,
@@ -9595,7 +9590,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'module_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeId
                                                                     (_loc,
                                                                     i)) :
@@ -9625,7 +9620,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -9668,7 +9663,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -9734,7 +9729,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StExp
                                                                     (_loc,
                                                                     e)) :
@@ -9764,7 +9759,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -9807,7 +9802,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -9858,7 +9853,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StClt
                                                                     (_loc,
                                                                     ctd)) :
@@ -9886,7 +9881,7 @@ module MakeRevisedParser =
                                                                     'class_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StCls
                                                                     (_loc,
                                                                     cd)) :
@@ -9928,7 +9923,7 @@ module MakeRevisedParser =
                                                                     'opt_rec) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StVal
                                                                     (_loc,
                                                                     r,
@@ -9957,7 +9952,7 @@ module MakeRevisedParser =
                                                                     'type_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StTyp
                                                                     (_loc,
                                                                     td)) :
@@ -9985,7 +9980,7 @@ module MakeRevisedParser =
                                                                     'module_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StOpn
                                                                     (_loc,
                                                                     i)) :
@@ -10033,7 +10028,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StMty
                                                                     (_loc,
                                                                     i,
@@ -10067,7 +10062,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StRecMod
                                                                     (_loc,
                                                                     mb)) :
@@ -10105,7 +10100,7 @@ module MakeRevisedParser =
                                                                     'a_UIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StMod
                                                                     (_loc,
                                                                     i,
@@ -10134,7 +10129,7 @@ module MakeRevisedParser =
                                                                     'module_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StInc
                                                                     (_loc,
                                                                     me)) :
@@ -10192,7 +10187,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StExt
                                                                     (_loc,
                                                                     i,
@@ -10237,7 +10232,7 @@ module MakeRevisedParser =
                                                                     'constructor_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StExc
                                                                     (_loc,
                                                                     t,
@@ -10269,7 +10264,7 @@ module MakeRevisedParser =
                                                                     'constructor_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StExc
                                                                     (_loc,
                                                                     t,
@@ -10324,7 +10319,7 @@ module MakeRevisedParser =
                                                                     'module_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (me :
                                                                     'module_binding0)
                                                                     ))
@@ -10365,7 +10360,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeTyc
                                                                     (_loc,
                                                                     me,
@@ -10418,7 +10413,7 @@ module MakeRevisedParser =
                                                                     'a_UIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeFun
                                                                     (_loc,
                                                                     m,
@@ -10498,7 +10493,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbColEq
                                                                     (_loc,
                                                                     m,
@@ -10530,7 +10525,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -10600,7 +10595,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -10647,7 +10642,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -10695,7 +10690,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -10738,7 +10733,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'module_binding) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbAnd
                                                                     (_loc,
                                                                     b1,
@@ -10820,7 +10815,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtFun
                                                                     (_loc,
                                                                     i,
@@ -10862,7 +10857,7 @@ module MakeRevisedParser =
                                                                     fun (mt :
                                                                     'module_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtWit
                                                                     (_loc,
                                                                     mt,
@@ -10901,7 +10896,7 @@ module MakeRevisedParser =
                                                                     fun (mt1 :
                                                                     'module_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((module_type_app
                                                                     mt1
                                                                     mt2) :
@@ -10935,7 +10930,7 @@ module MakeRevisedParser =
                                                                     fun (mt1 :
                                                                     'module_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((module_type_acc
                                                                     mt1
                                                                     mt2) :
@@ -10976,7 +10971,7 @@ module MakeRevisedParser =
                                                                     'sig_items) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtSig
                                                                     (_loc,
                                                                     sg)) :
@@ -11022,7 +11017,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtOf
                                                                     (_loc,
                                                                     me)) :
@@ -11049,7 +11044,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (mt :
                                                                     'module_type)
                                                                     ))
@@ -11075,7 +11070,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtQuo
                                                                     (_loc,
                                                                     i)) :
@@ -11098,7 +11093,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'module_longident_with_app) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtId
                                                                     (_loc,
                                                                     i)) :
@@ -11128,7 +11123,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -11171,7 +11166,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -11247,7 +11242,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgClt
                                                                     (_loc,
                                                                     ctd)) :
@@ -11275,7 +11270,7 @@ module MakeRevisedParser =
                                                                     'class_description) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgCls
                                                                     (_loc,
                                                                     cd)) :
@@ -11322,7 +11317,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgVal
                                                                     (_loc,
                                                                     i,
@@ -11351,7 +11346,7 @@ module MakeRevisedParser =
                                                                     'type_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgTyp
                                                                     (_loc,
                                                                     t)) :
@@ -11379,7 +11374,7 @@ module MakeRevisedParser =
                                                                     'module_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgOpn
                                                                     (_loc,
                                                                     i)) :
@@ -11412,7 +11407,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgMty
                                                                     (_loc,
                                                                     i,
@@ -11464,7 +11459,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgMty
                                                                     (_loc,
                                                                     i,
@@ -11498,7 +11493,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgRecMod
                                                                     (_loc,
                                                                     mb)) :
@@ -11536,7 +11531,7 @@ module MakeRevisedParser =
                                                                     'a_UIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgMod
                                                                     (_loc,
                                                                     i,
@@ -11565,7 +11560,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgInc
                                                                     (_loc,
                                                                     mt)) :
@@ -11623,7 +11618,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgExt
                                                                     (_loc,
                                                                     i,
@@ -11653,7 +11648,7 @@ module MakeRevisedParser =
                                                                     'constructor_declaration) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgExc
                                                                     (_loc,
                                                                     t)) :
@@ -11683,7 +11678,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -11726,7 +11721,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -11821,7 +11816,7 @@ module MakeRevisedParser =
                                                                     'a_UIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtFun
                                                                     (_loc,
                                                                     i,
@@ -11851,7 +11846,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (mt :
                                                                     'module_declaration)
                                                                     ))
@@ -11912,7 +11907,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbCol
                                                                     (_loc,
                                                                     m,
@@ -11943,7 +11938,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -11986,7 +11981,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -12030,7 +12025,7 @@ module MakeRevisedParser =
                                                                     fun (m1 :
                                                                     'module_rec_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbAnd
                                                                     (_loc,
                                                                     m1,
@@ -12099,7 +12094,7 @@ module MakeRevisedParser =
                                                                     'module_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcMoS
                                                                     (_loc,
                                                                     i1,
@@ -12143,7 +12138,7 @@ module MakeRevisedParser =
                                                                     'type_longident_and_parameters) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcTyS
                                                                     (_loc,
                                                                     t1,
@@ -12197,7 +12192,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -12262,7 +12257,7 @@ module MakeRevisedParser =
                                                                     'module_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcMod
                                                                     (_loc,
                                                                     i1,
@@ -12306,7 +12301,7 @@ module MakeRevisedParser =
                                                                     'type_longident_and_parameters) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcTyp
                                                                     (_loc,
                                                                     t1,
@@ -12360,7 +12355,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -12412,7 +12407,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -12455,7 +12450,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -12499,7 +12494,7 @@ module MakeRevisedParser =
                                                                     fun (wc1 :
                                                                     'with_constr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcAnd
                                                                     (_loc,
                                                                     wc1,
@@ -12570,7 +12565,7 @@ module MakeRevisedParser =
                                                                     'opt_class_self_patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExObj
                                                                     (_loc,
                                                                     csp,
@@ -12614,7 +12609,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExWhi
                                                                     (_loc,
                                                                     (
@@ -12697,7 +12692,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFor
                                                                     (_loc,
                                                                     i,
@@ -12737,7 +12732,7 @@ module MakeRevisedParser =
                                                                     'do_sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mksequence
                                                                     _loc
                                                                     seq) :
@@ -12777,7 +12772,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExIfe
                                                                     (_loc,
                                                                     e1,
@@ -12822,7 +12817,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExTry
                                                                     (_loc,
                                                                     (
@@ -12870,7 +12865,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExMat
                                                                     (_loc,
                                                                     (
@@ -12903,7 +12898,7 @@ module MakeRevisedParser =
                                                                     'fun_def) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'expr)
                                                                     ))
@@ -12946,7 +12941,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFun
                                                                     (_loc,
                                                                     (
@@ -12991,7 +12986,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOpI
                                                                     (_loc,
                                                                     i,
@@ -13044,7 +13039,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLmd
                                                                     (_loc,
                                                                     m,
@@ -13093,7 +13088,7 @@ module MakeRevisedParser =
                                                                     'opt_rec) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLet
                                                                     (_loc,
                                                                     r,
@@ -13145,7 +13140,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLet
                                                                     (_loc,
                                                                     rf,
@@ -13192,7 +13187,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     (bigarray_set
                                                                     _loc
@@ -13244,7 +13239,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13291,7 +13286,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13338,7 +13333,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13385,7 +13380,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13432,7 +13427,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13479,7 +13474,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13511,7 +13506,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13551,7 +13546,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13591,7 +13586,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13631,7 +13626,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13686,7 +13681,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13718,7 +13713,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13758,7 +13753,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13798,7 +13793,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     (
@@ -13844,7 +13839,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mkumin
                                                                     _loc
                                                                     "-."
@@ -13867,7 +13862,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mkumin
                                                                     _loc
                                                                     "-"
@@ -13900,7 +13895,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLaz
                                                                     (_loc,
                                                                     e)) :
@@ -13928,7 +13923,7 @@ module MakeRevisedParser =
                                                                     'class_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExNew
                                                                     (_loc,
                                                                     i)) :
@@ -13950,7 +13945,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mkassert
                                                                     _loc
                                                                     e) :
@@ -13971,7 +13966,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     e1,
@@ -14010,7 +14005,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOlb
                                                                     (_loc,
                                                                     i,
@@ -14051,7 +14046,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOlb
                                                                     (_loc,
                                                                     i,
@@ -14086,7 +14081,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -14129,7 +14124,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -14166,7 +14161,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLab
                                                                     (_loc,
                                                                     i,
@@ -14207,7 +14202,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLab
                                                                     (_loc,
                                                                     i,
@@ -14250,7 +14245,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExSnd
                                                                     (_loc,
                                                                     e,
@@ -14277,7 +14272,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExAcc
                                                                     (_loc,
                                                                     e1,
@@ -14320,7 +14315,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((bigarray_get
                                                                     _loc
                                                                     e1
@@ -14357,7 +14352,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExSte
                                                                     (_loc,
                                                                     e1,
@@ -14394,7 +14389,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExAre
                                                                     (_loc,
                                                                     e1,
@@ -14432,7 +14427,7 @@ module MakeRevisedParser =
                                                                     fun (f :
                                                                     'prefixop) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExApp
                                                                     (_loc,
                                                                     f,
@@ -14455,7 +14450,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExAcc
                                                                     (_loc,
                                                                     e,
@@ -14525,7 +14520,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExPkg
                                                                     (_loc,
                                                                     (
@@ -14568,7 +14563,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExPkg
                                                                     (_loc,
                                                                     me)) :
@@ -14591,7 +14586,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -14628,7 +14623,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mksequence
                                                                     _loc
                                                                     seq) :
@@ -14655,7 +14650,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'expr)
                                                                     ))
@@ -14695,7 +14690,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExCoe
                                                                     (_loc,
                                                                     e,
@@ -14757,7 +14752,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExCoe
                                                                     (_loc,
                                                                     e,
@@ -14791,7 +14786,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mksequence
                                                                     _loc
                                                                     e) :
@@ -14833,7 +14828,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mksequence
                                                                     _loc
                                                                     (
@@ -14880,7 +14875,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExTup
                                                                     (_loc,
                                                                     (
@@ -14927,7 +14922,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExTyc
                                                                     (_loc,
                                                                     e,
@@ -14951,7 +14946,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -14988,7 +14983,7 @@ module MakeRevisedParser =
                                                                     'field_expr_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOvr
                                                                     (_loc,
                                                                     fel)) :
@@ -15011,7 +15006,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOvr
                                                                     (_loc,
                                                                     (
@@ -15066,7 +15061,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExRec
                                                                     (_loc,
                                                                     el,
@@ -15100,7 +15095,7 @@ module MakeRevisedParser =
                                                                     'label_expr_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExRec
                                                                     (_loc,
                                                                     el,
@@ -15137,7 +15132,7 @@ module MakeRevisedParser =
                                                                     'sem_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExArr
                                                                     (_loc,
                                                                     el)) :
@@ -15160,7 +15155,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExArr
                                                                     (_loc,
                                                                     (
@@ -15196,7 +15191,7 @@ module MakeRevisedParser =
                                                                     'sem_expr_for_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mk_list
                                                                     (
                                                                     (Ast.ExId
@@ -15245,7 +15240,7 @@ module MakeRevisedParser =
                                                                     'sem_expr_for_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mk_list
                                                                     last) :
                                                                     'expr)
@@ -15267,7 +15262,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -15299,7 +15294,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExVrn
                                                                     (_loc,
                                                                     s)) :
@@ -15323,7 +15318,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'val_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     i)) :
@@ -15362,7 +15357,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'module_longident_dot_lparen) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOpI
                                                                     (_loc,
                                                                     i,
@@ -15386,7 +15381,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_CHAR) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExChr
                                                                     (_loc,
                                                                     s)) :
@@ -15409,7 +15404,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_STRING) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExStr
                                                                     (_loc,
                                                                     s)) :
@@ -15432,7 +15427,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_FLOAT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFlo
                                                                     (_loc,
                                                                     s)) :
@@ -15455,7 +15450,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_NATIVEINT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExNativeInt
                                                                     (_loc,
                                                                     s)) :
@@ -15478,7 +15473,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT64) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExInt64
                                                                     (_loc,
                                                                     s)) :
@@ -15501,7 +15496,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT32) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExInt32
                                                                     (_loc,
                                                                     s)) :
@@ -15524,7 +15519,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExInt
                                                                     (_loc,
                                                                     s)) :
@@ -15555,7 +15550,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -15605,7 +15600,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -15655,7 +15650,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -15706,7 +15701,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -15753,7 +15748,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -15803,7 +15798,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -15841,7 +15836,7 @@ module MakeRevisedParser =
                                                                     fun (seq :
                                                                     'sequence) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (seq :
                                                                     'e__17)
                                                                     ))
@@ -15855,7 +15850,7 @@ module MakeRevisedParser =
                                                                     fun (seq :
                                                                     'e__17) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (seq :
                                                                     'do_sequence)
                                                                     ))
@@ -15882,7 +15877,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'e__16)
                                                                     ))
@@ -15895,7 +15890,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -15938,7 +15933,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (seq :
                                                                     'e__15)
                                                                     ))
@@ -15952,7 +15947,7 @@ module MakeRevisedParser =
                                                                     fun (seq :
                                                                     'e__15) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (seq :
                                                                     'do_sequence)
                                                                     ))
@@ -15997,7 +15992,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Gram.Token.extract_string
                                                                     x) :
                                                                     'e__18)
@@ -16015,7 +16010,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Gram.Token.extract_string
                                                                     x) :
                                                                     'e__18)
@@ -16030,7 +16025,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'e__18) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -16081,7 +16076,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Gram.Token.extract_string
                                                                     x) :
                                                                     'e__19)
@@ -16099,7 +16094,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Gram.Token.extract_string
                                                                     x) :
                                                                     'e__19)
@@ -16114,7 +16109,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'e__19) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExId
                                                                     (_loc,
                                                                     (
@@ -16164,7 +16159,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.ExApp
@@ -16208,7 +16203,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.ExApp
@@ -16256,7 +16251,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.ExApp
@@ -16324,7 +16319,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'comma_expr)
                                                                     ))
@@ -16353,7 +16348,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -16394,7 +16389,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'comma_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExCom
                                                                     (_loc,
                                                                     e1,
@@ -16431,7 +16426,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'dummy)
                                                                     ))
@@ -16480,7 +16475,7 @@ module MakeRevisedParser =
                                                                     'sequence) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun e ->
                                                                     (
                                                                     Ast.ExSem
@@ -16501,7 +16496,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun e ->
                                                                     e :
                                                                     'sequence')
@@ -16513,7 +16508,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun e ->
                                                                     e :
                                                                     'sequence')
@@ -16568,7 +16563,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((k
                                                                     e) :
                                                                     'sequence)
@@ -16598,7 +16593,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -16655,7 +16650,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExOpI
                                                                     (_loc,
                                                                     i,
@@ -16708,7 +16703,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLmd
                                                                     (_loc,
                                                                     m,
@@ -16782,7 +16777,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((k
                                                                     (
                                                                     (Ast.ExLmd
@@ -16834,7 +16829,7 @@ module MakeRevisedParser =
                                                                     'opt_rec) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExLet
                                                                     (_loc,
                                                                     rf,
@@ -16903,7 +16898,7 @@ module MakeRevisedParser =
                                                                     'opt_rec) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((k
                                                                     (
                                                                     (Ast.ExLet
@@ -16956,7 +16951,7 @@ module MakeRevisedParser =
                                                                     fun (b :
                                                                     'let_binding) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (b :
                                                                     'binding)
                                                                     ))
@@ -16980,7 +16975,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'binding) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.BiAnd
                                                                     (_loc,
                                                                     b1,
@@ -17013,7 +17008,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17076,7 +17071,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17129,7 +17124,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17201,7 +17196,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.BiEq
                                                                     (_loc,
                                                                     p,
@@ -17250,7 +17245,7 @@ module MakeRevisedParser =
                                                                     fun (bi :
                                                                     'cvalue_binding) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (bi :
                                                                     'fun_binding)
                                                                     ))
@@ -17276,7 +17271,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFun
                                                                     (_loc,
                                                                     (
@@ -17314,7 +17309,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'e__20)
                                                                     ))
@@ -17346,7 +17341,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFUN
                                                                     (_loc,
                                                                     i,
@@ -17408,7 +17403,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.McArr
                                                                     (_loc,
                                                                     p,
@@ -17453,7 +17448,7 @@ module MakeRevisedParser =
                                                                     'match_case0 list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.mcOr_of_list
                                                                     l) :
                                                                     'match_case)
@@ -17523,7 +17518,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt_as_patt_opt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.McArr
                                                                     (_loc,
                                                                     p,
@@ -17587,7 +17582,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17656,7 +17651,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17713,7 +17708,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17761,7 +17756,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -17813,7 +17808,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExNil
                                                                     (_loc)) :
                                                                     'opt_when_expr)
@@ -17840,7 +17835,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (w :
                                                                     'opt_when_expr)
                                                                     ))
@@ -17884,7 +17879,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'patt_as_patt_opt)
                                                                     ))
@@ -17920,7 +17915,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaAli
                                                                     (_loc,
                                                                     p1,
@@ -17967,7 +17962,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'label_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (b1 :
                                                                     'label_expr_list)
                                                                     ))
@@ -17993,7 +17988,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'label_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (b1 :
                                                                     'label_expr_list)
                                                                     ))
@@ -18023,7 +18018,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'label_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbSem
                                                                     (_loc,
                                                                     b1,
@@ -18070,7 +18065,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbEq
                                                                     (_loc,
                                                                     i,
@@ -18115,7 +18110,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbEq
                                                                     (_loc,
                                                                     i,
@@ -18147,7 +18142,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -18209,7 +18204,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -18262,7 +18257,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -18309,7 +18304,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -18383,7 +18378,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFun
                                                                     (_loc,
                                                                     (
@@ -18418,7 +18413,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'e__21)
                                                                     ))
@@ -18456,7 +18451,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFUN
                                                                     (_loc,
                                                                     i,
@@ -18510,7 +18505,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (Ast.ExNil
                                                                     (_loc))
@@ -18555,7 +18550,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((w,
                                                                     e) :
                                                                     'fun_def_cont)
@@ -18584,7 +18579,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (Ast.ExNil
                                                                     (_loc))
@@ -18625,7 +18620,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'e__22)
                                                                     ))
@@ -18663,7 +18658,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (Ast.ExNil
                                                                     (_loc))
@@ -18723,7 +18718,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'fun_def_cont_no_when)
                                                                     ))
@@ -18757,7 +18752,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFun
                                                                     (_loc,
                                                                     (
@@ -18792,7 +18787,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'e__23)
                                                                     ))
@@ -18824,7 +18819,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExFUN
                                                                     (_loc,
                                                                     i,
@@ -18878,7 +18873,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaOrp
                                                                     (_loc,
                                                                     p1,
@@ -18915,7 +18910,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaRng
                                                                     (_loc,
                                                                     p1,
@@ -18948,7 +18943,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaLaz
                                                                     (_loc,
                                                                     p)) :
@@ -18969,7 +18964,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaApp
                                                                     (_loc,
                                                                     p1,
@@ -19031,7 +19026,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaOlbi
                                                                     (_loc,
                                                                     "",
@@ -19071,7 +19066,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaOlb
                                                                     (_loc,
                                                                     "",
@@ -19109,7 +19104,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19163,7 +19158,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19247,7 +19242,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19322,7 +19317,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19365,7 +19360,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19414,7 +19409,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19479,7 +19474,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19529,7 +19524,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19566,7 +19561,7 @@ module MakeRevisedParser =
                                                                     'type_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyp
                                                                     (_loc,
                                                                     i)) :
@@ -19594,7 +19589,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaVrn
                                                                     (_loc,
                                                                     s)) :
@@ -19624,7 +19619,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -19651,7 +19646,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaAny
                                                                     (_loc)) :
                                                                     'patt)
@@ -19692,7 +19687,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTup
                                                                     (_loc,
                                                                     (
@@ -19733,7 +19728,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaAli
                                                                     (_loc,
                                                                     p,
@@ -19776,7 +19771,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     p,
@@ -19804,7 +19799,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'patt)
                                                                     ))
@@ -19855,7 +19850,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     (
@@ -19902,7 +19897,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaMod
                                                                     (_loc,
                                                                     m)) :
@@ -19925,7 +19920,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaId
                                                                     (_loc,
                                                                     (
@@ -19962,7 +19957,7 @@ module MakeRevisedParser =
                                                                     'label_patt_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaRec
                                                                     (_loc,
                                                                     pl)) :
@@ -19995,7 +19990,7 @@ module MakeRevisedParser =
                                                                     'sem_patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaArr
                                                                     (_loc,
                                                                     pl)) :
@@ -20018,7 +20013,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaArr
                                                                     (_loc,
                                                                     (
@@ -20054,7 +20049,7 @@ module MakeRevisedParser =
                                                                     'sem_patt_for_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mk_list
                                                                     (
                                                                     (Ast.PaId
@@ -20103,7 +20098,7 @@ module MakeRevisedParser =
                                                                     'sem_patt_for_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((mk_list
                                                                     last) :
                                                                     'patt)
@@ -20125,7 +20120,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaId
                                                                     (_loc,
                                                                     (
@@ -20157,7 +20152,7 @@ module MakeRevisedParser =
                                                                     'a_FLOAT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaFlo
                                                                     (_loc,
                                                                     (
@@ -20188,7 +20183,7 @@ module MakeRevisedParser =
                                                                     'a_NATIVEINT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaNativeInt
                                                                     (_loc,
                                                                     (
@@ -20219,7 +20214,7 @@ module MakeRevisedParser =
                                                                     'a_INT64) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt64
                                                                     (_loc,
                                                                     (
@@ -20250,7 +20245,7 @@ module MakeRevisedParser =
                                                                     'a_INT32) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt32
                                                                     (_loc,
                                                                     (
@@ -20281,7 +20276,7 @@ module MakeRevisedParser =
                                                                     'a_INT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt
                                                                     (_loc,
                                                                     (
@@ -20307,7 +20302,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_CHAR) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaChr
                                                                     (_loc,
                                                                     s)) :
@@ -20330,7 +20325,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_STRING) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaStr
                                                                     (_loc,
                                                                     s)) :
@@ -20353,7 +20348,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_FLOAT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaFlo
                                                                     (_loc,
                                                                     s)) :
@@ -20376,7 +20371,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_NATIVEINT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaNativeInt
                                                                     (_loc,
                                                                     s)) :
@@ -20399,7 +20394,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT64) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt64
                                                                     (_loc,
                                                                     s)) :
@@ -20422,7 +20417,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT32) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt32
                                                                     (_loc,
                                                                     s)) :
@@ -20445,7 +20440,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_INT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaInt
                                                                     (_loc,
                                                                     s)) :
@@ -20468,7 +20463,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'ident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaId
                                                                     (_loc,
                                                                     i)) :
@@ -20499,7 +20494,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -20548,7 +20543,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -20600,7 +20595,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -20663,7 +20658,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'comma_patt)
                                                                     ))
@@ -20692,7 +20687,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -20733,7 +20728,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'comma_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaCom
                                                                     (_loc,
                                                                     p1,
@@ -20782,7 +20777,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'sem_patt)
                                                                     ))
@@ -20808,7 +20803,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'sem_patt)
                                                                     ))
@@ -20837,7 +20832,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -20884,7 +20879,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -20931,7 +20926,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.PaApp
@@ -20975,7 +20970,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.PaApp
@@ -21023,7 +21018,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.PaApp
@@ -21088,7 +21083,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p1 :
                                                                     'label_patt_list)
                                                                     ))
@@ -21114,7 +21109,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p1 :
                                                                     'label_patt_list)
                                                                     ))
@@ -21150,7 +21145,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -21187,7 +21182,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -21223,7 +21218,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -21270,7 +21265,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaEq
                                                                     (_loc,
                                                                     i,
@@ -21320,7 +21315,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaEq
                                                                     (_loc,
                                                                     i,
@@ -21352,7 +21347,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21397,7 +21392,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21439,7 +21434,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21497,7 +21492,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaAny
                                                                     (_loc)) :
                                                                     'ipatt)
@@ -21519,7 +21514,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaId
                                                                     (_loc,
                                                                     (
@@ -21565,7 +21560,7 @@ module MakeRevisedParser =
                                                                     'ipatt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTup
                                                                     (_loc,
                                                                     (
@@ -21606,7 +21601,7 @@ module MakeRevisedParser =
                                                                     'ipatt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaAli
                                                                     (_loc,
                                                                     p,
@@ -21649,7 +21644,7 @@ module MakeRevisedParser =
                                                                     'ipatt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     p,
@@ -21677,7 +21672,7 @@ module MakeRevisedParser =
                                                                     'ipatt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'ipatt)
                                                                     ))
@@ -21728,7 +21723,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     (
@@ -21775,7 +21770,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaMod
                                                                     (_loc,
                                                                     m)) :
@@ -21798,7 +21793,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaId
                                                                     (_loc,
                                                                     (
@@ -21832,7 +21827,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21872,7 +21867,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21924,7 +21919,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -21974,7 +21969,7 @@ module MakeRevisedParser =
                                                                     'label_ipatt_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaRec
                                                                     (_loc,
                                                                     pl)) :
@@ -22020,7 +22015,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'labeled_ipatt)
                                                                     ))
@@ -22066,7 +22061,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'comma_ipatt)
                                                                     ))
@@ -22095,7 +22090,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22136,7 +22131,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'comma_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaCom
                                                                     (_loc,
                                                                     p1,
@@ -22183,7 +22178,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p1 :
                                                                     'label_ipatt_list)
                                                                     ))
@@ -22209,7 +22204,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p1 :
                                                                     'label_ipatt_list)
                                                                     ))
@@ -22245,7 +22240,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -22282,7 +22277,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -22318,7 +22313,7 @@ module MakeRevisedParser =
                                                                     fun (p1 :
                                                                     'label_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     p1,
@@ -22380,7 +22375,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaEq
                                                                     (_loc,
                                                                     i,
@@ -22411,7 +22406,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22451,7 +22446,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22499,7 +22494,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22587,7 +22582,7 @@ module MakeRevisedParser =
                                                                     tpl) :
                                                                     'type_ident_and_parameters) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyDcl
                                                                     (_loc,
                                                                     n,
@@ -22616,7 +22611,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'type_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAnd
                                                                     (_loc,
                                                                     t1,
@@ -22647,7 +22642,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22687,7 +22682,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22735,7 +22730,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -22818,7 +22813,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((t1,
                                                                     t2) :
                                                                     'constrain)
@@ -22853,7 +22848,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyNil
                                                                     (_loc)) :
                                                                     'opt_eq_ctyp)
@@ -22880,7 +22875,7 @@ module MakeRevisedParser =
                                                                     'type_kind) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (tk :
                                                                     'opt_eq_ctyp)
                                                                     ))
@@ -22924,7 +22919,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'type_kind)
                                                                     ))
@@ -22979,7 +22974,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((i,
                                                                     tpl) :
                                                                     'type_ident_and_parameters)
@@ -23034,7 +23029,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((tpl
                                                                     (
                                                                     (Ast.TyId
@@ -23073,7 +23068,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun t ->
                                                                     t :
                                                                     'type_parameters)
@@ -23095,7 +23090,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'type_parameter) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (
                                                                     Ast.TyApp
@@ -23125,7 +23120,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'type_parameter) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun acc ->
                                                                     (t2
                                                                     (
@@ -23186,7 +23181,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuM
                                                                     (_loc,
                                                                     i)) :
@@ -23219,7 +23214,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuP
                                                                     (_loc,
                                                                     i)) :
@@ -23247,7 +23242,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuo
                                                                     (_loc,
                                                                     i)) :
@@ -23277,7 +23272,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -23319,7 +23314,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -23376,7 +23371,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAny
                                                                     (_loc)) :
                                                                     'optional_type_parameter)
@@ -23398,7 +23393,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAnM
                                                                     (_loc)) :
                                                                     'optional_type_parameter)
@@ -23420,7 +23415,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAnP
                                                                     (_loc)) :
                                                                     'optional_type_parameter)
@@ -23452,7 +23447,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuM
                                                                     (_loc,
                                                                     i)) :
@@ -23485,7 +23480,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuP
                                                                     (_loc,
                                                                     i)) :
@@ -23513,7 +23508,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuo
                                                                     (_loc,
                                                                     i)) :
@@ -23543,7 +23538,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -23585,7 +23580,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -23654,7 +23649,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyMan
                                                                     (_loc,
                                                                     t1,
@@ -23696,7 +23691,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyPrv
                                                                     (_loc,
                                                                     t)) :
@@ -23732,7 +23727,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAli
                                                                     (_loc,
                                                                     t1,
@@ -23780,7 +23775,7 @@ module MakeRevisedParser =
                                                                     'typevars) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyPol
                                                                     (_loc,
                                                                     t1,
@@ -23817,7 +23812,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyArr
                                                                     (_loc,
                                                                     t1,
@@ -23855,7 +23850,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_OPTLABEL) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOlb
                                                                     (_loc,
                                                                     i,
@@ -23893,7 +23888,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOlb
                                                                     (_loc,
                                                                     i,
@@ -23921,7 +23916,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LABEL) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyLab
                                                                     (_loc,
                                                                     i,
@@ -23959,7 +23954,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyLab
                                                                     (_loc,
                                                                     i,
@@ -23991,7 +23986,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (let t =
                                                                     (Ast.TyApp
                                                                     (_loc,
@@ -24040,7 +24035,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((try
                                                                     (Ast.TyId
                                                                     (_loc,
@@ -24106,7 +24101,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyPkg
                                                                     (_loc,
                                                                     p)) :
@@ -24139,7 +24134,7 @@ module MakeRevisedParser =
                                                                     'opt_meth_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'ctyp)
                                                                     ))
@@ -24165,7 +24160,7 @@ module MakeRevisedParser =
                                                                     'class_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCls
                                                                     (_loc,
                                                                     i)) :
@@ -24198,7 +24193,7 @@ module MakeRevisedParser =
                                                                     'label_declaration_list) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyRec
                                                                     (_loc,
                                                                     t)) :
@@ -24246,7 +24241,7 @@ module MakeRevisedParser =
                                                                     'row_field) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnInfSup
                                                                     (_loc,
                                                                     rfl,
@@ -24280,7 +24275,7 @@ module MakeRevisedParser =
                                                                     'row_field) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnInf
                                                                     (_loc,
                                                                     rfl)) :
@@ -24333,7 +24328,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnInfSup
                                                                     (_loc,
                                                                     rfl,
@@ -24372,7 +24367,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnInf
                                                                     (_loc,
                                                                     rfl)) :
@@ -24410,7 +24405,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnSup
                                                                     (_loc,
                                                                     rfl)) :
@@ -24438,7 +24433,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnSup
                                                                     (_loc,
                                                                     (
@@ -24479,7 +24474,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrnEq
                                                                     (_loc,
                                                                     rfl)) :
@@ -24512,7 +24507,7 @@ module MakeRevisedParser =
                                                                     'constructor_declarations) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySum
                                                                     (_loc,
                                                                     t)) :
@@ -24535,7 +24530,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySum
                                                                     (_loc,
                                                                     (
@@ -24565,7 +24560,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'ctyp)
                                                                     ))
@@ -24605,7 +24600,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyTup
                                                                     (_loc,
                                                                     (
@@ -24633,7 +24628,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyId
                                                                     (_loc,
                                                                     (
@@ -24660,7 +24655,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyId
                                                                     (_loc,
                                                                     (
@@ -24694,7 +24689,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -24734,7 +24729,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -24784,7 +24779,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -24836,7 +24831,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -24871,7 +24866,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAny
                                                                     (_loc)) :
                                                                     'ctyp)
@@ -24898,7 +24893,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuo
                                                                     (_loc,
                                                                     i)) :
@@ -24944,7 +24939,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'star_ctyp)
                                                                     ))
@@ -24968,7 +24963,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'star_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySta
                                                                     (_loc,
                                                                     t1,
@@ -25000,7 +24995,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25047,7 +25042,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25109,7 +25104,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyId
                                                                     (_loc,
                                                                     (
@@ -25151,7 +25146,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (let 
                                                                     (tl,
                                                                     rt) =
@@ -25211,7 +25206,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOf
                                                                     (_loc,
                                                                     (
@@ -25246,7 +25241,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'constructor_declarations) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOr
                                                                     (_loc,
                                                                     t1,
@@ -25277,7 +25272,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25317,7 +25312,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25364,7 +25359,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25426,7 +25421,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyId
                                                                     (_loc,
                                                                     (
@@ -25468,7 +25463,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOf
                                                                     (_loc,
                                                                     (
@@ -25507,7 +25502,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25548,7 +25543,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25610,7 +25605,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'constructor_arg_list)
                                                                     ))
@@ -25634,7 +25629,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'constructor_arg_list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAnd
                                                                     (_loc,
                                                                     t1,
@@ -25666,7 +25661,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25727,7 +25722,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'label_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t1 :
                                                                     'label_declaration_list)
                                                                     ))
@@ -25753,7 +25748,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'label_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t1 :
                                                                     'label_declaration_list)
                                                                     ))
@@ -25783,7 +25778,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'label_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySem
                                                                     (_loc,
                                                                     t1,
@@ -25850,7 +25845,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCol
                                                                     (_loc,
                                                                     (
@@ -25901,7 +25896,7 @@ module MakeRevisedParser =
                                                                     fun (s :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCol
                                                                     (_loc,
                                                                     (
@@ -25940,7 +25935,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -25980,7 +25975,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26027,7 +26022,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26089,7 +26084,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'a_ident)
                                                                     ))
@@ -26110,7 +26105,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'a_ident)
                                                                     ))
@@ -26163,7 +26158,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     (
@@ -26211,7 +26206,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26257,7 +26252,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdLid
                                                                     (_loc,
                                                                     i)) :
@@ -26280,7 +26275,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -26314,7 +26309,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26378,7 +26373,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -26410,7 +26405,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     (
@@ -26449,7 +26444,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26513,7 +26508,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'module_longident_with_app) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdApp
                                                                     (_loc,
                                                                     i,
@@ -26548,7 +26543,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'module_longident_with_app) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     i,
@@ -26584,7 +26579,7 @@ module MakeRevisedParser =
                                                                     'module_longident_with_app) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'module_longident_with_app)
                                                                     ))
@@ -26605,7 +26600,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -26639,7 +26634,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26713,7 +26708,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -26745,7 +26740,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     (
@@ -26794,7 +26789,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -26858,7 +26853,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdApp
                                                                     (_loc,
                                                                     i,
@@ -26893,7 +26888,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     i,
@@ -26929,7 +26924,7 @@ module MakeRevisedParser =
                                                                     'type_longident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'type_longident)
                                                                     ))
@@ -26950,7 +26945,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -26973,7 +26968,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdLid
                                                                     (_loc,
                                                                     i)) :
@@ -27007,7 +27002,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -27071,7 +27066,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdLid
                                                                     (_loc,
                                                                     i)) :
@@ -27103,7 +27098,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     (
@@ -27142,7 +27137,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -27206,7 +27201,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_type_longident)
                                                                     ))
@@ -27250,7 +27245,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'ident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'val_longident)
                                                                     ))
@@ -27294,7 +27289,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'label_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_longident)
                                                                     ))
@@ -27350,7 +27345,7 @@ module MakeRevisedParser =
                                                                     fun (ci :
                                                                     'class_info_for_class_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeEq
                                                                     (_loc,
                                                                     ci,
@@ -27381,7 +27376,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -27424,7 +27419,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -27468,7 +27463,7 @@ module MakeRevisedParser =
                                                                     fun (c1 :
                                                                     'class_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeAnd
                                                                     (_loc,
                                                                     c1,
@@ -27519,7 +27514,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeFun
                                                                     (_loc,
                                                                     p,
@@ -27563,7 +27558,7 @@ module MakeRevisedParser =
                                                                     'class_type_plus) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeTyc
                                                                     (_loc,
                                                                     ce,
@@ -27592,7 +27587,7 @@ module MakeRevisedParser =
                                                                     'class_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ce :
                                                                     'class_fun_binding)
                                                                     ))
@@ -27648,7 +27643,7 @@ module MakeRevisedParser =
                                                                     fun (mv :
                                                                     'opt_virtual) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCon
                                                                     (_loc,
                                                                     mv,
@@ -27712,7 +27707,7 @@ module MakeRevisedParser =
                                                                     fun (mv :
                                                                     'opt_virtual) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeCon
                                                                     (_loc,
                                                                     mv,
@@ -27764,7 +27759,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((i,
                                                                     (
                                                                     (Ast.TyNil
@@ -27809,7 +27804,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((i,
                                                                     x) :
                                                                     'class_name_and_param)
@@ -27854,7 +27849,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'type_parameter) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'comma_type_parameter)
                                                                     ))
@@ -27883,7 +27878,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -27924,7 +27919,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'comma_type_parameter) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCom
                                                                     (_loc,
                                                                     t1,
@@ -27961,7 +27956,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyNil
                                                                     (_loc)) :
                                                                     'opt_comma_ctyp)
@@ -27993,7 +27988,7 @@ module MakeRevisedParser =
                                                                     'comma_ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'opt_comma_ctyp)
                                                                     ))
@@ -28037,7 +28032,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'comma_ctyp)
                                                                     ))
@@ -28066,7 +28061,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -28107,7 +28102,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'comma_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCom
                                                                     (_loc,
                                                                     t1,
@@ -28159,7 +28154,7 @@ module MakeRevisedParser =
                                                                     'class_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ce :
                                                                     'class_fun_def)
                                                                     ))
@@ -28184,7 +28179,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'labeled_ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeFun
                                                                     (_loc,
                                                                     p,
@@ -28257,7 +28252,7 @@ module MakeRevisedParser =
                                                                     'opt_rec) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeLet
                                                                     (_loc,
                                                                     rf,
@@ -28297,7 +28292,7 @@ module MakeRevisedParser =
                                                                     'labeled_ipatt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeFun
                                                                     (_loc,
                                                                     p,
@@ -28338,7 +28333,7 @@ module MakeRevisedParser =
                                                                     fun (ce :
                                                                     'class_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeApp
                                                                     (_loc,
                                                                     ce,
@@ -28374,7 +28369,7 @@ module MakeRevisedParser =
                                                                     'class_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ce :
                                                                     'class_expr)
                                                                     ))
@@ -28414,7 +28409,7 @@ module MakeRevisedParser =
                                                                     'class_expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeTyc
                                                                     (_loc,
                                                                     ce,
@@ -28458,7 +28453,7 @@ module MakeRevisedParser =
                                                                     'opt_class_self_patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeStr
                                                                     (_loc,
                                                                     csp,
@@ -28482,7 +28477,7 @@ module MakeRevisedParser =
                                                                     fun (ce :
                                                                     'class_longident_and_param) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ce :
                                                                     'class_expr)
                                                                     ))
@@ -28510,7 +28505,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -28552,7 +28547,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -28615,7 +28610,7 @@ module MakeRevisedParser =
                                                                     fun (ci :
                                                                     'class_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeCon
                                                                     (_loc,
                                                                     Ast.ViNil
@@ -28664,7 +28659,7 @@ module MakeRevisedParser =
                                                                     fun (ci :
                                                                     'class_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeCon
                                                                     (_loc,
                                                                     Ast.ViNil
@@ -28728,7 +28723,7 @@ module MakeRevisedParser =
                                                                     fun (cst :
                                                                     'class_str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (cst :
                                                                     'e__24)
                                                                     ))
@@ -28742,7 +28737,7 @@ module MakeRevisedParser =
                                                                     fun (l :
                                                                     'e__24 list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.crSem_of_list
                                                                     l) :
                                                                     'class_structure)
@@ -28788,7 +28783,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -28845,7 +28840,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -28899,7 +28894,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaNil
                                                                     (_loc)) :
                                                                     'opt_class_self_patt)
@@ -28946,7 +28941,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     p,
@@ -28980,7 +28975,7 @@ module MakeRevisedParser =
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'opt_class_self_patt)
                                                                     ))
@@ -29031,7 +29026,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrIni
                                                                     (_loc,
                                                                     se)) :
@@ -29078,7 +29073,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrCtr
                                                                     (_loc,
                                                                     t1,
@@ -29142,7 +29137,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'method_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (if 
                                                                     (o
                                                                     <>
@@ -29220,7 +29215,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'method_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrMth
                                                                     (_loc,
                                                                     l,
@@ -29287,7 +29282,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'method_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (if 
                                                                     (o
                                                                     <>
@@ -29365,7 +29360,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'value_val_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (if 
                                                                     (o
                                                                     <>
@@ -29443,7 +29438,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'value_val_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (if 
                                                                     (o
                                                                     <>
@@ -29511,7 +29506,7 @@ module MakeRevisedParser =
                                                                     fun (o :
                                                                     'value_val_opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrVal
                                                                     (_loc,
                                                                     lab,
@@ -29562,7 +29557,7 @@ module MakeRevisedParser =
                                                                     'opt_override) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrInh
                                                                     (_loc,
                                                                     o,
@@ -29594,7 +29589,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -29637,7 +29632,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -29696,7 +29691,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvNil) :
                                                                     'method_opt_override)
                                                                     ))
@@ -29732,7 +29727,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -29768,7 +29763,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvOverride) :
                                                                     'method_opt_override)
                                                                     ))
@@ -29811,7 +29806,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvNil) :
                                                                     'value_val_opt_override)
                                                                     ))
@@ -29851,7 +29846,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -29891,7 +29886,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvOverride) :
                                                                     'value_val_opt_override)
                                                                     ))
@@ -29925,7 +29920,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ("" :
                                                                     'opt_as_lident)
                                                                     ))
@@ -29951,7 +29946,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'opt_as_lident)
                                                                     ))
@@ -29985,7 +29980,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyNil
                                                                     (_loc)) :
                                                                     'opt_polyt)
@@ -30012,7 +30007,7 @@ module MakeRevisedParser =
                                                                     'poly_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'opt_polyt)
                                                                     ))
@@ -30076,7 +30071,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExCoe
                                                                     (_loc,
                                                                     e,
@@ -30139,7 +30134,7 @@ module MakeRevisedParser =
                                                                     'poly_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     t with
                                                                     | Ast.TyPol
@@ -30197,7 +30192,7 @@ module MakeRevisedParser =
                                                                     'poly_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExTyc
                                                                     (_loc,
                                                                     e,
@@ -30261,7 +30256,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (let u =
                                                                     (Ast.TyPol
                                                                     (_loc,
@@ -30295,7 +30290,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'cvalue_binding)
                                                                     ))
@@ -30339,7 +30334,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'label)
                                                                     ))
@@ -30403,7 +30398,7 @@ module MakeRevisedParser =
                                                                     'opt_class_self_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtSig
                                                                     (_loc,
                                                                     cst,
@@ -30427,7 +30422,7 @@ module MakeRevisedParser =
                                                                     fun (ct :
                                                                     'class_type_longident_and_param) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ct :
                                                                     'class_type)
                                                                     ))
@@ -30455,7 +30450,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -30497,7 +30492,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -30560,7 +30555,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'class_type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCon
                                                                     (_loc,
                                                                     Ast.ViNil
@@ -30609,7 +30604,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'class_type_longident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCon
                                                                     (_loc,
                                                                     Ast.ViNil
@@ -30658,7 +30653,7 @@ module MakeRevisedParser =
                                                                     fun (ct :
                                                                     'class_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (ct :
                                                                     'class_type_plus)
                                                                     ))
@@ -30698,7 +30693,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtFun
                                                                     (_loc,
                                                                     t,
@@ -30735,7 +30730,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyNil
                                                                     (_loc)) :
                                                                     'opt_class_self_type)
@@ -30767,7 +30762,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'opt_class_self_type)
                                                                     ))
@@ -30826,7 +30821,7 @@ module MakeRevisedParser =
                                                                     fun (csg :
                                                                     'class_sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (csg :
                                                                     'e__25)
                                                                     ))
@@ -30840,7 +30835,7 @@ module MakeRevisedParser =
                                                                     fun (l :
                                                                     'e__25 list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.cgSem_of_list
                                                                     l) :
                                                                     'class_signature)
@@ -30886,7 +30881,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -30943,7 +30938,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31031,7 +31026,7 @@ module MakeRevisedParser =
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgCtr
                                                                     (_loc,
                                                                     t1,
@@ -31090,7 +31085,7 @@ module MakeRevisedParser =
                                                                     'opt_private) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgVir
                                                                     (_loc,
                                                                     l,
@@ -31145,7 +31140,7 @@ module MakeRevisedParser =
                                                                     'opt_private) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgMth
                                                                     (_loc,
                                                                     l,
@@ -31205,7 +31200,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgVir
                                                                     (_loc,
                                                                     l,
@@ -31274,7 +31269,7 @@ module MakeRevisedParser =
                                                                     'opt_mutable) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgVal
                                                                     (_loc,
                                                                     l,
@@ -31305,7 +31300,7 @@ module MakeRevisedParser =
                                                                     'class_type) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgInh
                                                                     (_loc,
                                                                     cs)) :
@@ -31335,7 +31330,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31378,7 +31373,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31437,7 +31432,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'type_constraint)
                                                                     ))
@@ -31453,7 +31448,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'type_constraint)
                                                                     ))
@@ -31512,7 +31507,7 @@ module MakeRevisedParser =
                                                                     fun (ci :
                                                                     'class_info_for_class_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCol
                                                                     (_loc,
                                                                     ci,
@@ -31543,7 +31538,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31586,7 +31581,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31630,7 +31625,7 @@ module MakeRevisedParser =
                                                                     fun (cd1 :
                                                                     'class_description) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtAnd
                                                                     (_loc,
                                                                     cd1,
@@ -31694,7 +31689,7 @@ module MakeRevisedParser =
                                                                     fun (ci :
                                                                     'class_info_for_class_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtEq
                                                                     (_loc,
                                                                     ci,
@@ -31725,7 +31720,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31768,7 +31763,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -31812,7 +31807,7 @@ module MakeRevisedParser =
                                                                     fun (cd1 :
                                                                     'class_type_declaration) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtAnd
                                                                     (_loc,
                                                                     cd1,
@@ -31859,7 +31854,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'field_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (b1 :
                                                                     'field_expr_list)
                                                                     ))
@@ -31885,7 +31880,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'field_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (b1 :
                                                                     'field_expr_list)
                                                                     ))
@@ -31915,7 +31910,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'field_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbSem
                                                                     (_loc,
                                                                     b1,
@@ -31980,7 +31975,7 @@ module MakeRevisedParser =
                                                                     fun (l :
                                                                     'label) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbEq
                                                                     (_loc,
                                                                     (
@@ -32016,7 +32011,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32064,7 +32059,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32137,7 +32132,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'meth_decl) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((m,
                                                                     v) :
                                                                     'meth_list)
@@ -32174,7 +32169,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'meth_decl) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((m,
                                                                     v) :
                                                                     'meth_list)
@@ -32207,7 +32202,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'meth_decl) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (Ast.TySem
                                                                     (_loc,
@@ -32272,7 +32267,7 @@ module MakeRevisedParser =
                                                                     fun (lab :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCol
                                                                     (_loc,
                                                                     (
@@ -32311,7 +32306,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32351,7 +32346,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32398,7 +32393,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32460,7 +32455,7 @@ module MakeRevisedParser =
                                                                     fun (v :
                                                                     'opt_dot_dot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyObj
                                                                     (_loc,
                                                                     (
@@ -32489,7 +32484,7 @@ module MakeRevisedParser =
                                                                     v) :
                                                                     'meth_list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyObj
                                                                     (_loc,
                                                                     ml,
@@ -32536,7 +32531,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'poly_type)
                                                                     ))
@@ -32580,7 +32575,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'module_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'package_type)
                                                                     ))
@@ -32631,7 +32626,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyQuo
                                                                     (_loc,
                                                                     i)) :
@@ -32661,7 +32656,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32702,7 +32697,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32739,7 +32734,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'typevars) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyApp
                                                                     (_loc,
                                                                     t1,
@@ -32788,7 +32783,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_ident) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyId
                                                                     (_loc,
                                                                     (
@@ -32822,7 +32817,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32863,7 +32858,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -32900,7 +32895,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'unquoted_typevars) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyApp
                                                                     (_loc,
                                                                     t1,
@@ -32947,7 +32942,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'row_field)
                                                                     ))
@@ -32988,7 +32983,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOf
                                                                     (_loc,
                                                                     (
@@ -33041,7 +33036,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOfAmp
                                                                     (_loc,
                                                                     (
@@ -33074,7 +33069,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrn
                                                                     (_loc,
                                                                     i)) :
@@ -33100,7 +33095,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'row_field) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOr
                                                                     (_loc,
                                                                     t1,
@@ -33132,7 +33127,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33179,7 +33174,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33241,7 +33236,7 @@ module MakeRevisedParser =
                                                                     fun (t :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (t :
                                                                     'amp_ctyp)
                                                                     ))
@@ -33270,7 +33265,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33311,7 +33306,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'amp_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAmp
                                                                     (_loc,
                                                                     t1,
@@ -33363,7 +33358,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrn
                                                                     (_loc,
                                                                     i)) :
@@ -33384,7 +33379,7 @@ module MakeRevisedParser =
                                                                     fun (t1 :
                                                                     'name_tags) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyApp
                                                                     (_loc,
                                                                     t1,
@@ -33417,7 +33412,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33469,7 +33464,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun i ->
                                                                     fun p ->
                                                                     (
@@ -33501,7 +33496,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (fun i ->
                                                                     fun p ->
                                                                     (
@@ -33552,7 +33547,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'patt_tcon)
                                                                     ))
@@ -33588,7 +33583,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     p,
@@ -33665,7 +33660,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaOlbi
                                                                     (_loc,
                                                                     "",
@@ -33705,7 +33700,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaOlb
                                                                     (_loc,
                                                                     "",
@@ -33743,7 +33738,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33797,7 +33792,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33881,7 +33876,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33956,7 +33951,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -33999,7 +33994,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34048,7 +34043,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34113,7 +34108,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34163,7 +34158,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34218,7 +34213,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (p :
                                                                     'ipatt_tcon)
                                                                     ))
@@ -34254,7 +34249,7 @@ module MakeRevisedParser =
                                                                     fun (p :
                                                                     'ipatt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaTyc
                                                                     (_loc,
                                                                     p,
@@ -34310,7 +34305,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34340,7 +34335,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.DiDownto) :
                                                                     'direction_flag)
                                                                     ))
@@ -34356,7 +34351,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.DiTo) :
                                                                     'direction_flag)
                                                                     ))
@@ -34390,7 +34385,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PrNil) :
                                                                     'opt_private)
                                                                     ))
@@ -34420,7 +34415,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34450,7 +34445,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PrPrivate) :
                                                                     'opt_private)
                                                                     ))
@@ -34484,7 +34479,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MuNil) :
                                                                     'opt_mutable)
                                                                     ))
@@ -34514,7 +34509,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34544,7 +34539,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MuMutable) :
                                                                     'opt_mutable)
                                                                     ))
@@ -34578,7 +34573,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ViNil) :
                                                                     'opt_virtual)
                                                                     ))
@@ -34608,7 +34603,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34638,7 +34633,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ViVirtual) :
                                                                     'opt_virtual)
                                                                     ))
@@ -34672,7 +34667,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RvNil) :
                                                                     'opt_dot_dot)
                                                                     ))
@@ -34702,7 +34697,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34732,7 +34727,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RvRowVar) :
                                                                     'opt_dot_dot)
                                                                     ))
@@ -34766,7 +34761,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ReNil) :
                                                                     'opt_rec)
                                                                     ))
@@ -34796,7 +34791,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34826,7 +34821,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ReRecursive) :
                                                                     'opt_rec)
                                                                     ))
@@ -34860,7 +34855,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvNil) :
                                                                     'opt_override)
                                                                     ))
@@ -34891,7 +34886,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -34922,7 +34917,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.OvOverride) :
                                                                     'opt_override)
                                                                     ))
@@ -34956,7 +34951,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExNil
                                                                     (_loc)) :
                                                                     'opt_expr)
@@ -34978,7 +34973,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'opt_expr)
                                                                     ))
@@ -35028,7 +35023,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35074,7 +35069,7 @@ module MakeRevisedParser =
                                                                     fun (si :
                                                                     'sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (
                                                                     si ) ::
@@ -35124,7 +35119,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     [(
                                                                     (Ast.SgDir
@@ -35194,7 +35189,7 @@ module MakeRevisedParser =
                                                                     fun (sg :
                                                                     'sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (sg :
                                                                     'e__26)
                                                                     ))
@@ -35208,7 +35203,7 @@ module MakeRevisedParser =
                                                                     fun (l :
                                                                     'e__26 list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.sgSem_of_list
                                                                     l) :
                                                                     'sig_items)
@@ -35254,7 +35249,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35311,7 +35306,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35381,7 +35376,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35427,7 +35422,7 @@ module MakeRevisedParser =
                                                                     fun (si :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (
                                                                     si ) ::
@@ -35477,7 +35472,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     [(
                                                                     (Ast.StDir
@@ -35547,7 +35542,7 @@ module MakeRevisedParser =
                                                                     fun (st :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (st :
                                                                     'e__27)
                                                                     ))
@@ -35561,7 +35556,7 @@ module MakeRevisedParser =
                                                                     fun (l :
                                                                     'e__27 list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.stSem_of_list
                                                                     l) :
                                                                     'str_items)
@@ -35607,7 +35602,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35664,7 +35659,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35734,7 +35729,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35762,7 +35757,7 @@ module MakeRevisedParser =
                                                                     fun (ph :
                                                                     'phrase) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Some
                                                                     (ph)) :
                                                                     'top_phrase)
@@ -35813,7 +35808,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -35859,7 +35854,7 @@ module MakeRevisedParser =
                                                                     fun (si :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     (
                                                                     si ) ::
@@ -35909,7 +35904,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (((
                                                                     [(
                                                                     (Ast.StDir
@@ -35973,7 +35968,7 @@ module MakeRevisedParser =
                                                                     fun (st :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (st :
                                                                     'phrase)
                                                                     ))
@@ -36018,7 +36013,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StDir
                                                                     (_loc,
                                                                     n,
@@ -36073,7 +36068,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36113,7 +36108,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36179,7 +36174,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36219,7 +36214,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36285,7 +36280,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36325,7 +36320,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36391,7 +36386,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36431,7 +36426,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36497,7 +36492,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36537,7 +36532,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36603,7 +36598,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36643,7 +36638,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36708,7 +36703,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36746,7 +36741,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36810,7 +36805,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36848,7 +36843,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36912,7 +36907,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -36959,7 +36954,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37022,7 +37017,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37069,7 +37064,7 @@ module MakeRevisedParser =
                                                                     Gram.Token.t) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37133,7 +37128,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37173,7 +37168,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37239,7 +37234,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37284,7 +37279,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37325,7 +37320,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -37377,7 +37372,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'value_let)
                                                                     ))
@@ -37416,7 +37411,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'value_val)
                                                                     ))
@@ -37455,7 +37450,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (() :
                                                                     'semi)
                                                                     ))
@@ -37489,7 +37484,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExNil
                                                                     (_loc)) :
                                                                     'expr_quot)
@@ -37511,7 +37506,7 @@ module MakeRevisedParser =
                                                                     fun (e :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (e :
                                                                     'expr_quot)
                                                                     ))
@@ -37547,7 +37542,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExSem
                                                                     (_loc,
                                                                     e1,
@@ -37586,7 +37581,7 @@ module MakeRevisedParser =
                                                                     fun (e1 :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.ExCom
                                                                     (_loc,
                                                                     e1,
@@ -37623,7 +37618,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaNil
                                                                     (_loc)) :
                                                                     'patt_quot)
@@ -37645,7 +37640,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'patt_quot)
                                                                     ))
@@ -37681,7 +37676,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (let i =
                                                                     (match
                                                                     x with
@@ -37734,7 +37729,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaSem
                                                                     (_loc,
                                                                     x,
@@ -37773,7 +37768,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.PaCom
                                                                     (_loc,
                                                                     x,
@@ -37810,7 +37805,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyNil
                                                                     (_loc)) :
                                                                     'ctyp_quot)
@@ -37832,7 +37827,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'ctyp_quot)
                                                                     ))
@@ -37868,7 +37863,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAnd
                                                                     (_loc,
                                                                     x,
@@ -37907,7 +37902,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyAmp
                                                                     (_loc,
                                                                     x,
@@ -37946,7 +37941,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySta
                                                                     (_loc,
                                                                     x,
@@ -38000,7 +37995,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySem
                                                                     (_loc,
                                                                     (
@@ -38044,7 +38039,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCol
                                                                     (_loc,
                                                                     x,
@@ -38103,7 +38098,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOr
                                                                     (_loc,
                                                                     (
@@ -38152,7 +38147,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOfAmp
                                                                     (_loc,
                                                                     x,
@@ -38206,7 +38201,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOr
                                                                     (_loc,
                                                                     (
@@ -38250,7 +38245,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOf
                                                                     (_loc,
                                                                     x,
@@ -38289,7 +38284,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyOr
                                                                     (_loc,
                                                                     x,
@@ -38328,7 +38323,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TySem
                                                                     (_loc,
                                                                     x,
@@ -38367,7 +38362,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'more_ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyCom
                                                                     (_loc,
                                                                     x,
@@ -38414,7 +38409,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'type_parameter) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'more_ctyp)
                                                                     ))
@@ -38435,7 +38430,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'ctyp) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'more_ctyp)
                                                                     ))
@@ -38461,7 +38456,7 @@ module MakeRevisedParser =
                                                                     'a_ident) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyVrn
                                                                     (_loc,
                                                                     x)) :
@@ -38483,7 +38478,7 @@ module MakeRevisedParser =
                                                                     'more_ctyp) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.TyMut
                                                                     (_loc,
                                                                     x)) :
@@ -38519,7 +38514,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StNil
                                                                     (_loc)) :
                                                                     'str_item_quot)
@@ -38541,7 +38536,7 @@ module MakeRevisedParser =
                                                                     fun (st :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (st :
                                                                     'str_item_quot)
                                                                     ))
@@ -38575,7 +38570,7 @@ module MakeRevisedParser =
                                                                     fun (st1 :
                                                                     'str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     st2 with
                                                                     | Ast.StNil
@@ -38621,7 +38616,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.StDir
                                                                     (_loc,
                                                                     n,
@@ -38658,7 +38653,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgNil
                                                                     (_loc)) :
                                                                     'sig_item_quot)
@@ -38680,7 +38675,7 @@ module MakeRevisedParser =
                                                                     fun (sg :
                                                                     'sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (sg :
                                                                     'sig_item_quot)
                                                                     ))
@@ -38714,7 +38709,7 @@ module MakeRevisedParser =
                                                                     fun (sg1 :
                                                                     'sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     sg2 with
                                                                     | Ast.SgNil
@@ -38760,7 +38755,7 @@ module MakeRevisedParser =
                                                                     'a_LIDENT) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.SgDir
                                                                     (_loc,
                                                                     n,
@@ -38797,7 +38792,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MtNil
                                                                     (_loc)) :
                                                                     'module_type_quot)
@@ -38819,7 +38814,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'module_type) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'module_type_quot)
                                                                     ))
@@ -38853,7 +38848,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MeNil
                                                                     (_loc)) :
                                                                     'module_expr_quot)
@@ -38875,7 +38870,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'module_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'module_expr_quot)
                                                                     ))
@@ -38909,7 +38904,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.McNil
                                                                     (_loc)) :
                                                                     'match_case_quot)
@@ -38938,7 +38933,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'match_case0 list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.mcOr_of_list
                                                                     x) :
                                                                     'match_case_quot)
@@ -38973,7 +38968,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.BiNil
                                                                     (_loc)) :
                                                                     'binding_quot)
@@ -38995,7 +38990,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'binding) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'binding_quot)
                                                                     ))
@@ -39029,7 +39024,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.RbNil
                                                                     (_loc)) :
                                                                     'rec_binding_quot)
@@ -39051,7 +39046,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'label_expr_list) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'rec_binding_quot)
                                                                     ))
@@ -39085,7 +39080,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbNil
                                                                     (_loc)) :
                                                                     'module_binding_quot)
@@ -39137,7 +39132,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbColEq
                                                                     (_loc,
                                                                     m,
@@ -39177,7 +39172,7 @@ module MakeRevisedParser =
                                                                     fun (m :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbCol
                                                                     (_loc,
                                                                     m,
@@ -39239,7 +39234,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39301,7 +39296,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39347,7 +39342,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39394,7 +39389,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39436,7 +39431,7 @@ module MakeRevisedParser =
                                                                     fun (b1 :
                                                                     'module_binding_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.MbAnd
                                                                     (_loc,
                                                                     b1,
@@ -39483,7 +39478,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'ident_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdApp
                                                                     (_loc,
                                                                     i,
@@ -39518,7 +39513,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'ident_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdAcc
                                                                     (_loc,
                                                                     i,
@@ -39554,7 +39549,7 @@ module MakeRevisedParser =
                                                                     'ident_quot) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (i :
                                                                     'ident_quot)
                                                                     ))
@@ -39595,7 +39590,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39641,7 +39636,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_LIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdLid
                                                                     (_loc,
                                                                     i)) :
@@ -39664,7 +39659,7 @@ module MakeRevisedParser =
                                                                     fun (i :
                                                                     'a_UIDENT) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.IdUid
                                                                     (_loc,
                                                                     i)) :
@@ -39698,7 +39693,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39752,7 +39747,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeNil
                                                                     (_loc)) :
                                                                     'class_expr_quot)
@@ -39774,7 +39769,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'class_expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_expr_quot)
                                                                     ))
@@ -39823,7 +39818,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -39871,7 +39866,7 @@ module MakeRevisedParser =
                                                                     'class_name_and_param) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeCon
                                                                     (_loc,
                                                                     Ast.ViVirtual
@@ -39904,7 +39899,7 @@ module MakeRevisedParser =
                                                                     fun (ce1 :
                                                                     'class_expr_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeEq
                                                                     (_loc,
                                                                     ce1,
@@ -39931,7 +39926,7 @@ module MakeRevisedParser =
                                                                     fun (ce1 :
                                                                     'class_expr_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CeAnd
                                                                     (_loc,
                                                                     ce1,
@@ -39968,7 +39963,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtNil
                                                                     (_loc)) :
                                                                     'class_type_quot)
@@ -39990,7 +39985,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'class_type_plus) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_type_quot)
                                                                     ))
@@ -40039,7 +40034,7 @@ module MakeRevisedParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.Token.t) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -40087,7 +40082,7 @@ module MakeRevisedParser =
                                                                     'class_name_and_param) ->
                                                                     fun _ ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCon
                                                                     (_loc,
                                                                     Ast.ViVirtual
@@ -40120,7 +40115,7 @@ module MakeRevisedParser =
                                                                     fun (ct1 :
                                                                     'class_type_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtCol
                                                                     (_loc,
                                                                     ct1,
@@ -40147,7 +40142,7 @@ module MakeRevisedParser =
                                                                     fun (ct1 :
                                                                     'class_type_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtEq
                                                                     (_loc,
                                                                     ct1,
@@ -40174,7 +40169,7 @@ module MakeRevisedParser =
                                                                     fun (ct1 :
                                                                     'class_type_quot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CtAnd
                                                                     (_loc,
                                                                     ct1,
@@ -40211,7 +40206,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CrNil
                                                                     (_loc)) :
                                                                     'class_str_item_quot)
@@ -40233,7 +40228,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'class_str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_str_item_quot)
                                                                     ))
@@ -40267,7 +40262,7 @@ module MakeRevisedParser =
                                                                     fun (x1 :
                                                                     'class_str_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     x2 with
                                                                     | Ast.CrNil
@@ -40311,7 +40306,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.CgNil
                                                                     (_loc)) :
                                                                     'class_sig_item_quot)
@@ -40333,7 +40328,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'class_sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'class_sig_item_quot)
                                                                     ))
@@ -40367,7 +40362,7 @@ module MakeRevisedParser =
                                                                     fun (x1 :
                                                                     'class_sig_item) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((match
                                                                     x2 with
                                                                     | Ast.CgNil
@@ -40411,7 +40406,7 @@ module MakeRevisedParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     ((Ast.WcNil
                                                                     (_loc)) :
                                                                     'with_constr_quot)
@@ -40433,7 +40428,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'with_constr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'with_constr_quot)
                                                                     ))
@@ -40477,7 +40472,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_rec) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'rec_flag_quot)
                                                                     ))
@@ -40521,7 +40516,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'direction_flag) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'direction_flag_quot)
                                                                     ))
@@ -40565,7 +40560,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_mutable) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'mutable_flag_quot)
                                                                     ))
@@ -40609,7 +40604,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_private) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'private_flag_quot)
                                                                     ))
@@ -40653,7 +40648,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_virtual) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'virtual_flag_quot)
                                                                     ))
@@ -40697,7 +40692,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_dot_dot) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'row_var_flag_quot)
                                                                     ))
@@ -40741,7 +40736,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'opt_override) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (x :
                                                                     'override_flag_quot)
                                                                     ))
@@ -40801,7 +40796,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -40867,7 +40862,7 @@ module MakeRevisedParser =
                                                                     fun (x :
                                                                     'expr) ->
                                                                     fun (_loc :
-                                                                    Gram.Loc.t) ->
+                                                                    FanLoc.t) ->
                                                                     (
                                                                     match
                                                                     __camlp4_0 with
@@ -41675,7 +41670,7 @@ module MakeRevisedParserParser =
                              'sequence) ->
                             fun _ ->
                              fun (_loc :
-                               Gram.Loc.t) ->
+                               FanLoc.t) ->
                               ((cparser_match _loc e po pcl) : 'expr)
                        )) ));
                     ((
@@ -41697,7 +41692,7 @@ module MakeRevisedParserParser =
                           'parser_ipatt option) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((cparser _loc po pcl) : 'expr) )) ))] ))]
                  ))) () ) ))
            );
@@ -41718,7 +41713,7 @@ module MakeRevisedParserParser =
                        fun (pc :
                          'parser_case) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ([pc] : 'parser_case_list) )) ));
                     ((
                      [( (Gram.Skeyword ("[")) ); (
@@ -41736,7 +41731,7 @@ module MakeRevisedParserParser =
                           'parser_case list) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            (pcl : 'parser_case_list) )) ))] ))] )))
                () ) ))
            );
@@ -41781,7 +41776,7 @@ module MakeRevisedParserParser =
                              'stream_patt) ->
                             fun _ ->
                              fun (_loc :
-                               Gram.Loc.t) ->
+                               FanLoc.t) ->
                               ((sp, po, e) : 'parser_case) )) ))] ))]
                  ))) () ) ))
            );
@@ -41795,9 +41790,8 @@ module MakeRevisedParserParser =
                    [(( [( (Gram.Skeyword ("[:")) )] ), (
                      (Gram.Action.mk (
                        fun _ ->
-                        fun (_loc :
-                          Gram.Loc.t) ->
-                         (() : 'stream_begin) )) ))] ))] ))) () ) ))
+                        fun (_loc : FanLoc.t) -> (() : 'stream_begin)
+                       )) ))] ))] ))) () ) ))
            );
            (
            (Gram.extend ( (stream_end : 'stream_end Gram.Entry.t) ) (
@@ -41808,7 +41802,7 @@ module MakeRevisedParserParser =
                    [(( [( (Gram.Skeyword (":]")) )] ), (
                      (Gram.Action.mk (
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (() : 'stream_end)
+                        fun (_loc : FanLoc.t) -> (() : 'stream_end)
                        )) ))] ))] ))) () ) ))
            );
            (
@@ -41821,9 +41815,8 @@ module MakeRevisedParserParser =
                    [(( [( (Gram.Skeyword ("`")) )] ), (
                      (Gram.Action.mk (
                        fun _ ->
-                        fun (_loc :
-                          Gram.Loc.t) ->
-                         (() : 'stream_quot) )) ))] ))] ))) () ) ))
+                        fun (_loc : FanLoc.t) -> (() : 'stream_quot)
+                       )) ))] ))] ))) () ) ))
            );
            (
            (Gram.extend ( (stream_expr : 'stream_expr Gram.Entry.t) )
@@ -41840,7 +41833,7 @@ module MakeRevisedParserParser =
                      (Gram.Action.mk (
                        fun (e :
                          'expr) ->
-                        fun (_loc : Gram.Loc.t) -> (e : 'stream_expr)
+                        fun (_loc : FanLoc.t) -> (e : 'stream_expr)
                        )) ))] ))] ))) () ) ))
            );
            (
@@ -41852,9 +41845,8 @@ module MakeRevisedParserParser =
                  [(None , None , (
                    [([] , (
                      (Gram.Action.mk (
-                       fun (_loc :
-                         Gram.Loc.t) ->
-                        (([]) : 'stream_patt) )) ));
+                       fun (_loc : FanLoc.t) -> (([]) : 'stream_patt)
+                       )) ));
                     ((
                      [(
                       (Gram.Snterm
@@ -41874,7 +41866,7 @@ module MakeRevisedParserParser =
                          fun (spc :
                            'stream_patt_comp) ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            (( (spc, None ) ) :: sp  : 'stream_patt)
                        )) ));
                     ((
@@ -41888,7 +41880,7 @@ module MakeRevisedParserParser =
                        fun (spc :
                          'stream_patt_comp) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ([(spc, None )] : 'stream_patt) )) ))] ))]
                  ))) () ) ))
            );
@@ -41919,16 +41911,15 @@ module MakeRevisedParserParser =
                               fun (e :
                                 'stream_expr) ->
                                fun _ ->
-                                fun (_loc :
-                                  Gram.Loc.t) ->
-                                 (e : 'e__28) )) ))] ))) )] ), (
+                                fun (_loc : FanLoc.t) -> (e : 'e__28)
+                              )) ))] ))) )] ), (
                      (Gram.Action.mk (
                        fun (eo :
                          'e__28 option) ->
                         fun (spc :
                           'stream_patt_comp) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ((spc, eo) : 'stream_patt_comp_err) )) ))]
                    ))] ))) () ) ))
            );
@@ -41954,7 +41945,7 @@ module MakeRevisedParserParser =
                          fun (spc :
                            'stream_patt_comp_err) ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            (( spc ) :: sp  :
                              'stream_patt_comp_err_list) )) ));
                     ((
@@ -41969,7 +41960,7 @@ module MakeRevisedParserParser =
                         fun (spc :
                           'stream_patt_comp_err) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ([spc] : 'stream_patt_comp_err_list) )) ));
                     ((
                      [(
@@ -41982,7 +41973,7 @@ module MakeRevisedParserParser =
                        fun (spc :
                          'stream_patt_comp_err) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ([spc] : 'stream_patt_comp_err_list) )) ))]
                    ))] ))) () ) ))
            );
@@ -42002,7 +41993,7 @@ module MakeRevisedParserParser =
                        fun (p :
                          'patt) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((SpStr (_loc, p)) : 'stream_patt_comp) ))
                      ));
                     ((
@@ -42021,7 +42012,7 @@ module MakeRevisedParserParser =
                          fun (p :
                            'patt) ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((SpNtr (_loc, p, e)) : 'stream_patt_comp)
                        )) ));
                     ((
@@ -42046,9 +42037,8 @@ module MakeRevisedParserParser =
                               fun (e :
                                 'stream_expr) ->
                                fun _ ->
-                                fun (_loc :
-                                  Gram.Loc.t) ->
-                                 (e : 'e__29) )) ))] ))) )] ), (
+                                fun (_loc : FanLoc.t) -> (e : 'e__29)
+                              )) ))] ))) )] ), (
                      (Gram.Action.mk (
                        fun (eo :
                          'e__29 option) ->
@@ -42056,7 +42046,7 @@ module MakeRevisedParserParser =
                           'patt) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((SpTrm (_loc, p, eo)) :
                              'stream_patt_comp) )) ))] ))] ))) () )
              ))
@@ -42072,7 +42062,7 @@ module MakeRevisedParserParser =
                      (Gram.Action.mk (
                        fun _ ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((Ast.PaAny (_loc)) : 'parser_ipatt) )) ));
                     ((
                      [(
@@ -42084,7 +42074,7 @@ module MakeRevisedParserParser =
                        fun (i :
                          'a_LIDENT) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                            'parser_ipatt) )) ))] ))] ))) () ) ))
            );
@@ -42115,7 +42105,7 @@ module MakeRevisedParserParser =
                           'stream_expr_comp_list) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((cstream _loc sel) : 'expr) )) ));
                     ((
                      [(
@@ -42131,7 +42121,7 @@ module MakeRevisedParserParser =
                        fun _ ->
                         fun _ ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ((cstream _loc [] ) : 'expr) )) ))] ))] )))
                () ) ))
            );
@@ -42154,7 +42144,7 @@ module MakeRevisedParserParser =
                        fun (se :
                          'stream_expr_comp) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ([se] : 'stream_expr_comp_list) )) ));
                     ((
                      [(
@@ -42168,7 +42158,7 @@ module MakeRevisedParserParser =
                         fun (se :
                           'stream_expr_comp) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ([se] : 'stream_expr_comp_list) )) ));
                     ((
                      [(
@@ -42184,7 +42174,7 @@ module MakeRevisedParserParser =
                          fun (se :
                            'stream_expr_comp) ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            (( se ) :: sel  : 'stream_expr_comp_list)
                        )) ))] ))] ))) () ) ))
            );
@@ -42204,7 +42194,7 @@ module MakeRevisedParserParser =
                        fun (e :
                          'stream_expr) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((SeNtr (_loc, e)) : 'stream_expr_comp) ))
                      ));
                     ((
@@ -42222,7 +42212,7 @@ module MakeRevisedParserParser =
                          'stream_expr) ->
                         fun _ ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ((SeTrm (_loc, e)) : 'stream_expr_comp) ))
                      ))] ))] ))) () ) ))
 
@@ -43153,7 +43143,7 @@ module MakeParser =
                                     fun (e :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (e : 'sem_expr) )) ));
                                  ((
                                   [(
@@ -43168,7 +43158,7 @@ module MakeParser =
                                      fun (e :
                                        'expr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        (e : 'sem_expr) )) ));
                                  ((
                                   [(
@@ -43186,7 +43176,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.ExSem (_loc, e1, e2)) :
                                           'sem_expr) )) ))] ))] )))
                             () ) ))
@@ -43209,7 +43199,7 @@ module MakeParser =
                                     fun (e :
                                       'sem_expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (e : 'sequence) )) ))] ))] )))
                             () ) ))
                         );
@@ -43234,7 +43224,7 @@ module MakeParser =
                                      fun (seq :
                                        'sequence) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        (seq : 'do_sequence) )) ))] ))]
                               ))) () ) ))
                         );
@@ -43257,7 +43247,7 @@ module MakeParser =
                                     fun (e :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (fun acc ->
                                         (Ast.ExApp
                                           (_loc, (
@@ -43282,7 +43272,7 @@ module MakeParser =
                                      fun (e :
                                        'expr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        (fun acc ->
                                          (Ast.ExApp
                                            (_loc, (
@@ -43310,7 +43300,7 @@ module MakeParser =
                                       fun (e :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (fun acc ->
                                           (Ast.ExApp
                                             (_loc, (
@@ -43354,7 +43344,7 @@ module MakeParser =
                                        fun _ ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.StExp
                                              (_loc, (
                                               (Ast.ExOpI (_loc, i, e))
@@ -43388,7 +43378,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.StExp
                                               (_loc, (
                                                (Ast.ExLmd
@@ -43413,7 +43403,7 @@ module MakeParser =
                                        'opt_rec) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((match bi with
                                           | Ast.BiEq
                                              (_, Ast.PaAny (_), e) ->
@@ -43447,7 +43437,7 @@ module MakeParser =
                                          'opt_rec) ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.StExp
                                              (_loc, (
                                               (Ast.ExLet
@@ -43473,7 +43463,7 @@ module MakeParser =
                                     fun (e1 :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (e1 : 'seq_expr) )) ));
                                  ((
                                   [(
@@ -43488,7 +43478,7 @@ module MakeParser =
                                      fun (e1 :
                                        'expr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        (e1 : 'seq_expr) )) ));
                                  ((
                                   [(
@@ -43506,7 +43496,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((conc_seq e1 e2) :
                                           'seq_expr) )) ))] ))] )))
                             () ) ))
@@ -43531,7 +43521,7 @@ module MakeParser =
                                     fun (e :
                                       'seq_expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (e : 'expr) )) ))] ))] ))) () )
                           ))
                         );
@@ -43561,7 +43551,7 @@ module MakeParser =
                                         'expr) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.ExIfe
                                             (_loc, e1, e2, (
                                              (Ast.ExId
@@ -43595,7 +43585,7 @@ module MakeParser =
                                           'expr) ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ExIfe
                                               (_loc, e1, e2, e3)) :
                                              'expr) )) ));
@@ -43612,7 +43602,7 @@ module MakeParser =
                                       'match_case) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.ExFun (_loc, a)) :
                                          'expr) )) ));
                                  ((
@@ -43638,7 +43628,7 @@ module MakeParser =
                                        fun _ ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.ExOpI (_loc, i, e)) :
                                             'expr) )) ));
                                  ((
@@ -43671,7 +43661,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.ExLmd
                                               (_loc, m, mb, e)) :
                                              'expr) )) ));
@@ -43702,7 +43692,7 @@ module MakeParser =
                                          'opt_rec) ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.ExLet
                                              (_loc, r, bi, x)) :
                                             'expr) )) ))] ))] ))) ()
@@ -43732,7 +43722,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.ExTup
                                            (_loc, (
                                             (Ast.ExCom (_loc, e1, e2))
@@ -43754,7 +43744,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((match
                                             (bigarray_set _loc e1 e2) with
                                           | Some (e) -> e
@@ -43777,7 +43767,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.ExAss
                                            (_loc, (
                                             (Ast.ExAcc
@@ -43809,7 +43799,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.ExApp
                                            (_loc, (
                                             (Ast.ExApp
@@ -43839,7 +43829,7 @@ module MakeParser =
                                      fun (e1 :
                                        'expr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((match
                                            ((
                                             (is_expr_constr_call e1)
@@ -43880,7 +43870,7 @@ module MakeParser =
                                       'class_longident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.ExNew (_loc, i)) :
                                          'expr) )) ));
                                  ((
@@ -43902,7 +43892,7 @@ module MakeParser =
                                             fun (e :
                                               'expr) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (e : 'e__31) )) ))] )))
                                    ); (
                                    (Gram.Snterm
@@ -43919,7 +43909,7 @@ module MakeParser =
                                         'e__31) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.ExRec (_loc, lel, e)) :
                                            'expr) )) ));
                                  ((
@@ -43940,7 +43930,7 @@ module MakeParser =
                                             fun (lel :
                                               'label_expr_list) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (lel : 'e__30) )) ))]
                                        ))) )] ), (
                                   (Gram.Action.mk (
@@ -43948,7 +43938,7 @@ module MakeParser =
                                       'e__30) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.ExRec
                                           (_loc, lel, (
                                            (Ast.ExNil (_loc)) ))) :
@@ -43958,7 +43948,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.ExId
                                          (_loc, (
                                           (Ast.IdUid (_loc, "True"))
@@ -43968,7 +43958,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.ExId
                                          (_loc, (
                                           (Ast.IdUid (_loc, "False"))
@@ -43998,7 +43988,7 @@ module MakeParser =
                                       fun (i :
                                         'a_UIDENT) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.IdAcc
                                            (_loc, (
                                             (Ast.IdUid (_loc, i)) ),
@@ -44024,7 +44014,7 @@ module MakeParser =
                                       fun (__camlp4_0 :
                                         Gram.Token.t) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (match __camlp4_0 with
                                          | ANTIQUOT
                                             ((((("" | "id") | "anti")
@@ -44049,7 +44039,7 @@ module MakeParser =
                                     fun (i :
                                       'a_LIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.IdLid (_loc, i)) :
                                         'val_longident) )) ));
                                  ((
@@ -44063,7 +44053,7 @@ module MakeParser =
                                     fun (i :
                                       'a_UIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.IdUid (_loc, i)) :
                                         'val_longident) )) ));
                                  ((
@@ -44082,7 +44072,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           ((((("" | "id") | "anti")
@@ -44120,7 +44110,7 @@ module MakeParser =
                                       'match_case0 list) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.mcOr_of_list l) :
                                          'match_case) )) ))] ))] )))
                             () ) ))
@@ -44145,7 +44135,7 @@ module MakeParser =
                                       'a_ident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaVrn (_loc, s)) :
                                          'patt_constr) )) ));
                                  ((
@@ -44159,7 +44149,7 @@ module MakeParser =
                                     fun (i :
                                       'module_longident) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaId (_loc, i)) :
                                         'patt_constr) )) ))] ))] )))
                             () ) ))
@@ -44187,7 +44177,7 @@ module MakeParser =
                                       fun (p1 :
                                         'patt) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaAli
                                            (_loc, p1, (
                                             (Ast.PaId
@@ -44208,7 +44198,7 @@ module MakeParser =
                                       fun (p1 :
                                         'patt) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaOrp (_loc, p1, p2)) :
                                           'patt) )) ))] ));
                                (( (Some (",")) ), None , (
@@ -44226,7 +44216,7 @@ module MakeParser =
                                       fun (p :
                                         'patt) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaTup
                                            (_loc, (
                                             (Ast.PaCom
@@ -44247,7 +44237,7 @@ module MakeParser =
                                       fun (p1 :
                                         'patt) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaApp
                                            (_loc, (
                                             (Ast.PaApp
@@ -44271,7 +44261,7 @@ module MakeParser =
                                     fun (p :
                                       'patt_constr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (p : 'patt) )) ));
                                  ((
                                   [(
@@ -44288,7 +44278,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           (((("" | "pat") | "anti") as
@@ -44306,7 +44296,7 @@ module MakeParser =
                                       'patt) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaLaz (_loc, p)) :
                                          'patt) )) ));
                                  ((
@@ -44322,7 +44312,7 @@ module MakeParser =
                                      fun (p1 :
                                        'patt_constr) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((match p2 with
                                          | Ast.PaTup (_, p) ->
                                             (List.fold_left (
@@ -44349,7 +44339,7 @@ module MakeParser =
                                       'type_longident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaTyp (_loc, i)) :
                                          'patt) )) ));
                                  ((
@@ -44364,14 +44354,14 @@ module MakeParser =
                                       'a_ident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaVrn (_loc, s)) :
                                          'patt) )) ));
                                  (( [( (Gram.Skeyword ("_")) )] ), (
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaAny (_loc)) : 'patt) ))
                                   ));
                                  ((
@@ -44384,7 +44374,7 @@ module MakeParser =
                                        'patt) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (p : 'patt) )) ));
                                  ((
                                   [( (Gram.Skeyword ("(")) );
@@ -44403,7 +44393,7 @@ module MakeParser =
                                          'patt) ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.PaTyc (_loc, p, t)) :
                                             'patt) )) ));
                                  ((
@@ -44430,7 +44420,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaTyc
                                               (_loc, (
                                                (Ast.PaMod (_loc, m))
@@ -44452,7 +44442,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.PaMod (_loc, m)) :
                                            'patt) )) ));
                                  ((
@@ -44462,7 +44452,7 @@ module MakeParser =
                                     fun _ ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaId
                                           (_loc, (
                                            (Ast.IdUid (_loc, "()"))
@@ -44481,7 +44471,7 @@ module MakeParser =
                                        'label_patt_list) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaRec (_loc, pl)) :
                                           'patt) )) ));
                                  ((
@@ -44498,7 +44488,7 @@ module MakeParser =
                                        'sem_patt) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaArr (_loc, pl)) :
                                           'patt) )) ));
                                  ((
@@ -44508,7 +44498,7 @@ module MakeParser =
                                     fun _ ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaArr
                                           (_loc, ( (Ast.PaNil (_loc))
                                            ))) : 'patt) )) ));
@@ -44526,7 +44516,7 @@ module MakeParser =
                                        'sem_patt_for_list) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((mk_list (
                                            (Ast.PaId
                                              (_loc, (
@@ -44551,7 +44541,7 @@ module MakeParser =
                                          'sem_patt_for_list) ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((mk_list last) : 'patt) ))
                                   ));
                                  ((
@@ -44561,7 +44551,7 @@ module MakeParser =
                                     fun _ ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaId
                                           (_loc, (
                                            (Ast.IdUid (_loc, "[]"))
@@ -44571,7 +44561,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaId
                                          (_loc, (
                                           (Ast.IdUid (_loc, "True"))
@@ -44581,7 +44571,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaId
                                          (_loc, (
                                           (Ast.IdUid (_loc, "False"))
@@ -44597,7 +44587,7 @@ module MakeParser =
                                     fun (s :
                                       'a_CHAR) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaChr (_loc, s)) : 'patt)
                                     )) ));
                                  ((
@@ -44619,7 +44609,7 @@ module MakeParser =
                                       fun (s1 :
                                         'a_CHAR) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.PaRng
                                            (_loc, (
                                             (Ast.PaChr (_loc, s1)) ),
@@ -44636,7 +44626,7 @@ module MakeParser =
                                     fun (s :
                                       'a_STRING) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaStr (_loc, s)) : 'patt)
                                     )) ));
                                  ((
@@ -44650,7 +44640,7 @@ module MakeParser =
                                     fun (s :
                                       'a_FLOAT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaFlo (_loc, s)) : 'patt)
                                     )) ));
                                  ((
@@ -44665,7 +44655,7 @@ module MakeParser =
                                       'a_FLOAT) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaFlo
                                           (_loc, ( ("-" ^ s) ))) :
                                          'patt) )) ));
@@ -44681,7 +44671,7 @@ module MakeParser =
                                       'a_NATIVEINT) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaNativeInt
                                           (_loc, ( ("-" ^ s) ))) :
                                          'patt) )) ));
@@ -44697,7 +44687,7 @@ module MakeParser =
                                       'a_INT64) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaInt64
                                           (_loc, ( ("-" ^ s) ))) :
                                          'patt) )) ));
@@ -44713,7 +44703,7 @@ module MakeParser =
                                       'a_INT32) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaInt32
                                           (_loc, ( ("-" ^ s) ))) :
                                          'patt) )) ));
@@ -44728,7 +44718,7 @@ module MakeParser =
                                       'a_INT) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaInt
                                           (_loc, ( ("-" ^ s) ))) :
                                          'patt) )) ));
@@ -44743,7 +44733,7 @@ module MakeParser =
                                     fun (s :
                                       'a_NATIVEINT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaNativeInt (_loc, s)) :
                                         'patt) )) ));
                                  ((
@@ -44757,7 +44747,7 @@ module MakeParser =
                                     fun (s :
                                       'a_INT64) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaInt64 (_loc, s)) :
                                         'patt) )) ));
                                  ((
@@ -44771,7 +44761,7 @@ module MakeParser =
                                     fun (s :
                                       'a_INT32) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaInt32 (_loc, s)) :
                                         'patt) )) ));
                                  ((
@@ -44784,7 +44774,7 @@ module MakeParser =
                                     fun (s :
                                       'a_INT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaInt (_loc, s)) : 'patt)
                                     )) ));
                                  ((
@@ -44797,7 +44787,7 @@ module MakeParser =
                                     fun (i :
                                       'ident) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.PaId (_loc, i)) : 'patt)
                                     )) ));
                                  ((
@@ -44812,7 +44802,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
@@ -44833,7 +44823,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT (("`bool" as n), s) ->
                                           ((Ast.PaAnt
@@ -44853,7 +44843,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT (("tup" as n), s) ->
                                           ((Ast.PaTup
@@ -44879,7 +44869,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           (((("" | "pat") | "anti") as
@@ -44909,7 +44899,7 @@ module MakeParser =
                                     fun (e1 :
                                       'expr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (e1 : 'comma_expr) )) ));
                                  ((
                                   [(
@@ -44927,7 +44917,7 @@ module MakeParser =
                                       fun (e1 :
                                         'expr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.ExCom (_loc, e1, e2)) :
                                           'comma_expr) )) ))] ))] )))
                             () ) ))
@@ -44946,7 +44936,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (() : 'type_constraint) )) ))]
                                 ))] ))) () ) ))
                         );
@@ -44980,7 +44970,7 @@ module MakeParser =
                                         'module_longident) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.WcMoS (_loc, i1, i2)) :
                                            'with_constr) )) ));
                                  ((
@@ -45004,7 +44994,7 @@ module MakeParser =
                                         'type_longident_and_parameters) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.WcTyS (_loc, t1, t2)) :
                                            'with_constr) )) ));
                                  ((
@@ -45031,7 +45021,7 @@ module MakeParser =
                                         Gram.Token.t) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          (match __camlp4_0 with
                                           | ANTIQUOT
                                              (((("" | "typ")
@@ -45066,7 +45056,7 @@ module MakeParser =
                                         'module_longident) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.WcMod (_loc, i1, i2)) :
                                            'with_constr) )) ));
                                  ((
@@ -45090,7 +45080,7 @@ module MakeParser =
                                         'type_longident_and_parameters) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.WcTyp (_loc, t1, t2)) :
                                            'with_constr) )) ));
                                  ((
@@ -45117,7 +45107,7 @@ module MakeParser =
                                         Gram.Token.t) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          (match __camlp4_0 with
                                           | ANTIQUOT
                                              (((("" | "typ")
@@ -45143,7 +45133,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
@@ -45166,7 +45156,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           ((((("" | "with_constr")
@@ -45189,7 +45179,7 @@ module MakeParser =
                                       fun (wc1 :
                                         'with_constr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.WcAnd (_loc, wc1, wc2)) :
                                           'with_constr) )) ))] ))] )))
                             () ) ))
@@ -45222,7 +45212,7 @@ module MakeParser =
                                       fun (i :
                                         'module_longident_with_app) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.MtWit
                                            (_loc, (
                                             (Ast.MtId (_loc, i)) ),
@@ -45239,7 +45229,7 @@ module MakeParser =
                                     fun (i :
                                       'module_longident_with_app) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.MtId (_loc, i)) :
                                         'package_type) )) ))] ))] )))
                             () ) ))
@@ -45271,7 +45261,7 @@ module MakeParser =
                                         'ident) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.WcTyp
                                             (_loc, (
                                              (Ast.TyId (_loc, i)) ),
@@ -45303,7 +45293,7 @@ module MakeParser =
                                       fun (c :
                                         'package_type_cstr) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.WcAnd (_loc, c, cs)) :
                                           'package_type_cstrs) )) ));
                                  ((
@@ -45317,7 +45307,7 @@ module MakeParser =
                                     fun (c :
                                       'package_type_cstr) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (c : 'package_type_cstrs) )) ))]
                                 ))] ))) () ) ))
                         );
@@ -45339,7 +45329,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (t : 'opt_private_ctyp) )) ));
                                  ((
                                   [( (Gram.Skeyword ("private")) ); (
@@ -45352,7 +45342,7 @@ module MakeParser =
                                       'ctyp) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyPrv (_loc, t)) :
                                          'opt_private_ctyp) )) ))] ))]
                               ))) () ) ))
@@ -45376,7 +45366,7 @@ module MakeParser =
                                     fun (ct :
                                       'class_type) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (ct : 'class_type_plus) )) ));
                                  ((
                                   [(
@@ -45400,7 +45390,7 @@ module MakeParser =
                                         'ctyp) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.CtFun (_loc, t, ct)) :
                                            'class_type_plus) )) ));
                                  ((
@@ -45427,7 +45417,7 @@ module MakeParser =
                                        fun (i :
                                          Gram.Token.t) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          (let i =
                                            (Gram.Token.extract_string
                                              i) in
@@ -45461,7 +45451,7 @@ module MakeParser =
                                           'a_LIDENT) ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.CtFun
                                               (_loc, (
                                                (Ast.TyOlb
@@ -45490,7 +45480,7 @@ module MakeParser =
                                        fun (i :
                                          'lident_colon) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.CtFun
                                             (_loc, (
                                              (Ast.TyLab (_loc, i, t))
@@ -45518,7 +45508,7 @@ module MakeParser =
                                     fun (i :
                                       'class_type_longident) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.CtCon
                                          (_loc, Ast.ViNil , i, (
                                           (Ast.TyNil (_loc)) ))) :
@@ -45544,7 +45534,7 @@ module MakeParser =
                                         'comma_ctyp) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.CtCon
                                             (_loc, Ast.ViNil , i, t)) :
                                            'class_type_longident_and_param)
@@ -45570,7 +45560,7 @@ module MakeParser =
                                     fun (ci :
                                       'class_longident) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.CeCon
                                          (_loc, Ast.ViNil , ci, (
                                           (Ast.TyNil (_loc)) ))) :
@@ -45596,7 +45586,7 @@ module MakeParser =
                                         'comma_ctyp) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.CeCon
                                             (_loc, Ast.ViNil , ci, t)) :
                                            'class_longident_and_param)
@@ -45621,7 +45611,7 @@ module MakeParser =
                                     fun (i :
                                       'a_LIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((i, ( (Ast.TyNil (_loc)) )) :
                                         'class_name_and_param) )) ));
                                  ((
@@ -45645,7 +45635,7 @@ module MakeParser =
                                         'comma_type_parameter) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((i, x) :
                                            'class_name_and_param) ))
                                   ))] ))] ))) () ) ))
@@ -45674,7 +45664,7 @@ module MakeParser =
                                        fun (t1 :
                                          'ctyp) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyAli
                                             (_loc, t1, (
                                              (Ast.TyQuo (_loc, i)) ))) :
@@ -45706,7 +45696,7 @@ module MakeParser =
                                           'a_LIDENT) ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyArr
                                               (_loc, (
                                                (Ast.TyOlb
@@ -45735,7 +45725,7 @@ module MakeParser =
                                        fun (i :
                                          'a_OPTLABEL) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyArr
                                             (_loc, (
                                              (Ast.TyOlb (_loc, i, t1))
@@ -45758,7 +45748,7 @@ module MakeParser =
                                             fun (i :
                                               'a_LIDENT) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (i : 'e__32) )) ))] )))
                                    ); (
                                    (Gram.Snterml
@@ -45777,7 +45767,7 @@ module MakeParser =
                                        fun (i :
                                          'e__32) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyArr
                                             (_loc, (
                                              (Ast.TyLab (_loc, i, t1))
@@ -45793,7 +45783,7 @@ module MakeParser =
                                       fun (t1 :
                                         'ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyArr (_loc, t1, t2)) :
                                           'ctyp) )) ))] ));
                                (( (Some ("star")) ), None , (
@@ -45812,7 +45802,7 @@ module MakeParser =
                                       fun (t :
                                         'ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyTup
                                            (_loc, (
                                             (Ast.TySta (_loc, t, tl))
@@ -45825,7 +45815,7 @@ module MakeParser =
                                      fun (t1 :
                                        'ctyp) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyApp (_loc, t2, t1)) :
                                          'ctyp) )) ))] ));
                                (( (Some ("ctyp2")) ), None , (
@@ -45842,7 +45832,7 @@ module MakeParser =
                                        fun (t1 :
                                          'ctyp) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          (let t =
                                            (Ast.TyApp (_loc, t1, t2)) in
                                           (try
@@ -45866,7 +45856,7 @@ module MakeParser =
                                       fun (t1 :
                                         'ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((try
                                            (Ast.TyId
                                              (_loc, (
@@ -45898,7 +45888,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyPkg (_loc, p)) :
                                            'ctyp) )) ));
                                  ((
@@ -45925,7 +45915,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.TyVrnInfSup
                                               (_loc, rfl, ntl)) :
                                              'ctyp) )) ));
@@ -45945,7 +45935,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyVrnInf (_loc, rfl)) :
                                            'ctyp) )) ));
                                  ((
@@ -45966,7 +45956,7 @@ module MakeParser =
                                        fun _ ->
                                         fun _ ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.TyVrnSup (_loc, rfl)) :
                                             'ctyp) )) ));
                                  ((
@@ -45978,7 +45968,7 @@ module MakeParser =
                                      fun _ ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyVrnSup
                                            (_loc, (
                                             (Ast.TyNil (_loc)) ))) :
@@ -45999,7 +45989,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyVrnEq (_loc, rfl)) :
                                            'ctyp) )) ));
                                  ((
@@ -46016,7 +46006,7 @@ module MakeParser =
                                        'opt_meth_list) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (t : 'ctyp) )) ));
                                  ((
                                   [( (Gram.Skeyword ("#")) ); (
@@ -46030,7 +46020,7 @@ module MakeParser =
                                       'class_longident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyCls (_loc, i)) :
                                          'ctyp) )) ));
                                  ((
@@ -46043,7 +46033,7 @@ module MakeParser =
                                        'ctyp) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (t : 'ctyp) )) ));
                                  ((
                                   [( (Gram.Skeyword ("(")) );
@@ -46071,7 +46061,7 @@ module MakeParser =
                                           'ctyp) ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((mk (
                                               (Ast.TyApp (_loc, i, t))
                                               )) : 'ctyp) )) ));
@@ -46087,7 +46077,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
@@ -46107,7 +46097,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT (("id" as n), s) ->
                                           ((Ast.TyId
@@ -46131,7 +46121,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT (("tup" as n), s) ->
                                           ((Ast.TyTup
@@ -46157,7 +46147,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           (((("" | "typ") | "anti") as
@@ -46178,7 +46168,7 @@ module MakeParser =
                                     fun (i :
                                       'a_UIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.TyId
                                          (_loc, (
                                           (Ast.IdUid (_loc, i)) ))) :
@@ -46194,7 +46184,7 @@ module MakeParser =
                                     fun (i :
                                       'a_LIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.TyId
                                          (_loc, (
                                           (Ast.IdLid (_loc, i)) ))) :
@@ -46203,7 +46193,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.TyAny (_loc)) : 'ctyp) ))
                                   ));
                                  ((
@@ -46218,7 +46208,7 @@ module MakeParser =
                                       'a_ident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyQuo (_loc, i)) :
                                          'ctyp) )) ))] ))] ))) () )
                           ))
@@ -46241,7 +46231,7 @@ module MakeParser =
                                     fun (m :
                                       'meth_decl) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((m, Ast.RvNil ) : 'meth_list)
                                     )) ))] ))] ))) () ) ))
                         );
@@ -46263,7 +46253,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (fun acc ->
                                         (Ast.TyApp (_loc, acc, t)) :
                                         'comma_ctyp_app) )) ));
@@ -46281,7 +46271,7 @@ module MakeParser =
                                       fun (t1 :
                                         'ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (fun acc ->
                                           (t2 (
                                             (Ast.TyApp
@@ -46307,7 +46297,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (t : 'star_ctyp) )) ));
                                  ((
                                   [(
@@ -46325,7 +46315,7 @@ module MakeParser =
                                       fun (t1 :
                                         'ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TySta (_loc, t1, t2)) :
                                           'star_ctyp) )) ));
                                  ((
@@ -46342,7 +46332,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT (("list" as n), s) ->
                                           ((Ast.TyAnt
@@ -46364,7 +46354,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           ((("" | "typ") as n), s) ->
@@ -46403,7 +46393,7 @@ module MakeParser =
                                       fun (s :
                                         'a_UIDENT) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((match
                                             (Ast.list_of_ctyp ret []
                                               ) with
@@ -46449,7 +46439,7 @@ module MakeParser =
                                         fun (s :
                                           'a_UIDENT) ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.TyCol
                                              (_loc, (
                                               (Ast.TyId
@@ -46471,13 +46461,13 @@ module MakeParser =
                                 [([] , (
                                   (Gram.Action.mk (
                                     fun (_loc :
-                                      Gram.Loc.t) ->
+                                      FanLoc.t) ->
                                      (() : 'semi) )) ));
                                  (( [( (Gram.Skeyword (";;")) )] ), (
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (() : 'semi) )) ))] ))] ))) ()
                             ) ))
                         );
@@ -46498,7 +46488,7 @@ module MakeParser =
                                     fun (p :
                                       'patt) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (p : 'ipatt) )) ))] ))] ))) ()
                             ) ))
                         );
@@ -46522,7 +46512,7 @@ module MakeParser =
                                     fun (i :
                                       'type_longident) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.TyId (_loc, i)) :
                                         'type_longident_and_parameters)
                                     )) ));
@@ -46544,7 +46534,7 @@ module MakeParser =
                                      fun (tp :
                                        'type_parameter) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyApp
                                           (_loc, (
                                            (Ast.TyId (_loc, i)) ),
@@ -46572,7 +46562,7 @@ module MakeParser =
                                         'type_parameters) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((tpl ( (Ast.TyId (_loc, i))
                                             )) :
                                            'type_longident_and_parameters)
@@ -46597,7 +46587,7 @@ module MakeParser =
                                     fun (t :
                                       'type_parameter) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (fun acc ->
                                         (Ast.TyApp (_loc, acc, t)) :
                                         'type_parameters) )) ));
@@ -46616,7 +46606,7 @@ module MakeParser =
                                       fun (t1 :
                                         'type_parameter) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         (fun acc ->
                                           (t2 (
                                             (Ast.TyApp
@@ -46645,7 +46635,7 @@ module MakeParser =
                                       'a_ident) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyQuo (_loc, i)) :
                                          'optional_type_parameter) ))
                                   ));
@@ -46653,7 +46643,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((Ast.TyAny (_loc)) :
                                         'optional_type_parameter) ))
                                   ));
@@ -46671,7 +46661,7 @@ module MakeParser =
                                      fun _ ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyQuM (_loc, i)) :
                                           'optional_type_parameter)
                                     )) ));
@@ -46682,7 +46672,7 @@ module MakeParser =
                                     fun _ ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyAnM (_loc)) :
                                          'optional_type_parameter) ))
                                   ));
@@ -46700,7 +46690,7 @@ module MakeParser =
                                      fun _ ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyQuP (_loc, i)) :
                                           'optional_type_parameter)
                                     )) ));
@@ -46711,7 +46701,7 @@ module MakeParser =
                                     fun _ ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyAnP (_loc)) :
                                          'optional_type_parameter) ))
                                   ));
@@ -46727,7 +46717,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
@@ -46749,7 +46739,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           (((("" | "typ") | "anti") as
@@ -46781,7 +46771,7 @@ module MakeParser =
                                     fun (i :
                                       'a_LIDENT) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((i, [] ) :
                                         'type_ident_and_parameters)
                                     )) ));
@@ -46803,7 +46793,7 @@ module MakeParser =
                                      fun (t :
                                        'optional_type_parameter) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((i, ( [t] )) :
                                          'type_ident_and_parameters)
                                     )) ));
@@ -46831,7 +46821,7 @@ module MakeParser =
                                         'optional_type_parameter list) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((i, tpl) :
                                            'type_ident_and_parameters)
                                     )) ))] ))] ))) () ) ))
@@ -46857,7 +46847,7 @@ module MakeParser =
                                        'label_declaration_list) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyRec (_loc, t)) :
                                           'type_kind) )) ));
                                  ((
@@ -46883,7 +46873,7 @@ module MakeParser =
                                        fun (t1 :
                                          'ctyp) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyMan
                                             (_loc, t1, (
                                              (Ast.TySum (_loc, t2))
@@ -46912,7 +46902,7 @@ module MakeParser =
                                         fun (t1 :
                                           'ctyp) ->
                                          fun (_loc :
-                                           Gram.Loc.t) ->
+                                           FanLoc.t) ->
                                           ((Ast.TyMan
                                              (_loc, t1, (
                                               (Ast.TyRec (_loc, t2))
@@ -46935,7 +46925,7 @@ module MakeParser =
                                        fun (t :
                                          'ctyp) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyMan
                                             (_loc, t, (
                                              (Ast.TyPrv (_loc, tk))
@@ -46951,7 +46941,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (t : 'type_kind) )) ));
                                  ((
                                   [(
@@ -46979,14 +46969,14 @@ module MakeParser =
                                              fun (x :
                                                Gram.Token.t option) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((x, t) : 'e__33) ))
                                          ))] ))) )] ), (
                                   (Gram.Action.mk (
                                     fun ((x, t) :
                                       'e__33) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       ((match (x, t) with
                                         | (None, Ast.TyAnt (_)) -> t
                                         | _ -> (Ast.TySum (_loc, t))) :
@@ -46999,7 +46989,7 @@ module MakeParser =
                                       'type_kind) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyPrv (_loc, tk)) :
                                          'type_kind) )) ))] ))] )))
                             () ) ))
@@ -47025,7 +47015,7 @@ module MakeParser =
                                        'label_declaration_list) ->
                                       fun _ ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyRec (_loc, t)) :
                                           'ctyp_quot) )) ));
                                  ((
@@ -47043,7 +47033,7 @@ module MakeParser =
                                       fun (x :
                                         'more_ctyp) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyMan (_loc, x, y)) :
                                           'ctyp_quot) )) ));
                                  ((
@@ -47058,7 +47048,7 @@ module MakeParser =
                                       'constructor_declarations) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TySum (_loc, t)) :
                                          'ctyp_quot) )) ));
                                  ((
@@ -47069,7 +47059,7 @@ module MakeParser =
                                       'ctyp_quot) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyPrv (_loc, t)) :
                                          'ctyp_quot) )) ))] ))] )))
                             () ) ))
@@ -47098,7 +47088,7 @@ module MakeParser =
                                        fun (i :
                                          'module_expr) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.MeApp (_loc, i, j)) :
                                            'module_expr) )) ))] ))]
                               ))) () ) ))
@@ -47126,7 +47116,7 @@ module MakeParser =
                                        fun (i :
                                          'ident_quot) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.IdApp (_loc, i, j)) :
                                            'ident_quot) )) ))] ))] )))
                             () ) ))
@@ -47156,7 +47146,7 @@ module MakeParser =
                                        fun (i :
                                          'module_longident_with_app) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.IdApp (_loc, i, j)) :
                                            'module_longident_with_app)
                                     )) ))] ))] ))) () ) ))
@@ -47185,7 +47175,7 @@ module MakeParser =
                                        fun (i :
                                          'type_longident) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.IdApp (_loc, i, j)) :
                                            'type_longident) )) ))] ))]
                               ))) () ) ))
@@ -47209,7 +47199,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (t : 'constructor_arg_list) ))
                                   ));
                                  ((
@@ -47223,7 +47213,7 @@ module MakeParser =
                                       fun (t1 :
                                         'constructor_arg_list) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyAnd (_loc, t1, t2)) :
                                           'constructor_arg_list) ))
                                   ))] ))] ))) () ) ))
@@ -47240,7 +47230,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (() : 'value_let) )) ))] ))] )))
                             () ) ))
                         );
@@ -47256,7 +47246,7 @@ module MakeParser =
                                   (Gram.Action.mk (
                                     fun _ ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (() : 'value_val) )) ))] ))] )))
                             () ) ))
                         );
@@ -47288,7 +47278,7 @@ module MakeParser =
                                         'a_LIDENT) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.TyCol
                                             (_loc, (
                                              (Ast.TyId
@@ -47316,7 +47306,7 @@ module MakeParser =
                                       fun (s :
                                         'a_LIDENT) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.TyCol
                                            (_loc, (
                                             (Ast.TyId
@@ -47336,7 +47326,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
@@ -47357,7 +47347,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           ((("" | "typ") as n), s) ->
@@ -47387,7 +47377,7 @@ module MakeParser =
                                     fun (t :
                                       'ctyp) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (t : 'poly_type) )) ));
                                  ((
                                   [(
@@ -47407,7 +47397,7 @@ module MakeParser =
                                             fun (t :
                                               'typevars) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (t : 'e__34) )) ))] )))
                                    ); (
                                    (Gram.Snterm
@@ -47420,7 +47410,7 @@ module MakeParser =
                                      fun (t1 :
                                        'e__34) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.TyPol (_loc, t1, t2)) :
                                          'poly_type) )) ))] ))] )))
                             () ) ))
@@ -47444,7 +47434,7 @@ module MakeParser =
                                     fun (p :
                                       'patt) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (p : 'labeled_ipatt) )) ));
                                  ((
                                   [( (Gram.Skeyword ("?")) ); (
@@ -47468,7 +47458,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaOlb
                                               (_loc, "", (
                                                (Ast.PaTyc
@@ -47494,7 +47484,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.PaOlb
                                             (_loc, i, (
                                              (Ast.PaNil (_loc)) ))) :
@@ -47528,7 +47518,7 @@ module MakeParser =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaOlbi
                                                 (_loc, "", (
                                                  (Ast.PaTyc
@@ -47562,7 +47552,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaOlbi
                                               (_loc, "", (
                                                (Ast.PaId
@@ -47583,7 +47573,7 @@ module MakeParser =
                                       'a_LIDENT) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaOlb
                                           (_loc, i, (
                                            (Ast.PaNil (_loc)) ))) :
@@ -47621,7 +47611,7 @@ module MakeParser =
                                            fun (i :
                                              'a_OPTLABEL) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaOlbi
                                                 (_loc, i, (
                                                  (Ast.PaTyc
@@ -47654,7 +47644,7 @@ module MakeParser =
                                          fun (i :
                                            'a_OPTLABEL) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaOlb
                                               (_loc, i, (
                                                (Ast.PaTyc
@@ -47686,7 +47676,7 @@ module MakeParser =
                                          fun (i :
                                            'a_OPTLABEL) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaOlbi
                                               (_loc, i, p, e)) :
                                              'labeled_ipatt) )) ));
@@ -47709,7 +47699,7 @@ module MakeParser =
                                        fun (i :
                                          'a_OPTLABEL) ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.PaOlb (_loc, i, p)) :
                                            'labeled_ipatt) )) ));
                                  ((
@@ -47724,7 +47714,7 @@ module MakeParser =
                                      fun (i :
                                        'a_OPTLABEL) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaOlb
                                           (_loc, i, (
                                            (Ast.PaAny (_loc)) ))) :
@@ -47747,7 +47737,7 @@ module MakeParser =
                                      fun (i :
                                        'a_OPTLABEL) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaOlb
                                           (_loc, i, (
                                            (Ast.PaId
@@ -47777,7 +47767,7 @@ module MakeParser =
                                         fun _ ->
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((Ast.PaLab
                                               (_loc, i, (
                                                (Ast.PaTyc
@@ -47803,7 +47793,7 @@ module MakeParser =
                                       fun _ ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Ast.PaLab
                                             (_loc, i, (
                                              (Ast.PaNil (_loc)) ))) :
@@ -47820,7 +47810,7 @@ module MakeParser =
                                       'a_LIDENT) ->
                                      fun _ ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaLab
                                           (_loc, i, (
                                            (Ast.PaNil (_loc)) ))) :
@@ -47843,7 +47833,7 @@ module MakeParser =
                                      fun (i :
                                        'a_LABEL) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Ast.PaLab (_loc, i, p)) :
                                          'labeled_ipatt) )) ))] ))]
                               ))) () ) ))
@@ -47875,7 +47865,7 @@ module MakeParser =
                                       fun (i :
                                         'label_longident) ->
                                        fun (_loc :
-                                         Gram.Loc.t) ->
+                                         FanLoc.t) ->
                                         ((Ast.RbEq (_loc, i, e)) :
                                           'label_expr) )) ))] ))] )))
                             () ) ))
@@ -47899,7 +47889,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | UIDENT (s) ->
                                           (s : 'a_UIDENT)
@@ -47916,7 +47906,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | UIDENT ("False") ->
                                           (" False" : 'a_UIDENT)
@@ -47933,7 +47923,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | UIDENT ("True") ->
                                           (" True" : 'a_UIDENT)
@@ -47952,7 +47942,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | ANTIQUOT
                                           ((("" | "uid") as n), s) ->
@@ -47978,7 +47968,7 @@ module MakeParser =
                                     fun (__camlp4_0 :
                                       Gram.Token.t) ->
                                      fun (_loc :
-                                       Gram.Loc.t) ->
+                                       FanLoc.t) ->
                                       (match __camlp4_0 with
                                        | EOI ->
                                           ((None) : 'top_phrase)
@@ -47997,7 +47987,7 @@ module MakeParser =
                                      fun (l :
                                        'str_item list) ->
                                       fun (_loc :
-                                        Gram.Loc.t) ->
+                                        FanLoc.t) ->
                                        ((Some (Ast.stSem_of_list l)) :
                                          'top_phrase) )) ));
                                  ((
@@ -48021,7 +48011,7 @@ module MakeParser =
                                         'a_LIDENT) ->
                                        fun _ ->
                                         fun (_loc :
-                                          Gram.Loc.t) ->
+                                          FanLoc.t) ->
                                          ((Some
                                             ((Ast.StDir (_loc, n, dp)))) :
                                            'top_phrase) )) ))] ))] )))
@@ -48106,7 +48096,7 @@ module MakeParserParser =
                                          fun (e :
                                            'expr) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (e : 'stream_expr) )) ))]
                                      ))] ))) () ) ))
                              );
@@ -48123,7 +48113,7 @@ module MakeParserParser =
                                        (Gram.Action.mk (
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (() : 'stream_begin) )) ))]
                                      ))] ))) () ) ))
                              );
@@ -48140,7 +48130,7 @@ module MakeParserParser =
                                        (Gram.Action.mk (
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (() : 'stream_end) )) ))]
                                      ))] ))) () ) ))
                              );
@@ -48157,7 +48147,7 @@ module MakeParserParser =
                                        (Gram.Action.mk (
                                          fun _ ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (() : 'stream_quot) )) ))]
                                      ))] ))) () ) ))
                              );
@@ -48187,7 +48177,7 @@ module MakeParserParser =
                                            'parser_case list) ->
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (pcl : 'parser_case_list)
                                          )) ))] ))] ))) () ) ))
 
@@ -50086,7 +50076,7 @@ module MakeQuotationCommon =
                                                              fun (x :
                                                                'entry) ->
                                                               fun (_loc :
-                                                                Gram.Loc.t) ->
+                                                                FanLoc.t) ->
                                                                (match
                                                                   __camlp4_0 with
                                                                 | EOI ->

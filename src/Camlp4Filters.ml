@@ -17,7 +17,7 @@ module MakeAstLifter (AstFilters : Camlp4.Sig.AstFilters) = struct
 
   register_str_item_filter (fun ast ->
     let _loc = Ast.loc_of_str_item ast in
-    <:str_item< let loc = Loc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) >>);
+    <:str_item< let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) >>); (* FIXME Loc => FanLoc*)
 
 end;
 
@@ -33,7 +33,7 @@ module MakeExceptionTracer (AstFilters : Camlp4.Sig.AstFilters) = struct
   value add_debug_expr e =
     (* let _loc = Loc.make_absolute (MLast.loc_of_expr e) in *)
     let _loc = Ast.loc_of_expr e in
-    let msg = "camlp4-debug: exc: %s at " ^ Loc.to_string _loc ^ "@." in
+    let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
     <:expr<
         try $e
         with
@@ -77,7 +77,7 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
   module StringMap = Map.Make String;
   open Ast;
 
-  value _loc = Loc.ghost;
+  value _loc = FanLoc.ghost;
 
   value sf = Printf.sprintf;
 
@@ -661,7 +661,7 @@ module MakeLocationStripper (AstFilters : Camlp4.Sig.AstFilters) = struct
   open AstFilters;
   open Ast;
 
-  register_str_item_filter (Ast.map_loc (fun _ -> Loc.ghost))#str_item;
+  register_str_item_filter (Ast.map_loc (fun _ -> FanLoc.ghost))#str_item;
 
 end;
 
@@ -702,7 +702,7 @@ module MakeProfiler (AstFilters : Camlp4.Sig.AstFilters) = struct
   value decorate_this_expr e id =
     let buf = Buffer.create 42 in
     let _loc = Ast.loc_of_expr e in
-    let () = Format.bprintf buf "%s @@ %a@?" id Loc.dump _loc in
+    let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
     let s = Buffer.contents buf in
     <:expr< let () = Camlp4prof.count $`str:s in $e >>;
 
@@ -764,7 +764,7 @@ type t =
     ant : Ast.ident;
   };
 
-value _loc = Loc.ghost;
+value _loc = FanLoc.ghost;
 
 value x i = <:ident< $(lid:"x"^string_of_int i) >>;
 

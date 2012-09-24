@@ -217,7 +217,7 @@ module MakeMacroParser =
                                          fun (__camlp4_0 :
                                            Gram.Token.t) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (match __camlp4_0 with
                                             | UIDENT (_) ->
                                                (((((new reloc) _loc)#expr) e) :
@@ -246,7 +246,7 @@ module MakeMacroParser =
                                          fun (__camlp4_0 :
                                            Gram.Token.t) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (match __camlp4_0 with
                                             | UIDENT (_) ->
                                                (let p = (substp _loc []  e) in
@@ -279,7 +279,7 @@ module MakeMacroParser =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | UIDENT (_) ->
                                                 (let el =
@@ -325,7 +325,7 @@ module MakeMacroParser =
                                           fun (__camlp4_0 :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (match __camlp4_0 with
                                              | UIDENT (_) ->
                                                 (let pl =
@@ -569,7 +569,7 @@ module MakeMacroParser =
                                           fun (x :
                                             'macro_def) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((execute_macro (
                                                (Ast.StNil (_loc)) ) (
                                                fun a ->
@@ -597,7 +597,7 @@ module MakeMacroParser =
                                           fun (x :
                                             'macro_def_sig) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((execute_macro (
                                                (Ast.SgNil (_loc)) ) (
                                                fun a ->
@@ -627,7 +627,7 @@ module MakeMacroParser =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (let fname =
                                                (Gram.Token.extract_string
                                                  fname) in
@@ -664,7 +664,7 @@ module MakeMacroParser =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((make_SdITE_result st1
                                                    st2) : 'macro_def) ))
                                         ));
@@ -695,7 +695,7 @@ module MakeMacroParser =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((make_SdITE_result st1
                                                    st2) : 'macro_def) ))
                                         ));
@@ -711,7 +711,7 @@ module MakeMacroParser =
                                             'uident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((SdUnd (i)) : 'macro_def)
                                           )) ));
                                        ((
@@ -734,7 +734,7 @@ module MakeMacroParser =
                                              'uident) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((SdDef (i, def)) :
                                                 'macro_def) )) ))] ))] )))
                                   () ) ))
@@ -761,7 +761,7 @@ module MakeMacroParser =
                                             Gram.Token.t) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              (let fname =
                                                (Gram.Token.extract_string
                                                  fname) in
@@ -798,7 +798,7 @@ module MakeMacroParser =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((make_SdITE_result sg1
                                                    sg2) : 'macro_def_sig)
                                           )) ));
@@ -829,7 +829,7 @@ module MakeMacroParser =
                                              fun _ ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((make_SdITE_result sg1
                                                    sg2) : 'macro_def_sig)
                                           )) ));
@@ -845,7 +845,7 @@ module MakeMacroParser =
                                             'uident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((SdUnd (i)) :
                                                'macro_def_sig) )) ));
                                        ((
@@ -861,7 +861,7 @@ module MakeMacroParser =
                                             'uident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((SdDef (i, None )) :
                                                'macro_def_sig) )) ))] ))]
                                     ))) () ) ))
@@ -885,7 +885,7 @@ module MakeMacroParser =
                                           fun (i :
                                             'uident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Stack.push ( (is_defined i)
                                                ) stack) :
                                               'uident_eval_ifdef) )) ))]
@@ -910,7 +910,7 @@ module MakeMacroParser =
                                           fun (i :
                                             'uident) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Stack.push (
                                                (not ( (is_defined i) )) )
                                                stack) :
@@ -935,7 +935,7 @@ module MakeMacroParser =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (([]) : 'else_macro_def) ))
                                         ));
                                        ((
@@ -956,7 +956,7 @@ module MakeMacroParser =
                                              'smlist_else) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (st : 'else_macro_def) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -978,7 +978,7 @@ module MakeMacroParser =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (([]) : 'else_macro_def_sig)
                                           )) ));
                                        ((
@@ -999,7 +999,7 @@ module MakeMacroParser =
                                              'sglist_else) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (st : 'else_macro_def_sig)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -1020,7 +1020,7 @@ module MakeMacroParser =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.ExId
                                                (_loc, (
                                                 (Ast.IdUid (_loc, "()"))
@@ -1042,7 +1042,7 @@ module MakeMacroParser =
                                              'expr) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (e : 'else_expr) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -1075,7 +1075,7 @@ module MakeMacroParser =
                                                   fun (si :
                                                     'str_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((SdStr (si)) :
                                                       'e__1) )) ));
                                               ((
@@ -1095,7 +1095,7 @@ module MakeMacroParser =
                                                   fun (d :
                                                     'macro_def) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((execute_macro_if_active_branch
                                                        _loc (
                                                        (Ast.StNil (_loc))
@@ -1111,7 +1111,7 @@ module MakeMacroParser =
                                           fun (sml :
                                             'e__1 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (sml : 'smlist_then) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -1144,7 +1144,7 @@ module MakeMacroParser =
                                                   fun (si :
                                                     'str_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((SdStr (si)) :
                                                       'e__2) )) ));
                                               ((
@@ -1164,7 +1164,7 @@ module MakeMacroParser =
                                                   fun (d :
                                                     'macro_def) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((execute_macro_if_active_branch
                                                        _loc (
                                                        (Ast.StNil (_loc))
@@ -1180,7 +1180,7 @@ module MakeMacroParser =
                                           fun (sml :
                                             'e__2 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (sml : 'smlist_else) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -1213,7 +1213,7 @@ module MakeMacroParser =
                                                   fun (si :
                                                     'sig_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((SdStr (si)) :
                                                       'e__3) )) ));
                                               ((
@@ -1233,7 +1233,7 @@ module MakeMacroParser =
                                                   fun (d :
                                                     'macro_def_sig) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((execute_macro_if_active_branch
                                                        _loc (
                                                        (Ast.SgNil (_loc))
@@ -1249,7 +1249,7 @@ module MakeMacroParser =
                                           fun (sgl :
                                             'e__3 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (sgl : 'sglist_then) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -1282,7 +1282,7 @@ module MakeMacroParser =
                                                   fun (si :
                                                     'sig_item) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((SdStr (si)) :
                                                       'e__4) )) ));
                                               ((
@@ -1302,7 +1302,7 @@ module MakeMacroParser =
                                                   fun (d :
                                                     'macro_def_sig) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     ((execute_macro_if_active_branch
                                                        _loc (
                                                        (Ast.SgNil (_loc))
@@ -1318,7 +1318,7 @@ module MakeMacroParser =
                                           fun (sgl :
                                             'e__4 list) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (sgl : 'sglist_else) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -1334,14 +1334,14 @@ module MakeMacroParser =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'endif) )) ));
                                        (( [( (Gram.Skeyword ("END")) )]
                                         ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'endif) )) ))] ))] )))
                                   () ) ))
                               );
@@ -1356,7 +1356,7 @@ module MakeMacroParser =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            ((None) : 'opt_macro_value) ))
                                         ));
                                        ((
@@ -1370,7 +1370,7 @@ module MakeMacroParser =
                                             'expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Some ([] , e)) :
                                                'opt_macro_value) )) ));
                                        ((
@@ -1392,7 +1392,7 @@ module MakeMacroParser =
                                                   fun (x :
                                                     Gram.Token.t) ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (let x =
                                                       (Gram.Token.extract_string
                                                         x) in
@@ -1413,7 +1413,7 @@ module MakeMacroParser =
                                                'e__5 list) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Some (pl, e)) :
                                                   'opt_macro_value) )) ))]
                                       ))] ))) () ) ))
@@ -1451,7 +1451,7 @@ module MakeMacroParser =
                                                 Gram.Token.t) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  (let i =
                                                    (Gram.Token.extract_string
                                                      i) in
@@ -1482,7 +1482,7 @@ module MakeMacroParser =
                                                'uident) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (if (is_defined i) then
                                                   e2
                                                  else e1 : 'expr) )) ));
@@ -1509,7 +1509,7 @@ module MakeMacroParser =
                                                'uident) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 (if (is_defined i) then
                                                   e1
                                                  else e2 : 'expr) )) ))]
@@ -1550,7 +1550,7 @@ module MakeMacroParser =
                                                  'uident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (if (is_defined i) then
                                                     p2
                                                    else p1 : 'patt) )) ));
@@ -1581,7 +1581,7 @@ module MakeMacroParser =
                                                  'uident) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   (if (is_defined i) then
                                                     p1
                                                    else p2 : 'patt) )) ))]
@@ -1606,7 +1606,7 @@ module MakeMacroParser =
                                           fun (i :
                                             Gram.Token.t) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (let i =
                                               (Gram.Token.extract_string
                                                 i) in
@@ -1635,7 +1635,7 @@ module MakeMacroParser =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExVrn (_loc, s)) :
                                                'expr) )) ));
                                        ((
@@ -1648,7 +1648,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1659,7 +1659,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1669,7 +1669,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1679,7 +1679,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1689,7 +1689,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1699,7 +1699,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1710,7 +1710,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ));
                                             ((
@@ -1720,7 +1720,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__6) )) ))] ))
                                          )] ), (
@@ -1729,7 +1729,7 @@ module MakeMacroParser =
                                             'e__6) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.ExVrn (_loc, kwd)) :
                                                'expr) )) ))] ))] ))) () )
                                 ))
@@ -1755,7 +1755,7 @@ module MakeMacroParser =
                                             'a_ident) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaVrn (_loc, s)) :
                                                'patt) )) ));
                                        ((
@@ -1768,7 +1768,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ));
                                             ((
@@ -1778,7 +1778,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ));
                                             ((
@@ -1788,7 +1788,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ));
                                             ((
@@ -1798,7 +1798,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ));
                                             ((
@@ -1809,7 +1809,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ));
                                             ((
@@ -1819,7 +1819,7 @@ module MakeMacroParser =
                                                fun (x :
                                                  Gram.Token.t) ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((Gram.Token.extract_string
                                                     x) : 'e__7) )) ))] ))
                                          )] ), (
@@ -1828,7 +1828,7 @@ module MakeMacroParser =
                                             'e__7) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((Ast.PaVrn (_loc, kwd)) :
                                                'patt) )) ))] ))] ))) () )
                                 ))

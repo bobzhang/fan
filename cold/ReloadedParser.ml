@@ -113,7 +113,7 @@ module Make =
                                              'match_case) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.ExFun (_loc, a)) : 'expr)
                                            )) ))] ))] ))) () ) ))
                                );
@@ -150,7 +150,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.McNil (_loc)) :
                                               'match_case) )) ));
                                        ((
@@ -172,7 +172,7 @@ module Make =
                                              'match_case0 list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((Ast.mcOr_of_list l) :
                                                 'match_case) )) ))] ))] )))
                                   () ) ))
@@ -211,7 +211,7 @@ module Make =
                                              fun (p :
                                                'patt_as_patt_opt) ->
                                               fun (_loc :
-                                                Gram.Loc.t) ->
+                                                FanLoc.t) ->
                                                ((Ast.McArr
                                                   (_loc, p, w, (
                                                    (mkseq _loc e) ))) :
@@ -246,7 +246,7 @@ module Make =
                                                'sequence) ->
                                               fun _ ->
                                                fun (_loc :
-                                                 Gram.Loc.t) ->
+                                                 FanLoc.t) ->
                                                 ((Ast.ExIfe
                                                    (_loc, ( (mkseq _loc e1)
                                                     ), ( (mkseq _loc e2) ), (
@@ -284,7 +284,7 @@ module Make =
                                                  'sequence) ->
                                                 fun _ ->
                                                  fun (_loc :
-                                                   Gram.Loc.t) ->
+                                                   FanLoc.t) ->
                                                   ((Ast.ExIfe
                                                      (_loc, ( (mkseq _loc e1)
                                                       ), ( (mkseq _loc e2) ),
@@ -303,7 +303,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'value_let) )) ))] ))] )))
                                   () ) ))
                               );
@@ -318,7 +318,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'value_val) )) ))] ))] )))
                                   () ) ))
                               );
@@ -330,19 +330,19 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (() : 'semi) )) ));
                                        (( [( (Gram.Skeyword (";")) )] ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'semi) )) ));
                                        (( [( (Gram.Skeyword (";;")) )] ), (
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'semi) )) ))] ))] ))) () )
                                 ))
 

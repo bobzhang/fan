@@ -1,4 +1,4 @@
-type loc = Loc.t
+type loc = FanLoc.t
 and meta_bool = BTrue | BFalse | BAnt of string
 and rec_flag = ReRecursive | ReNil | ReAnt of string
 and direction_flag = DiTo | DiDownto | DiAnt of string

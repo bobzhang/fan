@@ -370,7 +370,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
           <:expr< match $tok with
                   [ $pat:match_ -> $e1
                   | _ -> assert False ] >> ] in
-      <:expr< fun ($locid : $uid:gm.Loc.t) -> $e2 >> in (*FIXME hard coded Loc*)
+      <:expr< fun ($locid : FanLoc.t) -> $e2 >> in (*FIXME hard coded Loc*)
     let (txt, _) =
       List.fold_left
         (fun (txt, i) s ->

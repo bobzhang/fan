@@ -31,15 +31,15 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     debug ast2pt "constructors_arity: %b@." FanConfig.constructors_arity.val in
     FanConfig.constructors_arity.val;
 
-  value error loc str = Loc.raise loc (Failure str);
+  value error loc str = FanLoc.raise loc (Failure str);
 
   value char_of_char_token loc s =
-    try TokenEval.char s with [ Failure _ as exn -> Loc.raise loc exn ]
+    try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ]
   ;
 
   value string_of_string_token loc s =
     try TokenEval.string s
-    with [ Failure _ as exn -> Loc.raise loc exn ]
+    with [ Failure _ as exn -> FanLoc.raise loc exn ]
   ;
 
   value remove_underscores s =
@@ -54,8 +54,8 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     in remove 0 0
   ;
 
-  value mkloc = Loc.to_ocaml_location;
-  value mkghloc loc = Loc.to_ocaml_location (Loc.ghostify loc);
+  value mkloc = FanLoc.to_ocaml_location;
+  value mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
 
   value with_loc txt loc = Location.mkloc txt (mkloc loc);
 
@@ -602,7 +602,7 @@ module Make (Ast : Sig.Camlp4Ast) = struct
     | <:expr@loc< $uid:s >> as e ->
         match l with
         [ [] -> [(loc, [], e)]
-        | [(loc', sl, e) :: l] -> [(Loc.merge loc loc', [s :: sl], e) :: l] ]
+        | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
     | <:expr< $(id:(<:ident< $_.$_ >> as i)) >> ->
         let rec normalize_acc =
           fun
@@ -697,7 +697,7 @@ value varify_constructors var_names =
             (fun (loc_bp, e1) (loc_ep, ml, e2) ->
               match e2 with
               [ <:expr@sloc< $lid:s >> ->
-                  let loc = Loc.merge loc_bp loc_ep
+                  let loc = FanLoc.merge loc_bp loc_ep
                   in  (loc, mkexp loc (Pexp_field e1 (mkli sloc (conv_lab s) ml)))
               | _ -> error (loc_of_expr e2) "lowercase identifier expected" ])
             (loc, e) l
@@ -833,7 +833,7 @@ value varify_constructors var_names =
           [ [] -> expr <:expr< () >>
           | [e] -> expr e
           | [e :: el] ->
-              let _loc = Loc.merge (loc_of_expr e) _loc in
+              let _loc = FanLoc.merge (loc_of_expr e) _loc in
               mkexp _loc (Pexp_sequence (expr e) (loop el)) ]
         in
         loop (list_of_expr e [])
@@ -954,7 +954,7 @@ value varify_constructors var_names =
         let cl =
           List.map
             (fun (t1, t2) ->
-              let loc = Loc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
+              let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
               (ctyp t1, ctyp t2, mkloc loc))
             cl
         in

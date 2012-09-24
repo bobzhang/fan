@@ -328,10 +328,7 @@ module type Ast =
 
 module type Camlp4Ast =
                                                          sig
-                                                          module Loc :
-                                                           module type of FanLoc
-
-                                                          type loc = Loc.t
+                                                          type loc = FanLoc.t
                                                           and meta_bool =
                                                               BTrue
                                                             | BFalse
@@ -2243,13 +2240,13 @@ module type Camlp4Ast =
                                                               (expr -> bool)
 
                                                              val ty_of_stl :
-                                                              ((Loc.t *
+                                                              ((FanLoc.t *
                                                                 string *
                                                                 ctyp list) ->
                                                                ctyp)
 
                                                              val ty_of_sbt :
-                                                              ((Loc.t *
+                                                              ((FanLoc.t *
                                                                 string *
                                                                 bool * 
                                                                 ctyp) ->
@@ -2268,13 +2265,13 @@ module type Camlp4Ast =
                                                                -> binding)
 
                                                              val sum_type_of_list :
-                                                              ((Loc.t *
+                                                              ((FanLoc.t *
                                                                 string *
                                                                 ctyp list) list
                                                                -> ctyp)
 
                                                              val record_type_of_list :
-                                                              ((Loc.t *
+                                                              ((FanLoc.t *
                                                                 string *
                                                                 bool * 
                                                                 ctyp) list ->
@@ -2456,7 +2453,8 @@ module Camlp4AstToAst =
                                                           module MakeCamlp4Ast =
                                                            functor (Loc : Type) ->
                                                             struct
-                                                             type loc = Loc.t
+                                                             type loc =
+                                                              FanLoc.t
                                                              and meta_bool =
                                                                  BTrue
                                                                | BFalse
@@ -3323,9 +3321,7 @@ type
                                                           module type AstFilters =
                                                            sig
                                                             module Ast :
-                                                             (Camlp4Ast with
-                                                              module Loc =
-                                                              FanLoc)
+                                                             Camlp4Ast
 
                                                             type 'a filter =
                                                              ('a -> 'a)
@@ -3652,9 +3648,7 @@ module type Syntax =
                                                           module type Camlp4Syntax =
                                                            sig
                                                             module Ast :
-                                                             (Camlp4Ast with
-                                                              module Loc =
-                                                              FanLoc)
+                                                             Camlp4Ast
 
                                                             module Token :
                                                              FanSig.Camlp4Token
@@ -3662,11 +3656,7 @@ module type Syntax =
                                                             module Gram :
                                                              (FanSig.Grammar.Static
                                                               with
-                                                              module Loc =
-                                                              Ast.Loc
-                                                              and module Loc =
-                                                              Ast.Loc
-                                                              and module Token =
+                                                              module Token =
                                                               Token)
 
                                                             module
@@ -4307,9 +4297,7 @@ module type SyntaxExtension =
                                                              FanSig.camlp4_token
 
                                                             module Ast :
-                                                             (Camlp4Ast with
-                                                              module Loc =
-                                                              FanLoc)
+                                                             Camlp4Ast
 
                                                             module Token :
                                                              (FanSig.Token
@@ -4325,11 +4313,7 @@ module type SyntaxExtension =
                                                             module Gram :
                                                              (FanSig.Grammar.Static
                                                               with
-                                                              module Loc =
-                                                              FanLoc
-                                                              and module Loc =
-                                                              FanLoc
-                                                              and module Token =
+                                                              module Token =
                                                               Token)
 
                                                             module

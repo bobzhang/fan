@@ -47,7 +47,7 @@ module Make =
                                   fun (e :
                                     'expr) ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     (e : 'stream_expr) )) ))] ))] ))) () ) ))
                       );
                       (
@@ -61,7 +61,7 @@ module Make =
                                 (Gram.Action.mk (
                                   fun _ ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     (() : 'stream_begin) )) ))] ))] ))) () )
                         ))
                       );
@@ -76,7 +76,7 @@ module Make =
                                 (Gram.Action.mk (
                                   fun _ ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     (() : 'stream_end) )) ))] ))] ))) () ) ))
                       );
                       (
@@ -90,7 +90,7 @@ module Make =
                                 (Gram.Action.mk (
                                   fun _ ->
                                    fun (_loc :
-                                     Gram.Loc.t) ->
+                                     FanLoc.t) ->
                                     (() : 'stream_quot) )) ))] ))] ))) () )
                         ))
                       );
@@ -115,7 +115,7 @@ module Make =
                                     'parser_case list) ->
                                    fun _ ->
                                     fun (_loc :
-                                      Gram.Loc.t) ->
+                                      FanLoc.t) ->
                                      (pcl : 'parser_case_list) )) ))] ))] )))
                           () ) ))
 

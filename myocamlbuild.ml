@@ -780,6 +780,8 @@ let () =
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
+    "src/Camlp4/Struct/Camlp4Ast.ml" |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
+    (* dep ["ocaml"; "file:Camlp4/Struct/Camlp4Ast.ml"] ["Camlp4/Camlp4Ast.partial.ml"]; *)
     dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];
     dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
       ["camlp4/Camlp4/Camlp4Ast.partial.ml"];

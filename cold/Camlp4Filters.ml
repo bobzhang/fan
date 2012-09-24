@@ -48,8 +48,9 @@ module MakeAstLifter =
                                             (_loc, (
                                              (Ast.IdAcc
                                                (_loc, (
-                                                (Ast.IdUid (_loc, "Loc")) ),
-                                                ( (Ast.IdLid (_loc, "ghost"))
+                                                (Ast.IdUid (_loc, "FanLoc"))
+                                                ), (
+                                                (Ast.IdLid (_loc, "ghost"))
                                                 ))) ))) ))) ), (
                                        (MetaAst.Expr.meta_str_item _loc ast)
                                        ))) ))) ))
@@ -76,7 +77,8 @@ module MakeExceptionTracer =
                                      let _loc = (Ast.loc_of_expr e) in
                                      let msg =
                                       ("camlp4-debug: exc: %s at " ^ (
-                                        (( (Loc.to_string _loc) ) ^ "@.") )) in
+                                        (( (FanLoc.to_string _loc) ) ^ "@.")
+                                        )) in
                                      (Ast.ExTry
                                        (_loc, e, (
                                         (Ast.McOr
@@ -258,7 +260,7 @@ module MakeFoldGenerator =
 
                                                 open Ast
 
-                                                let _loc = Loc.ghost
+                                                let _loc = FanLoc.ghost
 
                                                 let sf = Printf.sprintf
 
@@ -2248,7 +2250,7 @@ module MakeLocationStripper =
                                                                ((Ast.map_loc
                                                                   (
                                                                   fun _ ->
-                                                                   Loc.ghost
+                                                                   FanLoc.ghost
                                                                   ))
                                                                 #str_item) ))
 
@@ -2309,7 +2311,7 @@ module MakeProfiler =
      fun id ->
       let buf = (Buffer.create 42) in
       let _loc = (Ast.loc_of_expr e) in
-      let () = (Format.bprintf buf "%s @@ %a@?" id Loc.dump _loc) in
+      let () = (Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc) in
       let s = (Buffer.contents buf) in
       (Ast.ExLet
         (_loc, Ast.ReNil , (
@@ -2415,7 +2417,7 @@ module MakeMetaGenerator =
                                                                    Ast.ident}
 
                                                                 let _loc =
-                                                                 Loc.ghost
+                                                                 FanLoc.ghost
 
                                                                 let x =
                                                                  fun i ->

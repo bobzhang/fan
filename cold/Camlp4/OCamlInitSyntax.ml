@@ -1,7 +1,6 @@
 module Make =
- functor (Ast : (Sig.Camlp4Ast with module Loc = FanLoc)) ->
-  functor (Gram : (FanSig.Grammar.Static with module Loc = Ast.Loc
-                   and module Loc = Ast.Loc and type  Token.t =
+ functor (Ast : Sig.Camlp4Ast) ->
+  functor (Gram : (FanSig.Grammar.Static with type  Token.t =
                    FanSig.camlp4_token)) ->
    functor (Quotation : (Sig.Quotation with module Ast =
                          Sig.Camlp4AstToAst(Ast))) ->
@@ -402,7 +401,7 @@ module Make =
                           fun (__camlp4_0 :
                             Gram.Token.t) ->
                            fun (_loc :
-                             Gram.Loc.t) ->
+                             FanLoc.t) ->
                             (match __camlp4_0 with
                              | EOI -> ((None) : 'top_phrase)
                              | _ -> assert false) )) ))] ))] ))) () ) ))
@@ -436,7 +435,7 @@ module Make =
                      fun (x :
                        'expr) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | EOI -> (x : 'antiquot_expr)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
@@ -459,7 +458,7 @@ module Make =
                      fun (x :
                        'patt) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | EOI -> (x : 'antiquot_patt)
                         | _ -> assert false) )) ))] ))] ))) () ) ))

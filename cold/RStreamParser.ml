@@ -879,7 +879,7 @@ module Make =
                                                 'sequence) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((cparser_match _loc e po
                                                     pcl) : 'expr) )) ));
                                        ((
@@ -902,7 +902,7 @@ module Make =
                                              'parser_ipatt option) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((cparser _loc po pcl) : 'expr)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -925,7 +925,7 @@ module Make =
                                           fun (pc :
                                             'parser_case) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ([pc] : 'parser_case_list) )) ));
                                        ((
                                         [( (Gram.Skeyword ("[")) ); (
@@ -944,7 +944,7 @@ module Make =
                                              'parser_case list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (pcl : 'parser_case_list) )) ))]
                                       ))] ))) () ) ))
                               );
@@ -994,7 +994,7 @@ module Make =
                                                 'stream_patt) ->
                                                fun _ ->
                                                 fun (_loc :
-                                                  Gram.Loc.t) ->
+                                                  FanLoc.t) ->
                                                  ((sp, po, e) : 'parser_case)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -1010,7 +1010,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'stream_begin) )) ))] ))]
                                     ))) () ) ))
                               );
@@ -1025,7 +1025,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'stream_end) )) ))] ))] )))
                                   () ) ))
                               );
@@ -1040,7 +1040,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (() : 'stream_quot) )) ))] ))] )))
                                   () ) ))
                               );
@@ -1061,7 +1061,7 @@ module Make =
                                           fun (e :
                                             'expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             (e : 'stream_expr) )) ))] ))] )))
                                   () ) ))
                               );
@@ -1075,7 +1075,7 @@ module Make =
                                       [([] , (
                                         (Gram.Action.mk (
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (([]) : 'stream_patt) )) ));
                                        ((
                                         [(
@@ -1097,7 +1097,7 @@ module Make =
                                             fun (spc :
                                               'stream_patt_comp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (( (spc, None ) ) :: sp  :
                                                 'stream_patt) )) ));
                                        ((
@@ -1111,7 +1111,7 @@ module Make =
                                           fun (spc :
                                             'stream_patt_comp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ([(spc, None )] : 'stream_patt)
                                           )) ))] ))] ))) () ) ))
                               );
@@ -1145,7 +1145,7 @@ module Make =
                                                    'stream_expr) ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (e : 'e__1) )) ))] ))) )]
                                         ), (
                                         (Gram.Action.mk (
@@ -1154,7 +1154,7 @@ module Make =
                                            fun (spc :
                                              'stream_patt_comp) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((spc, eo) :
                                                'stream_patt_comp_err) )) ))]
                                       ))] ))) () ) ))
@@ -1183,7 +1183,7 @@ module Make =
                                             fun (spc :
                                               'stream_patt_comp_err) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (( spc ) :: sp  :
                                                 'stream_patt_comp_err_list)
                                           )) ));
@@ -1200,7 +1200,7 @@ module Make =
                                            fun (spc :
                                              'stream_patt_comp_err) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ([spc] :
                                                'stream_patt_comp_err_list) ))
                                         ));
@@ -1215,7 +1215,7 @@ module Make =
                                           fun (spc :
                                             'stream_patt_comp_err) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ([spc] :
                                               'stream_patt_comp_err_list) ))
                                         ))] ))] ))) () ) ))
@@ -1238,7 +1238,7 @@ module Make =
                                           fun (p :
                                             'patt) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((SpStr (_loc, p)) :
                                               'stream_patt_comp) )) ));
                                        ((
@@ -1259,7 +1259,7 @@ module Make =
                                             fun (p :
                                               'patt) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((SpNtr (_loc, p, e)) :
                                                 'stream_patt_comp) )) ));
                                        ((
@@ -1288,7 +1288,7 @@ module Make =
                                                    'stream_expr) ->
                                                   fun _ ->
                                                    fun (_loc :
-                                                     Gram.Loc.t) ->
+                                                     FanLoc.t) ->
                                                     (e : 'e__2) )) ))] ))) )]
                                         ), (
                                         (Gram.Action.mk (
@@ -1298,7 +1298,7 @@ module Make =
                                              'patt) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((SpTrm (_loc, p, eo)) :
                                                 'stream_patt_comp) )) ))] ))]
                                     ))) () ) ))
@@ -1315,7 +1315,7 @@ module Make =
                                         (Gram.Action.mk (
                                           fun _ ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaAny (_loc)) :
                                               'parser_ipatt) )) ));
                                        ((
@@ -1329,7 +1329,7 @@ module Make =
                                           fun (i :
                                             'a_LIDENT) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((Ast.PaId
                                                (_loc, ( (Ast.IdLid (_loc, i))
                                                 ))) : 'parser_ipatt) )) ))]
@@ -1366,7 +1366,7 @@ module Make =
                                              'stream_expr_comp_list) ->
                                             fun _ ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               ((cstream _loc sel) : 'expr) ))
                                         ));
                                        ((
@@ -1385,7 +1385,7 @@ module Make =
                                           fun _ ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((cstream _loc [] ) : 'expr) ))
                                         ))] ))] ))) () ) ))
                               );
@@ -1408,7 +1408,7 @@ module Make =
                                           fun (se :
                                             'stream_expr_comp) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ([se] : 'stream_expr_comp_list)
                                           )) ));
                                        ((
@@ -1424,7 +1424,7 @@ module Make =
                                            fun (se :
                                              'stream_expr_comp) ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ([se] : 'stream_expr_comp_list)
                                           )) ));
                                        ((
@@ -1442,7 +1442,7 @@ module Make =
                                             fun (se :
                                               'stream_expr_comp) ->
                                              fun (_loc :
-                                               Gram.Loc.t) ->
+                                               FanLoc.t) ->
                                               (( se ) :: sel  :
                                                 'stream_expr_comp_list) )) ))]
                                       ))] ))) () ) ))
@@ -1465,7 +1465,7 @@ module Make =
                                           fun (e :
                                             'stream_expr) ->
                                            fun (_loc :
-                                             Gram.Loc.t) ->
+                                             FanLoc.t) ->
                                             ((SeNtr (_loc, e)) :
                                               'stream_expr_comp) )) ));
                                        ((
@@ -1485,7 +1485,7 @@ module Make =
                                             'stream_expr) ->
                                            fun _ ->
                                             fun (_loc :
-                                              Gram.Loc.t) ->
+                                              FanLoc.t) ->
                                              ((SeTrm (_loc, e)) :
                                                'stream_expr_comp) )) ))] ))]
                                     ))) () ) ))

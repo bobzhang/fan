@@ -13,19 +13,19 @@ module Make =
 
    let constructors_arity = fun ()  -> !FanConfig.constructors_arity
 
-   let error = fun loc -> fun str -> (Loc.raise loc ( (Failure (str)) ))
+   let error = fun loc -> fun str -> (FanLoc.raise loc ( (Failure (str)) ))
 
    let char_of_char_token =
     fun loc ->
      fun s ->
       (try (TokenEval.char s) with
-       (Failure (_) as exn) -> (Loc.raise loc exn))
+       (Failure (_) as exn) -> (FanLoc.raise loc exn))
 
    let string_of_string_token =
     fun loc ->
      fun s ->
       (try (TokenEval.string s) with
-       (Failure (_) as exn) -> (Loc.raise loc exn))
+       (Failure (_) as exn) -> (FanLoc.raise loc exn))
 
    let remove_underscores =
     fun s ->
@@ -41,9 +41,10 @@ module Make =
              ( (String.set s dst c) ); (remove ( (src + 1) ) ( (dst + 1) ))) in
      (remove 0 0)
 
-   let mkloc = Loc.to_ocaml_location
+   let mkloc = FanLoc.to_ocaml_location
 
-   let mkghloc = fun loc -> (Loc.to_ocaml_location ( (Loc.ghostify loc) ))
+   let mkghloc =
+    fun loc -> (FanLoc.to_ocaml_location ( (FanLoc.ghostify loc) ))
 
    let with_loc = fun txt -> fun loc -> (Location.mkloc txt ( (mkloc loc) ))
 
@@ -780,7 +781,7 @@ module Make =
         (match l with
          | [] -> [(loc, [] , e)]
          | ((loc', sl, e) :: l) ->
-            ( (( (Loc.merge loc loc') ), ( ( s ) :: sl  ), e) ) :: l )
+            ( (( (FanLoc.merge loc loc') ), ( ( s ) :: sl  ), e) ) :: l )
      | Ast.ExId (_, (Ast.IdAcc (_, _, _) as i)) ->
         let rec normalize_acc =
          function
@@ -878,7 +879,7 @@ module Make =
            fun (loc_ep, ml, e2) ->
             (match e2 with
              | Ast.ExId (sloc, Ast.IdLid (_, s)) ->
-                let loc = (Loc.merge loc_bp loc_ep) in
+                let loc = (FanLoc.merge loc_bp loc_ep) in
                 (loc, (
                  (mkexp loc (
                    (Pexp_field (e1, ( (mkli sloc ( (conv_lab s) ) ml) ))) ))
@@ -1056,7 +1057,7 @@ module Make =
         | [] -> (expr ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))
         | (e :: []) -> (expr e)
         | (e :: el) ->
-           let _loc = (Loc.merge ( (loc_of_expr e) ) _loc) in
+           let _loc = (FanLoc.merge ( (loc_of_expr e) ) _loc) in
            (mkexp _loc ( (Pexp_sequence (( (expr e) ), ( (loop el) ))) )) in
        (loop ( (list_of_expr e [] ) ))
     | ExSnd (loc, e, s) -> (mkexp loc ( (Pexp_send (( (expr e) ), s)) ))
@@ -1217,7 +1218,8 @@ module Make =
           let cl =
            (List.map (
              fun (t1, t2) ->
-              let loc = (Loc.merge ( (loc_of_ctyp t1) ) ( (loc_of_ctyp t2) )) in
+              let loc =
+               (FanLoc.merge ( (loc_of_ctyp t1) ) ( (loc_of_ctyp t2) )) in
               (( (ctyp t1) ), ( (ctyp t2) ), ( (mkloc loc) )) ) cl) in
           (
            (( (with_loc c cloc) ), (

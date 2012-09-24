@@ -1124,7 +1124,7 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (e :
                         'delete_rule_body) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (e : 'expr) ))
+                       fun _ -> fun (_loc : FanLoc.t) -> (e : 'expr) ))
                    ));
                   ((
                    [( (Gram.Skeyword ("EXTEND")) ); (
@@ -1136,7 +1136,7 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (e :
                         'extend_body) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (e : 'expr) ))
+                       fun _ -> fun (_loc : FanLoc.t) -> (e : 'expr) ))
                    ))] ))] ))) () ) ))
          );
          (
@@ -1154,7 +1154,7 @@ and ('e, 'p) symbol = {
                      fun (g :
                        'qualuid) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((None , g) : 'extend_header) )) ));
                   ((
                    [( (Gram.Skeyword ("(")) ); (
@@ -1174,7 +1174,7 @@ and ('e, 'p) symbol = {
                           'qualid) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((( (Some (i)) ), t) : 'extend_header) )) ))]
                  ))] ))) () ) ))
          );
@@ -1209,8 +1209,8 @@ and ('e, 'p) symbol = {
                             fun _ ->
                              fun (e :
                                'entry) ->
-                              fun (_loc : Gram.Loc.t) -> (e : 'e__1) ))
-                          ))] ))) )] ), (
+                              fun (_loc : FanLoc.t) -> (e : 'e__1) )) ))]
+                        ))) )] ), (
                    (Gram.Action.mk (
                      fun (el :
                        'e__1 list) ->
@@ -1219,7 +1219,7 @@ and ('e, 'p) symbol = {
                        fun ((gram, g) :
                          'extend_header) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((text_of_functorial_extend _loc g gram
                             global_list el) : 'extend_body) )) ))] ))] )))
              () ) ))
@@ -1257,7 +1257,7 @@ and ('e, 'p) symbol = {
                         fun (g :
                           'qualuid) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (let (e, b) = (expr_of_delete_rule _loc n sl) in
                            (subst_gmod (
                              (Ast.ExApp
@@ -1288,7 +1288,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdUid (_loc, i)) : 'qualuid) )) ));
                   ((
@@ -1304,7 +1304,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1325,7 +1325,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdLid (_loc, i)) : 'qualid) )) ));
                   ((
@@ -1337,7 +1337,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.IdUid (_loc, i)) : 'qualid) )) ));
                   ((
@@ -1353,7 +1353,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1380,7 +1380,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | LIDENT ("t") ->
                              (let x = (Gram.Token.extract_string x) in
@@ -1399,7 +1399,7 @@ and ('e, 'p) symbol = {
                        fun (x :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let x = (Gram.Token.extract_string x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
@@ -1434,7 +1434,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("GLOBAL") -> (sl : 'global)
                            | _ -> assert false) )) ))] ))] ))) () ) ))
@@ -1467,7 +1467,7 @@ and ('e, 'p) symbol = {
                         fun (n :
                           'name) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           ({name = n; pos = pos; levels = ll} : 'entry)
                      )) ))] ))] ))) () ) ))
          );
@@ -1496,7 +1496,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ((("Before" | "After") | "Level") as x) ->
                             ((Ast.ExApp
@@ -1524,7 +1524,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT (("First" | "Last") as x) ->
                            ((Ast.ExId
@@ -1558,8 +1558,8 @@ and ('e, 'p) symbol = {
                       fun (ll :
                         'level list) ->
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (ll : 'level_list) ))
-                   ))] ))] ))) () ) ))
+                        fun (_loc : FanLoc.t) -> (ll : 'level_list) )) ))]
+                 ))] ))) () ) ))
          );
          (
          (Gram.extend ( (level : 'level Gram.Entry.t) ) (
@@ -1582,7 +1582,7 @@ and ('e, 'p) symbol = {
                             fun (x :
                               Gram.Token.t) ->
                              fun (_loc :
-                               Gram.Loc.t) ->
+                               FanLoc.t) ->
                               (let x = (Gram.Token.extract_string x) in x :
                                 'e__2) )) ))] ))) ); (
                     (Gram.Sopt
@@ -1600,7 +1600,7 @@ and ('e, 'p) symbol = {
                        fun (lab :
                          'e__2 option) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ({label = lab; assoc = ass; rules = rules} :
                            'level) )) ))] ))] ))) () ) ))
          );
@@ -1619,7 +1619,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT (x) ->
                            ((failwithf
@@ -1638,7 +1638,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ((("LA" | "RA") | "NA") as x) ->
                            ((Ast.ExId
@@ -1673,7 +1673,7 @@ and ('e, 'p) symbol = {
                         'rule list) ->
                        fun _ ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((retype_rule_list_without_patterns _loc rules) :
                            'rule_list) )) ));
                   ((
@@ -1682,8 +1682,8 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun _ ->
                       fun _ ->
-                       fun (_loc : Gram.Loc.t) -> (([]) : 'rule_list) ))
-                   ))] ))] ))) () ) ))
+                       fun (_loc : FanLoc.t) -> (([]) : 'rule_list) )) ))]
+                 ))] ))) () ) ))
          );
          (
          (Gram.extend ( (rule : 'rule Gram.Entry.t) ) (
@@ -1706,7 +1706,7 @@ and ('e, 'p) symbol = {
                      fun (psl :
                        'psymbol list) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ({prod = psl; action = None } : 'rule) )) ));
                   ((
                    [(
@@ -1729,7 +1729,7 @@ and ('e, 'p) symbol = {
                        fun (psl :
                          'psymbol list) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ({prod = psl; action = ( (Some (act)) )} :
                            'rule) )) ))] ))] ))) () ) ))
          );
@@ -1747,7 +1747,7 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
-                      fun (_loc : Gram.Loc.t) -> (s : 'psymbol) )) ));
+                      fun (_loc : FanLoc.t) -> (s : 'psymbol) )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -1763,7 +1763,7 @@ and ('e, 'p) symbol = {
                        fun (p :
                          'pattern) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((match s.pattern with
                            | Some
                               (Ast.PaApp
@@ -1803,7 +1803,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -1815,7 +1815,7 @@ and ('e, 'p) symbol = {
                       fun (i :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (let i = (Gram.Token.extract_string i) in
                          let name =
                           (mk_name _loc ( (Ast.IdLid (_loc, i)) )) in
@@ -1838,7 +1838,7 @@ and ('e, 'p) symbol = {
                        fun (p :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let p = (Gram.Token.extract_string p) in
                           (match s.pattern with
                            | Some
@@ -1899,7 +1899,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ("TRY") ->
                             (let text = (TXtry (_loc, ( s.text ))) in
@@ -1919,7 +1919,7 @@ and ('e, 'p) symbol = {
                       fun (__camlp4_0 :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | UIDENT ("OPT") ->
                             (let () = (check_not_tok s) in
@@ -1959,7 +1959,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("SEP") -> (t : 'e__4)
                                 | _ -> assert false) )) ))] ))) )] ), (
@@ -1971,7 +1971,7 @@ and ('e, 'p) symbol = {
                        fun (__camlp4_0 :
                          Gram.Token.t) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (match __camlp4_0 with
                           | UIDENT (("LIST0" | "LIST1") as x) ->
                              (let () = (check_not_tok s) in
@@ -2004,8 +2004,8 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (s_t :
                         'symbol) ->
-                       fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (s_t : 'symbol) )) ));
+                       fun _ -> fun (_loc : FanLoc.t) -> (s_t : 'symbol)
+                     )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -2032,7 +2032,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -2044,7 +2044,7 @@ and ('e, 'p) symbol = {
                       fun (n :
                         'name) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         ({used = ( [( n.tvar )] );
                           text = ( (TXnterm (_loc, n, lev)) );
                           styp = ( (STquo (_loc, ( n.tvar ))) );
@@ -2078,7 +2078,7 @@ and ('e, 'p) symbol = {
                              fun (__camlp4_0 :
                                Gram.Token.t) ->
                               fun (_loc :
-                                Gram.Loc.t) ->
+                                FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
                                    (let s = (Gram.Token.extract_string s) in
@@ -2093,7 +2093,7 @@ and ('e, 'p) symbol = {
                         fun (i :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (let i = (Gram.Token.extract_string i) in
                            let n =
                             (mk_name _loc (
@@ -2112,7 +2112,7 @@ and ('e, 'p) symbol = {
                      fun (s :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let s = (Gram.Token.extract_string s) in
                         {used = [] ; text = ( (TXkwd (_loc, s)) );
                          styp = ( (STtok (_loc)) ); pattern = None } :
@@ -2133,7 +2133,7 @@ and ('e, 'p) symbol = {
                       fun (x :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (match __camlp4_0 with
                          | ANTIQUOT ("", s) ->
                             (let x = (Gram.Token.extract_string x) in
@@ -2208,7 +2208,7 @@ and ('e, 'p) symbol = {
                       fun (x :
                         Gram.Token.t) ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         (let s = (Gram.Token.extract_string s) in
                          let x = (Gram.Token.extract_string x) in
                          (mk_tok _loc (
@@ -2226,7 +2226,7 @@ and ('e, 'p) symbol = {
                      fun (x :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let x = (Gram.Token.extract_string x) in
                         (mk_tok _loc (
                           (Ast.PaApp
@@ -2246,7 +2246,7 @@ and ('e, 'p) symbol = {
                        'patt) ->
                       fun _ ->
                        fun (_loc :
-                         Gram.Loc.t) ->
+                         FanLoc.t) ->
                         ((mk_tok _loc p ( (STtok (_loc)) )) : 'symbol) ))
                    ));
                   ((
@@ -2263,7 +2263,7 @@ and ('e, 'p) symbol = {
                         'rule list) ->
                        fun _ ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          (let rl =
                            (retype_rule_list_without_patterns _loc rl) in
                           let t = (new_type_var () ) in
@@ -2283,7 +2283,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ("NEXT") ->
                            ({used = [] ; text = ( (TXnext (_loc)) );
@@ -2301,7 +2301,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ("SELF") ->
                            ({used = [] ; text = ( (TXself (_loc)) );
@@ -2331,7 +2331,7 @@ and ('e, 'p) symbol = {
                           'pattern) ->
                          fun _ ->
                           fun (_loc :
-                            Gram.Loc.t) ->
+                            FanLoc.t) ->
                            ((Ast.PaTup
                               (_loc, ( (Ast.PaCom (_loc, p1, p2)) ))) :
                              'pattern) )) ));
@@ -2342,13 +2342,13 @@ and ('e, 'p) symbol = {
                      fun _ ->
                       fun (p :
                         'pattern) ->
-                       fun _ -> fun (_loc : Gram.Loc.t) -> (p : 'pattern)
+                       fun _ -> fun (_loc : FanLoc.t) -> (p : 'pattern)
                      )) ));
                   (( [( (Gram.Skeyword ("_")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((Ast.PaAny (_loc)) : 'pattern) )) ));
                   ((
                    [(
@@ -2359,7 +2359,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let i = (Gram.Token.extract_string i) in
                         (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'pattern) )) ))] ))] ))) () ) ))
@@ -2378,7 +2378,7 @@ and ('e, 'p) symbol = {
                    (Gram.Action.mk (
                      fun (p :
                        'pattern) ->
-                      fun (_loc : Gram.Loc.t) -> (p : 'comma_patt) )) ));
+                      fun (_loc : FanLoc.t) -> (p : 'comma_patt) )) ));
                   ((
                    [Gram.Sself ; ( (Gram.Skeyword (",")) ); Gram.Sself ]
                    ), (
@@ -2389,7 +2389,7 @@ and ('e, 'p) symbol = {
                        fun (p1 :
                          'comma_patt) ->
                         fun (_loc :
-                          Gram.Loc.t) ->
+                          FanLoc.t) ->
                          ((Ast.PaCom (_loc, p1, p2)) : 'comma_patt) )) ))]
                  ))] ))) () ) ))
          );
@@ -2408,7 +2408,7 @@ and ('e, 'p) symbol = {
                      fun (il :
                        'qualid) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((mk_name _loc il) : 'name) )) ))] ))] ))) () ) ))
          );
          (
@@ -2428,7 +2428,7 @@ and ('e, 'p) symbol = {
                      fun (__camlp4_0 :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (match __camlp4_0 with
                         | ANTIQUOT ("", s) ->
                            ((AntiquotSyntax.parse_expr _loc s) : 'string)
@@ -2442,7 +2442,7 @@ and ('e, 'p) symbol = {
                      fun (s :
                        Gram.Token.t) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        (let s = (Gram.Token.extract_string s) in
                         (Ast.ExStr (_loc, s)) : 'string) )) ))] ))] )))
              () ) ))
@@ -2454,7 +2454,7 @@ and ('e, 'p) symbol = {
                [(None , None , (
                  [(( [( (Gram.Skeyword (";")) )] ), (
                    (Gram.Action.mk (
-                     fun _ -> fun (_loc : Gram.Loc.t) -> (() : 'semi_sep)
+                     fun _ -> fun (_loc : FanLoc.t) -> (() : 'semi_sep)
                      )) ))] ))] ))) () ) ))
 
  let sfold =
@@ -2575,7 +2575,7 @@ and ('e, 'p) symbol = {
                           fun (__camlp4_0 :
                             Gram.Token.t) ->
                            fun (_loc :
-                             Gram.Loc.t) ->
+                             FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
                              | (UIDENT ("SEP"), UIDENT ("FOLD1")) ->
                                 ((sfoldsep _loc "FOLD1 SEP" "sfold1sep" f
@@ -2614,7 +2614,7 @@ and ('e, 'p) symbol = {
                           fun (__camlp4_0 :
                             Gram.Token.t) ->
                            fun (_loc :
-                             Gram.Loc.t) ->
+                             FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
                              | (UIDENT ("SEP"), UIDENT ("FOLD0")) ->
                                 ((sfoldsep _loc "FOLD0 SEP" "sfold0sep" f
@@ -2645,7 +2645,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("FOLD1") ->
                               ((sfold _loc "FOLD1" "sfold1" f e s) :
@@ -2676,7 +2676,7 @@ and ('e, 'p) symbol = {
                         fun (__camlp4_0 :
                           Gram.Token.t) ->
                          fun (_loc :
-                           Gram.Loc.t) ->
+                           FanLoc.t) ->
                           (match __camlp4_0 with
                            | UIDENT ("FOLD0") ->
                               ((sfold _loc "FOLD0" "sfold0" f e s) :
@@ -2698,8 +2698,7 @@ and ('e, 'p) symbol = {
                       fun (e :
                         'expr) ->
                        fun _ ->
-                        fun (_loc : Gram.Loc.t) -> (e : 'simple_expr) ))
-                   ));
+                        fun (_loc : FanLoc.t) -> (e : 'simple_expr) )) ));
                   ((
                    [(
                     (Gram.Snterm
@@ -2709,7 +2708,7 @@ and ('e, 'p) symbol = {
                      fun (i :
                        'a_LIDENT) ->
                       fun (_loc :
-                        Gram.Loc.t) ->
+                        FanLoc.t) ->
                        ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'simple_expr) )) ))] ))] ))) () ) ))
 

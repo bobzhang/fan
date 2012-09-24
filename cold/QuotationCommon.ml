@@ -1040,7 +1040,7 @@ module Make =
                                          fun (x :
                                            'entry) ->
                                           fun (_loc :
-                                            Gram.Loc.t) ->
+                                            FanLoc.t) ->
                                            (match __camlp4_0 with
                                             | EOI -> (x : 'entry_eoi)
                                             | _ -> assert false) )) ))] ))]

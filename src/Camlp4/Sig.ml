@@ -241,7 +241,7 @@ end;
 module type Camlp4Ast = sig
 
   (** The inner module for locations *)
-  module Loc : module type of FanLoc;
+  (* module Loc : module type of FanLoc; *)
 
   INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
 
@@ -527,13 +527,13 @@ module type Camlp4Ast = sig
   value is_patt_constructor : patt -> bool;
   value is_expr_constructor : expr -> bool;
 
-  value ty_of_stl : (Loc.t * string * list ctyp) -> ctyp;
-  value ty_of_sbt : (Loc.t * string * bool * ctyp) -> ctyp;
+  value ty_of_stl : (FanLoc.t * string * list ctyp) -> ctyp;
+  value ty_of_sbt : (FanLoc.t * string * bool * ctyp) -> ctyp;
   value bi_of_pe : (patt * expr) -> binding;
   value pel_of_binding : binding -> list (patt * expr);
   value binding_of_pel : list (patt * expr) -> binding;
-  value sum_type_of_list : list (Loc.t * string * list ctyp) -> ctyp;
-  value record_type_of_list : list (Loc.t * string * bool * ctyp) -> ctyp;
+  value sum_type_of_list : list (FanLoc.t * string * list ctyp) -> ctyp;
+  value record_type_of_list : list (FanLoc.t * string * bool * ctyp) -> ctyp;
 end;
 
 (** This functor is a restriction functor.
@@ -589,7 +589,7 @@ type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
       - Interface filters: sig_item -> sig_item. *)
 module type AstFilters = sig
 
-  module Ast : Camlp4Ast with module Loc = FanLoc;
+  module Ast : Camlp4Ast (* with module Loc = FanLoc*);
 
   type filter 'a = 'a -> 'a;
 
@@ -777,10 +777,10 @@ end;
 module type Camlp4Syntax = sig
   (* module Loc            : FanSig.Loc; *)
 
-  module Ast            : Camlp4Ast with module Loc = FanLoc;
+  module Ast            : Camlp4Ast (* with module Loc = FanLoc*) ;
   module Token          : FanSig.Camlp4Token (* with module Loc = Loc *);
 
-  module Gram           : FanSig.Grammar.Static with  module Loc = Ast.Loc and 
+  module Gram           : FanSig.Grammar.Static with  (* module Loc = Ast.Loc and *)
                           module Token = Token;
   module Quotation      : Quotation with module Ast = Camlp4AstToAst Ast;
 
@@ -998,12 +998,12 @@ module type LEXER = functor (Token: FanSig.Camlp4Token) -> FanSig.Lexer
 module type PRECAST = sig
   type token = FanSig.camlp4_token ;
   (* module Loc        : FanSig.Loc; *)
-  module Ast        : Camlp4Ast with  module Loc = FanLoc ;
+  module Ast        : Camlp4Ast (* with  module Loc = FanLoc *);
   module Token      : FanSig.Token  with (* module Loc = Loc and *)
                       type t = FanSig.camlp4_token;
   module Lexer      : FanSig.Lexer  with (* module Loc = Loc and *)
                       module Token = Token;
-  module Gram       : FanSig.Grammar.Static  with module Loc = FanLoc and
+  module Gram       : FanSig.Grammar.Static  with (* module Loc = FanLoc and*)
                       module Token = Token;
   module Quotation  : Quotation with module Ast = Camlp4AstToAst Ast;
   (* module DynLoader  : DynLoader; *)
