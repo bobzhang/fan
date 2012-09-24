@@ -18,13 +18,13 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Loc : FanSig.Loc)
-: Sig.Camlp4Ast with module Loc = Loc
-= struct
-  module Loc = Loc;
-
+(* module Make (Loc : FanSig.Loc) *)
+(* : Sig.Camlp4Ast with module Loc = Loc *)
+(* = struct *)
+  (* module Loc = Loc; *)
+  module Loc = FanLoc;
   module Ast = struct
-    include Sig.MakeCamlp4Ast Loc;
+    include Sig.MakeCamlp4Ast FanLoc;
 
     value safe_string_escaped s =
       if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
@@ -660,4 +660,4 @@ module Make (Loc : FanSig.Loc)
 
   end;
     
-end;
+(* end; *)
