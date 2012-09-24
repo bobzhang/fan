@@ -1,13 +1,13 @@
 module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   type token = FanSig.camlp4_token ;
-  module Ast = Struct.Camlp4Ast; 
+  module Ast = Camlp4Ast; 
   module Token = FanToken;
   module Lexer = Lexer Token;
   module Gram =  Grammar.Static.Make Lexer;
-  module Quotation = Struct.Quotation.Make Ast;
+  module Quotation = Quotation.Make Ast;
   module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
   module Syntax = MakeSyntax (struct end);
-  module AstFilters = Struct.AstFilters.Make Ast;
+  module AstFilters = AstFilters.Make Ast;
   type parser_fun 'a = ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
   type printer_fun 'a = ?input_file:string -> ?output_file:string -> 'a -> unit;
   value sig_item_parser =

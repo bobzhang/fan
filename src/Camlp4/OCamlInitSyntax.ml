@@ -31,7 +31,7 @@ module Make (Ast     : Sig.Camlp4Ast )
   module Ast     = Ast;
   module Gram    = Gram;
   module Token   = Gram.Token;
-  module Ast2pt  = Struct.Camlp4Ast2OCamlAst.Make Ast;
+  module Ast2pt  = Camlp4Ast2OCamlAst.Make Ast;
   open Sig;
     
   (* Warnings *)

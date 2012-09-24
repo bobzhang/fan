@@ -25,7 +25,7 @@ end;
 module Make (Syntax : Sig.Camlp4Syntax)
 : (Sig.Printer Syntax.Ast).S
 = struct
-  (* module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast; *)
+  (* module Ast2pt = Camlp4Ast2OCamlAst.Make Syntax.Ast; *)
 
   value print_interf ?(input_file = "-") ?output_file ast =
     let pt = Syntax.Ast2pt.sig_item ast in

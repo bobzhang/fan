@@ -24,7 +24,7 @@ module Id = struct
 end;
 
 module Make (Syntax : Sig.Camlp4Syntax) : (Sig.Printer Syntax.Ast).S = struct
-  (* module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast; *)
+
   value print_implem ?input_file:(_) ?output_file ast =
     let pt = Syntax.Ast2pt.str_item ast in
     FanUtil.with_open_out_file output_file
