@@ -8,9 +8,9 @@ module IdAstLoader =
 
                end
 
-module MakeAstLoader : Camlp4.Sig.ParserImpl =
+module MakeAstLoader : Sig.ParserImpl =
                      struct
-                      module Ast = Camlp4.Camlp4Ast
+                      module Ast = Camlp4Ast
 
                       let parse =
                        fun ast_magic ->
@@ -53,15 +53,15 @@ module IdDebugParser =
                            end
 
 module MakeDebugParser =
-                                 functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                 functor (Syntax : Sig.Camlp4Syntax) ->
                                   struct
-                                   open Camlp4.Sig
+                                   open Sig
 
                                    include Syntax
 
                                    open FanSig
 
-                                   module Ast = Camlp4.Camlp4Ast
+                                   module Ast = Camlp4Ast
 
                                    let debug_mode =
                                     (try
@@ -380,13 +380,13 @@ module IdGrammarParser =
                                         end
 
 module MakeGrammarParser =
-                                              functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                              functor (Syntax : Sig.Camlp4Syntax) ->
                                                struct
-                                                open Camlp4.Sig
+                                                open Sig
 
                                                 include Syntax
 
-                                                module Ast = Camlp4.Camlp4Ast
+                                                module Ast = Camlp4Ast
 
                                                 open FanSig
 
@@ -406,9 +406,8 @@ module MakeGrammarParser =
                                                      fun fmt ->
                                                       fun p ->
                                                        (Pprintast.pattern fmt
-                                                         (
-                                                         (Camlp4.Ast2pt.patt
-                                                           p) )) ) patt) in
+                                                         ( (Ast2pt.patt p) ))
+                                                     ) patt) in
                                                   let str =
                                                    (Buffer.contents buf) in
                                                   if (str = "") then
@@ -3134,15 +3133,15 @@ module IdListComprehension =
       end
 
 module MakeListComprehension =
-            functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+            functor (Syntax : Sig.Camlp4Syntax) ->
              struct
-              open Camlp4.Sig
+              open Sig
 
               open FanSig
 
               include Syntax
 
-              module Ast = Camlp4.Camlp4Ast
+              module Ast = Camlp4Ast
 
               let rec loop =
                fun n ->
@@ -3723,15 +3722,15 @@ module IdMacroParser =
                    end
 
 module MakeMacroParser =
-                         functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                         functor (Syntax : Sig.Camlp4Syntax) ->
                           struct
-                           open Camlp4.Sig
+                           open Sig
 
                            open FanSig
 
                            include Syntax
 
-                           module Ast = Camlp4.Camlp4Ast
+                           module Ast = Camlp4Ast
 
                            type 'a item_or_def =
                               SdStr of 'a
@@ -5835,9 +5834,9 @@ module MakeMacroParser =
                           end
 
 module MakeNothing =
-                                functor (Syn : Camlp4.Sig.Camlp4Syntax) ->
+                                functor (Syn : Sig.Camlp4Syntax) ->
                                  struct
-                                  module Ast = Camlp4.Camlp4Ast
+                                  module Ast = Camlp4Ast
 
                                   let map_expr =
                                    function
@@ -5973,16 +5972,15 @@ module IdReloadedParser =
                                        end
 
 module MakeReloadedParser =
-                                             functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                             functor (Syntax : Sig.Camlp4Syntax) ->
                                               struct
-                                               open Camlp4.Sig
+                                               open Sig
 
                                                open FanSig
 
                                                include Syntax
 
-                                               module Ast =
-                                                Camlp4.Camlp4Ast
+                                               module Ast = Camlp4Ast
 
                                                let _ = (Gram.Entry.clear
                                                          match_case)
@@ -6643,16 +6641,16 @@ module IdRevisedParser =
                                                     end
 
 module MakeRevisedParser =
-                                                          functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                                          functor (Syntax : Sig.Camlp4Syntax) ->
                                                            struct
-                                                            open Camlp4.Sig
+                                                            open Sig
 
                                                             open FanSig
 
                                                             include Syntax
 
                                                             module Ast =
-                                                             Camlp4.Camlp4Ast
+                                                             Camlp4Ast
 
                                                             let _ = (FanConfig.constructors_arity
                                                                     :=
@@ -9537,7 +9535,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.module_expr_tag) :
+                                                                    DynAst.module_expr_tag) :
                                                                     'module_expr)
                                                                     | 
                                                                     _ ->
@@ -9676,7 +9674,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.str_item_tag) :
+                                                                    DynAst.str_item_tag) :
                                                                     'str_item)
                                                                     | 
                                                                     _ ->
@@ -10442,7 +10440,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.module_binding_tag) :
+                                                                    DynAst.module_binding_tag) :
                                                                     'module_binding)
                                                                     | 
                                                                     _ ->
@@ -11040,7 +11038,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.module_type_tag) :
+                                                                    DynAst.module_type_tag) :
                                                                     'module_type)
                                                                     | 
                                                                     _ ->
@@ -11595,7 +11593,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.sig_item_tag) :
+                                                                    DynAst.sig_item_tag) :
                                                                     'sig_item)
                                                                     | 
                                                                     _ ->
@@ -11855,7 +11853,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.module_binding_tag) :
+                                                                    DynAst.module_binding_tag) :
                                                                     'module_rec_declaration)
                                                                     | 
                                                                     _ ->
@@ -12324,7 +12322,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.with_constr_tag) :
+                                                                    DynAst.with_constr_tag) :
                                                                     'with_constr)
                                                                     | 
                                                                     _ ->
@@ -15665,7 +15663,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.expr_tag) :
+                                                                    DynAst.expr_tag) :
                                                                     'expr)
                                                                     | 
                                                                     _ ->
@@ -19536,7 +19534,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.patt_tag) :
+                                                                    DynAst.patt_tag) :
                                                                     'patt)
                                                                     | 
                                                                     _ ->
@@ -21309,7 +21307,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.patt_tag) :
+                                                                    DynAst.patt_tag) :
                                                                     'label_patt)
                                                                     | 
                                                                     _ ->
@@ -21744,7 +21742,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.patt_tag) :
+                                                                    DynAst.patt_tag) :
                                                                     'ipatt)
                                                                     | 
                                                                     _ ->
@@ -22323,7 +22321,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.patt_tag) :
+                                                                    DynAst.patt_tag) :
                                                                     'label_ipatt)
                                                                     | 
                                                                     _ ->
@@ -22559,7 +22557,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'type_declaration)
                                                                     | 
                                                                     _ ->
@@ -23189,7 +23187,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'type_parameter)
                                                                     | 
                                                                     _ ->
@@ -23455,7 +23453,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'optional_type_parameter)
                                                                     | 
                                                                     _ ->
@@ -24606,7 +24604,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'ctyp)
                                                                     | 
                                                                     _ ->
@@ -25189,7 +25187,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'constructor_declarations)
                                                                     | 
                                                                     _ ->
@@ -25419,7 +25417,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'constructor_declaration)
                                                                     | 
                                                                     _ ->
@@ -25852,7 +25850,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'label_declaration)
                                                                     | 
                                                                     _ ->
@@ -27293,7 +27291,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_expr_tag) :
+                                                                    DynAst.class_expr_tag) :
                                                                     'class_declaration)
                                                                     | 
                                                                     _ ->
@@ -28422,7 +28420,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_expr_tag) :
+                                                                    DynAst.class_expr_tag) :
                                                                     'class_expr)
                                                                     | 
                                                                     _ ->
@@ -29506,7 +29504,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_str_item_tag) :
+                                                                    DynAst.class_str_item_tag) :
                                                                     'class_str_item)
                                                                     | 
                                                                     _ ->
@@ -30367,7 +30365,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_type_tag) :
+                                                                    DynAst.class_type_tag) :
                                                                     'class_type)
                                                                     | 
                                                                     _ ->
@@ -31247,7 +31245,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_sig_item_tag) :
+                                                                    DynAst.class_sig_item_tag) :
                                                                     'class_sig_item)
                                                                     | 
                                                                     _ ->
@@ -31455,7 +31453,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_type_tag) :
+                                                                    DynAst.class_type_tag) :
                                                                     'class_description)
                                                                     | 
                                                                     _ ->
@@ -31637,7 +31635,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.class_type_tag) :
+                                                                    DynAst.class_type_tag) :
                                                                     'class_type_declaration)
                                                                     | 
                                                                     _ ->
@@ -32223,7 +32221,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'meth_decl)
                                                                     | 
                                                                     _ ->
@@ -32573,7 +32571,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'typevars)
                                                                     | 
                                                                     _ ->
@@ -32734,7 +32732,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Camlp4.DynAst.ctyp_tag) :
+                                                                    DynAst.ctyp_tag) :
                                                                     'unquoted_typevars)
                                                                     | 
                                                                     _ ->
@@ -40791,7 +40789,7 @@ module MakeRevisedParser =
                                                            end
 
 module IdRevisedParserParser :
-                                                                 Camlp4.Sig.Id =
+                                                                 Sig.Id =
                                                                  struct
                                                                   let name =
                                                                    "Camlp4OCamlRevisedParserParser"
@@ -40803,15 +40801,15 @@ module IdRevisedParserParser :
 
 
 module MakeRevisedParserParser =
- functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+ functor (Syntax : Sig.Camlp4Syntax) ->
   struct
-   open Camlp4.Sig
+   open Sig
 
    open FanSig
 
    include Syntax
 
-   module Ast = Camlp4.Camlp4Ast
+   module Ast = Camlp4Ast
 
    type spat_comp =
       SpTrm of FanLoc.t * Ast.patt * Ast.expr option
@@ -42128,7 +42126,7 @@ module MakeRevisedParserParser =
 
   end
 
-module IdParser : Camlp4.Sig.Id =
+module IdParser : Sig.Id =
         struct
          let name = "Camlp4OCamlParser"
 
@@ -42137,15 +42135,15 @@ module IdParser : Camlp4.Sig.Id =
         end
 
 module MakeParser =
-              functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+              functor (Syntax : Sig.Camlp4Syntax) ->
                struct
-                open Camlp4.Sig
+                open Sig
 
                 open FanSig
 
                 include Syntax
 
-                module Ast = Camlp4.Camlp4Ast
+                module Ast = Camlp4Ast
 
                 let _ = (FanConfig.constructors_arity := false )
 
@@ -44718,7 +44716,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Camlp4.DynAst.patt_tag) :
+                                             DynAst.patt_tag) :
                                             'patt)
                                        | _ -> assert false) )) ));
                                  ((
@@ -45049,7 +45047,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Camlp4.DynAst.with_constr_tag) :
+                                             DynAst.with_constr_tag) :
                                             'with_constr)
                                        | _ -> assert false) )) ));
                                  ((
@@ -45993,7 +45991,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Camlp4.DynAst.ctyp_tag) :
+                                             DynAst.ctyp_tag) :
                                             'ctyp)
                                        | _ -> assert false) )) ));
                                  ((
@@ -46633,7 +46631,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Camlp4.DynAst.ctyp_tag) :
+                                             DynAst.ctyp_tag) :
                                             'optional_type_parameter)
                                        | _ -> assert false) )) ));
                                  ((
@@ -47242,7 +47240,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Camlp4.DynAst.ctyp_tag) :
+                                             DynAst.ctyp_tag) :
                                             'label_declaration)
                                        | _ -> assert false) )) ));
                                  ((
@@ -47955,7 +47953,7 @@ module MakeParser =
 
                end
 
-module IdParserParser : Camlp4.Sig.Id =
+module IdParserParser : Sig.Id =
                      struct
                       let name = "Camlp4OCamlParserParser"
 
@@ -47964,15 +47962,15 @@ module IdParserParser : Camlp4.Sig.Id =
                      end
 
 module MakeParserParser =
-                           functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                           functor (Syntax : Sig.Camlp4Syntax) ->
                             struct
-                             open Camlp4.Sig
+                             open Sig
 
                              open FanSig
 
                              include Syntax
 
-                             module Ast = Camlp4.Camlp4Ast
+                             module Ast = Camlp4Ast
 
                              module M =
                               (MakeRevisedParserParser)(Syntax)
@@ -48106,17 +48104,16 @@ module IdQuotationCommon =
                                   end
 
 module MakeQuotationCommon =
-                                        functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-                                         functor (TheAntiquotSyntax : Camlp4.Sig.ParserExpr) ->
+                                        functor (Syntax : Sig.Camlp4Syntax) ->
+                                         functor (TheAntiquotSyntax : Sig.ParserExpr) ->
                                           struct
-                                           open Camlp4.Sig
+                                           open Sig
 
                                            open FanSig
 
                                            include Syntax
 
-                                           module Ast =
-                                            Camlp4.Camlp4Ast
+                                           module Ast = Camlp4Ast
 
                                            module MetaLocHere =
                                             Ast.Meta.MetaLoc
@@ -50006,16 +50003,16 @@ module MakeQuotationCommon =
                                                 );
                                                 (
                                                 (Quotation.add name
-                                                  Camlp4.DynAst.expr_tag
+                                                  DynAst.expr_tag
                                                   expand_expr)
                                                 );
                                                 (
                                                 (Quotation.add name
-                                                  Camlp4.DynAst.patt_tag
+                                                  DynAst.patt_tag
                                                   expand_patt)
                                                 );
                                                 (Quotation.add name
-                                                  Camlp4.DynAst.str_item_tag
+                                                  DynAst.str_item_tag
                                                   expand_str_item)
 
                                            let _ = (add_quotation
@@ -50172,7 +50169,7 @@ module IdQuotationExpander =
                                                 end
 
 module MakeQuotationExpander =
-                                                      functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                                      functor (Syntax : Sig.Camlp4Syntax) ->
                                                        struct
                                                         module M =
                                                          ((MakeQuotationCommon)
@@ -50187,7 +50184,7 @@ let pa_r =
                                                              fun ((module
                                                               P)
                                                                :
-                                                               (module Camlp4.Sig.PRECAST
+                                                               (module Sig.PRECAST
                                                               )) ->
                                                               (P.syntax_extension
                                                                 (module
@@ -50200,7 +50197,7 @@ let pa_rr =
  fun ((module
   P)
    :
-   (module Camlp4.Sig.PRECAST
+   (module Sig.PRECAST
   )) ->
   (P.syntax_extension (module IdReloadedParser) (module
     MakeReloadedParser))
@@ -50209,7 +50206,7 @@ let pa_o =
                            fun ((module
                             P)
                              :
-                             (module Camlp4.Sig.PRECAST
+                             (module Sig.PRECAST
                             )) ->
                             (P.syntax_extension (module IdParser)
                               (module MakeParser))
@@ -50218,7 +50215,7 @@ let pa_rp =
                                                      fun ((module
                                                       P)
                                                        :
-                                                       (module Camlp4.Sig.PRECAST
+                                                       (module Sig.PRECAST
                                                       )) ->
                                                       (P.syntax_extension
                                                         (module
@@ -50231,7 +50228,7 @@ let pa_op =
  fun ((module
   P)
    :
-   (module Camlp4.Sig.PRECAST
+   (module Sig.PRECAST
   )) ->
   (P.syntax_extension (module IdParserParser) (module
     MakeParserParser))
@@ -50240,7 +50237,7 @@ let pa_g =
                          fun ((module
                           P)
                            :
-                           (module Camlp4.Sig.PRECAST
+                           (module Sig.PRECAST
                           )) ->
                           (P.syntax_extension (module
                             IdGrammarParser) (module
@@ -50250,7 +50247,7 @@ let pa_m =
                                                   fun ((module
                                                    P)
                                                     :
-                                                    (module Camlp4.Sig.PRECAST
+                                                    (module Sig.PRECAST
                                                    )) ->
                                                    let () =
                                                     (P.syntax_extension
@@ -50268,7 +50265,7 @@ let pa_q =
                                                                     fun ((module
                                                                     P)
                                                                      :
-                                                                    (module Camlp4.Sig.PRECAST
+                                                                    (module Sig.PRECAST
                                                                     )) ->
                                                                     (P.syntax_extension
                                                                     (module
@@ -50281,10 +50278,10 @@ let pa_rq =
  fun ((module
   P)
    :
-   (module Camlp4.Sig.PRECAST
+   (module Sig.PRECAST
   )) ->
   let module Gram = (Grammar.Static.Make)(P.Lexer) in
-  let module M1 = (Camlp4.OCamlInitSyntax.Make)(P.Gram) in
+  let module M1 = (OCamlInitSyntax.Make)(P.Gram) in
   let module M2 = (MakeRevisedParser)(M1) in
   let module M3 =
    ((MakeQuotationCommon)(M2))(P.Syntax.AntiquotSyntax) in
@@ -50294,10 +50291,10 @@ let pa_oq =
        fun ((module
         P)
          :
-         (module Camlp4.Sig.PRECAST
+         (module Sig.PRECAST
         )) ->
         let module Gram = (Grammar.Static.Make)(P.Lexer) in
-        let module M1 = (Camlp4.OCamlInitSyntax.Make)(P.Gram) in
+        let module M1 = (OCamlInitSyntax.Make)(P.Gram) in
         let module M2 = (MakeRevisedParser)(M1) in
         let module M3 = (MakeParser)(M2) in
         let module M4 =
@@ -50308,7 +50305,7 @@ let pa_l =
              fun ((module
               P)
                :
-               (module Camlp4.Sig.PRECAST
+               (module Sig.PRECAST
               )) ->
               (P.syntax_extension (module IdListComprehension)
                 (module MakeListComprehension))
@@ -50317,7 +50314,7 @@ let pa_debug =
                                                   fun ((module
                                                    P)
                                                     :
-                                                    (module Camlp4.Sig.PRECAST
+                                                    (module Sig.PRECAST
                                                    )) ->
                                                    (P.syntax_extension
                                                      (module

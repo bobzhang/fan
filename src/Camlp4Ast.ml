@@ -458,7 +458,7 @@
     | x -> [x :: acc] ];
 
   module Camlp4Trash = struct
-    INCLUDE "src/Camlp4/Ast.ml";
+    INCLUDE "src/Ast.ml";
   end;
 
   module Meta = struct

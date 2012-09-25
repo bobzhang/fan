@@ -1,7 +1,7 @@
 open Format;
 
 module Id = struct
-  value name = "Camlp4.Printers.OCaml";
+  value name = "Printers.OCaml";
   value version = Sys.ocaml_version;
 end;
 module P = struct

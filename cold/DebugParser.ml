@@ -7,9 +7,9 @@ open FanSig
 
 
 module MakeDebugParser =
- functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+ functor (Syntax : Sig.Camlp4Syntax) ->
   struct
-   open Camlp4.Sig
+   open Sig
 
    include Syntax
 

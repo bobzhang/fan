@@ -186,24 +186,24 @@ module Make =
     let enable_ocaml_printer =
      fun ()
        ->
-      (replace_printer (module Printers.OCaml.Id) (module Printers.OCaml.P))
+      (replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P))
 
     let enable_dump_ocaml_ast_printer =
      fun ()
        ->
-      (replace_printer (module Printers.DumpOCamlAst.Id) (module
-        Printers.DumpOCamlAst.P))
+      (replace_printer (module PrinterDumpOCamlAst.Id) (module
+        PrinterDumpOCamlAst.P))
 
     let enable_dump_camlp4_ast_printer =
      fun ()
        ->
-      (replace_printer (module Printers.DumpCamlp4Ast.Id) (module
-        Printers.DumpCamlp4Ast.P))
+      (replace_printer (module PrinterDumpCamlp4Ast.Id) (module
+        PrinterDumpCamlp4Ast.P))
 
     let enable_null_printer =
      fun ()
        ->
-      (replace_printer (module Printers.Null.Id) (module Printers.Null.P))
+      (replace_printer (module PrinterNull.Id) (module PrinterNull.P))
 
     let enable_auto =
      fun isatty ->
@@ -212,13 +212,13 @@ module Make =
 
     module Printers =
      struct
-      module OCaml = Printers.OCaml.P
+      module OCaml = PrinterOCaml.P
 
-      module DumpOCamlAst = Printers.DumpOCamlAst.P
+      module DumpOCamlAst = PrinterDumpOCamlAst.P
 
-      module DumpCamlp4Ast = Printers.DumpCamlp4Ast.P
+      module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P
 
-      module Null = Printers.Null.P
+      module Null = PrinterNull.P
 
      end
 

@@ -5,8 +5,8 @@ end;
 
 open FanSig;
   
-module MakeDebugParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
-  open Camlp4.Sig;
+module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
+  open Sig;
   include Syntax;
 
   module StringSet = Set.Make String;

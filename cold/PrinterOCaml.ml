@@ -2,7 +2,7 @@ open Format
 
 module Id =
               struct
-               let name = "Camlp4.Printers.OCaml"
+               let name = "Printers.OCaml"
 
                let version = Sys.ocaml_version
 

@@ -4,10 +4,10 @@ module Id = struct (* FIXME unused here *)
   value version = Sys.ocaml_version;
 end;
 
-module Make (Syntax : Camlp4.Sig.Camlp4Syntax)
-            (TheAntiquotSyntax : (Camlp4.Sig.Parser Syntax.Ast).SIMPLE)
+module Make (Syntax : Sig.Camlp4Syntax)
+            (TheAntiquotSyntax : (Sig.Parser Syntax.Ast).SIMPLE)
 = struct
-  open Camlp4.Sig;
+  open Sig;
   include Syntax; (* Be careful an AntiquotSyntax module appears here *)
 
   module MetaLocHere = Ast.Meta.MetaLoc;

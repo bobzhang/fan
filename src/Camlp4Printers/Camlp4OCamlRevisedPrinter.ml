@@ -16,4 +16,4 @@
  * - Nicolas Pouillard: initial version
  *)
 
-Camlp4.Register.enable_ocamlr_printer ();
+Register.enable_ocamlr_printer ();

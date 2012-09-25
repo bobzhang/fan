@@ -6,7 +6,7 @@ module P : PRINTER_PLUGIN =
                        fun ((module
                         Register)
                          :
-                         (module Camlp4.MakeRegister.S
+                         (module MakeRegister.S
                         )) ->
                         (Register.enable_auto (
                           fun ()  -> (Unix.isatty Unix.stdout) ))

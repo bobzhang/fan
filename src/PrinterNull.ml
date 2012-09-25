@@ -1,5 +1,5 @@
 module Id = struct
-  value name = "Camlp4.Printers.Null";
+  value name = "Printers.Null";
   value version = Sys.ocaml_version;
 end;
 

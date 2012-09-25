@@ -75,21 +75,21 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
       register_parser M.parse_implem M.parse_interf );
 
   value enable_ocaml_printer () = begin
-    replace_printer (module Printers.OCaml.Id) (module Printers.OCaml.P);
+    replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P);
    (* FIXME can be simplified *)
   end;
 
   value enable_dump_ocaml_ast_printer () =
-    replace_printer (module Printers.DumpOCamlAst.Id)
-        (module Printers.DumpOCamlAst.P);
+    replace_printer (module PrinterDumpOCamlAst.Id)
+        (module PrinterDumpOCamlAst.P);
 
   value enable_dump_camlp4_ast_printer () =
-    replace_printer (module Printers.DumpCamlp4Ast.Id)
-      (module Printers.DumpCamlp4Ast.P);
+    replace_printer (module PrinterDumpCamlp4Ast.Id)
+      (module PrinterDumpCamlp4Ast.P);
 
   value enable_null_printer () =
-    replace_printer (module Printers.Null.Id)
-      (module Printers.Null.P);
+    replace_printer (module PrinterNull.Id)
+      (module PrinterNull.P);
 
   value enable_auto isatty  =
     if isatty () then
@@ -99,10 +99,10 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
 
   (* rebound module Printers to extract most useful parts *)
   module Printers = struct
-    module OCaml = Printers.OCaml.P;
-    module DumpOCamlAst = Printers.DumpOCamlAst.P;
-    module DumpCamlp4Ast = Printers.DumpCamlp4Ast.P;
-    module Null = Printers.Null.P;
+    module OCaml = PrinterOCaml.P;
+    module DumpOCamlAst = PrinterDumpOCamlAst.P;
+    module DumpCamlp4Ast = PrinterDumpCamlp4Ast.P;
+    module Null = PrinterNull.P;
   end;
     
   (* value ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) = *)

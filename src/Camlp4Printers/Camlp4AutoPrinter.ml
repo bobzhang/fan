@@ -21,4 +21,4 @@
 
 open MakeCamlp4Bin;
 
-Camlp4.Register.enable_auto (fun () -> Unix.isatty Unix.stdout);
+Register.enable_auto (fun () -> Unix.isatty Unix.stdout);

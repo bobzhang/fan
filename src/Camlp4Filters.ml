@@ -1,11 +1,11 @@
-open Camlp4;
+(* open Camlp4; *)
 open FanUtil;
 module IdAstLifter = struct
   value name    = "Camlp4AstLifter";
   value version = Sys.ocaml_version;
 end;
 
-module MakeAstLifter (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
   (* open AstFilters; *)
   module Ast = Camlp4Ast;
   module MetaLoc = struct
@@ -26,7 +26,7 @@ module IdExceptionTracer = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeExceptionTracer (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
 
   module Ast = Camlp4Ast; (* FIXME future, Ast can be customized *)
   value add_debug_expr e =
@@ -67,7 +67,7 @@ module IdFoldGenerator = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeFoldGenerator (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   value _loc = FanLoc.ghost;
   value sf = Printf.sprintf;
@@ -648,7 +648,7 @@ module IdLocationStripper = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeLocationStripper (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeLocationStripper (Syn : Sig.Camlp4Syntax) = struct
   module Ast=Camlp4Ast;
   Syn.AstFilters.register_str_item_filter (Ast.map_loc (fun _ -> FanLoc.ghost))#str_item;
 end;
@@ -659,7 +659,7 @@ module IdProfiler = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeProfiler (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   value decorate_binding decorate_fun = object
     inherit Ast.map as super;
@@ -712,7 +712,7 @@ module IdTrashRemover = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeTrashRemover (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+module MakeTrashRemover (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   Syn.AstFilters.register_str_item_filter
     (Ast.map_str_item
@@ -729,7 +729,7 @@ module IdMetaGenerator = struct
   value name = "Camlp4MetaGenerator";
   value version = Sys.ocaml_version;
 end ;
-module MakeMetaGenerator (Syn: Camlp4.Sig.Camlp4Syntax) = struct
+module MakeMetaGenerator (Syn: Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
 type t =
   { name : Ast.ident;
@@ -927,25 +927,25 @@ value filter st =
   Syn.AstFilters.register_str_item_filter filter;
 end;
   
-value f_lift (module P:Camlp4.Sig.PRECAST) =
+value f_lift (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdAstLifter) (module MakeAstLifter); 
   
-value f_exn (module P:Camlp4.Sig.PRECAST) =
+value f_exn (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdExceptionTracer) (module MakeExceptionTracer);
   
-value f_prof (module P:Camlp4.Sig.PRECAST) =
+value f_prof (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdProfiler) (module MakeProfiler) ;
   
-value f_fold (module P:Camlp4.Sig.PRECAST) =
+value f_fold (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdFoldGenerator) (module MakeFoldGenerator) ;
   
-value f_striploc (module P:Camlp4.Sig.PRECAST) =
+value f_striploc (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdLocationStripper) (module MakeLocationStripper) ;
   
-value f_trash (module P:Camlp4.Sig.PRECAST) =
+value f_trash (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdTrashRemover) (module MakeTrashRemover) ;
   
-value f_meta (module P:Camlp4.Sig.PRECAST) =
+value f_meta (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdMetaGenerator) (module MakeMetaGenerator) ;
   
 

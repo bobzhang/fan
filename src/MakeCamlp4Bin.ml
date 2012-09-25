@@ -1,7 +1,7 @@
 
 
 open Format;
-open Camlp4;
+
 open Camlp4Parsers;
 open Camlp4Filters;
 open FanUtil;
@@ -9,9 +9,6 @@ module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
       open PreCast;
-      (* module CleanAst = Struct.CleanAst.Make PreCast.Ast; *)
-
-
       value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
         Hashtbl.create 30;
       value dyn_loader = ref (fun () -> failwith "empty in dynloader");
@@ -25,8 +22,6 @@ module Camlp4Bin
               fun [ FanLoc.Exc_located loc exn ->
                 fprintf ppf "%a:@\n%a" FanLoc.print loc FanUtil.ErrorHandler.print exn
                   | exn -> raise exn ]);
-
-          
       (* value plugins = Hashtbl.create 50;      *)
       value (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
@@ -237,7 +232,7 @@ module Camlp4Bin
       
       value process_intf dyn_loader name =
         process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (new Camlp4.Camlp4Ast.clean_ast)#sig_item
+                (new Camlp4Ast.clean_ast)#sig_item
                 PreCast.Syntax.AstFilters.fold_interf_filters gind;
       value process_impl dyn_loader name =
         process
@@ -245,7 +240,7 @@ module Camlp4Bin
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
-          (new Camlp4.Camlp4Ast.clean_ast)#str_item
+          (new Camlp4Ast.clean_ast)#str_item
           PreCast.Syntax.AstFilters.fold_implem_filters
           gimd;
 

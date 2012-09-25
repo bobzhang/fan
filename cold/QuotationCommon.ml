@@ -9,10 +9,10 @@ module Id =
               end
 
 module Make =
-                    functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-                     functor (TheAntiquotSyntax : Camlp4.Sig.Parser(Syntax.Ast).SIMPLE) ->
+                    functor (Syntax : Sig.Camlp4Syntax) ->
+                     functor (TheAntiquotSyntax : Sig.Parser(Syntax.Ast).SIMPLE) ->
                       struct
-                       open Camlp4.Sig
+                       open Sig
 
                        include Syntax
 

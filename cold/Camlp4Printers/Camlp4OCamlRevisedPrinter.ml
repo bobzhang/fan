@@ -1,1 +1,1 @@
-let _ = (Camlp4.Register.enable_ocamlr_printer () )
+let _ = (Register.enable_ocamlr_printer () )
