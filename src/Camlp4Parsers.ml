@@ -1,5 +1,3 @@
-(* open Camlp4; *)
-(* open FanSig; *)
 open FanUtil;
 module IdAstLoader = struct
   value name = "Camlp4AstLoader";
@@ -1965,7 +1963,9 @@ New syntax:\
         | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s ->
             <:str_item< $(anti:mk_anti ~c:"str_item" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.str_item_tag
-        | e = expr -> <:str_item< $exp:e >> ] ]
+        | e = expr -> <:str_item< $exp:e >>
+        (* this entry makes <:str_item< let $rec:r $bi in $x >> parsable *)
+        ] ]
     ;
     module_binding0:
       [ RA
@@ -3926,7 +3926,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
   DELETE_RULE Gram expr: SELF; "where"; opt_rec; let_binding END;
   DELETE_RULE Gram value_let: "value" END;
   DELETE_RULE Gram value_val: "value" END;
-  DELETE_RULE Gram str_item: value_let; opt_rec; binding END;
+  DELETE_RULE Gram str_item: value_let; opt_rec; binding END; (* deleted *)
   DELETE_RULE Gram module_type: "'"; a_ident END;
   DELETE_RULE Gram module_type: SELF; SELF; dummy END;
   DELETE_RULE Gram module_type: SELF; "."; SELF END;

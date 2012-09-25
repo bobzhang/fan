@@ -1,3 +1,7 @@
+
+  (******************************)
+  (* Intialize a filter plugin  *)
+  (******************************)
 module type S = sig
   type filter 'a = 'a -> 'a;
   value register_sig_item_filter : (filter Ast.sig_item) -> unit;

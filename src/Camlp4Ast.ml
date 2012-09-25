@@ -1,33 +1,12 @@
-(* -*- Mode:caml -*- *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
-
-  (* module FanLoc = FanLoc; *)
-  module Ast = struct
-    include Ast;
-    value safe_string_escaped s =
-      if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
-      else String.escaped s;
-  end;
-
+(* Enrich with some utility functions in Ast *)
+module Ast = struct
   include Ast;
+  value safe_string_escaped s =
+    if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+    else String.escaped s;
+end;
+
+include Ast;
 
   external loc_of_ctyp : ctyp -> FanLoc.t = "%field0";
   external loc_of_patt : patt -> FanLoc.t = "%field0";
