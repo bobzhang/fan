@@ -1,13 +1,13 @@
 open Camlp4;
-
+open FanUtil;
 module IdAstLifter = struct
   value name    = "Camlp4AstLifter";
   value version = Sys.ocaml_version;
 end;
 
-module MakeAstLifter (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-
+module MakeAstLifter (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+  (* open AstFilters; *)
+  module Ast = Camlp4Ast;
   module MetaLoc = struct
     module Ast = Ast;
     value meta_loc_patt _loc _ = <:patt< loc >>;
@@ -15,7 +15,7 @@ module MakeAstLifter (AstFilters : Camlp4.Sig.AstFilters) = struct
   end;
   module MetaAst = Ast.Meta.Make MetaLoc;
 
-  register_str_item_filter (fun ast ->
+  Syn.AstFilters.register_str_item_filter (fun ast ->
     let _loc = Ast.loc_of_str_item ast in
     <:str_item< let loc = FanLoc.ghost in $(exp:MetaAst.Expr.meta_str_item _loc ast) >>); (* FIXME Loc => FanLoc*)
 
@@ -26,17 +26,14 @@ module IdExceptionTracer = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeExceptionTracer (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  open Ast;
+module MakeExceptionTracer (Syn : Camlp4.Sig.Camlp4Syntax) = struct
 
+  module Ast = Camlp4Ast; (* FIXME future, Ast can be customized *)
   value add_debug_expr e =
-
     let _loc = Ast.loc_of_expr e in
     let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
     <:expr<
-        try $e
-        with
+        try $e  with
         [ Stream.Failure | Exit as exc -> raise exc
         | exc -> do {
             if Debug.mode "exc" then
@@ -61,9 +58,7 @@ module MakeExceptionTracer (AstFilters : Camlp4.Sig.AstFilters) = struct
     [ <:str_item< module Debug = $_ >> as st -> st
     | st -> super#str_item st ];
   end;
-
-  register_str_item_filter filter#str_item;
-
+  Syn.AstFilters.register_str_item_filter filter#str_item;
 end;
 
 
@@ -72,13 +67,9 @@ module IdFoldGenerator = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  module StringMap = Map.Make String;
-  open Ast;
-
+module MakeFoldGenerator (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+  module Ast = Camlp4Ast;
   value _loc = FanLoc.ghost;
-
   value sf = Printf.sprintf;
 
   value xik i k =
@@ -140,11 +131,11 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
   type type_decl = (string * Ast.ident * list Ast.ctyp * Ast.ctyp * bool);
 
   value builtin_types =
-    let tyMap = StringMap.empty in
+    let tyMap = SMap.empty in
     let tyMap =
       let abstr = ["string"; "int"; "float"; "int32"; "int64"; "nativeint"; "char"] in
       List.fold_right
-        (fun name -> StringMap.add name (name, <:ident< $lid:name >>, [], <:ctyp<>>, False))
+        (fun name -> SMap.add name (name, <:ident< $lid:name >>, [], <:ctyp<>>, False))
         abstr tyMap in
     let tyMap =
       let concr =
@@ -153,15 +144,15 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
          ("option", <:ident<option>>, [ <:ctyp< 'a >> ], <:ctyp< [ None | Some of 'a ] >>, False);
          ("ref", <:ident<ref>>, [ <:ctyp< 'a >> ], <:ctyp< { contents : 'a } >>, False)]
       in
-      List.fold_right (fun ((name, _, _, _, _) as decl) -> StringMap.add name decl) concr tyMap
+      List.fold_right (fun ((name, _, _, _, _) as decl) -> SMap.add name decl) concr tyMap
     in
     tyMap;
 
-  value used_builtins = ref StringMap.empty;
+  value used_builtins = ref SMap.empty;
 
   value store_if_builtin_type id =
-    if StringMap.mem id builtin_types then
-      used_builtins.val := StringMap.add id (StringMap.find id builtin_types) used_builtins.val
+    if SMap.mem id builtin_types then
+      used_builtins.val := SMap.add id (SMap.find id builtin_types) used_builtins.val
     else ();
 
   type mode = [ Fold | Map | Fold_map ];
@@ -524,12 +515,12 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
            $acc >>
 
       and generate_structure tyMap =
-        StringMap.fold method_of_type_decl used_builtins.val
-          (StringMap.fold method_of_type_decl tyMap <:class_str_item<>>)
+        SMap.fold method_of_type_decl used_builtins.val
+          (SMap.fold method_of_type_decl tyMap <:class_str_item<>>)
 
       and generate_signature tyMap =
-        StringMap.fold class_sig_item_of_type_decl used_builtins.val
-          (StringMap.fold class_sig_item_of_type_decl tyMap <:class_sig_item<>>);
+        SMap.fold class_sig_item_of_type_decl used_builtins.val
+          (SMap.fold class_sig_item_of_type_decl tyMap <:class_sig_item<>>);
 
   end;
 
@@ -539,11 +530,11 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
     | <:ctyp< $t1 and $t2 >> ->
         tyMap_of_type_decls t1 (tyMap_of_type_decls t2 acc)
     | Ast.TyDcl _ name tl tk _ ->
-        StringMap.add name (name, <:ident< $lid:name >>, tl, tk, False) acc
+        SMap.add name (name, <:ident< $lid:name >>, tl, tk, False) acc
     | _ -> assert False ];
 
   value generate_class_implem mode c tydcl n =
-    let tyMap = tyMap_of_type_decls tydcl StringMap.empty in
+    let tyMap = tyMap_of_type_decls tydcl SMap.empty in
     let module M = Gen(struct value size = n; value mode = mode; end) in
     let generated = M.generate_structure tyMap in
     let gen_type =
@@ -566,7 +557,7 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
     <:str_item< class $lid:c = object (o : 'self_type) $generated; $failure; $unknown end >>;
 
   value generate_class_interf mode c tydcl n =
-    let tyMap = tyMap_of_type_decls tydcl StringMap.empty in
+    let tyMap = tyMap_of_type_decls tydcl SMap.empty in
     let module M = Gen(struct value size = n; value mode = mode; end) in
     let generated = M.generate_signature tyMap in
     let gen_type =
@@ -647,8 +638,8 @@ module MakeFoldGenerator (AstFilters : Camlp4.Sig.AstFilters) = struct
         | sg -> super#sig_item sg ];
     end;
 
-  register_str_item_filter processor#str_item;
-  register_sig_item_filter processor#sig_item;
+  Syn.AstFilters.register_str_item_filter processor#str_item;
+  Syn.AstFilters.register_sig_item_filter processor#sig_item;
 
 end;
   
@@ -657,12 +648,9 @@ module IdLocationStripper = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeLocationStripper (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  open Ast;
-
-  register_str_item_filter (Ast.map_loc (fun _ -> FanLoc.ghost))#str_item;
-
+module MakeLocationStripper (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+  module Ast=Camlp4Ast;
+  Syn.AstFilters.register_str_item_filter (Ast.map_loc (fun _ -> FanLoc.ghost))#str_item;
 end;
 
 
@@ -671,10 +659,8 @@ module IdProfiler = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeProfiler (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  open Ast;
-
+module MakeProfiler (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+  module Ast = Camlp4Ast;
   value decorate_binding decorate_fun = object
     inherit Ast.map as super;
     method binding =
@@ -717,7 +703,7 @@ module MakeProfiler (AstFilters : Camlp4.Sig.AstFilters) = struct
         decorate_this_expr <:expr< fun [ $(decorate_match_case m) ] >> id
     | e -> decorate_this_expr (decorate_expr e) id ];
 
-  register_str_item_filter (decorate decorate_fun)#str_item;
+  Syn.AstFilters.register_str_item_filter (decorate decorate_fun)#str_item;
 
 end;
   
@@ -726,32 +712,28 @@ module IdTrashRemover = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeTrashRemover (AstFilters : Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  open Ast;
-
-  register_str_item_filter
+module MakeTrashRemover (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+  module Ast = Camlp4Ast;
+  Syn.AstFilters.register_str_item_filter
     (Ast.map_str_item
       (fun
        [ <:str_item@_loc< module Camlp4Trash = $_ >> ->
             <:str_item<>>
        | st -> st ]))#str_item;
-
 end;
 
 
-module MapTy = Map.Make String;
+(* module SMap = Map.Make String; *)
 
 module IdMetaGenerator = struct
   value name = "Camlp4MetaGenerator";
   value version = Sys.ocaml_version;
 end ;
-module MakeMetaGenerator (AstFilters: Camlp4.Sig.AstFilters) = struct
-  open AstFilters;
-  open Ast;
+module MakeMetaGenerator (Syn: Camlp4.Sig.Camlp4Syntax) = struct
+  module Ast = Camlp4Ast;
 type t =
   { name : Ast.ident;
-    type_decls : MapTy.t Ast.ctyp;
+    type_decls : SMap.t Ast.ctyp;
     acc : Ast.expr;
     app : Ast.expr;
     id  : Ast.expr;
@@ -798,7 +780,7 @@ value fold_data_ctors ty f init =
   loop init ty;
 
 value fold_type_decls m f init =
-  MapTy.fold f m.type_decls init;
+  SMap.fold f m.type_decls init;
 
 value patt_of_data_ctor_decl cons tyargs =
   fold_args tyargs begin fun _ i acc ->
@@ -877,11 +859,11 @@ value mk_meta m =
 
 value find_type_decls = object
   inherit Ast.fold as super;
-  value accu = MapTy.empty;
+  value accu = SMap.empty;
   method get = accu;
   method ctyp =
     fun
-    [ Ast.TyDcl _ name _ _ _ as t -> {< accu = MapTy.add name t accu >}
+    [ Ast.TyDcl _ name _ _ _ as t -> {< accu = SMap.add name t accu >}
     | t -> super#ctyp t ];
 end;
 
@@ -942,29 +924,29 @@ value filter st =
      | me -> me ];
   end#str_item st;
 
-  register_str_item_filter filter;
+  Syn.AstFilters.register_str_item_filter filter;
 end;
   
 value f_lift (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdAstLifter) (module MakeAstLifter); 
+  P.syntax_plugin (module IdAstLifter) (module MakeAstLifter); 
   
 value f_exn (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdExceptionTracer) (module MakeExceptionTracer);
+  P.syntax_plugin (module IdExceptionTracer) (module MakeExceptionTracer);
   
 value f_prof (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdProfiler) (module MakeProfiler) ;
+  P.syntax_plugin (module IdProfiler) (module MakeProfiler) ;
   
 value f_fold (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdFoldGenerator) (module MakeFoldGenerator) ;
+  P.syntax_plugin (module IdFoldGenerator) (module MakeFoldGenerator) ;
   
 value f_striploc (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdLocationStripper) (module MakeLocationStripper) ;
+  P.syntax_plugin (module IdLocationStripper) (module MakeLocationStripper) ;
   
 value f_trash (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdTrashRemover) (module MakeTrashRemover) ;
+  P.syntax_plugin (module IdTrashRemover) (module MakeTrashRemover) ;
   
 value f_meta (module P:Camlp4.Sig.PRECAST) =
-  P.ast_filter (module IdMetaGenerator) (module MakeMetaGenerator) ;
+  P.syntax_plugin (module IdMetaGenerator) (module MakeMetaGenerator) ;
   
 
   

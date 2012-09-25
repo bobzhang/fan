@@ -1,563 +1,26 @@
-(* camlp4r *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
-
-
-(** Camlp4 signature repository *)
-
-(** {6 Basic signatures} *)
-
-(** Signature with just a type. *)
-module type Type = sig
-  type t;
-end;
-
-
-(** A signature for extensions identifiers. *)
 module type Id = sig
-
-  (** The name of the extension, typically the module name. *)
-  value name    : string;
-
-  (** The version of the extension, typically $ Id$ with a versionning system. *)
+  value name : string;
   value version : string;
-
 end;
-
 module type Warning = sig
   type warning = FanLoc.t -> string -> unit;
   value default_warning: warning;
   value current_warning: ref warning;
   value print_warning: warning;  
 end;
-  
-
-(** Signature for OCaml syntax trees. *) (*
-    This signature is an extension of {!Ast}
-    It provides:
-      - Types for all kinds of structure.
-      - Map: A base class for map traversals.
-      - Map classes and functions for common kinds.
-
-    == Core language ==
-    ctyp               :: Representaion of types
-    patt               :: The type of patterns
-    expr               :: The type of expressions
-    match_case         :: The type of cases for match/function/try constructions
-    ident              :: The type of identifiers (including path like Foo(X).Bar.y)
-    binding            :: The type of let bindings
-    rec_binding        :: The type of record definitions
-
-    == Modules ==
-    module_type        :: The type of module types
-    sig_item           :: The type of signature items
-    str_item           :: The type of structure items
-    module_expr        :: The type of module expressions
-    module_binding     :: The type of recursive module definitions
-    with_constr        :: The type of `with' constraints
-
-    == Classes ==
-    class_type         :: The type of class types
-    class_sig_item     :: The type of class signature items
-    class_expr         :: The type of class expressions
-    class_str_item     :: The type of class structure items
- *)
-module type Camlp4Ast = sig
-
-  (** The inner module for locations *)
-  (* module Loc : module type of FanLoc; *)
-
-  INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
-
-  value loc_of_ctyp : ctyp -> loc;
-  value loc_of_patt : patt -> loc;
-  value loc_of_expr : expr -> loc;
-  value loc_of_module_type : module_type -> loc;
-  value loc_of_module_expr : module_expr -> loc;
-  value loc_of_sig_item : sig_item -> loc;
-  value loc_of_str_item : str_item -> loc;
-  value loc_of_class_type : class_type -> loc;
-  value loc_of_class_sig_item : class_sig_item -> loc;
-  value loc_of_class_expr : class_expr -> loc;
-  value loc_of_class_str_item : class_str_item -> loc;
-  value loc_of_with_constr : with_constr -> loc;
-  value loc_of_binding : binding -> loc;
-  value loc_of_rec_binding : rec_binding -> loc;
-  value loc_of_module_binding : module_binding -> loc;
-  value loc_of_match_case : match_case -> loc;
-  value loc_of_ident : ident -> loc;
-
-  module Meta : sig
-    module type META_LOC = sig
-      (* The first location is where to put the returned pattern.
-          Generally it's _loc to match with <:patt< ... >> quotations.
-          The second location is the one to treat. *)
-      value meta_loc_patt : loc -> loc -> patt;
-      (* The first location is where to put the returned expression.
-          Generally it's _loc to match with <:expr< ... >> quotations.
-          The second location is the one to treat. *)
-      value meta_loc_expr : loc -> loc -> expr;
-    end;
-    module MetaLoc : sig
-      value meta_loc_patt : loc -> loc -> patt;
-      value meta_loc_expr : loc -> loc -> expr;
-    end;
-    module MetaGhostLoc : sig
-      value meta_loc_patt : loc -> 'a -> patt;
-      value meta_loc_expr : loc -> 'a -> expr;
-    end;
-    module MetaLocVar : sig
-      value meta_loc_patt : loc -> 'a -> patt;
-      value meta_loc_expr : loc -> 'a -> expr;
-    end;
-    module Make (MetaLoc : META_LOC) : sig
-      module Expr : sig
-        value meta_string : loc -> string -> expr;
-        value meta_int : loc -> string -> expr;
-        value meta_float : loc -> string -> expr;
-        value meta_char : loc -> string -> expr;
-        value meta_bool : loc -> bool -> expr;
-        value meta_list : (loc -> 'a -> expr) -> loc -> list 'a -> expr;
-        value meta_binding : loc -> binding -> expr;
-        value meta_rec_binding : loc -> rec_binding -> expr;
-        value meta_class_expr : loc -> class_expr -> expr;
-        value meta_class_sig_item : loc -> class_sig_item -> expr;
-        value meta_class_str_item : loc -> class_str_item -> expr;
-        value meta_class_type : loc -> class_type -> expr;
-        value meta_ctyp : loc -> ctyp -> expr;
-        value meta_expr : loc -> expr -> expr;
-        value meta_ident : loc -> ident -> expr;
-        value meta_match_case : loc -> match_case -> expr;
-        value meta_module_binding : loc -> module_binding -> expr;
-        value meta_module_expr : loc -> module_expr -> expr;
-        value meta_module_type : loc -> module_type -> expr;
-        value meta_patt : loc -> patt -> expr;
-        value meta_sig_item : loc -> sig_item -> expr;
-        value meta_str_item : loc -> str_item -> expr;
-        value meta_with_constr : loc -> with_constr -> expr;
-        value meta_rec_flag : loc -> rec_flag -> expr;
-        value meta_mutable_flag : loc -> mutable_flag -> expr;
-        value meta_virtual_flag : loc -> virtual_flag -> expr;
-        value meta_private_flag : loc -> private_flag -> expr;
-        value meta_row_var_flag : loc -> row_var_flag -> expr;
-        value meta_override_flag : loc -> override_flag -> expr;
-        value meta_direction_flag : loc -> direction_flag -> expr;
-      end;
-      module Patt : sig
-        value meta_string : loc -> string -> patt;
-        value meta_int : loc -> string -> patt;
-        value meta_float : loc -> string -> patt;
-        value meta_char : loc -> string -> patt;
-        value meta_bool : loc -> bool -> patt;
-        value meta_list : (loc -> 'a -> patt) -> loc -> list 'a -> patt;
-        value meta_binding : loc -> binding -> patt;
-        value meta_rec_binding : loc -> rec_binding -> patt;
-        value meta_class_expr : loc -> class_expr -> patt;
-        value meta_class_sig_item : loc -> class_sig_item -> patt;
-        value meta_class_str_item : loc -> class_str_item -> patt;
-        value meta_class_type : loc -> class_type -> patt;
-        value meta_ctyp : loc -> ctyp -> patt;
-        value meta_expr : loc -> expr -> patt;
-        value meta_ident : loc -> ident -> patt;
-        value meta_match_case : loc -> match_case -> patt;
-        value meta_module_binding : loc -> module_binding -> patt;
-        value meta_module_expr : loc -> module_expr -> patt;
-        value meta_module_type : loc -> module_type -> patt;
-        value meta_patt : loc -> patt -> patt;
-        value meta_sig_item : loc -> sig_item -> patt;
-        value meta_str_item : loc -> str_item -> patt;
-        value meta_with_constr : loc -> with_constr -> patt;
-        value meta_rec_flag : loc -> rec_flag -> patt;
-        value meta_mutable_flag : loc -> mutable_flag -> patt;
-        value meta_virtual_flag : loc -> virtual_flag -> patt;
-        value meta_private_flag : loc -> private_flag -> patt;
-        value meta_row_var_flag : loc -> row_var_flag -> patt;
-        value meta_override_flag : loc -> override_flag -> patt;
-        value meta_direction_flag : loc -> direction_flag -> patt;
-      end;
-    end;
-  end;
-
-  (** See {!Ast.map}. *)
-  class map : object ('self_type)
-    method string : string -> string;
-    method list : ! 'a 'b . ('self_type -> 'a -> 'b) -> list 'a -> list 'b;
-    method meta_bool : meta_bool -> meta_bool;
-    method meta_option : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
-    method meta_list : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
-    method loc : loc -> loc;
-    method expr : expr -> expr;
-    method patt : patt -> patt;
-    method ctyp : ctyp -> ctyp;
-    method str_item : str_item -> str_item;
-    method sig_item : sig_item -> sig_item;
-
-    method module_expr : module_expr -> module_expr;
-    method module_type : module_type -> module_type;
-    method class_expr : class_expr -> class_expr;
-    method class_type : class_type -> class_type;
-    method class_sig_item : class_sig_item -> class_sig_item;
-    method class_str_item : class_str_item -> class_str_item;
-    method with_constr : with_constr -> with_constr;
-    method binding : binding -> binding;
-    method rec_binding : rec_binding -> rec_binding;
-    method module_binding : module_binding -> module_binding;
-    method match_case : match_case -> match_case;
-    method ident : ident -> ident;
-    method mutable_flag : mutable_flag -> mutable_flag;
-    method private_flag : private_flag -> private_flag;
-    method virtual_flag : virtual_flag -> virtual_flag;
-    method direction_flag : direction_flag -> direction_flag;
-    method rec_flag : rec_flag -> rec_flag;
-    method row_var_flag : row_var_flag -> row_var_flag;
-    method override_flag : override_flag -> override_flag;
-
-    method unknown : ! 'a. 'a -> 'a;
-  end;
-
-  (** See {!Ast.fold}. *)
-  class fold : object ('self_type)
-    method string : string -> 'self_type;
-    method list : ! 'a . ('self_type -> 'a -> 'self_type) -> list 'a -> 'self_type;
-    method meta_bool : meta_bool -> 'self_type;
-    method meta_option : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_option 'a -> 'self_type;
-    method meta_list : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_list 'a -> 'self_type;
-    method loc : loc -> 'self_type;
-    method expr : expr -> 'self_type;
-    method patt : patt -> 'self_type;
-    method ctyp : ctyp -> 'self_type;
-    method str_item : str_item -> 'self_type;
-    method sig_item : sig_item -> 'self_type;
-    method module_expr : module_expr -> 'self_type;
-    method module_type : module_type -> 'self_type;
-    method class_expr : class_expr -> 'self_type;
-    method class_type : class_type -> 'self_type;
-    method class_sig_item : class_sig_item -> 'self_type;
-    method class_str_item : class_str_item -> 'self_type;
-    method with_constr : with_constr -> 'self_type;
-    method binding : binding -> 'self_type;
-    method rec_binding : rec_binding -> 'self_type;
-    method module_binding : module_binding -> 'self_type;
-    method match_case : match_case -> 'self_type;
-    method ident : ident -> 'self_type;
-    method rec_flag : rec_flag -> 'self_type;
-    method direction_flag : direction_flag -> 'self_type;
-    method mutable_flag : mutable_flag -> 'self_type;
-    method private_flag : private_flag -> 'self_type;
-    method virtual_flag : virtual_flag -> 'self_type;
-    method row_var_flag : row_var_flag -> 'self_type;
-    method override_flag : override_flag -> 'self_type;
-
-    method unknown : ! 'a. 'a -> 'self_type;
-  end;
-  class clean_ast :  object ('c)
-    method binding : binding -> binding;
-    method class_expr : class_expr -> class_expr;
-    method class_sig_item : class_sig_item -> class_sig_item;
-    method class_str_item : class_str_item -> class_str_item;
-    method class_type : class_type -> class_type;
-    method ctyp : ctyp -> ctyp;
-    method direction_flag : direction_flag -> direction_flag;
-    method expr : expr -> expr;
-    method ident : ident -> ident;
-    method list : ('c -> 'a -> 'b) -> list 'a -> list 'b;
-    method loc : loc -> loc;
-    method match_case : match_case -> match_case;
-    method meta_bool : meta_bool -> meta_bool;
-    method meta_list :
-      ('c -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
-    method meta_option :
-      ('c -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
-    method module_binding : module_binding -> module_binding;
-    method module_expr : module_expr -> module_expr;
-    method module_type : module_type -> module_type;
-    method mutable_flag : mutable_flag -> mutable_flag;
-    method override_flag : override_flag -> override_flag;
-    method patt : patt -> patt;
-    method private_flag : private_flag -> private_flag;
-    method rec_binding : rec_binding -> rec_binding;
-    method rec_flag : rec_flag -> rec_flag;
-    method row_var_flag : row_var_flag -> row_var_flag;
-    method sig_item : sig_item -> sig_item;
-    method str_item : str_item -> str_item;
-    method string : string -> string;
-    method unknown : 'a -> 'a;
-    method virtual_flag : virtual_flag -> virtual_flag;
-    method with_constr : with_constr -> with_constr;
-  end;
-
-
-  value map_expr : (expr -> expr) -> map;
-  value map_patt : (patt -> patt) -> map;
-  value map_ctyp : (ctyp -> ctyp) -> map;
-  value map_str_item : (str_item -> str_item) -> map;
-  value map_sig_item : (sig_item -> sig_item) -> map;
-  value map_loc : (loc -> loc) -> map;
-
-  value ident_of_expr : expr -> ident;
-  value ident_of_patt : patt -> ident;
-  value ident_of_ctyp : ctyp -> ident;
-
-  value biAnd_of_list : list binding -> binding;
-  value rbSem_of_list : list rec_binding -> rec_binding;
-  value paSem_of_list : list patt -> patt;
-  value paCom_of_list : list patt -> patt;
-  value tyOr_of_list : list ctyp -> ctyp;
-  value tyAnd_of_list : list ctyp -> ctyp;
-  value tyAmp_of_list : list ctyp -> ctyp;
-  value tySem_of_list : list ctyp -> ctyp;
-  value tyCom_of_list : list ctyp -> ctyp;
-  value tySta_of_list : list ctyp -> ctyp;
-  value stSem_of_list : list str_item -> str_item;
-  value sgSem_of_list : list sig_item -> sig_item;
-  value crSem_of_list : list class_str_item -> class_str_item;
-  value cgSem_of_list : list class_sig_item -> class_sig_item;
-  value ctAnd_of_list : list class_type -> class_type;
-  value ceAnd_of_list : list class_expr -> class_expr;
-  value wcAnd_of_list : list with_constr -> with_constr;
-  value meApp_of_list : list module_expr -> module_expr;
-  value mbAnd_of_list : list module_binding -> module_binding;
-  value mcOr_of_list : list match_case -> match_case;
-  value idAcc_of_list : list ident -> ident;
-  value idApp_of_list : list ident -> ident;
-  value exSem_of_list : list expr -> expr;
-  value exCom_of_list : list expr -> expr;
-
-  value list_of_ctyp : ctyp -> list ctyp -> list ctyp;
-  value list_of_binding : binding -> list binding -> list binding;
-  value list_of_rec_binding : rec_binding -> list rec_binding -> list rec_binding;
-  value list_of_with_constr : with_constr -> list with_constr -> list with_constr;
-  value list_of_patt : patt -> list patt -> list patt;
-  value list_of_expr : expr -> list expr -> list expr;
-  value list_of_str_item : str_item -> list str_item -> list str_item;
-  value list_of_sig_item : sig_item -> list sig_item -> list sig_item;
-  value list_of_class_sig_item : class_sig_item -> list class_sig_item -> list class_sig_item;
-  value list_of_class_str_item : class_str_item -> list class_str_item -> list class_str_item;
-  value list_of_class_type : class_type -> list class_type -> list class_type;
-  value list_of_class_expr : class_expr -> list class_expr -> list class_expr;
-  value list_of_module_expr : module_expr -> list module_expr -> list module_expr;
-  value list_of_module_binding : module_binding -> list module_binding -> list module_binding;
-  value list_of_match_case : match_case -> list match_case -> list match_case;
-  value list_of_ident : ident -> list ident -> list ident;
-
-  (** Like [String.escape] but takes care to not
-      escape antiquotations strings. *)
-  value safe_string_escaped : string -> string;
-
-  (** Returns True if the given pattern is irrefutable. *)
-  value is_irrefut_patt : patt -> bool;
-
-  value is_constructor : ident -> bool;
-  value is_patt_constructor : patt -> bool;
-  value is_expr_constructor : expr -> bool;
-
-  value ty_of_stl : (FanLoc.t * string * list ctyp) -> ctyp;
-  value ty_of_sbt : (FanLoc.t * string * bool * ctyp) -> ctyp;
-  value bi_of_pe : (patt * expr) -> binding;
-  value pel_of_binding : binding -> list (patt * expr);
-  value binding_of_pel : list (patt * expr) -> binding;
-  value sum_type_of_list : list (FanLoc.t * string * list ctyp) -> ctyp;
-  value record_type_of_list : list (FanLoc.t * string * bool * ctyp) -> ctyp;
-end;
-
-(** This functor is a restriction functor.
-    It takes a Camlp4Ast module and gives the Ast one.
-    Typical use is for [with] constraints.
-    Example: ... with module Ast = Camlp4.Sig.Camlp4AstToAst Camlp4Ast *)
-(* module Camlp4AstToAst (M : Camlp4Ast) : Ast *)
-(*   with type loc = M.loc *)
-(*    and type meta_bool = M.meta_bool *)
-(*    and type meta_option 'a = M.meta_option 'a *)
-(*    and type meta_list 'a = M.meta_list 'a *)
-(*    and type ctyp = M.ctyp *)
-(*    and type patt = M.patt *)
-(*    and type expr = M.expr *)
-(*    and type module_type = M.module_type *)
-(*    and type sig_item = M.sig_item *)
-(*    and type with_constr = M.with_constr *)
-(*    and type module_expr = M.module_expr *)
-(*    and type str_item = M.str_item *)
-(*    and type class_type = M.class_type *)
-(*    and type class_sig_item = M.class_sig_item *)
-(*    and type class_expr = M.class_expr *)
-(*    and type class_str_item = M.class_str_item *)
-(*    and type binding = M.binding *)
-(*    and type rec_binding = M.rec_binding *)
-(*    and type module_binding = M.module_binding *)
-(*    and type match_case = M.match_case *)
-(*    and type ident = M.ident *)
-(*    and type rec_flag = M.rec_flag *)
-(*    and type direction_flag = M.direction_flag *)
-(*    and type mutable_flag = M.mutable_flag *)
-(*    and type private_flag = M.private_flag *)
-(*    and type virtual_flag = M.virtual_flag *)
-(*    and type row_var_flag = M.row_var_flag *)
-(*    and type override_flag = M.override_flag *)
-(* = M; *)
-
-
-(** {6 Filters} *)
 
 (** A type for stream filters. *)
 type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
 
-(** Registerinng and folding of Ast filters.
-    Two kinds of filters must be handled:
-      - Implementation filters: str_item -> str_item.
-      - Interface filters: sig_item -> sig_item. *)
-module type AstFilters = sig
-
-  module Ast : Camlp4Ast ;
-
-  type filter 'a = 'a -> 'a;
-
-  value register_sig_item_filter : (filter Ast.sig_item) -> unit;
-  value register_str_item_filter : (filter Ast.str_item) -> unit;
-  value register_topphrase_filter : (filter Ast.str_item) -> unit;
-
-  value fold_interf_filters : ('a -> filter Ast.sig_item -> 'a) -> 'a -> 'a;
-  value fold_implem_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
-  value fold_topphrase_filters : ('a -> filter Ast.str_item -> 'a) -> 'a -> 'a;
-
-end;
-
-(** ASTs as one single dynamic type *)
-module type DynAst = sig
-  module Ast : Camlp4Ast; (* remove Ast,  Camlp4Ast *)
-  type tag 'a;
-
-  value ctyp_tag : tag Ast.ctyp;
-  value patt_tag : tag Ast.patt;
-  value expr_tag : tag Ast.expr;
-  value module_type_tag : tag Ast.module_type;
-  value sig_item_tag : tag Ast.sig_item;
-  value with_constr_tag : tag Ast.with_constr;
-  value module_expr_tag : tag Ast.module_expr;
-  value str_item_tag : tag Ast.str_item;
-  value class_type_tag : tag Ast.class_type;
-  value class_sig_item_tag : tag Ast.class_sig_item;
-  value class_expr_tag : tag Ast.class_expr;
-  value class_str_item_tag : tag Ast.class_str_item;
-  value match_case_tag : tag Ast.match_case;
-  value ident_tag : tag Ast.ident;
-  value binding_tag : tag Ast.binding;
-  value rec_binding_tag : tag Ast.rec_binding;
-  value module_binding_tag : tag Ast.module_binding;
-
-  value string_of_tag : tag 'a -> string;
-
-  module Pack (X : sig type t 'a; end) : sig
-    type pack;
-    value pack : tag 'a -> X.t 'a -> pack;
-    value unpack : tag 'a -> pack -> X.t 'a;
-    value print_tag : Format.formatter -> pack -> unit;
-  end;
-end;
-
-
-(** {6 Quotation operations} *)
-
-(** The signature for a quotation expander registery. *)
-module type Quotation = sig
-  module Ast : Camlp4Ast;
-  module DynAst : DynAst with module Ast = Ast;
-  open Ast;
-
-  (** The [loc] is the initial location. The option string is the optional name
-      for the location variable. The string is the quotation contents. *)
-  type expand_fun 'a = loc -> option string -> string -> 'a;
-
-  (** [add name exp] adds the quotation [name] associated with the
-      expander [exp]. *)
-  value add : string -> DynAst.tag 'a -> expand_fun 'a -> unit;
-
-  (** [find name] returns the expander of the given quotation name. *)
-  value find : string -> DynAst.tag 'a -> expand_fun 'a;
-
-  (** [default] holds the default quotation name. *)
-  value default : ref string;
-
-  (** [default_tbl] mapping position to the default quotation name
-      it has higher precedence over default
-   *)  
-  value default_tbl : Hashtbl.t string string ;
-
-  (** [default_at_pos] set the default quotation name for specific pos*)  
-  value default_at_pos: string -> string -> unit;
-      
-  (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
-      It's a parser wrapper, this function handles the error reporting for you. *)
-    
-  value parse_quotation_result :
-    (loc -> string -> 'a) -> loc -> FanSig.quotation -> string -> string -> 'a;
-
-  (** function translating quotation names; default = identity *)
-  value translate : ref (string -> string);
-
-  value expand : loc -> FanSig.quotation -> DynAst.tag 'a -> 'a;
-
-  (** [dump_file] optionally tells Camlp4 to dump the
-      result of an expander if this result is syntactically incorrect.
-      If [None] (default), this result is not dumped. If [Some fname], the
-      result is dumped in the file [fname]. *)
-  value dump_file : ref (option string);
-
-  module Error : FanSig.Error;
-
-end;
-
-(** {6 Tokens} *)
-
-
-(** {6 Dynamic loaders} *)
-
-
-(* (\** A signature for lexers. *\) *)
-(* module type Lexer = sig *)
-(*   module Loc : FanSig.Loc; *)
-(*   module Token : FanSig.Token with module Loc = Loc; *)
-(*   module Error : FanSig.Error; *)
-
-(*   (\** The constructor for a lexing function. The character stream is the input *)
-(*       stream to be lexed. The result is a stream of pairs of a token and *)
-(*       a location. *)
-(*       The lexer do not use global (mutable) variables: instantiations *)
-(*       of [Lexer.mk ()] do not perturb each other. *\) *)
-(*   value mk : unit -> (Loc.t -> Stream.t char -> Stream.t (Token.t * Loc.t)); *)
-(* end; *)
-
-
-(** A signature for parsers abstract from ASTs. *)
-module Parser (Ast : Camlp4Ast) = struct
-  module type SIMPLE = sig
+module type ParserExpr = sig
     (** The parse function for expressions.
         The underlying expression grammar entry is generally "expr; EOI". *)
-    value parse_expr : FanLoc.t -> string -> Ast.expr;
-
+  value parse_expr : FanLoc.t -> string -> Ast.expr;
     (** The parse function for patterns.
         The underlying pattern grammar entry is generally "patt; EOI". *)
-    value parse_patt : FanLoc.t -> string -> Ast.patt;
-  end;
-
-  module type S = sig
-
+  value parse_patt : FanLoc.t -> string -> Ast.patt;
+end;
+module type ParserImpl = sig
     (** Called when parsing an implementation (ml file) to build the syntax
         tree; the returned list contains the phrases (structure items) as a
         single "declare" node (a list of structure items);   if  the parser
@@ -566,72 +29,35 @@ module Parser (Ast : Camlp4Ast) = struct
         the parsing starts again. *)
     value parse_implem : ?directive_handler:(Ast.str_item -> option Ast.str_item) ->
                         FanLoc.t -> Stream.t char -> Ast.str_item;
-
     (** Same as {!parse_implem} but for interface (mli file). *)
     value parse_interf : ?directive_handler:(Ast.sig_item -> option Ast.sig_item) ->
                         FanLoc.t -> Stream.t char -> Ast.sig_item;
-  end;
 end;
 
-(** A signature for printers abstract from ASTs. *)
-module Printer (Ast : Camlp4Ast) = struct
-  module type S = sig
-
-    value print_interf : ?input_file:string -> ?output_file:string ->
-                        Ast.sig_item -> unit;
-    value print_implem : ?input_file:string -> ?output_file:string ->
-                        Ast.str_item -> unit;
-
-  end;
+module type PrinterImpl = sig
+  value print_interf : ?input_file:string -> ?output_file:string ->
+    Ast.sig_item -> unit;
+  value print_implem : ?input_file:string -> ?output_file:string ->
+    Ast.str_item -> unit;
 end;
 
-(** A syntax module is a sort of constistent bunch of modules and values.
-   In such a module you have a parser, a printer, and also modules for
-   locations, syntax trees, tokens, grammars, quotations, anti-quotations.
-   There is also the main grammar entries. *)
-module type Syntax = sig
-  module Ast            : Camlp4Ast  ;
-  module Token          : FanSig.Token ;
-  module Gram           : FanSig.Grammar.Static with 
-                          module Token = Token;
-  module Quotation      : Quotation with module Ast = Ast;
 
-  module AntiquotSyntax : (Parser Ast).SIMPLE;
-
-
-  include Warning;
-  include (Parser  Ast).S;
-  include (Printer Ast).S;
-end;
 
 (** A syntax module is a sort of constistent bunch of modules and values.
     In such a module you have a parser, a printer, and also modules for
     locations, syntax trees, tokens, grammars, quotations, anti-quotations.
     There is also the main grammar entries. *)
 module type Camlp4Syntax = sig
-
-
-  module Ast            : Camlp4Ast ;
   module Token          : FanSig.Camlp4Token ;
-
   module Gram           : FanSig.Grammar.Static with  
                           module Token = Token;
-  module Quotation      : Quotation with module Ast = Ast ; 
-
-  module AntiquotSyntax : (Parser Ast).SIMPLE;
-
-  module Ast2pt         : sig
-    value patt: Ast.patt -> Parsetree.pattern;
-    value expr:  Ast.expr -> Parsetree.expression;
-    value sig_item : Ast.sig_item -> Parsetree.signature;
-    value str_item : Ast.str_item -> Parsetree.structure;
-    value phrase : Ast.str_item -> Parsetree.toplevel_phrase;
-  end;
-
+  module AntiquotSyntax : ParserExpr;
+  module Quotation : Quotation.S;
+  module AstFilters: AstFilters.S;  
+    
   include Warning;  
-  include (Parser  Ast).S;
-  include (Printer Ast).S;
-
+  include ParserImpl;
+  include PrinterImpl;
   value interf : Gram.Entry.t (list Ast.sig_item * option FanLoc.t);
   value implem : Gram.Entry.t (list Ast.str_item * option FanLoc.t);
   value top_phrase : Gram.Entry.t (option Ast.str_item);
@@ -797,64 +223,49 @@ module type Camlp4Syntax = sig
   value infixop2 : Gram.Entry.t Ast.expr;
   value infixop3 : Gram.Entry.t Ast.expr;
   value infixop4 : Gram.Entry.t Ast.expr;
+
 end;
 
 (** A signature for syntax extension (syntax -> syntax functors). *)
-module type SyntaxExtension = functor (Syn : Syntax)
-                    -> (Syntax with  module Ast            = Syn.Ast
-                                and module Token          = Syn.Token
-                                and module Gram           = Syn.Gram
-                                and module Quotation      = Syn.Quotation);
-(** Camlp4Syntax with module [AstFilter] added *)                      
-(* module type FilterSyntax = sig
- *   include Camlp4Syntax;
- *   module AstFilters:AstFilters with module Ast = Ast; 
- * end ; *)
-
+module type SyntaxExtension = functor (Syn : Camlp4Syntax)
+  -> (Camlp4Syntax with
+      module Token = Syn.Token and
+      module Gram  = Syn.Gram  and
+      module AntiquotSyntax = Syn.AntiquotSyntax and
+      module Quotation = Syn.Quotation and
+      module AstFilters = Syn.AstFilters );
 
 module type PLUGIN = functor (Unit:sig end) -> sig end;
-    
-module type OCAML_SYNTAX_EXTENSION = functor (Syn:Camlp4Syntax) -> Camlp4Syntax ;
+module type SyntaxPlugin = functor (Syn:Camlp4Syntax) -> sig end ;
 
-module type SYNTAX_PLUGIN = functor (Syn:Syntax) -> sig end ;
-module type PRINTER_PLUGIN = functor (Syn:Syntax) -> (Printer Syn.Ast).S;   
-module type OCAML_PRINTER_PLUGIN =
-    functor (Syn:Camlp4Syntax) ->  (Printer Syn.Ast).S;
-module type PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S;
-module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> (Parser Ast).S ;
-module type ASTFILTER_PLUGIN  = functor (F:AstFilters) -> sig end ;
-module type LEXER = functor (Token: FanSig.Camlp4Token) -> FanSig.Lexer
-  with  module Token = Token;
+(** generate two printers to be registered*)
+module type PrinterPlugin = functor (Syn:Camlp4Syntax) -> PrinterImpl;   
 
+(* module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> Parser.S ; *)
+module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
+(* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 
+module type LEXER =  functor (Token: FanSig.Camlp4Token)
+  -> FanSig.Lexer with  module Token = Token;
 
 module type PRECAST = sig
   type token = FanSig.camlp4_token ;
-
-  module Ast        : Camlp4Ast ;
   module Token      : FanSig.Token  with 
                       type t = FanSig.camlp4_token;
   module Lexer      : FanSig.Lexer  with 
                       module Token = Token;
   module Gram       : FanSig.Grammar.Static  with
                       module Token = Token;
-  module Quotation  : Quotation with module Ast = Ast;
-
-  module AstFilters : AstFilters with module Ast = Ast;
   module Syntax     : Camlp4Syntax with 
-                       module Token   = Token
-                       and module Ast     = Ast
-                       and module Gram    = Gram
-                       and module Quotation = Quotation;
-      
+                       module Token   = Token;
   module Printers : sig
-    module OCaml         : (Printer Ast).S;
-    module DumpOCamlAst  : (Printer Ast).S;
-    module DumpCamlp4Ast : (Printer Ast).S;
-    module Null          : (Printer Ast).S;
+    module OCaml         : PrinterImpl;
+    module DumpOCamlAst  : PrinterImpl;
+    module DumpCamlp4Ast : PrinterImpl;
+    module Null          : PrinterImpl;
   end;
 
-  module MakeSyntax (U : sig end) : Syntax;
+  module MakeSyntax (U : sig end) : Camlp4Syntax;
 
   (* parser signature *)  
   type parser_fun 'a =
@@ -870,16 +281,18 @@ module type PRECAST = sig
   value current_parser :
       unit -> (parser_fun Ast.str_item * parser_fun Ast.sig_item);
 
-  value plugin : (module Id) -> (module PLUGIN) -> unit ;      
-  value syntax_plugin : (module Id) -> (module SYNTAX_PLUGIN) -> unit ;
-  value syntax_extension : (module Id) -> (module SyntaxExtension) -> unit;
-  value ocaml_syntax_extension : (module Id) ->
-    (module OCAML_SYNTAX_EXTENSION) -> unit ;
-
-  value parser_plugin : (module Id) -> (module PARSER) -> unit;
-  value ocaml_parser_plugin : (module Id) -> (module OCAML_PARSER) -> unit;
-  value ocaml_precast_parser_plugin : (module Id) ->
-    (module (Parser Syntax.Ast).S) -> unit ;
+  value plugin : (module Id) -> (module PLUGIN) -> unit ;
+  value syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;  
+  value syntax_extension: (module Id) -> (module SyntaxExtension) -> unit;
+  value printer_plugin: (module Id) -> (module PrinterPlugin) -> unit;
+  value replace_printer: (module Id) -> (module PrinterImpl) -> unit;
+  value replace_parser: (module Id) -> (module ParserImpl) -> unit;
+  value parser_plugin: (module Id) -> (module ParserPlugin) -> unit;
+  value enable_ocaml_printer : unit -> unit;
+  value enable_dump_ocaml_ast_printer : unit -> unit;
+  value enable_dump_camlp4_ast_printer: unit -> unit;  
+  value enable_null_printer: unit -> unit;
+  value enable_auto: (unit->bool) -> unit;  
 
 
   value register_str_item_printer : printer_fun Ast.str_item -> unit;
@@ -889,23 +302,16 @@ module type PRECAST = sig
   value current_printer :
       unit -> (printer_fun Ast.str_item * printer_fun Ast.sig_item);
         
-  value printer : (module Id) -> (module PRINTER_PLUGIN) -> unit ;
-  value ocaml_printer : (module Id) -> (module OCAML_PRINTER_PLUGIN) -> unit;
-  value ocaml_precast_printer : (module Id) ->
-    (module (Printer Syntax.Ast).S) -> unit ;
-
-  value ast_filter : (module Id)-> (module ASTFILTER_PLUGIN) -> unit ;
-
   value declare_dyn_module : string -> (unit -> unit) -> unit  ;
 
-  module CurrentParser : (Parser Ast).S;
-  module CurrentPrinter : (Printer Ast).S;
+  module CurrentParser : ParserImpl;
+  module CurrentPrinter : PrinterImpl;
 
-  value enable_ocaml_printer : unit -> unit;
-  value enable_null_printer : unit -> unit;
-  value enable_dump_ocaml_ast_printer : unit -> unit;
-  value enable_dump_camlp4_ast_printer : unit -> unit;
-  value enable_auto : (unit -> bool) -> unit ;  
+  (* value enable_ocaml_printer : unit -> unit; *)
+  (* value enable_null_printer : unit -> unit; *)
+  (* value enable_dump_ocaml_ast_printer : unit -> unit; *)
+  (* value enable_dump_camlp4_ast_printer : unit -> unit; *)
+  (* value enable_auto : (unit -> bool) -> unit ;   *)
 
 end ;
 
@@ -914,3 +320,298 @@ end ;
 module type PRECAST_PLUGIN = sig
   value apply : (module PRECAST) -> unit;
 end; 
+
+
+(* module type Camlp4Ast = sig *)
+(*   INCLUDE "src/Camlp4/Ast.ml"; *)
+(*   value loc_of_ctyp : ctyp -> loc; *)
+(*   value loc_of_patt : patt -> loc; *)
+(*   value loc_of_expr : expr -> loc; *)
+(*   value loc_of_module_type : module_type -> loc; *)
+(*   value loc_of_module_expr : module_expr -> loc; *)
+(*   value loc_of_sig_item : sig_item -> loc; *)
+(*   value loc_of_str_item : str_item -> loc; *)
+(*   value loc_of_class_type : class_type -> loc; *)
+(*   value loc_of_class_sig_item : class_sig_item -> loc; *)
+(*   value loc_of_class_expr : class_expr -> loc; *)
+(*   value loc_of_class_str_item : class_str_item -> loc; *)
+(*   value loc_of_with_constr : with_constr -> loc; *)
+(*   value loc_of_binding : binding -> loc; *)
+(*   value loc_of_rec_binding : rec_binding -> loc; *)
+(*   value loc_of_module_binding : module_binding -> loc; *)
+(*   value loc_of_match_case : match_case -> loc; *)
+(*   value loc_of_ident : ident -> loc; *)
+(*   module Meta : sig *)
+(*     module type META_LOC = sig *)
+(*       (\* The first location is where to put the returned pattern. *)
+(*           Generally it's _loc to match with <:patt< ... >> quotations. *)
+(*           The second location is the one to treat. *\) *)
+(*       value meta_loc_patt : loc -> loc -> patt; *)
+(*       (\* The first location is where to put the returned expression. *)
+(*           Generally it's _loc to match with <:expr< ... >> quotations. *)
+(*           The second location is the one to treat. *\) *)
+(*       value meta_loc_expr : loc -> loc -> expr; *)
+(*     end; *)
+(*     module MetaLoc : sig *)
+(*       value meta_loc_patt : loc -> loc -> patt; *)
+(*       value meta_loc_expr : loc -> loc -> expr; *)
+(*     end;
+    module MetaGhostLoc : sig
+      value meta_loc_patt : loc -> 'a -> patt;
+      value meta_loc_expr : loc -> 'a -> expr;
+    end;
+    module MetaLocVar : sig
+      value meta_loc_patt : loc -> 'a -> patt;
+      value meta_loc_expr : loc -> 'a -> expr;
+    end;
+    module Make (MetaLoc : META_LOC) : sig
+      module Expr : sig
+        value meta_string : loc -> string -> expr;
+        value meta_int : loc -> string -> expr;
+        value meta_float : loc -> string -> expr;
+        value meta_char : loc -> string -> expr;
+        value meta_bool : loc -> bool -> expr;
+        value meta_list : (loc -> 'a -> expr) -> loc -> list 'a -> expr;
+        value meta_binding : loc -> binding -> expr;
+        value meta_rec_binding : loc -> rec_binding -> expr;
+        value meta_class_expr : loc -> class_expr -> expr;
+        value meta_class_sig_item : loc -> class_sig_item -> expr;
+        value meta_class_str_item : loc -> class_str_item -> expr;
+        value meta_class_type : loc -> class_type -> expr;
+        value meta_ctyp : loc -> ctyp -> expr;
+        value meta_expr : loc -> expr -> expr;
+        value meta_ident : loc -> ident -> expr;
+        value meta_match_case : loc -> match_case -> expr;
+        value meta_module_binding : loc -> module_binding -> expr;
+        value meta_module_expr : loc -> module_expr -> expr;
+        value meta_module_type : loc -> module_type -> expr;
+        value meta_patt : loc -> patt -> expr;
+        value meta_sig_item : loc -> sig_item -> expr;
+        value meta_str_item : loc -> str_item -> expr;
+        value meta_with_constr : loc -> with_constr -> expr;
+        value meta_rec_flag : loc -> rec_flag -> expr;
+        value meta_mutable_flag : loc -> mutable_flag -> expr;
+        value meta_virtual_flag : loc -> virtual_flag -> expr;
+        value meta_private_flag : loc -> private_flag -> expr;
+        value meta_row_var_flag : loc -> row_var_flag -> expr;
+        value meta_override_flag : loc -> override_flag -> expr;
+        value meta_direction_flag : loc -> direction_flag -> expr;
+      end;
+      module Patt : sig
+        value meta_string : loc -> string -> patt;
+        value meta_int : loc -> string -> patt;
+        value meta_float : loc -> string -> patt;
+        value meta_char : loc -> string -> patt;
+        value meta_bool : loc -> bool -> patt;
+        value meta_list : (loc -> 'a -> patt) -> loc -> list 'a -> patt;
+        value meta_binding : loc -> binding -> patt;
+        value meta_rec_binding : loc -> rec_binding -> patt;
+        value meta_class_expr : loc -> class_expr -> patt;
+        value meta_class_sig_item : loc -> class_sig_item -> patt;
+        value meta_class_str_item : loc -> class_str_item -> patt;
+        value meta_class_type : loc -> class_type -> patt;
+        value meta_ctyp : loc -> ctyp -> patt;
+        value meta_expr : loc -> expr -> patt;
+        value meta_ident : loc -> ident -> patt;
+        value meta_match_case : loc -> match_case -> patt;
+        value meta_module_binding : loc -> module_binding -> patt;
+        value meta_module_expr : loc -> module_expr -> patt;
+        value meta_module_type : loc -> module_type -> patt;
+        value meta_patt : loc -> patt -> patt;
+        value meta_sig_item : loc -> sig_item -> patt;
+        value meta_str_item : loc -> str_item -> patt;
+        value meta_with_constr : loc -> with_constr -> patt;
+        value meta_rec_flag : loc -> rec_flag -> patt;
+        value meta_mutable_flag : loc -> mutable_flag -> patt;
+        value meta_virtual_flag : loc -> virtual_flag -> patt;
+        value meta_private_flag : loc -> private_flag -> patt;
+        value meta_row_var_flag : loc -> row_var_flag -> patt;
+        value meta_override_flag : loc -> override_flag -> patt;
+        value meta_direction_flag : loc -> direction_flag -> patt;
+      end;
+    end;
+  end;
+
+  (\** See {!Ast.map}. *\)
+  class map : object ('self_type)
+    method string : string -> string;
+    method list : ! 'a 'b . ('self_type -> 'a -> 'b) -> list 'a -> list 'b;
+    method meta_bool : meta_bool -> meta_bool;
+    method meta_option : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
+    method meta_list : ! 'a 'b . ('self_type -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
+    method loc : loc -> loc;
+    method expr : expr -> expr;
+    method patt : patt -> patt;
+    method ctyp : ctyp -> ctyp;
+    method str_item : str_item -> str_item;
+    method sig_item : sig_item -> sig_item;
+
+    method module_expr : module_expr -> module_expr;
+    method module_type : module_type -> module_type;
+    method class_expr : class_expr -> class_expr;
+    method class_type : class_type -> class_type;
+    method class_sig_item : class_sig_item -> class_sig_item;
+    method class_str_item : class_str_item -> class_str_item;
+    method with_constr : with_constr -> with_constr;
+    method binding : binding -> binding;
+    method rec_binding : rec_binding -> rec_binding;
+    method module_binding : module_binding -> module_binding;
+    method match_case : match_case -> match_case;
+    method ident : ident -> ident;
+    method mutable_flag : mutable_flag -> mutable_flag;
+    method private_flag : private_flag -> private_flag;
+    method virtual_flag : virtual_flag -> virtual_flag;
+    method direction_flag : direction_flag -> direction_flag;
+    method rec_flag : rec_flag -> rec_flag;
+    method row_var_flag : row_var_flag -> row_var_flag;
+    method override_flag : override_flag -> override_flag;
+
+    method unknown : ! 'a. 'a -> 'a;
+  end;
+
+  (\** See {!Ast.fold}. *\)
+  class fold : object ('self_type)
+    method string : string -> 'self_type;
+    method list : ! 'a . ('self_type -> 'a -> 'self_type) -> list 'a -> 'self_type;
+    method meta_bool : meta_bool -> 'self_type;
+    method meta_option : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_option 'a -> 'self_type;
+    method meta_list : ! 'a . ('self_type -> 'a -> 'self_type) -> meta_list 'a -> 'self_type;
+    method loc : loc -> 'self_type;
+    method expr : expr -> 'self_type;
+    method patt : patt -> 'self_type;
+    method ctyp : ctyp -> 'self_type;
+    method str_item : str_item -> 'self_type;
+    method sig_item : sig_item -> 'self_type;
+    method module_expr : module_expr -> 'self_type;
+    method module_type : module_type -> 'self_type;
+    method class_expr : class_expr -> 'self_type;
+    method class_type : class_type -> 'self_type;
+    method class_sig_item : class_sig_item -> 'self_type;
+    method class_str_item : class_str_item -> 'self_type;
+    method with_constr : with_constr -> 'self_type;
+    method binding : binding -> 'self_type;
+    method rec_binding : rec_binding -> 'self_type;
+    method module_binding : module_binding -> 'self_type;
+    method match_case : match_case -> 'self_type;
+    method ident : ident -> 'self_type;
+    method rec_flag : rec_flag -> 'self_type;
+    method direction_flag : direction_flag -> 'self_type;
+    method mutable_flag : mutable_flag -> 'self_type;
+    method private_flag : private_flag -> 'self_type;
+    method virtual_flag : virtual_flag -> 'self_type;
+    method row_var_flag : row_var_flag -> 'self_type;
+    method override_flag : override_flag -> 'self_type;
+
+    method unknown : ! 'a. 'a -> 'self_type;
+  end;
+  class clean_ast :  object ('c)
+    method binding : binding -> binding;
+    method class_expr : class_expr -> class_expr;
+    method class_sig_item : class_sig_item -> class_sig_item;
+    method class_str_item : class_str_item -> class_str_item;
+    method class_type : class_type -> class_type;
+    method ctyp : ctyp -> ctyp;
+    method direction_flag : direction_flag -> direction_flag;
+    method expr : expr -> expr;
+    method ident : ident -> ident;
+    method list : ('c -> 'a -> 'b) -> list 'a -> list 'b;
+    method loc : loc -> loc;
+    method match_case : match_case -> match_case;
+    method meta_bool : meta_bool -> meta_bool;
+    method meta_list :
+      ('c -> 'a -> 'b) -> meta_list 'a -> meta_list 'b;
+    method meta_option :
+      ('c -> 'a -> 'b) -> meta_option 'a -> meta_option 'b;
+    method module_binding : module_binding -> module_binding;
+    method module_expr : module_expr -> module_expr;
+    method module_type : module_type -> module_type;
+    method mutable_flag : mutable_flag -> mutable_flag;
+    method override_flag : override_flag -> override_flag;
+    method patt : patt -> patt;
+    method private_flag : private_flag -> private_flag;
+    method rec_binding : rec_binding -> rec_binding;
+    method rec_flag : rec_flag -> rec_flag;
+    method row_var_flag : row_var_flag -> row_var_flag;
+    method sig_item : sig_item -> sig_item;
+    method str_item : str_item -> str_item;
+    method string : string -> string;
+    method unknown : 'a -> 'a;
+    method virtual_flag : virtual_flag -> virtual_flag;
+    method with_constr : with_constr -> with_constr;
+  end;
+
+
+  value map_expr : (expr -> expr) -> map;
+  value map_patt : (patt -> patt) -> map;
+  value map_ctyp : (ctyp -> ctyp) -> map;
+  value map_str_item : (str_item -> str_item) -> map;
+  value map_sig_item : (sig_item -> sig_item) -> map;
+  value map_loc : (loc -> loc) -> map;
+
+  value ident_of_expr : expr -> ident;
+  value ident_of_patt : patt -> ident;
+  value ident_of_ctyp : ctyp -> ident;
+
+  value biAnd_of_list : list binding -> binding;
+  value rbSem_of_list : list rec_binding -> rec_binding;
+  value paSem_of_list : list patt -> patt;
+  value paCom_of_list : list patt -> patt;
+  value tyOr_of_list : list ctyp -> ctyp;
+  value tyAnd_of_list : list ctyp -> ctyp;
+  value tyAmp_of_list : list ctyp -> ctyp;
+  value tySem_of_list : list ctyp -> ctyp;
+  value tyCom_of_list : list ctyp -> ctyp;
+  value tySta_of_list : list ctyp -> ctyp;
+  value stSem_of_list : list str_item -> str_item;
+  value sgSem_of_list : list sig_item -> sig_item;
+  value crSem_of_list : list class_str_item -> class_str_item;
+  value cgSem_of_list : list class_sig_item -> class_sig_item;
+  value ctAnd_of_list : list class_type -> class_type;
+  value ceAnd_of_list : list class_expr -> class_expr;
+  value wcAnd_of_list : list with_constr -> with_constr;
+  value meApp_of_list : list module_expr -> module_expr;
+  value mbAnd_of_list : list module_binding -> module_binding;
+  value mcOr_of_list : list match_case -> match_case;
+  value idAcc_of_list : list ident -> ident;
+  value idApp_of_list : list ident -> ident;
+  value exSem_of_list : list expr -> expr;
+  value exCom_of_list : list expr -> expr;
+
+  value list_of_ctyp : ctyp -> list ctyp -> list ctyp;
+  value list_of_binding : binding -> list binding -> list binding;
+  value list_of_rec_binding : rec_binding -> list rec_binding -> list rec_binding;
+  value list_of_with_constr : with_constr -> list with_constr -> list with_constr;
+  value list_of_patt : patt -> list patt -> list patt;
+  value list_of_expr : expr -> list expr -> list expr;
+  value list_of_str_item : str_item -> list str_item -> list str_item;
+  value list_of_sig_item : sig_item -> list sig_item -> list sig_item;
+  value list_of_class_sig_item : class_sig_item -> list class_sig_item -> list class_sig_item;
+  value list_of_class_str_item : class_str_item -> list class_str_item -> list class_str_item;
+  value list_of_class_type : class_type -> list class_type -> list class_type;
+  value list_of_class_expr : class_expr -> list class_expr -> list class_expr;
+  value list_of_module_expr : module_expr -> list module_expr -> list module_expr;
+  value list_of_module_binding : module_binding -> list module_binding -> list module_binding;
+  value list_of_match_case : match_case -> list match_case -> list match_case;
+  value list_of_ident : ident -> list ident -> list ident;
+
+  (\** Like [String.escape] but takes care to not
+      escape antiquotations strings. *\)
+  value safe_string_escaped : string -> string;
+
+  (\** Returns True if the given pattern is irrefutable. *\)
+  value is_irrefut_patt : patt -> bool;
+
+  value is_constructor : ident -> bool;
+  value is_patt_constructor : patt -> bool;
+  value is_expr_constructor : expr -> bool;
+
+  value ty_of_stl : (FanLoc.t * string * list ctyp) -> ctyp;
+  value ty_of_sbt : (FanLoc.t * string * bool * ctyp) -> ctyp;
+  value bi_of_pe : (patt * expr) -> binding;
+  value pel_of_binding : binding -> list (patt * expr);
+  value binding_of_pel : list (patt * expr) -> binding;
+  value sum_type_of_list : list (FanLoc.t * string * list ctyp) -> ctyp;
+  value record_type_of_list : list (FanLoc.t * string * bool * ctyp) -> ctyp;
+end;
+
+*)  

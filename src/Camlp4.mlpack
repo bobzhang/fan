@@ -4,8 +4,9 @@ OCamlInitSyntax
 Sig
 Printers
 AstFilters
+Ast
 Camlp4Ast
-Camlp4Ast2OCamlAst
+Ast2pt
 FreeVars
 Quotation
 DynAst

@@ -208,7 +208,7 @@ module Camlp4Bin =
                   | (_, "use", s) ->
                      (Some (parse_file dyn_loader s pa getdir))
                   | (_, "default_quotation", s) ->
-                     ( (PreCast.Quotation.default := s) ); (None)
+                     ( (PreCast.Syntax.Quotation.default := s) ); (None)
                   | (loc, _, _) ->
                      (FanLoc.raise loc (
                        (Stream.Error
@@ -262,16 +262,16 @@ module Camlp4Bin =
      fun name ->
       (process dyn_loader name PreCast.CurrentParser.parse_interf
         PreCast.CurrentPrinter.print_interf (
-        ((new PreCast.Syntax.Ast.clean_ast)#sig_item) )
-        AstFilters.fold_interf_filters gind)
+        ((new Camlp4.Camlp4Ast.clean_ast)#sig_item) )
+        PreCast.Syntax.AstFilters.fold_interf_filters gind)
 
    let process_impl =
     fun dyn_loader ->
      fun name ->
       (process dyn_loader name PreCast.CurrentParser.parse_implem
         PreCast.CurrentPrinter.print_implem (
-        ((new PreCast.Syntax.Ast.clean_ast)#str_item) )
-        AstFilters.fold_implem_filters gimd)
+        ((new Camlp4.Camlp4Ast.clean_ast)#str_item) )
+        PreCast.Syntax.AstFilters.fold_implem_filters gimd)
 
    let just_print_the_version =
     fun ()  -> ( (printf "%s@." FanConfig.version) ); (exit 0)
@@ -387,7 +387,8 @@ module Camlp4Bin =
       ("<name>   Name of the location variable (default: " ^ (
         (( !FanLoc.name ) ^ ").") )) ));
      ("-QD", (
-      (Arg.String (fun x -> (Quotation.dump_file := ( (Some (x)) )))) ),
+      (Arg.String
+        (fun x -> (PreCast.Syntax.Quotation.dump_file := ( (Some (x)) )))) ),
       "<file> Dump quotation expander result in case of syntax error.");
      ("-o", ( (Arg.String (fun x -> (output_file := ( (Some (x)) )))) ),
       "<file> Output on <file> instead of standard output.");

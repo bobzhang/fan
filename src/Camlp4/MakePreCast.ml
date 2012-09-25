@@ -1,15 +1,16 @@
 module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   type token = FanSig.camlp4_token ;
-  module Ast = Camlp4Ast; 
   module Token = FanToken;
   module Lexer = Lexer Token;
   module Gram =  Grammar.Static.Make Lexer;
-  module Quotation = Quotation.Make Ast;
-  module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Ast Gram Quotation;
+  module Quotation = Quotation.Make (struct end);
+  module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Gram ;
   module Syntax = MakeSyntax (struct end);
-  module AstFilters = AstFilters.Make Ast;
-  type parser_fun 'a = ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
-  type printer_fun 'a = ?input_file:string -> ?output_file:string -> 'a -> unit;
+  (* module AstFilters = AstFilters.Make (struct end); *)
+  type parser_fun 'a =
+      ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
+  type printer_fun 'a =
+      ?input_file:string -> ?output_file:string -> 'a -> unit;
   value sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
   value str_item_parser =
@@ -49,54 +50,69 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   value plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) = 
     declare_dyn_module Id.name (fun _ -> let module M = Maker (struct end) in ());
 
-  value syntax_plugin (module Id:Sig.Id) (module Maker:Sig.SYNTAX_PLUGIN) =
+  value syntax_plugin (module Id:Sig.Id) (module Maker:Sig.SyntaxPlugin) =
     declare_dyn_module Id.name (fun _ -> let module M = Maker Syntax in ());
     
   value syntax_extension (module Id:Sig.Id) (module Maker:Sig.SyntaxExtension) =
     declare_dyn_module Id.name (fun _ -> let module M = Maker Syntax in ());
 
-  value ocaml_syntax_extension (module Id:Sig.Id) (module Maker:Sig.OCAML_SYNTAX_EXTENSION) =
-    declare_dyn_module Id.name (fun _ -> let module M = Maker Syntax in ());
-    
-
-
-  value printer (module Id:Sig.Id) (module Maker:Sig.PRINTER_PLUGIN) =
+  value printer_plugin (module Id:Sig.Id) (module Maker:Sig.PrinterPlugin) =
     declare_dyn_module Id.name
       (fun _ -> let module M = Maker Syntax in
       register_printer M.print_implem M.print_interf);
 
-  (* Apply the functor and register the generated printer as the main printer *)  
-  value ocaml_printer (module Id:Sig.Id) (module Maker:Sig.OCAML_PRINTER_PLUGIN) =
-    declare_dyn_module Id.name
-      (fun _ -> let module M = Maker Syntax in
-      register_printer M.print_implem M.print_interf);
-
-  value ocaml_precast_printer (module Id:Sig.Id) (module P:(Sig.Printer Syntax.Ast).S) =
+  value replace_printer (module Id:Sig.Id) (module P:Sig.PrinterImpl) =
     declare_dyn_module Id.name (fun _ ->
       register_printer P.print_implem P.print_interf);
 
-  value parser_plugin (module Id:Sig.Id) (module Maker:Sig.PARSER) =
+  value replace_parser (module Id:Sig.Id) (module Maker: Sig.ParserImpl) =
       declare_dyn_module Id.name
-        (fun _ -> let module M = Maker Syntax.Ast in
-        register_parser M.parse_implem M.parse_interf);
-  value ocaml_parser_plugin (module Id:Sig.Id) (module Maker:Sig.OCAML_PARSER) =
+        (fun _ ->  register_parser Maker.parse_implem Maker.parse_interf);
+
+  value parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) =
     declare_dyn_module Id.name (fun _
-      -> let module M = Maker Syntax.Ast in
+      -> let module M = Maker Syntax in
       register_parser M.parse_implem M.parse_interf );
 
-  value ocaml_precast_parser_plugin (module Id:Sig.Id)
-      (module P:(Sig.Parser Syntax.Ast).S) =
-    declare_dyn_module Id.name (fun _
-      -> register_parser P.parse_implem P.parse_interf );
-  value ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) =
-    declare_dyn_module Id.name (fun _
-        -> let module M = Maker AstFilters in ());
+  value enable_ocaml_printer () = begin
+    replace_printer (module Printers.OCaml.Id) (module Printers.OCaml.P);
+   (* FIXME can be simplified *)
+  end;
+
+  value enable_dump_ocaml_ast_printer () =
+    replace_printer (module Printers.DumpOCamlAst.Id)
+        (module Printers.DumpOCamlAst.P);
+
+  value enable_dump_camlp4_ast_printer () =
+    replace_printer (module Printers.DumpCamlp4Ast.Id)
+      (module Printers.DumpCamlp4Ast.P);
+
+  value enable_null_printer () =
+    replace_printer (module Printers.Null.Id)
+      (module Printers.Null.P);
+
+  value enable_auto isatty  =
+    if isatty () then
+      enable_ocaml_printer ()
+    else
+      enable_dump_ocaml_ast_printer ();
+
+  (* rebound module Printers to extract most useful parts *)
+  module Printers = struct
+    module OCaml = Printers.OCaml.P;
+    module DumpOCamlAst = Printers.DumpOCamlAst.P;
+    module DumpCamlp4Ast = Printers.DumpCamlp4Ast.P;
+    module Null = Printers.Null.P;
+  end;
+    
+  (* value ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) = *)
+  (*   declare_dyn_module Id.name (fun _ *)
+  (*       -> let module M = Maker AstFilters in ()); *)
 
   sig_item_parser.val := Syntax.parse_interf;
   str_item_parser.val := Syntax.parse_implem;
 
   module CurrentParser = struct
-    module Ast = Syntax.Ast;
     value parse_interf ?directive_handler loc strm =
       sig_item_parser.val ?directive_handler loc strm;
     value parse_implem ?directive_handler loc strm =
@@ -106,42 +122,11 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   end;
 
   module CurrentPrinter = struct
-    module Ast = Syntax.Ast;
     value print_interf ?input_file ?output_file ast =
       sig_item_printer.val ?input_file ?output_file ast;
     value print_implem ?input_file ?output_file ast =
       str_item_printer.val ?input_file ?output_file ast;
   end;
 
-  value enable_ocaml_printer () = begin
-    (* Format.eprintf "enable.."; *)
-    ocaml_printer (module Printers.OCaml.Id) (module Printers.OCaml.Make);
-  end;
-
-  value enable_dump_ocaml_ast_printer () =
-    ocaml_printer (module Printers.DumpOCamlAst.Id)
-        (module Printers.DumpOCamlAst.Make);
-
-  value enable_dump_camlp4_ast_printer () =
-    printer (module Printers.DumpCamlp4Ast.Id) (module Printers.DumpCamlp4Ast.Make);
-
-  value enable_null_printer () =
-    printer (module Printers.Null.Id) (module Printers.Null.Make);
-
-  value enable_auto isatty  =
-    if isatty () then
-      enable_ocaml_printer ()
-    else
-      enable_dump_ocaml_ast_printer ();
-
-  (* rebound module Printers to extract most useful parts *)  
-  module Printers = struct
-    module OCaml = Printers.OCaml.Make Syntax;
-    (* module OCamlr = Printers.OCamlr.Make Syntax; *)
-    (* module OCamlrr = Printers.OCamlrr.Make Syntax; *)
-    module DumpOCamlAst = Printers.DumpOCamlAst.Make Syntax;
-    module DumpCamlp4Ast = Printers.DumpCamlp4Ast.Make Syntax;
-    module Null = Printers.Null.Make Syntax;
-  end;
     
 end; 

@@ -204,7 +204,7 @@ module Camlp4Bin
               [ (_, "load", s) -> do { rewrite_and_load "" s; None }
               | (_, "directory", s) -> do { DynLoader.include_dir dyn_loader s; None }
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
-              | (_, "default_quotation", s) -> do { PreCast.Quotation.default.val := s; None }
+              | (_, "default_quotation", s) -> do { PreCast.Syntax.Quotation.default.val := s; None }
               | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
         let loc = FanLoc.mk name
@@ -237,16 +237,16 @@ module Camlp4Bin
       
       value process_intf dyn_loader name =
         process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
-                (new PreCast.Syntax.Ast.clean_ast)#sig_item
-                AstFilters.fold_interf_filters gind;
+                (new Camlp4.Camlp4Ast.clean_ast)#sig_item
+                PreCast.Syntax.AstFilters.fold_interf_filters gind;
       value process_impl dyn_loader name =
         process
           dyn_loader
           name
           PreCast.CurrentParser.parse_implem
           PreCast.CurrentPrinter.print_implem
-          (new PreCast.Syntax.Ast.clean_ast)#str_item
-          AstFilters.fold_implem_filters
+          (new Camlp4.Camlp4Ast.clean_ast)#str_item
+          PreCast.Syntax.AstFilters.fold_implem_filters
           gimd;
 
       (*be careful, since you can register your own [str_item_parser],
@@ -371,7 +371,7 @@ module Camlp4Bin
           "More verbose in parsing errors.");
         ("-loc", Arg.Set_string FanLoc.name,
           "<name>   Name of the location variable (default: " ^ FanLoc.name.val ^ ").");
-        ("-QD", Arg.String (fun x -> Quotation.dump_file.val := Some x),
+        ("-QD", Arg.String (fun x -> PreCast.Syntax.Quotation.dump_file.val := Some x),
           "<file> Dump quotation expander result in case of syntax error.");
         ("-o", Arg.String (fun x -> output_file.val := Some x),
           "<file> Output on <file> instead of standard output.");

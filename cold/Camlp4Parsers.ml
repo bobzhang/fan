@@ -8,355 +8,255 @@ module IdAstLoader =
 
                end
 
-module MakeAstLoader =
-                     functor (Ast : Camlp4.Sig.Camlp4Ast) ->
-                      (struct
-                        module Ast = Ast
+module MakeAstLoader : Camlp4.Sig.ParserImpl =
+                     struct
+                      module Ast = Camlp4.Camlp4Ast
 
-                        let parse =
-                         fun ast_magic ->
-                          fun ?directive_handler:_ ->
-                           fun _loc ->
-                            fun strm ->
-                             let str =
-                              let buf = (Buffer.create 2047) in
-                              let () =
-                               (Stream.iter ( (Buffer.add_char buf) ) strm) in
-                              (Buffer.contents buf) in
-                             let magic_len = (String.length ast_magic) in
-                             let buffer = (String.create magic_len) in
-                             (
-                             (String.blit str 0 buffer 0 magic_len)
-                             );
-                             (
-                             if (buffer = ast_magic) then () 
-                             else
-                              (failwith (
-                                (Format.sprintf "Bad magic: %S vs %S" buffer
-                                  ast_magic) ))
-                             );
-                             (Marshal.from_string str magic_len)
+                      let parse =
+                       fun ast_magic ->
+                        fun ?directive_handler:_ ->
+                         fun _loc ->
+                          fun strm ->
+                           let str =
+                            let buf = (Buffer.create 2047) in
+                            let () =
+                             (Stream.iter ( (Buffer.add_char buf) ) strm) in
+                            (Buffer.contents buf) in
+                           let magic_len = (String.length ast_magic) in
+                           let buffer = (String.create magic_len) in
+                           (
+                           (String.blit str 0 buffer 0 magic_len)
+                           );
+                           (
+                           if (buffer = ast_magic) then () 
+                           else
+                            (failwith (
+                              (Format.sprintf "Bad magic: %S vs %S" buffer
+                                ast_magic) ))
+                           );
+                           (Marshal.from_string str magic_len)
 
-                        let parse_implem =
-                         (parse FanConfig.camlp4_ast_impl_magic_number)
+                      let parse_implem =
+                       (parse FanConfig.camlp4_ast_impl_magic_number)
 
-                        let parse_interf =
-                         (parse FanConfig.camlp4_ast_intf_magic_number)
+                      let parse_interf =
+                       (parse FanConfig.camlp4_ast_intf_magic_number)
 
-                       end : Camlp4.Sig.Parser(Ast).S)
+                     end
 
 module IdDebugParser =
-                                                         struct
-                                                          let name =
-                                                           "Camlp4DebugParser"
+                           struct
+                            let name = "Camlp4DebugParser"
 
-                                                          let version =
-                                                           Sys.ocaml_version
+                            let version = Sys.ocaml_version
 
-                                                         end
+                           end
 
 module MakeDebugParser =
-                                                               functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-                                                                struct
-                                                                 open Camlp4.Sig
+                                 functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                  struct
+                                   open Camlp4.Sig
 
-                                                                 include Syntax
+                                   include Syntax
 
-                                                                 open FanSig
+                                   open FanSig
 
-                                                                 module StringSet =
-                                                                  (Set.Make)
-                                                                   (String)
+                                   module Ast = Camlp4.Camlp4Ast
 
-                                                                 let debug_mode =
-                                                                  (try
-                                                                    let str =
-                                                                    (Sys.getenv
-                                                                    "STATIC_CAMLP4_DEBUG") in
-                                                                    let rec loop =
-                                                                    fun acc ->
-                                                                    fun i ->
-                                                                    (
-                                                                    try
-                                                                    let pos =
-                                                                    (String.index_from
-                                                                    str i
-                                                                    ':') in
-                                                                    (loop (
-                                                                    (StringSet.add
-                                                                    (
-                                                                    (String.sub
-                                                                    str i (
-                                                                    (pos - i)
-                                                                    )) ) acc)
-                                                                    ) (
-                                                                    (pos + 1)
-                                                                    ))
-                                                                    with
-                                                                    Not_found ->
-                                                                    (StringSet.add
-                                                                    (
-                                                                    (String.sub
-                                                                    str i (
-                                                                    ((
-                                                                    (String.length
-                                                                    str) ) -
-                                                                    i) )) )
-                                                                    acc)) in
-                                                                    let sections =
-                                                                    (loop
-                                                                    StringSet.empty
-                                                                    0) in
-                                                                    if 
-                                                                    (StringSet.mem
-                                                                    "*"
-                                                                    sections) then
-                                                                    (
-                                                                    fun _ ->
-                                                                    (true)
-                                                                    )
-                                                                    else
-                                                                    fun x ->
-                                                                    (StringSet.mem
-                                                                    x
-                                                                    sections)
-                                                                   with
-                                                                   Not_found ->
-                                                                    fun _ ->
-                                                                    (false))
+                                   let debug_mode =
+                                    (try
+                                      let str =
+                                       (Sys.getenv "STATIC_CAMLP4_DEBUG") in
+                                      let rec loop =
+                                       fun acc ->
+                                        fun i ->
+                                         (try
+                                           let pos =
+                                            (String.index_from str i ':') in
+                                           (loop (
+                                             (SSet.add (
+                                               (String.sub str i ( (pos - i)
+                                                 )) ) acc) ) ( (pos + 1) ))
+                                          with
+                                          Not_found ->
+                                           (SSet.add (
+                                             (String.sub str i (
+                                               (( (String.length str) ) - i)
+                                               )) ) acc)) in
+                                      let sections = (loop SSet.empty 0) in
+                                      if (SSet.mem "*" sections) then
+                                       (
+                                       fun _ -> (true)
+                                       )
+                                      else fun x -> (SSet.mem x sections)
+                                     with
+                                     Not_found -> fun _ -> (false))
 
-                                                                 let rec apply =
-                                                                  fun accu ->
-                                                                   function
-                                                                   | [] ->
-                                                                    accu
-                                                                   | 
-                                                                   (x :: xs) ->
-                                                                    let _loc =
-                                                                    (Ast.loc_of_expr
-                                                                    x) in
-                                                                    (apply (
-                                                                    (Ast.ExApp
-                                                                    (_loc,
-                                                                    accu, x))
-                                                                    ) xs)
+                                   let rec apply =
+                                    fun accu ->
+                                     function
+                                     | [] -> accu
+                                     | (x :: xs) ->
+                                        let _loc = (Ast.loc_of_expr x) in
+                                        (apply ( (Ast.ExApp (_loc, accu, x))
+                                          ) xs)
 
-                                                                 let mk_debug_mode =
-                                                                  fun _loc ->
-                                                                   function
-                                                                   | None ->
-                                                                    (
-                                                                    Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdAcc
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "Debug"))
-                                                                    ), (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "mode"))
-                                                                    ))) )))
-                                                                   | 
-                                                                   Some (m) ->
-                                                                    (
-                                                                    Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdAcc
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, m))
-                                                                    ), (
-                                                                    (Ast.IdAcc
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "Debug"))
-                                                                    ), (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "mode"))
-                                                                    ))) )))
-                                                                    )))
+                                   let mk_debug_mode =
+                                    fun _loc ->
+                                     function
+                                     | None ->
+                                        (Ast.ExId
+                                          (_loc, (
+                                           (Ast.IdAcc
+                                             (_loc, (
+                                              (Ast.IdUid (_loc, "Debug")) ),
+                                              ( (Ast.IdLid (_loc, "mode")) )))
+                                           )))
+                                     | Some (m) ->
+                                        (Ast.ExId
+                                          (_loc, (
+                                           (Ast.IdAcc
+                                             (_loc, ( (Ast.IdUid (_loc, m))
+                                              ), (
+                                              (Ast.IdAcc
+                                                (_loc, (
+                                                 (Ast.IdUid (_loc, "Debug"))
+                                                 ), (
+                                                 (Ast.IdLid (_loc, "mode"))
+                                                 ))) ))) )))
 
-                                                                 let mk_debug =
-                                                                  fun _loc ->
-                                                                   fun m ->
-                                                                    fun fmt ->
-                                                                    fun section ->
-                                                                    fun args ->
-                                                                    let call =
-                                                                    (apply (
-                                                                    (Ast.ExApp
-                                                                    (_loc, (
-                                                                    (Ast.ExApp
-                                                                    (_loc, (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdAcc
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "Debug"))
-                                                                    ), (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "printf"))
-                                                                    ))) )))
-                                                                    ), (
-                                                                    (Ast.ExStr
-                                                                    (_loc,
-                                                                    section))
-                                                                    ))) ), (
-                                                                    (Ast.ExStr
-                                                                    (_loc,
-                                                                    fmt)) )))
-                                                                    ) args) in
-                                                                    (
-                                                                    Ast.ExIfe
-                                                                    (_loc, (
-                                                                    (Ast.ExApp
-                                                                    (_loc, (
-                                                                    (mk_debug_mode
-                                                                    _loc m)
-                                                                    ), (
-                                                                    (Ast.ExStr
-                                                                    (_loc,
-                                                                    section))
-                                                                    ))) ),
-                                                                    call, (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "()")) )))
-                                                                    )))
+                                   let mk_debug =
+                                    fun _loc ->
+                                     fun m ->
+                                      fun fmt ->
+                                       fun section ->
+                                        fun args ->
+                                         let call =
+                                          (apply (
+                                            (Ast.ExApp
+                                              (_loc, (
+                                               (Ast.ExApp
+                                                 (_loc, (
+                                                  (Ast.ExId
+                                                    (_loc, (
+                                                     (Ast.IdAcc
+                                                       (_loc, (
+                                                        (Ast.IdUid
+                                                          (_loc, "Debug")) ),
+                                                        (
+                                                        (Ast.IdLid
+                                                          (_loc, "printf"))
+                                                        ))) ))) ), (
+                                                  (Ast.ExStr (_loc, section))
+                                                  ))) ), (
+                                               (Ast.ExStr (_loc, fmt)) ))) )
+                                            args) in
+                                         (Ast.ExIfe
+                                           (_loc, (
+                                            (Ast.ExApp
+                                              (_loc, ( (mk_debug_mode _loc m)
+                                               ), (
+                                               (Ast.ExStr (_loc, section)) )))
+                                            ), call, (
+                                            (Ast.ExId
+                                              (_loc, (
+                                               (Ast.IdUid (_loc, "()")) )))
+                                            )))
 
-                                                                 let _ = 
-                                                                 let _ =
-                                                                  (expr :
-                                                                    'expr Gram.Entry.t) in
-                                                                 let grammar_entry_create =
-                                                                  Gram.Entry.mk in
-                                                                 let end_or_in =
-                                                                  ((grammar_entry_create
-                                                                    "end_or_in") :
-                                                                    'end_or_in Gram.Entry.t)
-                                                                 and start_debug =
-                                                                  ((grammar_entry_create
-                                                                    "start_debug") :
-                                                                    'start_debug Gram.Entry.t) in
-                                                                 (
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (expr :
-                                                                    'expr Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
-                                                                     ->
-                                                                    (None , (
-                                                                    [(None ,
-                                                                    None , (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (start_debug :
-                                                                    'start_debug Gram.Entry.t)
-                                                                    ))) ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT _"))
-                                                                    ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    ); (
-                                                                    (Gram.Slist0
-                                                                    ((Gram.Snterml
-                                                                    ((
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (expr :
-                                                                    'expr Gram.Entry.t)
-                                                                    )) ),
-                                                                    "."))))
-                                                                    ); (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (end_or_in :
-                                                                    'end_or_in Gram.Entry.t)
-                                                                    ))) )] ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (x :
-                                                                    'end_or_in) ->
-                                                                    fun (args :
-                                                                    'expr list) ->
-                                                                    fun (fmt :
-                                                                    Gram.Token.t) ->
-                                                                    fun (section :
-                                                                    Gram.Token.t) ->
-                                                                    fun (m :
-                                                                    'start_debug) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (let fmt =
-                                                                    (Gram.Token.extract_string
-                                                                    fmt) in
-                                                                    let section =
-                                                                    (Gram.Token.extract_string
-                                                                    section) in
-                                                                    (
-                                                                    match
-                                                                    (x, (
-                                                                    (debug_mode
+                                   let _ = let _ =
+                                            (expr : 'expr Gram.Entry.t) in
+                                           let grammar_entry_create =
+                                            Gram.Entry.mk in
+                                           let end_or_in =
+                                            ((grammar_entry_create
+                                               "end_or_in") :
+                                              'end_or_in Gram.Entry.t)
+                                           and start_debug =
+                                            ((grammar_entry_create
+                                               "start_debug") :
+                                              'start_debug Gram.Entry.t) in
+                                           (
+                                           (Gram.extend (
+                                             (expr : 'expr Gram.Entry.t) ) (
+                                             ((fun ()
+                                                 ->
+                                                (None , (
+                                                 [(None , None , (
+                                                   [((
+                                                     [(
+                                                      (Gram.Snterm
+                                                        (Gram.Entry.obj (
+                                                          (start_debug :
+                                                            'start_debug Gram.Entry.t)
+                                                          ))) ); (
+                                                      (Gram.Stoken
+                                                        ((
+                                                         function
+                                                         | LIDENT (_) ->
+                                                            (true)
+                                                         | _ -> (false) ),
+                                                         "LIDENT _")) ); (
+                                                      (Gram.Stoken
+                                                        ((
+                                                         function
+                                                         | STRING (_) ->
+                                                            (true)
+                                                         | _ -> (false) ),
+                                                         "STRING _")) ); (
+                                                      (Gram.Slist0
+                                                        ((Gram.Snterml
+                                                           ((
+                                                            (Gram.Entry.obj (
+                                                              (expr :
+                                                                'expr Gram.Entry.t)
+                                                              )) ), "."))))
+                                                      ); (
+                                                      (Gram.Snterm
+                                                        (Gram.Entry.obj (
+                                                          (end_or_in :
+                                                            'end_or_in Gram.Entry.t)
+                                                          ))) )] ), (
+                                                     (Gram.Action.mk (
+                                                       fun (x :
+                                                         'end_or_in) ->
+                                                        fun (args :
+                                                          'expr list) ->
+                                                         fun (fmt :
+                                                           Gram.Token.t) ->
+                                                          fun (section :
+                                                            Gram.Token.t) ->
+                                                           fun (m :
+                                                             'start_debug) ->
+                                                            fun (_loc :
+                                                              FanLoc.t) ->
+                                                             (let fmt =
+                                                               (Gram.Token.extract_string
+                                                                 fmt) in
+                                                              let section =
+                                                               (Gram.Token.extract_string
+                                                                 section) in
+                                                              (match
+                                                                 (x, (
+                                                                  (debug_mode
                                                                     section)
-                                                                    )) with
-                                                                    | (None,
-                                                                    false) ->
-                                                                    (
-                                                                    Ast.ExId
+                                                                  )) with
+                                                               | (None, false) ->
+                                                                  (Ast.ExId
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc,
                                                                     "()")) )))
-                                                                    | (Some
-                                                                    (e),
-                                                                    false) ->
-                                                                    e
-                                                                    | (None,
-                                                                    _) ->
-                                                                    (mk_debug
+                                                               | (Some (e),
+                                                                  false) ->
+                                                                  e
+                                                               | (None, _) ->
+                                                                  (mk_debug
                                                                     _loc m
                                                                     fmt
                                                                     section
                                                                     args)
-                                                                    | 
-                                                                    (Some (e),
-                                                                    _) ->
-                                                                    (
-                                                                    Ast.ExLet
+                                                               | (Some (e), _) ->
+                                                                  (Ast.ExLet
                                                                     (_loc,
                                                                     Ast.ReNil
                                                                     , (
@@ -374,207 +274,206 @@ module MakeDebugParser =
                                                                     section
                                                                     args) )))
                                                                     ), e))) :
-                                                                    'expr) ))
-                                                                    ))] ))]
-                                                                    ))) () )
-                                                                   ))
-                                                                 );
-                                                                 (
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (end_or_in :
-                                                                    'end_or_in Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
-                                                                     ->
-                                                                    (None , (
-                                                                    [(None ,
-                                                                    None , (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Skeyword
-                                                                    ("in"))
-                                                                    ); (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (expr :
-                                                                    'expr Gram.Entry.t)
-                                                                    ))) )] ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (e :
-                                                                    'expr) ->
-                                                                    fun _ ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((Some
-                                                                    (e)) :
-                                                                    'end_or_in)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Skeyword
-                                                                    ("end"))
-                                                                    )] ), (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun _ ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((None) :
-                                                                    'end_or_in)
-                                                                    )) ))] ))]
-                                                                    ))) () )
-                                                                   ))
-                                                                 );
-                                                                 (Gram.extend
-                                                                   (
-                                                                   (start_debug :
-                                                                    'start_debug Gram.Entry.t)
-                                                                   ) (
-                                                                   ((fun ()
-                                                                     ->
-                                                                    (None , (
-                                                                    [(None ,
-                                                                    None , (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    ("camlp4_debug") ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT (\"camlp4_debug\")"))
-                                                                    )] ), (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (
-                                                                    match
-                                                                    __camlp4_0 with
-                                                                    | LIDENT
-                                                                    ("camlp4_debug") ->
-                                                                    ((Some
-                                                                    ("Camlp4")) :
-                                                                    'start_debug)
-                                                                    | 
-                                                                    _ ->
-                                                                    assert false)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    ("debug") ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT (\"debug\")"))
-                                                                    )] ), (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (
-                                                                    match
-                                                                    __camlp4_0 with
-                                                                    | LIDENT
-                                                                    ("debug") ->
-                                                                    ((None) :
-                                                                    'start_debug)
-                                                                    | 
-                                                                    _ ->
-                                                                    assert false)
-                                                                    )) ))] ))]
-                                                                    ))) () )
-                                                                   ))
+                                                               'expr) )) ))]
+                                                   ))] ))) () ) ))
+                                           );
+                                           (
+                                           (Gram.extend (
+                                             (end_or_in :
+                                               'end_or_in Gram.Entry.t) ) (
+                                             ((fun ()
+                                                 ->
+                                                (None , (
+                                                 [(None , None , (
+                                                   [((
+                                                     [(
+                                                      (Gram.Skeyword ("in"))
+                                                      ); (
+                                                      (Gram.Snterm
+                                                        (Gram.Entry.obj (
+                                                          (expr :
+                                                            'expr Gram.Entry.t)
+                                                          ))) )] ), (
+                                                     (Gram.Action.mk (
+                                                       fun (e :
+                                                         'expr) ->
+                                                        fun _ ->
+                                                         fun (_loc :
+                                                           FanLoc.t) ->
+                                                          ((Some (e)) :
+                                                            'end_or_in) )) ));
+                                                    ((
+                                                     [(
+                                                      (Gram.Skeyword ("end"))
+                                                      )] ), (
+                                                     (Gram.Action.mk (
+                                                       fun _ ->
+                                                        fun (_loc :
+                                                          FanLoc.t) ->
+                                                         ((None) :
+                                                           'end_or_in) )) ))]
+                                                   ))] ))) () ) ))
+                                           );
+                                           (Gram.extend (
+                                             (start_debug :
+                                               'start_debug Gram.Entry.t) ) (
+                                             ((fun ()
+                                                 ->
+                                                (None , (
+                                                 [(None , None , (
+                                                   [((
+                                                     [(
+                                                      (Gram.Stoken
+                                                        ((
+                                                         function
+                                                         | LIDENT
+                                                            ("camlp4_debug") ->
+                                                            (true)
+                                                         | _ -> (false) ),
+                                                         "LIDENT (\"camlp4_debug\")"))
+                                                      )] ), (
+                                                     (Gram.Action.mk (
+                                                       fun (__camlp4_0 :
+                                                         Gram.Token.t) ->
+                                                        fun (_loc :
+                                                          FanLoc.t) ->
+                                                         (match
+                                                            __camlp4_0 with
+                                                          | LIDENT
+                                                             ("camlp4_debug") ->
+                                                             ((Some
+                                                                ("Camlp4")) :
+                                                               'start_debug)
+                                                          | _ -> assert false)
+                                                       )) ));
+                                                    ((
+                                                     [(
+                                                      (Gram.Stoken
+                                                        ((
+                                                         function
+                                                         | LIDENT ("debug") ->
+                                                            (true)
+                                                         | _ -> (false) ),
+                                                         "LIDENT (\"debug\")"))
+                                                      )] ), (
+                                                     (Gram.Action.mk (
+                                                       fun (__camlp4_0 :
+                                                         Gram.Token.t) ->
+                                                        fun (_loc :
+                                                          FanLoc.t) ->
+                                                         (match
+                                                            __camlp4_0 with
+                                                          | LIDENT ("debug") ->
+                                                             ((None) :
+                                                               'start_debug)
+                                                          | _ -> assert false)
+                                                       )) ))] ))] ))) () ) ))
 
-                                                                end
-
+                                  end
 
 module IdGrammarParser =
- struct
-  let name = "Camlp4GrammarParser"
+                                        struct
+                                         let name = "Camlp4GrammarParser"
 
-  let version = Sys.ocaml_version
+                                         let version = Sys.ocaml_version
 
- end
+                                        end
 
 module MakeGrammarParser =
-       functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-        struct
-         open Camlp4.Sig
+                                              functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
+                                               struct
+                                                open Camlp4.Sig
 
-         include Syntax
+                                                include Syntax
 
-         open FanSig
+                                                module Ast = Camlp4.Camlp4Ast
 
-         module MetaLoc = Ast.Meta.MetaGhostLoc
+                                                open FanSig
 
-         module MetaAst = (Ast.Meta.Make)(MetaLoc)
+                                                module MetaLoc =
+                                                 Ast.Meta.MetaGhostLoc
 
-         let string_of_patt =
-          fun patt ->
-           let buf = (Buffer.create 42) in
-           let () =
-            (Format.bprintf buf "%a@?" (
-              fun fmt ->
-               fun p -> (Pprintast.pattern fmt ( (Syntax.Ast2pt.patt p) )) )
-              patt) in
-           let str = (Buffer.contents buf) in
-           if (str = "") then ( assert false ) else str
+                                                module MetaAst =
+                                                 (Ast.Meta.Make)(MetaLoc)
 
-         let split_ext = (ref false )
+                                                let string_of_patt =
+                                                 fun patt ->
+                                                  let buf =
+                                                   (Buffer.create 42) in
+                                                  let () =
+                                                   (Format.bprintf buf "%a@?"
+                                                     (
+                                                     fun fmt ->
+                                                      fun p ->
+                                                       (Pprintast.pattern fmt
+                                                         (
+                                                         (Camlp4.Ast2pt.patt
+                                                           p) )) ) patt) in
+                                                  let str =
+                                                   (Buffer.contents buf) in
+                                                  if (str = "") then
+                                                   (
+                                                   assert false
+                                                   )
+                                                  else str
 
-         type loc = FanLoc.t
+                                                let split_ext = (ref false )
 
-         type 'e name = {expr:'e; tvar:string; loc:loc}
+                                                type loc = FanLoc.t
 
-         type styp =
-            STlid of loc * string
-          | STapp of loc * styp * styp
-          | STquo of loc * string
-          | STself of loc * string
-          | STtok of loc
-          | STstring_tok of loc
-          | STtyp of Ast.ctyp
+                                                type 'e name = {
+                                                                 expr:'e;
+                                                                 tvar:string;
+                                                                 loc:loc}
 
-         type ('e, 'p) text =
-            TXmeta of loc * string * ('e, 'p) text list * 'e * styp
-          | TXlist of loc * bool * ('e, 'p) symbol * ('e, 'p) symbol option
-          | TXnext of loc
-          | TXnterm of loc * 'e name * string option
-          | TXopt of loc * ('e, 'p) text
-          | TXtry of loc * ('e, 'p) text
-          | TXrules of loc * (('e, 'p) text list * 'e) list
-          | TXself of loc
-          | TXkwd of loc * string
-          | TXtok of loc * 'e * string
-         and ('e, 'p) entry = {
-                                name:'e name;
-                                pos:'e option;
-                                levels:('e, 'p) level list}
-        and ('e, 'p) level = {
-                               label:string option;
-                               assoc:'e option;
-                               rules:('e, 'p) rule list}
-       and ('e, 'p) rule = {prod:('e, 'p) symbol list; action:'e option}
+                                                type styp =
+                                                   STlid of loc * string
+                                                 | STapp of loc * styp * styp
+                                                 | STquo of loc * string
+                                                 | STself of loc * string
+                                                 | STtok of loc
+                                                 | STstring_tok of loc
+                                                 | STtyp of Ast.ctyp
+
+                                                type ('e, 'p) text =
+                                                   TXmeta of loc * string *
+                                                    ('e, 'p) text list * 'e *
+                                                    styp
+                                                 | TXlist of loc * bool *
+                                                    ('e, 'p) symbol *
+                                                    ('e, 'p) symbol option
+                                                 | TXnext of loc
+                                                 | TXnterm of loc * 'e name *
+                                                    string option
+                                                 | TXopt of loc *
+                                                    ('e, 'p) text
+                                                 | TXtry of loc *
+                                                    ('e, 'p) text
+                                                 | TXrules of loc *
+                                                    (('e, 'p) text list * 'e) list
+                                                 | TXself of loc
+                                                 | TXkwd of loc * string
+                                                 | TXtok of loc * 'e * string
+                                                and ('e, 'p) entry = 
+                                                 {
+                                                   name:'e name;
+                                                   pos:'e option;
+                                                   levels:('e, 'p) level list}
+                                               and ('e, 'p) level = {
+                                                                    label:
+                                                                    string option;
+                                                                    assoc:
+                                                                    'e option;
+                                                                    rules:
+                                                                    ('e,
+                                                                    'p) rule list
+                                                                    }
+                                              and ('e, 'p) rule = {
+                                                                    prod:
+                                                                    ('e,
+                                                                    'p) symbol list;
+                                                                    action:
+                                                                    'e option}
 and ('e, 'p) symbol = {
                         used:string list;
                         text:('e, 'p) text;
@@ -3243,6 +3142,8 @@ module MakeListComprehension =
 
               include Syntax
 
+              module Ast = Camlp4.Camlp4Ast
+
               let rec loop =
                fun n ->
                 function
@@ -3829,6 +3730,8 @@ module MakeMacroParser =
                            open FanSig
 
                            include Syntax
+
+                           module Ast = Camlp4.Camlp4Ast
 
                            type 'a item_or_def =
                               SdStr of 'a
@@ -5932,11 +5835,9 @@ module MakeMacroParser =
                           end
 
 module MakeNothing =
-                                functor (AstFilters : Camlp4.Sig.AstFilters) ->
+                                functor (Syn : Camlp4.Sig.Camlp4Syntax) ->
                                  struct
-                                  open AstFilters
-
-                                  open Ast
+                                  module Ast = Camlp4.Camlp4Ast
 
                                   let map_expr =
                                    function
@@ -6055,7 +5956,8 @@ module MakeNothing =
                                                   ))) ))) ))) )))
                                    | e -> e
 
-                                  let _ = (register_str_item_filter (
+                                  let _ = (Syn.AstFilters.register_str_item_filter
+                                            (
                                             ((Ast.map_expr map_expr)
                                              #str_item) ))
 
@@ -6078,6 +5980,9 @@ module MakeReloadedParser =
                                                open FanSig
 
                                                include Syntax
+
+                                               module Ast =
+                                                Camlp4.Camlp4Ast
 
                                                let _ = (Gram.Entry.clear
                                                          match_case)
@@ -6745,6 +6650,9 @@ module MakeRevisedParser =
                                                             open FanSig
 
                                                             include Syntax
+
+                                                            module Ast =
+                                                             Camlp4.Camlp4Ast
 
                                                             let _ = (FanConfig.constructors_arity
                                                                     :=
@@ -9629,7 +9537,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.module_expr_tag) :
+                                                                    Camlp4.DynAst.module_expr_tag) :
                                                                     'module_expr)
                                                                     | 
                                                                     _ ->
@@ -9768,7 +9676,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.str_item_tag) :
+                                                                    Camlp4.DynAst.str_item_tag) :
                                                                     'str_item)
                                                                     | 
                                                                     _ ->
@@ -10534,7 +10442,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.module_binding_tag) :
+                                                                    Camlp4.DynAst.module_binding_tag) :
                                                                     'module_binding)
                                                                     | 
                                                                     _ ->
@@ -11132,7 +11040,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.module_type_tag) :
+                                                                    Camlp4.DynAst.module_type_tag) :
                                                                     'module_type)
                                                                     | 
                                                                     _ ->
@@ -11687,7 +11595,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.sig_item_tag) :
+                                                                    Camlp4.DynAst.sig_item_tag) :
                                                                     'sig_item)
                                                                     | 
                                                                     _ ->
@@ -11947,7 +11855,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.module_binding_tag) :
+                                                                    Camlp4.DynAst.module_binding_tag) :
                                                                     'module_rec_declaration)
                                                                     | 
                                                                     _ ->
@@ -12416,7 +12324,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.with_constr_tag) :
+                                                                    Camlp4.DynAst.with_constr_tag) :
                                                                     'with_constr)
                                                                     | 
                                                                     _ ->
@@ -15757,7 +15665,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.expr_tag) :
+                                                                    Camlp4.DynAst.expr_tag) :
                                                                     'expr)
                                                                     | 
                                                                     _ ->
@@ -19628,7 +19536,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.patt_tag) :
+                                                                    Camlp4.DynAst.patt_tag) :
                                                                     'patt)
                                                                     | 
                                                                     _ ->
@@ -21401,7 +21309,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.patt_tag) :
+                                                                    Camlp4.DynAst.patt_tag) :
                                                                     'label_patt)
                                                                     | 
                                                                     _ ->
@@ -21836,7 +21744,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.patt_tag) :
+                                                                    Camlp4.DynAst.patt_tag) :
                                                                     'ipatt)
                                                                     | 
                                                                     _ ->
@@ -22415,7 +22323,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.patt_tag) :
+                                                                    Camlp4.DynAst.patt_tag) :
                                                                     'label_ipatt)
                                                                     | 
                                                                     _ ->
@@ -22651,7 +22559,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'type_declaration)
                                                                     | 
                                                                     _ ->
@@ -23281,7 +23189,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'type_parameter)
                                                                     | 
                                                                     _ ->
@@ -23547,7 +23455,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'optional_type_parameter)
                                                                     | 
                                                                     _ ->
@@ -24698,7 +24606,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'ctyp)
                                                                     | 
                                                                     _ ->
@@ -25281,7 +25189,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'constructor_declarations)
                                                                     | 
                                                                     _ ->
@@ -25511,7 +25419,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'constructor_declaration)
                                                                     | 
                                                                     _ ->
@@ -25944,7 +25852,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'label_declaration)
                                                                     | 
                                                                     _ ->
@@ -27385,7 +27293,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_expr_tag) :
+                                                                    Camlp4.DynAst.class_expr_tag) :
                                                                     'class_declaration)
                                                                     | 
                                                                     _ ->
@@ -28514,7 +28422,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_expr_tag) :
+                                                                    Camlp4.DynAst.class_expr_tag) :
                                                                     'class_expr)
                                                                     | 
                                                                     _ ->
@@ -29598,7 +29506,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_str_item_tag) :
+                                                                    Camlp4.DynAst.class_str_item_tag) :
                                                                     'class_str_item)
                                                                     | 
                                                                     _ ->
@@ -30459,7 +30367,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_type_tag) :
+                                                                    Camlp4.DynAst.class_type_tag) :
                                                                     'class_type)
                                                                     | 
                                                                     _ ->
@@ -31339,7 +31247,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_sig_item_tag) :
+                                                                    Camlp4.DynAst.class_sig_item_tag) :
                                                                     'class_sig_item)
                                                                     | 
                                                                     _ ->
@@ -31547,7 +31455,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_type_tag) :
+                                                                    Camlp4.DynAst.class_type_tag) :
                                                                     'class_description)
                                                                     | 
                                                                     _ ->
@@ -31729,7 +31637,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.class_type_tag) :
+                                                                    Camlp4.DynAst.class_type_tag) :
                                                                     'class_type_declaration)
                                                                     | 
                                                                     _ ->
@@ -32315,7 +32223,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'meth_decl)
                                                                     | 
                                                                     _ ->
@@ -32665,7 +32573,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'typevars)
                                                                     | 
                                                                     _ ->
@@ -32826,7 +32734,7 @@ module MakeRevisedParser =
                                                                     ((Quotation.expand
                                                                     _loc
                                                                     x
-                                                                    Quotation.DynAst.ctyp_tag) :
+                                                                    Camlp4.DynAst.ctyp_tag) :
                                                                     'unquoted_typevars)
                                                                     | 
                                                                     _ ->
@@ -40903,6 +40811,8 @@ module MakeRevisedParserParser =
 
    include Syntax
 
+   module Ast = Camlp4.Camlp4Ast
+
    type spat_comp =
       SpTrm of FanLoc.t * Ast.patt * Ast.expr option
     | SpNtr of FanLoc.t * Ast.patt * Ast.expr
@@ -42234,6 +42144,8 @@ module MakeParser =
                 open FanSig
 
                 include Syntax
+
+                module Ast = Camlp4.Camlp4Ast
 
                 let _ = (FanConfig.constructors_arity := false )
 
@@ -44806,7 +44718,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Quotation.DynAst.patt_tag) :
+                                             Camlp4.DynAst.patt_tag) :
                                             'patt)
                                        | _ -> assert false) )) ));
                                  ((
@@ -45137,7 +45049,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Quotation.DynAst.with_constr_tag) :
+                                             Camlp4.DynAst.with_constr_tag) :
                                             'with_constr)
                                        | _ -> assert false) )) ));
                                  ((
@@ -46081,7 +45993,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Quotation.DynAst.ctyp_tag) :
+                                             Camlp4.DynAst.ctyp_tag) :
                                             'ctyp)
                                        | _ -> assert false) )) ));
                                  ((
@@ -46721,7 +46633,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Quotation.DynAst.ctyp_tag) :
+                                             Camlp4.DynAst.ctyp_tag) :
                                             'optional_type_parameter)
                                        | _ -> assert false) )) ));
                                  ((
@@ -47330,7 +47242,7 @@ module MakeParser =
                                       (match __camlp4_0 with
                                        | QUOTATION (x) ->
                                           ((Quotation.expand _loc x
-                                             Quotation.DynAst.ctyp_tag) :
+                                             Camlp4.DynAst.ctyp_tag) :
                                             'label_declaration)
                                        | _ -> assert false) )) ));
                                  ((
@@ -48060,6 +47972,8 @@ module MakeParserParser =
 
                              include Syntax
 
+                             module Ast = Camlp4.Camlp4Ast
+
                              module M =
                               (MakeRevisedParserParser)(Syntax)
 
@@ -48193,13 +48107,16 @@ module IdQuotationCommon =
 
 module MakeQuotationCommon =
                                         functor (Syntax : Camlp4.Sig.Camlp4Syntax) ->
-                                         functor (TheAntiquotSyntax : Camlp4.Sig.Parser(Syntax.Ast).SIMPLE) ->
+                                         functor (TheAntiquotSyntax : Camlp4.Sig.ParserExpr) ->
                                           struct
                                            open Camlp4.Sig
 
                                            open FanSig
 
                                            include Syntax
+
+                                           module Ast =
+                                            Camlp4.Camlp4Ast
 
                                            module MetaLocHere =
                                             Ast.Meta.MetaLoc
@@ -50089,16 +50006,16 @@ module MakeQuotationCommon =
                                                 );
                                                 (
                                                 (Quotation.add name
-                                                  Quotation.DynAst.expr_tag
+                                                  Camlp4.DynAst.expr_tag
                                                   expand_expr)
                                                 );
                                                 (
                                                 (Quotation.add name
-                                                  Quotation.DynAst.patt_tag
+                                                  Camlp4.DynAst.patt_tag
                                                   expand_patt)
                                                 );
                                                 (Quotation.add name
-                                                  Quotation.DynAst.str_item_tag
+                                                  Camlp4.DynAst.str_item_tag
                                                   expand_str_item)
 
                                            let _ = (add_quotation
@@ -50272,7 +50189,7 @@ let pa_r =
                                                                :
                                                                (module Camlp4.Sig.PRECAST
                                                               )) ->
-                                                              (P.ocaml_syntax_extension
+                                                              (P.syntax_extension
                                                                 (module
                                                                 IdRevisedParser)
                                                                 (module
@@ -50285,7 +50202,7 @@ let pa_rr =
    :
    (module Camlp4.Sig.PRECAST
   )) ->
-  (P.ocaml_syntax_extension (module IdReloadedParser) (module
+  (P.syntax_extension (module IdReloadedParser) (module
     MakeReloadedParser))
 
 let pa_o =
@@ -50294,20 +50211,20 @@ let pa_o =
                              :
                              (module Camlp4.Sig.PRECAST
                             )) ->
-                            (P.ocaml_syntax_extension (module
-                              IdParser) (module MakeParser))
+                            (P.syntax_extension (module IdParser)
+                              (module MakeParser))
 
 let pa_rp =
-                                                               fun ((module
-                                                                P)
-                                                                 :
-                                                                 (module Camlp4.Sig.PRECAST
-                                                                )) ->
-                                                                (P.ocaml_syntax_extension
-                                                                  (module
-                                                                  IdRevisedParserParser)
-                                                                  (module
-                                                                  MakeRevisedParserParser))
+                                                     fun ((module
+                                                      P)
+                                                       :
+                                                       (module Camlp4.Sig.PRECAST
+                                                      )) ->
+                                                      (P.syntax_extension
+                                                        (module
+                                                        IdRevisedParserParser)
+                                                        (module
+                                                        MakeRevisedParserParser))
 
 
 let pa_op =
@@ -50316,7 +50233,7 @@ let pa_op =
    :
    (module Camlp4.Sig.PRECAST
   )) ->
-  (P.ocaml_syntax_extension (module IdParserParser) (module
+  (P.syntax_extension (module IdParserParser) (module
     MakeParserParser))
 
 let pa_g =
@@ -50325,7 +50242,7 @@ let pa_g =
                            :
                            (module Camlp4.Sig.PRECAST
                           )) ->
-                          (P.ocaml_syntax_extension (module
+                          (P.syntax_extension (module
                             IdGrammarParser) (module
                             MakeGrammarParser))
 
@@ -50336,12 +50253,12 @@ let pa_m =
                                                     (module Camlp4.Sig.PRECAST
                                                    )) ->
                                                    let () =
-                                                    (P.ocaml_syntax_extension
+                                                    (P.syntax_extension
                                                       (module
                                                       IdMacroParser)
                                                       (module
                                                       MakeMacroParser)) in
-                                                   (P.ast_filter
+                                                   (P.syntax_plugin
                                                      (module
                                                      IdMacroParser)
                                                      (module
@@ -50353,7 +50270,7 @@ let pa_q =
                                                                      :
                                                                     (module Camlp4.Sig.PRECAST
                                                                     )) ->
-                                                                    (P.ocaml_syntax_extension
+                                                                    (P.syntax_extension
                                                                     (module
                                                                     IdQuotationExpander)
                                                                     (module
@@ -50367,8 +50284,7 @@ let pa_rq =
    (module Camlp4.Sig.PRECAST
   )) ->
   let module Gram = (Grammar.Static.Make)(P.Lexer) in
-  let module M1 =
-   (((Camlp4.OCamlInitSyntax.Make)(P.Ast))(P.Gram))(P.Quotation) in
+  let module M1 = (Camlp4.OCamlInitSyntax.Make)(P.Gram) in
   let module M2 = (MakeRevisedParser)(M1) in
   let module M3 =
    ((MakeQuotationCommon)(M2))(P.Syntax.AntiquotSyntax) in
@@ -50381,9 +50297,7 @@ let pa_oq =
          (module Camlp4.Sig.PRECAST
         )) ->
         let module Gram = (Grammar.Static.Make)(P.Lexer) in
-        let module M1 =
-         (((Camlp4.OCamlInitSyntax.Make)(P.Ast))(P.Gram))
-          (P.Quotation) in
+        let module M1 = (Camlp4.OCamlInitSyntax.Make)(P.Gram) in
         let module M2 = (MakeRevisedParser)(M1) in
         let module M3 = (MakeParser)(M2) in
         let module M4 =
@@ -50396,7 +50310,7 @@ let pa_l =
                :
                (module Camlp4.Sig.PRECAST
               )) ->
-              (P.ocaml_syntax_extension (module IdListComprehension)
+              (P.syntax_extension (module IdListComprehension)
                 (module MakeListComprehension))
 
 let pa_debug =
@@ -50405,7 +50319,7 @@ let pa_debug =
                                                     :
                                                     (module Camlp4.Sig.PRECAST
                                                    )) ->
-                                                   (P.ocaml_syntax_extension
+                                                   (P.syntax_extension
                                                      (module
                                                      IdDebugParser)
                                                      (module

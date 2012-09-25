@@ -16,24 +16,14 @@
  * - Nicolas Pouillard: initial version
  *)
 
-module Make (Ast     : Sig.Camlp4Ast )
-            (Gram    : FanSig.Grammar.Static with 
-                                             type Token.t = FanSig.camlp4_token)
-            (Quotation : Sig.Quotation with module Ast = Ast )
-: Sig.Camlp4Syntax with 
-                    module Ast = Ast
-                    and module Token = Gram.Token
-                    and module Gram = Gram
-                    and module Quotation = Quotation
-= struct
-
-
-  module Ast     = Ast;
+module Make
+    (Gram: FanSig.Grammar.Static with type Token.t = FanSig.camlp4_token):
+    Sig.Camlp4Syntax with
+       module Token = Gram.Token and
+       module Gram = Gram =   struct
+  module Ast     = Camlp4Ast;
   module Gram    = Gram;
   module Token   = Gram.Token;
-  module Ast2pt  = Camlp4Ast2OCamlAst.Make Ast;
-  open Sig;
-    
   (* Warnings *)
   type warning = FanLoc.t -> string -> unit;
   value default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
@@ -236,7 +226,7 @@ module Make (Ast     : Sig.Camlp4Ast )
     value parse_patt loc str = Gram.parse_string antiquot_patt loc str;
   end;
 
-  module Quotation = Quotation;
+  module Quotation = Quotation.Make(struct end);
 
   value wrap directive_handler pa init_loc cs =
     let rec loop loc =
@@ -264,4 +254,5 @@ module Make (Ast     : Sig.Camlp4Ast )
 
   value print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
   value print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
+  module AstFilters = AstFilters.Make (struct end);
 end;

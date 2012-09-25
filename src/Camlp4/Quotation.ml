@@ -1,47 +1,66 @@
-(* camlp4r *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright 2002-2006 Institut National de Recherche en Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
+module type S = sig
+  (* module Ast : Camlp4Ast; *)
+  (* module DynAst : DynAst (\* with module Ast = Ast *\); *)
+  (* open Ast; *)
 
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
-
-
-module Make (Ast : Sig.Camlp4Ast)
-: Sig.Quotation with module Ast = Ast
-= struct
-  module Ast = Ast;
-  module DynAst = DynAst.Make Ast;
-  open Format;
-  open Sig;
-
+  (** The [loc] is the initial location. The option string is the optional name
+      for the location variable. The string is the quotation contents. *)
   type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
 
-  module Exp_key = DynAst.Pack(struct
-    type t 'a = unit;
-  end);
+  (** [add name exp] adds the quotation [name] associated with the
+      expander [exp]. *)
+  value add : string -> DynAst.tag 'a -> expand_fun 'a -> unit;
 
-  module Exp_fun = DynAst.Pack(struct
-    type t 'a = expand_fun 'a;
-  end);
+  (** [find name] returns the expander of the given quotation name. *)
+  value find : string -> DynAst.tag 'a -> expand_fun 'a;
 
-  value expanders_table =
+  (** [default] holds the default quotation name. *)
+  value default : ref string;
+
+  (** [default_tbl] mapping position to the default quotation name
+      it has higher precedence over default
+   *)
+  value default_tbl : Hashtbl.t string string ;
+
+  (** [default_at_pos] set the default quotation name for specific pos*)
+  value default_at_pos: string -> string -> unit;
+      
+  (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
+      It's a parser wrapper, this function handles the error reporting for you. *)
+    
+  value parse_quotation_result :
+    (FanLoc.t -> string -> 'a) -> FanLoc.t -> FanSig.quotation -> string -> string -> 'a;
+
+  (** function translating quotation names; default = identity *)
+  value translate : ref (string -> string);
+
+  value expand : FanLoc.t -> FanSig.quotation -> DynAst.tag 'a -> 'a;
+
+  (** [dump_file] optionally tells Camlp4 to dump the
+      result of an expander if this result is syntactically incorrect.
+      If [None] (default), this result is not dumped. If [Some fname], the
+      result is dumped in the file [fname]. *)
+  value dump_file : ref (option string);
+
+  module Error : FanSig.Error;
+
+end;
+
+module Make (U:sig end) : S = struct   
+  open Format;
+  type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
+module Exp_key = DynAst.Pack(struct
+  type t 'a = unit;
+end);
+
+module Exp_fun = DynAst.Pack(struct
+  type t 'a = expand_fun 'a;
+end);
+
+value expanders_table =
     (ref [] : ref (list ((string * Exp_key.pack) * Exp_fun.pack)));
 
-  value default = ref "";
+value default = ref "";
   (* create a table mapping from
      (string_of_tag tag) to default quotation expander *)  
   value default_tbl : Hashtbl.t string string = Hashtbl.create 50;

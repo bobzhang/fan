@@ -21,11 +21,10 @@
 
   (* module FanLoc = FanLoc; *)
   module Ast = struct
-  (* include Sig.MakeCamlp4Ast FanLoc; *)
-     INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
-  value safe_string_escaped s =
-    if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
-    else String.escaped s;
+    include Ast;
+    value safe_string_escaped s =
+      if String.length s > 2 && s.[0] = '\\' && s.[1] = '$' then s
+      else String.escaped s;
   end;
 
   include Ast;
@@ -459,7 +458,7 @@
     | x -> [x :: acc] ];
 
   module Camlp4Trash = struct
-    INCLUDE "src/Camlp4/Camlp4Ast.partial.ml";
+    INCLUDE "src/Camlp4/Ast.ml";
   end;
 
   module Meta = struct

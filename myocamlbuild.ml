@@ -779,16 +779,16 @@ let () =
     flag ["ocaml"; "pp"; "camlp4boot"; "native"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);
-    "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
-    "src/Camlp4/Struct/Camlp4Ast.ml" |-? ["src/Camlp4/Camlp4Ast.partial.ml"];
+    "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Ast.ml"];
+    "src/Camlp4/Struct/Camlp4Ast.ml" |-? ["src/Camlp4/Ast.ml"];
     (* dep ["ocaml"; "file:Camlp4/Struct/Camlp4Ast.ml"] ["Camlp4/Camlp4Ast.partial.ml"]; *)
-    dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Camlp4Ast.partial.ml"];
-    dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]
-      ["camlp4/Camlp4/Camlp4Ast.partial.ml"];
+    dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Ast.ml"];
+    dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]  ["src/Camlp4/Ast.ml"];
 
   end;;
-copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml"
-  ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";;
+
+(* copy_rule "camlp4: boot/Camlp4Ast.ml -> src/Camlp4/Struct/Camlp4Ast.ml" *)
+(*   ~insert:`top "boot/Camlp4Ast.ml" "src/Camlp4/Struct/Camlp4Ast.ml";; *)
 
 copy_rule "camlp4: src/fan.byte -> boot/fan.byte"
   ~insert:`top "src/fan.byte" "boot/fan.byte";;

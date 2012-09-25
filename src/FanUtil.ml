@@ -39,7 +39,7 @@ let cvt_nativeint_literal s =
   Nativeint.neg (Nativeint.of_string ("-" ^ s))
     
 module SSet = Set.Make (String)
-
+module SMap = Map.Make (String)
 
 (* either dump to a file or stdout *)    
 let with_open_out_file x f =

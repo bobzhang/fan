@@ -1,91 +1,64 @@
-(* camlp4r *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright 2002-2006 Institut National de Recherche en Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
+open Format;
+open Parsetree;
+open Longident;
+open Asttypes;
 
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
+open Camlp4Ast;
+value constructors_arity () =
+  debug ast2pt "constructors_arity: %b@." FanConfig.constructors_arity.val in
+  FanConfig.constructors_arity.val;
 
 
+value error loc str = FanLoc.raise loc (Failure str);
 
-module Make (Ast : Sig.Camlp4Ast) = struct
-  open Format;
-  open Parsetree;
-  open Longident;
-  open Asttypes;
-  open Ast;
+value char_of_char_token loc s =
+  try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
+    
+value string_of_string_token loc s =
+  try TokenEval.string s
+  with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
 
-  value constructors_arity () =
-    debug ast2pt "constructors_arity: %b@." FanConfig.constructors_arity.val in
-    FanConfig.constructors_arity.val;
+value remove_underscores s =
+  let l = String.length s in
+  let rec remove src dst =
+    if src >= l then
+      if dst >= l then s else String.sub s 0 dst
+    else
+      match s.[src] with
+      [ '_' -> remove (src + 1) dst
+      |  c  -> do { s.[dst] := c; remove (src + 1) (dst + 1) } ]
+  in remove 0 0 ;
 
-  value error loc str = FanLoc.raise loc (Failure str);
+value mkloc = FanLoc.to_ocaml_location;
+value mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
 
-  value char_of_char_token loc s =
-    try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ]
-  ;
+value with_loc txt loc = Location.mkloc txt (mkloc loc);
+  
+value mktyp loc d = {ptyp_desc = d; ptyp_loc = mkloc loc};
+value mkpat loc d = {ppat_desc = d; ppat_loc = mkloc loc};
+value mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
+value mkexp loc d = {pexp_desc = d; pexp_loc = mkloc loc};
+value mkmty loc d = {pmty_desc = d; pmty_loc = mkloc loc};
+value mksig loc d = {psig_desc = d; psig_loc = mkloc loc};
+value mkmod loc d = {pmod_desc = d; pmod_loc = mkloc loc};
+value mkstr loc d = {pstr_desc = d; pstr_loc = mkloc loc};
+value mkfield loc d = {pfield_desc = d; pfield_loc = mkloc loc};
+value mkcty loc d = {pcty_desc = d; pcty_loc = mkloc loc};
+value mkcl loc d = {pcl_desc = d; pcl_loc = mkloc loc};
+value mkcf loc d = { pcf_desc = d; pcf_loc = mkloc loc; };
+value mkctf loc d = { pctf_desc = d; pctf_loc = mkloc loc; };
 
-  value string_of_string_token loc s =
-    try TokenEval.string s
-    with [ Failure _ as exn -> FanLoc.raise loc exn ]
-  ;
-
-  value remove_underscores s =
-    let l = String.length s in
-    let rec remove src dst =
-      if src >= l then
-        if dst >= l then s else String.sub s 0 dst
-      else
-        match s.[src] with
-        [ '_' -> remove (src + 1) dst
-        |  c  -> do { s.[dst] := c; remove (src + 1) (dst + 1) } ]
-    in remove 0 0
-  ;
-
-  value mkloc = FanLoc.to_ocaml_location;
-  value mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
-
-  value with_loc txt loc = Location.mkloc txt (mkloc loc);
-
-  value mktyp loc d = {ptyp_desc = d; ptyp_loc = mkloc loc};
-  value mkpat loc d = {ppat_desc = d; ppat_loc = mkloc loc};
-  value mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
-  value mkexp loc d = {pexp_desc = d; pexp_loc = mkloc loc};
-  value mkmty loc d = {pmty_desc = d; pmty_loc = mkloc loc};
-  value mksig loc d = {psig_desc = d; psig_loc = mkloc loc};
-  value mkmod loc d = {pmod_desc = d; pmod_loc = mkloc loc};
-  value mkstr loc d = {pstr_desc = d; pstr_loc = mkloc loc};
-  value mkfield loc d = {pfield_desc = d; pfield_loc = mkloc loc};
-  value mkcty loc d = {pcty_desc = d; pcty_loc = mkloc loc};
-  value mkcl loc d = {pcl_desc = d; pcl_loc = mkloc loc};
-  value mkcf loc d = { pcf_desc = d; pcf_loc = mkloc loc; };
-  value mkctf loc d = { pctf_desc = d; pctf_loc = mkloc loc; };
-
-  value mkpolytype t =
-    match t.ptyp_desc with
+value mkpolytype t = match t.ptyp_desc with
     [ Ptyp_poly _ _ -> t
-    | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } ]
-  ;
+    | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } ] ;
 
-  value mkvirtual = fun
+value mkvirtual = fun
     [ <:virtual_flag< virtual >> -> Virtual
     | <:virtual_flag<>> -> Concrete
     | _ -> assert False ];
 
-  value mkdirection = fun
-    [ <:direction_flag< to >> -> Upto
+value mkdirection = fun
+   [ <:direction_flag< to >> -> Upto
     | <:direction_flag< downto >> -> Downto
     | _ -> assert False ];
 
@@ -150,14 +123,14 @@ module Make (Ast : Sig.Camlp4Ast) = struct
           let x =
             match acc with
             [ None -> i'
-            | _ -> error (loc_of_ident i) "invalid long identifier" ]
+            | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
           in (x, `app)
       | <:ident< $uid:s >> ->
           let x =
             match acc with
             [ None -> lident s
             | Some (acc, `uident | `app) -> ldot acc s
-            | _ -> error (loc_of_ident i) "invalid long identifier" ]
+            | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
           in (x, `uident)
       | <:ident< $lid:s >> ->
           let x =
@@ -1232,4 +1205,4 @@ value varify_constructors var_names =
     [ StDir _ d dp -> Ptop_dir d (directive dp)
     | si -> Ptop_def (str_item si) ]
   ;
-end;
+

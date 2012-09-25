@@ -19,7 +19,7 @@
 
 # shared with the cold tree
 <Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
-<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Camlp4Ast2OCamlAst.{ml,mli}> or <Camlp4/Sig.ml> : pkg_compiler-libs.common
+<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Camlp4/Ast2pt.{ml,mli}> or <Camlp4/Sig.ml> : pkg_compiler-libs.common
 
 # <Camlp4/Struct/DynLoader.ml> :pkg_dynlink
 # <Camlp4Top/**>: pkg_compiler-libs.toplevel

@@ -6,13 +6,12 @@ module Id =
 
  end
 
-module Make =
-       functor (Syntax : Sig.Syntax) ->
-        struct
-         let print_interf =
-          fun ?input_file:_ -> fun ?output_file:_ -> fun _ -> ()
+module P =
+       struct
+        let print_interf =
+         fun ?input_file:_ -> fun ?output_file:_ -> fun _ -> ()
 
-         let print_implem =
-          fun ?input_file:_ -> fun ?output_file:_ -> fun _ -> ()
+        let print_implem =
+         fun ?input_file:_ -> fun ?output_file:_ -> fun _ -> ()
 
-        end
+       end

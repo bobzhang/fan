@@ -6,9 +6,8 @@ module IdAstLoader = struct
   value version = Sys.ocaml_version;
 end;
 
-module MakeAstLoader (Ast : Camlp4.Sig.Camlp4Ast) : (Camlp4.Sig.Parser Ast).S= struct
-  module Ast = Ast;
-
+module MakeAstLoader  : Camlp4.Sig.ParserImpl= struct
+  module Ast = Camlp4.Camlp4Ast;
   value parse ast_magic ?directive_handler:(_) _loc strm =
     let str =
       let buf = Buffer.create 2047 in
@@ -37,21 +36,21 @@ module MakeDebugParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   include Syntax;
   open FanSig ; (* For FanToken, probably we should fix FanToken as well  *)
-  module StringSet = Set.Make String;
-
+  (* module StringSet = Set.Make String; *)
+  module Ast = Camlp4.Camlp4Ast;  
   value debug_mode =
     try
       let str = Sys.getenv "STATIC_CAMLP4_DEBUG" in
       let rec loop acc i =
         try
           let pos = String.index_from str i ':' in
-          loop (StringSet.add (String.sub str i (pos - i)) acc) (pos + 1)
+          loop (SSet.add (String.sub str i (pos - i)) acc) (pos + 1)
         with
         [ Not_found ->
-            StringSet.add (String.sub str i (String.length str - i)) acc ] in
-      let sections = loop StringSet.empty 0 in
-      if StringSet.mem "*" sections then fun _ -> True
-      else fun x -> StringSet.mem x sections
+            SSet.add (String.sub str i (String.length str - i)) acc ] in
+      let sections = loop SSet.empty 0 in
+      if SSet.mem "*" sections then fun _ -> True
+      else fun x -> SSet.mem x sections
     with [ Not_found -> fun _ -> False ];
 
   value rec apply accu =
@@ -99,6 +98,7 @@ end;
 module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   include Syntax;
+  module Ast = Camlp4.Camlp4Ast;
   open FanSig;
   module MetaLoc = Ast.Meta.MetaGhostLoc;
   module MetaAst = Ast.Meta.Make MetaLoc;
@@ -106,7 +106,7 @@ module MakeGrammarParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     let buf = Buffer.create 42 in
     let () =
       Format.bprintf buf "%a@?"
-        (fun fmt p -> Pprintast.pattern fmt (Syntax.Ast2pt.patt p)) patt in
+        (fun fmt p -> Pprintast.pattern fmt (Camlp4.Ast2pt.patt p)) patt in
     (* let () = Format.bprintf buf "%a@?" pp#patt patt in *)
     let str = Buffer.contents buf in
     if str = "" then assert False else str;
@@ -864,7 +864,7 @@ module MakeListComprehension (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   value rec loop n =
     fun
     [ [] -> None
@@ -1060,7 +1060,7 @@ module MakeMacroParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   type item_or_def 'a =
     [ SdStr of 'a
     | SdDef of string and option (list string * Ast.expr)
@@ -1398,10 +1398,10 @@ end;
 
 
 
-module MakeNothing (AstFilters : Camlp4.Sig.AstFilters) = struct
- open AstFilters;
- open Ast;
-
+module MakeNothing (Syn : Camlp4.Sig.Camlp4Syntax) = struct
+ (* open AstFilters; *)
+ (* open Ast; *)
+ module Ast = Camlp4.Camlp4Ast ;
  (* Remove NOTHING and expanse __FILE__ and __LOCATION__ *)
  value map_expr =
    fun
@@ -1415,7 +1415,7 @@ module MakeNothing (AstFilters : Camlp4.Sig.AstFilters) = struct
         $(if h then <:expr< True >> else <:expr< False >> )) >>
    | e -> e];
 
- register_str_item_filter (Ast.map_expr map_expr)#str_item;
+ Syn.AstFilters.register_str_item_filter (Ast.map_expr map_expr)#str_item;
 
 end;
 
@@ -1429,7 +1429,7 @@ module MakeReloadedParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   Gram.Entry.clear match_case;
   Gram.Entry.clear semi;
 
@@ -1505,7 +1505,7 @@ module MakeRevisedParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   (* FanConfig.constructors_arity.val := True; *)
   FanConfig.constructors_arity.val := False;
 
@@ -1927,7 +1927,8 @@ New syntax:\
       | "simple"
         [ `ANTIQUOT (""|"mexp"|"anti"|"list" as n) s ->
             <:module_expr< $(anti:mk_anti ~c:"module_expr" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.module_expr_tag
+        | `QUOTATION x ->
+            Quotation.expand _loc x Camlp4.DynAst.module_expr_tag
         | i = module_longident -> <:module_expr< $id:i >>
         | "("; me = SELF; ":"; mt = module_type; ")" ->
             <:module_expr< ( $me : $mt ) >>
@@ -1963,7 +1964,7 @@ New syntax:\
             <:str_item< class type $ctd >>
         | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s ->
             <:str_item< $(anti:mk_anti ~c:"str_item" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.str_item_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.str_item_tag
         | e = expr -> <:str_item< $exp:e >> ] ]
     ;
     module_binding0:
@@ -1984,7 +1985,7 @@ New syntax:\
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
         | `ANTIQUOT ("" as n) m; ":"; mt = module_type; "="; me = module_expr ->
             <:module_binding< $(mk_anti n m) : $mt = $me >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.module_binding_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.module_binding_tag
         | m = a_UIDENT; ":"; mt = module_type; "="; me = module_expr ->
             <:module_binding< $m : $mt = $me >> ] ]
     ;
@@ -2005,7 +2006,7 @@ New syntax:\
       | "simple"
         [ `ANTIQUOT (""|"mtyp"|"anti"|"list" as n) s ->
             <:module_type< $(anti:mk_anti ~c:"module_type" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.module_type_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.module_type_tag
         | i = module_longident_with_app -> <:module_type< $id:i >>
         | "'"; i = a_ident -> <:module_type< ' $i >>
         | "("; mt = SELF; ")" -> <:module_type< $mt >>
@@ -2016,7 +2017,7 @@ New syntax:\
       [ "top"
         [ `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s ->
             <:sig_item< $(anti:mk_anti ~c:"sig_item" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.sig_item_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.sig_item_tag
         | "exception"; t = constructor_declaration ->
             <:sig_item< exception $t >>
         | "external"; i = a_LIDENT; ":"; t = ctyp; "="; sl = string_list ->
@@ -2051,7 +2052,7 @@ New syntax:\
         [ m1 = SELF; "and"; m2 = SELF -> <:module_binding< $m1 and $m2 >>
         | `ANTIQUOT (""|"module_binding"|"anti"|"list" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.module_binding_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.module_binding_tag
         | m = a_UIDENT; ":"; mt = module_type -> <:module_binding< $m : $mt >>
       ] ]
     ;
@@ -2060,7 +2061,7 @@ New syntax:\
         [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.with_constr_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.with_constr_tag
         | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; "="; t = ctyp ->
             <:with_constr< type $(anti:mk_anti ~c:"ctyp" n s) = $t >>
         | "type"; t1 = type_longident_and_parameters; "="; t2 = ctyp ->
@@ -2159,7 +2160,7 @@ New syntax:\
         [ "!"; e = SELF -> <:expr< $e.val >>
         | f = prefixop; e = SELF -> <:expr< $f $e >> ]
       | "simple"
-        [ `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.expr_tag
+        [ `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.expr_tag
         | `ANTIQUOT ("exp"|""|"anti" as n) s ->
             <:expr< $(anti:mk_anti ~c:"expr" n s) >>
         | `ANTIQUOT ("`bool" as n) s ->
@@ -2392,7 +2393,7 @@ New syntax:\
         | "("; p = SELF; "as"; p2 = SELF; ")" -> <:patt< ($p as $p2) >>
         | "("; p = SELF; ","; pl = comma_patt; ")" -> <:patt< ($p, $pl) >>
         | "_" -> <:patt< _ >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.patt_tag
         | "`"; s = a_ident -> <:patt< ` $s >>
         | "#"; i = type_longident -> <:patt< # $i >>
         | `LABEL i; p = SELF -> <:patt< ~ $i : $p >>
@@ -2440,7 +2441,7 @@ New syntax:\
     label_patt:
       [ [ `ANTIQUOT (""|"pat"|"anti" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.patt_tag
         | `ANTIQUOT ("list" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
         | i = label_longident; "="; p = patt -> <:patt< $i = $p >>
@@ -2453,7 +2454,7 @@ New syntax:\
             <:patt< $(anti:mk_anti ~c:"patt" n s) >>
         | `ANTIQUOT ("tup" as n) s ->
             <:patt< ($(tup:<:patt< $(anti:mk_anti ~c:"patt" n s) >>)) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.patt_tag
         | "("; ")" -> <:patt< () >>
         | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m) >>
         | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
@@ -2487,7 +2488,7 @@ New syntax:\
         | `ANTIQUOT ("list" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
         | `QUOTATION x ->
-            Quotation.expand _loc x Quotation.DynAst.patt_tag
+            Quotation.expand _loc x Camlp4.DynAst.patt_tag
         | i = label_longident; "="; p = ipatt -> <:patt< $i = $p >>
       ] ]
     ;
@@ -2497,7 +2498,7 @@ New syntax:\
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctypand" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | t1 = SELF; "and"; t2 = SELF -> <:ctyp< $t1 and $t2 >>
         | (n, tpl) = type_ident_and_parameters; tk = opt_eq_ctyp;
           cl = LIST0 constrain -> Ast.TyDcl _loc n tpl tk cl ] ]
@@ -2529,14 +2530,14 @@ New syntax:\
 
     type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $(anti:mk_anti n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | "'"; i = a_ident -> <:ctyp< '$lid:i >>
         | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
         | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i >> ] ]
     ;
     optional_type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $(anti:mk_anti n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | "'"; i = a_ident -> <:ctyp< '$lid:i >>
         | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
         | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i >>
@@ -2589,7 +2590,7 @@ New syntax:\
             <:ctyp< ($(tup:<:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>)) >>
         | `ANTIQUOT ("id" as n) s ->
             <:ctyp< $(id:<:ident< $(anti:mk_anti ~c:"ident" n s) >>) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | i = a_LIDENT -> <:ctyp< $lid:i >>
         | i = a_UIDENT -> <:ctyp< $uid:i >>
         | "("; t = SELF; "*"; tl = star_ctyp; ")" ->
@@ -2631,7 +2632,7 @@ New syntax:\
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp|" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | t1 = SELF; "|"; t2 = SELF ->
             <:ctyp< $t1 | $t2 >>
         | s = a_UIDENT; "of"; t = constructor_arg_list ->
@@ -2646,7 +2647,7 @@ New syntax:\
     constructor_declaration:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | s = a_UIDENT; "of"; t = constructor_arg_list ->
             <:ctyp< $uid:s of $t >>
         | s = a_UIDENT ->
@@ -2671,7 +2672,7 @@ New syntax:\
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp;" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | s = a_LIDENT; ":"; t = poly_type ->
             <:ctyp< $lid:s : $t >>
         | s = a_LIDENT; ":"; "mutable"; t = poly_type ->
@@ -2747,7 +2748,7 @@ New syntax:\
             <:class_expr< $c1 and $c2 >>
         | `ANTIQUOT (""|"cdcl"|"anti"|"list" as n) s ->
             <:class_expr< $(anti:mk_anti ~c:"class_expr" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_expr_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_expr_tag
         | ci = class_info_for_class_expr; ce = class_fun_binding ->
             <:class_expr< $ci = $ce >>
       ] ]
@@ -2808,7 +2809,7 @@ New syntax:\
       | "simple"
         [ `ANTIQUOT (""|"cexp"|"anti" as n) s ->
             <:class_expr< $(anti:mk_anti ~c:"class_expr" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_expr_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_expr_tag
         | ce = class_longident_and_param -> ce
         | "object"; csp = opt_class_self_patt; cst = class_structure; "end" ->
             <:class_expr< object ($csp) $cst end >>
@@ -2839,7 +2840,7 @@ New syntax:\
       [ LA
         [ `ANTIQUOT (""|"cst"|"anti"|"list" as n) s ->
             <:class_str_item< $(anti:mk_anti ~c:"class_str_item" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_str_item_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_str_item_tag
         | "inherit"; o = opt_override; ce = class_expr; pb = opt_as_lident ->
             <:class_str_item< inherit $override:o $ce as $pb >>
         | o = value_val_opt_override; mf = opt_mutable; lab = label; e = cvalue_binding
@@ -2916,7 +2917,7 @@ New syntax:\
     class_type:
       [ [ `ANTIQUOT (""|"ctyp"|"anti" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_type_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_type_tag
         | ct = class_type_longident_and_param -> ct
         | "object"; cst = opt_class_self_type; csg = class_signature; "end" ->
             <:class_type< object ($cst) $csg end >> ] ]
@@ -2947,7 +2948,7 @@ New syntax:\
     class_sig_item:
       [ [ `ANTIQUOT (""|"csg"|"anti"|"list" as n) s ->
             <:class_sig_item< $(anti:mk_anti ~c:"class_sig_item" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_sig_item_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_sig_item_tag
         | "inherit"; cs = class_type ->
             <:class_sig_item< inherit $cs >>
         | value_val; mf = opt_mutable; mv = opt_virtual;
@@ -2971,7 +2972,7 @@ New syntax:\
         | `ANTIQUOT (""|"typ"|"anti"|"list" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
         | `QUOTATION x ->
-            Quotation.expand _loc x Quotation.DynAst.class_type_tag
+            Quotation.expand _loc x Camlp4.DynAst.class_type_tag
         | ci = class_info_for_class_type; ":"; ct = class_type_plus ->
             <:class_type< $ci : $ct >>
       ] ]
@@ -2982,7 +2983,7 @@ New syntax:\
           <:class_type< $cd1 and $cd2 >>
         | `ANTIQUOT (""|"typ"|"anti"|"list" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.class_type_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.class_type_tag
         | ci = class_info_for_class_type; "="; ct = class_type ->
             <:class_type< $ci = $ct >>
       ] ]
@@ -3009,7 +3010,7 @@ New syntax:\
     meth_decl:
       [ [ `ANTIQUOT (""|"typ" as n) s        -> <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s          -> <:ctyp< $(anti:mk_anti ~c:"ctyp;" n s) >>
-        | `QUOTATION x                       -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x                       -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | lab = a_LIDENT; ":"; t = poly_type -> <:ctyp< $lid:lab : $t >> ] ]
     ;
     opt_meth_list:
@@ -3028,7 +3029,7 @@ New syntax:\
         [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | "'"; i = a_ident -> <:ctyp< '$lid:i >>
       ] ]
     ;
@@ -3037,7 +3038,7 @@ New syntax:\
         [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | i = a_ident -> <:ctyp< $lid:i >>
       ] ]
     ;
@@ -3442,7 +3443,7 @@ module MakeRevisedParserParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   type spat_comp =
     [ SpTrm of FanLoc.t and Ast.patt and option Ast.expr
     | SpNtr of FanLoc.t and Ast.patt and Ast.expr
@@ -3815,7 +3816,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   FanConfig.constructors_arity.val := False;
 
   (*FIXME remove this and use OCaml ones *)
@@ -4148,7 +4149,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:patt< $(anti:mk_anti ~c:"patt" n s) >>
         | `ANTIQUOT ("tup" as n) s -> <:patt< ($(tup:<:patt< $(anti:mk_anti ~c:"patt" n s) >>)) >>
         | `ANTIQUOT ("`bool" as n) s -> <:patt< $(anti:mk_anti n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.patt_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.patt_tag
         | i = ident -> <:patt< $id:i >>
         | s = a_INT -> <:patt< $int:s >>
         | s = a_INT32 -> <:patt< $int32:s >>
@@ -4199,7 +4200,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
         [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.with_constr_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.with_constr_tag
         | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; "="; t = opt_private_ctyp ->
             <:with_constr< type $(anti:mk_anti ~c:"ctyp" n s) = $t >>
         | "type"; t1 = type_longident_and_parameters; "="; t2 = opt_private_ctyp ->
@@ -4295,7 +4296,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
             <:ctyp< ($(tup:<:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>)) >>
         | `ANTIQUOT ("id" as n) s ->
             <:ctyp< $(id:<:ident< $(anti:mk_anti ~c:"ident" n s) >>) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | "("; t = SELF; ","; mk = comma_ctyp_app; ")";
           i = ctyp Level "ctyp2" ->
             mk <:ctyp< $i $t >>
@@ -4364,7 +4365,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
 
     optional_type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $(anti:mk_anti n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | "+"; "_" -> Ast.TyAnP _loc 
         | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
         | "-"; "_" -> Ast.TyAnM _loc
@@ -4433,7 +4434,7 @@ module MakeParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
     label_declaration:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
-        | `QUOTATION x -> Quotation.expand _loc x Quotation.DynAst.ctyp_tag
+        | `QUOTATION x -> Quotation.expand _loc x Camlp4.DynAst.ctyp_tag
         | s = a_LIDENT; ":"; t = poly_type ->  <:ctyp< $lid:s : $t >>
         | "mutable"; s = a_LIDENT; ":"; t = poly_type ->
             <:ctyp< $lid:s : mutable $t >>
@@ -4517,7 +4518,7 @@ module MakeParserParser (Syntax : Camlp4.Sig.Camlp4Syntax) = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax;
-
+  module Ast = Camlp4.Camlp4Ast;
   module M = MakeRevisedParserParser  Syntax;
   open M;
 
@@ -4552,12 +4553,12 @@ module IdQuotationCommon = struct (* FIXME unused here *)
 end;
 
 module MakeQuotationCommon (Syntax : Camlp4.Sig.Camlp4Syntax)
-            (TheAntiquotSyntax : (Camlp4.Sig.Parser Syntax.Ast).SIMPLE)
+            (TheAntiquotSyntax : Camlp4.Sig.ParserExpr)
 = struct
   open Camlp4.Sig;
   open FanSig;
   include Syntax; (* Be careful an AntiquotSyntax module appears here *)
-
+  module Ast = Camlp4.Camlp4Ast;
   module MetaLocHere = Ast.Meta.MetaLoc;
   module MetaLoc = struct
     module Ast = Ast;
@@ -4706,9 +4707,9 @@ module MakeQuotationCommon (Syntax : Camlp4.Sig.Camlp4Syntax)
           [ [ x = entry; `EOI -> x ] ]
         ;
       END;
-      Quotation.add name Quotation.DynAst.expr_tag expand_expr;
-      Quotation.add name Quotation.DynAst.patt_tag expand_patt;
-      Quotation.add name Quotation.DynAst.str_item_tag expand_str_item;
+      Quotation.add name Camlp4.DynAst.expr_tag expand_expr;
+      Quotation.add name Camlp4.DynAst.patt_tag expand_patt;
+      Quotation.add name Camlp4.DynAst.str_item_tag expand_str_item;
     };
 
   add_quotation "sig_item" sig_item_quot ME.meta_sig_item MP.meta_sig_item;
@@ -4756,43 +4757,43 @@ end;
 
 (* value pa_r  = "Camlp4OCamlRevisedParser"; *)    
 value pa_r (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
+  P.syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
 
 (* value pa_rr = "Camlp4OCamlReloadedParser"; *)
 value pa_rr (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdReloadedParser) (module MakeReloadedParser);
+  P.syntax_extension (module IdReloadedParser) (module MakeReloadedParser);
   
 (* value pa_o  = "Camlp4OCamlParser"; *)
 value pa_o (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdParser) (module MakeParser);
+  P.syntax_extension (module IdParser) (module MakeParser);
   
 (* value pa_rp = "Camlp4OCamlRevisedParserParser"; *)
 value pa_rp (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdRevisedParserParser)
+  P.syntax_extension (module IdRevisedParserParser)
     (module MakeRevisedParserParser);
 
 (* value pa_op = "Camlp4OCamlParserParser"; *)
 value pa_op (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdParserParser) (module MakeParserParser);
+  P.syntax_extension (module IdParserParser) (module MakeParserParser);
 
 value pa_g (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
+  P.syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
 
 (* value pa_m  = "Camlp4MacroParser"; *)
 value pa_m (module P:Camlp4.Sig.PRECAST) =
-  let () = P.ocaml_syntax_extension (module IdMacroParser) (module MakeMacroParser) in
-  P.ast_filter (module IdMacroParser) (module MakeNothing);
+  let () = P.syntax_extension (module IdMacroParser) (module MakeMacroParser) in
+  P.syntax_plugin (module IdMacroParser) (module MakeNothing);
 
 (* value pa_q  = "Camlp4QuotationExpander"; *)
 value pa_q (module P:Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
+  P.syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
   
 (* value pa_rq = "Camlp4OCamlRevisedQuotationExpander"; *)
 (*   unreflective*, quotation syntax use revised syntax. *)
 
 value pa_rq (module P:Camlp4.Sig.PRECAST) =
   let module Gram = Grammar.Static.Make P.Lexer in
-  let module M1 = Camlp4.OCamlInitSyntax.Make P.Ast P.Gram P.Quotation in
+  let module M1 = Camlp4.OCamlInitSyntax.Make P.Gram in
   let module M2 = MakeRevisedParser M1 in
   let module M3 = MakeQuotationCommon M2 P.Syntax.AntiquotSyntax in ();
   
@@ -4803,19 +4804,19 @@ value pa_rq (module P:Camlp4.Sig.PRECAST) =
 
 value pa_oq (module P: Camlp4.Sig.PRECAST)   =
   let module Gram = Grammar.Static.Make P.Lexer in
-  let module M1 = Camlp4.OCamlInitSyntax.Make P.Ast P.Gram P.Quotation in
+  let module M1 = Camlp4.OCamlInitSyntax.Make P.Gram  in
   let module M2 = MakeRevisedParser M1 in
   let module M3 = MakeParser M2 in
   let module M4 = MakeQuotationCommon M3 P.Syntax.AntiquotSyntax in ();
 
 
 value pa_l  (module P: Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdListComprehension) (module MakeListComprehension);
+  P.syntax_extension (module IdListComprehension) (module MakeListComprehension);
 
 
 (* load debug parser for bootstrapping *)
 value pa_debug (module P: Camlp4.Sig.PRECAST) =
-  P.ocaml_syntax_extension (module IdDebugParser) (module MakeDebugParser);
+  P.syntax_extension (module IdDebugParser) (module MakeDebugParser);
 
 
 

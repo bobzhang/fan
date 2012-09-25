@@ -1,19 +1,35 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2007   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
 (* Note: when you modify these types you must increment
    ast magic numbers defined in FanConfig.ml. *)
+(** Signature for OCaml syntax trees. *) (*
+    This signature is an extension of {!Ast}
+    It provides:
+      - Types for all kinds of structure.
+      - Map: A base class for map traversals.
+      - Map classes and functions for common kinds.
+
+    == Core language ==
+    ctyp               :: Representaion of types
+    patt               :: The type of patterns
+    expr               :: The type of expressions
+    match_case         :: The type of cases for match/function/try constructions
+    ident              :: The type of identifiers (including path like Foo(X).Bar.y)
+    binding            :: The type of let bindings
+    rec_binding        :: The type of record definitions
+
+    == Modules ==
+    module_type        :: The type of module types
+    sig_item           :: The type of signature items
+    str_item           :: The type of structure items
+    module_expr        :: The type of module expressions
+    module_binding     :: The type of recursive module definitions
+    with_constr        :: The type of `with' constraints
+
+    == Classes ==
+    class_type         :: The type of class types
+    class_sig_item     :: The type of class signature items
+    class_expr         :: The type of class expressions
+    class_str_item     :: The type of class structure items
+ *)
 
   type loc = FanLoc.t
    and meta_bool =
