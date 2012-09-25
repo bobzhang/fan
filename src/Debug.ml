@@ -18,7 +18,7 @@
  *)
 (* camlp4r *)
 open Format;
-
+open FanUtil;
 module Debug = struct value mode _ = False; end;
 
 type section = string;
@@ -31,7 +31,7 @@ value out_channel =
   with
   [ Not_found -> Pervasives.stderr ];
 
-module StringSet = Set.Make String;
+
 
 value mode =
   try
@@ -39,13 +39,13 @@ value mode =
     let rec loop acc i =
       try
         let pos = String.index_from str i ':' in
-        loop (StringSet.add (String.sub str i (pos - i)) acc) (pos + 1)
+        loop (SSet.add (String.sub str i (pos - i)) acc) (pos + 1)
       with
       [ Not_found ->
-          StringSet.add (String.sub str i (String.length str - i)) acc ] in
-    let sections = loop StringSet.empty 0 in
-    if StringSet.mem "*" sections then fun _ -> True
-    else fun x -> StringSet.mem x sections
+          SSet.add (String.sub str i (String.length str - i)) acc ] in
+    let sections = loop SSet.empty 0 in
+    if SSet.mem "*" sections then fun _ -> True
+    else fun x -> SSet.mem x sections
   with [ Not_found -> fun _ -> False ];
 
 value formatter =
