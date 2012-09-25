@@ -1,17 +1,15 @@
-
-
-open Format;
+open LibUtil;
 
 open Camlp4Parsers;
 open Camlp4Filters;
-open FanUtil;
+(* open FanUtil; *)
 module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
       open PreCast;
       value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
         Hashtbl.create 30;
-      value dyn_loader = ref (fun () -> failwith "empty in dynloader");
+      (* value dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
       value rcall_callback = ref (fun () -> ());
       value loaded_modules = ref SSet.empty;
       value add_to_loaded_modules name =
@@ -22,13 +20,14 @@ module Camlp4Bin
               fun [ FanLoc.Exc_located loc exn ->
                 fprintf ppf "%a:@\n%a" FanLoc.print loc FanUtil.ErrorHandler.print exn
                   | exn -> raise exn ]);
+      module DynLoader = DynLoader.Make (struct end);
       (* value plugins = Hashtbl.create 50;      *)
       value (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");
       
       value rewrite_and_load n x =
-        let dyn_loader = dyn_loader.val () in
+        let dyn_loader = DynLoader.instance.val () in 
         let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do {
           add_to_loaded_modules name;
@@ -248,26 +247,6 @@ module Camlp4Bin
         if you do it in-consistently, this may result in an
         in-consistent behavior
        *)  
-      (* value process_expr dyn_loader name = *)
-      (*   let parse_expr ?directive_handler _loc stream = *)
-      (*     PreCast.Gram.parse PreCast.Syntax.expr _loc stream in *)
-
-      (*   (\* see [Printers/OCaml] *\) *)
-      (*   let print_expr ?input_file:(_) ?output_file ast = *)
-      (*     (\* let module Ast2pt = Struct.Camlp4Ast2OCamlAst.Make Syntax.Ast in *\) *)
-      (*     let pt = Syntax.Ast2pt.expr ast in *)
-      (*     FanUtil.with_open_out_file output_file (fun oc -> *)
-      (*       let fmt = Format.formatter_of_out_channel oc in *)
-      (*       let () = Pprintast.print_expression fmt pt in  *)
-      (*       pp_print_flush fmt ();) in  *)
-      (*   process *)
-      (*     dyn_loader *)
-      (*     name *)
-      (*     parse_expr *)
-      (*     print_expr *)
-      (*     (new clean_ast)#expr *)
-      (*     AstFilters.fold_implem_filters *)
-      (*     gimd; *)
         
       value just_print_the_version () =
         do { printf "%s@." FanConfig.version; exit 0 };
@@ -288,7 +267,7 @@ module Camlp4Bin
       <file>.%s Load this module inside the Camlp4 core@."
       (if DynLoader.is_native then "cmxs     " else "(cmo|cma)")
       ;
-          Options.print_usage_list ini_sl;
+          FanUtil.Options.print_usage_list ini_sl;
           (* loop (ini_sl @ ext_sl) where rec loop =
             fun
             [ [(y, _, _) :: _] when y = "-help" -> ()
@@ -296,7 +275,7 @@ module Camlp4Bin
             | [] -> eprintf "  -help         Display this list of options.@." ];    *)
           if ext_sl <> [] then do {
             eprintf "Options added by loaded object files:@.";
-            Options.print_usage_list ext_sl;
+            FanUtil.Options.print_usage_list ext_sl;
           }
           else ();
         };
@@ -326,7 +305,7 @@ module Camlp4Bin
         let do_task usage = match t.val with [ Some f -> f usage | None -> () ] in
         (task, do_task);
       value input_file x =
-        let dyn_loader = dyn_loader.val () in
+        let dyn_loader = DynLoader.instance.val () in 
         do {
           rcall_callback.val ();
           match x with
@@ -389,7 +368,7 @@ module Camlp4Bin
         ("--", Arg.Unit ignore, "Deprecated, does nothing")
       ];
       
-      Options.init initial_spec_list;
+      FanUtil.Options.init initial_spec_list;
 
       (* handle the file name *)  
       value anon_fun name =
@@ -401,11 +380,11 @@ module Camlp4Bin
           else raise (Arg.Bad ("don't know what to do with " ^ name)));
       
       value main argv =
-        let usage () = do { usage initial_spec_list (Options.ext_spec_list ()); exit 0 } in
+        let usage () = do { usage initial_spec_list (FanUtil.Options.ext_spec_list ()); exit 0 } in
         try do {
           let dynloader = DynLoader.mk ~ocaml_stdlib:search_stdlib.val
                                        ~camlp4_stdlib:search_stdlib.val ();
-          dyn_loader.val := fun () -> dynloader;
+          DynLoader.instance.val := fun () -> dynloader;
           let call_callback () =
             PreCast.iter_and_take_callbacks
               (fun (name, module_callback) ->
@@ -413,7 +392,7 @@ module Camlp4Bin
                  module_callback ());
           call_callback ();
           rcall_callback.val := call_callback;
-          match Options.parse anon_fun argv with
+          match FanUtil.Options.parse anon_fun argv with
           [ [] -> ()
           | ["-help"|"--help"|"-h"|"-?" :: _] -> usage ()
           | [s :: _] ->

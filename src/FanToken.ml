@@ -146,7 +146,7 @@ open Format;
         parser
         [ [: `((_tok, _loc) as x); xs :] ->
             debug token "@[<hov 2>Lexer after filter:@ %a@ at@ %a@]@."
-                        print _tok Loc.dump _loc in
+                        print _tok FanLoc.dump _loc in
             [: ` x; tracer xs :]
         | [: :] -> [: :] ]
       in fun strm -> tracer (x.filter (filter strm));

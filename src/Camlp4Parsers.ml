@@ -1962,6 +1962,11 @@ New syntax:\
             <:str_item< class type $ctd >>
         | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s ->
             <:str_item< $(anti:mk_anti ~c:"str_item" n s) >>
+            (*
+              first, it gives "mk_anti ~c:"str_item" n s" , and then through
+              the meta operation, it gets
+              (Ast.StAnt (_loc, ( (mk_anti ~c:"str_item" n s) )))
+             *)
         | `QUOTATION x -> Quotation.expand _loc x DynAst.str_item_tag
         | e = expr -> <:str_item< $exp:e >>
         (* this entry makes <:str_item< let $rec:r $bi in $x >> parsable *)
@@ -3148,6 +3153,7 @@ New syntax:\
     interf:
       [ [ "#"; n = a_LIDENT; dp = opt_expr; semi ->
             ([ <:sig_item< # $n $dp >> ], stopped_at _loc)
+          (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
         | si = sig_item; semi; (sil, stopped) = SELF -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
     ;

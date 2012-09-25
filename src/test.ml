@@ -1,1 +1,2 @@
-module X = Grammar.Static.Make;  
+open FanUtil;
+module X = DynLoader.Make;
