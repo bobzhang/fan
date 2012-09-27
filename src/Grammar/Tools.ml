@@ -18,19 +18,19 @@
  *)
 
 (* PR#5090: don't do lookahead on get_prev_loc. *)
-(* value get_prev_loc_only = ref False; *)
+(* let get_prev_loc_only = ref False; *)
 
 module Make (Structure : Structure.S) = struct
   open Structure;
 
-  value empty_entry ename _ =
+  let empty_entry ename _ =
     raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
 
-  value rec stream_map f = parser
+  let rec stream_map f = parser
     [ [: ` x; strm :] -> [: ` (f x); stream_map f strm :]
     | [: :] -> [: :] ];
 
-  value keep_prev_loc strm =
+  let keep_prev_loc strm =
     match Stream.peek strm with
     [ None -> [: :]
     | Some (tok0,init_loc) ->
@@ -46,14 +46,14 @@ module Make (Structure : Structure.S) = struct
           | [: :] -> [: :] ]
       in go init_loc strm ];
 
-  value drop_prev_loc strm = stream_map (fun (tok,r) -> (tok,r.cur_loc)) strm;
+  let drop_prev_loc strm = stream_map (fun (tok,r) -> (tok,r.cur_loc)) strm;
 
-  value get_cur_loc strm =
+  let get_cur_loc strm =
     match Stream.peek strm with
     [ Some (_,r) -> r.cur_loc
     | None -> FanLoc.ghost ];
 
-  value get_prev_loc strm =
+  let get_prev_loc strm =
     begin
       (* get_prev_loc_only.val := True; *)
       let result = match Stream.peek strm with
@@ -65,25 +65,25 @@ module Make (Structure : Structure.S) = struct
       result
     end;
 
-  value is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> False ];
+  let is_level_labelled n = fun [ {lname=Some n1; _  } ->  n = n1 | _ -> False ];
 
-  value warning_verbose = ref True;
+  let warning_verbose = ref True;
 
-  value rec get_token_list entry tokl last_tok  = fun 
+  let rec get_token_list entry tokl last_tok  = fun 
     [ Node {node = (Stoken _ | Skeyword _ as tok); son = son; brother = DeadEnd} ->
         get_token_list entry [last_tok :: tokl] tok son
     | tree ->
         if tokl = [] then None
         else Some (List.rev [last_tok :: tokl], last_tok, tree) ];
 
-  value is_antiquot s =
+  let is_antiquot s =
     let len = String.length s in
     len > 1 && s.[0] = '$';
 
-  value eq_Stoken_ids s1 s2 =
+  let eq_Stoken_ids s1 s2 =
     not (is_antiquot s1) && not (is_antiquot s2) && s1 = s2;
 
-  value logically_eq_symbols entry =
+  let logically_eq_symbols entry =
     let rec eq_symbols s1 s2 =
       match (s1, s2) with
       [ (Snterm e1, Snterm e2) -> e1.ename = e2.ename
@@ -110,7 +110,7 @@ module Make (Structure : Structure.S) = struct
     in
     eq_symbols;
 
-  value rec eq_symbol s1 s2 =
+  let rec eq_symbol s1 s2 =
     match (s1, s2) with
     [ (Snterm e1, Snterm e2) -> e1 == e2
     | (Snterml e1 l1, Snterml e2 l2) -> e1 == e2 && l1 = l2

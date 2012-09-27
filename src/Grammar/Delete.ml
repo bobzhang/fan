@@ -32,7 +32,7 @@ module Make (Structure : Structure.S) = struct
         [t] = remaining tree
      [None] if failure *)
 
-value delete_rule_in_tree entry =
+let delete_rule_in_tree entry =
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with
     [ ([s :: sl], Node n) ->
@@ -64,7 +64,7 @@ value delete_rule_in_tree entry =
   in
   delete_in_tree
 ;
-value rec decr_keyw_use gram =
+let rec decr_keyw_use gram =
   fun
   [ Skeyword kwd -> removing gram kwd
   | Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
@@ -84,7 +84,7 @@ and decr_keyw_use_in_tree gram =
       } ]
 ;
 
-value rec delete_rule_in_suffix entry symbols = fun
+let rec delete_rule_in_suffix entry symbols = fun
   [ [lev :: levs] ->
       match delete_rule_in_tree entry symbols lev.lsuffix with
       [ Some (dsl, t) ->
@@ -107,7 +107,7 @@ value rec delete_rule_in_suffix entry symbols = fun
   | [] -> raise Not_found ]
 ;
 
-value rec delete_rule_in_prefix entry symbols =
+let rec delete_rule_in_prefix entry symbols =
   fun
   [ [lev :: levs] ->
       match delete_rule_in_tree entry symbols lev.lprefix with
@@ -130,7 +130,7 @@ value rec delete_rule_in_prefix entry symbols =
   | [] -> raise Not_found ]
 ;
 
-value rec delete_rule_in_level_list entry symbols levs =
+let rec delete_rule_in_level_list entry symbols levs =
   match symbols with
   [ [Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
   | [Snterm e :: symbols] when e == entry ->
@@ -139,7 +139,7 @@ value rec delete_rule_in_level_list entry symbols levs =
 ;
 
 
-value delete_rule entry sl =
+let delete_rule entry sl =
   match entry.edesc with
   [ Dlevels levs ->
       let levs = delete_rule_in_level_list entry sl levs in

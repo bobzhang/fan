@@ -20,7 +20,7 @@ Camlp4 Version 3.08.2
      (holding respectively the character number of the beginning of the
      current line, the current line number and the name of the file being
      parsed).
-   - pcaml.mli: a new value `position'. A global reference to a triple like
+   - pcaml.mli: a new let `position'. A global reference to a triple like
      the one mentioned above.
 - [07 Sep 04] Camlp4 grammars `error recovery mode' now issues a warning
   when used (but this warning is disabled by default).

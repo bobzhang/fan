@@ -9859,12 +9859,125 @@ module MakeRevisedParser =
                                                                     ));
                                                                     ((
                                                                     [(
+                                                                    (Gram.Skeyword
+                                                                    ("let"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("open"))
+                                                                    );
+                                                                    (
                                                                     (Gram.Snterm
                                                                     (Gram.Entry.obj
                                                                     (
-                                                                    (value_let :
-                                                                    'value_let Gram.Entry.t)
+                                                                    (module_longident :
+                                                                    'module_longident Gram.Entry.t)
                                                                     )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("in"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (expr :
+                                                                    'expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (e :
+                                                                    'expr) ->
+                                                                    fun _ ->
+                                                                    fun (i :
+                                                                    'module_longident) ->
+                                                                    fun _ ->
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.StExp
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExOpI
+                                                                    (_loc,
+                                                                    i,
+                                                                    e))
+                                                                    ))) :
+                                                                    'str_item)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Skeyword
+                                                                    ("let"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("module"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (a_UIDENT :
+                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (module_binding0 :
+                                                                    'module_binding0 Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("in"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (expr :
+                                                                    'expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (e :
+                                                                    'expr) ->
+                                                                    fun _ ->
+                                                                    fun (mb :
+                                                                    'module_binding0) ->
+                                                                    fun (m :
+                                                                    'a_UIDENT) ->
+                                                                    fun _ ->
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.StExp
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExLmd
+                                                                    (_loc,
+                                                                    m,
+                                                                    mb,
+                                                                    e))
+                                                                    ))) :
+                                                                    'str_item)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Skeyword
+                                                                    ("let"))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
@@ -9893,10 +10006,82 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((Ast.StVal
+                                                                    ((match
+                                                                    bi with
+                                                                    | Ast.BiEq
+                                                                    (_,
+                                                                    Ast.PaAny
+                                                                    (_),
+                                                                    e) ->
+                                                                    (
+                                                                    Ast.StExp
+                                                                    (_loc,
+                                                                    e))
+                                                                    | _ ->
+                                                                    (
+                                                                    Ast.StVal
                                                                     (_loc,
                                                                     r,
-                                                                    bi)) :
+                                                                    bi))) :
+                                                                    'str_item)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Skeyword
+                                                                    ("let"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (opt_rec :
+                                                                    'opt_rec Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (binding :
+                                                                    'binding Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("in"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (expr :
+                                                                    'expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (x :
+                                                                    'expr) ->
+                                                                    fun _ ->
+                                                                    fun (bi :
+                                                                    'binding) ->
+                                                                    fun (r :
+                                                                    'opt_rec) ->
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.StExp
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExLet
+                                                                    (_loc,
+                                                                    r,
+                                                                    bi,
+                                                                    x))
+                                                                    ))) :
                                                                     'str_item)
                                                                     ))
                                                                     ));

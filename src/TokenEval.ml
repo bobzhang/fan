@@ -5,7 +5,7 @@
   valch '3' = 3
   ]}
  *) 
-value valch x = Char.code x - Char.code '0';
+let valch x = Char.code x - Char.code '0';
 
 (*
   {[
@@ -15,22 +15,22 @@ value valch x = Char.code x - Char.code '0';
   ]}
   no error check
  *)      
-value valch_hex x =
+let valch_hex x =
   let d = Char.code x in
   if d >= 97 then d - 87
   else if d >= 65 then d - 55
   else d - 48;
 
-value rec skip_indent = parser
+let rec skip_indent = parser
   [ [: `' ' | '\t'; s :] -> skip_indent s
   | [: :] -> () ];
 
-value skip_opt_linefeed = parser
+let skip_opt_linefeed = parser
   [ [: `'\010' :] -> ()
   | [: :] -> () ];
 
 
-value chr c =
+let chr c =
   if c < 0 || c > 255 then failwith "invalid char token" else Char.chr c;
 
 (*
@@ -47,7 +47,7 @@ value chr c =
   - : char = '\255'
   ]}
  *)  
-value rec backslash = parser
+let rec backslash = parser
   [ [: `('\010' | '\013' | '\\' | '\'' | ' ' | '"' as x) :] -> x
   | [: `'n' :]  -> '\n'
   | [: `'r' :]  -> '\r'
@@ -61,7 +61,7 @@ value rec backslash = parser
 
 (* follow the ocaml convention
  *)    
-value rec backslash_in_string strict store = parser
+let rec backslash_in_string strict store = parser
   [ [: `'\010'; s :] -> skip_indent s
   | [: `'\013'; s :] -> do { skip_opt_linefeed s; skip_indent s }
   | [: x = backslash :] -> store x
@@ -79,7 +79,7 @@ value rec backslash_in_string strict store = parser
   - : char = '\255'
   ]}  
  *)
-value char s =
+let char s =
   if String.length s = 1 then s.[0] (* normal *)
   else if String.length s = 0 then failwith "invalid char token"
   else match Stream.of_string s with parser
@@ -95,7 +95,7 @@ value char s =
   
   ]}
  *)    
-value string ?strict s =
+let string ?strict s =
   let buf = Buffer.create 23 in
   let store = Buffer.add_char buf in
   let rec parse = parser

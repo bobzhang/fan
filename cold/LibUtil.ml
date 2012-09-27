@@ -2921,7 +2921,7 @@ module Hashtbl =
     (Hashtbl.fold ( fun k -> fun _v -> fun acc -> ( k ) :: acc  ) tbl []
       )
 
-  let values =
+  let lets =
    fun tbl ->
     (Hashtbl.fold ( fun _k -> fun v -> fun acc -> ( v ) :: acc  ) tbl []
       )

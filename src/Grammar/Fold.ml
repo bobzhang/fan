@@ -33,7 +33,7 @@ module Make (Structure : Structure.S) = struct
     exception Error = Stream.Error;
   end;
 
-  value sfold0 f e _entry _symbl psymb =
+  let sfold0 f e _entry _symbl psymb =
     let rec fold accu =
       parser
       [ [: a = psymb; s :] -> fold (f a accu) s
@@ -42,7 +42,7 @@ module Make (Structure : Structure.S) = struct
     parser [: a = fold e :] -> a
   ;
 
-  value sfold1 f e _entry _symbl psymb =
+  let sfold1 f e _entry _symbl psymb =
     let rec fold accu =
       parser
       [ [: a = psymb; s :] -> fold (f a accu) s
@@ -51,7 +51,7 @@ module Make (Structure : Structure.S) = struct
     parser [: a = psymb; a = fold (f a e) :] -> a
   ;
 
-  value sfold0sep f e entry symbl psymb psep =
+  let sfold0sep f e entry symbl psymb psep =
     let failed =
       fun
       [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
@@ -67,7 +67,7 @@ module Make (Structure : Structure.S) = struct
     | [: :] -> e ]
   ;
 
-  value sfold1sep f e entry symbl psymb psep =
+  let sfold1sep f e entry symbl psymb psep =
     let failed =
       fun
       [ [symb; sep] -> Fail.symb_failed_txt entry sep symb

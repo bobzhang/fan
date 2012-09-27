@@ -1,6 +1,6 @@
 module IdDebugParser = struct
-  value name = "Camlp4DebugParser";
-  value version = Sys.ocaml_version;
+  let name = "Camlp4DebugParser";
+  let version = Sys.ocaml_version;
 end;
 
 open FanSig;
@@ -11,7 +11,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
 
   module StringSet = Set.Make String;
 
-  value debug_mode =
+  let debug_mode =
     try
       let str = Sys.getenv "STATIC_CAMLP4_DEBUG" in
       let rec loop acc i =
@@ -26,17 +26,17 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       else fun x -> StringSet.mem x sections
     with [ Not_found -> fun _ -> False ];
 
-  value rec apply accu =
+  let rec apply accu =
     fun
     [ [] -> accu
     | [x :: xs] ->
         let _loc = Ast.loc_of_expr x
         in apply <:expr< $accu $x >> xs ];
 
-  value mk_debug_mode _loc = fun [ None -> <:expr< Debug.mode >>
+  let mk_debug_mode _loc = fun [ None -> <:expr< Debug.mode >>
                                  | Some m -> <:expr< $uid:m.Debug.mode >> ];
 
-  value mk_debug _loc m fmt section args =
+  let mk_debug _loc m fmt section args =
     let call = apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
 

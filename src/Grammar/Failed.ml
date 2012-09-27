@@ -24,7 +24,7 @@ module Make (Structure : Structure.S) = struct
   open Structure;
   open Format;
 
-value rec name_of_symbol entry =
+let rec name_of_symbol entry =
   fun
   [ Snterm e -> "[" ^ e.ename ^ "]"
   | Snterml e l -> "[" ^ e.ename ^ " level " ^ l ^ "]"
@@ -35,7 +35,7 @@ value rec name_of_symbol entry =
 ;
 
 
-value rec name_of_symbol_failed entry =
+let rec name_of_symbol_failed entry =
   fun
   [ Slist0 s | Slist0sep s _ |
     Slist1 s | Slist1sep s _ |
@@ -75,8 +75,8 @@ and name_of_tree_failed entry =
             "" tokl ]
   | DeadEnd | LocAct _ _ -> "???" ]
 ;
-value magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;
-value tree_failed entry prev_symb_result prev_symb tree =
+let magic _s x = debug magic "Obj.magic: %s@." _s in Obj.magic x;
+let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt =
     match prev_symb with
@@ -122,11 +122,11 @@ value tree_failed entry prev_symb_result prev_symb tree =
     txt ^ " (in [" ^ entry.ename ^ "])"
   }
 ;
-value symb_failed entry prev_symb_result prev_symb symb =
+let symb_failed entry prev_symb_result prev_symb symb =
   let tree = Node {node = symb; brother = DeadEnd; son = DeadEnd} in
   tree_failed entry prev_symb_result prev_symb tree
 ;
 
-value symb_failed_txt e s1 s2 = symb_failed e 0 s1 s2;
+let symb_failed_txt e s1 s2 = symb_failed e 0 s1 s2;
 
 end;

@@ -343,7 +343,7 @@ some bugs happenend here.
    x.f <- y
    x.f := y
 
-   x:=!x + y
+   x:=!x + y  =FIXEd=
    x.val := x.val + y
 
    if a then b

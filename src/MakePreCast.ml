@@ -11,87 +11,87 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
       ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
   type printer_fun 'a =
       ?input_file:string -> ?output_file:string -> 'a -> unit;
-  value sig_item_parser =
+  let sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
-  value str_item_parser =
+  let str_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No implementation parser");
-  value sig_item_printer =
+  let sig_item_printer =
     ref (fun ?input_file:(_) ?output_file:(_) _ -> failwith "No interface printer");
-  value str_item_printer =
+  let str_item_printer =
     ref (fun ?input_file:(_) ?output_file:(_) _ -> failwith "No implementation printer");
-  value callbacks = Queue.create ();
-  value loaded_modules = ref [];
+  let callbacks = Queue.create ();
+  let loaded_modules = ref [];
 
   (* iter and remove from the Queue *)  
-  value iter_and_take_callbacks f =
+  let iter_and_take_callbacks f =
     let rec loop () = loop (f (Queue.take callbacks)) in
     try loop () with [ Queue.Empty -> () ];
       
-  value declare_dyn_module m f =
+  let declare_dyn_module m f =
     begin
       loaded_modules := [ m :: !loaded_modules ];
         Queue.add (m, f) callbacks;
     end;
 
-  value register_str_item_parser f = str_item_parser := f;
-  value register_sig_item_parser f = sig_item_parser := f;
-  value register_parser f g =
+  let register_str_item_parser f = str_item_parser := f;
+  let register_sig_item_parser f = sig_item_parser := f;
+  let register_parser f g =
     do { str_item_parser := f; sig_item_parser := g };
-  value current_parser () = (!str_item_parser, !sig_item_parser);
+  let current_parser () = (!str_item_parser, !sig_item_parser);
 
-  value register_str_item_printer f = str_item_printer := f;
-  value register_sig_item_printer f = sig_item_printer := f;
-  value register_printer f g =
+  let register_str_item_printer f = str_item_printer := f;
+  let register_sig_item_printer f = sig_item_printer := f;
+  let register_printer f g =
     do { str_item_printer := f; sig_item_printer := g };
-  value current_printer () = (!str_item_printer, !sig_item_printer);
+  let current_printer () = (!str_item_printer, !sig_item_printer);
 
 
     
-  value plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) = 
+  let plugin (module Id:Sig.Id) (module Maker:Sig.PLUGIN) = 
     declare_dyn_module Id.name (fun _ -> let module M = Maker (struct end) in ());
 
-  value syntax_plugin (module Id:Sig.Id) (module Maker:Sig.SyntaxPlugin) =
+  let syntax_plugin (module Id:Sig.Id) (module Maker:Sig.SyntaxPlugin) =
     declare_dyn_module Id.name (fun _ -> let module M = Maker Syntax in ());
     
-  value syntax_extension (module Id:Sig.Id) (module Maker:Sig.SyntaxExtension) =
+  let syntax_extension (module Id:Sig.Id) (module Maker:Sig.SyntaxExtension) =
     declare_dyn_module Id.name (fun _ -> let module M = Maker Syntax in ());
 
-  value printer_plugin (module Id:Sig.Id) (module Maker:Sig.PrinterPlugin) =
+  let printer_plugin (module Id:Sig.Id) (module Maker:Sig.PrinterPlugin) =
     declare_dyn_module Id.name
       (fun _ -> let module M = Maker Syntax in
       register_printer M.print_implem M.print_interf);
 
-  value replace_printer (module Id:Sig.Id) (module P:Sig.PrinterImpl) =
+  let replace_printer (module Id:Sig.Id) (module P:Sig.PrinterImpl) =
     declare_dyn_module Id.name (fun _ ->
       register_printer P.print_implem P.print_interf);
 
-  value replace_parser (module Id:Sig.Id) (module Maker: Sig.ParserImpl) =
+  let replace_parser (module Id:Sig.Id) (module Maker: Sig.ParserImpl) =
       declare_dyn_module Id.name
         (fun _ ->  register_parser Maker.parse_implem Maker.parse_interf);
 
-  value parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) =
+  let parser_plugin (module Id:Sig.Id) (module Maker:Sig.ParserPlugin) =
     declare_dyn_module Id.name (fun _
       -> let module M = Maker Syntax in
       register_parser M.parse_implem M.parse_interf );
 
-  value enable_ocaml_printer () = begin
+  let enable_ocaml_printer () = begin
     replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P);
    (* FIXME can be simplified *)
   end;
 
-  value enable_dump_ocaml_ast_printer () =
+  let enable_dump_ocaml_ast_printer () =
     replace_printer (module PrinterDumpOCamlAst.Id)
         (module PrinterDumpOCamlAst.P);
 
-  value enable_dump_camlp4_ast_printer () =
+  let enable_dump_camlp4_ast_printer () =
     replace_printer (module PrinterDumpCamlp4Ast.Id)
       (module PrinterDumpCamlp4Ast.P);
 
-  value enable_null_printer () =
+  let enable_null_printer () =
     replace_printer (module PrinterNull.Id)
       (module PrinterNull.P);
 
-  value enable_auto isatty  =
+  let enable_auto isatty  =
     if isatty () then
       enable_ocaml_printer ()
     else
@@ -105,7 +105,7 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
     module Null = PrinterNull.P;
   end;
     
-  (* value ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) = *)
+  (* let ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) = *)
   (*   declare_dyn_module Id.name (fun _ *)
   (*       -> let module M = Maker AstFilters in ()); *)
 
@@ -113,18 +113,18 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   str_item_parser := Syntax.parse_implem;
 
   module CurrentParser = struct
-    value parse_interf ?directive_handler loc strm =
+    let parse_interf ?directive_handler loc strm =
       !sig_item_parser ?directive_handler loc strm;
-    value parse_implem ?directive_handler loc strm =
+    let parse_implem ?directive_handler loc strm =
       !str_item_parser ?directive_handler loc strm;
-    (* value parse_expr ?directive_handler loc expr = *)
+    (* let parse_expr ?directive_handler loc expr = *)
       
   end;
 
   module CurrentPrinter = struct
-    value print_interf ?input_file ?output_file ast =
+    let print_interf ?input_file ?output_file ast =
       !sig_item_printer ?input_file ?output_file ast;
-    value print_implem ?input_file ?output_file ast =
+    let print_implem ?input_file ?output_file ast =
       !str_item_printer ?input_file ?output_file ast;
   end;
 

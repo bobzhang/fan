@@ -9,9 +9,9 @@ class c_fold_pattern_vars ['accu] f init =  object
   | p -> super#patt p ];
 end;
 
-value fold_pattern_vars f p init = ((new c_fold_pattern_vars f init)#patt p)#acc;
+let fold_pattern_vars f p init = ((new c_fold_pattern_vars f init)#patt p)#acc;
 
-value rec fold_binding_vars f bi acc = match bi with
+let rec fold_binding_vars f bi acc = match bi with
   [ <:binding< $bi1 and $bi2 >> ->
     fold_binding_vars f bi1 (fold_binding_vars f bi2 acc)
   | <:binding< $p = $_ >> -> fold_pattern_vars f p acc
@@ -57,9 +57,9 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   method str_item = fun
   [ <:str_item< external $s : $t = $_ >> ->
     (o#ctyp t)#add_atom s
-  | <:str_item< value $bi >> ->
+  | <:str_item< let $bi >> ->
       (o#binding bi)#add_binding bi
-  | <:str_item< value rec $bi >> ->
+  | <:str_item< let rec $bi >> ->
       (o#add_binding bi)#binding bi
   | st -> super#str_item st ];
 
@@ -90,6 +90,6 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   | me -> super#module_expr me ];
 end;
 
-value free_vars env_init e =
+let free_vars env_init e =
   let fold = new fold_free_vars SSet.add ~env_init SSet.empty in (fold#expr e)#free;
 

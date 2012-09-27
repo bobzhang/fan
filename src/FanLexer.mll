@@ -19,11 +19,11 @@
        lexed). +|
   quotations : bool     };
 
-value default_context : context;
+let default_context : context;
 
-value mk : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
+let mk : FanLoc.t -> Stream.t char -> Stream.t (Token.t * FanLoc.t);
 
-value mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);              *)
+let mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);              *)
 (* FIXME Beware the context argument must be given like that:
  * mk' { (default_context) with ... = ... } strm
  *)

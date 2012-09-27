@@ -21,7 +21,7 @@
 open MakeCamlp4Bin;
 
 module P : PRINTER_PLUGIN = struct
-  value apply (module Register:MakeRegister.S) =
+  let apply (module Register:MakeRegister.S) =
     Register.enable_auto (fun () -> Unix.isatty Unix.stdout);
 end;
 

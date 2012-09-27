@@ -4,7 +4,7 @@ open Format;
   type t = camlp4_token;
 
 
-  value to_string =
+  let to_string =
     fun
     [ KEYWORD s    -> sprintf "KEYWORD %S" s
     | SYMBOL s     -> sprintf "SYMBOL %S" s
@@ -31,14 +31,14 @@ open Format;
     | LINE_DIRECTIVE i None -> sprintf "LINE_DIRECTIVE %d" i
     | LINE_DIRECTIVE i (Some s) -> sprintf "LINE_DIRECTIVE %d %S" i s ];
 
-  value print ppf x = pp_print_string ppf (to_string x);
+  let print ppf x = pp_print_string ppf (to_string x);
 
-  value match_keyword kwd =
+  let match_keyword kwd =
     fun
     [ KEYWORD kwd' when kwd = kwd' -> True
     | _ -> False ];
 
-  value extract_string =
+  let extract_string =
     fun
     [ KEYWORD s | SYMBOL s | LIDENT s | UIDENT s | INT _ s | INT32 _ s |
       INT64 _ s | NATIVEINT _ s | FLOAT _ s | CHAR _ s | STRING _ s |
@@ -56,7 +56,7 @@ open Format;
 
     exception E of t;
 
-    value print ppf =
+    let print ppf =
       fun
       [ Illegal_token s ->
           fprintf ppf "Illegal token (%s)" s
@@ -67,7 +67,7 @@ open Format;
       | Illegal_constructor con ->
           fprintf ppf "Illegal constructor %S" con ];
 
-    value to_string x =
+    let to_string x =
       let b = Buffer.create 50 in
       let () = bprintf b "%a" print x in Buffer.contents b;
   end;
@@ -80,16 +80,16 @@ open Format;
       { is_kwd : string -> bool;
         filter : mutable token_filter };
 
-    value err error loc =
+    let err error loc =
       raise (FanLoc.Exc_located loc (Error.E error));
 
-    value keyword_conversion tok is_kwd =
+    let keyword_conversion tok is_kwd =
       match tok with
       [ SYMBOL s | LIDENT s | UIDENT s when is_kwd s -> KEYWORD s
       | ESCAPED_IDENT s -> LIDENT s
       | _ -> tok ];
 
-    value check_keyword_as_label tok loc is_kwd =
+    let check_keyword_as_label tok loc is_kwd =
       let s =
         match tok with
         [ LABEL s         -> s
@@ -97,15 +97,15 @@ open Format;
         | _               -> "" ]
       in if s <> "" && is_kwd s then err (Error.Keyword_as_label s) loc else ();
 
-    value check_unknown_keywords tok loc =
+    let check_unknown_keywords tok loc =
       match tok with
       [ SYMBOL s -> err (Error.Illegal_token s) loc
       | _        -> () ];
 
-    value error_no_respect_rules p_con p_prm =
+    let error_no_respect_rules p_con p_prm =
       raise (Error.E (Error.Illegal_token_pattern p_con p_prm));
 
-    value check_keyword _ = True;
+    let check_keyword _ = True;
       (* FIXME let lb = Lexing.from_string s in
       let next () = token default_context lb in
       try
@@ -114,20 +114,20 @@ open Format;
         | _ -> False ]
       with [ Stream.Error _ -> False ];                        *)
 
-    value error_on_unknown_keywords = ref False;
+    let error_on_unknown_keywords = ref False;
 
-    value rec ignore_layout =
+    let rec ignore_layout =
       parser
       [ [: `(COMMENT _ | BLANKS _ | NEWLINE | LINE_DIRECTIVE _ _, _); s :] ->
           ignore_layout s
       | [: ` x; s :] -> [: ` x; ignore_layout s :]
       | [: :] -> [: :] ];
 
-    value mk is_kwd =
+    let mk is_kwd =
       { is_kwd = is_kwd;
         filter = ignore_layout };
 
-    value filter x =
+    let filter x =
       let f tok loc = do {
         let tok = keyword_conversion tok x.is_kwd;
         check_keyword_as_label tok loc x.is_kwd;
@@ -151,10 +151,10 @@ open Format;
         | [: :] -> [: :] ]
       in fun strm -> tracer (x.filter (filter strm));
 
-    value define_filter x f = x.filter <- f x.filter;
+    let define_filter x f = x.filter <- f x.filter;
 
-    value keyword_added _ _ _ = ();
-    value keyword_removed _ _ = ();
+    let keyword_added _ _ _ = ();
+    let keyword_removed _ _ = ();
   end;
 
 

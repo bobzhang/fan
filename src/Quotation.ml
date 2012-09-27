@@ -57,20 +57,20 @@ module Exp_fun = DynAst.Pack(struct
   type t 'a = expand_fun 'a;
 end);
 
-value expanders_table =
+let expanders_table =
     (ref [] : ref (list ((string * Exp_key.pack) * Exp_fun.pack)));
 
-value default = ref "";
+let default = ref "";
   (* create a table mapping from
      (string_of_tag tag) to default quotation expander *)  
-  value default_tbl : Hashtbl.t string string = Hashtbl.create 50;
-  value translate = ref (fun x -> x);
+  let default_tbl : Hashtbl.t string string = Hashtbl.create 50;
+  let translate = ref (fun x -> x);
   (* intentionaly make its value a string to be more flexibile to
      incorporating more tags in the future
    *)  
-  value default_at_pos pos str =
+  let default_at_pos pos str =
     Hashtbl.replace default_tbl pos str;
-  value expander_name pos_tag name =
+  let expander_name pos_tag name =
     let str = DynAst.string_of_tag pos_tag in 
     match !translate name with
     [ "" ->
@@ -78,15 +78,15 @@ value default = ref "";
       with [Not_found -> !default]
     | name -> name ];
 
-  value find name tag =
+  let find name tag =
     let key = (expander_name tag name, Exp_key.pack tag ()) in
     Exp_fun.unpack tag (List.assoc key !expanders_table);
 
-  value add name tag f =
+  let add name tag f =
     let elt = ((name, Exp_key.pack tag ()), Exp_fun.pack tag f) in
     expanders_table := [elt :: !expanders_table];
 
-  value dump_file = ref None;
+  let dump_file = ref None;
 
   module Error = struct
     type error =
@@ -97,7 +97,7 @@ value default = ref "";
     type t = (string * string * error * exn);
     exception E of t;
 
-    value print ppf (name, position, ctx, exn) =
+    let print ppf (name, position, ctx, exn) =
       let name = if name = "" then !default else name in
       let pp x = fprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position in
       let () =
@@ -143,14 +143,14 @@ value default = ref "";
         ]
       in fprintf ppf "@\n%a@]@." FanUtil.ErrorHandler.print exn;
 
-    value to_string x =
+    let to_string x =
       let b = Buffer.create 50 in
       let () = bprintf b "%a" print x in Buffer.contents b;
   end;
   let module M = FanUtil.ErrorHandler.Register Error in ();
   open Error;
 
-  value expand_quotation loc expander pos_tag quot =
+  let expand_quotation loc expander pos_tag quot =
     debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
     let open FanSig in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
@@ -164,7 +164,7 @@ value default = ref "";
         let exc1 = Error.E (quot.q_name, pos_tag, Expanding, exc) in
         raise (FanLoc.Exc_located loc exc1) ];
 
-  value parse_quotation_result parse loc quot pos_tag str =
+  let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in 
     try parse loc str with
     [ FanLoc.Exc_located iloc (Error.E (n, pos_tag, Expanding, exc)) ->
@@ -178,7 +178,7 @@ value default = ref "";
         let exc1 = Error.E (quot.q_name, pos_tag, ctx, exc) in
         raise (FanLoc.Exc_located iloc exc1) ];
 
-  value expand loc quotation tag =
+  let expand loc quotation tag =
     let open FanSig in 
     let pos_tag = DynAst.string_of_tag tag in
     let name = quotation.q_name in

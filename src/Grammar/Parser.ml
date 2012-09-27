@@ -26,14 +26,14 @@ module Make (Structure : Structure.S) = struct
 
   module StreamOrig = Stream;
 
-  value njunk strm n =
+  let njunk strm n =
     for i = 1 to n do Stream.junk strm done;
 
-  value loc_bp = Tools.get_cur_loc;
-  value loc_ep = Tools.get_prev_loc;
-  value drop_prev_loc = Tools.drop_prev_loc;
+  let loc_bp = Tools.get_cur_loc;
+  let loc_ep = Tools.get_prev_loc;
+  let drop_prev_loc = Tools.drop_prev_loc;
 
-  value add_loc bp parse_fun strm =
+  let add_loc bp parse_fun strm =
     let x = parse_fun strm in
     let ep = loc_ep strm in
     let loc =
@@ -45,7 +45,7 @@ module Make (Structure : Structure.S) = struct
     in
     (x, loc);
 
-  value stream_peek_nth strm n =
+  let stream_peek_nth strm n =
     let rec loop i = fun
       [ [x :: xs] -> if i = 1 then Some x else loop (i - 1) xs
       | [] -> None ]
@@ -57,10 +57,10 @@ module Make (Structure : Structure.S) = struct
     type t 'a = StreamOrig.t 'a;
     exception Failure = StreamOrig.Failure;
     exception Error = StreamOrig.Error;
-    value peek = StreamOrig.peek;
-    value junk = StreamOrig.junk;
+    let peek = StreamOrig.peek;
+    let junk = StreamOrig.junk;
 
-    value dup strm =
+    let dup strm =
       (* This version of peek_nth is off-by-one from Stream.peek_nth *)
       let peek_nth n =
         loop n (Stream.npeek (n + 1) strm) where rec loop n =
@@ -72,7 +72,7 @@ module Make (Structure : Structure.S) = struct
       Stream.from peek_nth;
   end;
 
-  value try_parser ps strm =
+  let try_parser ps strm =
     let strm' = Stream.dup strm in
     let r =
       try ps strm'
@@ -85,7 +85,7 @@ module Make (Structure : Structure.S) = struct
       r;
     };
 
-  value level_number entry lab =
+  let level_number entry lab =
     let rec lookup levn =
       fun
       [ [] -> failwith ("unknown level " ^ lab)
@@ -96,10 +96,10 @@ module Make (Structure : Structure.S) = struct
     [ Dlevels elev -> lookup 0 elev
     | Dparser _ -> raise Not_found ]
   ;
-  value strict_parsing = ref False;
-  value strict_parsing_warning = ref False;
+  let strict_parsing = ref False;
+  let strict_parsing_warning = ref False;
 
-  value rec top_symb entry =
+  let rec top_symb entry =
     fun
     [ Sself | Snext -> Snterm entry
     | Snterml e _ -> Snterm e
@@ -107,14 +107,14 @@ module Make (Structure : Structure.S) = struct
     | _ -> raise Stream.Failure ]
   ;
 
-  value top_tree entry =
+  let top_tree entry =
     fun
     [ Node {node = s; brother = bro; son = son} ->
         Node {node = top_symb entry s; brother = bro; son = son}
     | LocAct _ _ | DeadEnd -> raise Stream.Failure ]
   ;
 
-  value entry_of_symb entry =
+  let entry_of_symb entry =
     fun
     [ Sself | Snext -> entry
     | Snterm e -> e
@@ -122,7 +122,7 @@ module Make (Structure : Structure.S) = struct
     | _ -> raise Stream.Failure ]
   ;
 
-  value continue entry loc a s son p1 =
+  let continue entry loc a s son p1 =
     parser
       [: a = (entry_of_symb entry s).econtinue 0 loc a;
         act = p1 ?? Failed.tree_failed entry a s son :] ->
@@ -132,13 +132,13 @@ module Make (Structure : Structure.S) = struct
   (* PR#4603, PR#4330, PR#4551:
      Here loc_bp replaced get_loc_ep to fix all these bugs.
      If you do change it again look at these bugs. *)
-  value skip_if_empty bp strm =
+  let skip_if_empty bp strm =
     if loc_bp strm = bp then Action.mk (fun _ -> raise Stream.Failure)
     else
       raise Stream.Failure
   ;
 
-  value do_recover parser_of_tree entry nlevn alevn loc a s son =
+  let do_recover parser_of_tree entry nlevn alevn loc a s son =
     parser
     [ [: a = parser_of_tree entry nlevn alevn (top_tree entry son) :] -> a
     | [: a = skip_if_empty loc :] -> a
@@ -149,7 +149,7 @@ module Make (Structure : Structure.S) = struct
   ;
 
 
-  value recover parser_of_tree entry nlevn alevn loc a s son strm =
+  let recover parser_of_tree entry nlevn alevn loc a s son strm =
     if !strict_parsing then raise (Stream.Error (Failed.tree_failed entry a s son))
     else
       let _ =
@@ -162,7 +162,7 @@ module Make (Structure : Structure.S) = struct
       do_recover parser_of_tree entry nlevn alevn loc a s son strm
   ;
 
-  value rec parser_of_tree entry nlevn alevn =
+  let rec parser_of_tree entry nlevn alevn =
     fun
     [ DeadEnd -> parser []
     | LocAct act _ -> parser [: :] -> act
@@ -351,7 +351,7 @@ module Make (Structure : Structure.S) = struct
   and parse_top_symb entry symb strm =
     parser_of_symbol entry 0 (top_symb entry symb) strm;
 
-  value rec start_parser_of_levels entry clevn =
+  let rec start_parser_of_levels entry clevn =
     fun
     [ [] -> fun _ -> parser []
     | [lev :: levs] ->
@@ -385,14 +385,14 @@ module Make (Structure : Structure.S) = struct
                     | [: act = p1 levn :] -> act ] ] ] ]
   ;
 
-  value start_parser_of_entry entry =
+  let start_parser_of_entry entry =
     debug gram "start_parser_of_entry: @[<2>%a@]@." Print.entry entry in
     match entry.edesc with
     [ Dlevels [] -> Tools.empty_entry entry.ename
     | Dlevels elev -> start_parser_of_levels entry 0 elev
     | Dparser p -> fun _ -> p ]
   ;
-  value rec continue_parser_of_levels entry clevn =
+  let rec continue_parser_of_levels entry clevn =
     fun
     [ [] -> fun _ _ _ -> parser []
     | [lev :: levs] ->
@@ -416,7 +416,7 @@ module Make (Structure : Structure.S) = struct
                     entry.econtinue levn loc a strm ] ] ]
   ;
 
-  value continue_parser_of_entry entry =
+  let continue_parser_of_entry entry =
     debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.entry entry in
     match entry.edesc with
     [ Dlevels elev ->

@@ -4,21 +4,21 @@ open Longident;
 open Asttypes;
 
 open Camlp4Ast;
-value constructors_arity () =
+let constructors_arity () =
   debug ast2pt "constructors_arity: %b@." !FanConfig.constructors_arity in
   !FanConfig.constructors_arity;
 
 
-value error loc str = FanLoc.raise loc (Failure str);
+let error loc str = FanLoc.raise loc (Failure str);
 
-value char_of_char_token loc s =
+let char_of_char_token loc s =
   try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
     
-value string_of_string_token loc s =
+let string_of_string_token loc s =
   try TokenEval.string s
   with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
 
-value remove_underscores s =
+let remove_underscores s =
   let l = String.length s in
   let rec remove src dst =
     if src >= l then
@@ -29,47 +29,47 @@ value remove_underscores s =
       |  c  -> do { s.[dst] <- c; remove (src + 1) (dst + 1) } ]
   in remove 0 0 ;
 
-value mkloc = FanLoc.to_ocaml_location;
-value mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
+let mkloc = FanLoc.to_ocaml_location;
+let mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
 
-value with_loc txt loc = Location.mkloc txt (mkloc loc);
+let with_loc txt loc = Location.mkloc txt (mkloc loc);
   
-value mktyp loc d = {ptyp_desc = d; ptyp_loc = mkloc loc};
-value mkpat loc d = {ppat_desc = d; ppat_loc = mkloc loc};
-value mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
-value mkexp loc d = {pexp_desc = d; pexp_loc = mkloc loc};
-value mkmty loc d = {pmty_desc = d; pmty_loc = mkloc loc};
-value mksig loc d = {psig_desc = d; psig_loc = mkloc loc};
-value mkmod loc d = {pmod_desc = d; pmod_loc = mkloc loc};
-value mkstr loc d = {pstr_desc = d; pstr_loc = mkloc loc};
-value mkfield loc d = {pfield_desc = d; pfield_loc = mkloc loc};
-value mkcty loc d = {pcty_desc = d; pcty_loc = mkloc loc};
-value mkcl loc d = {pcl_desc = d; pcl_loc = mkloc loc};
-value mkcf loc d = { pcf_desc = d; pcf_loc = mkloc loc; };
-value mkctf loc d = { pctf_desc = d; pctf_loc = mkloc loc; };
+let mktyp loc d = {ptyp_desc = d; ptyp_loc = mkloc loc};
+let mkpat loc d = {ppat_desc = d; ppat_loc = mkloc loc};
+let mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
+let mkexp loc d = {pexp_desc = d; pexp_loc = mkloc loc};
+let mkmty loc d = {pmty_desc = d; pmty_loc = mkloc loc};
+let mksig loc d = {psig_desc = d; psig_loc = mkloc loc};
+let mkmod loc d = {pmod_desc = d; pmod_loc = mkloc loc};
+let mkstr loc d = {pstr_desc = d; pstr_loc = mkloc loc};
+let mkfield loc d = {pfield_desc = d; pfield_loc = mkloc loc};
+let mkcty loc d = {pcty_desc = d; pcty_loc = mkloc loc};
+let mkcl loc d = {pcl_desc = d; pcl_loc = mkloc loc};
+let mkcf loc d = { pcf_desc = d; pcf_loc = mkloc loc; };
+let mkctf loc d = { pctf_desc = d; pctf_loc = mkloc loc; };
 
-value mkpolytype t = match t.ptyp_desc with
+let mkpolytype t = match t.ptyp_desc with
     [ Ptyp_poly _ _ -> t
     | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } ] ;
 
-value mkvirtual = fun
+let mkvirtual = fun
     [ <:virtual_flag< virtual >> -> Virtual
     | <:virtual_flag<>> -> Concrete
     | _ -> assert False ];
 
-value mkdirection = fun
+let mkdirection = fun
    [ <:direction_flag< to >> -> Upto
     | <:direction_flag< downto >> -> Downto
     | _ -> assert False ];
 
-  value lident s = Lident s;
-  value lident_with_loc s loc = with_loc (Lident s) loc;
+  let lident s = Lident s;
+  let lident_with_loc s loc = with_loc (Lident s) loc;
 
 
-  value ldot l s = Ldot l s;
-  value lapply l s = Lapply l s;
+  let ldot l s = Ldot l s;
+  let lapply l s = Lapply l s;
 
-  value conv_con =
+  let conv_con =
     let t = Hashtbl.create 73 in
     do {
       List.iter (fun (s, s') -> Hashtbl.add t s s')
@@ -79,7 +79,7 @@ value mkdirection = fun
     }
   ;
   (* *)
-  value conv_lab = (* FIXME remove them later*)
+  let conv_lab = (* FIXME remove them later*)
     let t = Hashtbl.create 73 in
     do {
       List.iter (fun (s, s') -> Hashtbl.add t s s') [("val", "contents")];
@@ -87,30 +87,30 @@ value mkdirection = fun
     }
   ;
 
-  value array_function_no_loc str name =
+  let array_function_no_loc str name =
     ldot (lident str) (if !FanConfig.unsafe then "unsafe_" ^ name else name)
   ;
-  value array_function loc str name = with_loc (array_function_no_loc str name) loc;
-  value mkrf =
+  let array_function loc str name = with_loc (array_function_no_loc str name) loc;
+  let mkrf =
     fun
     [ <:rec_flag< rec >> -> Recursive
     | <:rec_flag<>> -> Nonrecursive
     | _ -> assert False ];
 
-  value mkli sloc s list = with_loc (loop lident list) sloc
+  let mkli sloc s list = with_loc (loop lident list) sloc
     where rec loop f =
       fun
       [ [i :: il] -> loop (ldot (f i)) il
       | [] -> f s ]
   ;
 
-  value rec ctyp_fa al =
+  let rec ctyp_fa al =
     fun
     [ TyApp _ f a -> ctyp_fa [a :: al] f
     | f -> (f, al) ]
   ;
 
-  value ident_tag ?(conv_lid = fun x -> x) i =
+  let ident_tag ?(conv_lid = fun x -> x) i =
 
     let rec self i acc =
       match i with
@@ -142,20 +142,20 @@ value mkdirection = fun
       | _ -> error (loc_of_ident i) "invalid long identifier" ]
     in self i None;
 
-  value ident_noloc ?conv_lid i = fst (ident_tag ?conv_lid i);
-  value ident ?conv_lid  i =
+  let ident_noloc ?conv_lid i = fst (ident_tag ?conv_lid i);
+  let ident ?conv_lid  i =
         with_loc (ident_noloc ?conv_lid i) (loc_of_ident i);
 
-  value long_lident msg id =
+  let long_lident msg id =
     match ident_tag id with
     [ (i, `lident) -> with_loc i (loc_of_ident id)
     | _ -> error (loc_of_ident id) msg ]
   ;
 
-  value long_type_ident = long_lident "invalid long identifier type";
-  value long_class_ident = long_lident "invalid class name";
+  let long_type_ident = long_lident "invalid long identifier type";
+  let long_class_ident = long_lident "invalid class name";
 
-  value long_uident_noloc ?(conv_con = fun x -> x) i =
+  let long_uident_noloc ?(conv_con = fun x -> x) i =
     match ident_tag i with
     [ (Ldot i s, `uident) -> ldot i (conv_con s)
     | (Lident s, `uident) -> lident (conv_con s)
@@ -163,10 +163,10 @@ value mkdirection = fun
     | _ -> error (loc_of_ident i) "uppercase identifier expected" ]
   ;
 
-  value long_uident ?conv_con i =
+  let long_uident ?conv_con i =
      with_loc (long_uident_noloc ?conv_con i) (loc_of_ident i);
 
-  value rec ctyp_long_id_prefix t =
+  let rec ctyp_long_id_prefix t =
     match t with
     [ <:ctyp< $id:i >> -> ident_noloc i
     | <:ctyp< $m1 $m2 >> ->
@@ -176,7 +176,7 @@ value mkdirection = fun
     | t -> error (loc_of_ctyp t) "invalid module expression" ]
   ;
 
-  value ctyp_long_id t =
+  let ctyp_long_id t =
     match t with
     [ <:ctyp< $id:i >> ->
         (False, long_type_ident i)
@@ -186,16 +186,16 @@ value mkdirection = fun
     | t -> error (loc_of_ctyp t) "invalid type" ]
   ;
 
-  value rec ty_var_list_of_ctyp =
+  let rec ty_var_list_of_ctyp =
     fun
     [ <:ctyp< $t1 $t2 >> -> ty_var_list_of_ctyp t1 @ ty_var_list_of_ctyp t2
     | <:ctyp< '$s >> -> [s]
     | _ -> assert False ];
 
-  value predef_option loc =
+  let predef_option loc =
     TyId (loc, IdAcc (loc, IdLid (loc, "*predef*"), IdLid (loc, "option")));
 
-  value rec ctyp =
+  let rec ctyp =
     fun
     [ TyId loc i ->
         let li = long_type_ident i in
@@ -291,25 +291,25 @@ value mkdirection = fun
     | mt -> error (loc_of_module_type mt) "unexpected package type" ]
   ;
 
-  value mktype loc tl cl tk tp tm =
+  let mktype loc tl cl tk tp tm =
     let (params, variance) = List.split tl in
     {ptype_params = params; ptype_cstrs = cl; ptype_kind = tk;
      ptype_private = tp; ptype_manifest = tm; ptype_loc = mkloc loc;
      ptype_variance = variance}
   ;
-  value mkprivate' m = if m then Private else Public;
-  value mkprivate = fun
+  let mkprivate' m = if m then Private else Public;
+  let mkprivate = fun
     [ <:private_flag< private >> -> Private
     | <:private_flag<>> -> Public
     | _ -> assert False ];
-  value mktrecord =
+  let mktrecord =
     fun
     [ <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : mutable $t >> ->
         (with_loc s sloc, Mutable, mkpolytype (ctyp t), mkloc loc)
     | <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : $t >> ->
         (with_loc s sloc, Immutable, mkpolytype (ctyp t), mkloc loc)
     | _ -> assert False (*FIXME*) ];
-  value mkvariant =
+  let mkvariant =
     fun
     [ <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) >> ->
       (with_loc (conv_con s) sloc, [], None, mkloc loc)
@@ -321,7 +321,7 @@ value mkdirection = fun
       (with_loc (conv_con s) sloc, [], Some (ctyp t), mkloc loc)
 
     | _ -> assert False (*FIXME*) ];
-  value rec type_decl tl cl loc m pflag =
+  let rec type_decl tl cl loc m pflag =
     fun
     [ <:ctyp< $t1 == $t2 >> ->
         type_decl tl cl loc (Some (ctyp t1)) pflag t2
@@ -344,34 +344,34 @@ value mkdirection = fun
         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m ]
   ;
 
-  value type_decl tl cl t loc = type_decl tl cl loc None False t;
+  let type_decl tl cl t loc = type_decl tl cl loc None False t;
 
-  value mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc = mkloc loc};
+  let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc = mkloc loc};
 
-  value rec list_of_meta_list =
+  let rec list_of_meta_list =
     fun
     [ Ast.LNil -> []
     | Ast.LCons x xs -> [x :: list_of_meta_list xs]
     | Ast.LAnt _ -> assert False ];
 
-  value mkmutable = fun
+  let mkmutable = fun
     [ <:mutable_flag< mutable >> -> Mutable
     | <:mutable_flag<>> -> Immutable
     | _ -> assert False ];
 
-  value paolab lab p =
+  let paolab lab p =
     match (lab, p) with
     [ ("", <:patt< $lid:i >> | <:patt< ($lid:i : $_) >>) -> i
     | ("", p) -> error (loc_of_patt p) "bad ast in label"
     | _ -> lab ]
   ;
 
-  value opt_private_ctyp =
+  let opt_private_ctyp =
     fun
     [ <:ctyp< private $t >> -> (Ptype_abstract, Private, ctyp t)
     | t -> (Ptype_abstract, Public, ctyp t) ];
 
-  value rec type_parameters t acc =
+  let rec type_parameters t acc =
     match t with
     [ <:ctyp< $t1 $t2 >> -> type_parameters t1 (type_parameters t2 acc)
     | <:ctyp< +'$s >> -> [(s, (True, False)) :: acc]
@@ -379,7 +379,7 @@ value mkdirection = fun
     | <:ctyp< '$s >> -> [(s, (False, False)) :: acc]
     | _ -> assert False ];
 
-  value rec optional_type_parameters t acc =
+  let rec optional_type_parameters t acc =
     match t with
     [ <:ctyp< $t1 $t2 >> -> optional_type_parameters t1 (optional_type_parameters t2 acc)
     | <:ctyp@loc< +'$s >> -> [(Some (with_loc s loc), (True, False)) :: acc]
@@ -390,7 +390,7 @@ value mkdirection = fun
     | Ast.TyAny _loc -> [(None, (False, False)) :: acc]
     | _ -> assert False ];
 
-  value rec class_parameters t acc =
+  let rec class_parameters t acc =
     match t with
     [ <:ctyp< $t1, $t2 >> -> class_parameters t1 (class_parameters t2 acc)
     | <:ctyp@loc< +'$s >> -> [(with_loc s loc, (True, False)) :: acc]
@@ -398,7 +398,7 @@ value mkdirection = fun
     | <:ctyp@loc< '$s >> -> [(with_loc s loc, (False, False)) :: acc]
     | _ -> assert False ];
 
-  value rec type_parameters_and_type_name t acc =
+  let rec type_parameters_and_type_name t acc =
     match t with
     [ <:ctyp< $t1 $t2 >> ->
         type_parameters_and_type_name t1
@@ -406,7 +406,7 @@ value mkdirection = fun
     | <:ctyp< $id:i >> -> (ident i, acc)
     | _ -> assert False ];
 
-  value mkwithtyp pwith_type loc id_tpl ct =
+  let mkwithtyp pwith_type loc id_tpl ct =
     let (id, tpl) = type_parameters_and_type_name id_tpl [] in
     let (params, variance) = List.split tpl in
     let (kind, priv, ct) = opt_private_ctyp ct in
@@ -417,7 +417,7 @@ value mkdirection = fun
         ptype_manifest = Some ct;
         ptype_loc = mkloc loc; ptype_variance = variance});
 
-  value rec mkwithc wc acc =
+  let rec mkwithc wc acc =
     match wc with
     [ <:with_constr<>> -> acc
     | <:with_constr@loc< type $id_tpl = $ct >> ->
@@ -432,13 +432,13 @@ value mkdirection = fun
     | <:with_constr@loc< $anti:_ >> ->
          error loc "bad with constraint (antiquotation)" ];
 
-  value rec patt_fa al =
+  let rec patt_fa al =
     fun
     [ PaApp _ f a -> patt_fa [a :: al] f
     | f -> (f, al) ]
   ;
 
-  value rec deep_mkrangepat loc c1 c2 =
+  let rec deep_mkrangepat loc c1 c2 =
     if c1 = c2 then mkghpat loc (Ppat_constant (Const_char c1))
     else
       mkghpat loc
@@ -446,7 +446,7 @@ value mkdirection = fun
           (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
   ;
 
-  value rec mkrangepat loc c1 c2 =
+  let rec mkrangepat loc c1 c2 =
     if c1 > c2 then mkrangepat loc c2 c1
     else if c1 = c2 then mkpat loc (Ppat_constant (Const_char c1))
     else
@@ -455,7 +455,7 @@ value mkdirection = fun
           (deep_mkrangepat loc (Char.chr (Char.code c1 + 1)) c2))
   ;
 
-  value rec patt =
+  let rec patt =
     fun
     [ <:patt@loc< $(id:<:ident@sloc< $lid:s >>) >> ->
       mkpat loc (Ppat_var (with_loc s sloc))
@@ -556,20 +556,20 @@ value mkdirection = fun
     [ <:patt< $i = $p >> -> (ident ~conv_lid:conv_lab i, patt p)
     | p -> error (loc_of_patt p) "invalid pattern" ];
 
-  value rec expr_fa al =
+  let rec expr_fa al =
     fun
     [ ExApp _ f a -> expr_fa [a :: al] f
     | f -> (f, al) ]
   ;
 
-  value rec class_expr_fa al =
+  let rec class_expr_fa al =
     fun
     [ CeApp _ ce a -> class_expr_fa [a :: al] ce
     | ce -> (ce, al) ]
   ;
 
 
-  value rec sep_expr_acc l =
+  let rec sep_expr_acc l =
     fun
     [ ExAcc _ e1 e2 -> sep_expr_acc (sep_expr_acc l e2) e1
     | <:expr@loc< $uid:s >> as e ->
@@ -589,18 +589,18 @@ value mkdirection = fun
     | e -> [(loc_of_expr e, [], e) :: l] ]
   ;
 
-  value override_flag loc =
+  let override_flag loc =
     fun [ <:override_flag< ! >> -> Override
         | <:override_flag<>> -> Fresh
         |  _ -> error loc "antiquotation not allowed here"
         ];
 
-  value list_of_opt_ctyp ot acc =
+  let list_of_opt_ctyp ot acc =
     match ot with
     [ <:ctyp<>> -> acc
     | t -> list_of_ctyp t acc ];
 
-value varify_constructors var_names =
+let varify_constructors var_names =
   let rec loop t =
     let desc =
       match t.ptyp_desc with
@@ -649,7 +649,7 @@ value varify_constructors var_names =
 
 
 
-  value rec expr =
+  let rec expr =
     fun
     [ <:expr@loc<  $x.contents >> -> (* fixme probably a bug here *)
         mkexp loc
@@ -1189,10 +1189,10 @@ value varify_constructors var_names =
         [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
     | CrAnt _ _ -> assert False ];
 
-  value sig_item ast = sig_item ast [];
-  value str_item ast = str_item ast [];
+  let sig_item ast = sig_item ast [];
+  let str_item ast = str_item ast [];
 
-  value directive =
+  let directive =
     fun
     [ <:expr<>> -> Pdir_none
     | ExStr _ s -> Pdir_string s
@@ -1202,7 +1202,7 @@ value varify_constructors var_names =
     | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ]
   ;
 
-  value phrase =
+  let phrase =
     fun
     [ StDir _ d dp -> Ptop_dir d (directive dp)
     | si -> Ptop_def (str_item si) ]

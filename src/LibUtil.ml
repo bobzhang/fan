@@ -3,67 +3,67 @@ include Format;
 module Map_Make (S : Map.OrderedType) =
   struct
     include (Map.Make S);
-    value of_list lst =
+    let of_list lst =
       List.fold_left (fun acc (k, v) -> add k v acc) empty lst;
-    value of_hashtbl tbl =
+    let of_hashtbl tbl =
       Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
-    value elements map = fold (fun k v acc -> [ (k, v) :: acc ]) map [];
+    let elements map = fold (fun k v acc -> [ (k, v) :: acc ]) map [];
   end;
 module StringMap = Map_Make String;
 module IntMap =
-  Map_Make (struct type t = int; value compare = Pervasives.compare; end);
+  Map_Make (struct type t = int; let compare = Pervasives.compare; end);
 module StringSet = struct include (Set.Make String); end;
 module IntSet =
-  Set.Make (struct type t = int; value compare = Pervasives.compare; end);
+  Set.Make (struct type t = int; let compare = Pervasives.compare; end);
 module Hashset =
   struct
     type t 'a = Hashtbl.t 'a unit;
-    value create = Hashtbl.create;
-    value add set x = Hashtbl.replace set x ();
-    value remove = Hashtbl.remove;
-    value mem = Hashtbl.mem;
-    value iter f = Hashtbl.iter (fun v () -> f v);
-    value fold f = Hashtbl.fold (fun v () st -> f v st);
-    value elements = Hashtbl.length;
-    value clear = Hashtbl.clear;
-    value of_list size vs =
+    let create = Hashtbl.create;
+    let add set x = Hashtbl.replace set x ();
+    let remove = Hashtbl.remove;
+    let mem = Hashtbl.mem;
+    let iter f = Hashtbl.iter (fun v () -> f v);
+    let fold f = Hashtbl.fold (fun v () st -> f v st);
+    let elements = Hashtbl.length;
+    let clear = Hashtbl.clear;
+    let of_list size vs =
       let set = create size in (List.iter (add set) vs; set);
-    value to_list set = fold (fun x y -> [ x :: y ]) set [];
+    let to_list set = fold (fun x y -> [ x :: y ]) set [];
   end;
 (*
   let (module M) = mk_set (compare:int->int->int) in
   M.iter print_int M.empty;     *)
-value mk_set (type s) ~cmp =
-  let module M = struct type t = s; value compare = cmp; end
+let mk_set (type s) ~cmp =
+  let module M = struct type t = s; let compare = cmp; end
   in (module Set.Make M : Set.S with type elt = s);
-value mk_map (type s) ~cmp =
-  let module M = struct type t = s; value compare = cmp; end
+let mk_map (type s) ~cmp =
+  let module M = struct type t = s; let compare = cmp; end
   in (module Map.Make M : Map.S with type key = s);
-value mk_hashtbl (type s) ~eq ~hash =
-  let module M = struct type t = s; value equal = eq; value hash = hash; end
+let mk_hashtbl (type s) ~eq ~hash =
+  let module M = struct type t = s; let equal = eq; let hash = hash; end
   in (module Hashtbl.Make M : Hashtbl.S with type key = s);
-value ( |> ) x f = f x;
-value ( /> ) x f = f x;
-value ( & ) f x = f x;
-value ( |- ) f g x = g (f x);
-value ( <| ) f x = f x;
-value ( -| ) f g x = f (g x);
-value ( *** ) f g (x, y) = ((f x), (g y));
-value ( &&& ) f g x = ((f x), (g x));
-value flip f x y = f y x;
-value curry f x y = f (x, y);
-value uncurry f (x, y) = f x y;
-value failwithf fmt = ksprintf failwith fmt;
-value prerr_endlinef fmt = ksprintf prerr_endline fmt;
-value const x _ = x;
-value tap f x = (f x; x);
-value is_even x = (x mod 2) == 0;
+let ( |> ) x f = f x;
+let ( /> ) x f = f x;
+let ( & ) f x = f x;
+let ( |- ) f g x = g (f x);
+let ( <| ) f x = f x;
+let ( -| ) f g x = f (g x);
+let ( *** ) f g (x, y) = ((f x), (g y));
+let ( &&& ) f g x = ((f x), (g x));
+let flip f x y = f y x;
+let curry f x y = f (x, y);
+let uncurry f (x, y) = f x y;
+let failwithf fmt = ksprintf failwith fmt;
+let prerr_endlinef fmt = ksprintf prerr_endline fmt;
+let const x _ = x;
+let tap f x = (f x; x);
+let is_even x = (x mod 2) == 0;
 (*
   {[
   to_string_of_printer pp_print_int 32;
   "32"]}
  *)
-value to_string_of_printer printer v =
+let to_string_of_printer printer v =
   let buf = Buffer.create 30 in
   let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf;
 (*
@@ -73,13 +73,13 @@ value to_string_of_printer printer v =
   int = 6
   ]}
  *)
-value nfold_left ?(start = 0) ~until ~acc f =
+let nfold_left ?(start = 0) ~until ~acc f =
   let v = ref acc
   in (for x = start to until do v := f !v x done; !v);
 (* a module to abstract exeption mechanism  *)
-(* we put the return value exn, so we don't need to work around type system later *)
+(* we put the return let exn, so we don't need to work around type system later *)
 type cont 'a = 'a -> exn;
-value callcc (type u) (f : cont u -> u) =
+let callcc (type u) (f : cont u -> u) =
   let module M = struct exception Return of u; end
   in try f (fun x -> raise (M.Return x)) with [ M.Return u -> u ];
 (*
@@ -91,29 +91,29 @@ module List =
     (* a mutable list whose runtime is the same as function list  *)
     type mut_list 'a = { hd : 'a; tl : mutable list 'a };
     external inj : mut_list 'a -> list 'a = "%identity";
-    value dummy_node () = { hd = Obj.magic (); tl = []; };
-    value cons h t = [ h :: t ];
-    value is_empty = fun [ [] -> True | _ -> False ];
+    let dummy_node () = { hd = Obj.magic (); tl = []; };
+    let cons h t = [ h :: t ];
+    let is_empty = fun [ [] -> True | _ -> False ];
     (*$T is_empty
   is_empty []
   not (is_empty [1])
  *)
     (* tail recursive list *)
-    value nth l index =
+    let nth l index =
       (if index < 0 then invalid_arg "Negative index not allowed" else ();
        let rec loop n =
          fun
          [ [] -> invalid_arg "Index past end of list"
          | [ h :: t ] -> if n = 0 then h else loop (n - 1) t ];
        loop index l);
-    value at = nth;
+    let at = nth;
     (*$T at
   try ignore (at [] 0); false with Invalid_argument _ -> true
   try ignore (at [1;2;3] (-1)); false with Invalid_argument _ -> true
   at [1;2;3] 2 = 3
  *)
     (* save one pass compared with Stdlib's append *)
-    value append l1 l2 =
+    let append l1 l2 =
       match l1 with
       [ [] -> l2
       | [ h :: t ] ->
@@ -124,7 +124,7 @@ module List =
                 let cell = { hd = h; tl = []; }
                 in (dst.tl <- inj cell; loop cell t) ] in
           let r = { hd = h; tl = []; } in (loop r t; inj r) ];
-    value rec flatten l =
+    let rec flatten l =
       let rec inner dst =
         fun
         [ [] -> dst
@@ -133,12 +133,12 @@ module List =
       let rec outer dst =
         fun [ [] -> () | [ h :: t ] -> outer (inner dst h) t ] in
       let r = dummy_node () in (outer r l; r.tl);
-    value concat = flatten;
+    let concat = flatten;
     (*$T flatten
   flatten [[1;2];[3];[];[4;5;6]] = [1;2;3;4;5;6]
   flatten [[]] = []
  *)
-    value map f =
+    let map f =
       fun
       [ [] -> []
       | [ h :: t ] ->
@@ -148,7 +148,7 @@ module List =
             | [ h :: t ] ->
                 let r = { hd = f h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
           let r = { hd = f h; tl = []; } in (loop r t; inj r) ];
-    value take n l =
+    let take n l =
       let rec loop n dst =
         fun
         [ [ h :: t ] when n > 0 ->
@@ -162,7 +162,7 @@ module List =
   (take 4 [1;2;3]) [1;2;3]
   (take 1 [1;2;3]) [1]
  *)
-    value take_while p li =
+    let take_while p li =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -178,15 +178,15 @@ module List =
   (take_while ((=) 3) []) []
   (take_while ((=) 2) [2; 2]) [2; 2]
  *)
-    value rec drop_while f =
+    let rec drop_while f =
       fun [ [] -> [] | [ x :: xs ] when f x -> drop_while f xs | xs -> xs ];
     (*$= drop_while & ~printer:(IO.to_string (List.print Int.print))
   (drop_while ((=) 3) [3;3;4;3;3]) [4;3;3]
   (drop_while ((=) 3) [3]) []
  *)
-    value takewhile = take_while;
-    value dropwhile = drop_while;
-    value interleave ?first ?last (sep : 'a) (l : list 'a) =
+    let takewhile = take_while;
+    let dropwhile = drop_while;
+    let interleave ?first ?last (sep : 'a) (l : list 'a) =
       let rec aux acc =
         fun [ [] -> acc | [ h :: t ] -> aux [ h; sep :: acc ] t ]
       in
@@ -220,11 +220,11 @@ module List =
  *)
     (*  unique [1;3;3;3;2];
                                              [1; 3; 2] *)
-    value unique (type et) ?(hash = Hashtbl.hash) ?(eq = ( = )) (l : list et)
+    let unique (type et) ?(hash = Hashtbl.hash) ?(eq = ( = )) (l : list et)
                  =
       let module HT =
         Hashtbl.Make
-          (struct type t = et; value equal = eq; value hash = hash; end)  in
+          (struct type t = et; let equal = eq; let hash = hash; end)  in
         let ht = HT.create (List.length l) in
         let rec loop dst =
           fun
@@ -244,7 +244,7 @@ module List =
   [1] (unique_hash [1;1;1;1;1;1;1;1;1;1])
   [2;3] (unique_hash ~hash:(fun x -> Hashtbl.hash (x land 1)) ~eq:(fun x y -> x land 1 = y land 1) [2;2;2;4;6;8;3;1;2])
  *)
-    value filter_map f l =
+    let filter_map f l =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -254,14 +254,14 @@ module List =
             | Some x ->
                 let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r t) ] ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
-    value rec find_map f =
+    let rec find_map f =
       fun
       [ [] -> None
       | [ x :: xs ] ->
           match f x with [ (Some _ as y) -> y | None -> find_map f xs ] ];
-    value fold_right_max = 1000;
+    let fold_right_max = 1000;
     (* a constant for switching tail-recursion or not *)
-    value fold_right f l init =
+    let fold_right f l init =
       let rec tail_loop acc =
         fun [ [] -> acc | [ h :: t ] -> tail_loop (f h acc) t ] in
       let rec loop n =
@@ -272,7 +272,7 @@ module List =
             then f h (loop (n + 1) t)
             else f h (tail_loop init (rev t)) ]
       in loop 0 l;
-    value map2 f l1 l2 =
+    let map2 f l1 l2 =
       let rec loop dst src1 src2 =
         match (src1, src2) with
         [ ([], []) -> ()
@@ -281,17 +281,17 @@ module List =
             in (dst.tl <- inj r; loop r t1 t2)
         | _ -> invalid_arg "map2: Different_list_size" ] in
       let dummy = dummy_node () in (loop dummy l1 l2; dummy.tl);
-    value rec iter2 f l1 l2 =
+    let rec iter2 f l1 l2 =
       match (l1, l2) with
       [ ([], []) -> ()
       | ([ h1 :: t1 ], [ h2 :: t2 ]) -> (f h1 h2; iter2 f t1 t2)
       | _ -> invalid_arg "iter2: Different_list_size" ];
-    value rec fold_left2 f accum l1 l2 =
+    let rec fold_left2 f accum l1 l2 =
       match (l1, l2) with
       [ ([], []) -> accum
       | ([ h1 :: t1 ], [ h2 :: t2 ]) -> fold_left2 f (f accum h1 h2) t1 t2
       | _ -> invalid_arg "fold_left2: Different_list_size" ];
-    value fold_right2 f l1 l2 init =
+    let fold_right2 f l1 l2 init =
       let rec tail_loop acc l1 l2 =
         match (l1, l2) with
         [ ([], []) -> acc
@@ -306,7 +306,7 @@ module List =
             else f h1 h2 (tail_loop init (rev t1) (rev t2))
         | _ -> invalid_arg "fold_right2: Different_list_size" ]
       in loop 0 l1 l2;
-    value for_all2 p l1 l2 =
+    let for_all2 p l1 l2 =
       let rec loop l1 l2 =
         match (l1, l2) with
         [ ([], []) -> True
@@ -314,7 +314,7 @@ module List =
             if p h1 h2 then loop t1 t2 else False
         | _ -> invalid_arg "for_all2: Different_list_size" ]
       in loop l1 l2;
-    value exists2 p l1 l2 =
+    let exists2 p l1 l2 =
       let rec loop l1 l2 =
         match (l1, l2) with
         [ ([], []) -> False
@@ -323,7 +323,7 @@ module List =
         | _ -> invalid_arg "exists2: Different_list_size" ]
       in loop l1 l2;
     (* equality using [=] *)
-    value remove_assoc x lst =
+    let remove_assoc x lst =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -334,7 +334,7 @@ module List =
               let r = { hd = pair; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
     (* equality using [==] *)
-    value remove_assq x lst =
+    let remove_assq x lst =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -346,8 +346,8 @@ module List =
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
     (* rfind (fun x -> x>3) [1;2;3;9;3;4;2;3];
  * - : int = 4 *)
-    value rfind p l = find p (rev l);
-    value find_all p l =
+    let rfind p l = find p (rev l);
+    let find_all p l =
       let rec findnext dst =
         fun
         [ [] -> ()
@@ -357,13 +357,13 @@ module List =
               let r = { hd = h; tl = []; } in (dst.tl <- inj r; findnext r t)
             else findnext dst t ] in
       let dummy = dummy_node () in (findnext dummy l; dummy.tl);
-    value rec findi p l =
+    let rec findi p l =
       let rec loop n =
         fun
         [ [] -> raise Not_found
         | [ h :: t ] -> if p n h then (n, h) else loop (n + 1) t ]
       in loop 0 l;
-    value rec index_of e l =
+    let rec index_of e l =
       let rec loop n =
         fun
         [ [] -> None
@@ -371,29 +371,29 @@ module List =
         | [ _ :: t ] -> loop (n + 1) t ]
       in loop 0 l;
     (* using [==]*)
-    value rec index_ofq e l =
+    let rec index_ofq e l =
       let rec loop n =
         fun
         [ [] -> None
         | [ h :: _ ] when h == e -> Some n
         | [ _ :: t ] -> loop (n + 1) t ]
       in loop 0 l;
-    value rec rindex_of e l =
+    let rec rindex_of e l =
       let rec loop n acc =
         fun
         [ [] -> acc
         | [ h :: t ] when h = e -> loop (n + 1) (Some n) t
         | [ _ :: t ] -> loop (n + 1) acc t ]
       in loop 0 None l;
-    value rec rindex_ofq e l =
+    let rec rindex_ofq e l =
       let rec loop n acc =
         fun
         [ [] -> acc
         | [ h :: t ] when h == e -> loop (n + 1) (Some n) t
         | [ _ :: t ] -> loop (n + 1) acc t ]
       in loop 0 None l;
-    value filter = find_all;
-    value partition p lst =
+    let filter = find_all;
+    let partition p lst =
       let rec loop yesdst nodst =
         fun
         [ [] -> ()
@@ -406,7 +406,7 @@ module List =
       let yesdummy = dummy_node ()
       and nodummy = dummy_node ()
       in (loop yesdummy nodummy lst; ((yesdummy.tl), (nodummy.tl)));
-    value split lst =
+    let split lst =
       let rec loop adst bdst =
         fun
         [ [] -> ()
@@ -417,7 +417,7 @@ module List =
       let adummy = dummy_node ()
       and bdummy = dummy_node ()
       in (loop adummy bdummy lst; ((adummy.tl), (bdummy.tl)));
-    value combine l1 l2 =
+    let combine l1 l2 =
       let rec loop dst l1 l2 =
         match (l1, l2) with
         [ ([], []) -> ()
@@ -426,12 +426,12 @@ module List =
             in (dst.tl <- inj r; loop r t1 t2)
         | (_, _) -> invalid_arg "combine: Different_list_size" ] in
       let dummy = dummy_node () in (loop dummy l1 l2; dummy.tl);
-    value make i x =
+    let make i x =
       (if i < 0 then invalid_arg "List.make" else ();
        let rec loop x acc =
          fun [ 0 -> acc | i -> loop x [ x :: acc ] (i - 1) ];
        loop x [] i);
-    value mapi f =
+    let mapi f =
       fun
       [ [] -> []
       | [ h :: t ] ->
@@ -442,17 +442,17 @@ module List =
                 let r = { hd = f n h; tl = []; }
                 in (dst.tl <- inj r; loop r (n + 1) t) ] in
           let r = { hd = f 0 h; tl = []; } in (loop r 1 t; inj r) ];
-    value iteri f l =
+    let iteri f l =
       let rec loop n =
         fun [ [] -> () | [ h :: t ] -> (f n h; loop (n + 1) t) ]
       in loop 0 l;
-    value first = hd;
-    value rec last =
+    let first = hd;
+    let rec last =
       fun
       [ [] -> invalid_arg "Empty List"
       | [ h ] -> h
       | [ _ :: t ] -> last t ];
-    value split_nth index =
+    let split_nth index =
       fun
       [ [] ->
           if index = 0
@@ -476,10 +476,10 @@ module List =
                       in (dst.tl <- inj r; loop (n - 1) r t) ] in
               let r = { hd = h; tl = []; }
               in ((inj r), (loop (index - 1) r t)) ];
-    value split_at = split_nth;
-    value find_exn f e l = try find f l with [ Not_found -> raise e ];
+    let split_at = split_nth;
+    let find_exn f e l = try find f l with [ Not_found -> raise e ];
     (* using [=]*)
-    value remove l x =
+    let remove l x =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -488,7 +488,7 @@ module List =
             then dst.tl <- t
             else let r = { hd = h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
-    value rec remove_if f lst =
+    let rec remove_if f lst =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -497,7 +497,7 @@ module List =
             then dst.tl <- l
             else let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r l) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
-    value rec remove_all l x =
+    let rec remove_all l x =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -507,7 +507,7 @@ module List =
             else let r = { hd = h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
     (* will raise an exception if it's not an rectangle *)
-    value transpose =
+    let transpose =
       fun
       [ [] -> []
       | [ x ] -> List.map (fun x -> [ x ]) x
@@ -528,16 +528,16 @@ module List =
   transpose [] = []
   transpose [ [1] ] = [ [1] ]
  *)
-    (* assoc via value using [=]*)
-    value assoc_inv e l =
+    (* assoc via let using [=]*)
+    let assoc_inv e l =
       let rec aux =
         fun
         [ [] -> raise Not_found
         | [ (a, b) :: _ ] when b = e -> a
         | [ _ :: t ] -> aux t ]
       in aux l;
-    (* assoc via value using [==]*)
-    value assq_inv e l =
+    (* assoc via let using [==]*)
+    let assq_inv e l =
       let rec aux =
         fun
         [ [] -> raise Not_found
@@ -546,12 +546,12 @@ module List =
       in aux l;
     (* sort_unique (compare) [1;2;3;2;3;2;1;2;3;434;2;23;2;4234;23];
  * list int = [1; 2; 3; 23; 434; 4234] *)
-    value sort_unique (type s) (cmp : s -> s -> int) lst =
+    let sort_unique (type s) (cmp : s -> s -> int) lst =
       let (module M) = mk_set ~cmp
       in let open M in elements & (fold_left (flip add) empty lst);
     (* group compare [1;2;2;3;2;32;32;23;2];
  * - : list (list int) = [[1]; [2; 2; 2; 2]; [3]; [23]; [32; 32]]       *)
-    value group cmp lst =
+    let group cmp lst =
       let sorted = List.sort cmp lst in
       let fold first rest =
         List.fold_left
@@ -566,12 +566,12 @@ module List =
         | [ hd :: tl ] ->
             let (groups, lastgr, _) = fold hd tl
             in List.rev_map List.rev [ lastgr :: groups ] ];
-    value cross_product l1 l2 =
+    let cross_product l1 l2 =
       List.concat (List.map (fun i -> List.map (fun j -> (i, j)) l2) l1);
     (*$T cartesian_product as cp
   cp [1;2;3] ['x';'y'] = [1,'x';1,'y';2,'x';2,'y';3,'x';3,'y']
  *)
-    value rec ncross_product =
+    let rec ncross_product =
       fun
       [ [] -> assert False
       | [ l ] -> List.map (fun i -> [ i ]) l
@@ -591,9 +591,9 @@ module List =
    (4, 12)
    ]}
  *)
-    value fold_lefti f init ls =
+    let fold_lefti f init ls =
       fold_left (fun (i, acc) x -> ((i + 1), (f i acc x))) (0, init) ls;
-    value reduce_left_with ~compose ~map lst =
+    let reduce_left_with ~compose ~map lst =
       match lst with
       [ [] -> invalid_arg "reduce_left length zero"
       | [ x :: xs ] ->
@@ -602,8 +602,8 @@ module List =
             [ [] -> x
             | [ y :: ys ] -> loop (compose x (map y)) ys ]
           in loop (map x) xs ];
-    value reduce_left compose = reduce_left_with ~compose ~map: (fun x -> x);
-    value reduce_right_with ~compose ~map lst =
+    let reduce_left compose = reduce_left_with ~compose ~map: (fun x -> x);
+    let reduce_right_with ~compose ~map lst =
       match lst with
       [ [] -> invalid_arg "reduce_right length zero"
       | xs ->
@@ -613,12 +613,12 @@ module List =
             | [ y ] -> map y
             | [ y :: ys ] -> compose (map y) (loop ys) ]
           in loop xs ];
-    value reduce_right compose =
+    let reduce_right compose =
       reduce_right_with ~compose ~map: (fun x -> x);
     (* do sequence does not support try with
          use do only for simple construct
        *)
-    value find_first f lst = let module M = struct exception First; end
+    let find_first f lst = let module M = struct exception First; end
       in
         let res = ref None
         in
@@ -631,19 +631,19 @@ module List =
                lst;
              None)
           with [ M.First -> !res ];
-    value rec filter_map f =
+    let rec filter_map f =
       fun
       [ [] -> []
       | [ x :: xs ] ->
           match f x with
           [ Some v -> [ v :: filter_map f xs ]
           | None -> filter_map f xs ] ];
-    (* find the first function which return some value *)
-    value find_first_result preds v =
+    (* find the first function which return some let *)
+    let find_first_result preds v =
       match find_first (fun pred -> pred v) preds with
       [ None -> failwith "find_first_result"
       | Some r -> r ];
-    value init n f = let open Array
+    let init n f = let open Array
       in if n < 0 then invalid_arg "List.init <0" else (init n f) |> to_list;
     (*
         {[
@@ -652,7 +652,7 @@ module List =
         list int = [4]
         ]}
        *)
-    value rec drop n =
+    let rec drop n =
       fun [ [ _ :: l ] when n > 0 -> drop (n - 1) l | l -> l ];
     (*
             {[
@@ -660,13 +660,13 @@ module List =
             ([4;3;2;1], 5 )
             ]}
            *)
-    value lastbut1 ls =
+    let lastbut1 ls =
       match ls with
       [ [] -> failwith "lastbut1 empty"
       | _ -> let l = List.rev ls in ((List.tl l), (List.hd l)) ];
     (* range_up 20 ~step:3 ;;
  * - : int list = [0; 3; 6; 9; 12; 15; 18] *)
-    value range_up ?(from = 0) ?(step = 1) until =
+    let range_up ?(from = 0) ?(step = 1) until =
       let rec loop dst i =
         if i > until
         then ()
@@ -681,7 +681,7 @@ module List =
           in (loop res (from + step); inj res);
     (* range_down 20 ~step:3 ;;
  * - : int list = [20; 17; 14; 11; 8; 5; 2] *)
-    value range_down ?(until = 0) ?(step = 1) from =
+    let range_down ?(until = 0) ?(step = 1) from =
       let rec loop dst i =
         if i < until
         then ()
@@ -697,36 +697,36 @@ module List =
     (* range_up 10 // is_even /@ (fun x -> x + 1);;
  * - : int list = [1; 3; 5; 7; 9; 11] 
  * range_up 10 // is_even /@ (fun x -> x + 1) /> take 10  /@ (fun x -> x + 1);; *)
-    value ( @ ) = append;
-    value ( /@ ) lst f = map f lst;
-    value ( @/ ) = map;
-    value ( // ) lst f = filter f lst;
-    value ( //@ ) lst f = filter_map f lst;
-    value ( @// ) = filter_map;
+    let ( @ ) = append;
+    let ( /@ ) lst f = map f lst;
+    let ( @/ ) = map;
+    let ( // ) lst f = filter f lst;
+    let ( //@ ) lst f = filter_map f lst;
+    let ( @// ) = filter_map;
   end;
 include List;
 module ErrorMonad =
   struct
     type log = string;
     type result 'a = [ Left of 'a | Right of log ];
-    value return x = Left x;
-    value fail x = Right x;
-    value ( >>= ) ma f =
+    let return x = Left x;
+    let fail x = Right x;
+    let ( >>= ) ma f =
       match ma with [ Left v -> f v | Right x -> Right x ];
     (* write this way to overcome type system*)
-    value bind = ( >>= );
-    value map f = fun [ Left v -> Left (f v) | Right s -> Right s ];
-    value ( >>| ) ma (str, f) =
+    let bind = ( >>= );
+    let map f = fun [ Left v -> Left (f v) | Right s -> Right s ];
+    let ( >>| ) ma (str, f) =
       match ma with [ Left v -> f v | Right x -> Right (x ^ str) ];
     (*  append error message later *)
-    value ( >>? ) ma str =
+    let ( >>? ) ma str =
       match ma with [ Left _ -> ma | Right x -> Right (x ^ str) ];
-    value ( <|> ) fa fb a =
+    let ( <|> ) fa fb a =
       match fa a with [ (Left _ as x) -> x | Right str -> (fb a) >>? str ];
     (* raise an exception to make type system simple  *)
-    value unwrap f a =
+    let unwrap f a =
       match f a with [ Left res -> res | Right msg -> failwith msg ];
-    value mapi_m f xs =
+    let mapi_m f xs =
       let rec aux acc xs =
         match xs with
         [ [] -> return []
@@ -737,52 +737,52 @@ module ErrorMonad =
   end;
 module Option =
   struct
-    value bind o f = match o with [ Some x -> f x | None -> None ];
-    value map f = fun [ Some x -> Some (f x) | None -> None ];
-    value adapt f a = Some (f a);
+    let bind o f = match o with [ Some x -> f x | None -> None ];
+    let map f = fun [ Some x -> Some (f x) | None -> None ];
+    let adapt f a = Some (f a);
   end;
 module Log =
   struct
-    value verbose = ref 1;
-    value dprintf ?(level = 1) =
+    let verbose = ref 1;
+    let dprintf ?(level = 1) =
       if !verbose > level then eprintf else ifprintf err_formatter;
     (* ifprintf to overcome type system *)
     (* infoprintf will not *)
-    value info_printf a = dprintf ~level: 2 a;
-    value warn_printf a = dprintf ~level: 1 a;
-    value error_printf a = dprintf ~level: 0 a;
+    let info_printf a = dprintf ~level: 2 a;
+    let warn_printf a = dprintf ~level: 1 a;
+    let error_printf a = dprintf ~level: 0 a;
   end;
 module Char =
   struct
     include Char;
-    value is_whitespace =
+    let is_whitespace =
       fun [ ' ' | '\n' | '\r' | '\t' | '\026' | '\012' -> True | _ -> False ];
-    value is_newline = fun [ '\n' | '\r' -> True | _ -> False ];
-    value is_digit = fun [ '0' .. '9' -> True | _ -> False ];
-    value is_uppercase c = ('A' <= c) && (c <= 'Z');
-    value is_lowercase c = ('a' <= c) && (c <= 'z');
-    value is_uppercase_latin1 c =
+    let is_newline = fun [ '\n' | '\r' -> True | _ -> False ];
+    let is_digit = fun [ '0' .. '9' -> True | _ -> False ];
+    let is_uppercase c = ('A' <= c) && (c <= 'Z');
+    let is_lowercase c = ('a' <= c) && (c <= 'z');
+    let is_uppercase_latin1 c =
       (is_uppercase c) ||
         ((('\192' <= (*À*) c) && (c <= '\214')) || (*Ö*)
            (('\216' <= (*Ø*) c) && (c <= '\221')));
     (*Ý*)
-    value is_lowercase_latin1 c =
+    let is_lowercase_latin1 c =
       (is_lowercase c) ||
         ((('\222' <= (*Þ*) c) && (c <= '\246')) || (*ö*)
            (('\248' <= (*ø*) c) && (c <= '\255')));
     (*'ÿ'*)
-    value is_latin1 c = (is_uppercase_latin1 c) || (is_lowercase_latin1 c);
-    value is_symbol =
+    let is_latin1 c = (is_uppercase_latin1 c) || (is_lowercase_latin1 c);
+    let is_symbol =
       fun
       [ '!' | '%' | '&' | '$' | '#' | '+' | '-' | '/' | ':' | '<' | '=' | '>'
           | '?' | '@' | '\\' | '~' | '^' | '|' | '*' -> True
       | _ -> False ];
-    value is_letter c = (is_uppercase c) || (is_lowercase c);
+    let is_letter c = (is_uppercase c) || (is_lowercase c);
     external unsafe_int : char -> int = "%identity";
     external unsafe_chr : int -> char = "%identity";
-    value is_capital c =
+    let is_capital c =
       let c = code c in (c >= (code 'A')) && (c <= (code 'Z'));
-    value of_digit i =
+    let of_digit i =
       if (i >= 0) && (i < 10)
       then unsafe_chr (i + (code '0'))
       else invalid_arg "Char.of_digit";
@@ -795,7 +795,7 @@ module Char =
 module String =
   struct
     include String;
-    value init len f =
+    let init len f =
       let s = create len
       in (for i = 0 to len - 1 do unsafe_set s i (f i) done; s);
     (*$T init
@@ -803,7 +803,7 @@ module String =
  *)
     (*
  *)
-    value ends_with s e =
+    let ends_with s e =
       let ne = String.length e
       and ns = String.length s
       in
@@ -838,7 +838,7 @@ module String =
   true
   ]}
  *)
-    value starts_with s e =
+    let starts_with s e =
       let ne = length e in
       let ns = length s
       in
@@ -860,7 +860,7 @@ module String =
   neg "-3"
   "3"
   ]} *)
-    value neg n =
+    let neg n =
       let len = String.length n
       in
         if (len > 0) && (n.[0] = '-')
@@ -876,7 +876,7 @@ module String =
   string = ""
   ]}
  *)
-    value drop_while f s =
+    let drop_while f s =
       let len = String.length s in
       let found = ref False in
       let i = ref 0
@@ -884,7 +884,7 @@ module String =
         (while (!i < len) && (not !found) do
            if not (f s.[!i]) then found:= True else incr i done;
          String.sub s !i (len - !i));
-    value find_from str pos sub =
+    let find_from str pos sub =
       let len = length str in
       let sublen = length sub
       in
@@ -913,12 +913,12 @@ module String =
   try ignore (find_from "foo" 4 "foo"); false with Invalid_argument _ -> true
   try ignore (find_from "foo" (-1) "foo"); false with Invalid_argument _ -> true
  *)
-    value find str sub = find_from str 0 sub;
+    let find str sub = find_from str 0 sub;
     (*$T find
   find "foobarbaz" "bar" = 3
   try ignore (find "foo" "bar"); false with Not_found -> true
  *)
-    value rfind_from str pos sub =
+    let rfind_from str pos sub =
       let sublen = length sub
       and len = length str
       in
@@ -949,12 +949,12 @@ module String =
   try ignore (rfind_from "foo" 3 "foo"); false with Invalid_argument _ -> true
   try ignore (rfind_from "foo" (-2) "foo"); false with Invalid_argument _ -> true
  *)
-    value rfind str sub = rfind_from str ((String.length str) - 1) sub;
+    let rfind str sub = rfind_from str ((String.length str) - 1) sub;
     (*$T rfind
   rfind "foobarbaz" "ba" = 6
   try ignore (rfind "foo" "barr"); false with Not_found -> true
  *)
-    value strip ?(chars = " \t\r\n") s =
+    let strip ?(chars = " \t\r\n") s =
       let p = ref 0 in
       let l = length s
       in
@@ -970,7 +970,7 @@ module String =
   strip ~chars:"abc" "abbcbab"
   ""
  *)
-    value exists str sub =
+    let exists str sub =
       try (ignore (find str sub); True) with [ Not_found -> False ];
     (*$T exists
   exists "foobarbaz" "obar"
@@ -985,7 +985,7 @@ module String =
   exists "ab" "b"
   not (exists "ab" "c")
  *)
-    value left s len = if len >= (length s) then s else sub s 0 len;
+    let left s len = if len >= (length s) then s else sub s 0 len;
     (*$T left
   left "abc" 1 = "a"
   left "ab" 3 = "ab"
@@ -993,7 +993,7 @@ module String =
   left "abc" 10 = "abc"
   left "abc" 0 = ""
  *)
-    value right s len =
+    let right s len =
       let slen = length s
       in if len >= slen then s else sub s (slen - len) len;
     (*$T right
@@ -1002,13 +1002,13 @@ module String =
   right "abc" 3 = "abc"
   right "abc" 0 = ""
   right "abc" 10 = "abc" *)
-    value head s pos = left s pos;
+    let head s pos = left s pos;
     (*$T head
   head "abc" 0 = ""
   head "abc" 10 = "abc"
   head "abc" 3 = "abc"
  *)
-    value tail s pos =
+    let tail s pos =
       let slen = length s
       in if pos >= slen then "" else sub s pos (slen - pos);
     (*$T tail
@@ -1023,7 +1023,7 @@ module String =
   tail "abc" 0
   "abc"
  *)
-    value split str ~by: (sep) =
+    let split str ~by: (sep) =
       let p = find str sep in
       let len = length sep in
       let slen = length str
@@ -1040,7 +1040,7 @@ module String =
   split "abcabcd" ~by:"abcd"
   ("abc", "")
  *)
-    value rsplit str ~by: (sep) =
+    let rsplit str ~by: (sep) =
       let p = rfind str sep in
       let len = length sep in
       let slen = length str
@@ -1056,7 +1056,7 @@ module String =
   This implementation traverses the string backwards, hence building the list
   of substrings from the end to the beginning, so as to avoid a call to [List.rev].
  *)
-    value nsplit str ~by: (sep) =
+    let nsplit str ~by: (sep) =
       if str = ""
       then []
       else
@@ -1091,13 +1091,13 @@ module String =
   nsplit "/a/b/c//" ~by:"/" = [""; "a"; "b"; "c"; ""; ""]
   nsplit "FOOaFOObFOOcFOOFOO" ~by:"FOO" = [""; "a"; "b"; "c"; ""; ""]
  *)
-    value join = concat;
-    value unsafe_slice i j s =
+    let join = concat;
+    let unsafe_slice i j s =
       if (i >= j) || (i = (length s)) then create 0 else sub s i (j - i);
-    value clip ~lo ~hi (x : int) =
+    let clip ~lo ~hi (x : int) =
       if x < lo then lo else if x > hi then hi else x;
-    value wrap (x : int) ~hi = if x < 0 then hi + x else x;
-    value slice ?(first = 0) ?(last = Sys.max_string_length) s =
+    let wrap (x : int) ~hi = if x < 0 then hi + x else x;
+    let slice ?(first = 0) ?(last = Sys.max_string_length) s =
       let lo = 0 and hi = length s in
       let i = clip ~lo ~hi (wrap first ~hi) in
       let j = clip ~lo ~hi (wrap last ~hi) in unsafe_slice i j s;
@@ -1109,7 +1109,7 @@ module String =
   slice ~first:(-3) ~last:(-1) "foob" = "oo"
   slice ~first:5 ~last:4 "foobarbaz" = ""
  *)
-    value lchop ?(n = 1) s =
+    let lchop ?(n = 1) s =
       if n < 0
       then invalid_arg "lchop: number of characters to chop is negative"
       else
@@ -1122,7 +1122,7 @@ module String =
   lchop ~n:0 "Weeble" = "Weeble"
   try ignore (lchop ~n:(-1) "Weeble"); false with Invalid_argument _ -> true
  *)
-    value rchop ?(n = 1) s =
+    let rchop ?(n = 1) s =
       if n < 0
       then invalid_arg "rchop: number of characters to chop is negative"
       else
@@ -1134,24 +1134,24 @@ module String =
   rchop ~n:1000 "Weeble" = ""
   try ignore (rchop ~n:(-1) "Weeble"); false with Invalid_argument _ -> true
  *)
-    value of_int = string_of_int;
+    let of_int = string_of_int;
     (*$T of_int
   of_int 56 = "56"
   of_int (-1) = "-1"
  *)
-    value of_float = string_of_float;
-    value of_char = make 1;
+    let of_float = string_of_float;
+    let of_char = make 1;
     (*$T of_char
   of_char 's' = "s"
   of_char '\000' = "\000"
  *)
-    value to_int s = int_of_string s;
+    let to_int s = int_of_string s;
     (*$T to_int
   to_int "8_480" = to_int "0x21_20"
   try ignore (to_int ""); false with Failure "int_of_string" -> true
   try ignore (to_int "2,3"); false with Failure "int_of_string" -> true
  *)
-    value to_float s = float_of_string s;
+    let to_float s = float_of_string s;
   end;
 (*$T to_float
   to_float "12.34e-1" = to_float "1.234"
@@ -1199,28 +1199,28 @@ exception Not_implemented;
 module Ref =
   struct
     type t 'a = ref 'a;
-    value post r f = let old = !r in (r := f old; old);
-    value pre r f = (r := f !r; !r);
-    value modify r f = r := f !r;
-    value swap a b = let buf = !a in (a := !b; b := buf);
+    let post r f = let old = !r in (r := f old; old);
+    let pre r f = (r := f !r; !r);
+    let modify r f = r := f !r;
+    let swap a b = let buf = !a in (a := !b; b := buf);
     (*$T swap
   let a = ref 1 and b = ref 2 in swap a b; !a = 2 && !b = 1
  *)
-    value pre_incr r = pre r (( + ) 1);
-    value pre_decr r = pre r (( + ) (-1));
-    value post_incr r = post r (( + ) 1);
-    value post_decr r = post r (( + ) (-1));
+    let pre_incr r = pre r (( + ) 1);
+    let pre_decr r = pre r (( + ) (-1));
+    let post_incr r = post r (( + ) 1);
+    let post_decr r = post r (( + ) (-1));
     (*$T pre_incr
   let r = ref 0 in pre_incr r = 1 && !r = 1
  *)
     (*$T post_incr
   let r = ref 0 in post_incr r = 0 && !r = 1
  *)
-    value copy r = ref !r;
+    let copy r = ref !r;
     (*$T copy
   let r = ref 0 in let s = copy r in r := 1; !s == 0 && !r == 1
  *)
-    value protect r v body =
+    let protect r v body =
       let old = !r
       in
         try (r := v; let res = body (); r := old; res)
@@ -1230,53 +1230,53 @@ module Ref =
   let r = ref 0 in let b () = incr r; if !r=3 then raise Not_found in (try protect r 2 b; false with Not_found -> true) && !r = 0
  *)
     external ref : 'a -> ref 'a = "%makemutable";
-    (** Return a fresh reference containing the given value. *)
+    (** Return a fresh reference containing the given let. *)
     external ( ! ) : ref 'a -> 'a = "%field0";
     (** [!r] returns the current contents of reference [r].
     Equivalent to [fun r -> r.contents]. *)
     external ( := ) : ref 'a -> 'a -> unit = "%setfield0";
-    (** [r := a] stores the value of [a] in reference [r].
+    (** [r := a] stores the let of [a] in reference [r].
     Equivalent to [fun r v -> r.contents <- v]. *)
     external set : ref 'a -> 'a -> unit = "%setfield0";
     (** As [ := ] *)
     external get : ref 'a -> 'a = "%field0";
     (** As [ ! ]*)
-    value print print_a out r = print_a out !r;
-    value toggle r = r := not !r;
+    let print print_a out r = print_a out !r;
+    let toggle r = r := not !r;
     (*$T toggle
   let r = ref true in toggle r; !r = false;
   let r = ref false in toggle r; !r = true;
  *)
-    value oset r x = r := Some x;
-    value oget_exn r =
+    let oset r x = r := Some x;
+    let oget_exn r =
       match !r with [ None -> raise Not_found | Some x -> x ];
     (*  FAIL $T oset, oget_exn
           let r = ref None in oset r 3; oget_exn r = 3
        *)
-    value ord o x y = o !x !y;
-    value eq e x y = e !x !y;
+    let ord o x y = o !x !y;
+    let eq e x y = e !x !y;
   end;
 module Buffer =
   struct
     include Buffer;
     module Ops =
       struct
-        value ( +> ) buf chr = (Buffer.add_char buf chr; buf);
-        value ( +>> ) buf str = (Buffer.add_string buf str; buf);
+        let ( +> ) buf chr = (Buffer.add_char buf chr; buf);
+        let ( +>> ) buf str = (Buffer.add_string buf str; buf);
       end;
   end;
 module Hashtbl =
   struct
     include Hashtbl;
-    value keys tbl = Hashtbl.fold (fun k _v acc -> [ k :: acc ]) tbl [];
-    value values tbl = Hashtbl.fold (fun _k v acc -> [ v :: acc ]) tbl [];
+    let keys tbl = Hashtbl.fold (fun k _v acc -> [ k :: acc ]) tbl [];
+    let lets tbl = Hashtbl.fold (fun _k v acc -> [ v :: acc ]) tbl [];
   end;
 
 
 module SMap = Map.Make(String);
 module SSet = Set.Make(String);
-value (|>) x f = f x;
-value (&) f x = f x;
+let (|>) x f = f x;
+let (&) f x = f x;
 
 type log = string;
 
@@ -1284,34 +1284,34 @@ type result 'a =
   [ Left of 'a
   | Right of log];
 
-(* value left x  =  Left x ; *)
+(* let left x  =  Left x ; *)
   
-value ret x = Left x ;  
-value right x = Right x ;
+let ret x = Left x ;  
+let right x = Right x ;
 
 (** maybe you need more log here *)  
-value (>>=) ma f = match ma with
+let (>>=) ma f = match ma with
   [ Left v -> f v
   | Right x -> Right x (** rewrite to overcome the type system*)
   ];
 
-value (>>|) ma (str,f) = match ma with
+let (>>|) ma (str,f) = match ma with
   [ Left v -> f v
   | Right x -> Right (x ^ str) ]
 ;
   
-value (|-) f g  x =
+let (|-) f g  x =
   g (f x );
 
 (**
    append error message later
  *)  
-value (>>?) ma str = match ma with
+let (>>?) ma str = match ma with
   [ Left _ -> ma
   | Right x -> Right (x^str)]
 ;
   
-value (<|>) fa fb = fun a->
+let (<|>) fa fb = fun a->
   match fa a with
   [ Left _ as x -> x
   | Right str ->
@@ -1319,44 +1319,44 @@ value (<|>) fa fb = fun a->
   ]
 ;
 
-value unwrap f a = match f a with
+let unwrap f a = match f a with
   [ Left res -> res
   | Right msg -> invalid_arg msg]
 ;
   
-value failwithf fmt = ksprintf failwith fmt  ;
+let failwithf fmt = ksprintf failwith fmt  ;
 
-value opt_bind o f = match o with
+let opt_bind o f = match o with
   [Some x -> f x
   | None -> None]
 ;
 
-value opt_map o f = match o with
+let opt_map o f = match o with
   [ Some x -> Some f x
   | None -> None]
 ;
   
-value prerr_endlinef fmt = ksprintf prerr_endline fmt;
+let prerr_endlinef fmt = ksprintf prerr_endline fmt;
 
-value verbose = ref 1;  
-value dprintf ?(log_level=1)   =
+let verbose = ref 1;  
+let dprintf ?(log_level=1)   =
   if !verbose >= log_level then
     (* prerr_endlinef fmt str *)
     eprintf
   else ifprintf err_formatter;
 
 
-value ends_with s e = 
+let ends_with s e = 
    let ne = String.length e
    and ns = String.length s in
    ns >= ne && String.sub s (ns-ne) ne = e 
 ;
 
-value starts_with s e =
+let starts_with s e =
   let ne = String.length e and ns = String.length s in
   ns >= ne && String.sub s 0 ne = e
 ;    
-value is_antiquot_data_ctor s =
+let is_antiquot_data_ctor s =
        ends_with s "Ant"
 ;
 
@@ -1364,7 +1364,7 @@ value is_antiquot_data_ctor s =
    [neg_string "ab" ] = ["-ab"]
    [neg_string ""] = ["-"]
  *)
-value neg_string n =
+let neg_string n =
   let len = String.length n in
   if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
   else "-" ^ n
@@ -1372,7 +1372,7 @@ value neg_string n =
   
 (** f will be incremented for each item
     indexed from 0 *)
-value fold_lefti
+let fold_lefti
      (f : 'a -> int -> 'b -> 'b )
      (ty: list 'a)  (init:'b) : 'b =
     let (_,res) = List.fold_left begin fun (i,acc) ty ->
@@ -1382,7 +1382,7 @@ value fold_lefti
 ;
 
 
-value  mapi_m f xs =
+let  mapi_m f xs =
     let rec aux acc xs = 
       match xs with
     [ [] ->  ret []
@@ -1393,7 +1393,7 @@ value  mapi_m f xs =
     in aux 0 xs
 ;
     
-value mapi f xs =
+let mapi f xs =
   let rec aux acc xs = match xs with
     [ [] -> []
     | [x::xs] ->
@@ -1405,7 +1405,7 @@ value mapi f xs =
 (**
    [start,until]
  *)
-value fold_nat_left ?(start=0) ~until ~acc f = do{
+let fold_nat_left ?(start=0) ~until ~acc f = do{
   let v = ref acc ;
   for x = start to until do
     v := f !v x 
@@ -1415,7 +1415,7 @@ value fold_nat_left ?(start=0) ~until ~acc f = do{
 ;  
 
 
-value iteri f lst =
+let iteri f lst =
   let i = ref 0 in 
   List.iter (fun x -> 
     let () = f !i x in
@@ -1424,7 +1424,7 @@ value iteri f lst =
 
 type dir = [= `Left | `Right];
 
-value reduce_left f lst =
+let reduce_left f lst =
   match lst with
     [ [] -> invalid_arg "reduce_left length zero"
     | [x::xs] ->
@@ -1432,7 +1432,7 @@ value reduce_left f lst =
           [ [] -> x
           | [y::ys] -> loop (f x y) ys] in loop x xs];
     
-value reduce_right_with ~compose ~f  lst =
+let reduce_right_with ~compose ~f  lst =
   match lst with
     [ [] -> invalid_arg "reduce_right length zero"
     | xs ->
@@ -1440,7 +1440,7 @@ value reduce_right_with ~compose ~f  lst =
           [ [] -> assert False
           | [y] -> f y
           | [y::ys] -> compose (f y) (loop ys) ] in loop xs];
-value reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x);
+let reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x);
 
 
 (*
@@ -1453,7 +1453,7 @@ value reduce_right compose = reduce_right_with ~compose ~f:(fun x -> x);
   string = ""
   ]}
  *)  
-value string_drop_while f s =
+let string_drop_while f s =
   let len = String.length s in
   let found = ref False in
   let i = ref 0 in begin 
@@ -1472,7 +1472,7 @@ exception First;
 (** do sequence does not support try with
     use do only for simple construct
  *)
-value find_first f lst =
+let find_first f lst =
   let res = ref None in
   try
     List.iter (fun x ->
@@ -1484,13 +1484,13 @@ value find_first f lst =
 ;
   
 
-value mkmke preds (cons,tyargs)=
+let mkmke preds (cons,tyargs)=
   match find_first (fun pred -> pred(cons,tyargs)) preds with
   [ None -> invalid_arg "mkmke"
   | Some r -> r ]
 ;
 
-value adapt f a =
+let adapt f a =
   Some (f a )
 ;
 
@@ -1498,7 +1498,7 @@ value adapt f a =
 (* Camlp4.PreCast.Syntax.Quotation.default := "expr"; *)
 
 
-value rec intersperse y xs = match xs with
+let rec intersperse y xs = match xs with
   [ [] -> []
   | [x] -> xs
   | [x::xs] ->
@@ -1506,13 +1506,13 @@ value rec intersperse y xs = match xs with
   ]
 ;  
 
-value init n f =
+let init n f =
   Array.( init n f |> to_list)
 ;    
 
 
 
-value to_string_of_printer printer v =
+let to_string_of_printer printer v =
   let buf = Buffer.create 30 in 
   let () = Format.bprintf buf "@[%a@]" printer v in 
   Buffer.contents buf 
@@ -1525,15 +1525,15 @@ value to_string_of_printer printer v =
    string = "\\$listbinding:code"
    ]}
  *)    
-value mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
+let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
 
 (** \\$expr;:code *)
-value is_antiquot s =
+let is_antiquot s =
   let len = String.length s in
   len > 2 && s.[0] = '\\' && s.[1] = '$';
 
   
-value handle_antiquot_in_string ~s ~term ~parse ~loc ~decorate =
+let handle_antiquot_in_string ~s ~term ~parse ~loc ~decorate =
   if is_antiquot s then
     let pos = String.index s ':' in
     let name = String.sub s 2 (pos - 2)
@@ -1541,13 +1541,13 @@ value handle_antiquot_in_string ~s ~term ~parse ~loc ~decorate =
     decorate name (parse loc code)
   else term;
 
-value is_capital c =
+let is_capital c =
   let c = Char.code c  in
   (c >= Char.code 'A' &&
    c <= Char.code 'Z')
 ;
   
-value is_digit c =
+let is_digit c =
   let c = Char.code c in
   (c >= Char.code '0' && c <= Char.code '9')
 ;    
@@ -1557,7 +1557,7 @@ value is_digit c =
    Some "a"
    ]}
  *)
-value destruct_poly s =
+let destruct_poly s =
   let n = String.length s in
   if n = 0 then
     invalid_arg "destruct_poly length=0"
@@ -1567,7 +1567,7 @@ value destruct_poly s =
     else None
 ;
 
-value uncurry f (x,y)  =f x y;
+let uncurry f (x,y)  =f x y;
 (**
    {[
    drop 3 [1;2;3;4];
@@ -1575,7 +1575,7 @@ value uncurry f (x,y)  =f x y;
    list int = [4]
    ]}
  *)  
-value rec drop n = fun
+let rec drop n = fun
   [ [_ :: l] when n > 0 -> drop (n-1) l
   | l -> l]
 ;
@@ -1586,7 +1586,7 @@ value rec drop n = fun
   ([4;3;2;1], 5 )
   ]}
  *)
-value lastbut1 ls = match ls with
+let lastbut1 ls = match ls with
   [ [ ] -> failwith "lastbut1 empty"
   |  _ -> let l = List.rev ls in
      (List.tl l, List.hd l ) ];

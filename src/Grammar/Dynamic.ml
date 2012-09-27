@@ -27,7 +27,7 @@ module Make (Lexer : FanSig.Lexer)
 
   include Structure;
 
-  value mk () =
+  let mk () =
     let gkeywords = Hashtbl.create 301 in
     {
       gkeywords = gkeywords;
@@ -37,36 +37,36 @@ module Make (Lexer : FanSig.Lexer)
       error_verbose = FanConfig.verbose
     };
 
-  value get_filter g = g.gfilter;
+  let get_filter g = g.gfilter;
 
-  value lex g loc cs = g.glexer loc cs;
+  let lex g loc cs = g.glexer loc cs;
 
-  value lex_string g loc str = lex g loc (Stream.of_string str);
+  let lex_string g loc str = lex g loc (Stream.of_string str);
 
-  value filter g ts = Tools.keep_prev_loc (Token.Filter.filter g.gfilter ts);
+  let filter g ts = Tools.keep_prev_loc (Token.Filter.filter g.gfilter ts);
 
-  value parse_tokens_after_filter entry ts = Entry.parse_tokens_after_filter entry ts;
+  let parse_tokens_after_filter entry ts = Entry.parse_tokens_after_filter entry ts;
 
-  value parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter entry.egram ts);
+  let parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter entry.egram ts);
 
-  value parse entry loc cs = parse_tokens_before_filter entry (lex entry.egram loc cs);
+  let parse entry loc cs = parse_tokens_before_filter entry (lex entry.egram loc cs);
 
-  value parse_string entry loc str =
+  let parse_string entry loc str =
     parse_tokens_before_filter entry (lex_string entry.egram loc str);
 
-  value delete_rule = Delete.delete_rule;
+  let delete_rule = Delete.delete_rule;
 
-  value srules e rl =
+  let srules e rl =
     let t =
       List.fold_left
       (fun tree (symbols, action) -> Insert.insert_tree e symbols action tree)
       DeadEnd rl
     in
     Stree t;
-  value sfold0 = Fold.sfold0;
-  value sfold1 = Fold.sfold1;
-  value sfold0sep = Fold.sfold0sep;
-  (* value sfold1sep = Fold.sfold1sep; *)
+  let sfold0 = Fold.sfold0;
+  let sfold1 = Fold.sfold1;
+  let sfold0sep = Fold.sfold0sep;
+  (* let sfold1sep = Fold.sfold1sep; *)
 
-  value extend = Insert.extend;
+  let extend = Insert.extend;
 end;

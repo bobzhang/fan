@@ -7,12 +7,12 @@ module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
       open PreCast;
-      value printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
+      let printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
         Hashtbl.create 30;
-      (* value dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
-      value rcall_callback = ref (fun () -> ());
-      value loaded_modules = ref SSet.empty;
-      value add_to_loaded_modules name =
+      (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
+      let rcall_callback = ref (fun () -> ());
+      let loaded_modules = ref SSet.empty;
+      let add_to_loaded_modules name =
         loaded_modules := SSet.add name !loaded_modules;
 
       FanUtil.ErrorHandler.register
@@ -21,12 +21,12 @@ module Camlp4Bin
                 fprintf ppf "%a:@\n%a" FanLoc.print loc FanUtil.ErrorHandler.print exn
                   | exn -> raise exn ]);
       module DynLoader = DynLoader.Make (struct end);
-      (* value plugins = Hashtbl.create 50;      *)
-      value (objext,libext) =
+      (* let plugins = Hashtbl.create 50;      *)
+      let (objext,libext) =
         if DynLoader.is_native then (".cmxs",".cmxs")
         else (".cmo",".cma");
       
-      value rewrite_and_load n x =
+      let rewrite_and_load n x =
         let dyn_loader = !DynLoader.instance () in 
         let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do {
@@ -187,10 +187,10 @@ module Camlp4Bin
           !rcall_callback ();
         };
       
-      value print_warning = eprintf "%a:\n%s@." FanLoc.print;
+      let print_warning = eprintf "%a:\n%s@." FanLoc.print;
 
       (* camlp4 directive handler *)  
-      value rec parse_file dyn_loader name pa getdir =
+      let rec parse_file dyn_loader name pa getdir =
         let directive_handler = Some (fun ast ->
           match getdir ast with
           [ Some x ->
@@ -214,26 +214,26 @@ module Camlp4Bin
           phr
         };
       
-      value output_file = ref None;
+      let output_file = ref None;
       
-      value process dyn_loader name pa pr clean fold_filters getdir =
+      let process dyn_loader name pa pr clean fold_filters getdir =
           parse_file dyn_loader name pa getdir
           |> fold_filters (fun t filter -> filter t )
           |> clean
           |> pr ?input_file:(Some name) ?output_file:!output_file ;
-      value gind = fun
+      let gind = fun
         [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
-      value gimd = fun
+      let gimd = fun
         [ <:str_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
       
-      value process_intf dyn_loader name =
+      let process_intf dyn_loader name =
         process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new Camlp4Ast.clean_ast)#sig_item
                 PreCast.Syntax.AstFilters.fold_interf_filters gind;
-      value process_impl dyn_loader name =
+      let process_impl dyn_loader name =
         process
           dyn_loader
           name
@@ -248,16 +248,16 @@ module Camlp4Bin
         in-consistent behavior
        *)  
         
-      value just_print_the_version () =
+      let just_print_the_version () =
         do { printf "%s@." FanConfig.version; exit 0 };
       
-      value print_version () =
+      let print_version () =
         do { eprintf "Camlp4 version %s@." FanConfig.version; exit 0 };
       
-      value print_stdlib () =
+      let print_stdlib () =
         do { printf "%s@." FanConfig.camlp4_standard_library; exit 0 };
       
-      value usage ini_sl ext_sl =
+      let usage ini_sl ext_sl =
         do {
           eprintf "\
       Usage: camlp4 [load-options] [--] [other-options]\n\
@@ -280,7 +280,7 @@ module Camlp4Bin
           else ();
         };
       
-      value warn_noassert () =
+      let warn_noassert () =
         do {
           eprintf "\
       camlp4 warning: option -noassert is obsolete\n\
@@ -294,9 +294,9 @@ module Camlp4Bin
         | ModuleImpl of string
         | IncludeDir of string ];
       
-      value search_stdlib = ref True;
-      value print_loaded_modules = ref False;
-      value (task, do_task) =
+      let search_stdlib = ref True;
+      let print_loaded_modules = ref False;
+      let (task, do_task) =
         let t = ref None in
         let task f x =
           let () = FanConfig.current_input_file := x in
@@ -304,7 +304,7 @@ module Camlp4Bin
                          else (fun usage -> usage ())) in
         let do_task usage = match !t with [ Some f -> f usage | None -> () ] in
         (task, do_task);
-      value input_file x =
+      let input_file x =
         let dyn_loader = !DynLoader.instance () in 
         do {
           !rcall_callback ();
@@ -324,7 +324,7 @@ module Camlp4Bin
           !rcall_callback ();
         };
       
-      value initial_spec_list =
+      let initial_spec_list =
         [("-I", Arg.String (fun x -> input_file (IncludeDir x)),
           "<directory>  Add directory in search patch for object files.");
         ("-where", Arg.Unit print_stdlib,
@@ -371,7 +371,7 @@ module Camlp4Bin
       FanUtil.Options.init initial_spec_list;
 
       (* handle the file name *)  
-      value anon_fun name =
+      let anon_fun name =
         input_file
         (if Filename.check_suffix name ".mli" then Intf name
           else if Filename.check_suffix name ".ml" then Impl name
@@ -379,7 +379,7 @@ module Camlp4Bin
           else if Filename.check_suffix name libext then ModuleImpl name
           else raise (Arg.Bad ("don't know what to do with " ^ name)));
       
-      value main argv =
+      let main argv =
         let usage () = do { usage initial_spec_list (FanUtil.Options.ext_spec_list ()); exit 0 } in
         try begin
           let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib

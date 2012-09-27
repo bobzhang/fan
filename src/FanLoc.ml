@@ -25,7 +25,7 @@ type t = {
 
 
 (* Debug section *)
-value dump_sel f x =
+let dump_sel f x =
   let s =
     match x with
     [ `start -> "`start"
@@ -34,11 +34,11 @@ value dump_sel f x =
     | _      -> "<not-printable>" ]
   in pp_print_string f s;
   
-value dump_pos f x =
+let dump_pos f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
           x.line x.bol x.off;
   
-value dump_long f x =
+let dump_long f x =
   fprintf f
     "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
     x.file_name dump_pos x.start (x.start.off - x.start.bol)
@@ -46,17 +46,17 @@ value dump_long f x =
     (x.stop.off - x.stop.bol) x.ghost;
 
 (** Print the location in a short format useful for debugging. *)  
-value dump f x =
+let dump f x =
   fprintf f "[%S: %d:%d-%d %d:%d%t]"
     x.file_name x.start.line (x.start.off - x.start.bol)
     (x.stop.off - x.start.bol) x.stop.line (x.stop.off - x.stop.bol)
     (fun o -> if x.ghost then fprintf o " (ghost)" else ());
 
-value start_pos = { line = 1 ; bol = 0 ; off = 0 };
+let start_pos = { line = 1 ; bol = 0 ; off = 0 };
 
 (** The [ghost] location can be used when no location
         information is available. *)
-value ghost =
+let ghost =
   { file_name = "ghost-location";
     start     = start_pos;
     stop      = start_pos;
@@ -64,7 +64,7 @@ value ghost =
 
 (** Return a start location for the given file name.
     This location starts at the begining of the file. *)
-value mk file_name =
+let mk file_name =
   debug loc "mk %s@\n" file_name in
   { file_name = file_name;
     start     = start_pos;
@@ -72,7 +72,7 @@ value mk file_name =
     ghost     = False    };
 (** Return a location from [(file_name, start_line, start_bol, start_off,
             stop_line,  stop_bol,  stop_off, ghost)]. *)
-value of_tuple (file_name, start_line, start_bol, start_off,
+let of_tuple (file_name, start_line, start_bol, start_off,
                           stop_line,  stop_bol,  stop_off, ghost) =
   { file_name = file_name;
     start     = { line = start_line ; bol = start_bol ; off = start_off };
@@ -81,7 +81,7 @@ value of_tuple (file_name, start_line, start_bol, start_off,
 
 (** Return [(file_name, start_line, start_bol, start_off,
             stop_line,  stop_bol,  stop_off, ghost)]. *)
-value to_tuple
+let to_tuple
   { file_name = file_name;
     start     = { line = start_line ; bol = start_bol ; off = start_off };
     stop      = { line = stop_line  ; bol = stop_bol  ; off = stop_off  };
@@ -89,7 +89,7 @@ value to_tuple
   (file_name, start_line, start_bol, start_off,
               stop_line,  stop_bol,  stop_off, ghost);
 
-value pos_of_lexing_position p =
+let pos_of_lexing_position p =
   let pos =
   { line = p.Lexing.pos_lnum ;
     bol  = p.Lexing.pos_bol  ;
@@ -97,7 +97,7 @@ value pos_of_lexing_position p =
   debug loc "pos_of_lexing_position: %a@\n" dump_pos pos in
   pos;
 
-value pos_to_lexing_position p file_name =
+let pos_to_lexing_position p file_name =
   (* debug loc "pos_to_lexing_position: %a@\n" dump_pos p in *)
   { Lexing.
     pos_fname = file_name;
@@ -105,7 +105,7 @@ value pos_to_lexing_position p file_name =
     pos_bol   = p.bol    ;
     pos_cnum  = p.off    };
 
-value better_file_name a b =
+let better_file_name a b =
   match (a, b) with
   [ ("", "") -> a
   | ("", x)  -> x
@@ -115,7 +115,7 @@ value better_file_name a b =
   | (x, _)   -> x ];
     
 (** Return a location from ocamllex buffer. *)
-value of_lexbuf lb =
+let of_lexbuf lb =
   let start = Lexing.lexeme_start_p lb
   and stop  = Lexing.lexeme_end_p lb in
   let loc =
@@ -127,7 +127,7 @@ value of_lexbuf lb =
   loc;
 
 (** Return a location where both positions are set the given position. *)
-value of_lexing_position pos =
+let of_lexing_position pos =
   let loc =
   { file_name = pos.Lexing.pos_fname;
     start     = pos_of_lexing_position pos;
@@ -137,7 +137,7 @@ value of_lexing_position pos =
   loc;
 
 (** Return an OCaml location. *)
-value to_ocaml_location x =
+let to_ocaml_location x =
   debug loc "to_ocaml_location: %a@\n" dump x in
   { Location.
     loc_start = pos_to_lexing_position x.start x.file_name;
@@ -145,7 +145,7 @@ value to_ocaml_location x =
     loc_ghost = x.ghost };
 
 (** Return a location from an OCaml location. *)
-value of_ocaml_location { Location.loc_start = a; loc_end = b; loc_ghost = g } =
+let of_ocaml_location { Location.loc_start = a; loc_end = b; loc_ghost = g } =
   let res =
     { file_name = better_file_name a.Lexing.pos_fname b.Lexing.pos_fname;
       start     = pos_of_lexing_position a;
@@ -155,14 +155,14 @@ value of_ocaml_location { Location.loc_start = a; loc_end = b; loc_ghost = g } =
   res;
 
 (** Return the start position as a Lexing.position. *)
-value start_pos x = pos_to_lexing_position x.start x.file_name;
+let start_pos x = pos_to_lexing_position x.start x.file_name;
 
 (** Return the stop position as a Lexing.position. *)  
-value stop_pos x = pos_to_lexing_position x.stop x.file_name;
+let stop_pos x = pos_to_lexing_position x.stop x.file_name;
 
 (** [merge loc1 loc2] Return a location that starts at [loc1] and end at
             [loc2]. *)  
-value merge a b =
+let merge a b =
   if a == b then
     debug loc "trivial merge@\n" in
     a
@@ -182,27 +182,27 @@ value merge a b =
     in debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in r;
 
 (** The stop pos becomes equal to the start pos. *)
-value join x = { (x) with stop = x.start };
+let join x = { (x) with stop = x.start };
 
-value map f start_stop_both x =
+let map f start_stop_both x =
   match start_stop_both with
   [ `start -> { (x) with start = f x.start }
   | `stop  -> { (x) with stop  = f x.stop }
   | `both  -> { (x) with start = f x.start; stop  = f x.stop } ];
 
-value move_pos chars x = { (x) with off = x.off + chars };
+let move_pos chars x = { (x) with off = x.off + chars };
   
 (** [move selector n loc]
     Return the location where positions are moved.
     Affected positions are chosen with [selector].
     Returned positions have their character offset plus [n]. *)
-value move s chars x =
+let move s chars x =
   debug loc "move %a %d %a@\n" dump_sel s chars dump x in
   map (move_pos chars) s x;
 
 (** [move_line n loc] Return the location with the old line count plus [n].
             The "begin of line" of both positions become the current offset. *)
-value move_line lines x =
+let move_line lines x =
   debug loc "move_line %d %a@\n" lines dump x in
   let move_line_pos x =
     { (x) with line = x.line + lines ; bol = x.off }
@@ -212,50 +212,50 @@ value move_line lines x =
 (** [shift n loc] Return the location where the new start position is the old
             stop position, and where the new stop position character offset is the
             old one plus [n]. *)  
-value shift width x =
+let shift width x =
   { (x) with start = x.stop ; stop = move_pos width x.stop };
 
 (** Return the file name *)
-value file_name  x = x.file_name;
+let file_name  x = x.file_name;
   
 (** Return the line number of the begining of this location. *)
-value start_line x = x.start.line;
+let start_line x = x.start.line;
 
 (** Return the line number of the ending of this location. *)  
-value stop_line  x = x.stop.line;
+let stop_line  x = x.stop.line;
 
 (** Returns the number of characters from the begining of the stream
     to the begining of the line of location's begining. *)
- value start_bol  x = x.start.bol;
+ let start_bol  x = x.start.bol;
    
 (** Returns the number of characters from the begining of the stream
             to the begining of the line of location's ending. *)
-value stop_bol   x = x.stop.bol;
+let stop_bol   x = x.stop.bol;
 
 (** Returns the number of characters from the begining of the stream
             of the begining of this location. *)  
-value start_off  x = x.start.off;
+let start_off  x = x.start.off;
 
 (** Return the number of characters from the begining of the stream
             of the ending of this location. *)  
-value stop_off   x = x.stop.off;
+let stop_off   x = x.stop.off;
 
 (** Generally, return true if this location does not come
     from an input stream. *)
-value is_ghost   x = x.ghost;
+let is_ghost   x = x.ghost;
 
 (** Return the location with the give file name *)
-value set_file_name s x =
+let set_file_name s x =
   debug loc "set_file_name: %a@\n" dump x in
   { (x) with file_name = s };
 
 (** Return the associated ghost location. *)
-value ghostify x =
+let ghostify x =
   debug loc "ghostify: %a@\n" dump x in
   { (x) with ghost = True };
 
 (** Return the location with an absolute file name. *)
-value make_absolute x =
+let make_absolute x =
   debug loc "make_absolute: %a@\n" dump x in
   let pwd = Sys.getcwd () in
   if Filename.is_relative x.file_name then
@@ -264,13 +264,13 @@ value make_absolute x =
 
 (** [strictly_before loc1 loc2] True if the stop position of [loc1] is
             strictly_before the start position of [loc2]. *)
-value strictly_before x y =
+let strictly_before x y =
   let b = x.stop.off < y.start.off && x.file_name = y.file_name in
   debug loc "%a [strictly_before] %a => %b@\n" dump x dump y b in
   b;
 
 (** Same as {!print} but return a string instead of printting it. *)
-value to_string x = do {
+let to_string x = do {
   let (a, b) = (x.start, x.stop) in
   let res = sprintf "File \"%s\", line %d, characters %d-%d"
                     x.file_name a.line (a.off - a.bol) (b.off - a.bol) in
@@ -282,9 +282,9 @@ value to_string x = do {
 
 (** Print the location into the formatter in a format suitable for error
     reporting. *)
-value print out x = pp_print_string out (to_string x);
+let print out x = pp_print_string out (to_string x);
 
-value check x msg =
+let check x msg =
   if ((start_line x) > (stop_line x) ||
       (start_bol x) > (stop_bol x) ||
       (start_off x) > (stop_off x) ||
@@ -294,7 +294,7 @@ value check x msg =
       (* Here, we don't check
         (start_off x) < (start_bol x) || (stop_off x) < (start_bol x)
         since the lexer is called on antiquotations, with off=0, but line and bolpos
-        have "correct" values *)
+        have "correct" lets *)
   then do {
     eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
     False
@@ -311,11 +311,11 @@ exception Exc_located of t and exn;
 
 (** The name of the location variable used in grammars and in
     the predefined quotations for OCaml syntax trees. Default: [_loc]. *)
-value name = ref "_loc";
+let name = ref "_loc";
 
 (** [raise loc e], if [e] is already an [Exc_located] exception,
             re-raise it, else raise the exception [Exc_located loc e]. *)
-value raise loc exc =
+let raise loc exc =
   match exc with
   [ Exc_located _ _ -> raise exc
   | _ -> raise (Exc_located loc exc) ];

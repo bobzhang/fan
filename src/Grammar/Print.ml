@@ -22,14 +22,14 @@ module Make (Structure : Structure.S) = struct
   open Format;
   open FanSig.Grammar;
 
-  value rec flatten_tree =
+  let rec flatten_tree =
     fun
     [ DeadEnd -> []
     | LocAct _ _ -> [[]]
     | Node {node = n; brother = b; son = s} ->
         [ [n :: l] | l <- flatten_tree s ] @ flatten_tree b ];
 
-  value rec print_symbol ppf =
+  let rec print_symbol ppf =
     fun
     [ Smeta n sl _ -> print_meta ppf n sl
     | Slist0 s -> fprintf ppf "LIST0 %a" print_symbol1 s
@@ -97,7 +97,7 @@ module Make (Structure : Structure.S) = struct
     }
   ;
 
-  value levels ppf elev =
+  let levels ppf elev =
     let _ =
       List.fold_left
         (fun sep lev ->
@@ -122,7 +122,7 @@ module Make (Structure : Structure.S) = struct
     in
     ();
 
-  value entry ppf e =
+  let entry ppf e =
     do {
       fprintf ppf "@[<v 0>%s: [ " e.ename;
       match e.edesc with
@@ -140,7 +140,7 @@ module MakeDump (Structure : Structure.S) = struct
 
   type brothers = [ Bro of symbol and list brothers ];
 
-  value rec print_tree ppf tree =
+  let rec print_tree ppf tree =
     let rec get_brothers acc =
       fun
       [ DeadEnd -> List.rev acc
@@ -233,7 +233,7 @@ module MakeDump (Structure : Structure.S) = struct
     }
   ;
 
-  value levels ppf elev =
+  let levels ppf elev =
     let _ =
       List.fold_left
         (fun sep lev ->
@@ -258,7 +258,7 @@ module MakeDump (Structure : Structure.S) = struct
     in
     ();
 
-  value entry ppf e =
+  let entry ppf e =
     do {
       fprintf ppf "@[<v 0>%s: [ " e.ename;
       match e.edesc with

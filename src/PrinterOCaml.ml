@@ -1,11 +1,11 @@
 open Format;
 
 module Id = struct
-  value name = "Printers.OCaml";
-  value version = Sys.ocaml_version;
+  let name = "Printers.OCaml";
+  let version = Sys.ocaml_version;
 end;
 module P = struct
-value print_implem ?input_file:(_) ?output_file ast =
+let print_implem ?input_file:(_) ?output_file ast =
   let pt = Ast2pt.str_item ast in
   FanUtil.with_open_out_file output_file
     (fun oc ->
@@ -13,7 +13,7 @@ value print_implem ?input_file:(_) ?output_file ast =
       let () = Pprintast.print_structure fmt pt in 
       pp_print_flush fmt ();
     );
-value print_interf ?input_file:(_) ?output_file ast =
+let print_interf ?input_file:(_) ?output_file ast =
   let pt = Ast2pt.sig_item ast in
   FanUtil.with_open_out_file output_file
     (fun oc ->

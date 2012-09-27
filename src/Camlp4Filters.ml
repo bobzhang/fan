@@ -1,8 +1,8 @@
 (* open Camlp4; *)
 open FanUtil;
 module IdAstLifter = struct
-  value name    = "Camlp4AstLifter";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4AstLifter";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
@@ -10,8 +10,8 @@ module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   module MetaLoc = struct
     module Ast = Ast;
-    value meta_loc_patt _loc _ = <:patt< loc >>;
-    value meta_loc_expr _loc _ = <:expr< loc >>;
+    let meta_loc_patt _loc _ = <:patt< loc >>;
+    let meta_loc_expr _loc _ = <:expr< loc >>;
   end;
   module MetaAst = Ast.Meta.Make MetaLoc;
 
@@ -22,14 +22,14 @@ module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
 end;
 
 module IdExceptionTracer = struct
-  value name    = "Camlp4ExceptionTracer";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4ExceptionTracer";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
 
   module Ast = Camlp4Ast; (* FIXME future, Ast can be customized *)
-  value add_debug_expr e =
+  let add_debug_expr e =
     let _loc = Ast.loc_of_expr e in
     let msg = "camlp4-debug: exc: %s at " ^ FanLoc.to_string _loc ^ "@." in
     <:expr<
@@ -41,7 +41,7 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
             raise exc
           } ] >>;
 
-  value rec map_match_case =
+  let rec map_match_case =
     fun
     [ <:match_case@_loc< $m1 | $m2 >> ->
         <:match_case< $(map_match_case m1) | $(map_match_case m2) >>
@@ -49,7 +49,7 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
         <:match_case@_loc< $p when $w -> $(add_debug_expr e) >>
     | m -> m ];
 
-  value filter = object
+  let filter = object
     inherit Ast.map as super;
     method expr = fun
     [ <:expr@_loc< fun [ $m ] >>  -> <:expr< fun [ $(map_match_case m) ] >>
@@ -63,16 +63,16 @@ end;
 
 
 module IdFoldGenerator = struct
-  value name    = "Camlp4FoldGenerator";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4FoldGenerator";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
-  value _loc = FanLoc.ghost;
-  value sf = Printf.sprintf;
+  let _loc = FanLoc.ghost;
+  let sf = Printf.sprintf;
 
-  value xik i k =
+  let xik i k =
     let i =
       if i < 0 then assert False
       else if i = 0 then ""
@@ -84,45 +84,45 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
       else sf "_k%d" k
     in
     sf "_x%s%s" i k;
-  value exik i k = <:expr< $(lid:xik i k) >>;
-  value pxik i k = <:patt< $(lid:xik i k) >>;
-  value elidk y k = <:expr< $(lid:sf "%s_%d" y k) >>;
-  value plidk y k = <:patt< $(lid:sf "%s_%d" y k) >>;
+  let exik i k = <:expr< $(lid:xik i k) >>;
+  let pxik i k = <:patt< $(lid:xik i k) >>;
+  let elidk y k = <:expr< $(lid:sf "%s_%d" y k) >>;
+  let plidk y k = <:patt< $(lid:sf "%s_%d" y k) >>;
 
-  value xs s = "_x_" ^ s;
-  value xsk = sf "_x_%s_%d";
-  value exsk s k = <:expr< $(lid:xsk s k)>>;
+  let xs s = "_x_" ^ s;
+  let xsk = sf "_x_%s_%d";
+  let exsk s k = <:expr< $(lid:xsk s k)>>;
 
-  value rec apply_expr accu =
+  let rec apply_expr accu =
     fun
     [ [] -> accu
     | [x :: xs] ->
         let _loc = Ast.loc_of_expr x
         in apply_expr <:expr< $accu $x >> xs ];
 
-  value rec apply_patt accu =
+  let rec apply_patt accu =
     fun
     [ [] -> accu
     | [x :: xs] ->
         let _loc = Ast.loc_of_patt x
         in apply_patt <:patt< $accu $x >> xs ];
 
-  value rec apply_ctyp accu =
+  let rec apply_ctyp accu =
     fun
     [ [] -> accu
     | [x :: xs] ->
         let _loc = Ast.loc_of_ctyp x
         in apply_ctyp <:ctyp< $accu $x >> xs ];
 
-  value opt_map f = fun [ Some x -> Some (f x) | None -> None ];
+  let opt_map f = fun [ Some x -> Some (f x) | None -> None ];
 
-  value list_init f n =
+  let list_init f n =
     let rec self m =
       if m = n then []
       else [f m :: self (succ m)]
     in self 0;
 
-  value rec lid_of_ident sep =
+  let rec lid_of_ident sep =
     fun
     [ <:ident< $lid:s >> | <:ident< $uid:s >> -> s
     | <:ident< $i1.$i2 >> -> lid_of_ident sep i1 ^ sep ^ lid_of_ident sep i2
@@ -130,7 +130,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   type type_decl = (string * Ast.ident * list Ast.ctyp * Ast.ctyp * bool);
 
-  value builtin_types =
+  let builtin_types =
     let tyMap = SMap.empty in
     let tyMap =
       let abstr = ["string"; "int"; "float"; "int32"; "int64"; "nativeint"; "char"] in
@@ -148,16 +148,16 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     in
     tyMap;
 
-  value used_builtins = ref SMap.empty;
+  let used_builtins = ref SMap.empty;
 
-  value store_if_builtin_type id =
+  let store_if_builtin_type id =
     if SMap.mem id builtin_types then
       used_builtins := SMap.add id (SMap.find id builtin_types) !used_builtins
     else ();
 
   type mode = [ Fold | Map | Fold_map ];
 
-  value string_of_mode = fun [ Fold -> "fold" | Map -> "map" | Fold_map -> "fold_map" ];
+  let string_of_mode = fun [ Fold -> "fold" | Map -> "map" | Fold_map -> "fold_map" ];
 
   module Gen (X :
     sig
@@ -166,10 +166,10 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     end) =
     struct
 
-      value size = X.size;
-      value mode = X.mode;
+      let size = X.size;
+      let mode = X.mode;
 
-      value tuplify_expr f =
+      let tuplify_expr f =
         if size <= 0 then assert False
         else if size = 1 then f 1
         else
@@ -178,7 +178,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             else <:expr< $(loop (k - 1)), $(f k) >>
           in <:expr< ($(f 1), $(loop size)) >>;
 
-      value tuplify_patt f =
+      let tuplify_patt f =
         if size <= 0 then assert False
         else if size = 1 then f 1
         else
@@ -187,9 +187,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             else <:patt< $(loop (k - 1)), $(f k) >>
           in <:patt< ($(f 1), $(loop size)) >>;
 
-      value xiks i = tuplify_expr (exik i);
+      let xiks i = tuplify_expr (exik i);
 
-      value tuplify_type typ =
+      let tuplify_type typ =
         if size <= 0 then assert False
         else if size = 1 then typ
         else
@@ -198,9 +198,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             else <:ctyp< $(loop (k - 1)) * $typ >>
           in <:ctyp< ($typ * $(loop size)) >>;
 
-      value tuplify_tycon tycon = tuplify_type <:ctyp< $lid:tycon >>;
+      let tuplify_tycon tycon = tuplify_type <:ctyp< $lid:tycon >>;
 
-      value rec patt_of_expr =
+      let rec patt_of_expr =
         fun
         [ <:expr<>> -> <:patt<>>
         | <:expr< $id:i >> -> <:patt< $id:i >>
@@ -208,19 +208,19 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         | <:expr< $tup:e >> -> <:patt< $(tup:patt_of_expr e) >>
         | _ -> assert False ];
 
-      value bind p e1 e2 =
+      let bind p e1 e2 =
         match mode with
         [ Fold_map -> <:expr< let (o, $p) = $e1 in $e2 >>
         | Map      -> <:expr< let $p = $e1 in $e2 >>
         | Fold     -> <:expr< let o = $e1 in $e2 >> ];
 
-      value return e =
+      let return e =
         match mode with
         [ Fold_map -> <:expr< (o, $e) >>
         | Map      -> e
         | Fold     -> <:expr<o>> ];
 
-      value rec opt_bind opt_patt e1 mk_e2 =
+      let rec opt_bind opt_patt e1 mk_e2 =
         match e1 with
         [ <:expr< $id:_ >> | <:expr< $lid:_#$_ >> -> mk_e2 e1
         | <:expr< let $p1 = $e1 in $e2 >> ->
@@ -232,7 +232,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             | None -> <:expr< (fun o -> $e1) $e2 >> ] ];
 
         (* ts = [t1; ...; tN] *)
-      value chain_tuple mkp mke expr_of_ty ts =
+      let chain_tuple mkp mke expr_of_ty ts =
         (* exiks = [<<(x_i0_k1, ..., x_i0_kM)>>; ...; <<(x_iN_k1, ..., x_iN_kM)>>] *)
         let exiks = list_init (fun i -> tuplify_expr (exik i)) (List.length ts) in
         (* exi1s, pxi1s = [<<x_i0_k1>>; ...; <<x_iN_k1>>] *)
@@ -249,7 +249,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         in
         <:match_case< $p -> $e >>;
 
-      value mk_tuple expr_of_ty t =
+      let mk_tuple expr_of_ty t =
         let mc =
           chain_tuple
             (fun ps -> <:patt< $(tup:Ast.paCom_of_list ps) >>)
@@ -257,21 +257,21 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             expr_of_ty (Ast.list_of_ctyp t [])
         in <:expr< fun [ $mc ] >>;
 
-      value default_match_case =
+      let default_match_case =
         let mk k = if k = 1 then <:patt< x >> else <:patt< _ >> in
         match mode with
         [ Fold_map -> <:match_case< $(tuplify_patt mk) -> (o, x) >>
         | Fold     -> <:match_case< _ -> o >>
         | Map      -> <:match_case< $(tuplify_patt mk) -> x >> ];
 
-      value default_expr = <:expr< fun [ $default_match_case ] >>;
+      let default_expr = <:expr< fun [ $default_match_case ] >>;
 
-      value mkfuno e =
+      let mkfuno e =
         match e with
         [ <:expr< $e o >> -> e
         | _ -> <:expr< fun o -> $e >> ];
 
-      value is_unknown t =
+      let is_unknown t =
         let rec loop t =
           match t with
           [ <:ctyp< $lid:_ >> -> False
@@ -283,7 +283,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         [ <:ctyp< $uid:_ >> -> False
         | t -> loop t ];
 
-      value contains_unknown t =
+      let contains_unknown t =
         try
           let (_ : < .. >) =
             object
@@ -293,7 +293,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
           in False
         with [ Exit -> True ];
 
-      value opt_bind' ox e1 mk_e2 =
+      let opt_bind' ox e1 mk_e2 =
         let mk_e2 =
           match ox with
           [ Some x -> fun e1 -> <:expr< $(mk_e2 e1) $x >>
@@ -302,14 +302,14 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         opt_bind (opt_map patt_of_expr ox) e1 mk_e2;
 
     (* FIXME finish me
-      value rec is_simple =
+      let rec is_simple =
         fun
         [ <:expr< $id:_$ >> -> True
         | <:expr< $e$#$_$ >> | <:expr< $tup:e$ >> -> is_simple e
         | <:expr< $e1$ $e2$ >> | <:expr< $e1$, $e2$ >> -> is_simple e1 && is_simple e2
         | _ -> False ];
 
-      value app e1 e2 =
+      let app e1 e2 =
         let is_e1_simple = is_simple e1 in
         let is_e2_simple = is_simple e2 in
         if is_e1_simple then
@@ -320,12 +320,12 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
             let x = fresh "y" in <:expr< let $lid:y$ = $e1$ in $lid:y$ $e2$ >>
           else ; *)
 
-      value opt_app e ox =
+      let opt_app e ox =
         match ox with
         [ Some x -> <:expr< $e $x >> (* call app *)
         | _ -> e ];
 
-      value rec expr_of_ty x ty =
+      let rec expr_of_ty x ty =
         let rec self ?(arity=0) ox =
           fun
           [ t when is_unknown t ->
@@ -524,7 +524,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   end;
 
-  value rec tyMap_of_type_decls t acc =
+  let rec tyMap_of_type_decls t acc =
     match t with
     [ <:ctyp<>> -> acc
     | <:ctyp< $t1 and $t2 >> ->
@@ -533,9 +533,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         SMap.add name (name, <:ident< $lid:name >>, tl, tk, False) acc
     | _ -> assert False ];
 
-  value generate_class_implem mode c tydcl n =
+  let generate_class_implem mode c tydcl n =
     let tyMap = tyMap_of_type_decls tydcl SMap.empty in
-    let module M = Gen(struct value size = n; value mode = mode; end) in
+    let module M = Gen(struct let size = n; let mode = mode; end) in
     let generated = M.generate_structure tyMap in
     let gen_type =
       <:ctyp< ! 'a 'b . $(M.method_type_of_type <:ctyp< 'a >> <:ctyp< 'b >> [] []) >>
@@ -556,9 +556,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     in
     <:str_item< class $lid:c = object (o : 'self_type) $generated; $failure; $unknown end >>;
 
-  value generate_class_interf mode c tydcl n =
+  let generate_class_interf mode c tydcl n =
     let tyMap = tyMap_of_type_decls tydcl SMap.empty in
-    let module M = Gen(struct value size = n; value mode = mode; end) in
+    let module M = Gen(struct let size = n; let mode = mode; end) in
     let generated = M.generate_signature tyMap in
     let gen_type =
       <:ctyp< ! 'a 'b . $(M.method_type_of_type <:ctyp< 'a >> <:ctyp< 'b >> [] []) >>
@@ -577,7 +577,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     in
     <:sig_item< class $lid:c : object ('self_type) $generated; $failure; $unknown end >>;
 
-  value processor =
+  let processor =
     let last = ref <:ctyp<>> in
     let generate_class' generator default c s n =
       match s with
@@ -644,8 +644,8 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 end;
   
 module IdLocationStripper = struct
-  value name    = "Camlp4LocationStripper";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4LocationStripper";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeLocationStripper (Syn : Sig.Camlp4Syntax) = struct
@@ -655,13 +655,13 @@ end;
 
 
 module IdProfiler = struct
-  value name    = "Camlp4Profiler";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4Profiler";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
-  value decorate_binding decorate_fun = object
+  let decorate_binding decorate_fun = object
     inherit Ast.map as super;
     method binding =
       fun
@@ -670,12 +670,12 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
       | b -> super#binding b ];
   end#binding;
 
-  value decorate decorate_fun = object (o)
+  let decorate decorate_fun = object (o)
     inherit Ast.map as super;
     method str_item =
       fun
-      [ <:str_item@_loc< value $rec:r $b >> ->
-          <:str_item< value $rec:r $(decorate_binding decorate_fun b) >>
+      [ <:str_item@_loc< let $rec:r $b >> ->
+          <:str_item< let $rec:r $(decorate_binding decorate_fun b) >>
       | st -> super#str_item st ];
     method expr =
       fun
@@ -685,14 +685,14 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
       | e -> super#expr e ];
   end;
 
-  value decorate_this_expr e id =
+  let decorate_this_expr e id =
     let buf = Buffer.create 42 in
     let _loc = Ast.loc_of_expr e in
     let () = Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc in
     let s = Buffer.contents buf in
     <:expr< let () = Camlp4prof.count $`str:s in $e >>;
 
-  value rec decorate_fun id =
+  let rec decorate_fun id =
     let decorate = decorate decorate_fun in
     let decorate_expr = decorate#expr in
     let decorate_match_case = decorate#match_case in
@@ -708,8 +708,8 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
 end;
   
 module IdTrashRemover = struct
-  value name    = "Camlp4TrashRemover";
-  value version = Sys.ocaml_version;
+  let name    = "Camlp4TrashRemover";
+  let version = Sys.ocaml_version;
 end;
 
 module MakeTrashRemover (Syn : Sig.Camlp4Syntax) = struct
@@ -726,8 +726,8 @@ end;
 (* module SMap = Map.Make String; *)
 
 module IdMetaGenerator = struct
-  value name = "Camlp4MetaGenerator";
-  value version = Sys.ocaml_version;
+  let name = "Camlp4MetaGenerator";
+  let version = Sys.ocaml_version;
 end ;
 module MakeMetaGenerator (Syn: Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
@@ -746,15 +746,15 @@ type t =
     ant : Ast.ident;
   };
 
-value _loc = FanLoc.ghost;
+let _loc = FanLoc.ghost;
 
-value x i = <:ident< $(lid:"x"^string_of_int i) >>;
+let x i = <:ident< $(lid:"x"^string_of_int i) >>;
 
-value meta_ s = <:ident< $(lid:"meta_"^s) >>;
+let meta_ s = <:ident< $(lid:"meta_"^s) >>;
 
-value mf_ s = "mf_" ^ s;
+let mf_ s = "mf_" ^ s;
 
-value rec string_of_ident =
+let rec string_of_ident =
   fun
   [ <:ident< $lid:s >> -> s
   | <:ident< $uid:s >> -> s
@@ -762,14 +762,14 @@ value rec string_of_ident =
   | <:ident< $i1 $i2 >> -> "app_" ^ (string_of_ident i1) ^ "_" ^ (string_of_ident i2)
   | <:ident< $anti:_ >> -> assert False ];
 
-value fold_args ty f init =
+let fold_args ty f init =
   let (_, res) =
     List.fold_left begin fun (i, acc) ty ->
       (succ i, f ty i acc)
     end (0, init) ty
   in res;
 
-value fold_data_ctors ty f init =
+let fold_data_ctors ty f init =
   let rec loop acc t =
     match t with
     [ <:ctyp< $uid:cons of $ty >> -> f cons (Ast.list_of_ctyp ty []) acc
@@ -779,37 +779,37 @@ value fold_data_ctors ty f init =
     | _ -> assert False ] in
   loop init ty;
 
-value fold_type_decls m f init =
+let fold_type_decls m f init =
   SMap.fold f m.type_decls init;
 
-value patt_of_data_ctor_decl cons tyargs =
+let patt_of_data_ctor_decl cons tyargs =
   fold_args tyargs begin fun _ i acc ->
     <:patt< $acc $(id:x i) >>
   end <:patt< $id:cons >>;
 
-value expr_of_data_ctor_decl cons tyargs =
+let expr_of_data_ctor_decl cons tyargs =
   fold_args tyargs begin fun _ i acc ->
     <:expr< $acc $(id:x i) >>
   end <:expr< $id:cons >>;
 
-value is_antiquot_data_ctor s =
+let is_antiquot_data_ctor s =
   let ls = String.length s in
   ls > 3 && String.sub s (ls - 3) 3 = "Ant";
 
-value rec meta_ident m =
+let rec meta_ident m =
   fun
   [ <:ident< $i1.$i2 >> -> <:expr< Ast.IdAcc _loc $(meta_ident m i1) $(meta_ident m i2) >>
   | <:ident< $i1 $i2 >> -> <:expr< Ast.IdApp _loc $(meta_ident m i1) $(meta_ident m i2) >>
   | <:ident< $anti:s >>  -> <:expr< $anti:s >>
   | <:ident< $lid:s >>   -> <:expr< Ast.IdLid _loc $str:s >>
   | <:ident< $uid:s >>   -> <:expr< Ast.IdUid _loc $str:s >> ];
-value m_app m x y = <:expr< $(m.app) _loc $x $y >>; (* take care $(m.app) is need*)
-value m_id m i = <:expr< $(m.id) _loc $i >>;
-value m_uid m s = m_id m (meta_ident m <:ident< $uid:s >>);
+let m_app m x y = <:expr< $(m.app) _loc $x $y >>; (* take care $(m.app) is need*)
+let m_id m i = <:expr< $(m.id) _loc $i >>;
+let m_uid m s = m_id m (meta_ident m <:ident< $uid:s >>);
 
-value failure = <:expr< raise (Failure "MetaGenerator: cannot handle that kind of types") >>;
+let failure = <:expr< raise (Failure "MetaGenerator: cannot handle that kind of types") >>;
 
-value mk_meta m =
+let mk_meta m =
   let m_name_uid x = <:ident< $(m.name).$uid:x >> in
   fold_type_decls m begin fun tyname tydcl binding_acc ->
     match tydcl with
@@ -857,7 +857,7 @@ value mk_meta m =
     | _ -> assert False ]
   end <:binding<>>;
 
-value find_type_decls = object
+let find_type_decls = object
   inherit Ast.fold as super;
   val accu = SMap.empty; 
   method get = accu;
@@ -867,7 +867,7 @@ value find_type_decls = object
     | t -> super#ctyp t ];
 end;
 
-value filter st =
+let filter st =
   let type_decls = lazy (find_type_decls#str_item st)#get in
   object
    inherit Ast.map as super;
@@ -876,19 +876,19 @@ value filter st =
        let bi = mk_meta m in
        <:module_expr<
         struct
-          value meta_string _loc s = $(m.str) _loc (safe_string_escaped s);
-          value meta_int _loc s = $(m.int) _loc s;
-          value meta_float _loc s = $(m.flo) _loc s;
-          value meta_char _loc s = $(m.chr) _loc (String.escaped s);
-          value meta_bool _loc =
+          let meta_string _loc s = $(m.str) _loc (safe_string_escaped s);
+          let meta_int _loc s = $(m.int) _loc s;
+          let meta_float _loc s = $(m.flo) _loc s;
+          let meta_char _loc s = $(m.chr) _loc (String.escaped s);
+          let meta_bool _loc =
             fun
             [ False -> $(m_uid m "False")
             | True  -> $(m_uid m "True") ];
-          value rec meta_list mf_a _loc =
+          let rec meta_list mf_a _loc =
             fun
             [ [] -> $(m_uid m "[]")
             | [x :: xs] -> $(m_app m (m_app m (m_uid m "::") <:expr< mf_a _loc x >>) <:expr< meta_list mf_a _loc xs >>) ];
-          value rec $bi;
+          let rec $bi;
         end >> in
      match super#module_expr me with
      [ <:module_expr< Camlp4Filters.MetaGeneratorExpr $id:i >> ->
@@ -927,25 +927,25 @@ value filter st =
   Syn.AstFilters.register_str_item_filter filter;
 end;
   
-value f_lift (module P:Sig.PRECAST) =
+let f_lift (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdAstLifter) (module MakeAstLifter); 
   
-value f_exn (module P:Sig.PRECAST) =
+let f_exn (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdExceptionTracer) (module MakeExceptionTracer);
   
-value f_prof (module P:Sig.PRECAST) =
+let f_prof (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdProfiler) (module MakeProfiler) ;
   
-value f_fold (module P:Sig.PRECAST) =
+let f_fold (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdFoldGenerator) (module MakeFoldGenerator) ;
   
-value f_striploc (module P:Sig.PRECAST) =
+let f_striploc (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdLocationStripper) (module MakeLocationStripper) ;
   
-value f_trash (module P:Sig.PRECAST) =
+let f_trash (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdTrashRemover) (module MakeTrashRemover) ;
   
-value f_meta (module P:Sig.PRECAST) =
+let f_meta (module P:Sig.PRECAST) =
   P.syntax_plugin (module IdMetaGenerator) (module MakeMetaGenerator) ;
   
 

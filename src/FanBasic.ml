@@ -7,25 +7,25 @@
 open LibUtil;
 exception Unhandled of Ast.ctyp ;
 exception Finished of Ast.expr;
-value _loc = FanLoc.ghost;
-value unit_literal = <:expr< () >> ;
+let _loc = FanLoc.ghost;
+let unit_literal = <:expr< () >> ;
 
 (* generate name *)  
-value x ?(off=0) (i:int)    =
+let x ?(off=0) (i:int)    =
   if off > 25 then invalid_arg "unsupported offset in x "
   else
     let base = Char.(code 'a' + off |> chr) in
     String.of_char base ^ string_of_int i;
     
-value xid ?(off=0) (i:int) : Ast.ident  =
+let xid ?(off=0) (i:int) : Ast.ident  =
   <:ident< $(lid:x ~off i) >> ;
   
-value allx ?(off=0) i =  "all_" ^x ~off i ;
+let allx ?(off=0) i =  "all_" ^x ~off i ;
   
-value allxid ?(off=0) i = <:ident< $(lid:allx ~off i) >>;
+let allxid ?(off=0) i = <:ident< $(lid:allx ~off i) >>;
 
 (* check whether the introduced name is valid or not *)  
-value check_valid str =
+let check_valid str =
   let len = String.length str in
   if
     not
@@ -41,27 +41,27 @@ value check_valid str =
 (* module RPrinters = Camlp4.Printers.OCamlr.Make Camlp4.PreCast.Syntax; *)
 (* module OPrinters = Camlp4.Printers.OCaml.Make Camlp4.PreCast.Syntax; *)
 
-(* value opr= (new RPrinters.printer ()); *)
-(* value opo= (new OPrinters.printer ()); *)
+(* let opr= (new RPrinters.printer ()); *)
+(* let opo= (new OPrinters.printer ()); *)
 
 (* FIXME will Ast2pt do the check, and then some partial Ast node will not be able
    to be dumped
  *)  
-value p_expr fmt  e =
+let p_expr fmt  e =
   eprintf "@[%a@]@." Pprintast.print_expression (Ast2pt.expr e);
-(* value p_ident = eprintf "@[%a@]@." opr#ident ;     *)
-value p_patt fmt e =
+(* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
+let p_patt fmt e =
   eprintf "@[%a@]@." Pprintast.print_pattern (Ast2pt.pattern e);
   
-value p_str_item fmt e =
+let p_str_item fmt e =
   eprintf "@[%a@]@." Pprintast.print_structure (Ast2pt.str_item e);
-value p_ident fmt e =
+let p_ident fmt e =
   eprintf "@[%a@]@." Pprintast.fmt_longident (Ast2pt.ident e) ;    
-value p_ctyp fmt e =
+let p_ctyp fmt e =
   eprintf "@[%a@]@." Pprintast.core_type (Ast2pt.ctyp e) ;
   
 
-(* value error_report (loc,s) = begin *)
+(* let error_report (loc,s) = begin *)
 (*   prerr_endline (Loc.to_string loc); *)
 (*   let (start_bol,stop_bol, *)
 (*          start_off, stop_off) = *)
@@ -78,7 +78,7 @@ value p_ctyp fmt e =
 (* end ; *)
 
 
-(* value parse_string_of_entry ?(_loc=Loc.mk "<string>") entry  s = *)
+(* let parse_string_of_entry ?(_loc=Loc.mk "<string>") entry  s = *)
 (*   try *)
 (*     Gram.parse_string entry  _loc s *)
 (*   with *)
@@ -88,7 +88,7 @@ value p_ctyp fmt e =
 (*       Loc.raise loc e ; *)
 (*     end ]; *)
 
-(* value wrap_stream_parser ?(_loc=Loc.mk "<stream>") p s = *)
+(* let wrap_stream_parser ?(_loc=Loc.mk "<stream>") p s = *)
 (*   try p _loc s *)
 (*   with *)
 (*     [Loc.Exc_located(loc,e) -> begin *)
@@ -97,7 +97,7 @@ value p_ctyp fmt e =
 (*     end  *)
 (*    ]; *)
 
-(* value parse_include_file rule file  = *)
+(* let parse_include_file rule file  = *)
 (*   if Sys.file_exists file then *)
 (*     let ch = open_in file in *)
 (*     let st = Stream.of_channel ch in  *)
@@ -106,7 +106,7 @@ value p_ctyp fmt e =
 
 
 
-(* value parse_module_type str = *)
+(* let parse_module_type str = *)
 (*   try *)
 (*      match  Gram.parse_string Syntax.module_type _loc str with *)
 (*      [ <:module_type< .$id:i$. >>  -> i *)
@@ -120,7 +120,7 @@ value p_ctyp fmt e =
 (*       exit 2; *)
 (*     end]; *)
 
-(* value parse_include_file_smart file = let open Filename in  *)
+(* let parse_include_file_smart file = let open Filename in  *)
 (*   if check_suffix file ".ml" then  *)
 (*       `Str (parse_include_file Syntax.str_items file) *)
 (*   else if check_suffix file ".mli" then *)
@@ -138,13 +138,13 @@ value p_ctyp fmt e =
 (* module MetaLocHere = Ast.Meta.MetaLoc; *)
 (* module MetaLoc = struct *)
 (*   module Ast = Ast; *)
-(*   value loc_name = ref None; *)
-(*   value meta_loc_expr _loc loc = *)
+(*   let loc_name = ref None; *)
+(*   let meta_loc_expr _loc loc = *)
 (*     match loc_name.val with *)
 (*     [ None -> <:expr< .$lid:Loc.name.val$. >> *)
 (*     | Some "here" -> MetaLocHere.meta_loc_expr _loc loc *)
 (*     | Some x -> <:expr< .$lid:x$. >> ]; *)
-(*   value meta_loc_patt _loc _ = <:patt< _ >>; *)
+(*   let meta_loc_patt _loc _ = <:patt< _ >>; *)
 (* end; *)
 (* module MetaAst = Ast.Meta.Make MetaLoc; *)
 
@@ -157,7 +157,7 @@ value p_ctyp fmt e =
 (*   type t 'a = MGram.Entry.t 'a; *)
 (*   type loc =  MGram.Loc.t ; *)
 (*   (\* add an end marker for each parser *\) *)
-(*   value eoi_entry entry = do{ *)
+(*   let eoi_entry entry = do{ *)
 (*     let entry_eoi = MGram.Entry.(mk (name entry)) ; *)
 (*     EXTEND MGram entry_eoi: *)
 (*       [ [ x =entry ; `EOI -> x ]]; *)
@@ -166,7 +166,7 @@ value p_ctyp fmt e =
 (*    }; *)
 
 
-(*   value parse_quot_string_with_filter entry f loc loc_name_opt s  = do{ *)
+(*   let parse_quot_string_with_filter entry f loc loc_name_opt s  = do{ *)
 (*     let q = Camlp4_config.antiquotations.val ; *)
 (*     Camlp4_config.antiquotations.val := True; *)
 (*     let res = MGram.parse_string entry loc s ;   *)
@@ -177,7 +177,7 @@ value p_ctyp fmt e =
 (*   }; *)
 
 (*   (\* given an string input, apply the parser, return the result *\) *)
-(*   value parse_quot_string entry  loc  loc_name_opt s = *)
+(*   let parse_quot_string entry  loc  loc_name_opt s = *)
 (*     parse_quot_string_with_filter entry (fun x -> x) loc *)
 (*       loc_name_opt s ; *)
 
@@ -185,7 +185,7 @@ value p_ctyp fmt e =
 (*     we will add eoi automatically. *)
 (*     This add quotation utility is for normal *)
 (*     It's tailored for ADT DSL paradigm  *\) *)
-(*   value add_quotation ?antiquot_expander name   ~entry *)
+(*   let add_quotation ?antiquot_expander name   ~entry *)
 (*      ~mexpr ~mpatt  = ( *)
 (*     let anti_expr = match antiquot_expander with *)
 (*       [ None -> fun x -> x | Some obj -> obj#expr] in *)
@@ -223,15 +223,15 @@ value p_ctyp fmt e =
 (*     } *)
 (* ); *)
 
-(*     value add = Quotation.add; *)
-(*     value add_quotation_of_str_item ~name ~entry = *)
+(*     let add = Quotation.add; *)
+(*     let add_quotation_of_str_item ~name ~entry = *)
 (*       add name Quotation.DynAst.str_item_tag *)
 (*         (parse_quot_string (eoi_entry entry)); *)
-(*     value add_quotation_of_str_item_with_filter ~name ~entry ~filter = *)
+(*     let add_quotation_of_str_item_with_filter ~name ~entry ~filter = *)
 (*       add name Quotation.DynAst.str_item_tag *)
 (*         (parse_quot_string_with_filter (eoi_entry entry) filter); *)
 (*     (\* will register str_item as well  *\)  *)
-(*     value add_quotation_of_expr ~name ~entry = begin *)
+(*     let add_quotation_of_expr ~name ~entry = begin *)
 (*       let expand_fun = parse_quot_string & eoi_entry entry in  *)
 (*       let mk_fun loc loc_name_opt s = *)
 (*         <:str_item< .$exp:expand_fun loc loc_name_opt s$. >> in  *)
@@ -239,18 +239,18 @@ value p_ctyp fmt e =
 (*       let () = add name Quotation.DynAst.str_item_tag mk_fun in *)
 (*       () *)
 (*     end ; *)
-(*     value add_quotation_of_patt ~name ~entry = *)
+(*     let add_quotation_of_patt ~name ~entry = *)
 (*       add name Quotation.DynAst.patt_tag (parse_quot_string (eoi_entry entry)); *)
-(*     value add_quotation_of_class_str_item ~name ~entry = *)
+(*     let add_quotation_of_class_str_item ~name ~entry = *)
 (*      add name Quotation.DynAst.class_str_item_tag (parse_quot_string (eoi_entry entry)); *)
-(*     value add_quotation_of_match_case ~name ~entry = *)
+(*     let add_quotation_of_match_case ~name ~entry = *)
 (*       add name Quotation.DynAst.match_case_tag *)
 (*         (parse_quot_string (eoi_entry entry)); *)
 (* end; *)
 
 (* (\** Built in MGram  utilities *\) *)
 (* module Fan_camlp4syntax = Make(Gram); *)
-(* value (anti_str_item, anti_expr) *)
+(* let (anti_str_item, anti_expr) *)
 (*     =  Fan_camlp4syntax.( *)
 (*   (eoi_entry Syntax.str_item, *)
 (*   eoi_entry Syntax.expr) *)
@@ -258,7 +258,7 @@ value p_ctyp fmt e =
 (* ; *)
 
 
-(* value is_antiquot_data_ctor s = String.ends_with s "Ant"; *)
+(* let is_antiquot_data_ctor s = String.ends_with s "Ant"; *)
     
 (* (\** *)
 (*    c means [context] here  *)
@@ -268,14 +268,14 @@ value p_ctyp fmt e =
 (*    string = "\\$listbinding:code" *)
 (*    ]} *)
 (*  *\) *)
-(* value mk_anti ?(c = "") n s = "\\$" ^ (n ^ (c ^ (":" ^ s))); *)
+(* let mk_anti ?(c = "") n s = "\\$" ^ (n ^ (c ^ (":" ^ s))); *)
                                       
 (* (\** \\$expr;:code *\) *)
-(* value is_antiquot s = *)
+(* let is_antiquot s = *)
 (*   let len = String.length s in (len > 2) *)
 (*     && ((s.[0] = '\\') && (s.[1] = '$')); *)
     
-(* value handle_antiquot_in_string s ~term ~parse ~loc ~decorate = *)
+(* let handle_antiquot_in_string s ~term ~parse ~loc ~decorate = *)
 (*   if is_antiquot s *)
 (*   then *)
 (*     (let pos = String.index s ':' in *)
@@ -284,13 +284,13 @@ value p_ctyp fmt e =
 (*     in decorate name (parse loc code)) *)
 (*   else term s; *)
 
-(* value token_of_string str = *)
+(* let token_of_string str = *)
 (*   let lex = Lexer.mk () (Loc.mk "<string>") in *)
 (*   lex (Stream.of_string str); *)
 
 (* (\* debugging purpose *)
 (*  *\) *)
-(* value tokens_of_string str = begin  *)
+(* let tokens_of_string str = begin  *)
 (*   let stream = token_of_string str in *)
 (*   let tok = ref (fst (Stream.next stream)) in  *)
 (*   while tok.val <> EOI do *)
@@ -316,7 +316,7 @@ value p_ctyp fmt e =
 (*    triggered by fan_asthook *)
 (*    FIXME be more safe to guarantee its uniqueness. Magic number *)
 (*  *\) *)
-(* (\* value fan_generate_name = "GENERATE_by_fan"; *\) *)
+(* (\* let fan_generate_name = "GENERATE_by_fan"; *\) *)
 
 (* (\* *)
 (*   Wait for fix *)

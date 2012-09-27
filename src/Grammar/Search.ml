@@ -18,7 +18,7 @@
  *)
 module Make (Structure : Structure.S) = struct
   open Structure;
-value tree_in_entry prev_symb tree =
+let tree_in_entry prev_symb tree =
   fun
   [ Dlevels levels ->
       let rec search_levels =

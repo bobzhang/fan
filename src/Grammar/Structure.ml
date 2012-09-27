@@ -110,10 +110,10 @@ module Make (Lexer  : FanSig.Lexer) = struct
   module Token = Lexer.Token;
   module Action : FanSig.Grammar.Action = struct
     type  t     = Obj.t   ;
-    value mk    = Obj.repr;
-    value get   = Obj.obj ;
-    value getf  = Obj.obj ;
-    value getf2 = Obj.obj ;
+    let mk    = Obj.repr;
+    let get   = Obj.obj ;
+    let getf  = Obj.obj ;
+    let getf2 = Obj.obj ;
   end;
   module Lexer = Lexer;
 
@@ -188,18 +188,18 @@ module Make (Lexer  : FanSig.Lexer) = struct
     internal_entry -> list symbol ->
       (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
 
-  value get_filter g = g.gfilter;
-  value token_location r = r.cur_loc;
+  let get_filter g = g.gfilter;
+  let token_location r = r.cur_loc;
 
   type not_filtered 'a = 'a;
-  value using { gkeywords = table; gfilter = filter } kwd =
+  let using { gkeywords = table; gfilter = filter } kwd =
     let r = try Hashtbl.find table kwd with
             [ Not_found ->
                 let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
     in do { Token.Filter.keyword_added filter kwd (r.contents = 0);
             incr r };
 
-  value removing { gkeywords = table; gfilter = filter } kwd =
+  let removing { gkeywords = table; gfilter = filter } kwd =
     let r = Hashtbl.find table kwd in
     let () = decr r in
     if !r = 0 then do {
@@ -209,7 +209,7 @@ module Make (Lexer  : FanSig.Lexer) = struct
 end;
 
 (*
-value iter_entry f e =
+let iter_entry f e =
   let treated = ref [] in
   let rec do_entry e =
     if List.memq e treated.val then ()
@@ -238,7 +238,7 @@ value iter_entry f e =
   do_entry e
 ;
 
-value fold_entry f e init =
+let fold_entry f e init =
   let treated = ref [] in
   let rec do_entry accu e =
     if List.memq e treated.val then accu
@@ -274,13 +274,13 @@ value fold_entry f e init =
   do_entry init e
 ;
 
-value is_level_labelled n lev =
+let is_level_labelled n lev =
   match lev.lname with
   [ Some n1 -> n = n1
   | None -> False ]
 ;
 
-value tokens g con =
+let tokens g con =
   let list = ref [] in
   do {
     Hashtbl.iter

@@ -19,11 +19,11 @@
 (* camlp4r *)
 open Format;
 open FanUtil;
-module Debug = struct value mode _ = False; end;
+module Debug = struct let mode _ = False; end;
 
 type section = string;
 
-value out_channel =
+let out_channel =
   try
     let f = Sys.getenv "CAMLP4_DEBUG_FILE" in
     open_out_gen [Open_wronly; Open_creat; Open_append; Open_text]
@@ -33,7 +33,7 @@ value out_channel =
 
 
 
-value mode =
+let mode =
   try
     let str = Sys.getenv "CAMLP4_DEBUG" in
     let rec loop acc i =
@@ -48,7 +48,7 @@ value mode =
     else fun x -> SSet.mem x sections
   with [ Not_found -> fun _ -> False ];
 
-value formatter =
+let formatter =
   let header = "camlp4-debug: " in
   let at_bol = ref True in
   (make_formatter
@@ -61,4 +61,4 @@ value formatter =
        done)
     (fun () -> flush out_channel));
 
-value printf section fmt = fprintf formatter ("%s: " ^^ fmt) section;
+let printf section fmt = fprintf formatter ("%s: " ^^ fmt) section;

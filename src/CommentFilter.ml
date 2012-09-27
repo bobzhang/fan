@@ -21,14 +21,14 @@ module Make (Token : FanSig.Camlp4Token) = struct
 
   type t = (Stream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
 
-  value mk () =
+  let mk () =
     let q = Queue.create () in
     let f _ =
       debug comments "take...@\n" in
       try Some (Queue.take q) with [ Queue.Empty -> None ]
     in (Stream.from f, q);
 
-  value filter (_, q) =
+  let filter (_, q) =
     let rec self =
       parser
       [ [: ` (FanSig.COMMENT x, loc); xs :] ->
@@ -41,14 +41,14 @@ module Make (Token : FanSig.Camlp4Token) = struct
       | [: :] -> [: :] ]
     in self;
 
-  value take_list (_, q) =
+  let take_list (_, q) =
     let rec self accu =
       if Queue.is_empty q then accu else self [Queue.take q :: accu]
     in self [];
 
-  value take_stream = fst;
+  let take_stream = fst;
 
-  value define token_fiter comments_strm =
+  let define token_fiter comments_strm =
     debug comments "Define a comment filter@\n" in
     Token.Filter.define_filter token_fiter
       (fun previous strm -> previous (filter comments_strm strm));

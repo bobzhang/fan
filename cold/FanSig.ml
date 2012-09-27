@@ -250,8 +250,8 @@ module Grammar =
       end
       
     (** Signature for Camlp4 grammars. Here the dynamic means that you can produce as
-      many grammar values as needed with a single grammar module.
-      If you do not need many grammar values it's preferable to use a static one. *)
+      many grammar lets as needed with a single grammar module.
+      If you do not need many grammar lets it's preferable to use a static one. *)
     module type Dynamic =
       sig
         include Structure
@@ -310,7 +310,7 @@ module Grammar =
           
         val sfold0sep : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) foldsep
           
-        (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
+        (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
         (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
           gram ->
@@ -342,8 +342,8 @@ module Grammar =
       end
       
     (** Signature for Camlp4 grammars. Here the static means that there is only
-      one grammar value by grammar module. If you do not need to store the grammar
-      value it's preferable to use a static one. *)
+      one grammar let by grammar module. If you do not need to store the grammar
+      let it's preferable to use a static one. *)
     module type Static =
       sig
         include Structure
@@ -404,7 +404,7 @@ module Grammar =
           
         val sfold0sep : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) foldsep
           
-        (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
+        (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
         (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
           FanLoc.t -> char Stream.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered

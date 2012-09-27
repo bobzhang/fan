@@ -24,14 +24,14 @@ end;
 module Make (U:sig end) : S= struct 
   type t = Queue.t string;
 
-  value instance =  ref (fun () -> failwith "empty in dynloader");
+  let instance =  ref (fun () -> failwith "empty in dynloader");
   exception Error of string and string;
 
-  value include_dir x y = Queue.add y x;
+  let include_dir x y = Queue.add y x;
 
-  value fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
+  let fold_load_path x f acc = Queue.fold (fun x y -> f y x) acc x;
 
-  value mk ?(ocaml_stdlib = True) ?(camlp4_stdlib = True) () =
+  let mk ?(ocaml_stdlib = True) ?(camlp4_stdlib = True) () =
   let q = Queue.create () in do {
     if ocaml_stdlib then include_dir q FanConfig.ocaml_standard_library else ();
     if camlp4_stdlib then do {
@@ -44,7 +44,7 @@ module Make (U:sig end) : S= struct
   q
 };
 (* Load files in core *)
-value find_in_path x name =
+let find_in_path x name =
   if not (Filename.is_implicit name) then
     if Sys.file_exists name then name else raise Not_found
   else
@@ -58,7 +58,7 @@ value find_in_path x name =
           | x -> x ]) None
     in match res with [ None -> raise Not_found | Some x -> x ];
 
-value load =
+let load =
   let _initialized = ref False in
   fun _path file ->
     do {
@@ -81,5 +81,5 @@ value load =
     };
 
 
-value is_native = Dynlink.is_native;
+let is_native = Dynlink.is_native;
 end;

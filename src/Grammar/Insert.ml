@@ -25,13 +25,13 @@ module Make (Structure : Structure.S) = struct
   open Format;
   open FanSig.Grammar;
 
-  value is_before s1 s2 =
+  let is_before s1 s2 =
     match (s1, s2) with
     [ (Skeyword _ | Stoken _, Skeyword _ | Stoken _) -> False
     | (Skeyword _ | Stoken _, _) -> True
     | _ -> False ]
   ;
-  value rec derive_eps =
+  let rec derive_eps =
     fun
     [ Slist0 _ | Slist0sep _ _ | Sopt _ -> True
     | Stry s -> derive_eps s
@@ -50,7 +50,7 @@ module Make (Structure : Structure.S) = struct
     | DeadEnd -> False ]
   ;
 
-  value empty_lev lname assoc =
+  let empty_lev lname assoc =
     let assoc =
       match assoc with
       [ Some a -> a
@@ -58,7 +58,7 @@ module Make (Structure : Structure.S) = struct
     in
     {assoc = assoc; lname = lname; lsuffix = DeadEnd; lprefix = DeadEnd}
   ;
-  value change_lev entry lev n lname assoc =
+  let change_lev entry lev n lname assoc =
     let a =
       match assoc with
       [ None -> lev.assoc
@@ -85,14 +85,14 @@ module Make (Structure : Structure.S) = struct
       lprefix = lev.lprefix}
     }
   ;
-  value change_to_self entry =
+  let change_to_self entry =
     fun
     [ Snterm e when e == entry -> Sself
     | x -> x ]
   ;
 
 
-  value get_level entry position levs =
+  let get_level entry position levs =
     match position with
     [ Some First -> ([], empty_lev, levs)
     | Some Last -> (levs, empty_lev, [])
@@ -153,7 +153,7 @@ module Make (Structure : Structure.S) = struct
         | [] -> ([], empty_lev, []) ] ]
   ;
 
-  value rec check_gram entry =
+  let rec check_gram entry =
     fun
     [ Snterm e ->
         if e.egram != entry.egram then do {
@@ -189,14 +189,14 @@ module Make (Structure : Structure.S) = struct
         }
     | LocAct _ _ | DeadEnd -> () ]
   ;
-  value get_initial =
+  let get_initial =
     fun
     [ [Sself :: symbols] -> (True, symbols)
     | symbols -> (False, symbols) ]
   ;
 
 
-  value insert_tokens gram symbols =
+  let insert_tokens gram symbols =
     let rec insert =
       fun
       [ Smeta _ sl _ -> List.iter insert sl
@@ -215,7 +215,7 @@ module Make (Structure : Structure.S) = struct
     List.iter insert symbols
   ;
 
-  value insert_tree entry gsymbols action tree =
+  let insert_tree entry gsymbols action tree =
     let rec insert symbols tree =
       match symbols with
       [ [s :: sl] -> insert_in_tree s sl tree
@@ -260,7 +260,7 @@ module Make (Structure : Structure.S) = struct
     in
     insert gsymbols tree
   ;
-  value insert_level entry e1 symbols action slev =
+  let insert_level entry e1 symbols action slev =
     match e1 with
     [ True ->
         {assoc = slev.assoc; lname = slev.lname;
@@ -271,7 +271,7 @@ module Make (Structure : Structure.S) = struct
         lprefix = insert_tree entry symbols action slev.lprefix} ]
   ;
 
-  value levels_of_rules entry position rules =
+  let levels_of_rules entry position rules =
     let elev =
       match entry.edesc with
       [ Dlevels elev -> elev
@@ -307,7 +307,7 @@ module Make (Structure : Structure.S) = struct
       levs1 @ List.rev levs @ levs2
     ;
 
-    value extend entry (position, rules) =
+    let extend entry (position, rules) =
       let elev = levels_of_rules entry position rules in
       do {
         entry.edesc <- Dlevels elev;
