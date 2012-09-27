@@ -310,15 +310,15 @@ module Make (Structure : Structure.S) = struct
     value extend entry (position, rules) =
       let elev = levels_of_rules entry position rules in
       do {
-        entry.edesc := Dlevels elev;
-        entry.estart :=
+        entry.edesc <- Dlevels elev;
+        entry.estart <-
           fun lev strm ->
             let f = Parser.start_parser_of_entry entry in
-            do { entry.estart := f; f lev strm };
-        entry.econtinue :=
+            do { entry.estart <- f; f lev strm };
+        entry.econtinue <-
           fun lev bp a strm ->
             let f = Parser.continue_parser_of_entry entry in
-            do { entry.econtinue := f; f lev bp a strm }
+            do { entry.econtinue <- f; f lev bp a strm }
       };
 
   end;

@@ -151,7 +151,7 @@ open Format;
         | [: :] -> [: :] ]
       in fun strm -> tracer (x.filter (filter strm));
 
-    value define_filter x f = x.filter := f x.filter;
+    value define_filter x f = x.filter <- f x.filter;
 
     value keyword_added _ _ _ = ();
     value keyword_removed _ _ = ();

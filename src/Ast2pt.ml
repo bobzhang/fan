@@ -26,7 +26,7 @@ value remove_underscores s =
     else
       match s.[src] with
       [ '_' -> remove (src + 1) dst
-      |  c  -> do { s.[dst] := c; remove (src + 1) (dst + 1) } ]
+      |  c  -> do { s.[dst] <- c; remove (src + 1) (dst + 1) } ]
   in remove 0 0 ;
 
 value mkloc = FanLoc.to_ocaml_location;

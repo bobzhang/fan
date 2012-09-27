@@ -152,7 +152,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   value store_if_builtin_type id =
     if SMap.mem id builtin_types then
-      used_builtins.contents := SMap.add id (SMap.find id builtin_types) !used_builtins
+      used_builtins := SMap.add id (SMap.find id builtin_types) !used_builtins
     else ();
 
   type mode = [ Fold | Map | Fold_map ];
@@ -597,7 +597,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
       method str_item st =
         match st with
-        [ <:str_item< type $t >> -> (last.contents := t; st)
+        [ <:str_item< type $t >> -> (last := t; st)
 
         (* backward compatibility *)
         | <:str_item@_loc< class $lid:c = Camlp4Filters.GenerateFold.generated >> ->
@@ -618,7 +618,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
       method sig_item sg =
         match sg with
-        [ <:sig_item< type $t >> -> (last.contents := t; sg)
+        [ <:sig_item< type $t >> -> (last := t; sg)
 
         (* backward compatibility *)
         | <:sig_item@_loc< class $lid:c : Camlp4Filters.GenerateFold.generated >> ->

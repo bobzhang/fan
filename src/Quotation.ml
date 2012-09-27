@@ -84,7 +84,7 @@ value default = ref "";
 
   value add name tag f =
     let elt = ((name, Exp_key.pack tag ()), Exp_fun.pack tag f) in
-    expanders_table.contents := [elt :: !expanders_table];
+    expanders_table := [elt :: !expanders_table];
 
   value dump_file = ref None;
 

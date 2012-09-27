@@ -160,7 +160,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       let rll = Hashtbl.find_all ht n in
       List.iter
         (fun [ (({contents=Unused} as r), _)   ->  begin 
-            r.contents := UsedNotScanned; modif.contents := True;
+            r := UsedNotScanned; modif := True;
           end
           |  _ -> () ])
         rll
@@ -189,17 +189,17 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         (fun n ->
           try
             let rll = Hashtbl.find_all ht n.tvar in
-            List.iter (fun (r, _) -> r.contents := UsedNotScanned) rll
+            List.iter (fun (r, _) -> r := UsedNotScanned) rll
           with _ ->
             ())
         nl;
-      modif.contents := True;
+      modif := True;
       while !modif do {
-        modif.contents := False;
+        modif := False;
         Hashtbl.iter
           (fun _ (r, e) ->
             if !r = UsedNotScanned then do {
-              !r := UsedScanned;
+              r := UsedScanned;
               List.iter
                 (fun level ->
                     let rules = level.rules in
@@ -627,7 +627,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
     | _ -> () ];
 
-  FanConfig.antiquotations.contents := True;
+  FanConfig.antiquotations := True;
 
   EXTEND Gram GLOBAL: expr symbol;
     expr: After "top"
@@ -1187,7 +1187,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             ;
           END
       | None -> () ];
-      defined.contents := [(x, eo) :: !defined];
+      defined := [(x, eo) :: !defined];
     };
 
   value undef x =
@@ -1206,7 +1206,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               DELETE_RULE Gram patt: UIDENT $x; SELF END;
             }
         | None -> () ];
-        defined.contents := list_remove x !defined;
+        defined := list_remove x !defined;
       }
     with
     [ Not_found -> () ];
@@ -1226,7 +1226,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       let str =
         if String.get str ((String.length str)-1) = '/'
         then str else str ^ "/"
-      in include_dirs.contents := !include_dirs @ [str]
+      in include_dirs := !include_dirs @ [str]
     else ();
 
   value parse_include_file rule =
@@ -1504,8 +1504,8 @@ module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
-  (* FanConfig.constructors_arity.contents := True; *)
-  FanConfig.constructors_arity.contents := False;
+  (* FanConfig.constructors_arity := True; *)
+  FanConfig.constructors_arity := False;
 
   value help_sequences () =
     do {
@@ -2111,9 +2111,12 @@ New syntax:\
             <:expr< let $rec:rf $lb in $e >> ]
       | ":=" NA
         [ e1 = SELF; ":="; e2 = SELF; dummy ->
+              <:expr< $e1 := $e2 >> 
+        | e1 = SELF; "<-"; e2 = SELF; dummy -> (* FIXME should be deleted in original syntax later? *)
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
-            | None -> <:expr< $e1 := $e2 >> ]
+            | None -> <:expr< $e1 <- $e2 >> 
+            ]  
         ]
       | "||" RA
         [ e1 = SELF; op = infixop6; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
@@ -2163,7 +2166,9 @@ New syntax:\
         | e1 = SELF; "."; e2 = SELF -> <:expr< $e1 . $e2 >>
         | e = SELF; "#"; lab = label -> <:expr< $e # $lab >> ]
       | "~-" NA
-        [ "!"; e = SELF -> <:expr< $e.contents >>
+        [ "!"; e = SELF ->
+          <:expr< ! $e>>
+          (* <:expr< $e.contents >> (\* FIXME *\) *)
         | f = prefixop; e = SELF -> <:expr< $f $e >> ]
       | "simple"
         [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
@@ -3824,7 +3829,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
-  FanConfig.constructors_arity.contents := False;
+  FanConfig.constructors_arity := False;
 
   (*FIXME remove this and use OCaml ones *)
   value bigarray_set _loc var newval =
@@ -4085,11 +4090,12 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
             <:expr< ( $e1, $e2 ) >> ]
       | ":=" NA
         [ e1 = SELF; ":="; e2 = expr Level "top" ->
-            <:expr< $e1.contents := $e2 >>
+            (* <:expr< $e1.contents := $e2 >> *)
+              <:expr< $e1 := $e2 >> (* FIXME actually original syntax was not tested at all *)
         | e1 = SELF; "<-"; e2 = expr Level "top" ->
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
-            | None -> <:expr< $e1 := $e2 >> ]
+            | None -> <:expr< $e1 <- $e2 >> (* <:expr< $e1 := $e2 >> *) ]
       ] ];
     expr: After "^"
       [ "::" RA
@@ -4572,7 +4578,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     value loc_name = ref None;
     value meta_loc_expr _loc loc =
       match !loc_name with
-      [ None -> <:expr< $(lid:FanLoc.name.contents) >>
+      [ None -> <:expr< $(lid:!FanLoc.name) >>
       | Some "here" -> MetaLocHere.meta_loc_expr _loc loc
       | Some x -> <:expr< $lid:x >> ];
     value meta_loc_patt _loc _ = <:patt< _ >>;
@@ -4681,14 +4687,14 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   value add_quotation name entry mexpr mpatt =
     let entry_eoi = Gram.Entry.mk (Gram.Entry.name entry) in
     let parse_quot_string entry loc s =
-      let q = FanConfig.antiquotations.contents in
-      let () = FanConfig.antiquotations.contents := True in
+      let q = !FanConfig.antiquotations in
+      let () = FanConfig.antiquotations := True in
       let res = Gram.parse_string entry loc s in
-      let () = FanConfig.antiquotations.contents := q in
+      let () = FanConfig.antiquotations := q in
       res in
     let expand_expr loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi loc s in
-      let () = MetaLoc.loc_name.contents := loc_name_opt in
+      let () = MetaLoc.loc_name := loc_name_opt in
       let meta_ast = mexpr loc ast in
       let exp_ast = antiquot_expander#expr meta_ast in
       exp_ast in

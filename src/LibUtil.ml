@@ -75,7 +75,7 @@ value to_string_of_printer printer v =
  *)
 value nfold_left ?(start = 0) ~until ~acc f =
   let v = ref acc
-  in (for x = start to until do v.contents := f v.contents x done; v.contents);
+  in (for x = start to until do v := f !v x done; !v);
 (* a module to abstract exeption mechanism  *)
 (* we put the return value exn, so we don't need to work around type system later *)
 type cont 'a = 'a -> exn;
@@ -119,17 +119,17 @@ module List =
       | [ h :: t ] ->
           let rec loop dst =
             fun
-            [ [] -> dst.tl := l2
+            [ [] -> dst.tl <- l2
             | [ h :: t ] ->
                 let cell = { hd = h; tl = []; }
-                in (dst.tl := inj cell; loop cell t) ] in
+                in (dst.tl <- inj cell; loop cell t) ] in
           let r = { hd = h; tl = []; } in (loop r t; inj r) ];
     value rec flatten l =
       let rec inner dst =
         fun
         [ [] -> dst
         | [ h :: t ] ->
-            let r = { hd = h; tl = []; } in (dst.tl := inj r; inner r t) ] in
+            let r = { hd = h; tl = []; } in (dst.tl <- inj r; inner r t) ] in
       let rec outer dst =
         fun [ [] -> () | [ h :: t ] -> outer (inner dst h) t ] in
       let r = dummy_node () in (outer r l; r.tl);
@@ -146,14 +146,14 @@ module List =
             fun
             [ [] -> ()
             | [ h :: t ] ->
-                let r = { hd = f h; tl = []; } in (dst.tl := inj r; loop r t) ] in
+                let r = { hd = f h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
           let r = { hd = f h; tl = []; } in (loop r t; inj r) ];
     value take n l =
       let rec loop n dst =
         fun
         [ [ h :: t ] when n > 0 ->
             let r = { hd = h; tl = []; }
-            in (dst.tl := inj r; loop (n - 1) r t)
+            in (dst.tl <- inj r; loop (n - 1) r t)
         | _ -> () ] in
       let dummy = dummy_node () in (loop n dummy l; dummy.tl);
     (*$= take & ~printer:(IO.to_string (List.print Int.print))
@@ -168,7 +168,7 @@ module List =
         [ [] -> ()
         | [ x :: xs ] ->
             if p x
-            then let r = { hd = x; tl = []; } in (dst.tl := inj r; loop r xs)
+            then let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r xs)
             else () ] in
       let dummy = dummy_node () in (loop dummy li; dummy.tl);
     (*$= take_while & ~printer:(IO.to_string (List.print Int.print))
@@ -232,7 +232,7 @@ module List =
               (HT.add ht h ();
                let (* put h in hash table *) r = { hd = h; tl = []; };
                (* and to output list *)
-               dst.tl := inj r;
+               dst.tl <- inj r;
                loop r t)
           | [ _ :: t ] ->
               (* if already in hashtable then don't add to output list *)
@@ -252,7 +252,7 @@ module List =
             match f h with
             [ None -> loop dst t
             | Some x ->
-                let r = { hd = x; tl = []; } in (dst.tl := inj r; loop r t) ] ] in
+                let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r t) ] ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
     value rec find_map f =
       fun
@@ -278,7 +278,7 @@ module List =
         [ ([], []) -> ()
         | ([ h1 :: t1 ], [ h2 :: t2 ]) ->
             let r = { hd = f h1 h2; tl = []; }
-            in (dst.tl := inj r; loop r t1 t2)
+            in (dst.tl <- inj r; loop r t1 t2)
         | _ -> invalid_arg "map2: Different_list_size" ] in
       let dummy = dummy_node () in (loop dummy l1 l2; dummy.tl);
     value rec iter2 f l1 l2 =
@@ -329,9 +329,9 @@ module List =
         [ [] -> ()
         | [ ((a, _) as pair) :: t ] ->
             if a = x
-            then dst.tl := t
+            then dst.tl <- t
             else
-              let r = { hd = pair; tl = []; } in (dst.tl := inj r; loop r t) ] in
+              let r = { hd = pair; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
     (* equality using [==] *)
     value remove_assq x lst =
@@ -340,9 +340,9 @@ module List =
         [ [] -> ()
         | [ ((a, _) as pair) :: t ] ->
             if a == x
-            then dst.tl := t
+            then dst.tl <- t
             else
-              let r = { hd = pair; tl = []; } in (dst.tl := inj r; loop r t) ] in
+              let r = { hd = pair; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
     (* rfind (fun x -> x>3) [1;2;3;9;3;4;2;3];
  * - : int = 4 *)
@@ -354,7 +354,7 @@ module List =
         | [ h :: t ] ->
             if p h
             then
-              let r = { hd = h; tl = []; } in (dst.tl := inj r; findnext r t)
+              let r = { hd = h; tl = []; } in (dst.tl <- inj r; findnext r t)
             else findnext dst t ] in
       let dummy = dummy_node () in (findnext dummy l; dummy.tl);
     value rec findi p l =
@@ -401,8 +401,8 @@ module List =
             let r = { hd = h; tl = []; }
             in
               if p h
-              then (yesdst.tl := inj r; loop r nodst t)
-              else (nodst.tl := inj r; loop yesdst r t) ] in
+              then (yesdst.tl <- inj r; loop r nodst t)
+              else (nodst.tl <- inj r; loop yesdst r t) ] in
       let yesdummy = dummy_node ()
       and nodummy = dummy_node ()
       in (loop yesdummy nodummy lst; ((yesdummy.tl), (nodummy.tl)));
@@ -413,7 +413,7 @@ module List =
         | [ (a, b) :: t ] ->
             let x = { hd = a; tl = []; }
             and y = { hd = b; tl = []; }
-            in (adst.tl := inj x; bdst.tl := inj y; loop x y t) ] in
+            in (adst.tl <- inj x; bdst.tl <- inj y; loop x y t) ] in
       let adummy = dummy_node ()
       and bdummy = dummy_node ()
       in (loop adummy bdummy lst; ((adummy.tl), (bdummy.tl)));
@@ -423,7 +423,7 @@ module List =
         [ ([], []) -> ()
         | ([ h1 :: t1 ], [ h2 :: t2 ]) ->
             let r = { hd = (h1, h2); tl = []; }
-            in (dst.tl := inj r; loop r t1 t2)
+            in (dst.tl <- inj r; loop r t1 t2)
         | (_, _) -> invalid_arg "combine: Different_list_size" ] in
       let dummy = dummy_node () in (loop dummy l1 l2; dummy.tl);
     value make i x =
@@ -440,7 +440,7 @@ module List =
             [ [] -> ()
             | [ h :: t ] ->
                 let r = { hd = f n h; tl = []; }
-                in (dst.tl := inj r; loop r (n + 1) t) ] in
+                in (dst.tl <- inj r; loop r (n + 1) t) ] in
           let r = { hd = f 0 h; tl = []; } in (loop r 1 t; inj r) ];
     value iteri f l =
       let rec loop n =
@@ -473,7 +473,7 @@ module List =
                   [ [] -> invalid_arg "Index past end of list"
                   | [ h :: t ] ->
                       let r = { hd = h; tl = []; }
-                      in (dst.tl := inj r; loop (n - 1) r t) ] in
+                      in (dst.tl <- inj r; loop (n - 1) r t) ] in
               let r = { hd = h; tl = []; }
               in ((inj r), (loop (index - 1) r t)) ];
     value split_at = split_nth;
@@ -485,8 +485,8 @@ module List =
         [ [] -> ()
         | [ h :: t ] ->
             if x = h
-            then dst.tl := t
-            else let r = { hd = h; tl = []; } in (dst.tl := inj r; loop r t) ] in
+            then dst.tl <- t
+            else let r = { hd = h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
     value rec remove_if f lst =
       let rec loop dst =
@@ -494,8 +494,8 @@ module List =
         [ [] -> ()
         | [ x :: l ] ->
             if f x
-            then dst.tl := l
-            else let r = { hd = x; tl = []; } in (dst.tl := inj r; loop r l) ] in
+            then dst.tl <- l
+            else let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r l) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
     value rec remove_all l x =
       let rec loop dst =
@@ -504,7 +504,7 @@ module List =
         | [ h :: t ] ->
             if x = h
             then loop dst t
-            else let r = { hd = h; tl = []; } in (dst.tl := inj r; loop r t) ] in
+            else let r = { hd = h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
     (* will raise an exception if it's not an rectangle *)
     value transpose =
@@ -518,7 +518,7 @@ module List =
               (fun acc x ->
                  List.map2
                    (fun x xs ->
-                      let r = { hd = x; tl = []; } in (xs.tl := inj r; r))
+                      let r = { hd = x; tl = []; } in (xs.tl <- inj r; r))
                    x acc)
               heads xs
           in Obj.magic heads ];
@@ -626,11 +626,11 @@ module List =
             (List.iter
                (fun x ->
                   match f x with
-                  [ Some v -> (res.contents := Some v; raise M.First)
+                  [ Some v -> (res:= Some v; raise M.First)
                   | None -> () ])
                lst;
              None)
-          with [ M.First -> res.contents ];
+          with [ M.First -> !res ];
     value rec filter_map f =
       fun
       [ [] -> []
@@ -672,7 +672,7 @@ module List =
         then ()
         else
           let cell = { hd = i; tl = []; }
-          in (dst.tl := inj cell; loop cell (i + step))
+          in (dst.tl <- inj cell; loop cell (i + step))
       in
         if from > until
         then []
@@ -687,7 +687,7 @@ module List =
         then ()
         else
           let cell = { hd = i; tl = []; }
-          in (dst.tl := inj cell; loop cell (i - step))
+          in (dst.tl <- inj cell; loop cell (i - step))
       in
         if from < until
         then []
@@ -745,7 +745,7 @@ module Log =
   struct
     value verbose = ref 1;
     value dprintf ?(level = 1) =
-      if verbose.contents > level then eprintf else ifprintf err_formatter;
+      if !verbose > level then eprintf else ifprintf err_formatter;
     (* ifprintf to overcome type system *)
     (* infoprintf will not *)
     value info_printf a = dprintf ~level: 2 a;
@@ -881,9 +881,9 @@ module String =
       let found = ref False in
       let i = ref 0
       in
-        (while (i.contents < len) && (not found.contents) do
-           if not (f s.[i.contents]) then found.contents := True else incr i done;
-         String.sub s i.contents (len - i.contents));
+        (while (!i < len) && (not !found) do
+           if not (f s.[!i]) then found:= True else incr i done;
+         String.sub s !i (len - !i));
     value find_from str pos sub =
       let len = length str in
       let sublen = length sub
@@ -899,8 +899,8 @@ module String =
                 (for i = pos to len - sublen do
                    let j = ref 0;
                    while
-                     (unsafe_get str (i + j.contents)) = (unsafe_get sub j.contents) do
-                     incr j; if j.contents = sublen then raise & (k i) else ()
+                     (unsafe_get str (i + j.contents)) = (unsafe_get sub !j) do
+                     incr j; if !j = sublen then raise & (k i) else ()
                      done
                  done;
                  raise Not_found)));
@@ -933,8 +933,8 @@ module String =
                 (for i = (pos - sublen) + 1 downto 0 do
                    let j = ref 0;
                    while
-                     (unsafe_get str (i + j.contents)) = (unsafe_get sub j.contents) do
-                     incr j; if j.contents = sublen then raise & (k i) else ()
+                     (unsafe_get str (i + !j)) = (unsafe_get sub !j) do
+                     incr j; if !j = sublen then raise & (k i) else ()
                      done
                  done;
                  raise Not_found)));
@@ -958,13 +958,13 @@ module String =
       let p = ref 0 in
       let l = length s
       in
-        (while (p.contents < l) && (contains chars (unsafe_get s p.contents)) do 
+        (while (!p < l) && (contains chars (unsafe_get s !p)) do 
            incr p done;
-         let p = p.contents;
+         let p = !p;
          let l = ref (l - 1);
-         while (l.contents >= p) && (contains chars (unsafe_get s l.contents)) do
+         while (!l >= p) && (contains chars (unsafe_get s !l)) do
            decr l done;
-         sub s p ((l.contents - p) + 1));
+         sub s p ((!l - p) + 1));
     (*$T strip
   strip ~chars:" ,()" " boo() bar()" = "boo() bar"
   strip ~chars:"abc" "abbcbab"
@@ -1199,10 +1199,10 @@ exception Not_implemented;
 module Ref =
   struct
     type t 'a = ref 'a;
-    value post r f = let old = r.contents in (r.contents := f old; old);
-    value pre r f = (r.contents := f r.contents; r.contents);
-    value modify r f = r.contents := f r.contents;
-    value swap a b = let buf = a.contents in (a.contents := b.contents; b.contents := buf);
+    value post r f = let old = !r in (r := f old; old);
+    value pre r f = (r := f !r; !r);
+    value modify r f = r := f !r;
+    value swap a b = let buf = !a in (a := !b; b := buf);
     (*$T swap
   let a = ref 1 and b = ref 2 in swap a b; !a = 2 && !b = 1
  *)
@@ -1216,15 +1216,15 @@ module Ref =
     (*$T post_incr
   let r = ref 0 in post_incr r = 0 && !r = 1
  *)
-    value copy r = ref r.contents;
+    value copy r = ref !r;
     (*$T copy
   let r = ref 0 in let s = copy r in r := 1; !s == 0 && !r == 1
  *)
     value protect r v body =
-      let old = r.contents
+      let old = !r
       in
-        try (r.contents := v; let res = body (); r.contents := old; res)
-        with [ x -> (r.contents := old; raise x) ];
+        try (r := v; let res = body (); r := old; res)
+        with [ x -> (r := old; raise x) ];
     (*$T protect
   let r = ref 0 in let b () = incr r; !r in protect r 2 b = 3 && !r = 0
   let r = ref 0 in let b () = incr r; if !r=3 then raise Not_found in (try protect r 2 b; false with Not_found -> true) && !r = 0
@@ -1241,20 +1241,20 @@ module Ref =
     (** As [ := ] *)
     external get : ref 'a -> 'a = "%field0";
     (** As [ ! ]*)
-    value print print_a out r = print_a out r.contents;
-    value toggle r = r.contents := not r.contents;
+    value print print_a out r = print_a out !r;
+    value toggle r = r := not !r;
     (*$T toggle
   let r = ref true in toggle r; !r = false;
   let r = ref false in toggle r; !r = true;
  *)
-    value oset r x = r.contents := Some x;
+    value oset r x = r := Some x;
     value oget_exn r =
-      match r.contents with [ None -> raise Not_found | Some x -> x ];
+      match !r with [ None -> raise Not_found | Some x -> x ];
     (*  FAIL $T oset, oget_exn
           let r = ref None in oset r 3; oget_exn r = 3
        *)
-    value ord o x y = o x.contents y.contents;
-    value eq e x y = e x.contents y.contents;
+    value ord o x y = o !x !y;
+    value eq e x y = e !x !y;
   end;
 module Buffer =
   struct
@@ -1408,9 +1408,9 @@ value mapi f xs =
 value fold_nat_left ?(start=0) ~until ~acc f = do{
   let v = ref acc ;
   for x = start to until do
-    v.contents := f v.contents x 
+    v := f !v x 
   done;
-  v.contents  
+  !v  
 }
 ;  
 
@@ -1418,7 +1418,7 @@ value fold_nat_left ?(start=0) ~until ~acc f = do{
 value iteri f lst =
   let i = ref 0 in 
   List.iter (fun x -> 
-    let () = f i.contents x in
+    let () = f !i x in
     incr i) lst
 ;    
 
@@ -1457,12 +1457,12 @@ value string_drop_while f s =
   let len = String.length s in
   let found = ref False in
   let i = ref 0 in begin 
-  while i.contents < len && not found.contents do
-    if not (f s.[i.contents]) then 
-      found.contents:=True
+  while !i < len && not !found do
+    if not (f s.[!i]) then 
+      found:=True
     else incr i
   done ;
-  String.sub s i.contents (len - i.contents)
+  String.sub s !i (len - !i)
   end 
 ;      
 
@@ -1477,10 +1477,10 @@ value find_first f lst =
   try
     List.iter (fun x ->
     match f x with
-    [ Some v -> do{ res.contents := Some v; raise First}
+    [ Some v -> do{ res := Some v; raise First}
     | None -> ()]) lst;
     None;
-  with [First ->  res.contents]
+  with [First ->  !res]
 ;
   
 
@@ -1495,7 +1495,7 @@ value adapt f a =
 ;
 
 (* #default_quotation "expr"; *)
-(* Camlp4.PreCast.Syntax.Quotation.default.contents := "expr"; *)
+(* Camlp4.PreCast.Syntax.Quotation.default := "expr"; *)
 
 
 value rec intersperse y xs = match xs with

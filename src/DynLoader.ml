@@ -66,7 +66,7 @@ value load =
         try do {
           Dynlink.init ();
           Dynlink.allow_unsafe_modules True;
-         _initialized.contents := True
+         _initialized := True
         }
         with
         [ Dynlink.Error e ->

@@ -144,15 +144,15 @@ value delete_rule entry sl =
   [ Dlevels levs ->
       let levs = delete_rule_in_level_list entry sl levs in
       do {
-        entry.edesc := Dlevels levs;
-        entry.estart :=
+        entry.edesc <- Dlevels levs;
+        entry.estart <-
           fun lev strm ->
             let f = Parser.start_parser_of_entry entry in
-            do { entry.estart := f; f lev strm };
-        entry.econtinue :=
+            do { entry.estart <- f; f lev strm };
+        entry.econtinue <-
           fun lev bp a strm ->
             let f = Parser.continue_parser_of_entry entry in
-            do { entry.econtinue := f; f lev bp a strm }
+            do { entry.econtinue <- f; f lev bp a strm }
       }
   | Dparser _ -> () ]
 ;

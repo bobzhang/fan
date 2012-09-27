@@ -7701,7 +7701,10 @@ module MakeRevisedParser =
                                                                     (
                                                                     Some
                                                                     ((
-                                                                    Ast.ExApp
+                                                                    Ast.ExAss
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExAcc
                                                                     (_loc,
                                                                     (
                                                                     (Ast.ExApp
@@ -7731,7 +7734,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     (Ast.IdLid
                                                                     (_loc,
-                                                                    "set"))
+                                                                    "get"))
                                                                     )))
                                                                     )))
                                                                     )))
@@ -7745,6 +7748,16 @@ module MakeRevisedParser =
                                                                     (Ast.IdLid
                                                                     (_loc,
                                                                     "c1"))
+                                                                    )))
+                                                                    )))
+                                                                    ),
+                                                                    (
+                                                                    (Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "contents"))
                                                                     )))
                                                                     )))
                                                                     ),
@@ -7776,7 +7789,10 @@ module MakeRevisedParser =
                                                                     (
                                                                     Some
                                                                     ((
-                                                                    Ast.ExApp
+                                                                    Ast.ExAss
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExAcc
                                                                     (_loc,
                                                                     (
                                                                     (Ast.ExApp
@@ -7809,7 +7825,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     (Ast.IdLid
                                                                     (_loc,
-                                                                    "set"))
+                                                                    "get"))
                                                                     )))
                                                                     )))
                                                                     )))
@@ -7819,6 +7835,16 @@ module MakeRevisedParser =
                                                                     c1))
                                                                     ),
                                                                     c2))
+                                                                    ),
+                                                                    (
+                                                                    (Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "contents"))
+                                                                    )))
+                                                                    )))
                                                                     ),
                                                                     newval))))
                                                                  | Ast.ExApp
@@ -7851,7 +7877,10 @@ module MakeRevisedParser =
                                                                     (
                                                                     Some
                                                                     ((
-                                                                    Ast.ExApp
+                                                                    Ast.ExAss
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExAcc
                                                                     (_loc,
                                                                     (
                                                                     (Ast.ExApp
@@ -7887,7 +7916,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     (Ast.IdLid
                                                                     (_loc,
-                                                                    "set"))
+                                                                    "get"))
                                                                     )))
                                                                     )))
                                                                     )))
@@ -7899,6 +7928,16 @@ module MakeRevisedParser =
                                                                     c2))
                                                                     ),
                                                                     c3))
+                                                                    ),
+                                                                    (
+                                                                    (Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "contents"))
+                                                                    )))
+                                                                    )))
                                                                     ),
                                                                     newval))))
                                                                  | Ast.ExApp
@@ -13090,7 +13129,7 @@ module MakeRevisedParser =
                                                                     ;
                                                                     (
                                                                     (Gram.Skeyword
-                                                                    (":="))
+                                                                    ("<-"))
                                                                     );
                                                                     Gram.Sself
                                                                     ;
@@ -13128,6 +13167,55 @@ module MakeRevisedParser =
                                                                     (_loc,
                                                                     e1,
                                                                     e2))) :
+                                                                    'expr)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [Gram.Sself
+                                                                    ;
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    (":="))
+                                                                    );
+                                                                    Gram.Sself
+                                                                    ;
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (dummy :
+                                                                    'dummy Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun _ ->
+                                                                    fun (e2 :
+                                                                    'expr) ->
+                                                                    fun _ ->
+                                                                    fun (e1 :
+                                                                    'expr) ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.ExAss
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.ExAcc
+                                                                    (_loc,
+                                                                    e1,
+                                                                    (
+                                                                    (Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "contents"))
+                                                                    )))
+                                                                    )))
+                                                                    ),
+                                                                    e2)) :
                                                                     'expr)
                                                                     ))
                                                                     ))]
@@ -42168,46 +42256,9 @@ module MakeParser =
                                 (_, Ast.IdUid (_, "Array1"),
                                  Ast.IdLid (_, "get")))), arr), c1) ->
                         (Some
-                          ((Ast.ExApp
+                          ((Ast.ExAss
                              (_loc, (
-                              (Ast.ExApp
-                                (_loc, (
-                                 (Ast.ExApp
-                                   (_loc, (
-                                    (Ast.ExId
-                                      (_loc, (
-                                       (Ast.IdAcc
-                                         (_loc, (
-                                          (Ast.IdUid
-                                            (_loc, "Bigarray")) ), (
-                                          (Ast.IdAcc
-                                            (_loc, (
-                                             (Ast.IdUid
-                                               (_loc, "Array1")) ), (
-                                             (Ast.IdLid (_loc, "set"))
-                                             ))) ))) ))) ), arr)) ),
-                                 (
-                                 (Ast.ExId
-                                   (_loc, ( (Ast.IdLid (_loc, "c1"))
-                                    ))) ))) ), newval))))
-                     | Ast.ExApp
-                        (_,
-                         Ast.ExApp
-                          (_,
-                           Ast.ExApp
-                            (_,
-                             Ast.ExId
-                              (_,
-                               Ast.IdAcc
-                                (_, Ast.IdUid (_, "Bigarray"),
-                                 Ast.IdAcc
-                                  (_, Ast.IdUid (_, "Array2"),
-                                   Ast.IdLid (_, "get")))), arr), c1),
-                         c2) ->
-                        (Some
-                          ((Ast.ExApp
-                             (_loc, (
-                              (Ast.ExApp
+                              (Ast.ExAcc
                                 (_loc, (
                                  (Ast.ExApp
                                    (_loc, (
@@ -42223,32 +42274,34 @@ module MakeParser =
                                              (Ast.IdAcc
                                                (_loc, (
                                                 (Ast.IdUid
-                                                  (_loc, "Array2"))
+                                                  (_loc, "Array1"))
                                                 ), (
                                                 (Ast.IdLid
-                                                  (_loc, "set")) )))
+                                                  (_loc, "get")) )))
                                              ))) ))) ), arr)) ), c1))
-                                 ), c2)) ), newval))))
+                                 ), (
+                                 (Ast.ExId
+                                   (_loc, (
+                                    (Ast.IdLid (_loc, "contents")) )))
+                                 ))) ), newval))))
                      | Ast.ExApp
                         (_,
                          Ast.ExApp
                           (_,
                            Ast.ExApp
                             (_,
-                             Ast.ExApp
+                             Ast.ExId
                               (_,
-                               Ast.ExId
-                                (_,
+                               Ast.IdAcc
+                                (_, Ast.IdUid (_, "Bigarray"),
                                  Ast.IdAcc
-                                  (_, Ast.IdUid (_, "Bigarray"),
-                                   Ast.IdAcc
-                                    (_, Ast.IdUid (_, "Array3"),
-                                     Ast.IdLid (_, "get")))), arr),
-                             c1), c2), c3) ->
+                                  (_, Ast.IdUid (_, "Array2"),
+                                   Ast.IdLid (_, "get")))), arr), c1),
+                         c2) ->
                         (Some
-                          ((Ast.ExApp
+                          ((Ast.ExAss
                              (_loc, (
-                              (Ast.ExApp
+                              (Ast.ExAcc
                                 (_loc, (
                                  (Ast.ExApp
                                    (_loc, (
@@ -42266,13 +42319,68 @@ module MakeParser =
                                                 (Ast.IdAcc
                                                   (_loc, (
                                                    (Ast.IdUid
-                                                     (_loc, "Array3"))
+                                                     (_loc, "Array2"))
                                                    ), (
                                                    (Ast.IdLid
-                                                     (_loc, "set"))
+                                                     (_loc, "get"))
                                                    ))) ))) ))) ),
-                                          arr)) ), c1)) ), c2)) ),
-                                 c3)) ), newval))))
+                                          arr)) ), c1)) ), c2)) ), (
+                                 (Ast.ExId
+                                   (_loc, (
+                                    (Ast.IdLid (_loc, "contents")) )))
+                                 ))) ), newval))))
+                     | Ast.ExApp
+                        (_,
+                         Ast.ExApp
+                          (_,
+                           Ast.ExApp
+                            (_,
+                             Ast.ExApp
+                              (_,
+                               Ast.ExId
+                                (_,
+                                 Ast.IdAcc
+                                  (_, Ast.IdUid (_, "Bigarray"),
+                                   Ast.IdAcc
+                                    (_, Ast.IdUid (_, "Array3"),
+                                     Ast.IdLid (_, "get")))), arr),
+                             c1), c2), c3) ->
+                        (Some
+                          ((Ast.ExAss
+                             (_loc, (
+                              (Ast.ExAcc
+                                (_loc, (
+                                 (Ast.ExApp
+                                   (_loc, (
+                                    (Ast.ExApp
+                                      (_loc, (
+                                       (Ast.ExApp
+                                         (_loc, (
+                                          (Ast.ExApp
+                                            (_loc, (
+                                             (Ast.ExId
+                                               (_loc, (
+                                                (Ast.IdAcc
+                                                  (_loc, (
+                                                   (Ast.IdUid
+                                                     (_loc,
+                                                      "Bigarray")) ),
+                                                   (
+                                                   (Ast.IdAcc
+                                                     (_loc, (
+                                                      (Ast.IdUid
+                                                        (_loc,
+                                                         "Array3"))
+                                                      ), (
+                                                      (Ast.IdLid
+                                                        (_loc, "get"))
+                                                      ))) ))) ))) ),
+                                             arr)) ), c1)) ), c2)) ),
+                                    c3)) ), (
+                                 (Ast.ExId
+                                   (_loc, (
+                                    (Ast.IdLid (_loc, "contents")) )))
+                                 ))) ), newval))))
                      | Ast.ExApp
                         (_,
                          Ast.ExApp

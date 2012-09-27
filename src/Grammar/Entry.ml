@@ -84,16 +84,16 @@ module Make (Structure : Structure.S) = struct
 
   value setup_parser e (p : Stream.t (Token.t * token_info) -> 'a) =
     let f ts = Action.mk (p ts) in do {
-      e.estart := fun _ -> f;
-      e.econtinue := fun _ _ _ -> parser [];
-      e.edesc := Dparser f
+      e.estart <- fun _ -> f;
+      e.econtinue <- fun _ _ _ -> parser [];
+      e.edesc <- Dparser f
     };
 
   value clear e =
     do {
-      e.estart := fun _ -> parser [];
-      e.econtinue := fun _ _ _ -> parser [];
-      e.edesc := Dlevels []
+      e.estart <- fun _ -> parser [];
+      e.econtinue <- fun _ _ _ -> parser [];
+      e.edesc <- Dlevels []
     };
 
   value obj x = x;
