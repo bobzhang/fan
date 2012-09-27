@@ -9,3 +9,9 @@ value find_type_decls = object
 end;
 
 
+(* a.(3)<-3; *)
+
+
+(* 3 *)
+
+(* a.(3) := 4 ;     *)

@@ -1416,7 +1416,7 @@ let rec expr =
                       (Pexp_ident (array_function loc "Array" "set")) )) ), (
                     [("", ( (expr e1) )); ("", ( (expr e2) ));
                      ("", ( (expr v) ))] )))
-              | Ast.ExId (_, Ast.IdLid (lloc, lab)) ->
+              | Ast.ExId (lloc, Ast.IdLid (_, lab)) ->
                  (Pexp_setinstvar (( (with_loc lab lloc) ), ( (expr v) )))
               | ExSte (loc, e1, e2) ->
                  (Pexp_apply

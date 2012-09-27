@@ -252,3 +252,291 @@ some bugs happenend here.
 
 * semi
   either ";;" or ";" or nil
+
+* syntax difference
+  
+** lexing
+   '\''
+   '''
+
+** module
+   let x = 42 ;;
+   value x = 42;
+
+   let x = 42 in x + 7 ;;
+   let x = 42 in x + 7 ;
+
+   val x:int;;
+   value x: int;
+
+   (* signatures, abstract module types*)
+   module type MT;;
+   module type MT='a;
+
+   type t = Set.Make(M).t;;
+   type t = (Set.Make M).t;
+
+   module M = Mod.Make (M1) (M2);;
+   module M = Mod.Make M1 M2;
+   
+** expression and patterns
+   e1;e2;e3;e4
+   do {e1;e2;e3;e4}
+
+   while e1 do
+     e1;e2;e3
+   done
+
+   while e1 do{
+     e1;e2;e3
+   }
+   
+   for i = e1 to e2 do
+     e1;e2;e3
+   done
+
+   for i = e1 to e2 do{
+     e1;e2;e3
+   }
+
+   1,2
+   (1,2)
+
+   x::y
+   [x::y]
+
+   [x;y;z]
+   [x;y;z]
+
+   x::y::z::t
+   [x;y;z::t]
+
+   {e with field = a}
+   {(e) with field = a}
+
+   {field = fun a -> e}
+   {field a = e}
+
+   syntactic irrefutable pattern 
+
+   function no longer exists, only "fun"
+
+   match e with p1  -> e1 | p2 -> e2
+   match e with [p1 -> e1 | p2 -> e2]
+   (if there is only one case and if the
+   pattern is irrefutable, the brackets
+   are not required, hey optinoal, is a good
+   idea, when you writing quotations, you be
+   cautious, when you write code outside,
+   you don't add them
+   )
+
+   fun x -> x
+   fun x -> x
+
+   fun {foo=(y,_)} -> y
+   fun {foo=(y,_)} -> y
+
+   let f (x::y) = ..
+   let f = fun [ [x::y] -> ]
+
+   x.f <- y
+   x.f := y
+
+   x:=!x + y
+   x.val := x.val + y
+
+   if a then b
+   if a then b else ()
+
+   a or b & c
+   a || b && c
+
+   no more "begin end" construction
+
+   function Some a as b , c ->
+   fun [((Some a as b), c) -> ]
+
+   function Some a as b ->
+   fun [Some a as b -> ]
+
+   int list
+   list int
+
+   ('a,bool) Hashtbl.t
+   Hashtbl.t 'a bool
+
+   type 'a foo = 'a list list
+   type foo 'a = list (list 'a)
+
+   type 'a foo
+   type foo 'a = 'b
+
+   
+   type bar
+   type bar = 'a
+
+   int * bool
+   (int * bool)
+
+   type t = A of i | B
+   type t =  [A of i | B]
+
+   type t = C of t1 * t2
+   type t = [C of t1 and t2 ]
+
+   C(x,y)
+   C x y
+
+   type t = D of (t1*t2)
+   type t = [D of (t1 * t2)]
+
+   D (x,y)
+   D (x,y)
+
+   true && false
+   True && False
+
+   type t = {mutable x:t1}
+   type t = {x:mutable t1}
+
+   type 'a t = 'a option =
+      None
+     | Some of 'a
+   type t 'a = option 'a ==
+     [None
+     |Some of 'a]
+   
+   type t = {f:'a. 'a list}
+   type t = {f: ! 'a.  list 'a}
+
+   [< '1; '2; s; '3>]
+   [: `1; `2 ; s; `3 :]
+
+   parser
+   [< 'Foo >] -> e
+   | [< p=f >] -> f |
+
+   parser
+   [ [: `Foo :] -> e
+   | [: p = f :] -> f ] |
+
+   parser [: `x :] -> x
+
+** objects
+   class ['a,'b] point =
+   class point ['a,'b] =
+
+   class c = [int] color
+   classs c = color [int]
+
+   (* class signature *)
+   class c : int -> point
+   class c : [int] -> point 
+   
+   the keywords "virtual" and "private"
+   must be in order in revised syntax
+
+   object val x = 3 end
+   object value x =  3; end
+
+   object constraint 'a = int end
+   object type 'a = int; end
+
+
+** labels and variants
+
+   val x: num:int -> bool
+   value x : ~num:int -> bool
+
+   type t = [`On | `Off]
+   type t = [ = `On | `Off]
+   
+
+   
+** assignmetns
+
+   #+BEGIN_SRC ocaml
+     a.(2)<-3;;
+     Ptop_def
+       [
+         structure_item (//toplevel//[2,6+-6]..//toplevel//[2,6+2]) ghost
+           Pstr_eval
+           expression (//toplevel//[2,6+-6]..//toplevel//[2,6+2])
+             Pexp_apply
+             expression (//toplevel//[2,6+-6]..//toplevel//[2,6+2]) ghost
+               Pexp_ident "Array.set"
+             [
+               <label> ""
+                 expression (//toplevel//[2,6+-6]..//toplevel//[2,6+-5])
+                   Pexp_ident "a"
+               <label> ""
+                 expression (//toplevel//[2,6+-3]..//toplevel//[2,6+-2])
+                   Pexp_constant Const_int 2
+               <label> ""
+                 expression (//toplevel//[2,6+1]..//toplevel//[2,6+2])
+                   Pexp_constant Const_int 3
+             ]
+       ]
+   #+END_SRC
+
+
+   #+BEGIN_SRC ocaml
+     v.x<-2;;
+     Ptop_def
+       [
+         structure_item (//toplevel//[2,6+-6]..//toplevel//[2,6+0]) ghost
+           Pstr_eval
+           expression (//toplevel//[2,6+-6]..//toplevel//[2,6+0])
+             Pexp_setfield
+             expression (//toplevel//[2,6+-6]..//toplevel//[2,6+-5])
+               Pexp_ident "v"
+             "x"
+             expression (//toplevel//[2,6+-1]..//toplevel//[2,6+0])
+               Pexp_constant Const_int 2
+       ]
+   #+END_SRC
+
+   #+BEGIN_SRC ocaml
+a.[1] <- 'a';;
+Ptop_def
+  [
+    structure_item (//toplevel//[2,6+-6]..//toplevel//[3,14+12]) ghost
+      Pstr_eval
+      expression (//toplevel//[2,6+-6]..//toplevel//[3,14+12])
+        Pexp_sequence
+        expression (//toplevel//[2,6+-6]..//toplevel//[2,6+6])
+          Pexp_apply
+          expression (//toplevel//[2,6+-6]..//toplevel//[2,6+6]) ghost
+            Pexp_ident "String.set"
+          [
+            <label> ""
+              expression (//toplevel//[2,6+-6]..//toplevel//[2,6+-5])
+                Pexp_ident "a"
+            <label> ""
+              expression (//toplevel//[2,6+-3]..//toplevel//[2,6+-2])
+                Pexp_constant Const_int 1
+            <label> ""
+              expression (//toplevel//[2,6+3]..//toplevel//[2,6+6])
+                Pexp_constant Const_char 61
+          ]
+        expression (//toplevel//[3,14+0]..//toplevel//[3,14+12])
+          Pexp_apply
+          expression (//toplevel//[3,14+0]..//toplevel//[3,14+12]) ghost
+            Pexp_ident "String.set"
+          [
+            <label> ""
+              expression (//toplevel//[3,14+0]..//toplevel//[3,14+1])
+                Pexp_ident "a"
+            <label> ""
+              expression (//toplevel//[3,14+3]..//toplevel//[3,14+4])
+                Pexp_constant Const_int 1
+            <label> ""
+              expression (//toplevel//[3,14+9]..//toplevel//[3,14+12])
+                Pexp_constant Const_char 61
+          ]
+  ]
+   #+END_SRC
+
+** polymorphic syntax 
+   file://localhost/Users/bobzhang1988/olibs/htmlman/manual021.html#xhtoc17

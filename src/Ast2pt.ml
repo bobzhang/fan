@@ -712,7 +712,7 @@ value varify_constructors var_names =
     | ExAss loc e v ->
         let e =
           match e with
-          [ <:expr@loc< $x.contents >> -> (* fixme*)
+          [ <:expr@loc< $x.contents >> -> (* FIXME *)
               Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
                 [("", expr x); ("", expr v)]
           | ExAcc loc _ _ ->
@@ -722,7 +722,9 @@ value varify_constructors var_names =
           | ExAre loc e1 e2 ->
               Pexp_apply (mkexp loc (Pexp_ident (array_function loc "Array" "set")))
                 [("", expr e1); ("", expr e2); ("", expr v)]
-          | <:expr< $(id:<:ident@lloc< $lid:lab >>) >> -> Pexp_setinstvar (with_loc lab lloc) (expr v)
+          | <:expr@lloc< $lid:lab >>  ->
+              (* FIXME Ast.ExId (lloc, Ast.IdLid (_, lab)) vs Ast.ExId(_,Ast.IdLid(lloc,lab)) *)
+              Pexp_setinstvar (with_loc lab lloc) (expr v)
           | ExSte loc e1 e2 ->
               Pexp_apply
                 (mkexp loc (Pexp_ident (array_function loc "String" "set")))

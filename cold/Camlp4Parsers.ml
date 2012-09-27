@@ -7464,6 +7464,9 @@ module MakeRevisedParser =
                                                                     [arg]) in
                                                                 (match
                                                                    coords with
+                                                                 | [] ->
+                                                                    (failwith
+                                                                    "bigarray_get null list")
                                                                  | (c1
                                                                     ::
                                                                     []) ->
@@ -7602,7 +7605,13 @@ module MakeRevisedParser =
                                                                     c2))
                                                                     ),
                                                                     c3))
-                                                                 | coords ->
+                                                                 | (c1
+                                                                    ::
+                                                                    c2
+                                                                    ::
+                                                                    c3
+                                                                    ::
+                                                                    coords) ->
                                                                     (
                                                                     Ast.ExApp
                                                                     (_loc,
@@ -7642,8 +7651,23 @@ module MakeRevisedParser =
                                                                     (Ast.ExArr
                                                                     (_loc,
                                                                     (
+                                                                    (Ast.ExSem
+                                                                    (_loc,
+                                                                    c1,
+                                                                    (
+                                                                    (Ast.ExSem
+                                                                    (_loc,
+                                                                    c2,
+                                                                    (
+                                                                    (Ast.ExSem
+                                                                    (_loc,
+                                                                    c3,
+                                                                    (
                                                                     (Ast.exSem_of_list
                                                                     coords)
+                                                                    )))
+                                                                    )))
+                                                                    )))
                                                                     )))
                                                                     ))))
 
@@ -7714,7 +7738,15 @@ module MakeRevisedParser =
                                                                     ),
                                                                     arr))
                                                                     ),
-                                                                    c1))
+                                                                    (
+                                                                    (Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "c1"))
+                                                                    )))
+                                                                    )))
                                                                     ),
                                                                     newval))))
                                                                  | Ast.ExApp
@@ -42154,7 +42186,10 @@ module MakeParser =
                                                (_loc, "Array1")) ), (
                                              (Ast.IdLid (_loc, "set"))
                                              ))) ))) ))) ), arr)) ),
-                                 c1)) ), newval))))
+                                 (
+                                 (Ast.ExId
+                                   (_loc, ( (Ast.IdLid (_loc, "c1"))
+                                    ))) ))) ), newval))))
                      | Ast.ExApp
                         (_,
                          Ast.ExApp

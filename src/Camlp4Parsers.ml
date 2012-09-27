@@ -1758,22 +1758,22 @@ New syntax:\
       | _ -> [arg] ]
     in
     match coords with
-    [ [c1] -> <:expr< Bigarray.Array1.get $arr $c1 >>
-    | [c1; c2] -> <:expr< Bigarray.Array2.get $arr $c1 $c2 >>
-    | [c1; c2; c3] -> <:expr< Bigarray.Array3.get $arr $c1 $c2 $c3 >>
-    (* | coords -> <:expr< Bigarray.Genarray.get $arr$ [| $list:coords$ |] >> ] *)
-    | coords ->
-       <:expr< Bigarray.Genarray.get $arr [| $(Ast.exSem_of_list coords) |] >> ];
-
+    [
+     [] -> failwith "bigarray_get null list"
+    |[c1] -> <:expr< $arr.{$c1} >>  
+    | [c1; c2] -> <:expr< $arr.{$c1,$c2} >>  
+    | [c1; c2; c3] -> <:expr< $arr.{$c1,$c2,$c3} >> 
+    | [c1;c2;c3::coords] ->
+      <:expr< $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } >> ]; (* FIXME 1.ExArr, 2. can we just write $list:coords? *)
   value bigarray_set _loc var newval =
     match var with
-    [ <:expr< Bigarray.Array1.get $arr $c1 >> ->
-        Some <:expr< Bigarray.Array1.set $arr $c1 $newval >>
-    | <:expr< Bigarray.Array2.get $arr $c1 $c2 >> ->
-        Some <:expr< Bigarray.Array2.set $arr $c1 $c2 $newval >>
-    | <:expr< Bigarray.Array3.get $arr $c1 $c2 $c3 >> ->
-        Some <:expr< Bigarray.Array3.set $arr $c1 $c2 $c3 $newval >>
-    | <:expr< Bigarray.Genarray.get $arr [| $coords |] >> ->
+    [ <:expr<  $arr.{$c1} >> ->
+        Some <:expr< $arr.{c1} := $newval >> 
+    | <:expr<  $arr.{$c1, $c2} >> ->
+        Some <:expr<  $arr.{$c1, $c2} :=  $newval >>
+    | <:expr<  $arr.{$c1, $c2, $c3} >> ->
+        Some <:expr< $arr.{$c1,$c2,$c3} := $newval >> 
+    |  <:expr< Bigarray.Genarray.get $arr [| $coords |] >> -> (* FIXME how to remove Bigarray here?*)
         Some <:expr< Bigarray.Genarray.set $arr [| $coords |] $newval >>
     | _ -> None ];
 
@@ -2113,7 +2113,8 @@ New syntax:\
         [ e1 = SELF; ":="; e2 = SELF; dummy ->
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
-            | None -> <:expr< $e1 := $e2 >> ] ]
+            | None -> <:expr< $e1 := $e2 >> ]
+        ]
       | "||" RA
         [ e1 = SELF; op = infixop6; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
       | "&&" RA
@@ -3828,12 +3829,12 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
   (*FIXME remove this and use OCaml ones *)
   value bigarray_set _loc var newval =
     match var with
-    [ <:expr< Bigarray.Array1.get $arr $c1 >> ->
-        Some <:expr< Bigarray.Array1.set $arr $c1 $newval >>
-    | <:expr< Bigarray.Array2.get $arr $c1 $c2 >> ->
-        Some <:expr< Bigarray.Array2.set $arr $c1 $c2 $newval >>
-    | <:expr< Bigarray.Array3.get $arr $c1 $c2 $c3 >> ->
-        Some <:expr< Bigarray.Array3.set $arr $c1 $c2 $c3 $newval >>
+    [ <:expr<  $arr.{$c1} >> ->
+        Some <:expr<  $arr.{$c1} :=  $newval >>
+    | <:expr<  $arr.{$c1, $c2} >> ->
+        Some <:expr<  $arr.{$c1, $c2} := $newval >>
+    | <:expr<  $arr.{$c1, $c2, $c3} >> ->
+        Some <:expr< $arr.{$c1, $c2, $c3} := $newval >>
     | <:expr< Bigarray.Genarray.get $arr [| $coords |] >> ->
         Some <:expr< Bigarray.Genarray.set $arr [| $coords |] $newval >>
     | _ -> None ];
