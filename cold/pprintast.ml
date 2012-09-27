@@ -487,7 +487,7 @@ and simple_pattern ppf x =
   | Ppat_any -> fprintf ppf "_";            (* OXX done *)
   | Ppat_var ({txt = txt}) ->
       if (is_infix (fixity_of_string txt)) || List.mem txt.[0] prefix_symbols then
-        fprintf ppf "(%s)" txt                (* OXX done *)
+        fprintf ppf "( %s )" txt                (* OXX done *) (* fix bug ( *** ) *)
       else
         fprintf ppf "%s" txt;
   | Ppat_alias (p, s) ->                    (* OXX done ... *)
@@ -578,7 +578,7 @@ and simple_expr ppf x =
       pp_close_box ppf ();
       fprintf ppf ")";
   | Pexp_newtype (lid, e) ->
-      fprintf ppf "fun (type %s)@ " lid;
+      fprintf ppf "fun (type %s)@ ->" lid; (* bug fix *)
       expression ppf e
   | Pexp_tuple (l) ->
       fprintf ppf "@[<hov 1>(";
@@ -1800,7 +1800,7 @@ and string_x_core_type_ands ?(first=true) ppf l =
       string_x_core_type_ands ~first:false ppf t;
 
 and string_x_core_type ppf (s, ct) =
-  fprintf ppf "%a@ =@ %a" fmt_longident s core_type ct
+  fprintf ppf "type %a@ =@ %a" fmt_longident s core_type ct (* bug fix *)
 
 and longident_x_with_constraint ppf (li, wc) =
   match wc with
@@ -2199,3 +2199,7 @@ let print_signature : Format.formatter ->
   Parsetree.signature -> unit = signature
 let print_expression: Format.formatter ->
   Parsetree.expression -> unit = expression
+let print_pattern: Format.formatter ->
+  Parsetree.pattern -> unit = pattern
+let print_core_type: Format.formatter ->
+  Parsetree.core_type -> unit = core_type

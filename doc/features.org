@@ -15,3 +15,80 @@
   syntax
 
   s"sgho" --> [: 's';'g';'h';'o':]
+
+  
+
+* Active patterns
+  
+
+** multi-case
+   #+BEGIN_SRC ocaml
+     let (|Pharagraph|Sentence|Word|WhiteSpace|) (input : string) =
+             let input = input.Trim()
+             if input = "" then
+                 WhiteSpace
+             elif input.IndexOf(".") <> -1 then
+                 // Notice that Pharagraph contains an tuple of sentence counts, and sentences.
+                 let sentences = input.Split([|"."|], StringSplitOptions.None)
+                 Pharagraph (sentences.Length, sentences)
+             elif input.IndexOf(" ") <> -1 then
+                 // Notice that Sentence contains an Array of strings
+                 Sentence (input.Split([|" "|], StringSplitOptions.None))
+             else
+                 // Notice that the word contains a string
+                 Word (input)
+      
+     let rec countLetters str =
+         match str with
+         | WhiteSpace     -> 0
+         | Word x         -> x.Length
+         | Sentence words
+             -> Array.map countLetters words     |> Array.fold (+) 0
+         | Pharagraph (_, sentences)
+             -> Array.map countLetters sentences |> Array.fold (+) 0   
+   #+END_SRC
+** partial-active pattern
+
+
+   #+BEGIN_SRC ocaml
+     let (|Pharagraph|Sentence|Word|WhiteSpace|) (input : string) =
+             let input = input.Trim()
+             if input = "" then
+                 WhiteSpace
+             elif input.IndexOf(".") <> -1 then
+                 // Notice that Pharagraph contains an tuple of sentence counts, and sentences.
+                 let sentences = input.Split([|"."|], StringSplitOptions.None)
+                 Pharagraph (sentences.Length, sentences)
+             elif input.IndexOf(" ") <> -1 then
+                 // Notice that Sentence contains an Array of strings
+                 Sentence (input.Split([|" "|], StringSplitOptions.None))
+             else
+                 // Notice that the word contains a string
+                 Word (input)
+      
+     let rec countLetters str =
+         match str with
+         | WhiteSpace     -> 0
+         | Word x         -> x.Length
+         | Sentence words
+             -> Array.map countLetters words     |> Array.fold (+) 0
+         | Pharagraph (_, sentences)
+             -> Array.map countLetters sentences |> Array.fold (+) 0
+   #+END_SRC
+** parameterized active patterns
+
+   #+BEGIN_SRC ocaml
+     let (|MultipleOf|_|) x input = if input % x = 0 then Some(input / x) else None
+      
+     let factorize x =
+         let rec factorizeRec n i =
+             let sqrt = int (Math.Sqrt(float n))
+             if i > sqrt then
+                 []
+             else
+                 match n with
+                 | MultipleOf i timesXdividesIntoI
+                     -> i :: timesXdividesIntoI :: (factorizeRec n (i + 1))
+                 | _ -> factorizeRec n (i + 1)
+         factorizeRec x 1   
+   #+END_SRC

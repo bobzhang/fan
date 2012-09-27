@@ -38,3 +38,11 @@ let camlp4_ast_intf_magic_number = "Camlp42006N002";;
 let ocaml_ast_intf_magic_number = Config.ast_intf_magic_number;;
 let ocaml_ast_impl_magic_number = Config.ast_impl_magic_number;;
 let current_input_file = ref "";;
+
+(* new config *)
+let bug_main_address = "hongboz@seas.upenn.edu";;
+
+let fan_debug = ref false;;
+let conversion_table : (string, string) Hashtbl.t = Hashtbl.create 50
+
+

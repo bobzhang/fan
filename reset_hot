@@ -1,12 +1,9 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-
-# when hot boootstrap failed, roll back to cold as the preprocessor
 target=$1
 set -e
 test _build/boot || mkdir _build/boot
-
 test _build/boot/$target && mv _build/boot/$target _build/boot/$target.old
-cp _build/cold/$target _build/boot/
+cp _build/src/$target _build/boot/
 rm -f _build/boot/fan
 ln -s $target _build/boot/fan

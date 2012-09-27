@@ -12,7 +12,7 @@
 
 <Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
 <Camlp4Printers/**.ml>: use_unix
-<{Debug,MakePreCast,OCamlInitSyntax,Sig,Printers}.cmx>:for-pack(Camlp4)
+# <{Debug,MakePreCast,OCamlInitSyntax,Sig,Printers}.cmx>:for-pack(Camlp4)
 <Grammar/{Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.cmx>:for-pack(Grammar)
 
 # shared with the cold tree
