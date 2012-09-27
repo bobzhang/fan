@@ -1319,7 +1319,7 @@ let varify_constructors =
 
 let rec expr =
          function
-         | Ast.ExAcc (loc, x, Ast.ExId (_, Ast.IdLid (_, "val"))) ->
+         | Ast.ExAcc (loc, x, Ast.ExId (_, Ast.IdLid (_, "contents"))) ->
             (mkexp loc (
               (Pexp_apply
                 (( (mkexp loc ( (Pexp_ident (lident_with_loc "!" loc)) )) ),
@@ -1400,7 +1400,7 @@ let rec expr =
          | ExAss (loc, e, v) ->
             let e =
              (match e with
-              | Ast.ExAcc (loc, x, Ast.ExId (_, Ast.IdLid (_, "val"))) ->
+              | Ast.ExAcc (loc, x, Ast.ExId (_, Ast.IdLid (_, "contents"))) ->
                  (Pexp_apply
                    (( (mkexp loc ( (Pexp_ident (lident_with_loc ":=" loc)) ))
                     ), ( [("", ( (expr x) )); ("", ( (expr v) ))] )))

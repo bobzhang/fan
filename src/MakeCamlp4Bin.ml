@@ -13,7 +13,7 @@ module Camlp4Bin
       value rcall_callback = ref (fun () -> ());
       value loaded_modules = ref SSet.empty;
       value add_to_loaded_modules name =
-        loaded_modules.val := SSet.add name loaded_modules.val;
+        loaded_modules.contents := SSet.add name !loaded_modules;
 
       FanUtil.ErrorHandler.register
             (fun ppf ->
@@ -27,15 +27,15 @@ module Camlp4Bin
         else (".cmo",".cma");
       
       value rewrite_and_load n x =
-        let dyn_loader = DynLoader.instance.val () in 
+        let dyn_loader = !DynLoader.instance () in 
         let find_in_path = DynLoader.find_in_path dyn_loader in
         let real_load name = do {
           add_to_loaded_modules name;
           DynLoader.load dyn_loader name
         } in
         let load =  begin fun n ->
-          if SSet.mem n loaded_modules.val
-          || List.mem n PreCast.loaded_modules.val then ()
+          if SSet.mem n !loaded_modules
+          || List.mem n !PreCast.loaded_modules then ()
           else begin
             add_to_loaded_modules n;
             DynLoader.load dyn_loader (n ^ objext);
@@ -184,7 +184,7 @@ module Camlp4Bin
             let y = "Camlp4"^n^"/"^x^objext in
             real_load (try find_in_path y with [ Not_found -> x ])
           ];
-          rcall_callback.val ();
+          !rcall_callback ();
         };
       
       value print_warning = eprintf "%a:\n%s@." FanLoc.print;
@@ -198,12 +198,12 @@ module Camlp4Bin
               [ (_, "load", s) -> do { rewrite_and_load "" s; None }
               | (_, "directory", s) -> do { DynLoader.include_dir dyn_loader s; None }
               | (_, "use", s) -> Some (parse_file dyn_loader s pa getdir)
-              | (_, "default_quotation", s) -> do { PreCast.Syntax.Quotation.default.val := s; None }
+              | (_, "default_quotation", s) -> do { PreCast.Syntax.Quotation.default.contents := s; None }
               | (loc, _, _) -> FanLoc.raise loc (Stream.Error "bad directive camlp4 can not handled ") ]
           | None -> None ]) in
         let loc = FanLoc.mk name
         in do {
-          PreCast.Syntax.current_warning.val := print_warning;
+          PreCast.Syntax.current_warning.contents := print_warning;
           let ic = if name = "-" then stdin else open_in_bin name;
           let cs = Stream.of_channel ic;
           let clear () = if name = "-" then () else close_in ic;
@@ -220,7 +220,7 @@ module Camlp4Bin
           parse_file dyn_loader name pa getdir
           |> fold_filters (fun t filter -> filter t )
           |> clean
-          |> pr ?input_file:(Some name) ?output_file:output_file.val ;
+          |> pr ?input_file:(Some name) ?output_file:output_file.contents ;
       value gind = fun
         [ <:sig_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
@@ -299,15 +299,15 @@ module Camlp4Bin
       value (task, do_task) =
         let t = ref None in
         let task f x =
-          let () = FanConfig.current_input_file.val := x in
-          t.val := Some (if t.val = None then (fun _ -> f x)
+          let () = FanConfig.current_input_file.contents := x in
+          t.contents := Some (if !t = None then (fun _ -> f x)
                          else (fun usage -> usage ())) in
-        let do_task usage = match t.val with [ Some f -> f usage | None -> () ] in
+        let do_task usage = match !t with [ Some f -> f usage | None -> () ] in
         (task, do_task);
       value input_file x =
-        let dyn_loader = DynLoader.instance.val () in 
+        let dyn_loader = !DynLoader.instance () in 
         do {
-          rcall_callback.val ();
+          !rcall_callback ();
           match x with
           [ Intf file_name -> task (process_intf dyn_loader) file_name
           | Impl file_name -> task (process_impl dyn_loader) file_name
@@ -321,7 +321,7 @@ module Camlp4Bin
               end
           | ModuleImpl file_name -> rewrite_and_load "" file_name
           | IncludeDir dir -> DynLoader.include_dir dyn_loader dir ];
-          rcall_callback.val ();
+          !rcall_callback ();
         };
       
       value initial_spec_list =
@@ -344,10 +344,10 @@ module Camlp4Bin
         ("-verbose", Arg.Set FanConfig.verbose,
           "More verbose in parsing errors.");
         ("-loc", Arg.Set_string FanLoc.name,
-          "<name>   Name of the location variable (default: " ^ FanLoc.name.val ^ ").");
-        ("-QD", Arg.String (fun x -> PreCast.Syntax.Quotation.dump_file.val := Some x),
+          "<name>   Name of the location variable (default: " ^ !FanLoc.name ^ ").");
+        ("-QD", Arg.String (fun x -> PreCast.Syntax.Quotation.dump_file.contents := Some x),
           "<file> Dump quotation expander result in case of syntax error.");
-        ("-o", Arg.String (fun x -> output_file.val := Some x),
+        ("-o", Arg.String (fun x -> output_file.contents := Some x),
           "<file> Output on <file> instead of standard output.");
         ("-v", Arg.Unit print_version,
           "Print Camlp4 version and exit.");
@@ -381,30 +381,30 @@ module Camlp4Bin
       
       value main argv =
         let usage () = do { usage initial_spec_list (FanUtil.Options.ext_spec_list ()); exit 0 } in
-        try do {
-          let dynloader = DynLoader.mk ~ocaml_stdlib:search_stdlib.val
-                                       ~camlp4_stdlib:search_stdlib.val ();
-          DynLoader.instance.val := fun () -> dynloader;
+        try begin
+          let dynloader = DynLoader.mk ~ocaml_stdlib:!search_stdlib
+                                       ~camlp4_stdlib:!search_stdlib () in 
+          let () = DynLoader.instance.contents := fun () -> dynloader in
           let call_callback () =
             PreCast.iter_and_take_callbacks
               (fun (name, module_callback) ->
                  let () = add_to_loaded_modules name in
-                 module_callback ());
-          call_callback ();
-          rcall_callback.val := call_callback;
-          match FanUtil.Options.parse anon_fun argv with
+                 module_callback ()) in 
+          let () = call_callback () in 
+          let () = rcall_callback.contents := call_callback in 
+          let () = match FanUtil.Options.parse anon_fun argv with
           [ [] -> ()
           | ["-help"|"--help"|"-h"|"-?" :: _] -> usage ()
           | [s :: _] ->
               do { eprintf "%s: unknown or misused option\n" s;
                   eprintf "Use option -help for usage@.";
-                  exit 2 } ];
-          do_task usage;
-          call_callback ();
-          if print_loaded_modules.val then do {
-            SSet.iter (eprintf "%s@.") loaded_modules.val;
+                  exit 2 } ] in 
+          let ()  = do_task usage in 
+          let () =call_callback () in 
+          if !print_loaded_modules then do {
+            SSet.iter (eprintf "%s@.") !loaded_modules;
           } else ()
-        }
+        end
         with
         [ Arg.Bad s -> do { eprintf "Error: %s\n" s;
                             eprintf "Use option -help for usage@.";

@@ -22,41 +22,41 @@
 
 module Make (Structure : Structure.S) : sig
   open Structure;
-  value add_loc :
+  val add_loc :
     FanLoc.t -> (token_stream -> 'b) -> token_stream -> ('b * FanLoc.t);
-  value level_number : internal_entry -> string -> int;
-  value strict_parsing : ref bool;
-  value strict_parsing_warning : ref bool;
-  value top_symb :
+  val level_number : internal_entry -> string -> int;
+  val strict_parsing : ref bool;
+  val strict_parsing_warning : ref bool;
+  val top_symb :
     internal_entry -> symbol -> symbol;
-  value top_tree :
+  val top_tree :
     internal_entry -> tree -> tree;
-  value entry_of_symb :
+  val entry_of_symb :
     internal_entry -> symbol -> internal_entry;
-  value continue :
+  val continue :
     internal_entry -> FanLoc.t -> Action.t -> symbol -> tree -> efun -> efun;
-  value do_recover :
+  val do_recover :
     (internal_entry -> 'a -> 'b -> tree -> efun) -> internal_entry ->
     'a -> 'b -> FanLoc.t -> Action.t -> symbol -> tree -> efun;
-  value recover :
+  val recover :
     (internal_entry -> 'a -> 'b -> tree -> efun) -> internal_entry ->
     'a -> 'b -> FanLoc.t -> Action.t -> symbol -> tree -> efun;
-  value parser_of_tree :
+  val parser_of_tree :
     internal_entry -> int -> int -> tree -> efun;
-  value parser_cont :
+  val parser_cont :
     efun -> internal_entry -> int -> int -> symbol -> tree -> FanLoc.t -> Action.t -> efun;
-  value parser_of_token_list :
+  val parser_of_token_list :
     (FanLoc.t -> Action.t -> efun) -> list symbol -> efun;
-  value parser_of_symbol :
+  val parser_of_symbol :
     internal_entry -> int -> symbol -> efun;
-  value parse_top_symb :
+  val parse_top_symb :
     internal_entry -> symbol -> efun;
-  value start_parser_of_levels :
+  val start_parser_of_levels :
     internal_entry -> int -> list level -> int -> efun;
-  value start_parser_of_entry :
+  val start_parser_of_entry :
     internal_entry -> int -> efun;
-  value continue_parser_of_levels :
+  val continue_parser_of_levels :
     internal_entry -> int -> list level -> int -> FanLoc.t -> 'a -> efun;
-  value continue_parser_of_entry :
+  val continue_parser_of_entry :
     internal_entry -> int -> FanLoc.t -> Action.t -> efun;
 end;

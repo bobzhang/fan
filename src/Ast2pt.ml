@@ -5,8 +5,8 @@ open Asttypes;
 
 open Camlp4Ast;
 value constructors_arity () =
-  debug ast2pt "constructors_arity: %b@." FanConfig.constructors_arity.val in
-  FanConfig.constructors_arity.val;
+  debug ast2pt "constructors_arity: %b@." !FanConfig.constructors_arity in
+  !FanConfig.constructors_arity;
 
 
 value error loc str = FanLoc.raise loc (Failure str);
@@ -78,8 +78,8 @@ value mkdirection = fun
       fun s -> try Hashtbl.find t s with [ Not_found -> s ]
     }
   ;
-
-  value conv_lab =
+  (* *)
+  value conv_lab = (* FIXME remove them later*)
     let t = Hashtbl.create 73 in
     do {
       List.iter (fun (s, s') -> Hashtbl.add t s s') [("val", "contents")];
@@ -88,7 +88,7 @@ value mkdirection = fun
   ;
 
   value array_function_no_loc str name =
-    ldot (lident str) (if FanConfig.unsafe.val then "unsafe_" ^ name else name)
+    ldot (lident str) (if !FanConfig.unsafe then "unsafe_" ^ name else name)
   ;
   value array_function loc str name = with_loc (array_function_no_loc str name) loc;
   value mkrf =
@@ -651,7 +651,7 @@ value varify_constructors var_names =
 
   value rec expr =
     fun
-    [ <:expr@loc< $x.val >> ->
+    [ <:expr@loc<  $x.contents >> -> (* fixme probably a bug here *)
         mkexp loc
           (Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc "!" loc))) [("", expr x)])
     | ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
@@ -712,7 +712,7 @@ value varify_constructors var_names =
     | ExAss loc e v ->
         let e =
           match e with
-          [ <:expr@loc< $x.val >> ->
+          [ <:expr@loc< $x.contents >> -> (* fixme*)
               Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc ":=" loc)))
                 [("", expr x); ("", expr v)]
           | ExAcc loc _ _ ->
@@ -1008,12 +1008,12 @@ value varify_constructors var_names =
         mkmod loc (Pmod_structure (str_item sl []))
     | <:module_expr@loc< ($me : $mt) >> ->
         mkmod loc (Pmod_constraint (module_expr me) (module_type mt))
-    | <:module_expr@loc< (value $e : $pt) >> ->
+    | <:module_expr@loc< (val $e : $pt) >> ->
         mkmod loc (Pmod_unpack (
                    mkexp loc (Pexp_constraint (expr e,
                               Some (mktyp loc (Ptyp_package (package_type pt))),
                               None))))
-    | <:module_expr@loc< (value $e) >> ->
+    | <:module_expr@loc< (val $e) >> ->
         mkmod loc (Pmod_unpack (expr e))
     | <:module_expr@loc< $anti:_ >> -> error loc "antiquotation in module_expr" ]
   and str_item s l =

@@ -446,11 +446,11 @@ include Ast;
       (** The first location is where to put the returned pattern.
           Generally it's _loc to match with <:patt< ... >> quotations.
           The second location is the one to treat. *)
-      value meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
+      val meta_loc_patt : FanLoc.t -> FanLoc.t -> Ast.patt;
       (** The first location is where to put the returned expression.
           Generally it's _loc to match with <:expr< ... >> quotations.
           The second location is the one to treat. *)
-      value meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
+      val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
     end;
 
     module MetaLoc = struct
@@ -474,8 +474,8 @@ include Ast;
     end;
 
     module MetaLocVar = struct
-      value meta_loc_patt _loc _ = <:patt< $(lid:FanLoc.name.val) >>;
-      value meta_loc_expr _loc _ = <:expr< $(lid:FanLoc.name.val) >>;
+      value meta_loc_patt _loc _ = <:patt< $(lid:!FanLoc.name) >>;
+      value meta_loc_expr _loc _ = <:expr< $(lid:!FanLoc.name) >>;
     end;
 
     module Make (MetaLoc : META_LOC) = struct

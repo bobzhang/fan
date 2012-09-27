@@ -150,10 +150,10 @@ module Make (Structure : Structure.S) = struct
 
 
   value recover parser_of_tree entry nlevn alevn loc a s son strm =
-    if strict_parsing.val then raise (Stream.Error (Failed.tree_failed entry a s son))
+    if !strict_parsing then raise (Stream.Error (Failed.tree_failed entry a s son))
     else
       let _ =
-        if strict_parsing_warning.val then begin
+        if !strict_parsing_warning then begin
             let msg = Failed.tree_failed entry a s son;
             Format.eprintf "Warning: trying to recover from syntax error";
             if entry.ename <> "" then Format.eprintf " in [%s]" entry.ename else ();

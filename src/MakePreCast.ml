@@ -29,21 +29,21 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
       
   value declare_dyn_module m f =
     begin
-      loaded_modules.val := [ m :: loaded_modules.val ];
+      loaded_modules.contents := [ m :: loaded_modules.contents ];
         Queue.add (m, f) callbacks;
     end;
 
-  value register_str_item_parser f = str_item_parser.val := f;
-  value register_sig_item_parser f = sig_item_parser.val := f;
+  value register_str_item_parser f = str_item_parser.contents := f;
+  value register_sig_item_parser f = sig_item_parser.contents := f;
   value register_parser f g =
-    do { str_item_parser.val := f; sig_item_parser.val := g };
-  value current_parser () = (str_item_parser.val, sig_item_parser.val);
+    do { str_item_parser.contents := f; sig_item_parser.contents := g };
+  value current_parser () = (str_item_parser.contents, sig_item_parser.contents);
 
-  value register_str_item_printer f = str_item_printer.val := f;
-  value register_sig_item_printer f = sig_item_printer.val := f;
+  value register_str_item_printer f = str_item_printer.contents := f;
+  value register_sig_item_printer f = sig_item_printer.contents := f;
   value register_printer f g =
-    do { str_item_printer.val := f; sig_item_printer.val := g };
-  value current_printer () = (str_item_printer.val, sig_item_printer.val);
+    do { str_item_printer.contents := f; sig_item_printer.contents := g };
+  value current_printer () = (str_item_printer.contents, sig_item_printer.contents);
 
 
     
@@ -109,23 +109,23 @@ module Make   (Lexer: Sig.LEXER) : Sig.PRECAST  = struct
   (*   declare_dyn_module Id.name (fun _ *)
   (*       -> let module M = Maker AstFilters in ()); *)
 
-  sig_item_parser.val := Syntax.parse_interf;
-  str_item_parser.val := Syntax.parse_implem;
+  sig_item_parser.contents := Syntax.parse_interf;
+  str_item_parser.contents := Syntax.parse_implem;
 
   module CurrentParser = struct
     value parse_interf ?directive_handler loc strm =
-      sig_item_parser.val ?directive_handler loc strm;
+      sig_item_parser.contents ?directive_handler loc strm;
     value parse_implem ?directive_handler loc strm =
-      str_item_parser.val ?directive_handler loc strm;
+      str_item_parser.contents ?directive_handler loc strm;
     (* value parse_expr ?directive_handler loc expr = *)
       
   end;
 
   module CurrentPrinter = struct
     value print_interf ?input_file ?output_file ast =
-      sig_item_printer.val ?input_file ?output_file ast;
+      sig_item_printer.contents ?input_file ?output_file ast;
     value print_implem ?input_file ?output_file ast =
-      str_item_printer.val ?input_file ?output_file ast;
+      str_item_printer.contents ?input_file ?output_file ast;
   end;
 
     

@@ -4,21 +4,21 @@ module type S = sig
   (** [mk ?ocaml_stdlib ?camlp4_stdlib]
       The stdlib flag is true by default.
       To disable it use: [mk ~ocaml_stdlib:False] *)
-  value mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
+  val mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t;
   (** Fold over the current load path list. *)
-  value fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
+  val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a;
   (** [load f] Load the file [f]. If [f] is not an absolute path name,
       the load path list used to find the directory of [f]. *)
-  value load : t -> string -> unit;
+  val load : t -> string -> unit;
   (** [include_dir d] Add the directory [d] in the current load path
      list (like the common -I option). *)
-  value include_dir : t -> string -> unit;
+  val include_dir : t -> string -> unit;
   (** [find_in_path f] Returns the full path of the file [f] if
      [f] is in the current load path, raises [Not_found] otherwise. *)
-  value find_in_path : t -> string -> string;
+  val find_in_path : t -> string -> string;
   (** [is_native] [True] if we are in native code, [False] for bytecode. *)
-  value is_native : bool;
-  value instance: ref (unit -> t);  
+  val is_native : bool;
+  val instance: ref (unit -> t);  
 end;
 
 module Make (U:sig end) : S= struct 
@@ -62,11 +62,11 @@ value load =
   let _initialized = ref False in
   fun _path file ->
     do {
-      if not _initialized.val then
+      if not !_initialized then
         try do {
           Dynlink.init ();
           Dynlink.allow_unsafe_modules True;
-         _initialized.val := True
+         _initialized.contents := True
         }
         with
         [ Dynlink.Error e ->

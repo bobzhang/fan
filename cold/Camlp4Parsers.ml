@@ -9310,12 +9310,8 @@ module MakeRevisedParser =
                                                                     ("("))
                                                                     );
                                                                     (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
@@ -9376,12 +9372,8 @@ module MakeRevisedParser =
                                                                     ("("))
                                                                     );
                                                                     (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
@@ -11185,12 +11177,8 @@ module MakeRevisedParser =
                                                                     ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
@@ -14366,7 +14354,7 @@ module MakeRevisedParser =
                                                                     (
                                                                     (Ast.IdLid
                                                                     (_loc,
-                                                                    "val"))
+                                                                    "contents"))
                                                                     )))
                                                                     ))) :
                                                                     'expr)
@@ -29699,12 +29687,8 @@ module MakeRevisedParser =
                                                                     (
                                                                     [((
                                                                     [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     )]
                                                                     ),
                                                                     (
@@ -29719,12 +29703,8 @@ module MakeRevisedParser =
                                                                     ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Stoken
@@ -29774,12 +29754,8 @@ module MakeRevisedParser =
                                                                     ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Skeyword
@@ -31117,12 +31093,8 @@ module MakeRevisedParser =
                                                                     ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (value_val :
-                                                                    'value_val Gram.Entry.t)
-                                                                    )))
+                                                                    (Gram.Skeyword
+                                                                    ("val"))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
@@ -43685,7 +43657,8 @@ module MakeParser =
                                                (Ast.ExId
                                                  (_loc, (
                                                   (Ast.IdLid
-                                                    (_loc, "val")) )))
+                                                    (_loc,
+                                                     "contents")) )))
                                                ))) ), e2)) : 'expr)
                                     )) ))] ))] ))) () ) ))
                         );

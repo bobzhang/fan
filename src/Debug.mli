@@ -18,5 +18,5 @@
  *)
 (* camlp4r *)
 type section = string;
-value mode : section -> bool;
-value printf : section -> format 'a Format.formatter unit -> 'a;
+val mode : section -> bool;
+val printf : section -> format 'a Format.formatter unit -> 'a;

@@ -23,8 +23,8 @@
 module Make (Structure : Structure.S) : sig
   open Structure;
 
-  value sfold0 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-  value sfold1 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
-  value sfold0sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b;
+  val sfold0 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
+  val sfold1 : ('a -> 'b -> 'b) -> 'b -> fold _ 'a 'b;
+  val sfold0sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b;
   (* value sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
 end;

@@ -64,7 +64,8 @@ module Make (Structure : Structure.S) = struct
       [ None -> lev.assoc
       | Some a ->
           do {
-            if a <> lev.assoc && entry.egram.warning_verbose.val then do {
+            if a <> lev.assoc && !(entry.egram.warning_verbose) then do {
+             (*  () needed here, this is not a bug, ocaml's parser behaves the same  *)
               eprintf "<W> Changing associativity of level \"%s\"\n" n;
               flush Pervasives.stderr
             }
@@ -75,7 +76,7 @@ module Make (Structure : Structure.S) = struct
     do {
       match lname with
       [ Some n ->
-          if lname <> lev.lname && entry.egram.warning_verbose.val then do {
+          if lname <> lev.lname && !(entry.egram.warning_verbose) then do {
             eprintf "<W> Level label \"%s\" ignored\n" n; flush Pervasives.stderr
           }
           else ()
@@ -224,7 +225,7 @@ module Make (Structure : Structure.S) = struct
               Node {node = s; son = son; brother = insert [] bro}
           | LocAct old_action action_list ->
               let () =
-                if entry.egram.warning_verbose.val then
+                if !(entry.egram.warning_verbose) then
                   eprintf "<W> Grammar extension: in [%s] some rule has been masked@."
                           entry.ename
                 else ()

@@ -106,7 +106,7 @@ value tree_failed entry prev_symb_result prev_symb tree =
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb ]
   in
   do {
-    if entry.egram.error_verbose.val then do {
+    if !(entry.egram.error_verbose) then do {
       let tree = Search.tree_in_entry prev_symb tree entry.edesc;
       let ppf = err_formatter;
       fprintf ppf "@[<v 0>@,";

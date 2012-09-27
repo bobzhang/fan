@@ -44,7 +44,7 @@ module Make (Structure : Structure.S) = struct
   value action_parse entry ts : Action.t =
     try 
       let p =
-        if trace_parser.val then
+        if !trace_parser then
           Format.fprintf
         else Format.ifprintf in 
       let () = p Format.err_formatter "@[<4>%s@ " entry.ename in

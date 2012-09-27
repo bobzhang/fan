@@ -1,7 +1,7 @@
 open FanUtil;
 class c_fold_pattern_vars ['accu] f init =  object
   inherit Camlp4Ast.fold as super;
-  value acc = init;
+  val acc = init;
   method acc : 'accu = acc;
   method patt = fun
   [ <:patt< $lid:s >> | <:patt< ~ $s >> | <:patt< ? $s >>
@@ -20,8 +20,8 @@ value rec fold_binding_vars f bi acc = match bi with
 
 class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.empty) free_init =  object (o)
   inherit Camlp4Ast.fold as super;
-  value free : 'accu = free_init;
-  value env : SSet.t = env_init;
+  val free : 'accu = free_init;
+  val env : SSet.t = env_init;
     
   method free = free;
   method set_env env = {< env = env >};
@@ -78,9 +78,9 @@ class fold_free_vars ['accu] (f : string -> 'accu -> 'accu) ?(env_init = SSet.em
   [ <:class_str_item< inherit $override:_ $_ >> as cst -> super#class_str_item cst
   | <:class_str_item< inherit $override:_ $ce as $s >> ->
       (o#class_expr ce)#add_atom s
-  | <:class_str_item< value $override:_ $mutable:_ $s = $e >> ->
+  | <:class_str_item< val $override:_ $mutable:_ $s = $e >> ->
       (o#expr e)#add_atom s
-  | <:class_str_item< value virtual $mutable:_ $s : $t >> ->
+  | <:class_str_item< val virtual $mutable:_ $s : $t >> ->
       (o#ctyp t)#add_atom s
   | cst -> super#class_str_item cst ];
 

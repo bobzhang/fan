@@ -131,7 +131,7 @@ open Format;
       let f tok loc = do {
         let tok = keyword_conversion tok x.is_kwd;
         check_keyword_as_label tok loc x.is_kwd;
-        if error_on_unknown_keywords.val
+        if !error_on_unknown_keywords
         then check_unknown_keywords tok loc else ();
         debug token "@[<hov 2>Lexer before filter:@ %a@ at@ %a@]@."
                     print tok FanLoc.dump loc in

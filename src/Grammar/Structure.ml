@@ -98,11 +98,11 @@ module type S = sig
       (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
 
   (* Accessors *)
-  value get_filter : gram -> Token.Filter.t;
+  val get_filter : gram -> Token.Filter.t;
 
   (* Useful functions *)
-  value using : gram -> string -> unit;
-  value removing : gram -> string -> unit;
+  val using : gram -> string -> unit;
+  val removing : gram -> string -> unit;
 end;
 
 
@@ -196,13 +196,13 @@ module Make (Lexer  : FanSig.Lexer) = struct
     let r = try Hashtbl.find table kwd with
             [ Not_found ->
                 let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
-    in do { Token.Filter.keyword_added filter kwd (r.val = 0);
+    in do { Token.Filter.keyword_added filter kwd (r.contents = 0);
             incr r };
 
   value removing { gkeywords = table; gfilter = filter } kwd =
     let r = Hashtbl.find table kwd in
     let () = decr r in
-    if r.val = 0 then do {
+    if !r = 0 then do {
       Token.Filter.keyword_removed filter kwd;
       Hashtbl.remove table kwd
     } else ();

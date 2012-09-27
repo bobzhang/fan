@@ -159,8 +159,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     try
       let rll = Hashtbl.find_all ht n in
       List.iter
-        (fun [ (({val=Unused} as r), _)   ->  begin 
-            r.val := UsedNotScanned; modif.val := True;
+        (fun [ (({contents=Unused} as r), _)   ->  begin 
+            r.contents := UsedNotScanned; modif.contents := True;
           end
           |  _ -> () ])
         rll
@@ -189,17 +189,17 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         (fun n ->
           try
             let rll = Hashtbl.find_all ht n.tvar in
-            List.iter (fun (r, _) -> r.val := UsedNotScanned) rll
+            List.iter (fun (r, _) -> r.contents := UsedNotScanned) rll
           with _ ->
             ())
         nl;
-      modif.val := True;
-      while modif.val do {
-        modif.val := False;
+      modif.contents := True;
+      while !modif do {
+        modif.contents := False;
         Hashtbl.iter
           (fun _ (r, e) ->
-            if r.val = UsedNotScanned then do {
-              r.val := UsedScanned;
+            if !r = UsedNotScanned then do {
+              !r := UsedScanned;
               List.iter
                 (fun level ->
                     let rules = level.rules in
@@ -215,7 +215,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       };
       Hashtbl.iter
         (fun s (r, e) ->
-          if r.val = Unused then
+          if !r = Unused then
             print_warning e.name.loc ("Unused local entry \"" ^ s ^ "\"")
           else ())
         ht;
@@ -223,7 +223,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   ;
 
   value new_type_var =
-    let i = ref 0 in fun () -> do { incr i; "e__" ^ string_of_int i.val }
+    let i = ref 0 in fun () -> do { incr i; "e__" ^ string_of_int !i }
   ;
 
   value used_of_rule_list rl =
@@ -331,7 +331,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     ]}
    *)    
   value text_of_action _loc (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
-    let locid = <:patt< $(lid: FanLoc.name.val) >> in (* default is [_loc]*)
+    let locid = <:patt< $(lid: !FanLoc.name) >> in (* default is [_loc]*)
     let act = match act with
       [ Some act -> act
       | None -> <:expr< () >> ] in
@@ -387,7 +387,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         (e, 0) psl
     in
     let txt =
-      if meta_action.val then
+      if !meta_action then
         <:expr< Obj.magic $(MetaAst.Expr.meta_expr _loc txt) >>
       else txt
     in
@@ -627,7 +627,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
     | _ -> () ];
 
-  FanConfig.antiquotations.val := True;
+  FanConfig.antiquotations.contents := True;
 
   EXTEND Gram GLOBAL: expr symbol;
     expr: After "top"
@@ -1074,7 +1074,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
 
   value defined = ref [];
 
-  value is_defined i = List.mem_assoc i defined.val;
+  value is_defined i = List.mem_assoc i !defined;
 
   value bad_patt _loc =
     FanLoc.raise _loc
@@ -1187,13 +1187,13 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             ;
           END
       | None -> () ];
-      defined.val := [(x, eo) :: defined.val];
+      defined.contents := [(x, eo) :: !defined];
     };
 
   value undef x =
     try
       do {
-        let eo = List.assoc x defined.val in
+        let eo = List.assoc x !defined in
         match eo with
         [ Some ([], _) ->
             do {
@@ -1206,7 +1206,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               DELETE_RULE Gram patt: UIDENT $x; SELF END;
             }
         | None -> () ];
-        defined.val := list_remove x defined.val;
+        defined.contents := list_remove x !defined;
       }
     with
     [ Not_found -> () ];
@@ -1226,14 +1226,14 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       let str =
         if String.get str ((String.length str)-1) = '/'
         then str else str ^ "/"
-      in include_dirs.val := include_dirs.val @ [str]
+      in include_dirs.contents := !include_dirs @ [str]
     else ();
 
   value parse_include_file rule =
     let dir_ok file dir = Sys.file_exists (dir ^ file) in
     fun file ->
       let file =
-        try (List.find (dir_ok file) (include_dirs.val @ ["./"])) ^ file
+        try (List.find (dir_ok file) (!include_dirs @ ["./"])) ^ file
         with [ Not_found -> file ]
       in
       let ch = open_in file in
@@ -1504,8 +1504,8 @@ module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
-  (* FanConfig.constructors_arity.val := True; *)
-  FanConfig.constructors_arity.val := False;
+  (* FanConfig.constructors_arity.contents := True; *)
+  FanConfig.constructors_arity.contents := False;
 
   value help_sequences () =
     do {
@@ -1931,10 +1931,10 @@ New syntax:\
         | "("; me = SELF; ":"; mt = module_type; ")" ->
             <:module_expr< ( $me : $mt ) >>
         | "("; me = SELF; ")" -> <:module_expr< $me >>
-        | "("; value_val; e = expr; ")" ->
-            <:module_expr< (value $e) >>
-        | "("; value_val; e = expr; ":"; p = package_type; ")" ->
-            <:module_expr< (value $e : $p) >> ] ]
+        | "("; "val"; e = expr; ")" -> (* val *)
+            <:module_expr< (val $e) >>  (* first class modules *)
+        | "("; "val"; e = expr; ":"; p = package_type; ")" ->
+            <:module_expr< (val $e : $p) >> ] ]
     ;
     str_item:
       [ "top"
@@ -2039,8 +2039,8 @@ New syntax:\
         | "open"; i = module_longident -> <:sig_item< open $i >>
         | "type"; t = type_declaration ->
             <:sig_item< type $t >>
-        | value_val; i = a_LIDENT; ":"; t = ctyp ->
-            <:sig_item< value $i : $t >>
+        | "val"; i = a_LIDENT; ":"; t = ctyp ->
+            <:sig_item< val $i : $t >>
         | "class"; cd = class_description ->
             <:sig_item< class $cd >>
         | "class"; "type"; ctd = class_type_declaration ->
@@ -2162,7 +2162,7 @@ New syntax:\
         | e1 = SELF; "."; e2 = SELF -> <:expr< $e1 . $e2 >>
         | e = SELF; "#"; lab = label -> <:expr< $e # $lab >> ]
       | "~-" NA
-        [ "!"; e = SELF -> <:expr< $e.val >>
+        [ "!"; e = SELF -> <:expr< $e.contents >>
         | f = prefixop; e = SELF -> <:expr< $f $e >> ]
       | "simple"
         [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
@@ -2850,19 +2850,19 @@ New syntax:\
             <:class_str_item< inherit $override:o $ce as $pb >>
         | o = value_val_opt_override; mf = opt_mutable; lab = label; e = cvalue_binding
           ->
-            <:class_str_item< value $override:o $mutable:mf $lab = $e >>
+            <:class_str_item< val $override:o $mutable:mf $lab = $e >>
         | o = value_val_opt_override; mf = opt_mutable; "virtual"; l = label; ":";
               t = poly_type ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
-              <:class_str_item< value virtual $mutable:mf $l : $t >>
+              <:class_str_item< val virtual $mutable:mf $l : $t >>
         | o = value_val_opt_override; "virtual"; mf = opt_mutable; l = label; ":";
                 t = poly_type ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
-              <:class_str_item< value virtual $mutable:mf $l : $t >>
+              <:class_str_item< val virtual $mutable:mf $l : $t >>
         | o = method_opt_override; "virtual"; pf = opt_private; l = label; ":";
                 t = poly_type ->
             if o <> <:override_flag<>> then
@@ -2889,9 +2889,9 @@ New syntax:\
       ] ]
     ;
     value_val_opt_override:
-      [ [ value_val; "!" -> <:override_flag< ! >>
-        | value_val; `ANTIQUOT (("!"|"override"|"anti") as n) s -> Ast.OvAnt (mk_anti n s)
-        | value_val -> <:override_flag<>>
+      [ [ "val"; "!" -> <:override_flag< ! >>
+        | "val"; `ANTIQUOT (("!"|"override"|"anti") as n) s -> Ast.OvAnt (mk_anti n s)
+        | "val" -> <:override_flag<>>
       ] ]
     ;
     opt_as_lident:
@@ -2956,9 +2956,9 @@ New syntax:\
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_sig_item_tag
         | "inherit"; cs = class_type ->
             <:class_sig_item< inherit $cs >>
-        | value_val; mf = opt_mutable; mv = opt_virtual;
+        | "val"; mf = opt_mutable; mv = opt_virtual;
           l = label; ":"; t = ctyp ->
-            <:class_sig_item< value $mutable:mf $virtual:mv $l : $t >>
+            <:class_sig_item< val $mutable:mf $virtual:mv $l : $t >>
         | "method"; "virtual"; pf = opt_private; l = label; ":"; t = poly_type ->
             <:class_sig_item< method virtual $private:pf $l : $t >>
         | "method"; pf = opt_private; l = label; ":"; t = poly_type ->
@@ -3250,7 +3250,7 @@ New syntax:\
     value_let:
       [ [ "value" -> () ] ]
     ;
-    value_val:
+    value_val: (*FIXME remove it later*)
       [ [ "value" -> () ] ]
     ;
     semi:
@@ -3823,7 +3823,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
-  FanConfig.constructors_arity.val := False;
+  FanConfig.constructors_arity.contents := False;
 
   (*FIXME remove this and use OCaml ones *)
   value bigarray_set _loc var newval =
@@ -3924,7 +3924,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
     | <:expr< $_.$e >> -> is_expr_constr_call e
     | <:expr@_loc< $e $_ >> ->
         let res = is_expr_constr_call e in
-        if (not FanConfig.constructors_arity.val) && res then
+        if (not !FanConfig.constructors_arity) && res then
           FanLoc.raise _loc (Stream.Error "currified constructor")
         else res
     | _ -> False ];
@@ -4084,7 +4084,7 @@ module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
             <:expr< ( $e1, $e2 ) >> ]
       | ":=" NA
         [ e1 = SELF; ":="; e2 = expr Level "top" ->
-            <:expr< $e1.val := $e2 >>
+            <:expr< $e1.contents := $e2 >>
         | e1 = SELF; "<-"; e2 = expr Level "top" ->
             match bigarray_set _loc e1 e2 with
             [ Some e -> e
@@ -4570,8 +4570,8 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     module Ast = Ast;
     value loc_name = ref None;
     value meta_loc_expr _loc loc =
-      match loc_name.val with
-      [ None -> <:expr< $(lid:FanLoc.name.val) >>
+      match !loc_name with
+      [ None -> <:expr< $(lid:FanLoc.name.contents) >>
       | Some "here" -> MetaLocHere.meta_loc_expr _loc loc
       | Some x -> <:expr< $lid:x >> ];
     value meta_loc_patt _loc _ = <:patt< _ >>;
@@ -4680,14 +4680,14 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   value add_quotation name entry mexpr mpatt =
     let entry_eoi = Gram.Entry.mk (Gram.Entry.name entry) in
     let parse_quot_string entry loc s =
-      let q = FanConfig.antiquotations.val in
-      let () = FanConfig.antiquotations.val := True in
+      let q = FanConfig.antiquotations.contents in
+      let () = FanConfig.antiquotations.contents := True in
       let res = Gram.parse_string entry loc s in
-      let () = FanConfig.antiquotations.val := q in
+      let () = FanConfig.antiquotations.contents := q in
       res in
     let expand_expr loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi loc s in
-      let () = MetaLoc.loc_name.val := loc_name_opt in
+      let () = MetaLoc.loc_name.contents := loc_name_opt in
       let meta_ast = mexpr loc ast in
       let exp_ast = antiquot_expander#expr meta_ast in
       exp_ast in

@@ -75,7 +75,7 @@ value to_string_of_printer printer v =
  *)
 value nfold_left ?(start = 0) ~until ~acc f =
   let v = ref acc
-  in (for x = start to until do v.val := f v.val x done; v.val);
+  in (for x = start to until do v.contents := f v.contents x done; v.contents);
 (* a module to abstract exeption mechanism  *)
 (* we put the return value exn, so we don't need to work around type system later *)
 type cont 'a = 'a -> exn;
@@ -626,11 +626,11 @@ module List =
             (List.iter
                (fun x ->
                   match f x with
-                  [ Some v -> (res.val := Some v; raise M.First)
+                  [ Some v -> (res.contents := Some v; raise M.First)
                   | None -> () ])
                lst;
              None)
-          with [ M.First -> res.val ];
+          with [ M.First -> res.contents ];
     value rec filter_map f =
       fun
       [ [] -> []
@@ -745,7 +745,7 @@ module Log =
   struct
     value verbose = ref 1;
     value dprintf ?(level = 1) =
-      if verbose.val > level then eprintf else ifprintf err_formatter;
+      if verbose.contents > level then eprintf else ifprintf err_formatter;
     (* ifprintf to overcome type system *)
     (* infoprintf will not *)
     value info_printf a = dprintf ~level: 2 a;
@@ -881,9 +881,9 @@ module String =
       let found = ref False in
       let i = ref 0
       in
-        (while (i.val < len) && (not found.val) do
-           if not (f s.[i.val]) then found.val := True else incr i done;
-         String.sub s i.val (len - i.val));
+        (while (i.contents < len) && (not found.contents) do
+           if not (f s.[i.contents]) then found.contents := True else incr i done;
+         String.sub s i.contents (len - i.contents));
     value find_from str pos sub =
       let len = length str in
       let sublen = length sub
@@ -899,8 +899,8 @@ module String =
                 (for i = pos to len - sublen do
                    let j = ref 0;
                    while
-                     (unsafe_get str (i + j.val)) = (unsafe_get sub j.val) do
-                     incr j; if j.val = sublen then raise & (k i) else ()
+                     (unsafe_get str (i + j.contents)) = (unsafe_get sub j.contents) do
+                     incr j; if j.contents = sublen then raise & (k i) else ()
                      done
                  done;
                  raise Not_found)));
@@ -933,8 +933,8 @@ module String =
                 (for i = (pos - sublen) + 1 downto 0 do
                    let j = ref 0;
                    while
-                     (unsafe_get str (i + j.val)) = (unsafe_get sub j.val) do
-                     incr j; if j.val = sublen then raise & (k i) else ()
+                     (unsafe_get str (i + j.contents)) = (unsafe_get sub j.contents) do
+                     incr j; if j.contents = sublen then raise & (k i) else ()
                      done
                  done;
                  raise Not_found)));
@@ -958,13 +958,13 @@ module String =
       let p = ref 0 in
       let l = length s
       in
-        (while (p.val < l) && (contains chars (unsafe_get s p.val)) do 
+        (while (p.contents < l) && (contains chars (unsafe_get s p.contents)) do 
            incr p done;
-         let p = p.val;
+         let p = p.contents;
          let l = ref (l - 1);
-         while (l.val >= p) && (contains chars (unsafe_get s l.val)) do
+         while (l.contents >= p) && (contains chars (unsafe_get s l.contents)) do
            decr l done;
-         sub s p ((l.val - p) + 1));
+         sub s p ((l.contents - p) + 1));
     (*$T strip
   strip ~chars:" ,()" " boo() bar()" = "boo() bar"
   strip ~chars:"abc" "abbcbab"
@@ -1199,10 +1199,10 @@ exception Not_implemented;
 module Ref =
   struct
     type t 'a = ref 'a;
-    value post r f = let old = r.val in (r.val := f old; old);
-    value pre r f = (r.val := f r.val; r.val);
-    value modify r f = r.val := f r.val;
-    value swap a b = let buf = a.val in (a.val := b.val; b.val := buf);
+    value post r f = let old = r.contents in (r.contents := f old; old);
+    value pre r f = (r.contents := f r.contents; r.contents);
+    value modify r f = r.contents := f r.contents;
+    value swap a b = let buf = a.contents in (a.contents := b.contents; b.contents := buf);
     (*$T swap
   let a = ref 1 and b = ref 2 in swap a b; !a = 2 && !b = 1
  *)
@@ -1216,15 +1216,15 @@ module Ref =
     (*$T post_incr
   let r = ref 0 in post_incr r = 0 && !r = 1
  *)
-    value copy r = ref r.val;
+    value copy r = ref r.contents;
     (*$T copy
   let r = ref 0 in let s = copy r in r := 1; !s == 0 && !r == 1
  *)
     value protect r v body =
-      let old = r.val
+      let old = r.contents
       in
-        try (r.val := v; let res = body (); r.val := old; res)
-        with [ x -> (r.val := old; raise x) ];
+        try (r.contents := v; let res = body (); r.contents := old; res)
+        with [ x -> (r.contents := old; raise x) ];
     (*$T protect
   let r = ref 0 in let b () = incr r; !r in protect r 2 b = 3 && !r = 0
   let r = ref 0 in let b () = incr r; if !r=3 then raise Not_found in (try protect r 2 b; false with Not_found -> true) && !r = 0
@@ -1241,20 +1241,20 @@ module Ref =
     (** As [ := ] *)
     external get : ref 'a -> 'a = "%field0";
     (** As [ ! ]*)
-    value print print_a out r = print_a out r.val;
-    value toggle r = r.val := not r.val;
+    value print print_a out r = print_a out r.contents;
+    value toggle r = r.contents := not r.contents;
     (*$T toggle
   let r = ref true in toggle r; !r = false;
   let r = ref false in toggle r; !r = true;
  *)
-    value oset r x = r.val := Some x;
+    value oset r x = r.contents := Some x;
     value oget_exn r =
-      match r.val with [ None -> raise Not_found | Some x -> x ];
+      match r.contents with [ None -> raise Not_found | Some x -> x ];
     (*  FAIL $T oset, oget_exn
           let r = ref None in oset r 3; oget_exn r = 3
        *)
-    value ord o x y = o x.val y.val;
-    value eq e x y = e x.val y.val;
+    value ord o x y = o x.contents y.contents;
+    value eq e x y = e x.contents y.contents;
   end;
 module Buffer =
   struct
@@ -1408,9 +1408,9 @@ value mapi f xs =
 value fold_nat_left ?(start=0) ~until ~acc f = do{
   let v = ref acc ;
   for x = start to until do
-    v.val := f v.val x 
+    v.contents := f v.contents x 
   done;
-  v.val  
+  v.contents  
 }
 ;  
 
@@ -1418,7 +1418,7 @@ value fold_nat_left ?(start=0) ~until ~acc f = do{
 value iteri f lst =
   let i = ref 0 in 
   List.iter (fun x -> 
-    let () = f i.val x in
+    let () = f i.contents x in
     incr i) lst
 ;    
 
@@ -1457,12 +1457,12 @@ value string_drop_while f s =
   let len = String.length s in
   let found = ref False in
   let i = ref 0 in begin 
-  while i.val < len && not found.val do
-    if not (f s.[i.val]) then 
-      found.val:=True
+  while i.contents < len && not found.contents do
+    if not (f s.[i.contents]) then 
+      found.contents:=True
     else incr i
   done ;
-  String.sub s i.val (len - i.val)
+  String.sub s i.contents (len - i.contents)
   end 
 ;      
 
@@ -1477,10 +1477,10 @@ value find_first f lst =
   try
     List.iter (fun x ->
     match f x with
-    [ Some v -> do{ res.val := Some v; raise First}
+    [ Some v -> do{ res.contents := Some v; raise First}
     | None -> ()]) lst;
     None;
-  with [First ->  res.val]
+  with [First ->  res.contents]
 ;
   
 
@@ -1495,7 +1495,7 @@ value adapt f a =
 ;
 
 (* #default_quotation "expr"; *)
-(* Camlp4.PreCast.Syntax.Quotation.default.val := "expr"; *)
+(* Camlp4.PreCast.Syntax.Quotation.default.contents := "expr"; *)
 
 
 value rec intersperse y xs = match xs with

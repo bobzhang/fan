@@ -152,7 +152,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   value store_if_builtin_type id =
     if SMap.mem id builtin_types then
-      used_builtins.val := SMap.add id (SMap.find id builtin_types) used_builtins.val
+      used_builtins.contents := SMap.add id (SMap.find id builtin_types) !used_builtins
     else ();
 
   type mode = [ Fold | Map | Fold_map ];
@@ -161,8 +161,8 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
   module Gen (X :
     sig
-      value size : int;
-      value mode : mode;
+      val size : int;
+      val mode : mode;
     end) =
     struct
 
@@ -515,11 +515,11 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
            $acc >>
 
       and generate_structure tyMap =
-        SMap.fold method_of_type_decl used_builtins.val
+        SMap.fold method_of_type_decl !used_builtins
           (SMap.fold method_of_type_decl tyMap <:class_str_item<>>)
 
       and generate_signature tyMap =
-        SMap.fold class_sig_item_of_type_decl used_builtins.val
+        SMap.fold class_sig_item_of_type_decl !used_builtins
           (SMap.fold class_sig_item_of_type_decl tyMap <:class_sig_item<>>);
 
   end;
@@ -581,9 +581,9 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     let last = ref <:ctyp<>> in
     let generate_class' generator default c s n =
       match s with
-      [ "Fold"    -> generator Fold c last.val n
-      | "Map"     -> generator Map c last.val n
-      | "FoldMap" -> generator Fold_map c last.val n
+      [ "Fold"    -> generator Fold c !last n
+      | "Map"     -> generator Map c !last n
+      | "FoldMap" -> generator Fold_map c !last n
       | _ -> default ]
     in
     let generate_class_from_module_name generator c default m =
@@ -597,13 +597,13 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
       method str_item st =
         match st with
-        [ <:str_item< type $t >> -> (last.val := t; st)
+        [ <:str_item< type $t >> -> (last.contents := t; st)
 
         (* backward compatibility *)
         | <:str_item@_loc< class $lid:c = Camlp4Filters.GenerateFold.generated >> ->
-              generate_class_implem Fold c last.val 1
+              generate_class_implem Fold c !last 1
         | <:str_item@_loc< class $lid:c = Camlp4Filters.GenerateMap.generated >> ->
-              generate_class_implem Map c last.val 1
+              generate_class_implem Map c !last 1
 
         (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
         | <:str_item@_loc< class $lid:c = $uid:m.generated >> ->
@@ -618,13 +618,13 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
       method sig_item sg =
         match sg with
-        [ <:sig_item< type $t >> -> (last.val := t; sg)
+        [ <:sig_item< type $t >> -> (last.contents := t; sg)
 
         (* backward compatibility *)
         | <:sig_item@_loc< class $lid:c : Camlp4Filters.GenerateFold.generated >> ->
-             generate_class_interf Fold c last.val 1
+             generate_class_interf Fold c !last 1
         | <:sig_item@_loc< class $lid:c : Camlp4Filters.GenerateMap.generated >> ->
-             generate_class_interf Map c last.val 1
+             generate_class_interf Map c !last 1
 
         (* Handle Camlp4(Fold|Map|FoldMap)\d*Generator *)
         | <:sig_item@_loc< class $lid:c : $uid:m.generated >> ->
@@ -859,7 +859,7 @@ value mk_meta m =
 
 value find_type_decls = object
   inherit Ast.fold as super;
-  value accu = SMap.empty;
+  val accu = SMap.empty; 
   method get = accu;
   method ctyp =
     fun

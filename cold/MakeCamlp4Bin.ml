@@ -963,13 +963,12 @@ module Camlp4Bin =
                                                                 ~camlp4_stdlib:(
                                                                 !search_stdlib
                                                                 ) () ) in
-                                                             (
-                                                             (DynLoader.instance
-                                                               := (
-                                                               fun ()
-                                                                 ->
-                                                                dynloader ))
-                                                             );
+                                                             let () =
+                                                              (DynLoader.instance
+                                                                := (
+                                                                fun ()
+                                                                  ->
+                                                                 dynloader )) in
                                                              let call_callback =
                                                               fun ()
                                                                 ->
@@ -984,46 +983,41 @@ module Camlp4Bin =
                                                                     name) in
                                                                   (module_callback
                                                                     () ) )) in
-                                                             (
-                                                             (call_callback
-                                                               () )
-                                                             );
-                                                             (
-                                                             (rcall_callback
-                                                               :=
-                                                               call_callback)
-                                                             );
-                                                             (
-                                                             (match
-                                                                (FanUtil.Options.parse
-                                                                  anon_fun
-                                                                  argv) with
-                                                              | [] -> ()
-                                                              | (((("-help"
+                                                             let () =
+                                                              (call_callback
+                                                                () ) in
+                                                             let () =
+                                                              (rcall_callback
+                                                                :=
+                                                                call_callback) in
+                                                             let () =
+                                                              (match
+                                                                 (FanUtil.Options.parse
+                                                                   anon_fun
+                                                                   argv) with
+                                                               | [] -> ()
+                                                               | (((("-help"
                                                                     | "--help")
-                                                                   | "-h")
-                                                                  | "-?") ::
-                                                                 _) ->
-                                                                 (usage () )
-                                                              | (s :: _) ->
-                                                                 (
-                                                                 (eprintf
-                                                                   "%s: unknown or misused option\n"
-                                                                   s)
-                                                                 );
-                                                                 (
-                                                                 (eprintf
-                                                                   "Use option -help for usage@.")
-                                                                 );
-                                                                 (exit 2))
-                                                             );
-                                                             (
-                                                             (do_task usage)
-                                                             );
-                                                             (
-                                                             (call_callback
-                                                               () )
-                                                             );
+                                                                    | "-h")
+                                                                   | "-?") ::
+                                                                  _) ->
+                                                                  (usage () )
+                                                               | (s :: _) ->
+                                                                  (
+                                                                  (eprintf
+                                                                    "%s: unknown or misused option\n"
+                                                                    s)
+                                                                  );
+                                                                  (
+                                                                  (eprintf
+                                                                    "Use option -help for usage@.")
+                                                                  );
+                                                                  (exit 2)) in
+                                                             let () =
+                                                              (do_task usage) in
+                                                             let () =
+                                                              (call_callback
+                                                                () ) in
                                                              if !print_loaded_modules then
                                                               (
                                                               (SSet.iter (

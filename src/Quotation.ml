@@ -9,38 +9,38 @@ module type S = sig
 
   (** [add name exp] adds the quotation [name] associated with the
       expander [exp]. *)
-  value add : string -> DynAst.tag 'a -> expand_fun 'a -> unit;
+  val add : string -> DynAst.tag 'a -> expand_fun 'a -> unit;
 
   (** [find name] returns the expander of the given quotation name. *)
-  value find : string -> DynAst.tag 'a -> expand_fun 'a;
+  val find : string -> DynAst.tag 'a -> expand_fun 'a;
 
   (** [default] holds the default quotation name. *)
-  value default : ref string;
+  val default : ref string;
 
   (** [default_tbl] mapping position to the default quotation name
       it has higher precedence over default
    *)
-  value default_tbl : Hashtbl.t string string ;
+  val default_tbl : Hashtbl.t string string ;
 
   (** [default_at_pos] set the default quotation name for specific pos*)
-  value default_at_pos: string -> string -> unit;
+  val default_at_pos: string -> string -> unit;
       
   (** [parse_quotation_result parse_function loc position_tag quotation quotation_result]
       It's a parser wrapper, this function handles the error reporting for you. *)
     
-  value parse_quotation_result :
+  val parse_quotation_result :
     (FanLoc.t -> string -> 'a) -> FanLoc.t -> FanSig.quotation -> string -> string -> 'a;
 
   (** function translating quotation names; default = identity *)
-  value translate : ref (string -> string);
+  val translate : ref (string -> string);
 
-  value expand : FanLoc.t -> FanSig.quotation -> DynAst.tag 'a -> 'a;
+  val expand : FanLoc.t -> FanSig.quotation -> DynAst.tag 'a -> 'a;
 
   (** [dump_file] optionally tells Camlp4 to dump the
       result of an expander if this result is syntactically incorrect.
       If [None] (default), this result is not dumped. If [Some fname], the
       result is dumped in the file [fname]. *)
-  value dump_file : ref (option string);
+  val dump_file : ref (option string);
 
   module Error : FanSig.Error;
 
@@ -72,19 +72,19 @@ value default = ref "";
     Hashtbl.replace default_tbl pos str;
   value expander_name pos_tag name =
     let str = DynAst.string_of_tag pos_tag in 
-    match translate.val name with
+    match !translate name with
     [ "" ->
       try Hashtbl.find default_tbl str
-      with [Not_found -> default.val]
+      with [Not_found -> !default]
     | name -> name ];
 
   value find name tag =
     let key = (expander_name tag name, Exp_key.pack tag ()) in
-    Exp_fun.unpack tag (List.assoc key expanders_table.val);
+    Exp_fun.unpack tag (List.assoc key !expanders_table);
 
   value add name tag f =
     let elt = ((name, Exp_key.pack tag ()), Exp_fun.pack tag f) in
-    expanders_table.val := [elt :: expanders_table.val];
+    expanders_table.contents := [elt :: !expanders_table];
 
   value dump_file = ref None;
 
@@ -98,13 +98,13 @@ value default = ref "";
     exception E of t;
 
     value print ppf (name, position, ctx, exn) =
-      let name = if name = "" then default.val else name in
+      let name = if name = "" then !default else name in
       let pp x = fprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position in
       let () =
         match ctx with
         [ Finding -> begin
             pp "finding quotation";
-            if expanders_table.val = [] then
+            if expanders_table.contents = [] then
               fprintf ppf "@ There is no quotation expander available."
             else
               begin
@@ -112,7 +112,7 @@ value default = ref "";
                 List.iter begin fun ((s,t),_) ->
                   fprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
                     s Exp_key.print_tag t
-                end expanders_table.val;
+                end !expanders_table;
                 fprintf ppf "@]"
               end
           end
@@ -120,7 +120,7 @@ value default = ref "";
         | Locating -> pp "parsing"
         | ParsingResult loc str ->
           let () = pp "parsing result of quotation" in
-          match dump_file.val with
+          match !dump_file with
           [ Some dump_file ->
               let () = fprintf ppf " dumping result...\n" in
               try

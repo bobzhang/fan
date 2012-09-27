@@ -28,7 +28,7 @@ module Make
   type warning = FanLoc.t -> string -> unit;
   value default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
   value current_warning = ref default_warning;
-  value print_warning loc txt = current_warning.val loc txt;
+  value print_warning loc txt = !current_warning loc txt;
 
   value a_CHAR = Gram.Entry.mk "a_CHAR";
   value a_FLOAT = Gram.Entry.mk "a_FLOAT";

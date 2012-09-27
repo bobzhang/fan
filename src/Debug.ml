@@ -54,10 +54,10 @@ value formatter =
   (make_formatter
     (fun buf pos len ->
        for i = pos to pos + len - 1 do
-         if at_bol.val then output_string out_channel header else ();
+         if !at_bol then output_string out_channel header else ();
          let ch = buf.[i];
          output_char out_channel ch;
-         at_bol.val := ch = '\n';
+         at_bol.contents := ch = '\n';
        done)
     (fun () -> flush out_channel));
 

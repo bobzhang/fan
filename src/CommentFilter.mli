@@ -21,13 +21,13 @@ module Make (Token : FanSig.Camlp4Token) : sig
 
   type t;
 
-  value mk : unit -> t;
+  val mk : unit -> t;
 
-  value define : Token.Filter.t -> t -> unit;
+  val define : Token.Filter.t -> t -> unit;
 
-  value filter : t -> Stream.t (Token.t * FanLoc.t) -> Stream.t (Token.t * FanLoc.t);
+  val filter : t -> Stream.t (Token.t * FanLoc.t) -> Stream.t (Token.t * FanLoc.t);
 
-  value take_list : t -> list (string * FanLoc.t);
+  val take_list : t -> list (string * FanLoc.t);
 
-  value take_stream : t -> Stream.t (string * FanLoc.t);
+  val take_stream : t -> Stream.t (string * FanLoc.t);
 end;
