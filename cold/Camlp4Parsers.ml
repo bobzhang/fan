@@ -34423,17 +34423,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                None ,
                                                                (
-                                                               [([] ,
-                                                                 (
-                                                                 (Gram.Action.mk
-                                                                   (
-                                                                   fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (() :
-                                                                    'semi)
-                                                                   ))
-                                                                 ));
-                                                                ((
+                                                               [((
                                                                  [(
                                                                   (Gram.Skeyword
                                                                     (";"))

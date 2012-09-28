@@ -174,7 +174,7 @@ include Ast;
     | [t] -> t
     | [t::ts] ->
         let _loc = loc_of_str_item t in <:str_item< $t ; $(stSem_of_list ts) >> ];
-
+  (* FIXME introduces Nil here *)    
   let rec sgSem_of_list =
     fun
     [ [] -> <:sig_item@ghost<>>

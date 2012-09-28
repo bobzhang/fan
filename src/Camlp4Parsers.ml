@@ -3077,7 +3077,7 @@ New syntax:\
       [ [ `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s ->
             <:sig_item< $(anti:mk_anti n ~c:"sig_item" s) >>
         | `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s; semi; sg = SELF ->
-            <:sig_item< $(anti:mk_anti n ~c:"sig_item" s); $sg >>
+            <:sig_item< $(anti:mk_anti n ~c:"sig_item" s); $sg >> 
         | l = LIST0 [ sg = sig_item; semi -> sg ] -> Ast.sgSem_of_list l
       ] ]
     ;
@@ -3170,7 +3170,9 @@ New syntax:\
       [ [ "value" -> () ] ]
     ;
     semi:
-      [ [ ";" -> () | -> ()] ] (** accept both *)
+      [ [ ";" -> ()
+        (* | -> () *)
+        ] ] (** accept both *)
     ;
     expr_quot:
       [ [ e1 = expr; ","; e2 = comma_expr -> <:expr< $e1, $e2 >>

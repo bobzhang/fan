@@ -1000,7 +1000,7 @@ let varify_constructors var_names =
     | _ -> assert False ]
   and module_expr =
     fun
-    [ <:module_expr@loc<>> -> error loc "nil module expression"
+    [ <:module_expr@loc< >> -> error loc "nil module expression"
     | <:module_expr@loc< $id:i >> -> mkmod loc (Pmod_ident (long_uident i))
     | <:module_expr@loc< $me1 $me2 >> ->
         mkmod loc (Pmod_apply (module_expr me1) (module_expr me2))
