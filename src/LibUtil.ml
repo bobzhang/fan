@@ -124,7 +124,7 @@ module List =
                 let cell = { hd = h; tl = []; }
                 in (dst.tl <- inj cell; loop cell t) ] in
           let r = { hd = h; tl = []; } in (loop r t; inj r) ];
-    let rec flatten l =
+    let  flatten l =
       let rec inner dst =
         fun
         [ [] -> dst
@@ -357,13 +357,13 @@ module List =
               let r = { hd = h; tl = []; } in (dst.tl <- inj r; findnext r t)
             else findnext dst t ] in
       let dummy = dummy_node () in (findnext dummy l; dummy.tl);
-    let rec findi p l =
+    let findi p l =
       let rec loop n =
         fun
         [ [] -> raise Not_found
         | [ h :: t ] -> if p n h then (n, h) else loop (n + 1) t ]
       in loop 0 l;
-    let rec index_of e l =
+    let index_of e l =
       let rec loop n =
         fun
         [ [] -> None
@@ -371,21 +371,21 @@ module List =
         | [ _ :: t ] -> loop (n + 1) t ]
       in loop 0 l;
     (* using [==]*)
-    let rec index_ofq e l =
+    let index_ofq e l =
       let rec loop n =
         fun
         [ [] -> None
         | [ h :: _ ] when h == e -> Some n
         | [ _ :: t ] -> loop (n + 1) t ]
       in loop 0 l;
-    let rec rindex_of e l =
+    let rindex_of e l =
       let rec loop n acc =
         fun
         [ [] -> acc
         | [ h :: t ] when h = e -> loop (n + 1) (Some n) t
         | [ _ :: t ] -> loop (n + 1) acc t ]
       in loop 0 None l;
-    let rec rindex_ofq e l =
+    let rindex_ofq e l =
       let rec loop n acc =
         fun
         [ [] -> acc
@@ -488,7 +488,7 @@ module List =
             then dst.tl <- t
             else let r = { hd = h; tl = []; } in (dst.tl <- inj r; loop r t) ] in
       let dummy = dummy_node () in (loop dummy l; dummy.tl);
-    let rec remove_if f lst =
+    let remove_if f lst =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -497,7 +497,7 @@ module List =
             then dst.tl <- l
             else let r = { hd = x; tl = []; } in (dst.tl <- inj r; loop r l) ] in
       let dummy = dummy_node () in (loop dummy lst; dummy.tl);
-    let rec remove_all l x =
+    let remove_all l x =
       let rec loop dst =
         fun
         [ [] -> ()
@@ -1500,7 +1500,7 @@ let adapt f a =
 
 let rec intersperse y xs = match xs with
   [ [] -> []
-  | [x] -> xs
+  | [_x] -> xs
   | [x::xs] ->
       [x ; y :: intersperse y xs]
   ]

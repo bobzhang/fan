@@ -26,7 +26,7 @@ module Make =
     fun strm ->
      (match (Stream.peek strm) with
       | None -> Stream.sempty
-      | Some (tok0, init_loc) ->
+      | Some (_tok0, init_loc) ->
          let rec go =
           fun prev_loc ->
            fun strm1 ->
@@ -59,9 +59,10 @@ module Make =
     fun strm ->
      let result =
       (match (Stream.peek strm) with
-       | Some (_, {prev_loc = prev_loc; prev_loc_only = true}) ->
+       | Some (_, {prev_loc = prev_loc; prev_loc_only = true; _ }) ->
           ( (Stream.junk strm) ); prev_loc
-       | Some (_, {prev_loc = prev_loc; prev_loc_only = false}) -> prev_loc
+       | Some (_, {prev_loc = prev_loc; prev_loc_only = false; _ }) ->
+          prev_loc
        | None -> FanLoc.ghost) in
      result
 

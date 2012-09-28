@@ -231,13 +231,13 @@ module MakeExceptionTracer =
                                     let filter =
                                      object
                                       inherit Ast.map as super
-                                      method expr =
+                                      method! expr =
                                        function
                                        | Ast.ExFun (_loc, m) ->
                                           (Ast.ExFun
                                             (_loc, ( (map_match_case m) )))
                                        | x -> (super#expr x)
-                                      method str_item =
+                                      method! str_item =
                                        function
                                        | (Ast.StMod (_, "Debug", _) as st) ->
                                           st
@@ -1032,7 +1032,7 @@ module MakeFoldGenerator =
                                                              inherit 
                                                               Ast.fold
                                                               as super
-                                                             method ctyp =
+                                                             method! ctyp =
                                                               fun t ->
                                                                if (is_unknown
                                                                     t) then
@@ -1706,7 +1706,7 @@ module MakeFoldGenerator =
                                                              inherit 
                                                               Ast.fold
                                                               as super
-                                                             method ctyp =
+                                                             method! ctyp =
                                                               function
                                                               | Ast.TyId
                                                                  (_,
@@ -2070,7 +2070,7 @@ module MakeFoldGenerator =
                                                          default) in
                                                   object (self)
                                                    inherit Ast.map as super
-                                                   method str_item =
+                                                   method! str_item =
                                                     fun st ->
                                                      (match st with
                                                       | Ast.StTyp (_, t) ->
@@ -2163,7 +2163,7 @@ module MakeFoldGenerator =
                                                               st2) )))
                                                       | st ->
                                                          (super#str_item st))
-                                                   method sig_item =
+                                                   method! sig_item =
                                                     fun sg ->
                                                      (match sg with
                                                       | Ast.SgTyp (_, t) ->
@@ -2319,7 +2319,7 @@ module MakeProfiler =
     fun decorate_fun ->
      ((object
         inherit Ast.map as super
-        method binding =
+        method! binding =
          function
          | Ast.BiEq
             (_loc, Ast.PaId (_, Ast.IdLid (_, id)), (Ast.ExFun (_, _) as e)) ->
@@ -2333,12 +2333,12 @@ module MakeProfiler =
     fun decorate_fun ->
      object (o)
       inherit Ast.map as super
-      method str_item =
+      method! str_item =
        function
        | Ast.StVal (_loc, r, b) ->
           (Ast.StVal (_loc, r, ( (decorate_binding decorate_fun b) )))
        | st -> (super#str_item st)
-      method expr =
+      method! expr =
        function
        | Ast.ExLet (_loc, r, b, e) ->
           (Ast.ExLet
@@ -2938,7 +2938,7 @@ module MakeMetaGenerator =
                                inherit Ast.fold as super
                                val accu = SMap.empty
                                method get = accu
-                               method ctyp =
+                               method! ctyp =
                                 function
                                 | (Ast.TyDcl (_, name, _, _, _) as t) ->
                                    {< accu = (SMap.add name t accu) >}
@@ -2951,7 +2951,7 @@ module MakeMetaGenerator =
                                 lazy ( ((find_type_decls#str_item st)#get) ) in
                                (((object
                                    inherit Ast.map as super
-                                   method module_expr =
+                                   method! module_expr =
                                     fun me ->
                                      let mk_meta_module =
                                       fun m ->

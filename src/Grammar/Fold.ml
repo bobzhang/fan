@@ -20,11 +20,11 @@
  * - Nicolas Pouillard: refactoring
  *)
 module Make (Structure : Structure.S) = struct
-  open Structure;
-  open Format;
+  (* open Structure; *)
+  (* open Format; *)
   module Parse = Parser.Make Structure;
   module Fail = Failed.Make Structure;
-  open FanSig.Grammar;
+  (* open FanSig.Grammar; *)
 
   (* Prevent from implict usage. *)
   module Stream = struct
@@ -67,29 +67,29 @@ module Make (Structure : Structure.S) = struct
     | [: :] -> e ]
   ;
 
-  let sfold1sep f e entry symbl psymb psep =
-    let failed =
-      fun
-      [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
-      | _ -> "failed" ]
-    in
-    let parse_top =
-      fun
-      [ [symb; _] -> Parse.parse_top_symb entry symb (* FIXME context *)
-      | _ -> raise Stream.Failure ]
-    in
-    let rec kont accu =
-      parser
-      [ [: () = psep;
-          a =
-            parser
-            [ [: a = psymb :] -> a
-            | [: a = parse_top symbl :] -> Obj.magic a
-            | [: :] -> raise (Stream.Error (failed symbl)) ];
-          s :] ->
-            kont (f a accu) s
-      | [: :] -> accu ]
-    in
-    parser [: a = psymb; s :] -> kont (f a e) s
-  ;
+  (* let sfold1sep f e entry symbl psymb psep =  (\* FIXME this function was never used*\) *)
+  (*   let failed = *)
+  (*     fun *)
+  (*     [ [symb; sep] -> Fail.symb_failed_txt entry sep symb *)
+  (*     | _ -> "failed" ] *)
+  (*   in *)
+  (*   let parse_top = *)
+  (*     fun *)
+  (*     [ [symb; _] -> Parse.parse_top_symb entry symb (\* FIXME context *\) *)
+  (*     | _ -> raise Stream.Failure ] *)
+  (*   in *)
+  (*   let rec kont accu = *)
+  (*     parser *)
+  (*     [ [: () = psep; *)
+  (*         a = *)
+  (*           parser *)
+  (*           [ [: a = psymb :] -> a *)
+  (*           | [: a = parse_top symbl :] -> Obj.magic a *)
+  (*           | [: :] -> raise (Stream.Error (failed symbl)) ]; *)
+  (*         s :] -> *)
+  (*           kont (f a accu) s *)
+  (*     | [: :] -> accu ] *)
+  (*   in *)
+  (*   parser [: a = psymb; s :] -> kont (f a e) s *)
+  (* ; *)
 end;

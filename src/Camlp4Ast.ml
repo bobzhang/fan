@@ -495,38 +495,38 @@ include Ast;
 
   let map_expr f = object
     inherit map as super;
-    method expr x = f (super#expr x);
+    method! expr x = f (super#expr x);
   end;
   let map_patt f = object
     inherit map as super;
-    method patt x = f (super#patt x);
+    method! patt x = f (super#patt x);
   end;
   let map_ctyp f = object
     inherit map as super;
-    method ctyp x = f (super#ctyp x);
+    method! ctyp x = f (super#ctyp x);
   end;
   let map_str_item f = object
     inherit map as super;
-    method str_item x = f (super#str_item x);
+    method! str_item x = f (super#str_item x);
   end;
   let map_sig_item f = object
     inherit map as super;
-    method sig_item x = f (super#sig_item x);
+    method! sig_item x = f (super#sig_item x);
   end;
   let map_loc f = object
     inherit map as super;
-    method loc x = f (super#loc x);
+    method! loc x = f (super#loc x);
   end;
 
   class clean_ast = object
       
     inherit map as super;
-    method with_constr wc =
+    method! with_constr wc =
       match super#with_constr wc with
       [ <:with_constr< $(<:with_constr<>>)  and $wc >> |
         <:with_constr< $wc and $(<:with_constr<>> ) >> -> wc
       | wc -> wc ];
-    method expr e =
+    method! expr e =
       match super#expr e with
       [ <:expr< let $rec:_ $(<:binding<>>) in $e >> |
         <:expr< { ($e) with $(<:rec_binding<>>)  } >> |
@@ -535,7 +535,7 @@ include Ast;
         <:expr< $(<:expr<>>); $e >> |
         <:expr< $e; $(<:expr<>> ) >> -> e
       | e -> e ];
-    method patt p =
+    method! patt p =
       match super#patt p with
       [ <:patt< ( $p as $(<:patt<>> ) ) >> |
         <:patt< $(<:patt<>>) | $p >> |
@@ -545,29 +545,29 @@ include Ast;
         <:patt< $(<:patt<>> ); $p >> |
         <:patt< $p; $(<:patt<>> ) >> -> p
       | p -> p ];
-    method match_case mc =
+    method! match_case mc =
       match super#match_case mc with
       [ <:match_case< $(<:match_case<>> ) | $mc >> |
         <:match_case< $mc | $(<:match_case<>> ) >> -> mc
       | mc -> mc ];
-    method binding bi =
+    method! binding bi =
       match super#binding bi with
       [ <:binding< $(<:binding<>> ) and $bi >> |
         <:binding< $bi and $(<:binding<>> ) >> -> bi
       | bi -> bi ];
-    method rec_binding rb =
+    method! rec_binding rb =
       match super#rec_binding rb with
       [ <:rec_binding< $(<:rec_binding<>> ) ; $bi >> |
         <:rec_binding< $bi ; $(<:rec_binding<>> ) >> -> bi
       | bi -> bi ];
 
-    method module_binding mb =
+    method! module_binding mb =
       match super#module_binding mb with
       [ <:module_binding< $(<:module_binding<>> ) and $mb >> |
         <:module_binding< $mb and $(<:module_binding<>> ) >> -> mb
       | mb -> mb ];
 
-    method ctyp t =
+    method! ctyp t =
       match super#ctyp t with
       [ <:ctyp< ! $(<:ctyp<>> ) . $t >> |
         <:ctyp< $(<:ctyp<>> ) as $t >> |
@@ -589,14 +589,14 @@ include Ast;
         <:ctyp< $t * $(<:ctyp<>> ) >> -> t
       | t -> t ];
 
-    method sig_item sg =
+    method! sig_item sg =
       match super#sig_item sg with
       [ <:sig_item< $(<:sig_item<>>); $sg >> |
         <:sig_item< $sg; $(<:sig_item<>> ) >> -> sg
       | <:sig_item@loc< type $(<:ctyp<>> ) >> -> <:sig_item@loc<>>
       | sg -> sg ];
 
-    method str_item st =
+    method! str_item st =
       match super#str_item st with
       [ <:str_item< $(<:str_item<>> ); $st >> |
         <:str_item< $st; $(<:str_item<>> ) >> -> st
@@ -604,30 +604,30 @@ include Ast;
       | <:str_item@loc< let $rec:_ $(<:binding<>> ) >> -> <:str_item@loc<>>
       | st -> st ];
 
-    method module_type mt =
+    method! module_type mt =
       match super#module_type mt with
       [ <:module_type< $mt with $(<:with_constr<>> ) >> -> mt
       | mt -> mt ];
 
-    method class_expr ce =
+    method! class_expr ce =
       match super#class_expr ce with
       [ <:class_expr< $(<:class_expr<>> ) and $ce >> |
         <:class_expr< $ce and $(<:class_expr<>> ) >> -> ce
       | ce -> ce ];
 
-    method class_type ct =
+    method! class_type ct =
       match super#class_type ct with
       [ <:class_type< $(<:class_type<>> ) and $ct >> |
         <:class_type< $ct and $(<:class_type<>> ) >> -> ct
       | ct -> ct ];
 
-    method class_sig_item csg =
+    method! class_sig_item csg =
       match super#class_sig_item csg with
       [ <:class_sig_item< $(<:class_sig_item<>> ); $csg >> |
         <:class_sig_item< $csg; $(<:class_sig_item<>> ) >> -> csg
       | csg -> csg ];
 
-    method class_str_item cst =
+    method! class_str_item cst =
       match super#class_str_item cst with
       [ <:class_str_item< $(<:class_str_item<>> ); $cst >> |
         <:class_str_item< $cst; $(<:class_str_item<>> ) >> -> cst

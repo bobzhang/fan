@@ -13,13 +13,12 @@ module Make =
 
    module StreamOrig = Stream
 
-   let njunk = fun strm -> fun n -> for i = 1 to n do (Stream.junk strm) done
+   let njunk =
+    fun strm -> fun n -> for _i = 1 to n do (Stream.junk strm) done
 
    let loc_bp = Tools.get_cur_loc
 
    let loc_ep = Tools.get_prev_loc
-
-   let drop_prev_loc = Tools.drop_prev_loc
 
    let add_loc =
     fun bp ->

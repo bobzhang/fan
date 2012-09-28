@@ -24,8 +24,7 @@ module Make (Structure : Structure.S) = struct
   open Structure;
   open Format;
 
-let rec name_of_symbol entry =
-  fun
+let  name_of_symbol entry =  fun
   [ Snterm e -> "[" ^ e.ename ^ "]"
   | Snterml e l -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | Sself | Snext -> "[" ^ entry.ename ^ "]"

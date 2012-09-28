@@ -356,7 +356,7 @@ module List =
                                                                     );
                                                                     (inj r))
 
-                                                                let rec flatten =
+                                                                let flatten =
                                                                  fun l ->
                                                                   let rec inner =
                                                                    fun dst ->
@@ -1107,7 +1107,7 @@ module List =
                                                                    );
                                                                    dummy.tl
 
-                                                                let rec findi =
+                                                                let findi =
                                                                  fun p ->
                                                                   fun l ->
                                                                    let rec loop =
@@ -1128,7 +1128,7 @@ module List =
                                                                     t) in
                                                                    (loop 0 l)
 
-                                                                let rec index_of =
+                                                                let index_of =
                                                                  fun e ->
                                                                   fun l ->
                                                                    let rec loop =
@@ -1148,7 +1148,7 @@ module List =
                                                                     t) in
                                                                    (loop 0 l)
 
-                                                                let rec index_ofq =
+                                                                let index_ofq =
                                                                  fun e ->
                                                                   fun l ->
                                                                    let rec loop =
@@ -1168,7 +1168,7 @@ module List =
                                                                     t) in
                                                                    (loop 0 l)
 
-                                                                let rec rindex_of =
+                                                                let rindex_of =
                                                                  fun e ->
                                                                   fun l ->
                                                                    let rec loop =
@@ -1193,7 +1193,7 @@ module List =
                                                                    (loop 0
                                                                     None  l)
 
-                                                                let rec rindex_ofq =
+                                                                let rindex_ofq =
                                                                  fun e ->
                                                                   fun l ->
                                                                    let rec loop =
@@ -1568,7 +1568,7 @@ module List =
                                                                    );
                                                                    dummy.tl
 
-                                                                let rec remove_if =
+                                                                let remove_if =
                                                                  fun f ->
                                                                   fun lst ->
                                                                    let rec loop =
@@ -1604,7 +1604,7 @@ module List =
                                                                    );
                                                                    dummy.tl
 
-                                                                let rec remove_all =
+                                                                let remove_all =
                                                                  fun l ->
                                                                   fun x ->
                                                                    let rec loop =
@@ -3353,7 +3353,7 @@ let rec intersperse =
   fun xs ->
    (match xs with
     | [] -> ([])
-    | (x :: []) -> xs
+    | (_x :: []) -> xs
     | (x :: xs) -> ( x ) :: y :: (intersperse y xs) )
 
 let init =

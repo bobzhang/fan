@@ -7,7 +7,7 @@ module IdDebugParser = struct
 end;
 
 module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   include Syntax;
   open FanSig ; (* For FanToken, probably we should fix FanToken as well  *)
   (* module StringSet = Set.Make String; *)
@@ -70,7 +70,7 @@ module IdGrammarParser = struct
   let version = Sys.ocaml_version;
 end;
 module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   open FanSig;
@@ -144,7 +144,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     [ Not_found -> () ]
   ;
 
-  let rec mark_symbol modif ht symb =
+  let  mark_symbol modif ht symb =
     List.iter (fun e -> mark_used modif ht e) symb.used
   ;
 
@@ -213,11 +213,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       List.map
         (fun
           (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
-        [ {prod = [({pattern = None; styp = STtok _} as s)]; action = None} ->
+        [ {prod = [({pattern = None; styp = STtok _ ;_} as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
               action = Some <:expr< $uid:gm.Token.extract_string x >>}
           (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
-        | {prod = [({pattern = None} as s)]; action = None} ->
+        | {prod = [({pattern = None; _ } as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
               action = Some <:expr< x >>}
           (* ...; ([] -> a); ... *)
@@ -317,11 +317,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           fun
           [ { pattern = None; _ } -> accu
           | { pattern = Some p ; _} when Ast.is_irrefut_patt p -> accu
-          | { pattern = Some <:patt< ($_ $(tup:<:patt< _ >>) as $lid:s) >> } ->
+          | { pattern = Some <:patt< ($_ $(tup:<:patt< _ >>) as $lid:s) >> ; _} ->
               (tok_match_pl,
                <:expr< let $lid:s = $uid:gm.Token.extract_string $lid:s
                        in $act >>, i)
-          | { pattern = Some p; text=TXtok _ _ _ } ->
+          | { pattern = Some p; text=TXtok _ _ _ ; _ } ->
               let id = "__camlp4_"^string_of_int i in
               (Some (match (tok_match_pl) with
                      [ None -> (<:expr< $lid:id >>, p)
@@ -534,7 +534,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   class subst gmod =
     object
       inherit Ast.map as super;
-      method ident =
+      method! ident =
         fun
         [ <:ident< $uid:x >> when x = gm -> gmod
         | x -> super#ident x ];
@@ -561,7 +561,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   let wildcarder = object (self)
     inherit Ast.map as super;
-    method patt =
+    method! patt =
       fun
       [ <:patt@_loc< $lid:_ >> -> <:patt< _ >>
       | <:patt< ($p as $_) >> -> self#patt p
@@ -597,7 +597,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   (* FIXME why deprecate such syntax *)  
   let check_not_tok s =
     match s with
-    [ {text = TXtok _loc _ _ } ->
+    [ {text = TXtok _loc _ _ ;_} ->
         FanLoc.raise _loc (Stream.Error
           ("Deprecated syntax, use a sub rule. "^
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
@@ -835,7 +835,7 @@ module IdListComprehension = struct
 end;
 
 module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -1031,7 +1031,7 @@ Added statements:
 
 
 module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -1081,14 +1081,14 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       | _ -> bad_patt _loc ];
 
   class reloc _loc = object
-    inherit Ast.map as super;
-    method loc _ = _loc;
+    inherit Ast.map (* as super *);
+    method! loc _ = _loc;
     (* method _Loc_t _ = _loc; *)
   end;
 
   class subst _loc env = object
     inherit reloc _loc as super;
-    method expr =
+    method! expr =
       fun
       [ <:expr< $lid:x >> | <:expr< $uid:x >> as e ->
           try List.assoc x env with
@@ -1104,7 +1104,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
           with [ Not_found -> super#expr e ]
       | e -> super#expr e ];
 
-    method patt =
+    method! patt =
       fun
       [ <:patt< $lid:x >> | <:patt< $uid:x >> as p ->
          try substp _loc [] (List.assoc x env) with
@@ -1402,7 +1402,7 @@ module IdRevisedParser = struct
 end;
 
 module MakeRevisedParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -1670,7 +1670,7 @@ New syntax:\
   let bigarray_set _loc var newval =
     match var with
     [ <:expr<  $arr.{$c1} >> ->
-        Some <:expr< $arr.{c1} := $newval >> 
+        Some <:expr< $arr.{$c1} := $newval >> 
     | <:expr<  $arr.{$c1, $c2} >> ->
         Some <:expr<  $arr.{$c1, $c2} :=  $newval >>
     | <:expr<  $arr.{$c1, $c2, $c3} >> ->
@@ -3170,7 +3170,7 @@ New syntax:\
       [ [ "value" -> () ] ]
     ;
     semi:
-      [ [ ";" -> () ] ]
+      [ [ ";" -> () | -> ()] ] (** accept both *)
     ;
     expr_quot:
       [ [ e1 = expr; ","; e2 = comma_expr -> <:expr< $e1, $e2 >>
@@ -3362,8 +3362,8 @@ module IdRevisedParserParser : Sig.Id = struct
 end;
 
 module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
-  open FanSig;
+  (* open Sig; *)
+  (* open FanSig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   type spat_comp =
@@ -3735,7 +3735,7 @@ module IdParser : Sig.Id = struct
 end;
 
 module MakeParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
+  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -4438,8 +4438,8 @@ module IdParserParser : Sig.Id = struct
 end;
 
 module MakeParserParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
-  open FanSig;
+  (* open Sig; *)
+  (* open FanSig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   module M = MakeRevisedParserParser  Syntax;
@@ -4478,7 +4478,7 @@ end;
 module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
             (TheAntiquotSyntax : Sig.ParserExpr)
 = struct
-  open Sig;
+  (* open Sig; *)
   open FanSig;
   include Syntax; (* Be careful an AntiquotSyntax module appears here *)
   module Ast = Camlp4Ast;
@@ -4511,7 +4511,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
 
   let antiquot_expander = object
     inherit Ast.map as super;
-    method patt = fun
+    method! patt = fun
       [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
           let mloc _loc = MetaLoc.meta_loc_patt _loc _loc in
           handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc (fun n p ->
@@ -4535,7 +4535,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
             | "antiident" -> <:patt< Ast.IdAnt $(mloc _loc) $p >>
             | _ -> p ])
       | p -> super#patt p ];
-    method expr = fun
+    method! expr = fun
       [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
           let mloc _loc = MetaLoc.meta_loc_expr _loc _loc in
           handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc (fun n e ->

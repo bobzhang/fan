@@ -93,7 +93,7 @@ let default = ref "";
       [ Finding
       | Expanding
       | ParsingResult of FanLoc.t and string
-      | Locating ];
+      | Locating ]; (* FIXME locating never used to build values *)
     type t = (string * string * error * exn);
     exception E of t;
 

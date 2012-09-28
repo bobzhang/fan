@@ -196,7 +196,7 @@ module Make (Token : FanSig.Camlp4Token)
   let parse f c =
     f c c.lexbuf
   let mk_quotation quotation c ~name ~loc ~shift ~retract =
-   let s = parse_nested quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
+   let s = parse_nested ~lexer:quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
    let contents = String.sub s 0 (String.length s - retract) in
    FanSig.QUOTATION {
    FanSig.q_name     = name     ;
@@ -334,7 +334,7 @@ rule token c = parse
        | "'\\" (_ as c)
            { err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)         }
        | "(*"
-           { store c; COMMENT(parse_nested comment (in_comment c))                 }
+           { store c; COMMENT(parse_nested ~lexer:comment (in_comment c))                 }
        | "(*)"
            { warn Comment_start (FanLoc.of_lexbuf lexbuf)                             ;
              parse comment (in_comment c); COMMENT (buff_contents c)               }
@@ -459,9 +459,9 @@ and symbolchar_star beginning c = parse
 and maybe_quotation_at c = parse
     | (ident as loc) '<' (extra_quot as p)?     {
          Stack.push p opt_char;
-         mk_quotation quotation c "" loc
-           (2 + 1 + String.length loc + (opt_char_len p))
-           (2 + opt_char_len p)
+         mk_quotation quotation c ~name:"" ~loc
+           ~shift:(2 + 1 + String.length loc + (opt_char_len p))
+           ~retract:(2 + opt_char_len p)
        }
         (* { mk_quotation quotation c "" loc (1 + String.length loc)                 } *)
     | symbolchar* as tok                                   { SYMBOL("<@" ^ tok) }
@@ -471,16 +471,16 @@ and maybe_quotation_colon c = parse
     | (ident as name) '<' (extra_quot as p)?  { begin 
         Stack.push p opt_char;
         mk_quotation quotation c
-          ~name:name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
+          ~name ~loc:""  ~shift:(2 + 1 + String.length name + (opt_char_len p))
           ~retract:(2 + opt_char_len p)
     end
     }
         (* { mk_quotation quotation c name "" (1 + String.length name)               } *)
     | (ident as name) '@' (locname as loc) '<' (extra_quot as p)? { begin 
         Stack.push p opt_char;
-        mk_quotation quotation c name loc
-          (2 + 2 + String.length loc + String.length name + opt_char_len p)
-          (2 + opt_char_len p)
+        mk_quotation quotation c ~name ~loc
+          ~shift:(2 + 2 + String.length loc + String.length name + opt_char_len p)
+          ~retract:(2 + opt_char_len p)
       end}
    
         (* { mk_quotation quotation c name loc *)
@@ -590,7 +590,7 @@ and antiquot name depth c  = parse
 
 {
  let lexing_store s buff max =
-   let rec self n s =
+   let  self n s =
      if n >= max then n
      else
        match Stream.peek s with

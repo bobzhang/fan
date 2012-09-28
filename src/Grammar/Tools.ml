@@ -33,7 +33,7 @@ module Make (Structure : Structure.S) = struct
   let keep_prev_loc strm =
     match Stream.peek strm with
     [ None -> [: :]
-    | Some (tok0,init_loc) ->
+    | Some (_tok0,init_loc) ->
       let rec go prev_loc strm1 =
         (* if get_prev_loc_only.val then *)
         (*   [: `(tok0, {prev_loc; cur_loc = prev_loc; prev_loc_only = True}); *)
@@ -57,9 +57,9 @@ module Make (Structure : Structure.S) = struct
     begin
       (* get_prev_loc_only.val := True; *)
       let result = match Stream.peek strm with
-        [ Some (_, {prev_loc; prev_loc_only = True}) ->
+        [ Some (_, {prev_loc; prev_loc_only = True; _}) ->
             begin Stream.junk strm; prev_loc end
-        | Some (_, {prev_loc; prev_loc_only = False}) -> prev_loc
+        | Some (_, {prev_loc; prev_loc_only = False;_}) -> prev_loc
         | None -> FanLoc.ghost ];
       (* get_prev_loc_only.val := False; *)
       result

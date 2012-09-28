@@ -1,15 +1,9 @@
 module Make =
  functor (Structure : Structure.S) ->
   struct
-   open Structure
-
-   open Format
-
    module Parse = (Parser.Make)(Structure)
 
    module Fail = (Failed.Make)(Structure)
-
-   open FanSig.Grammar
 
    module Stream =
     struct
@@ -91,45 +85,5 @@ module Make =
                Stream.Failure -> (None)) with
             | Some (a) -> (kont ( (f a e) ) __strm)
             | _ -> e)
-
-   let sfold1sep =
-    fun f ->
-     fun e ->
-      fun entry ->
-       fun symbl ->
-        fun psymb ->
-         fun psep ->
-          let failed =
-           function
-           | (symb :: sep :: []) -> (Fail.symb_failed_txt entry sep symb)
-           | _ -> "failed" in
-          let parse_top =
-           function
-           | (symb :: _ :: []) -> (Parse.parse_top_symb entry symb)
-           | _ -> (raise Stream.Failure ) in
-          let rec kont =
-           fun accu ->
-            fun (__strm :
-              _ Stream.t) ->
-             (match
-                (try (Some (psep __strm)) with
-                 Stream.Failure -> (None)) with
-              | Some (()) ->
-                 let a =
-                  (try
-                    (try (psymb __strm) with
-                     Stream.Failure ->
-                      let a =
-                       (try (parse_top symbl __strm) with
-                        Stream.Failure ->
-                         (raise ( (Stream.Error (failed symbl)) ))) in
-                      (Obj.magic a))
-                   with
-                   Stream.Failure -> (raise ( (Stream.Error ("")) ))) in
-                 (kont ( (f a accu) ) __strm)
-              | _ -> accu) in
-          fun (__strm :
-            _ Stream.t) ->
-           let a = (psymb __strm) in (kont ( (f a e) ) __strm)
 
   end

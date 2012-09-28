@@ -122,8 +122,6 @@ module Make =
 
     let dummy = (Gram.Entry.mk "dummy")
 
-    let entry_eoi = (Gram.Entry.mk "entry_eoi")
-
     let eq_expr = (Gram.Entry.mk "eq_expr")
 
     let expr = (Gram.Entry.mk "expr")
@@ -205,10 +203,6 @@ module Make =
 
     let opt_class_self_type = (Gram.Entry.mk "opt_class_self_type")
 
-    let opt_class_signature = (Gram.Entry.mk "opt_class_signature")
-
-    let opt_class_structure = (Gram.Entry.mk "opt_class_structure")
-
     let opt_comma_ctyp = (Gram.Entry.mk "opt_comma_ctyp")
 
     let opt_dot_dot = (Gram.Entry.mk "opt_dot_dot")
@@ -234,10 +228,6 @@ module Make =
     let opt_rec = (Gram.Entry.mk "opt_rec")
 
     let rec_flag_quot = (Gram.Entry.mk "rec_flag_quot")
-
-    let opt_sig_items = (Gram.Entry.mk "opt_sig_items")
-
-    let opt_str_items = (Gram.Entry.mk "opt_str_items")
 
     let opt_virtual = (Gram.Entry.mk "opt_virtual")
 

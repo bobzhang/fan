@@ -11,7 +11,7 @@ module Make =
 
    open Format
 
-   let rec name_of_symbol =
+   let name_of_symbol =
     fun entry ->
      function
      | Snterm (e) -> ("[" ^ ( (( e.ename ) ^ "]") ))

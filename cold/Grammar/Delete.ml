@@ -132,7 +132,7 @@ module Make =
              ( lev ) :: levs )
       | [] -> (raise Not_found )
 
-   let rec delete_rule_in_level_list =
+   let delete_rule_in_level_list =
     fun entry ->
      fun symbols ->
       fun levs ->

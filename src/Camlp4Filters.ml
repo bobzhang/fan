@@ -51,10 +51,10 @@ module MakeExceptionTracer (Syn : Sig.Camlp4Syntax) = struct
 
   let filter = object
     inherit Ast.map as super;
-    method expr = fun
+    method! expr = fun
     [ <:expr@_loc< fun [ $m ] >>  -> <:expr< fun [ $(map_match_case m) ] >>
     | x -> super#expr x ];
-    method str_item = fun
+    method! str_item = fun
     [ <:str_item< module Debug = $_ >> as st -> st
     | st -> super#str_item st ];
   end;
@@ -288,7 +288,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
           let (_ : < .. >) =
             object
               inherit Ast.fold as super;
-              method ctyp t = if is_unknown t then raise Exit else super#ctyp t;
+              method! ctyp t = if is_unknown t then raise Exit else super#ctyp t;
             end#ctyp t
           in False
         with [ Exit -> True ];
@@ -504,7 +504,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
         let (_ : < .. >) =
           object (self)
             inherit Ast.fold as super;
-            method ctyp =
+            method! ctyp =
               fun
               [ <:ctyp< $lid:id >> -> let () = store_if_builtin_type id in self
               | t -> super#ctyp t ];
@@ -595,7 +595,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
     object (self)
       inherit Ast.map as super;
 
-      method str_item st =
+      method! str_item st =
         match st with
         [ <:str_item< type $t >> -> (last := t; st)
 
@@ -616,7 +616,7 @@ module MakeFoldGenerator (Syn : Sig.Camlp4Syntax) = struct
 
         | st -> super#str_item st ];
 
-      method sig_item sg =
+      method! sig_item sg =
         match sg with
         [ <:sig_item< type $t >> -> (last := t; sg)
 
@@ -663,7 +663,7 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   let decorate_binding decorate_fun = object
     inherit Ast.map as super;
-    method binding =
+    method! binding =
       fun
       [ <:binding@_loc< $lid:id = $( (<:expr< fun [ $_ ] >> as e)) >> ->
           <:binding< $lid:id = $(decorate_fun id e) >>
@@ -672,12 +672,12 @@ module MakeProfiler (Syn : Sig.Camlp4Syntax) = struct
 
   let decorate decorate_fun = object (o)
     inherit Ast.map as super;
-    method str_item =
+    method! str_item =
       fun
       [ <:str_item@_loc< let $rec:r $b >> ->
           <:str_item< let $rec:r $(decorate_binding decorate_fun b) >>
       | st -> super#str_item st ];
-    method expr =
+    method! expr =
       fun
       [ <:expr@_loc< let $rec:r $b in $e >> ->
           <:expr< let $rec:r $(decorate_binding decorate_fun b) in $(o#expr e) >>
@@ -861,7 +861,7 @@ let find_type_decls = object
   inherit Ast.fold as super;
   val accu = SMap.empty; 
   method get = accu;
-  method ctyp =
+  method! ctyp =
     fun
     [ Ast.TyDcl _ name _ _ _ as t -> {< accu = SMap.add name t accu >}
     | t -> super#ctyp t ];
@@ -871,7 +871,7 @@ let filter st =
   let type_decls = lazy (find_type_decls#str_item st)#get in
   object
    inherit Ast.map as super;
-   method module_expr me =
+   method! module_expr me =
      let mk_meta_module m =
        let bi = mk_meta m in
        <:module_expr<

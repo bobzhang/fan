@@ -11,8 +11,6 @@ module IdDebugParser =
 module MakeDebugParser =
                      functor (Syntax : Sig.Camlp4Syntax) ->
                       struct
-                       open Sig
-
                        include Syntax
 
                        open FanSig
@@ -274,8 +272,6 @@ module IdGrammarParser =
 module MakeGrammarParser =
                                   functor (Syntax : Sig.Camlp4Syntax) ->
                                    struct
-                                    open Sig
-
                                     include Syntax
 
                                     module Ast = Camlp4Ast
@@ -372,7 +368,7 @@ and ('e, 'p) symbol = {
       with
       Not_found -> ())
 
- let rec mark_symbol =
+ let mark_symbol =
   fun modif ->
    fun ht ->
     fun symb ->
@@ -454,7 +450,7 @@ and ('e, 'p) symbol = {
     (try
       (List.map (
         function
-        | {prod = (({pattern = None; styp = STtok (_)} as s) :: []);
+        | {prod = (({pattern = None; styp = STtok (_); _ } as s) :: []);
            action = None} ->
            {prod = (
              [{s with
@@ -474,7 +470,7 @@ and ('e, 'p) symbol = {
                             (Ast.IdLid (_loc, "extract_string")) ))) )))
                       ))) ), (
                    (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))) ))))) )}
-        | {prod = (({pattern = None} as s) :: []);
+        | {prod = (({pattern = None; _ } as s) :: []);
            action = None} ->
            {prod = (
              [{s with
@@ -605,7 +601,7 @@ and ('e, 'p) symbol = {
                Some
                 (Ast.PaAli
                   (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))),
-                   Ast.PaId (_, Ast.IdLid (_, s))))} ->
+                   Ast.PaId (_, Ast.IdLid (_, s)))); _ } ->
               (tok_match_pl, (
                (Ast.ExLet
                  (_loc, Ast.ReNil , (
@@ -625,7 +621,7 @@ and ('e, 'p) symbol = {
                         (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) )))
                      ))) ), act)) ), i)
            | {pattern = Some (p);
-              text = TXtok (_, _, _)} ->
+              text = TXtok (_, _, _); _ } ->
               let id = ("__camlp4_" ^ ( (string_of_int i) )) in
               ((
                (Some
@@ -1229,7 +1225,7 @@ and ('e, 'p) symbol = {
  class subst gmod =
   object
    inherit Ast.map as super
-   method ident =
+   method! ident =
     function
     | Ast.IdUid (_, x) when (x = gm) -> gmod
     | x -> (super#ident x)
@@ -1285,7 +1281,7 @@ and ('e, 'p) symbol = {
  let wildcarder =
   object (self)
    inherit Ast.map as super
-   method patt =
+   method! patt =
     function
     | Ast.PaId (_loc, Ast.IdLid (_, _)) -> (Ast.PaAny (_loc))
     | Ast.PaAli (_, p, _) -> (self#patt p)
@@ -1328,7 +1324,7 @@ and ('e, 'p) symbol = {
  let check_not_tok =
   fun s ->
    (match s with
-    | {text = TXtok (_loc, _, _)} ->
+    | {text = TXtok (_loc, _, _); _ } ->
        (FanLoc.raise _loc (
          (Stream.Error
            ("Deprecated syntax, use a sub rule. " ^
@@ -3009,8 +3005,6 @@ module IdListComprehension =
 module MakeListComprehension =
             functor (Syntax : Sig.Camlp4Syntax) ->
              struct
-              open Sig
-
               open FanSig
 
               include Syntax
@@ -3598,8 +3592,6 @@ module IdMacroParser =
 module MakeMacroParser =
                          functor (Syntax : Sig.Camlp4Syntax) ->
                           struct
-                           open Sig
-
                            open FanSig
 
                            include Syntax
@@ -3678,14 +3670,14 @@ module MakeMacroParser =
 
                            class reloc _loc =
                             object
-                             inherit Ast.map as super
-                             method loc = fun _ -> _loc
+                             inherit Ast.map
+                             method! loc = fun _ -> _loc
                             end
 
                            class subst _loc env =
                             object
                              inherit (reloc _loc) as super
-                             method expr =
+                             method! expr =
                               function
                               | ((Ast.ExId (_, Ast.IdLid (_, x))
                                   | Ast.ExId (_, Ast.IdUid (_, x))) as e) ->
@@ -3782,7 +3774,7 @@ module MakeMacroParser =
                                   with
                                   Not_found -> (super#expr e))
                               | e -> (super#expr e)
-                             method patt =
+                             method! patt =
                               function
                               | ((Ast.PaId (_, Ast.IdLid (_, x))
                                   | Ast.PaId (_, Ast.IdUid (_, x))) as p) ->
@@ -5849,8 +5841,6 @@ module IdRevisedParser =
 module MakeRevisedParser =
                                              functor (Syntax : Sig.Camlp4Syntax) ->
                                               struct
-                                               open Sig
-
                                                open FanSig
 
                                                include Syntax
@@ -6784,15 +6774,7 @@ module MakeRevisedParser =
                                                                     ),
                                                                     arr))
                                                                    ),
-                                                                   (
-                                                                   (Ast.ExId
-                                                                    (_loc,
-                                                                    (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "c1"))
-                                                                    )))
-                                                                   )))
+                                                                   c1))
                                                                 ), (
                                                                 (Ast.ExId
                                                                   (_loc,
@@ -34441,7 +34423,17 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                None ,
                                                                (
-                                                               [((
+                                                               [([] ,
+                                                                 (
+                                                                 (Gram.Action.mk
+                                                                   (
+                                                                   fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    (() :
+                                                                    'semi)
+                                                                   ))
+                                                                 ));
+                                                                ((
                                                                  [(
                                                                   (Gram.Skeyword
                                                                     (";"))
@@ -37552,10 +37544,6 @@ module IdRevisedParserParser :
 module MakeRevisedParserParser =
                                                           functor (Syntax : Sig.Camlp4Syntax) ->
                                                            struct
-                                                            open Sig
-
-                                                            open FanSig
-
                                                             include Syntax
 
                                                             module Ast =
@@ -41028,8 +41016,6 @@ module IdParser :
 module MakeParser =
  functor (Syntax : Sig.Camlp4Syntax) ->
   struct
-   open Sig
-
    open FanSig
 
    include Syntax
@@ -46038,10 +46024,6 @@ module IdParserParser : Sig.Id =
 module MakeParserParser =
               functor (Syntax : Sig.Camlp4Syntax) ->
                struct
-                open Sig
-
-                open FanSig
-
                 include Syntax
 
                 module Ast = Camlp4Ast
@@ -46166,8 +46148,6 @@ module MakeQuotationCommon =
                            functor (Syntax : Sig.Camlp4Syntax) ->
                             functor (TheAntiquotSyntax : Sig.ParserExpr) ->
                              struct
-                              open Sig
-
                               open FanSig
 
                               include Syntax
@@ -46245,7 +46225,7 @@ module MakeQuotationCommon =
                               let antiquot_expander =
                                object
                                 inherit Ast.map as super
-                                method patt =
+                                method! patt =
                                  function
                                  | ((Ast.PaAnt (_loc, s)
                                      | Ast.PaStr (_loc, s)) as p) ->
@@ -46584,7 +46564,7 @@ module MakeQuotationCommon =
                                                p))
                                          | _ -> p) ))
                                  | p -> (super#patt p)
-                                method expr =
+                                method! expr =
                                  function
                                  | ((Ast.ExAnt (_loc, s)
                                      | Ast.ExStr (_loc, s)) as e) ->

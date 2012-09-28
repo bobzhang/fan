@@ -27,11 +27,11 @@ module Make (Structure : Structure.S) = struct
   module StreamOrig = Stream;
 
   let njunk strm n =
-    for i = 1 to n do Stream.junk strm done;
+    for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
 
   let loc_bp = Tools.get_cur_loc;
   let loc_ep = Tools.get_prev_loc;
-  let drop_prev_loc = Tools.drop_prev_loc;
+  (* let drop_prev_loc = Tools.drop_prev_loc; *) (* FIXME unused *)
 
   let add_loc bp parse_fun strm =
     let x = parse_fun strm in

@@ -42,7 +42,7 @@ let chr =
                                  )
                                 else (Char.chr c)
 
-let rec backslash =
+let backslash =
                                                     fun (__strm :
                                                       _ Stream.t) ->
                                                      (match
@@ -289,7 +289,7 @@ let rec backslash =
                                                            Stream.Failure ))
 
 
-let rec backslash_in_string =
+let backslash_in_string =
  fun strict ->
   fun store ->
    fun (__strm :

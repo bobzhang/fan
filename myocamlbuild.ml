@@ -579,6 +579,9 @@ module Default = struct
   let before_options () = (
     Options.ocamlc     := ocamlfind & S[A"ocamlc";
                                         A"-annot";
+                                        A "-w";
+                                        A "+a-4-32";
+                                        (* A "-4"; (\* otherwise, a lot of fragile pattern will be detected*\)  *)
                                         (* A "-bin-annot"; *)
                                         (* A"-warn-error"; *)
                                         (* A"A" *)
@@ -586,6 +589,11 @@ module Default = struct
                                       ];
     Options.ocamlopt   := ocamlfind & S[A"ocamlopt";
                                         A"-annot";
+                                        A"-w";
+                                        A"+a-4-32";
+                                        (* A"-4"; *)
+                                        (* A "-warn-error"; *)
+                                        (* A "A" *)
                                         (* A"-bin-annot" *)
                                       ];
     Options.ocamldep   := ocamlfind & A"ocamldep";

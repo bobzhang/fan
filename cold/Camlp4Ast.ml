@@ -20196,35 +20196,36 @@ let map_expr =
  fun f ->
   object
    inherit map as super
-   method expr = fun x -> (f ( (super#expr x) ))
+   method! expr = fun x -> (f ( (super#expr x) ))
   end
 
 let map_patt =
         fun f ->
          object
           inherit map as super
-          method patt = fun x -> (f ( (super#patt x) ))
+          method! patt = fun x -> (f ( (super#patt x) ))
          end
 
 let map_ctyp =
                fun f ->
                 object
                  inherit map as super
-                 method ctyp = fun x -> (f ( (super#ctyp x) ))
+                 method! ctyp = fun x -> (f ( (super#ctyp x) ))
                 end
 
 let map_str_item =
                       fun f ->
                        object
                         inherit map as super
-                        method str_item = fun x -> (f ( (super#str_item x) ))
+                        method! str_item =
+                         fun x -> (f ( (super#str_item x) ))
                        end
 
 let map_sig_item =
                              fun f ->
                               object
                                inherit map as super
-                               method sig_item =
+                               method! sig_item =
                                 fun x -> (f ( (super#sig_item x) ))
                               end
 
@@ -20232,14 +20233,14 @@ let map_loc =
                                     fun f ->
                                      object
                                       inherit map as super
-                                      method loc =
+                                      method! loc =
                                        fun x -> (f ( (super#loc x) ))
                                      end
 
 class clean_ast =
                                            object
                                             inherit map as super
-                                            method with_constr =
+                                            method! with_constr =
                                              fun wc ->
                                               (match
                                                  (super#with_constr wc) with
@@ -20249,7 +20250,7 @@ class clean_ast =
                                                      (_, wc, Ast.WcNil (_))) ->
                                                   wc
                                                | wc -> wc)
-                                            method expr =
+                                            method! expr =
                                              fun e ->
                                               (match (super#expr e) with
                                                | (((((Ast.ExLet
@@ -20267,7 +20268,7 @@ class clean_ast =
                                                      (_, e, Ast.ExNil (_))) ->
                                                   e
                                                | e -> e)
-                                            method patt =
+                                            method! patt =
                                              fun p ->
                                               (match (super#patt p) with
                                                | ((((((Ast.PaAli
@@ -20287,7 +20288,7 @@ class clean_ast =
                                                      (_, p, Ast.PaNil (_))) ->
                                                   p
                                                | p -> p)
-                                            method match_case =
+                                            method! match_case =
                                              fun mc ->
                                               (match
                                                  (super#match_case mc) with
@@ -20297,7 +20298,7 @@ class clean_ast =
                                                      (_, mc, Ast.McNil (_))) ->
                                                   mc
                                                | mc -> mc)
-                                            method binding =
+                                            method! binding =
                                              fun bi ->
                                               (match (super#binding bi) with
                                                | (Ast.BiAnd
@@ -20306,7 +20307,7 @@ class clean_ast =
                                                      (_, bi, Ast.BiNil (_))) ->
                                                   bi
                                                | bi -> bi)
-                                            method rec_binding =
+                                            method! rec_binding =
                                              fun rb ->
                                               (match
                                                  (super#rec_binding rb) with
@@ -20316,7 +20317,7 @@ class clean_ast =
                                                      (_, bi, Ast.RbNil (_))) ->
                                                   bi
                                                | bi -> bi)
-                                            method module_binding =
+                                            method! module_binding =
                                              fun mb ->
                                               (match
                                                  (super#module_binding mb) with
@@ -20326,7 +20327,7 @@ class clean_ast =
                                                      (_, mb, Ast.MbNil (_))) ->
                                                   mb
                                                | mb -> mb)
-                                            method ctyp =
+                                            method! ctyp =
                                              fun t ->
                                               (match (super#ctyp t) with
                                                | (((((((((((((((((Ast.TyPol
@@ -20388,7 +20389,7 @@ class clean_ast =
                                                      (_, t, Ast.TyNil (_))) ->
                                                   t
                                                | t -> t)
-                                            method sig_item =
+                                            method! sig_item =
                                              fun sg ->
                                               (match (super#sig_item sg) with
                                                | (Ast.SgSem
@@ -20400,7 +20401,7 @@ class clean_ast =
                                                   (loc, Ast.TyNil (_)) ->
                                                   (Ast.SgNil (loc))
                                                | sg -> sg)
-                                            method str_item =
+                                            method! str_item =
                                              fun st ->
                                               (match (super#str_item st) with
                                                | (Ast.StSem
@@ -20415,7 +20416,7 @@ class clean_ast =
                                                   (loc, _, Ast.BiNil (_)) ->
                                                   (Ast.StNil (loc))
                                                | st -> st)
-                                            method module_type =
+                                            method! module_type =
                                              fun mt ->
                                               (match
                                                  (super#module_type mt) with
@@ -20423,7 +20424,7 @@ class clean_ast =
                                                   (_, mt, Ast.WcNil (_)) ->
                                                   mt
                                                | mt -> mt)
-                                            method class_expr =
+                                            method! class_expr =
                                              fun ce ->
                                               (match
                                                  (super#class_expr ce) with
@@ -20433,7 +20434,7 @@ class clean_ast =
                                                      (_, ce, Ast.CeNil (_))) ->
                                                   ce
                                                | ce -> ce)
-                                            method class_type =
+                                            method! class_type =
                                              fun ct ->
                                               (match
                                                  (super#class_type ct) with
@@ -20443,7 +20444,7 @@ class clean_ast =
                                                      (_, ct, Ast.CtNil (_))) ->
                                                   ct
                                                | ct -> ct)
-                                            method class_sig_item =
+                                            method! class_sig_item =
                                              fun csg ->
                                               (match
                                                  (super#class_sig_item csg) with
@@ -20453,7 +20454,7 @@ class clean_ast =
                                                      (_, csg, Ast.CgNil (_))) ->
                                                   csg
                                                | csg -> csg)
-                                            method class_str_item =
+                                            method! class_str_item =
                                              fun cst ->
                                               (match
                                                  (super#class_str_item cst) with

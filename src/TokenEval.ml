@@ -47,7 +47,7 @@ let chr c =
   - : char = '\255'
   ]}
  *)  
-let rec backslash = parser
+let  backslash = parser
   [ [: `('\010' | '\013' | '\\' | '\'' | ' ' | '"' as x) :] -> x
   | [: `'n' :]  -> '\n'
   | [: `'r' :]  -> '\r'
@@ -61,7 +61,7 @@ let rec backslash = parser
 
 (* follow the ocaml convention
  *)    
-let rec backslash_in_string strict store = parser
+let  backslash_in_string strict store = parser
   [ [: `'\010'; s :] -> skip_indent s
   | [: `'\013'; s :] -> do { skip_opt_linefeed s; skip_indent s }
   | [: x = backslash :] -> store x

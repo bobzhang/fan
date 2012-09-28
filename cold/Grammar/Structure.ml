@@ -187,7 +187,7 @@ and node = {node:symbol; son:tree; brother:tree}
 
  let using =
   fun {gkeywords = table;
-   gfilter = filter} ->
+   gfilter = filter; _ } ->
    fun kwd ->
     let r =
      (try (Hashtbl.find table kwd) with
@@ -200,7 +200,7 @@ and node = {node:symbol; son:tree; brother:tree}
 
  let removing =
   fun {gkeywords = table;
-   gfilter = filter} ->
+   gfilter = filter; _ } ->
    fun kwd ->
     let r = (Hashtbl.find table kwd) in
     let () = (decr r) in

@@ -7,8 +7,6 @@ open Camlp4Filters
 module Camlp4Bin =
                                                        functor (PreCast : Sig.PRECAST) ->
                                                         struct
-                                                         open PreCast
-
                                                          let printers =
                                                           ((Hashtbl.create
                                                              30) :
