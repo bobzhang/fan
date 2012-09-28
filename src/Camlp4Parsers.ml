@@ -1,28 +1,4 @@
 open FanUtil;
-module IdAstLoader = struct
-  let name = "Camlp4AstLoader";
-  let version = Sys.ocaml_version;
-end;
-
-module MakeAstLoader  : Sig.ParserImpl= struct
-  module Ast = Camlp4Ast;
-  let parse ast_magic ?directive_handler:(_) _loc strm =
-    let str =
-      let buf = Buffer.create 2047 in
-      let () = Stream.iter (Buffer.add_char buf) strm
-      in Buffer.contents buf in
-    let magic_len = String.length ast_magic in
-    let buffer = String.create magic_len in
-    do {
-      String.blit str 0 buffer 0 magic_len;
-      if buffer = ast_magic then ()
-      else failwith (Format.sprintf "Bad magic: %S vs %S" buffer ast_magic);
-      Marshal.from_string str magic_len;
-    };
-
-  let parse_implem = parse FanConfig.camlp4_ast_impl_magic_number;
-  let parse_interf = parse FanConfig.camlp4_ast_intf_magic_number;
-end;
 
 
 module IdDebugParser = struct
@@ -1418,80 +1394,6 @@ module MakeNothing (Syn : Sig.Camlp4Syntax) = struct
 end;
 
 
-module IdReloadedParser = struct
-  let name = "Camlp4Reloaded";
-  let version = Sys.ocaml_version;
-end;
-
-module MakeReloadedParser (Syntax : Sig.Camlp4Syntax) = struct
-  open Sig;
-  open FanSig;
-  include Syntax;
-  module Ast = Camlp4Ast;
-  Gram.Entry.clear match_case;
-  Gram.Entry.clear semi;
-
-  let mkseq _loc =
-    fun
-    [ <:expr< $_; $_ >> as e -> <:expr< do { $e } >>
-    | e -> e ]
-  ;
-
-  DELETE_RULE Gram match_case0: patt_as_patt_opt; opt_when_expr; "->"; expr END;
-
-  let revised =
-    try
-      (DELETE_RULE Gram expr: "if"; SELF; "then"; SELF; "else"; SELF END; True)
-    with [ Not_found -> begin
-      DELETE_RULE Gram expr: "if"; SELF; "then"; expr Level "top"; "else"; expr Level "top" END;
-      DELETE_RULE Gram expr: "if"; SELF; "then"; expr Level "top" END; False
-    end ];
-
-  if revised then begin
-    DELETE_RULE Gram expr: "fun"; "["; LIST0 match_case0 SEP "|"; "]" END;
-    EXTEND Gram
-      expr: Level "top"
-      [ [ "function"; a = match_case -> <:expr< fun [ $a ] >> ] ];
-    END;
-    DELETE_RULE Gram value_let: "value" END;
-    DELETE_RULE Gram value_val: "value" END;
-  end else begin
-    DELETE_RULE Gram value_let: "let" END;
-    DELETE_RULE Gram value_val: "val" END;
-  end;
-
-  EXTEND Gram
-    GLOBAL: match_case match_case0 expr value_let value_val semi;
-
-    match_case:
-      [ [ OPT "|"; l = LIST1 match_case0 SEP "|"; "end" -> Ast.mcOr_of_list l
-        | "end" -> <:match_case<>> ] ]
-    ;
-
-    match_case0:
-      [ [ p = patt_as_patt_opt; w = opt_when_expr; "->"; e = sequence ->
-            <:match_case< $p when $w -> $(mkseq _loc e) >> ] ]
-    ;
-
-    expr: Level "top"
-      [ [ "if"; e1 = sequence; "then"; e2 = sequence; "else"; e3 = sequence; "end" ->
-            <:expr< if $(mkseq _loc e1) then $(mkseq _loc e2) else $(mkseq _loc e3) >>
-        | "if"; e1 = sequence; "then"; e2 = sequence; "end" ->
-            <:expr< if $(mkseq _loc e1) then $(mkseq _loc e2) else () >> ] ]
-    ;
-
-    value_let:
-      [ [ "val" -> () ] ]
-    ;
-    value_val:
-      [ [ "val" -> () ] ]
-    ;
-    semi:
-      [ [ ";;" -> () | ";" -> () | -> () ] ]
-    ;
-  END;
-
-end;
 
 
 module IdRevisedParser = struct
@@ -4781,8 +4683,8 @@ let pa_r (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
 
 (* let pa_rr = "Camlp4OCamlReloadedParser"; *)
-let pa_rr (module P:Sig.PRECAST) =
-  P.syntax_extension (module IdReloadedParser) (module MakeReloadedParser);
+(* let pa_rr (module P:Sig.PRECAST) = *)
+(*   P.syntax_extension (module IdReloadedParser) (module MakeReloadedParser); *)
   
 (* let pa_o  = "Camlp4OCamlParser"; *)
 let pa_o (module P:Sig.PRECAST) =

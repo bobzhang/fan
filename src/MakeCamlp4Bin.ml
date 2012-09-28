@@ -48,11 +48,11 @@ module Camlp4Bin
             -> begin
               pa_r (module PreCast) ;
             end
-          | ("Parsers"|"",
-             "rr" | "reloaded" | "ocamlreloaded"| "camlp4ocamlreloadedparser.cmo")
-            -> begin
-              pa_rr (module PreCast) ;
-          end 
+          (* | ("Parsers"|"", *)
+          (*    "rr" | "reloaded" | "ocamlreloaded"| "camlp4ocamlreloadedparser.cmo") *)
+          (*   -> begin *)
+          (*     pa_rr (module PreCast) ; *)
+          (* end  *)
           | ("Parsers"|"",
              "pa_o.cmo"| "o"| "ocaml" | "camlp4ocamlparser.cmo") ->
                begin

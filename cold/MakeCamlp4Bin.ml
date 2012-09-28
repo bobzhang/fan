@@ -116,15 +116,6 @@ module Camlp4Bin =
                                                                   PreCast))
                                                              | (("Parsers"
                                                                  | ""),
-                                                                ((("rr"
-                                                                   | "reloaded")
-                                                                  | "ocamlreloaded")
-                                                                 | "camlp4ocamlreloadedparser.cmo")) ->
-                                                                (pa_rr
-                                                                  (module
-                                                                  PreCast))
-                                                             | (("Parsers"
-                                                                 | ""),
                                                                 ((("pa_o.cmo"
                                                                    | "o")
                                                                   | "ocaml")
