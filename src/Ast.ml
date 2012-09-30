@@ -308,6 +308,7 @@
     | McOr of loc and match_case and match_case
       (* p (when e)? -> e *)
     | McArr of loc and patt and expr and expr
+    (* | McArrow of loc and patt and option expr and expr (\* FIXME *\) *)
     | McAnt of loc and string (* $s$ *) ]
   and module_expr =
     [ MeNil of loc
