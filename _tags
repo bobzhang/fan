@@ -1,3 +1,4 @@
+true:pkg_batteries
 <{cold,src}/Pprintast.ml>: warn_a
 <{cold,src}/Camlp4Printers/**.ml>: use_unix
 <{cold,src}/Grammar/{Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.cmx>:for-pack(Grammar)

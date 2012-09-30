@@ -4,7 +4,8 @@
    we don't take care of Location.(Should be FIXED later)
  *)
 
-open LibUtil;
+(* open LibUtil; *)
+open Batteries;
 exception Unhandled of Ast.ctyp ;
 exception Finished of Ast.expr;
 let _loc = FanLoc.ghost;
