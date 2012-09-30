@@ -1,6 +1,6 @@
 include Format;
 
-module Map_Make (S : Map.OrderedType) =
+module MapMake (S : Map.OrderedType) =
   struct
     include (Map.Make S);
     let of_list lst =
@@ -9,12 +9,11 @@ module Map_Make (S : Map.OrderedType) =
       Hashtbl.fold (fun k v acc -> add k v acc) tbl empty;
     let elements map = fold (fun k v acc -> [ (k, v) :: acc ]) map [];
   end;
-module StringMap = Map_Make String;
-module IntMap =
-  Map_Make (struct type t = int; let compare = Pervasives.compare; end);
+module StringMap = MapMake String;
+module IntMap = MapMake (struct type t = int; let compare = Pervasives.compare; end);
 module StringSet = struct include (Set.Make String); end;
-module IntSet =
-  Set.Make (struct type t = int; let compare = Pervasives.compare; end);
+module IntSet = Set.Make (struct type t = int; let compare = Pervasives.compare; end);
+
 module Hashset =
   struct
     type t 'a = Hashtbl.t 'a unit;
@@ -30,9 +29,13 @@ module Hashset =
       let set = create size in (List.iter (add set) vs; set);
     let to_list set = fold (fun x y -> [ x :: y ]) set [];
   end;
-(*
-  let (module M) = mk_set (compare:int->int->int) in
-  M.iter print_int M.empty;     *)
+
+(**
+  {[
+   let (module M) = mk_set (compare:int->int->int) in
+   M.iter print_int M.empty;
+   ]}
+ *)
 let mk_set (type s) ~cmp =
   let module M = struct type t = s; let compare = cmp; end
   in (module Set.Make M : Set.S with type elt = s);
@@ -42,6 +45,7 @@ let mk_map (type s) ~cmp =
 let mk_hashtbl (type s) ~eq ~hash =
   let module M = struct type t = s; let equal = eq; let hash = hash; end
   in (module Hashtbl.Make M : Hashtbl.S with type key = s);
+  
 let ( |> ) x f = f x;
 let ( /> ) x f = f x;
 let ( & ) f x = f x;
@@ -58,6 +62,8 @@ let prerr_endlinef fmt = ksprintf prerr_endline fmt;
 let const x _ = x;
 let tap f x = (f x; x);
 let is_even x = (x mod 2) == 0;
+
+
 (*
   {[
   to_string_of_printer pp_print_int 32;
@@ -66,6 +72,7 @@ let is_even x = (x mod 2) == 0;
 let to_string_of_printer printer v =
   let buf = Buffer.create 30 in
   let () = Format.bprintf buf "@[%a@]" printer v in Buffer.contents buf;
+
 (*
   closed interval 
   {[
@@ -76,14 +83,18 @@ let to_string_of_printer printer v =
 let nfold_left ?(start = 0) ~until ~acc f =
   let v = ref acc
   in (for x = start to until do v := f !v x done; !v);
-(* a module to abstract exeption mechanism  *)
-(* we put the return let exn, so we don't need to work around type system later *)
+
+(* a module to abstract exeption mechanism  
+   we put the return let exn, so we don't
+   need to work around type system later *)
 type cont 'a = 'a -> exn;
 let callcc (type u) (f : cont u -> u) =
-  let module M = struct exception Return of u; end
-  in try f (fun x -> raise (M.Return x)) with [ M.Return u -> u ];
-(*
+  let module M = struct exception Return of u; end in
+  try f (fun x -> raise (M.Return x)) with [ M.Return u -> u ];
 
+
+(*
+  List should be first class here
  *)
 module List =
   struct
