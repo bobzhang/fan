@@ -106,10 +106,10 @@ module List =
     let cons h t = [ h :: t ];
     let is_empty = fun [ [] -> True | _ -> False ];
     (*$T is_empty
-  is_empty []
-  not (is_empty [1])
- *)
-    (* tail recursive list *)
+      is_empty []
+      not (is_empty [1])
+     *)
+
     let nth l index =
       (if index < 0 then invalid_arg "Negative index not allowed" else ();
        let rec loop n =
@@ -119,10 +119,11 @@ module List =
        loop index l);
     let at = nth;
     (*$T at
-  try ignore (at [] 0); false with Invalid_argument _ -> true
-  try ignore (at [1;2;3] (-1)); false with Invalid_argument _ -> true
-  at [1;2;3] 2 = 3
- *)
+      try ignore (at [] 0); false with Invalid_argument _ -> true
+      try ignore (at [1;2;3] (-1)); false with Invalid_argument _ -> true
+      at [1;2;3] 2 = 3
+     *)
+
     (* save one pass compared with Stdlib's append *)
     let append l1 l2 =
       match l1 with
@@ -135,6 +136,7 @@ module List =
                 let cell = { hd = h; tl = []; }
                 in (dst.tl <- inj cell; loop cell t) ] in
           let r = { hd = h; tl = []; } in (loop r t; inj r) ];
+        
     let  flatten l =
       let rec inner dst =
         fun
@@ -146,9 +148,9 @@ module List =
       let r = dummy_node () in (outer r l; r.tl);
     let concat = flatten;
     (*$T flatten
-  flatten [[1;2];[3];[];[4;5;6]] = [1;2;3;4;5;6]
-  flatten [[]] = []
- *)
+      flatten [[1;2];[3];[];[4;5;6]] = [1;2;3;4;5;6]
+      flatten [[]] = []
+     *)
     let map f =
       fun
       [ [] -> []
@@ -168,11 +170,11 @@ module List =
         | _ -> () ] in
       let dummy = dummy_node () in (loop n dummy l; dummy.tl);
     (*$= take & ~printer:(IO.to_string (List.print Int.print))
-  (take 0 [1;2;3]) []
-  (take 3 [1;2;3]) [1;2;3]
-  (take 4 [1;2;3]) [1;2;3]
-  (take 1 [1;2;3]) [1]
- *)
+      (take 0 [1;2;3]) []
+      (take 3 [1;2;3]) [1;2;3]
+      (take 4 [1;2;3]) [1;2;3]
+      (take 1 [1;2;3]) [1]
+     *)
     let take_while p li =
       let rec loop dst =
         fun
@@ -183,12 +185,12 @@ module List =
             else () ] in
       let dummy = dummy_node () in (loop dummy li; dummy.tl);
     (*$= take_while & ~printer:(IO.to_string (List.print Int.print))
-  (take_while ((=) 3) [3;3;4;3;3]) [3;3]
-  (take_while ((=) 3) [3]) [3]
-  (take_while ((=) 3) [4]) []
-  (take_while ((=) 3) []) []
-  (take_while ((=) 2) [2; 2]) [2; 2]
- *)
+      (take_while ((=) 3) [3;3;4;3;3]) [3;3]
+      (take_while ((=) 3) [3]) [3]
+      (take_while ((=) 3) [4]) []
+      (take_while ((=) 3) []) []
+      (take_while ((=) 2) [2; 2]) [2; 2]
+     *)
     let rec drop_while f =
       fun [ [] -> [] | [ x :: xs ] when f x -> drop_while f xs | xs -> xs ];
     (*$= drop_while & ~printer:(IO.to_string (List.print Int.print))

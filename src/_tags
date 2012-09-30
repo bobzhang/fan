@@ -1,22 +1,6 @@
 # -*- Mode:Shell-script -*-
 
-
-
 <**/*.ml>: camlp4boot
 <**/*.mli>: camlp4boot
-
-
-# remove some warnings
-<Pprintast.ml>: warn_a
 <{P4_util,*_ppo,**/*_ppo,Pprintast,tmp*,FanLexer,FanConfig,FanUtil,FanSig}.ml>: -camlp4boot
-
 <Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash
-<Camlp4Printers/**.ml>: use_unix
-# <{Debug,MakePreCast,OCamlInitSyntax,Sig,Printers}.cmx>:for-pack(Camlp4)
-<Grammar/{Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.cmx>:for-pack(Grammar)
-
-# shared with the cold tree
-<Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
-<{Pprintast,FanSig,FanLoc,FanConfig}.ml>  or <Ast2pt.{ml,mli}> or <Camlp4/Sig.ml> : pkg_compiler-libs.common
-
-<Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)

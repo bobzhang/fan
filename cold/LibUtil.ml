@@ -1,6 +1,6 @@
 include Format
 
-module Map_Make =
+module MapMake =
                  functor (S : Map.OrderedType) ->
                   struct
                    include (Map.Make)(S)
@@ -23,18 +23,17 @@ module Map_Make =
 
                   end
 
-module StringMap = (Map_Make)(String)
+module StringMap = (MapMake)(String)
 
 module IntMap =
-                                                               (Map_Make)
-                                                                (struct
-                                                                  type t =
-                                                                   int
+                                                              (MapMake)
+                                                               (struct
+                                                                 type t = int
 
-                                                                  let compare =
-                                                                   Pervasives.compare
+                                                                 let compare =
+                                                                  Pervasives.compare
 
-                                                                 end)
+                                                                end)
 
 
 module StringSet =
