@@ -29,24 +29,24 @@ let remove_underscores s =
       |  c  -> do { s.[dst] <- c; remove (src + 1) (dst + 1) } ]
   in remove 0 0 ;
 
-let mkloc = FanLoc.to_ocaml_location;
-let mkghloc loc = FanLoc.to_ocaml_location (FanLoc.ghostify loc);
+(* let mkloc = FanLoc.to_ocaml_location; *)
+let mkghloc loc = (* FanLoc.to_ocaml_location ( *)FanLoc.ghostify loc(* ) *);
 
-let with_loc txt loc = Location.mkloc txt (mkloc loc);
+let with_loc txt loc = Location.mkloc txt  loc;
   
-let mktyp loc d = {ptyp_desc = d; ptyp_loc = mkloc loc};
-let mkpat loc d = {ppat_desc = d; ppat_loc = mkloc loc};
+let mktyp loc d = {ptyp_desc = d; ptyp_loc =  loc};
+let mkpat loc d = {ppat_desc = d; ppat_loc =  loc};
 let mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
-let mkexp loc d = {pexp_desc = d; pexp_loc = mkloc loc};
-let mkmty loc d = {pmty_desc = d; pmty_loc = mkloc loc};
-let mksig loc d = {psig_desc = d; psig_loc = mkloc loc};
-let mkmod loc d = {pmod_desc = d; pmod_loc = mkloc loc};
-let mkstr loc d = {pstr_desc = d; pstr_loc = mkloc loc};
-let mkfield loc d = {pfield_desc = d; pfield_loc = mkloc loc};
-let mkcty loc d = {pcty_desc = d; pcty_loc = mkloc loc};
-let mkcl loc d = {pcl_desc = d; pcl_loc = mkloc loc};
-let mkcf loc d = { pcf_desc = d; pcf_loc = mkloc loc; };
-let mkctf loc d = { pctf_desc = d; pctf_loc = mkloc loc; };
+let mkexp loc d = {pexp_desc = d; pexp_loc =  loc};
+let mkmty loc d = {pmty_desc = d; pmty_loc =  loc};
+let mksig loc d = {psig_desc = d; psig_loc =  loc};
+let mkmod loc d = {pmod_desc = d; pmod_loc =  loc};
+let mkstr loc d = {pstr_desc = d; pstr_loc =  loc};
+let mkfield loc d = {pfield_desc = d; pfield_loc =  loc};
+let mkcty loc d = {pcty_desc = d; pcty_loc =  loc};
+let mkcl loc d = {pcl_desc = d; pcl_loc =  loc};
+let mkcf loc d = { pcf_desc = d; pcf_loc =  loc; };
+let mkctf loc d = { pctf_desc = d; pctf_loc =  loc; };
 
 let mkpolytype t = match t.ptyp_desc with
     [ Ptyp_poly _ _ -> t
@@ -294,7 +294,7 @@ let mkdirection = fun
   let mktype loc tl cl tk tp tm =
     let (params, variance) = List.split tl in
     {ptype_params = params; ptype_cstrs = cl; ptype_kind = tk;
-     ptype_private = tp; ptype_manifest = tm; ptype_loc = mkloc loc;
+     ptype_private = tp; ptype_manifest = tm; ptype_loc =  loc;
      ptype_variance = variance}
   ;
   let mkprivate' m = if m then Private else Public;
@@ -305,20 +305,20 @@ let mkdirection = fun
   let mktrecord =
     fun
     [ <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : mutable $t >> ->
-        (with_loc s sloc, Mutable, mkpolytype (ctyp t), mkloc loc)
+        (with_loc s sloc, Mutable, mkpolytype (ctyp t),  loc)
     | <:ctyp@loc< $(id:<:ident@sloc< $lid:s >>) : $t >> ->
-        (with_loc s sloc, Immutable, mkpolytype (ctyp t), mkloc loc)
+        (with_loc s sloc, Immutable, mkpolytype (ctyp t),  loc)
     | _ -> assert False (*FIXME*) ];
   let mkvariant =
     fun
     [ <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) >> ->
-      (with_loc (conv_con s) sloc, [], None, mkloc loc)
+      (with_loc (conv_con s) sloc, [], None,  loc)
     | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) of $t >> ->
-      (with_loc (conv_con s) sloc, List.map ctyp (list_of_ctyp t []), None, mkloc loc)
+      (with_loc (conv_con s) sloc, List.map ctyp (list_of_ctyp t []), None,  loc)
     | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) : ($t -> $u) >> ->
-      (with_loc (conv_con s) sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u), mkloc loc)
+      (with_loc (conv_con s) sloc, List.map ctyp (list_of_ctyp t []), Some (ctyp u),  loc)
     | <:ctyp@loc< $(id:<:ident@sloc< $uid:s >>) : $t >> ->
-      (with_loc (conv_con s) sloc, [], Some (ctyp t), mkloc loc)
+      (with_loc (conv_con s) sloc, [], Some (ctyp t),  loc)
 
     | _ -> assert False (*FIXME*) ];
   let rec type_decl tl cl loc m pflag =
@@ -346,7 +346,7 @@ let mkdirection = fun
 
   let type_decl tl cl t loc = type_decl tl cl loc None False t;
 
-  let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc = mkloc loc};
+  let mkvalue_desc loc t p = {pval_type = ctyp t; pval_prim = p; pval_loc =  loc};
 
   let rec list_of_meta_list =
     fun
@@ -415,7 +415,7 @@ let mkdirection = fun
         ptype_kind = kind;
         ptype_private = priv;
         ptype_manifest = Some ct;
-        ptype_loc = mkloc loc; ptype_variance = variance});
+        ptype_loc =  loc; ptype_variance = variance});
 
   let rec mkwithc wc acc =
     match wc with
@@ -930,7 +930,7 @@ let varify_constructors var_names =
           List.map
             (fun (t1, t2) ->
               let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
-              (ctyp t1, ctyp t2, mkloc loc))
+              (ctyp t1, ctyp t2,  loc))
             cl
         in
         [(with_loc c cloc,
@@ -1073,7 +1073,7 @@ let varify_constructors var_names =
         mkcty loc (Pcty_signature {
           pcsig_self = ctyp t;
           pcsig_fields = cil;
-          pcsig_loc = mkloc loc;
+          pcsig_loc =  loc;
         })
     | CtCon loc _ _ _ ->
         error loc "invalid virtual class inside a class type"
@@ -1089,10 +1089,10 @@ let varify_constructors var_names =
         | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ]
       in
       {pci_virt = mkvirtual vir;
-       pci_params = (params, mkloc loc_params);
+       pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;
        pci_expr = class_expr ce;
-       pci_loc = mkloc loc;
+       pci_loc =  loc;
        pci_variance = variance}
     | ce -> error (loc_of_class_expr ce) "bad class definition" ]
   and class_info_class_type ci =
@@ -1105,10 +1105,10 @@ let varify_constructors var_names =
         | t -> (loc_of_ctyp t, List.split (class_parameters t [])) ]
       in
       {pci_virt = mkvirtual vir;
-       pci_params = (params, mkloc loc_params);
+       pci_params = (params,  loc_params);
        pci_name = with_loc name nloc;
        pci_expr = class_type ct;
-       pci_loc = mkloc loc;
+       pci_loc =  loc;
        pci_variance = variance}
     | ct -> error (loc_of_class_type ct)
               "bad class/class type declaration/definition" ]

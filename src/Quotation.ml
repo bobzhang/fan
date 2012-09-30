@@ -93,7 +93,7 @@ let default = ref "";
       [ Finding
       | Expanding
       | ParsingResult of FanLoc.t and string
-      | Locating ]; (* FIXME locating never used to build values *)
+      (* | Locating  *)]; (* FIXME locating never used to build values *)
     type t = (string * string * error * exn);
     exception E of t;
 
@@ -117,7 +117,7 @@ let default = ref "";
               end
           end
         | Expanding -> pp "expanding quotation"
-        | Locating -> pp "parsing"
+        (* | Locating -> pp "parsing" *)
         | ParsingResult loc str ->
           let () = pp "parsing result of quotation" in
           match !dump_file with

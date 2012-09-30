@@ -10,19 +10,23 @@ open Format;
     line-number field of the position. It makes therefore no sense
     to use character numbers with the source file if the sources
     contain line number directives. *)
-type pos = {
-    line : int;
-    bol  : int;
-    off  : int
-  };
 
-type t = {
-  file_name : string;
-  start     : pos;
-  stop      : pos;
-  ghost     : bool
-};
+(* type pos = { *)
+(*     line : int; *)
+(*     bol  : int; *)
+(*     off  : int *)
+(*   }; *)
 
+
+(* type t = { *)
+(*   file_name : string; *)
+(*   start     : pos; *)
+(*   stop      : pos; *)
+(*   ghost     : bool *)
+(* }; *)
+open Location;
+open Lexing;
+type t = Location.t;
 
 (* Debug section *)
 let dump_sel f x =
@@ -36,74 +40,101 @@ let dump_sel f x =
   
 let dump_pos f x =
   fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]"
-          x.line x.bol x.off;
+          x.pos_lnum x.pos_bol x.pos_cnum;
   
 let dump_long f x =
   fprintf f
     "@[<hov 2>{ file_name = %s ;@ start = %a (%d-%d);@ stop = %a (%d);@ ghost = %b@ } : FanLoc.t@]"
-    x.file_name dump_pos x.start (x.start.off - x.start.bol)
-    (x.stop.off - x.start.bol) dump_pos x.stop
-    (x.stop.off - x.stop.bol) x.ghost;
+    x.loc_start.pos_fname dump_pos x.loc_start (x.loc_start.pos_cnum - x.loc_start.pos_bol)
+    (x.loc_end.pos_cnum - x.loc_start.pos_bol)  (* FIXME here*)
+    dump_pos
+    x.loc_end
+    (x.loc_end.pos_cnum - x.loc_end.pos_bol) x.loc_ghost;
 
 (** Print the location in a short format useful for debugging. *)  
 let dump f x =
   fprintf f "[%S: %d:%d-%d %d:%d%t]"
-    x.file_name x.start.line (x.start.off - x.start.bol)
-    (x.stop.off - x.start.bol) x.stop.line (x.stop.off - x.stop.bol)
-    (fun o -> if x.ghost then fprintf o " (ghost)" else ());
+    x.loc_start.pos_fname x.loc_start.pos_lnum
+    (x.loc_start.pos_cnum - x.loc_start.pos_bol)
+    (x.loc_end.pos_cnum - x.loc_start.pos_bol) x.loc_end.pos_lnum (x.loc_end.pos_cnum - x.loc_end.pos_bol)
+    (fun o -> if x.loc_ghost then fprintf o " (ghost)" else ());
 
-let start_pos = { line = 1 ; bol = 0 ; off = 0 };
+  
+let start_pos name =
+  { pos_fname=name ;
+    pos_lnum = 1 ;
+    pos_bol = 0 ;
+    pos_cnum = 0 };
 
+let ghost_name = "ghost-location";
 (** The [ghost] location can be used when no location
         information is available. *)
 let ghost =
-  { file_name = "ghost-location";
-    start     = start_pos;
-    stop      = start_pos;
-    ghost     = True     };
+  { 
+    loc_start = start_pos ghost_name;
+    loc_end   = start_pos ghost_name;
+    loc_ghost     = True     };
 
 (** Return a start location for the given file name.
     This location starts at the begining of the file. *)
 let mk file_name =
   debug loc "mk %s@\n" file_name in
-  { file_name = file_name;
-    start     = start_pos;
-    stop      = start_pos;
-    ghost     = False    };
+  { 
+    loc_start     = start_pos file_name;
+    loc_end      = start_pos file_name;
+    loc_ghost     = False    };
+
+
 (** Return a location from [(file_name, start_line, start_bol, start_off,
             stop_line,  stop_bol,  stop_off, ghost)]. *)
 let of_tuple (file_name, start_line, start_bol, start_off,
                           stop_line,  stop_bol,  stop_off, ghost) =
-  { file_name = file_name;
-    start     = { line = start_line ; bol = start_bol ; off = start_off };
-    stop      = { line = stop_line  ; bol = stop_bol  ; off = stop_off  };
-    ghost     = ghost };
+  { (* file_name = file_name; *)
+    loc_start     = {
+      pos_fname=file_name;
+      pos_lnum = start_line ;
+      pos_bol = start_bol ;
+      pos_cnum = start_off };
+    loc_end      = {
+      pos_fname = file_name;
+      pos_lnum = stop_line;
+      pos_bol = stop_bol;
+      pos_cnum = stop_off};
+
+    loc_ghost     = ghost };
 
 (** Return [(file_name, start_line, start_bol, start_off,
             stop_line,  stop_bol,  stop_off, ghost)]. *)
-let to_tuple
-  { file_name = file_name;
-    start     = { line = start_line ; bol = start_bol ; off = start_off };
-    stop      = { line = stop_line  ; bol = stop_bol  ; off = stop_off  };
-    ghost     = ghost } =
-  (file_name, start_line, start_bol, start_off,
-              stop_line,  stop_bol,  stop_off, ghost);
+let to_tuple = 
+  fun [
+    { (* file_name = file_name; *)
+    loc_start     = { pos_fname;
+                  pos_lnum = start_line ;
+                  pos_bol = start_bol ;
+                  pos_cnum  = start_off };
+    loc_end      = { pos_lnum = stop_line  ;
+                  pos_bol = stop_bol  ;
+                  pos_cnum = stop_off ; _
+                };
+    loc_ghost     = ghost } -> 
+  (pos_fname, start_line, start_bol, start_off,
+              stop_line,  stop_bol,  stop_off, ghost) ];
 
-let pos_of_lexing_position p =
-  let pos =
-  { line = p.Lexing.pos_lnum ;
-    bol  = p.Lexing.pos_bol  ;
-    off  = p.Lexing.pos_cnum } in
-  debug loc "pos_of_lexing_position: %a@\n" dump_pos pos in
-  pos;
+(* let pos_of_lexing_position p = *)
+(*   let pos = *)
+(*   { line = p.Lexing.pos_lnum ; *)
+(*     bol  = p.Lexing.pos_bol  ; *)
+(*     off  = p.Lexing.pos_cnum } in *)
+(*   debug loc "pos_of_lexing_position: %a@\n" dump_pos pos in *)
+(*   pos; *)
 
-let pos_to_lexing_position p file_name =
-  (* debug loc "pos_to_lexing_position: %a@\n" dump_pos p in *)
-  { Lexing.
-    pos_fname = file_name;
-    pos_lnum  = p.line   ;
-    pos_bol   = p.bol    ;
-    pos_cnum  = p.off    };
+(* let pos_to_lexing_position p file_name = *)
+(*   (\* debug loc "pos_to_lexing_position: %a@\n" dump_pos p in *\) *)
+(*   { Lexing. *)
+(*     pos_fname = file_name; *)
+(*     pos_lnum  = p.line   ; *)
+(*     pos_bol   = p.bol    ; *)
+(*     pos_cnum  = p.off    }; *)
 
 let better_file_name a b =
   match (a, b) with
@@ -119,46 +150,46 @@ let of_lexbuf lb =
   let start = Lexing.lexeme_start_p lb
   and stop  = Lexing.lexeme_end_p lb in
   let loc =
-  { file_name = better_file_name start.Lexing.pos_fname stop.Lexing.pos_fname;
-    start     = pos_of_lexing_position start;
-    stop      = pos_of_lexing_position stop;
-    ghost     = False } in
+  { (* file_name = better_file_name start.Lexing.pos_fname stop.Lexing.pos_fname; *)
+    loc_start     = (* pos_of_lexing_position *) start;
+    loc_end      = (* pos_of_lexing_position *) stop;
+    loc_ghost     = False } in
   debug loc "of_lexbuf: %a@\n" dump loc in
   loc;
 
 (** Return a location where both positions are set the given position. *)
 let of_lexing_position pos =
   let loc =
-  { file_name = pos.Lexing.pos_fname;
-    start     = pos_of_lexing_position pos;
-    stop      = pos_of_lexing_position pos;
-    ghost     = False } in
+  { (* file_name = pos.Lexing.pos_fname; *)
+    loc_start     = (* pos_of_lexing_position *) pos;
+    loc_end      = (* pos_of_lexing_position *) pos;
+    loc_ghost     = False } in
   debug loc "of_lexing_position: %a@\n" dump loc in
   loc;
 
 (** Return an OCaml location. *)
-let to_ocaml_location x =
-  debug loc "to_ocaml_location: %a@\n" dump x in
-  { Location.
-    loc_start = pos_to_lexing_position x.start x.file_name;
-    loc_end   = pos_to_lexing_position x.stop x.file_name;
-    loc_ghost = x.ghost };
+(* let to_ocaml_location x = *)
+(*   debug loc "to_ocaml_location: %a@\n" dump x in *)
+(*   { Location. *)
+(*     loc_start = pos_to_lexing_position x.start x.file_name; *)
+(*     loc_end   = pos_to_lexing_position x.stop x.file_name; *)
+(*     loc_ghost = x.ghost }; *)
 
 (** Return a location from an OCaml location. *)
-let of_ocaml_location { Location.loc_start = a; loc_end = b; loc_ghost = g } =
-  let res =
-    { file_name = better_file_name a.Lexing.pos_fname b.Lexing.pos_fname;
-      start     = pos_of_lexing_position a;
-      stop      = pos_of_lexing_position b;
-      ghost     = g } in
-  debug loc "of_ocaml_location: %a@\n" dump res in
-  res;
+(* let of_ocaml_location { Location.loc_start = a; loc_end = b; loc_ghost = g } = *)
+(*   let res = *)
+(*     { file_name = better_file_name a.Lexing.pos_fname b.Lexing.pos_fname; *)
+(*       start     = pos_of_lexing_position a; *)
+(*       stop      = pos_of_lexing_position b; *)
+(*       ghost     = g } in *)
+(*   debug loc "of_ocaml_location: %a@\n" dump res in *)
+(*   res; *)
 
 (** Return the start position as a Lexing.position. *)
-let start_pos x = pos_to_lexing_position x.start x.file_name;
+let start_pos x =  x.loc_start;
 
 (** Return the stop position as a Lexing.position. *)  
-let stop_pos x = pos_to_lexing_position x.stop x.file_name;
+let stop_pos x =  x.loc_end;
 
 (** [merge loc1 loc2] Return a location that starts at [loc1] and end at
             [loc2]. *)  
@@ -168,29 +199,28 @@ let merge a b =
     a
   else
     let r =
-      match (a.ghost, b.ghost) with
+      match (a.loc_ghost, b.loc_ghost) with
       [ (False, False) ->
         (* FIXME if a.file_name <> b.file_name then
           raise (Invalid_argument
             (sprintf "Loc.merge: Filenames must be equal: %s <> %s"
                     a.file_name b.file_name))                          *)
         (* else *)
-          { (a) with stop = b.stop }
-      | (True, True) -> { (a) with stop = b.stop }
-      | (True, _) -> { (a) with stop = b.stop }
-      | (_, True) -> { (b) with start = a.start } ]
+          { (a) with loc_end = b.loc_end }
+      | (True, True) -> { (a) with loc_end = b.loc_end }
+      | (True, _) -> { (a) with loc_end = b.loc_end }
+      | (_, True) -> { (b) with loc_start = a.loc_start } ]
     in debug loc "@[<hov 6>merge %a@ %a@ %a@]@\n" dump a dump b dump r in r;
 
 (** The stop pos becomes equal to the start pos. *)
-let join x = { (x) with stop = x.start };
+let join x = { (x) with loc_end = x.loc_start };
 
-let map f start_stop_both x =
-  match start_stop_both with
-  [ `start -> { (x) with start = f x.start }
-  | `stop  -> { (x) with stop  = f x.stop }
-  | `both  -> { (x) with start = f x.start; stop  = f x.stop } ];
+let map f start_stop_both x = match start_stop_both with
+  [ `start -> { (x) with loc_start = f x.loc_start }
+  | `stop  -> { (x) with loc_end  = f x.loc_end }
+  | `both  -> { (x) with loc_start = f x.loc_start; loc_end  = f x.loc_end } ];
 
-let move_pos chars x = { (x) with off = x.off + chars };
+let move_pos chars x = { (x) with pos_cnum = x.pos_cnum + chars };
   
 (** [move selector n loc]
     Return the location where positions are moved.
@@ -205,7 +235,7 @@ let move s chars x =
 let move_line lines x =
   debug loc "move_line %d %a@\n" lines dump x in
   let move_line_pos x =
-    { (x) with line = x.line + lines ; bol = x.off }
+    { (x) with pos_lnum = x.pos_lnum + lines ; pos_bol = x.pos_cnum }
   in map move_line_pos `both x;
   
 
@@ -213,70 +243,81 @@ let move_line lines x =
             stop position, and where the new stop position character offset is the
             old one plus [n]. *)  
 let shift width x =
-  { (x) with start = x.stop ; stop = move_pos width x.stop };
+  { (x) with loc_start = x.loc_end ; loc_end = move_pos width x.loc_end };
 
 (** Return the file name *)
-let file_name  x = x.file_name;
+let file_name  x = x.loc_start.pos_fname;
   
 (** Return the line number of the begining of this location. *)
-let start_line x = x.start.line;
+let start_line x = x.loc_start.pos_lnum;
 
 (** Return the line number of the ending of this location. *)  
-let stop_line  x = x.stop.line;
+let stop_line  x = x.loc_end.pos_lnum;
 
 (** Returns the number of characters from the begining of the stream
     to the begining of the line of location's begining. *)
- let start_bol  x = x.start.bol;
+ let start_bol  x = x.loc_start.pos_bol;
    
 (** Returns the number of characters from the begining of the stream
             to the begining of the line of location's ending. *)
-let stop_bol   x = x.stop.bol;
+let stop_bol   x = x.loc_end.pos_bol;
 
 (** Returns the number of characters from the begining of the stream
             of the begining of this location. *)  
-let start_off  x = x.start.off;
+let start_off  x = x.loc_start.pos_cnum;
 
 (** Return the number of characters from the begining of the stream
             of the ending of this location. *)  
-let stop_off   x = x.stop.off;
+let stop_off   x = x.loc_end.pos_cnum;
 
 (** Generally, return true if this location does not come
     from an input stream. *)
-let is_ghost   x = x.ghost;
+let is_ghost   x = x.loc_ghost;
 
 (** Return the location with the give file name *)
 let set_file_name s x =
   debug loc "set_file_name: %a@\n" dump x in
-  { (x) with file_name = s };
+  { (x) with
+    loc_start = {(x.loc_start) with pos_fname = s };
+    loc_end = {(x.loc_end) with pos_fname = s }
+  };
 
 (** Return the associated ghost location. *)
 let ghostify x =
   debug loc "ghostify: %a@\n" dump x in
-  { (x) with ghost = True };
+  { (x) with loc_ghost = True };
 
 (** Return the location with an absolute file name. *)
 let make_absolute x =
   debug loc "make_absolute: %a@\n" dump x in
   let pwd = Sys.getcwd () in
-  if Filename.is_relative x.file_name then
-    { (x) with file_name = Filename.concat pwd x.file_name }
+  let old_name = x.loc_start.pos_fname in 
+  if Filename.is_relative old_name then
+    let new_name = Filename.concat pwd old_name in  
+    { (x) with
+      loc_start = {(x.loc_start) with pos_fname = new_name};
+      loc_end = {(x.loc_end) with pos_fname = new_name}
+    }
   else x;
 
 (** [strictly_before loc1 loc2] True if the stop position of [loc1] is
-            strictly_before the start position of [loc2]. *)
+            strictly_before the start position of [loc2].
+ *)
 let strictly_before x y =
-  let b = x.stop.off < y.start.off && x.file_name = y.file_name in
+  let b = x.loc_end.pos_cnum < y.loc_start.pos_cnum && x.loc_end.pos_fname = y.loc_start.pos_fname in
   debug loc "%a [strictly_before] %a => %b@\n" dump x dump y b in
   b;
 
 (** Same as {!print} but return a string instead of printting it. *)
 let to_string x = do {
-  let (a, b) = (x.start, x.stop) in
+  let (a, b) = (x.loc_start, x.loc_end) in
   let res = sprintf "File \"%s\", line %d, characters %d-%d"
-                    x.file_name a.line (a.off - a.bol) (b.off - a.bol) in
-  if x.start.line <> x.stop.line then
+      a.pos_fname a.pos_lnum
+      (a.pos_cnum - a.pos_bol)
+      (b.pos_cnum - a.pos_bol) in
+  if x.loc_start.pos_lnum  <> x.loc_end.pos_lnum then
     sprintf "%s (end at line %d, character %d)"
-            res x.stop.line (b.off - b.bol)
+            res x.loc_end.pos_lnum (b.pos_cnum - b.pos_bol)
   else res
 };
 

@@ -75,26 +75,23 @@ let remove_underscores =
                                                                     0)
 
 
-let mkloc = FanLoc.to_ocaml_location
-
-let mkghloc =
-                                       fun loc ->
-                                        (FanLoc.to_ocaml_location (
-                                          (FanLoc.ghostify loc) ))
+let mkghloc = fun loc -> (FanLoc.ghostify loc)
 
 let with_loc =
-                                                                    fun txt ->
-                                                                    fun loc ->
-                                                                    (Location.mkloc
-                                                                    txt (
-                                                                    (mkloc
-                                                                    loc) ))
+                                                 fun txt ->
+                                                  fun loc ->
+                                                   (Location.mkloc txt loc)
 
 
-let mktyp = fun loc -> fun d -> {ptyp_desc = d; ptyp_loc = ( (mkloc loc) )}
+let mktyp = fun loc -> fun d -> {ptyp_desc = d; ptyp_loc = loc}
 
-
-let mkpat = fun loc -> fun d -> {ppat_desc = d; ppat_loc = ( (mkloc loc) )}
+let mkpat =
+                                                                  fun loc ->
+                                                                   fun d ->
+                                                                    {ppat_desc =
+                                                                    d;
+                                                                    ppat_loc =
+                                                                    loc}
 
 
 let mkghpat =
@@ -106,37 +103,54 @@ let mkexp =
                                                                     {pexp_desc =
                                                                     d;
                                                                     pexp_loc =
-                                                                    (
-                                                                    (mkloc
-                                                                    loc) )}
+                                                                    loc}
 
 
-let mkmty = fun loc -> fun d -> {pmty_desc = d; pmty_loc = ( (mkloc loc) )}
+let mkmty = fun loc -> fun d -> {pmty_desc = d; pmty_loc = loc}
+
+let mksig =
+                                                                  fun loc ->
+                                                                   fun d ->
+                                                                    {psig_desc =
+                                                                    d;
+                                                                    psig_loc =
+                                                                    loc}
 
 
-let mksig = fun loc -> fun d -> {psig_desc = d; psig_loc = ( (mkloc loc) )}
+let mkmod = fun loc -> fun d -> {pmod_desc = d; pmod_loc = loc}
+
+let mkstr =
+                                                                  fun loc ->
+                                                                   fun d ->
+                                                                    {pstr_desc =
+                                                                    d;
+                                                                    pstr_loc =
+                                                                    loc}
 
 
-let mkmod = fun loc -> fun d -> {pmod_desc = d; pmod_loc = ( (mkloc loc) )}
+let mkfield = fun loc -> fun d -> {pfield_desc = d; pfield_loc = loc}
 
 
-let mkstr = fun loc -> fun d -> {pstr_desc = d; pstr_loc = ( (mkloc loc) )}
+let mkcty = fun loc -> fun d -> {pcty_desc = d; pcty_loc = loc}
+
+let mkcl =
+                                                                  fun loc ->
+                                                                   fun d ->
+                                                                    {pcl_desc =
+                                                                    d;
+                                                                    pcl_loc =
+                                                                    loc}
 
 
-let mkfield =
- fun loc -> fun d -> {pfield_desc = d; pfield_loc = ( (mkloc loc) )}
+let mkcf = fun loc -> fun d -> {pcf_desc = d; pcf_loc = loc}
 
-
-let mkcty = fun loc -> fun d -> {pcty_desc = d; pcty_loc = ( (mkloc loc) )}
-
-
-let mkcl = fun loc -> fun d -> {pcl_desc = d; pcl_loc = ( (mkloc loc) )}
-
-
-let mkcf = fun loc -> fun d -> {pcf_desc = d; pcf_loc = ( (mkloc loc) )}
-
-
-let mkctf = fun loc -> fun d -> {pctf_desc = d; pctf_loc = ( (mkloc loc) )}
+let mkctf =
+                                                               fun loc ->
+                                                                fun d ->
+                                                                 {pctf_desc =
+                                                                   d;
+                                                                  pctf_loc =
+                                                                   loc}
 
 
 let mkpolytype =
@@ -545,8 +559,7 @@ let mktype =
                                                      ptype_kind = tk;
                                                      ptype_private = tp;
                                                      ptype_manifest = tm;
-                                                     ptype_loc = (
-                                                      (mkloc loc) );
+                                                     ptype_loc = loc;
                                                      ptype_variance =
                                                       variance}
 
@@ -572,11 +585,11 @@ let mktrecord =
                           (loc, Ast.TyId (_, Ast.IdLid (sloc, s)),
                            Ast.TyMut (_, t)) ->
                           (( (with_loc s sloc) ), Mutable , (
-                           (mkpolytype ( (ctyp t) )) ), ( (mkloc loc) ))
+                           (mkpolytype ( (ctyp t) )) ), loc)
                        | Ast.TyCol
                           (loc, Ast.TyId (_, Ast.IdLid (sloc, s)), t) ->
                           (( (with_loc s sloc) ), Immutable , (
-                           (mkpolytype ( (ctyp t) )) ), ( (mkloc loc) ))
+                           (mkpolytype ( (ctyp t) )) ), loc)
                        | _ -> assert false
 
 let mkvariant =
@@ -585,8 +598,7 @@ let mkvariant =
                                                 (loc, Ast.IdUid (sloc, s)) ->
                                                 ((
                                                  (with_loc ( (conv_con s) )
-                                                   sloc) ), [] , None , (
-                                                 (mkloc loc) ))
+                                                   sloc) ), [] , None , loc)
                                              | Ast.TyOf
                                                 (loc,
                                                  Ast.TyId
@@ -596,7 +608,7 @@ let mkvariant =
                                                    sloc) ), (
                                                  (List.map ctyp (
                                                    (list_of_ctyp t [] ) )) ),
-                                                 None , ( (mkloc loc) ))
+                                                 None , loc)
                                              | Ast.TyCol
                                                 (loc,
                                                  Ast.TyId
@@ -607,8 +619,7 @@ let mkvariant =
                                                    sloc) ), (
                                                  (List.map ctyp (
                                                    (list_of_ctyp t [] ) )) ),
-                                                 ( (Some (ctyp u)) ), (
-                                                 (mkloc loc) ))
+                                                 ( (Some (ctyp u)) ), loc)
                                              | Ast.TyCol
                                                 (loc,
                                                  Ast.TyId
@@ -616,8 +627,7 @@ let mkvariant =
                                                 ((
                                                  (with_loc ( (conv_con s) )
                                                    sloc) ), [] , (
-                                                 (Some (ctyp t)) ), (
-                                                 (mkloc loc) ))
+                                                 (Some (ctyp t)) ), loc)
                                              | _ -> assert false
 
 let rec type_decl =
@@ -710,9 +720,7 @@ let type_decl =
 
 let mkvalue_desc =
  fun loc ->
-  fun t ->
-   fun p ->
-    {pval_type = ( (ctyp t) ); pval_prim = p; pval_loc = ( (mkloc loc) )}
+  fun t -> fun p -> {pval_type = ( (ctyp t) ); pval_prim = p; pval_loc = loc}
 
 
 let rec list_of_meta_list =
@@ -851,26 +859,73 @@ let mkwithtyp =
       (pwith_type
         {ptype_params = params; ptype_cstrs = [] ; ptype_kind = kind;
          ptype_private = priv; ptype_manifest = ( (Some (ct)) );
-         ptype_loc = ( (mkloc loc) ); ptype_variance = variance}) ))
-
+         ptype_loc = loc; ptype_variance = variance}) ))
 
 let rec mkwithc =
- fun wc ->
-  fun acc ->
-   (match wc with
-    | Ast.WcNil (_) -> acc
-    | Ast.WcTyp (loc, id_tpl, ct) ->
-       ( ( (mkwithtyp ( fun x -> (Pwith_type (x)) ) loc id_tpl ct) ) ) :: acc 
-    | Ast.WcMod (_, i1, i2) ->
-       ( (( (long_uident i1) ), ( (Pwith_module (long_uident i2)) )) ) :: acc 
-    | Ast.WcTyS (loc, id_tpl, ct) ->
-       ( ( (mkwithtyp ( fun x -> (Pwith_typesubst (x)) ) loc id_tpl ct)
-        ) ) :: acc 
-    | Ast.WcMoS (_, i1, i2) ->
-       ( (( (long_uident i1) ), ( (Pwith_modsubst (long_uident i2)) )) ) ::
-        acc 
-    | Ast.WcAnd (_, wc1, wc2) -> (mkwithc wc1 ( (mkwithc wc2 acc) ))
-    | Ast.WcAnt (loc, _) -> (error loc "bad with constraint (antiquotation)"))
+                                                           fun wc ->
+                                                            fun acc ->
+                                                             (match wc with
+                                                              | Ast.WcNil (_) ->
+                                                                 acc
+                                                              | Ast.WcTyp
+                                                                 (loc,
+                                                                  id_tpl, ct) ->
+                                                                 ( (
+                                                                  (mkwithtyp
+                                                                    (
+                                                                    fun x ->
+                                                                    (
+                                                                    Pwith_type
+                                                                    (x)) )
+                                                                    loc
+                                                                    id_tpl
+                                                                    ct)
+                                                                  ) ) :: acc 
+                                                              | Ast.WcMod
+                                                                 (_, i1, i2) ->
+                                                                 (
+                                                                  ((
+                                                                   (long_uident
+                                                                    i1) ), (
+                                                                   (Pwith_module
+                                                                    (long_uident
+                                                                    i2)) )) ) ::
+                                                                  acc 
+                                                              | Ast.WcTyS
+                                                                 (loc,
+                                                                  id_tpl, ct) ->
+                                                                 ( (
+                                                                  (mkwithtyp
+                                                                    (
+                                                                    fun x ->
+                                                                    (
+                                                                    Pwith_typesubst
+                                                                    (x)) )
+                                                                    loc
+                                                                    id_tpl
+                                                                    ct)
+                                                                  ) ) :: acc 
+                                                              | Ast.WcMoS
+                                                                 (_, i1, i2) ->
+                                                                 (
+                                                                  ((
+                                                                   (long_uident
+                                                                    i1) ), (
+                                                                   (Pwith_modsubst
+                                                                    (long_uident
+                                                                    i2)) )) ) ::
+                                                                  acc 
+                                                              | Ast.WcAnd
+                                                                 (_, wc1, wc2) ->
+                                                                 (mkwithc wc1
+                                                                   (
+                                                                   (mkwithc
+                                                                    wc2 acc)
+                                                                   ))
+                                                              | Ast.WcAnt
+                                                                 (loc, _) ->
+                                                                 (error loc
+                                                                   "bad with constraint (antiquotation)"))
 
 
 let rec patt_fa =
@@ -1713,7 +1768,7 @@ let rec expr =
                   fun (t1, t2) ->
                    let loc =
                     (FanLoc.merge ( (loc_of_ctyp t1) ) ( (loc_of_ctyp t2) )) in
-                   (( (ctyp t1) ), ( (ctyp t2) ), ( (mkloc loc) )) ) cl) in
+                   (( (ctyp t1) ), ( (ctyp t2) ), loc) ) cl) in
                (
                 (( (with_loc c cloc) ), (
                  (type_decl (
@@ -1959,7 +2014,7 @@ let rec expr =
             (mkcty loc (
               (Pcty_signature
                 ({pcsig_self = ( (ctyp t) ); pcsig_fields = cil;
-                  pcsig_loc = ( (mkloc loc) )})) ))
+                  pcsig_loc = loc})) ))
          | CtCon (loc, _, _, _) ->
             (error loc "invalid virtual class inside a class type")
          | ((((CtAnt (_, _) | CtEq (_, _, _)) | CtCol (_, _, _))
@@ -1976,9 +2031,9 @@ let rec expr =
                    (( (loc_of_ctyp t) ), (
                     (List.split ( (class_parameters t [] ) )) ))) in
               {pci_virt = ( (mkvirtual vir) );
-               pci_params = (params, ( (mkloc loc_params) ));
+               pci_params = (params, loc_params);
                pci_name = ( (with_loc name nloc) );
-               pci_expr = ( (class_expr ce) ); pci_loc = ( (mkloc loc) );
+               pci_expr = ( (class_expr ce) ); pci_loc = loc;
                pci_variance = variance}
            | ce -> (error ( (loc_of_class_expr ce) ) "bad class definition"))
         and class_info_class_type =
@@ -1993,9 +2048,9 @@ let rec expr =
                    (( (loc_of_ctyp t) ), (
                     (List.split ( (class_parameters t [] ) )) ))) in
               {pci_virt = ( (mkvirtual vir) );
-               pci_params = (params, ( (mkloc loc_params) ));
+               pci_params = (params, loc_params);
                pci_name = ( (with_loc name nloc) );
-               pci_expr = ( (class_type ct) ); pci_loc = ( (mkloc loc) );
+               pci_expr = ( (class_type ct) ); pci_loc = loc;
                pci_variance = variance}
            | ct ->
               (error ( (loc_of_class_type ct) )

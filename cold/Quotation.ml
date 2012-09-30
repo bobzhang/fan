@@ -84,10 +84,7 @@ module Make =
           module Error =
            struct
             type error =
-               Finding
-             | Expanding
-             | ParsingResult of FanLoc.t * string
-             | Locating
+               Finding | Expanding | ParsingResult of FanLoc.t * string
 
             type t = (string * string * error * exn)
 
@@ -126,7 +123,6 @@ module Make =
                      (fprintf ppf "@]")
                     end
                  | Expanding -> (pp "expanding quotation")
-                 | Locating -> (pp "parsing")
                  | ParsingResult (loc, str) ->
                     let () = (pp "parsing result of quotation") in
                     (match !dump_file with
