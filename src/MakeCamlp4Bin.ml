@@ -1,9 +1,7 @@
-(* open LibUtil; *)
-(* open Batteries; *)
 open Camlp4Parsers;
 open Camlp4Filters;
 open Format;
-open FanUtil;
+open LibUtil;
 module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct

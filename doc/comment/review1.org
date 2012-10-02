@@ -1,0 +1,231 @@
+#+STARTUP: indent
+#+STARTUP: overview
+#+TAGS: details(d) ideas(i) attention(t) trick(k)
+#+TAGS:  { bad(1) good(2) awesome(3) } question(q)
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+# * shortcut                                                           :awesome:
+#   Shift+Table : display overview
+#   C-c C-c : smart update 
+#   Table : cycle display
+#   C-c {C-f C-b} the same level 
+#   c-c {C-n c-p} 跨级 c-c c-u 上级
+#   M-left 将当前项升高一级 M-right (M-up M-down 将当前分支上下移动
+#   [[链接地址] [链接名称]]
+#   C-c \ 搜索标签 (a+b) (a-b 有a 没b) (a|b) (C-c C-c查询视图中退出)
+#   C-c C-o -- open link at point
+#   C-c C-t [T] todo 
+#   <s 
+
+#+TITLE:     review1.org
+#+AUTHOR:    Hongbo Zhang
+#+EMAIL:     bobzhang1988@Hongbos-MacBook-Air.local
+#+DATE:      2012-07-29 Sun
+#+DESCRIPTION:
+#+KEYWORDS:
+#+LANGUAGE:  en
+#+OPTIONS:   H:3 num:t toc:t \n:nil @:t ::t |:t ^:{} -:t f:t *:t <:t
+#+OPTIONS:   TeX:t LaTeX:t skip:nil d:nil todo:t pri:nil tags:not-in-toc
+#+INFOJS_OPT: view:nil toc:nil ltoc:t mouse:underline buttons:0 path:http://orgmode.org/org-info.js
+#+EXPORT_SELECT_TAGS: export
+#+EXPORT_EXCLUDE_TAGS: noexport
+#+LINK_UP:   
+#+LINK_HOME: 
+#+XSLT:
+
+* compiler time evaluation pa_ulex
+
+** communication
+Unlike other code generator, JIT for Java, dynamic code generator for
+meta-ocaml. There are two different passes for compile time
+evaluation, one is preprocess-time (also called read-time in Lisp's
+terminology), the other is run-time.
+
+The benefit of the complexity is that this's *the most efficient way* to
+generate the code, since even the JIT time is saved.
+
+Communication is a problem.
+
+It can be split into three categories 
+
+*** side effects
+Communication is not needed indeed. The usage lies in mutate the
+parser, or scoped syntax extension.
+
+*** dump the Ast directly
+If the result of  compile time evaluation is just Ast, then no
+conversion is needed. The use case, as we will see later, is the code
+generator. For example; if you have a code generator
+*code_of_t : 'a -> Ast.expr *, then simply pipeline the output to the
+preprocessor
+
+*** Send value back
+Suppose you have a function called *fib*, in the pre-process time, as
+we embed the ocaml's interpreter into our preprocessor, we do the
+evaluation, and get the result. For example, if we get the result 100
+as an int, we must send back *Ast.ExInt 3*. So, what shall we do? we
+need to query the identifier for the type, then calculate a function
+whose type is *int -> Ast.expr*.
+
+Thanks to our previous work of fan, For arbitrary data type (Abstract
+data type, and function type excluded), given an arbitrary data type,
+we can generate the function of type *'a -> Ast.expr* automatically.
+Then send the value back is do-able.
+
+I've already known how to query the type information and a clear goal
+on how to implement it, this is extremely complex that I wonder it's
+worth or not, however.
+
+The complexity lies in we do compilation twice.
+
+Given a string input, we parse the string, get a parsetree, type
+check, emit code, get the value as a result and find a way to turn the
+result into a parsetree again, typecheck, emit code for the second
+time. (back and forth twice)
+
+For dynamic code generation(Jit),  there's no such complexity.
+** comparison with D
+After I discussed with some experienced D programmers, the power of D's
+compile-time evaluation is very limitied.
+
+First, all the sources should appear in one file, which means the D's
+compiler should be able to see the source code of all function invoked
+in the compile time.
+
+Second, you can only send primitives back.
+
+The neat thing about D's compile time evaluation is that it's
+intergrated with D's compiler.
+
+So you only need to mark a as *enum* as follows:
+*enum a = fib (3)*
+Then the compiler will help you to analysis whether *fib 3* is able to
+be computed at compile time. This is nice.
+
+Another nice point is that D has a *mixin* primitive. When
+*mixin(code)* D will try its best to calcute *code* as a *string* at
+*compile time*, and interprete it as a piece of program.
+
+Analysis which part can be done at compile time or not is a really
+nice feature and help alleviate the user's burdern a lot.
+** docs
+I managed to build the ocamldoc-style docs for  ocaml compiler and
+uploaded here. Given the complexity of the building process, this is
+non-trivial.
+[[http://www.seas.upenn.edu/~hongboz/hongbo_zhang_files/typing.docdir/index.html][compiler]]
+
+(code is kept )
+
+* programmable (parser/lexer) generator
+I have already refactored *ulex* to make a programmable lexer in
+*ulex* directory.
+
+I have given an example as below.
+#+BEGIN_SRC caml
+let (tables,partitions,code) =
+  code_of_t _loc  <:regexps<
+      "<utf8>"
+    ; "<latin1>"
+    ; xml_letter+
+    ; eof
+    ; [1234-1246]
+    ;  "("
+    ;  _
+    >>
+ [| |] in
+ opr#expr fmt code;
+There are 4 tables
+fun lexbuf ->
+  let rec __ulex_state_0000 lexbuf =
+    match __ulex_partition_0000 (Ulexing.next lexbuf) with
+    [ 0 -> 3
+    | 1 -> 6
+    | 2 -> 5
+    | 3 -> __ulex_state_0004 lexbuf
+    | 4 -> __ulex_state_0017 lexbuf
+    | 5 -> __ulex_state_0019 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0004 lexbuf =
+    (Ulexing.mark lexbuf 6;
+     match __ulex_partition_0002 (Ulexing.next lexbuf) with
+     [ 0 -> __ulex_state_0005 lexbuf
+     | 1 -> __ulex_state_0012 lexbuf
+     | _ -> Ulexing.backtrack lexbuf ])
+  and __ulex_state_0005 lexbuf =
+    match __ulex_partition_0003 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0006 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0006 lexbuf =
+    match __ulex_partition_0004 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0007 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0007 lexbuf =
+    match __ulex_partition_0005 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0008 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0008 lexbuf =
+    match __ulex_partition_0006 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0009 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0009 lexbuf =
+    match __ulex_partition_0007 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0010 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0010 lexbuf =
+    match __ulex_partition_0008 (Ulexing.next lexbuf) with
+    [ 0 -> 1
+    | _ -> Ulexing.backtrack lexbuf ]
+  and 
+  and __ulex_state_0012 lexbuf =
+    match __ulex_partition_0004 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0013 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0013 lexbuf =
+    match __ulex_partition_0009 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0014 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0014 lexbuf =
+    match __ulex_partition_0010 (Ulexing.next lexbuf) with
+    [ 0 -> __ulex_state_0015 lexbuf
+    | _ -> Ulexing.backtrack lexbuf ]
+  and __ulex_state_0015 lexbuf =
+    match __ulex_partition_0008 (Ulexing.next lexbuf) with
+    [ 0 -> 0
+    | _ -> Ulexing.backtrack lexbuf ]
+  and 
+  and __ulex_state_0017 lexbuf =
+    (Ulexing.mark lexbuf 2;
+     match __ulex_partition_0011 (Ulexing.next lexbuf) with
+     [ 0 -> __ulex_state_0018 lexbuf
+     | _ -> Ulexing.backtrack lexbuf ])
+  and __ulex_state_0018 lexbuf =
+    (Ulexing.mark lexbuf 2;
+     match __ulex_partition_0011 (Ulexing.next lexbuf) with
+     [ 0 -> __ulex_state_0018 lexbuf
+     | _ -> Ulexing.backtrack lexbuf ])
+  and __ulex_state_0019 lexbuf =
+    (Ulexing.mark lexbuf 2;
+     match __ulex_partition_0011 (Ulexing.next lexbuf) with
+     [ 0 -> __ulex_state_0018 lexbuf
+     | _ -> Ulexing.backtrack lexbuf ])
+  in
+    (Ulexing.start lexbuf;
+     match __ulex_state_0000 lexbuf with [  | _ -> raise Ulexing.Error ])
+- : unit = ()
+#+END_SRC
+As we see above, we generate the automata bassed only *on regexps*,
+and *regexps* are programmable(I introduced an regexps quotation
+language to give a user-friendly syntax), actions can simply be
+spliced later.
+
+Here we see that we  *need compile-time evaluation* to pipeline the
+Ast, otherwise we need to store the result in another file and
+compile.
+
+This complexity comes from the fact that we exposed the *code
+generator as an normal ocaml's function*. The benefit is obvious, you
+have a programmable code generator and gained much more flexibity, the
+downside is that then yout get the Ast node as output, and you are
+responsible to send the Ast back. Compile time evaluation come to rescue.
+* scope analysis

@@ -1,6 +1,27 @@
 (* -*- Mode:caml; -*- *)
-#use "/Users/bobzhang1988/.ocamlinit";;
+
+#use "topfind";;
+#require "batteries";;
+(* open Batteries;; *)
+open Format;;
+#directory "+compiler-libs";;
+let print_ocaml_loc (fmt:formatter)(loc:Location.t) = ();;
+#install_printer print_ocaml_loc;;
+#directory "_build";;
 #directory "_build/src";;
+let fmt = std_formatter
+let _ = Clflags.noprompt := true;;
 #load_rec "FanLoc.cmo";;
-#load_rec "FanLexer.cmo";;
-#load_rec "FanToken.cmo";;
+let _loc = FanLoc.ghost;;
+let _ = begin
+  Hashtbl.replace Toploop.directive_table "pwd"
+    (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())))
+end
+let (|-) f g x = g (f x );;
+    
+let interface_of_string =
+  Lexing.from_string |- Parse.interface;;
+let implementation_of_string =
+  Lexing.from_string |- Parse.implementation;;
+
+(* consult Topdirs for more utlities *)

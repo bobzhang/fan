@@ -751,6 +751,7 @@ let define_context_for_root r =
     def (r // "Camlp4/Struct/Grammar")  [ r // "Camlp4"; r];
     def (r // "Camlp4") [ r];
     def (r // "Grammar") [r];
+    def (r // "Lib") [r];
   end ;;
 define_context_for_root root1;;
 define_context_for_root root2;;
@@ -788,7 +789,7 @@ let () =
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:dep"] (S[A"-D"; A"OPT"]);
     flag ["ocaml"; "pp"; "camlp4boot"; "pp:doc"] (S[A"-printer"; A"o"]);
     "src/Camlp4/Sig.ml"  |-? ["src/Camlp4/Ast.ml"];
-    "src/Camlp4/Struct/Camlp4Ast.ml" |-? ["src/Camlp4/Ast.ml"];
+    "src/Camlp4Ast.ml" |-? ["src/Ast.ml"];
     (* dep ["ocaml"; "file:Camlp4/Struct/Camlp4Ast.ml"] ["Camlp4/Camlp4Ast.partial.ml"]; *)
     dep ["ocaml"; "file:Camlp4/Sig.ml"] ["Camlp4/Ast.ml"];
     dep ["ocaml"; "compile"; "file:camlp4/Camlp4/Sig.ml"]  ["src/Camlp4/Ast.ml"];

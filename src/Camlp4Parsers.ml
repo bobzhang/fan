@@ -1,5 +1,5 @@
+open LibUtil;
 open FanUtil;
-
 
 module IdDebugParser = struct
   let name = "Camlp4DebugParser";
@@ -70,12 +70,10 @@ module IdGrammarParser = struct
   let version = Sys.ocaml_version;
 end;
 module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
-  (* open Sig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   open FanSig;
-  module MetaLoc = Ast.Meta.MetaGhostLoc;
-  module MetaAst = Ast.Meta.Make MetaLoc;
+  module MetaAst = Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
   let string_of_patt patt =
     let buf = Buffer.create 42 in
     let () =
@@ -4480,42 +4478,18 @@ end;
 module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
             (TheAntiquotSyntax : Sig.ParserExpr)
 = struct
-  (* open Sig; *)
   open FanSig;
   include Syntax; (* Be careful an AntiquotSyntax module appears here *)
   module Ast = Camlp4Ast;
-  module MetaLocHere = Ast.Meta.MetaLoc;
-  module MetaLoc = struct
-    module Ast = Ast;
-    let loc_name = ref None;
-    let meta_loc_expr _loc loc =
-      match !loc_name with
-      [ None -> <:expr< $(lid:!FanLoc.name) >>
-      | Some "here" -> MetaLocHere.meta_loc_expr _loc loc
-      | Some x -> <:expr< $lid:x >> ];
-    let meta_loc_patt _loc _ = <:patt< _ >>;
-  end;
-  module MetaAst = Ast.Meta.Make MetaLoc;
+  module MetaAst = Ast.Meta.Make Lib.Meta.MetaLocQuotation;
   module ME = MetaAst.Expr;
   module MP = MetaAst.Patt;
-
-  let is_antiquot s =
-    let len = String.length s in
-    len > 2 && s.[0] = '\\' && s.[1] = '$';
-
-  let handle_antiquot_in_string s term parse loc decorate =
-    if is_antiquot s then
-      let pos = String.index s ':' in
-      let name = String.sub s 2 (pos - 2)
-      and code = String.sub s (pos + 1) (String.length s - pos - 1) in
-      decorate name (parse loc code)
-    else term;
 
   let antiquot_expander = object
     inherit Ast.map as super;
     method! patt = fun
       [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
-          let mloc _loc = MetaLoc.meta_loc_patt _loc _loc in
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
           handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc (fun n p ->
             match n with
             [ "antisig_item" -> <:patt< Ast.SgAnt $(mloc _loc) $p >>
@@ -4539,7 +4513,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
       | p -> super#patt p ];
     method! expr = fun
       [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
-          let mloc _loc = MetaLoc.meta_loc_expr _loc _loc in
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
           handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc (fun n e ->
             match n with
             [ "`int" -> <:expr< string_of_int $e >>
@@ -4606,7 +4580,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
       res in
     let expand_expr loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi loc s in
-      let () = MetaLoc.loc_name := loc_name_opt in
+      let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
       let meta_ast = mexpr loc ast in
       let exp_ast = antiquot_expander#expr meta_ast in
       exp_ast in

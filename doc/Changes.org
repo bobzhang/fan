@@ -384,3 +384,13 @@ two printers
   - [14 Sep 02] Grammar.print_entry does not end any more with
   Format.print_flush. The "flush" is done by Grammar.Entry.print.
 
+
+* design
+  Use batteries, but don't use its io,
+  do't =open Batteries= by default.
+  For operators, define your own to enhance them.
+
+
+
+* Wishes
+  hope to expose float_repres

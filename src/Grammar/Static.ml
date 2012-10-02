@@ -1,23 +1,5 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
-*)
-
-open FanUtil;
+open LibUtil;
+open Format;
 module Make (Lexer : FanSig.Lexer)
 = struct
   module Structure = Structure.Make Lexer;
@@ -69,6 +51,33 @@ module Make (Lexer : FanSig.Lexer)
 
   let parse_string entry loc str = parse_tokens_before_filter entry (lex_string loc str);
 
+  (* with a special exception handler *)  
+  let parse_string_safe entry loc s =
+    try
+      parse_string entry loc s
+    with
+      [FanLoc.Exc_located(loc, e) -> begin
+        eprintf "%s" (Printexc.to_string e);
+        FanLoc.error_report (loc,s);
+        FanLoc.raise loc e ;
+    end ];
+
+  let wrap_stream_parser  p loc s =
+     try p loc s
+     with
+       [FanLoc.Exc_located(loc,e) -> begin
+         eprintf "error: %s@." (FanLoc.to_string loc) ;
+         FanLoc.raise loc e;
+       end 
+      ];
+
+  let parse_file_with ~rule file  =
+    if Sys.file_exists file then
+      let ch = open_in file in
+      let st = Stream.of_channel ch in 
+      parse rule (FanLoc.mk file) st
+    else  failwithf "@[file: %s not found@]@." file;
+    
   let delete_rule = Delete.delete_rule;
 
   let srules e rl =

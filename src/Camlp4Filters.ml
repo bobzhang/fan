@@ -1,15 +1,16 @@
 (* open Camlp4; *)
-open FanUtil;
+open LibUtil;
 module IdAstLifter = struct
   let name    = "Camlp4AstLifter";
   let version = Sys.ocaml_version;
 end;
 
 module MakeAstLifter (Syn : Sig.Camlp4Syntax) = struct
-  (* open AstFilters; *)
   module Ast = Camlp4Ast;
   module MetaLoc = struct
-    module Ast = Ast;
+   (* this makes sense here, because, for list operation
+      you don't care about the location representation here
+    *)
     let meta_loc_patt _loc _ = <:patt< loc >>;
     let meta_loc_expr _loc _ = <:expr< loc >>;
   end;

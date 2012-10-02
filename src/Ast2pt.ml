@@ -2,84 +2,49 @@
 open Parsetree;
 open Longident;
 open Asttypes;
-
+open Lib;
 open Camlp4Ast;
 let constructors_arity () =
   debug ast2pt "constructors_arity: %b@." !FanConfig.constructors_arity in
   !FanConfig.constructors_arity;
 
 
-let error loc str = FanLoc.raise loc (Failure str);
 
-let char_of_char_token loc s =
-  try TokenEval.char s with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
-    
-let string_of_string_token loc s =
-  try TokenEval.string s
-  with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
 
-let remove_underscores s =
-  let l = String.length s in
-  let rec remove src dst =
-    if src >= l then
-      if dst >= l then s else String.sub s 0 dst
-    else
-      match s.[src] with
-      [ '_' -> remove (src + 1) dst
-      |  c  -> do { s.[dst] <- c; remove (src + 1) (dst + 1) } ]
-  in remove 0 0 ;
+(* let mksig loc d = {psig_desc = d; psig_loc =  loc}; *)
+(* let mkmod loc d = {pmod_desc = d; pmod_loc =  loc}; *)
+(* let mkstr loc d = {pstr_desc = d; pstr_loc =  loc}; *)
+(* let mkfield loc d = {pfield_desc = d; pfield_loc =  loc}; *)
+(* let mkcty loc d = {pcty_desc = d; pcty_loc =  loc}; *)
+(* let mkcl loc d = {pcl_desc = d; pcl_loc =  loc}; *)
+(* let mkcf loc d = { pcf_desc = d; pcf_loc =  loc; }; *)
+(* let mkctf loc d = { pctf_desc = d; pctf_loc =  loc; }; *)
 
-(* let mkloc = FanLoc.to_ocaml_location; *)
-let mkghloc loc = (* FanLoc.to_ocaml_location ( *)FanLoc.ghostify loc(* ) *);
-
-let with_loc txt loc = Location.mkloc txt  loc;
-  
-let mktyp loc d = {ptyp_desc = d; ptyp_loc =  loc};
-let mkpat loc d = {ppat_desc = d; ppat_loc =  loc};
-let mkghpat loc d = {ppat_desc = d; ppat_loc = mkghloc loc};
-let mkexp loc d = {pexp_desc = d; pexp_loc =  loc};
-let mkmty loc d = {pmty_desc = d; pmty_loc =  loc};
-let mksig loc d = {psig_desc = d; psig_loc =  loc};
-let mkmod loc d = {pmod_desc = d; pmod_loc =  loc};
-let mkstr loc d = {pstr_desc = d; pstr_loc =  loc};
-let mkfield loc d = {pfield_desc = d; pfield_loc =  loc};
-let mkcty loc d = {pcty_desc = d; pcty_loc =  loc};
-let mkcl loc d = {pcl_desc = d; pcl_loc =  loc};
-let mkcf loc d = { pcf_desc = d; pcf_loc =  loc; };
-let mkctf loc d = { pctf_desc = d; pctf_loc =  loc; };
-
-let mkpolytype t = match t.ptyp_desc with
-    [ Ptyp_poly _ _ -> t
-    | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } ] ;
+(* let mkpolytype t = match t.ptyp_desc with *)
+(*     [ Ptyp_poly _ _ -> t *)
+(*     | _ -> { (t) with ptyp_desc = Ptyp_poly [] t } ] ; *)
 
 let mkvirtual = fun
-    [ <:virtual_flag< virtual >> -> Virtual
-    | <:virtual_flag<>> -> Concrete
-    | _ -> assert False ];
+  [ <:virtual_flag< virtual >> -> Virtual
+  | <:virtual_flag<>> -> Concrete
+  | _ -> assert False ];
 
 let mkdirection = fun
    [ <:direction_flag< to >> -> Upto
-    | <:direction_flag< downto >> -> Downto
-    | _ -> assert False ];
-
-  let lident s = Lident s;
-  let lident_with_loc s loc = with_loc (Lident s) loc;
+   | <:direction_flag< downto >> -> Downto
+   | _ -> assert False ];
 
 
-  let ldot l s = Ldot l s;
-  let lapply l s = Lapply l s;
+let conv_con =
+  let t = Hashtbl.create 73 in begin
+    List.iter (fun (s, s') -> Hashtbl.add t s s')
+      [("True", "true"); ("False", "false"); (" True", "True");
+       (" False", "False")];
+    fun s -> try Hashtbl.find t s with [ Not_found -> s ]
+  end;
 
-  let conv_con =
-    let t = Hashtbl.create 73 in
-    do {
-      List.iter (fun (s, s') -> Hashtbl.add t s s')
-        [("True", "true"); ("False", "false"); (" True", "True");
-        (" False", "False")];
-      fun s -> try Hashtbl.find t s with [ Not_found -> s ]
-    }
-  ;
-  (* *)
-  let conv_lab = (* FIXME remove them later*)
+(* *)
+let conv_lab = (* FIXME remove them later*)
     let t = Hashtbl.create 73 in
     do {
       List.iter (fun (s, s') -> Hashtbl.add t s s') [("val", "contents")];
@@ -569,26 +534,6 @@ let mkdirection = fun
   ;
 
 
-  let rec sep_expr_acc l =
-    fun
-    [ ExAcc _ e1 e2 -> sep_expr_acc (sep_expr_acc l e2) e1
-    | <:expr@loc< $uid:s >> as e ->
-        match l with
-        [ [] -> [(loc, [], e)]
-        | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
-    | <:expr< $(id:(<:ident< $_.$_ >> as i)) >> ->
-        let rec normalize_acc =
-          fun
-          [ <:ident@_loc< $i1.$i2 >> ->
-            <:expr< $(normalize_acc i1).$(normalize_acc i2) >>
-          | <:ident@_loc< $i1 $i2 >> ->
-            <:expr< $(normalize_acc i1) $(normalize_acc i2) >>
-          | <:ident@_loc< $anti:_ >> | <:ident@_loc< $uid:_ >> |
-            <:ident@_loc< $lid:_ >> as i -> <:expr< $id:i >> ]
-        in sep_expr_acc l (normalize_acc i)
-    | e -> [(loc_of_expr e, [], e) :: l] ]
-  ;
-
   let override_flag loc =
     fun [ <:override_flag< ! >> -> Override
         | <:override_flag<>> -> Fresh
@@ -651,12 +596,9 @@ let varify_constructors var_names =
 
   let rec expr =
     fun
-    [ <:expr@loc<  $x.contents >> -> (* fixme probably a bug here *)
-        mkexp loc
-          (Pexp_apply (mkexp loc (Pexp_ident (lident_with_loc "!" loc))) [("", expr x)])
-    | ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
+    [  ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
         let (e, l) =
-          match sep_expr_acc [] e with
+          match Expr.sep_expr_acc [] e with
           [ [(loc, ml, <:expr@sloc< $uid:s >>) :: l] ->
               let ca = constructors_arity () in
               (mkexp loc (Pexp_construct (mkli sloc (conv_con s) ml) None ca), l)

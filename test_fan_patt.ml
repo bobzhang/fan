@@ -1,0 +1,42 @@
+open Format;
+#load "fan_patt.cma";
+open Fan_patt;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

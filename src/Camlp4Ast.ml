@@ -391,8 +391,7 @@ module Camlp4Trash = struct
     INCLUDE "src/Ast.ml";
 end;
 
-module Meta = struct
-  module type META_LOC = sig
+module type META_LOC = sig
       (** The first location is where to put the returned pattern.
           Generally it's _loc to match with <:patt< ... >> quotations.
           The second location is the one to treat. *)
@@ -401,39 +400,14 @@ module Meta = struct
           Generally it's _loc to match with <:expr< ... >> quotations.
           The second location is the one to treat. *)
     val meta_loc_expr : FanLoc.t -> FanLoc.t -> Ast.expr;
-  end;
+end;
 
-  module MetaLoc = struct
-    let meta_loc_patt _loc location =
-      let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
-        <:patt< FanLoc.of_tuple
-                  ($`str:a, $`int:b, $`int:c, $`int:d,
-                  $`int:e, $`int:f, $`int:g,
-                  $(if h then <:patt< True >> else <:patt< False >> )) >>;
-      let meta_loc_expr _loc location =
-        let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple location in
-        <:expr< FanLoc.of_tuple
-                  ($`str:a, $`int:b, $`int:c, $`int:d,
-                  $`int:e, $`int:f, $`int:g,
-                  $(if h then <:expr< True >> else <:expr< False >> )) >>;
-    end;
-
-    module MetaGhostLoc = struct
-      let meta_loc_patt _loc _ = <:patt< FanLoc.ghost >>; (* FIXME *)
-      let meta_loc_expr _loc _ = <:expr< FanLoc.ghost >>;
-    end;
-
-    module MetaLocVar = struct
-      let meta_loc_patt _loc _ = <:patt< $(lid:!FanLoc.name) >>;
-      let meta_loc_expr _loc _ = <:expr< $(lid:!FanLoc.name) >>;
-    end;
-
+  
+module Meta = struct
     module Make (MetaLoc : META_LOC) = struct
-      open MetaLoc;
-
-      let meta_loc = meta_loc_expr;
+      let meta_loc = MetaLoc.meta_loc_expr;
       module Expr = Camlp4Filters.MetaGeneratorExpr Ast;
-      let meta_loc = meta_loc_patt;
+      let meta_loc = MetaLoc.meta_loc_patt;
       module Patt = Camlp4Filters.MetaGeneratorPatt Ast;
     end;
 
@@ -569,4 +543,5 @@ module Meta = struct
       | cst -> cst ];
   end;
     
+
 
