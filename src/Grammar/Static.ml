@@ -89,4 +89,11 @@ module Make (Lexer : FanSig.Lexer)
 
   let extend = Insert.extend;
 
+  (* let eoi_entry entry = *)
+  (*   let entry_eoi = Entry.(mk (name entry ^ "_eoi")) in   *)
+  (*   let () = EXTEND (gram:t) entry_eoi: *)
+  (*     [[ x = entry; `EOI -> x ]]; *)
+  (*     END in  *)
+  (*   entry_eoi; *)
+
 end;

@@ -1,5 +1,5 @@
 
-
+open Camlp4Ast;
 
 (*
   
@@ -13,3 +13,14 @@ let rec to_var_list =  fun
     to_var_list t1 @ to_var_list t2
   | <:ctyp< '$s >> -> [s]
   | _ -> assert False ];
+
+let list_of_opt ot acc = match ot with
+  [ <:ctyp<>> -> acc
+  | t -> list_of_ctyp t acc ];
+
+
+let rec name_tags = fun
+  [ <:ctyp< $t1 $t2 >> -> name_tags t1 @ name_tags t2
+  | <:ctyp< `$s >> -> [s]
+  | _ -> assert False ];
+  

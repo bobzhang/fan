@@ -145,11 +145,18 @@ let rec ctyp = fun
   | <:ctyp@loc< (module $pt) >> ->
       let (i, cs) = package_type pt in
       mktyp loc (Ptyp_package i cs)
+  | TyPol loc t1 t2 -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
+  | TyQuo loc s -> mktyp loc (Ptyp_var s)
+  | <:ctyp@loc< ($t1 * $t2) >> ->
+      mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
+  | <:ctyp@loc< [ = $t ] >> -> mktyp loc (Ptyp_variant (row_field t) True None)
+  | <:ctyp@loc< [ > $t ] >> -> mktyp loc (Ptyp_variant (row_field t) False None)
+  | <:ctyp@loc< [ < $t ] >> -> mktyp loc (Ptyp_variant (row_field t) True (Some []))
+  | <:ctyp@loc< [ < $t > $t' ] >> ->
+      mktyp loc (Ptyp_variant (row_field t) True (Some (Ctyp.name_tags t')))
   | TyLab loc _ _ -> error loc "labelled type not allowed here"
   | TyMan loc _ _ -> error loc "manifest type not allowed here"
   | TyOlb loc _ _ -> error loc "labelled type not allowed here"
-  | TyPol loc t1 t2 -> mktyp loc (Ptyp_poly (Ctyp.to_var_list t1) (ctyp t2))
-  | TyQuo loc s -> mktyp loc (Ptyp_var s)
   | TyRec loc _ -> error loc "record type not allowed here"
   | TySum loc _ -> error loc "sum type not allowed here"
   | TyPrv loc _ -> error loc "private type not allowed here"
@@ -159,31 +166,20 @@ let rec ctyp = fun
   | TyOf loc _ _ -> error loc "type1 of type2 not allowed here"
   | TyCol loc _ _ -> error loc "type1 : type2 not allowed here"
   | TySem loc _ _ -> error loc "type1 ; type2 not allowed here"
-  | <:ctyp@loc< ($t1 * $t2) >> ->
-      mktyp loc (Ptyp_tuple (List.map ctyp (list_of_ctyp t1 (list_of_ctyp t2 []))))
-  | <:ctyp@loc< [ = $t ] >> -> mktyp loc (Ptyp_variant (row_field t) True None)
-  | <:ctyp@loc< [ > $t ] >> -> mktyp loc (Ptyp_variant (row_field t) False None)
-  | <:ctyp@loc< [ < $t ] >> -> mktyp loc (Ptyp_variant (row_field t) True (Some []))
-  | <:ctyp@loc< [ < $t > $t' ] >> ->
-      mktyp loc (Ptyp_variant (row_field t) True (Some (name_tags t')))
   | TyAnt loc _ -> error loc "antiquotation not allowed here"
   | TyOfAmp _ _ _ |TyAmp _ _ _ |TySta _ _ _ |
     TyCom _ _ _ |TyVrn _ _ |TyQuM _ _ |TyQuP _ _ |TyDcl _ _ _ _ _ |
     TyAnP _ | TyAnM _ | TyTypePol _ _ _ |
     TyObj _ _ (RvAnt _) | TyNil _ | TyTup _ _ ->
       assert False ]
-and row_field = fun
+and row_field = fun (* ctyp -> row_field list*)
   [ <:ctyp<>> -> []
   | <:ctyp< `$i >> -> [Rtag i True []]
   | <:ctyp< `$i of & $t >> -> [Rtag i True (List.map ctyp (list_of_ctyp t []))]
   | <:ctyp< `$i of $t >> -> [Rtag i False (List.map ctyp (list_of_ctyp t []))]
   | <:ctyp< $t1 | $t2 >> -> row_field t1 @ row_field t2
   | t -> [Rinherit (ctyp t)] ]
-and name_tags = fun
-  [ <:ctyp< $t1 $t2 >> -> name_tags t1 @ name_tags t2
-  | <:ctyp< `$s >> -> [s]
-  | _ -> assert False ]
-and meth_list fl acc = match fl with
+and meth_list fl acc = match fl with (* ctyp -> core_field_type list -> core_field_type list *)
   [ <:ctyp<>> -> acc
   | <:ctyp< $t1; $t2 >> -> meth_list t1 (meth_list t2 acc)
   | <:ctyp@loc< $lid:lab : $t >> ->
@@ -442,17 +438,10 @@ let rec patt = fun
          | PaMod loc m -> mkpat loc (Ppat_unpack (with_loc m loc))
          | PaEq _ _ _ | PaSem _ _ _ | PaCom _ _ _ | PaNil _ as p ->
              error (loc_of_patt p) "invalid pattern" ]
-and mklabpat = fun
+and mklabpat = fun (* patt -> Longident.t loc * pattern*)
   [ <:patt< $i = $p >> -> (ident ~conv_lid:conv_lab i, patt p)
   | p -> error (loc_of_patt p) "invalid pattern" ];
   
-let rec expr_fa al = fun
-  [ ExApp _ f a -> expr_fa [a :: al] f
-  | f -> (f, al) ];
-
-let rec class_expr_fa al =  fun
-  [ CeApp _ ce a -> class_expr_fa [a :: al] ce
-  | ce -> (ce, al) ];
 
 
 let override_flag loc = fun
@@ -460,55 +449,11 @@ let override_flag loc = fun
   | <:override_flag<>> -> Fresh
   |  _ -> error loc "antiquotation not allowed here" ];
 
-let list_of_opt_ctyp ot acc = match ot with
-  [ <:ctyp<>> -> acc
-  | t -> list_of_ctyp t acc ];
   
-let varify_constructors var_names =
-  let rec loop t =
-    let desc =
-      match t.ptyp_desc with
-      [ Ptyp_any -> Ptyp_any
-      | Ptyp_var x -> Ptyp_var x
-      | Ptyp_arrow label core_type core_type' ->
-          Ptyp_arrow label (loop core_type) (loop core_type')
-      | Ptyp_tuple lst -> Ptyp_tuple (List.map loop lst)
-      | Ptyp_constr ({ txt = Lident s ; _}) [] when List.mem s var_names ->
-          Ptyp_var ("&" ^ s)
-      | Ptyp_constr longident lst ->
-          Ptyp_constr longident (List.map loop lst)
-      | Ptyp_object lst ->
-          Ptyp_object (List.map loop_core_field lst)
-      | Ptyp_class longident lst lbl_list ->
-          Ptyp_class (longident, List.map loop lst, lbl_list)
-      | Ptyp_alias core_type string ->
-          Ptyp_alias(loop core_type, string)
-      | Ptyp_variant row_field_list flag lbl_lst_option ->
-          Ptyp_variant(List.map loop_row_field row_field_list, flag, lbl_lst_option)
-      | Ptyp_poly string_lst core_type ->
-          Ptyp_poly(string_lst, loop core_type)
-      | Ptyp_package longident lst ->
-          Ptyp_package(longident,List.map (fun (n,typ) -> (n,loop typ) ) lst)] in
-    {(t) with ptyp_desc = desc}
-and loop_core_field t =
-    let desc =
-      match t.pfield_desc with
-      [ Pfield(n,typ) ->
-          Pfield(n,loop typ)
-      | Pfield_var ->
-          Pfield_var]  in
-    { (t) with pfield_desc=desc}
-      
-and loop_row_field x  = match x with
-  [ Rtag(label,flag,lst) ->
-    Rtag(label,flag,List.map loop lst)
-  | Rinherit t ->
-      Rinherit (loop t) ]in
-  loop;
 
 
 
-let rec expr = fun
+let rec expr = fun (* expr -> expression*)
   [ ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
     let (e, l) =
       match Expr.sep_expr_acc [] e with
@@ -531,7 +476,7 @@ let rec expr = fun
     e
   | ExAnt loc _ -> error loc "antiquotation not allowed here"
   | ExApp loc _ _ as f ->
-      let (f, al) = expr_fa [] f in
+      let (f, al) = Expr.fa [] f in
       let al = List.map label_expr al in
       match (expr f).pexp_desc with
       [ Pexp_construct li None _ ->
@@ -695,17 +640,17 @@ let rec expr = fun
         | <:expr@loc< $_;$_ >> ->
             error loc "expr; expr: not allowed here, use do {...} or [|...|] to surround them"
         | ExId _ _ | ExNil _ as e -> error (loc_of_expr e) "invalid expr" ]
-and patt_of_lab _loc lab =  fun
+and patt_of_lab _loc lab =  fun (* loc -> string -> patt -> pattern *)
   [ <:patt<>> -> patt <:patt< $lid:lab >>
   | p -> patt p ]
-and expr_of_lab _loc lab = fun
+and expr_of_lab _loc lab = fun (* loc -> string -> expr -> expression*)
   [ <:expr<>> -> expr <:expr< $lid:lab >>
   | e -> expr e ]
-and label_expr = fun
+and label_expr = fun (* expr -> label * expression *)
   [ ExLab loc lab eo -> (lab, expr_of_lab loc lab eo)
   | ExOlb loc lab eo -> ("?" ^ lab, expr_of_lab loc lab eo)
   | e -> ("", expr e) ]
-and binding x acc =  match x with
+and binding x acc =  match x with (* binding -> (pattern * expression) list ->  (pattern * expression) list *)
   [ <:binding< $x and $y >> ->
     binding x (binding y acc)
   | <:binding@_loc< $(pat: <:patt@sloc< $lid:bind_name >> ) = ($e : $(TyTypePol _ vs ty)) >> ->
@@ -736,28 +681,27 @@ and binding x acc =  match x with
   | <:binding< $p = $e >> -> [(patt p, expr e) :: acc]
   | <:binding<>> -> acc
   | _ -> assert False ]
-and match_case x acc =
-  match x with
+and match_case x acc =  match x with (* match_case -> (pattern * expression) list -> (pattern * expression) list*)
   [ <:match_case< $x | $y >> -> match_case x (match_case y acc)
   | <:match_case< $pat:p when $w -> $e >> ->
       [(patt p, when_expr e w) :: acc]
   | <:match_case<>> -> acc
   | _ -> assert False ]
-and when_expr e w = match w with
+and when_expr e w = match w with (* expr -> expr -> expression*)
   [ <:expr<>> -> expr e
   | w -> mkexp (loc_of_expr w) (Pexp_when (expr w) (expr e)) ]
-and mklabexp x acc = match x with
+and mklabexp x acc = match x with (* rec_binding ->  (Longident.t loc * expression) list -> (Longident.t loc * expression) list *)
   [ <:rec_binding< $x; $y >> ->
     mklabexp x (mklabexp y acc)
   | <:rec_binding< $i = $e >> -> [(ident ~conv_lid:conv_lab i, expr e) :: acc]
   | _ -> assert False ]
-and mkideexp x acc =match x with
+and mkideexp x acc =match x with (* rec_binding -> (string loc * expression) list ->  (string loc * expression) list *)
   [ <:rec_binding<>> -> acc
   | <:rec_binding< $x; $y >> ->
       mkideexp x (mkideexp y acc)
   | <:rec_binding< $(id: <:ident@sloc< $lid:s >>) = $e >> -> [(with_loc s sloc, expr e) :: acc]
   | _ -> assert False ]
-and mktype_decl x acc = match x with
+and mktype_decl x acc = match x with (* ctyp -> (string loc * type_declaration) list -> (string loc * type_declaration) list*)
   [ <:ctyp< $x and $y >> ->
     mktype_decl x (mktype_decl y acc)
   | Ast.TyDcl cloc c tl td cl ->
@@ -770,7 +714,7 @@ and mktype_decl x acc = match x with
       [(with_loc c cloc,
         type_decl (List.fold_right optional_type_parameters tl []) cl td cloc) :: acc]
   | _ -> assert False ]
-and module_type = fun
+and module_type = fun (*module_type -> module_type*)
   [ <:module_type@loc<>> -> error loc "abstract/nil module type not allowed here"
   | <:module_type@loc< $id:i >> -> mkmty loc (Pmty_ident (long_uident i))
   | <:module_type@loc< functor ($n : $nt) -> $mt >> ->
@@ -783,7 +727,7 @@ and module_type = fun
   | <:module_type@loc< module type of $me >> ->
       mkmty loc (Pmty_typeof (module_expr me))
   | <:module_type< $anti:_ >> -> assert False ]
-and sig_item s l = match s with
+and sig_item s l = match s with (* sig_item -> signature -> signature*)
   [ <:sig_item<>> -> l
   | SgCls loc cd ->
       [mksig loc (Psig_class
@@ -814,19 +758,19 @@ and sig_item s l = match s with
   | SgTyp loc tdl -> [mksig loc (Psig_type (mktype_decl tdl [])) :: l]
   | SgVal loc n t -> [mksig loc (Psig_value (with_loc n loc) (mkvalue_desc loc t [])) :: l]
   | <:sig_item@loc< $anti:_ >> -> error loc "antiquotation in sig_item" ]
-and module_sig_binding x acc = match x with
+and module_sig_binding x acc = match x with (* module_binding -> (string loc * module_type) list -> (string loc * module_type) list*)
   [ <:module_binding< $x and $y >> ->
     module_sig_binding x (module_sig_binding y acc)
   | <:module_binding@loc< $s : $mt >> ->
       [(with_loc s loc, module_type mt) :: acc]
   | _ -> assert False ]
-and module_str_binding x acc =  match x with
+and module_str_binding x acc =  match x with (* module_binding ->  (string loc * module_type * module_expr) list ->  (string loc * module_type * module_expr) list*)
   [ <:module_binding< $x and $y >> ->
       module_str_binding x (module_str_binding y acc)
   | <:module_binding@loc< $s : $mt = $me >> ->
       [(with_loc s loc, module_type mt, module_expr me) :: acc]
   | _ -> assert False ]
-and module_expr =   fun
+and module_expr =   fun (* module_expr -> module_expr *)
   [ <:module_expr@loc< >> -> error loc "nil module expression"
   | <:module_expr@loc< $id:i >> -> mkmod loc (Pmod_ident (long_uident i))
   | <:module_expr@loc< $me1 $me2 >> ->
@@ -845,7 +789,7 @@ and module_expr =   fun
   | <:module_expr@loc< (val $e) >> ->
       mkmod loc (Pmod_unpack (expr e))
   | <:module_expr@loc< $anti:_ >> -> error loc "antiquotation in module_expr" ]
-and str_item s l = match s with
+and str_item s l = match s with (* str_item -> structure -> structure*)
   [ <:str_item<>> -> l
   | StCls loc cd ->
       [mkstr loc (Pstr_class
@@ -878,10 +822,10 @@ and str_item s l = match s with
   | StVal loc rf bi ->
       [mkstr loc (Pstr_value (mkrf rf) (binding bi [])) :: l]
   | <:str_item@loc< $anti:_ >> -> error loc "antiquotation in str_item" ]
-and class_type = fun
+and class_type = fun (* class_type -> class_type *)
   [ CtCon loc ViNil id tl ->
     mkcty loc
-      (Pcty_constr (long_class_ident id) (List.map ctyp (list_of_opt_ctyp tl [])))
+      (Pcty_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
   | CtFun loc (TyLab _ lab t) ct ->
       mkcty loc (Pcty_fun lab (ctyp t) (class_type ct))
   | CtFun loc (TyOlb loc1 lab t) ct ->
@@ -903,7 +847,7 @@ and class_type = fun
   | CtAnt _ _ | CtEq _ _ _ | CtCol _ _ _ | CtAnd _ _ _ | CtNil _ ->
       assert False ]
     
-and class_info_class_expr ci = match ci with
+and class_info_class_expr ci = match ci with (* class_expr -> class_declaration*)
   [ CeEq _ (CeCon loc vir (IdLid nloc name) params) ce ->
     let (loc_params, (params, variance)) = match params with
     [ <:ctyp<>> -> (loc, ([], []))
@@ -915,7 +859,7 @@ and class_info_class_expr ci = match ci with
      pci_loc =  loc;
      pci_variance = variance}
   | ce -> error (loc_of_class_expr ce) "bad class definition" ]
-and class_info_class_type ci = match ci with
+and class_info_class_type ci = match ci with (* class_type -> class_description*)
   [ CtEq _ (CtCon loc vir (IdLid nloc name) params) ct
   | CtCol _ (CtCon loc vir (IdLid nloc name) params) ct ->
       let (loc_params, (params, variance)) =
@@ -930,7 +874,7 @@ and class_info_class_type ci = match ci with
        pci_variance = variance}
   | ct -> error (loc_of_class_type ct)
         "bad class/class type declaration/definition" ]
-and class_sig_item c l = match c with
+and class_sig_item c l = match c with (* class_sig_item -> class_type_field list -> class_type_field list *)
   [ <:class_sig_item<>> -> l
   | CgCtr loc t1 t2 -> [mkctf loc (Pctf_cstr (ctyp t1, ctyp t2)) :: l]
   | <:class_sig_item< $csg1; $csg2 >> ->
@@ -943,14 +887,14 @@ and class_sig_item c l = match c with
   | CgVir loc s b t ->
       [mkctf loc (Pctf_virt (s, mkprivate b, mkpolytype (ctyp t))) :: l]
   | CgAnt _ _ -> assert False ]
-and class_expr = fun
+and class_expr = fun (* class_expr -> class_expr *)
   [ CeApp loc _ _ as c ->
-    let (ce, el) = class_expr_fa [] c in
+    let (ce, el) = ClassExpr.fa [] c in
     let el = List.map label_expr el in
     mkcl loc (Pcl_apply (class_expr ce) el)
   | CeCon loc ViNil id tl ->
       mkcl loc
-        (Pcl_constr (long_class_ident id) (List.map ctyp (list_of_opt_ctyp tl [])))
+        (Pcl_constr (long_class_ident id) (List.map ctyp (Ctyp.list_of_opt tl [])))
   | CeFun loc (PaLab _ lab po) ce ->
       mkcl loc
         (Pcl_fun lab None (patt_of_lab loc lab po) (class_expr ce))
@@ -978,7 +922,7 @@ and class_expr = fun
   | CeCon loc _ _ _ ->
       error loc "invalid virtual class inside a class expression"
   | CeAnt _ _ | CeEq _ _ _ | CeAnd _ _ _ | CeNil _ -> assert False ]
-and class_str_item c l = match c with
+and class_str_item c l = match c with (*class_str_item -> class_field list -> class_field list*)
   [ CrNil _ -> l
   | CrCtr loc t1 t2 -> [mkcf loc (Pcf_constr (ctyp t1, ctyp t2)) :: l]
   | <:class_str_item< $cst1; $cst2 >> ->
@@ -1000,10 +944,10 @@ and class_str_item c l = match c with
   | CrVvr loc s mf t ->
       [mkcf loc (Pcf_valvirt (with_loc s loc, mkmutable mf, ctyp t)) :: l]
   | CrAnt _ _ -> assert False ];
-  
+(* sig_item -> signature *)  
 let sig_item ast = sig_item ast [];
 let str_item ast = str_item ast [];
-
+(* expr -> directive_argument *)
 let directive = fun
   [ <:expr<>> -> Pdir_none
   | ExStr _ s -> Pdir_string s
@@ -1011,7 +955,7 @@ let directive = fun
   | <:expr< True >> -> Pdir_bool True
   | <:expr< False >> -> Pdir_bool False
   | e -> Pdir_ident (ident_noloc (ident_of_expr e)) ] ;
-  
+(* str_item -> phrase *)  
 let phrase = fun
   [ StDir _ d dp -> Ptop_dir d (directive dp)
   | si -> Ptop_def (str_item si) ];

@@ -40,3 +40,9 @@ let rec sep_expr_acc l = fun
       sep_expr_acc l (Ident.normalize_acc i)
   | e -> [(loc_of_expr e, [], e) :: l] ];
 
+
+let rec fa al = fun
+  [ <:expr< $f $a >> ->fa [a :: al] f
+  | f -> (f, al) ];
+
+  
