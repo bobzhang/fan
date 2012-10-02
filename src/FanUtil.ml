@@ -75,17 +75,26 @@ let string_of_string_token loc s =
   try TokenEval.string s
   with [ Failure _ as exn -> FanLoc.raise loc exn ] ;
 
+
+(*
+  {[
+  remove_underscores "_a";;
+  - : string = "a"
+  remove_underscores "__a";;
+  - : string = "a"
+  remove_underscores "__a___b";;
+  - : string = "ab"
+  remove_underscores "__a___b__";;
+  - : string = "ab"
+  ]}
+ *)    
 let remove_underscores s =
   let l = String.length s in
-  let rec remove src dst =
-    if src >= l then
-      if dst >= l then s else String.sub s 0 dst
-    else
-      match s.[src] with
-      [ '_' -> remove (src + 1) dst
-      |  c  -> do { s.[dst] <- c; remove (src + 1) (dst + 1) } ]
-  in remove 0 0 ;
-  
+  let buf = Buffer.create l in
+  let () = String.iter (fun ch ->
+    if ch <> '_' then ignore (Buffer.add_char buf ch) else () ) s in
+  Buffer.contents buf ;
+    
 
 (********************************************************************)
 module ErrorHandler = struct
