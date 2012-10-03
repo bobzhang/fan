@@ -145,7 +145,10 @@ module Hashtbl = struct
   let values tbl = fold (fun _ v acc -> [v::acc] ) tbl [];
 end;
 
-
+module Stream = struct
+  include BatStream;
+  include Stream;
+end;
 (* ugly module, removed it later *)  
 module ErrorMonad = struct     
   type log = string;

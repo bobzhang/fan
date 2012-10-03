@@ -1,22 +1,4 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
+open LibUtil;
 (* PR#5090: don't do lookahead on get_prev_loc. *)
 (* let get_prev_loc_only = ref False; *)
 
@@ -26,27 +8,27 @@ module Make (Structure : Structure.S) = struct
   let empty_entry ename _ =
     raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
 
-  let rec stream_map f = parser
-    [ [: ` x; strm :] -> [: ` (f x); stream_map f strm :]
-    | [: :] -> [: :] ];
+  (* let rec stream_map f = parser *)
+  (*   [ [< 'x; strm >] -> [< '(f x); stream_map f strm >] *)
+  (*   | [< >] -> [< >] ]; *)
 
   let keep_prev_loc strm =
     match Stream.peek strm with
-    [ None -> [: :]
+    [ None -> [< >]
     | Some (_tok0,init_loc) ->
       let rec go prev_loc strm1 =
         (* if get_prev_loc_only.val then *)
-        (*   [: `(tok0, {prev_loc; cur_loc = prev_loc; prev_loc_only = True}); *)
-        (*      go prev_loc strm1 :] *)
+        (*   [< `(tok0, {prev_loc; cur_loc = prev_loc; prev_loc_only = True}); *)
+        (*      go prev_loc strm1 >] *)
         (* else *)
           match strm1 with parser
-          [ [: `(tok,cur_loc); strm :] ->
-              [: `(tok, {prev_loc; cur_loc; prev_loc_only = False});
-                 go cur_loc strm :]
-          | [: :] -> [: :] ]
+          [ [< '(tok,cur_loc); strm >] ->
+              [< '(tok, {prev_loc; cur_loc; prev_loc_only = False});
+                 go cur_loc strm >]
+          | [< >] -> [< >] ]
       in go init_loc strm ];
 
-  let drop_prev_loc strm = stream_map (fun (tok,r) -> (tok,r.cur_loc)) strm;
+  let drop_prev_loc strm = Stream.map (fun (tok,r) -> (tok,r.cur_loc)) strm;
 
   let get_cur_loc strm =
     match Stream.peek strm with
@@ -123,6 +105,5 @@ module Make (Structure : Structure.S) = struct
         eq_symbol s1 s2 && eq_symbol sep1 sep2
     | (Stree _, Stree _) -> False
     | (Stoken (_, s1), Stoken (_, s2)) -> eq_Stoken_ids s1 s2
-    | _ -> s1 = s2 ]
-  ;
+    | _ -> s1 = s2 ];
 end;

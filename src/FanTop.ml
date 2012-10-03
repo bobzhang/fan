@@ -3,16 +3,16 @@
 module P = MakePreCast.Make FanLexer.Make ;
 open P;
 open FanSig;  
-external not_filtered : 'a -> Gram.not_filtered 'a = "%identity";
+(* external not_filtered : 'a -> Gram.not_filtered 'a = "%identity"; *)
 
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
   let not_filtered_token_stream = Lexer.from_lexbuf lb in
-  let token_stream = Gram.filter (not_filtered not_filtered_token_stream) in
+  let token_stream = Gram.filter  not_filtered_token_stream in
   try
     match token_stream with parser
-    [ [: `(EOI, _) :] -> raise End_of_file
-    | [: :] -> parse_fun token_stream ]
+    [ [< '(EOI, _) >] -> raise End_of_file
+    | [< >] -> parse_fun token_stream ]
   with
   [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
         as x -> raise x
@@ -66,8 +66,9 @@ let use_file token_stream =
   in List.map Ast2pt.phrase (pl0 @ pl);
 
 
+let revise_parser =  wrap toplevel_phrase; 
 let _  =   begin
-    Toploop.parse_toplevel_phrase := wrap toplevel_phrase;
+    Toploop.parse_toplevel_phrase := revise_parser;
 
     Toploop.parse_use_file := wrap use_file;
 
@@ -79,11 +80,6 @@ let _  =   begin
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;
 
-(* Toploop.parse_toplevel_phrase:= *)
-
-
-
-
 let open Camlp4Parsers in  begin
    pa_r (module P);
    pa_rp (module P);
@@ -92,6 +88,14 @@ let open Camlp4Parsers in  begin
    pa_g (module P);
    pa_l (module P);
    pa_m (module P);
+end;
+
+let normal () = begin
+  Toploop.parse_toplevel_phrase := Parse.toplevel_phrase;
+end;
+    
+let revise ()  = begin
+  Toploop.parse_toplevel_phrase := revise_parser;
 end;
 (* Camlp4Parsers.pa_r (module P); *)
 (* Camlp4Parsers.pa_rq (module P); *)

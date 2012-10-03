@@ -111,10 +111,10 @@ module Filter = struct
   let error_on_unknown_keywords = ref False;
 
   let rec ignore_layout = parser
-  [ [: `(COMMENT _ | BLANKS _ | NEWLINE | LINE_DIRECTIVE _ _, _); s :] ->
+  [ [< '(COMMENT _ | BLANKS _ | NEWLINE | LINE_DIRECTIVE _ _, _); s >] ->
     ignore_layout s
-    | [: ` x; s :] -> [: ` x; ignore_layout s :]
-    | [: :] -> [: :] ];
+    | [< ' x; s >] -> [< ' x; ignore_layout s >]
+    | [< >] -> [< >] ];
 
   let mk is_kwd =
     { is_kwd = is_kwd;
@@ -132,14 +132,14 @@ module Filter = struct
         (tok, loc)
       end in
       let rec filter = parser
-        [ [: `(tok, loc); s :] -> [: ` f tok loc; filter s :]
-        | [: :] -> [: :] ] in
+        [ [< '(tok, loc); s >] -> [< ' f tok loc; filter s >]
+        | [< >] -> [< >] ] in
       let rec tracer = (* FIXME add a debug block construct *) parser
-        [ [: `((_tok, _loc) as x); xs :] ->
+        [ [< '((_tok, _loc) as x); xs >] ->
             debug token "@[<hov 2>Lexer after filter:@ %a@ at@ %a@]@."
                         print _tok FanLoc.dump _loc in
-            [: ` x; tracer xs :]
-        | [: :] -> [: :] ]
+            [< ' x; tracer xs >]
+        | [< >] -> [< >] ]
   in fun strm -> tracer (x.filter (filter strm));
 
   let define_filter x f = x.filter <- f x.filter;

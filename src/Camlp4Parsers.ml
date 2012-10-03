@@ -1337,7 +1337,7 @@ New syntax:\
   let setup_op_parser entry p =
     Gram.Entry.setup_parser entry
       (parser
-        [: `(KEYWORD x | SYMBOL x, ti) when p x :] ->
+        [< '(KEYWORD x | SYMBOL x, ti) when p x >] ->
           let _loc = Gram.token_location ti in
           <:expr< $lid:x >>);
 
@@ -1377,14 +1377,14 @@ New syntax:\
 
   let rec infix_kwds_filter =
     parser
-    [ [: `((KEYWORD "(", _) as tok); xs :] ->
+    [ [< '((KEYWORD "(", _) as tok); xs >] ->
         match xs with parser
-        [ [: `(KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
-             `(KEYWORD ")", _); xs :] ->
-                [: `(LIDENT i, _loc); infix_kwds_filter xs :]
-        | [: xs :] ->
-                [: `tok; infix_kwds_filter xs :] ]
-    | [: `x; xs :] -> [: `x; infix_kwds_filter xs :] ];
+        [ [< '(KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+             '(KEYWORD ")", _); xs >] ->
+                [< '(LIDENT i, _loc); infix_kwds_filter xs >]
+        | [< xs >] ->
+                [< 'tok; infix_kwds_filter xs >] ]
+    | [< 'x; xs >] -> [< 'x; infix_kwds_filter xs >] ];
 
   Token.Filter.define_filter (Gram.get_filter ())
     (fun f strm -> infix_kwds_filter (f strm));
@@ -1393,20 +1393,20 @@ New syntax:\
     let symb1 = Gram.parse_tokens_after_filter expr in
     let symb =
       parser
-      [ [: `(ANTIQUOT ("list" as n) s, ti) :] ->
+      [ [< '(ANTIQUOT ("list" as n) s, ti) >] ->
         let _loc = Gram.token_location ti in
         <:expr< $(anti:mk_anti ~c:"expr;" n s) >>
-      | [: a = symb1 :] -> a ]
+      | [< a = symb1 >] -> a ]
     in
     let rec kont al =
       parser
-      [ [: `(KEYWORD ";", _); a = symb; s :] ->
+      [ [< '(KEYWORD ";", _); a = symb; s >] ->
         let _loc = FanLoc.merge (Ast.loc_of_expr al)
                              (Ast.loc_of_expr a) in
         kont <:expr< $al; $a >> s
-      | [: :] -> al ]
+      | [< >] -> al ]
     in
-    parser [: a = symb; s :] -> kont a s
+    parser [< a = symb; s >] -> kont a s
   end;
 
   EXTEND Gram
@@ -3058,11 +3058,11 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ stream_begin; sp = stream_patt; stream_end; po = OPT parser_ipatt; "->"; e = expr ->
             (sp, po, e) ] ]
     stream_begin:
-      [ [ "[:" -> () ] ]
+      [ [ "[<" -> () ] ]
     stream_end:
-      [ [ ":]" -> () ] ]
+      [ [ ">]" -> () ] ]
     stream_quot:
-      [ [ "`" -> () ] ]
+      [ [ "'" -> () ] ]
     stream_expr:
       [ [ e = expr -> e ] ]
     stream_patt:

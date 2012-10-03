@@ -644,7 +644,10 @@ let debug_from_string str =
   try
     Stream.iter (fun (t,loc) ->
     match t with
-    |FanSig.EOI -> raise (Stream.Error "end")
+    |FanSig.EOI -> begin
+        fprintf std_formatter "%a@ %a@." Token.print t FanLoc.print loc;
+        raise (Stream.Error "end")
+    end
     | _ ->  fprintf std_formatter "%a@ %a@."
           Token.print t FanLoc.print loc) stream
   with

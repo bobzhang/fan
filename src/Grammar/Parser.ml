@@ -124,8 +124,8 @@ module Make (Structure : Structure.S) = struct
 
   let continue entry loc a s son p1 =
     parser
-      [: a = (entry_of_symb entry s).econtinue 0 loc a;
-        act = p1 ?? Failed.tree_failed entry a s son :] ->
+      [< a = (entry_of_symb entry s).econtinue 0 loc a;
+        act = p1 ?? Failed.tree_failed entry a s son >] ->
         Action.mk (fun _ -> Action.getf act a)
   ;
 
@@ -140,11 +140,11 @@ module Make (Structure : Structure.S) = struct
 
   let do_recover parser_of_tree entry nlevn alevn loc a s son =
     parser
-    [ [: a = parser_of_tree entry nlevn alevn (top_tree entry son) :] -> a
-    | [: a = skip_if_empty loc :] -> a
-    | [: a =
+    [ [< a = parser_of_tree entry nlevn alevn (top_tree entry son) >] -> a
+    | [< a = skip_if_empty loc >] -> a
+    | [< a =
           continue entry loc a s son
-            (parser_of_tree entry nlevn alevn son) :] ->
+            (parser_of_tree entry nlevn alevn son) >] ->
         a ]
   ;
 
@@ -165,14 +165,14 @@ module Make (Structure : Structure.S) = struct
   let rec parser_of_tree entry nlevn alevn =
     fun
     [ DeadEnd -> parser []
-    | LocAct act _ -> parser [: :] -> act
+    | LocAct act _ -> parser [< >] -> act
     | Node {node = Sself; son = LocAct act _; brother = DeadEnd} ->
-        parser [: a = entry.estart alevn :] -> Action.getf act a
+        parser [< a = entry.estart alevn >] -> Action.getf act a
     | Node {node = Sself; son = LocAct act _; brother = bro} ->
         let p2 = parser_of_tree entry nlevn alevn bro in
         parser
-        [ [: a = entry.estart alevn :] -> Action.getf act a
-        | [: a = p2 :] -> a ]
+        [ [< a = entry.estart alevn >] -> Action.getf act a
+        | [< a = p2 >] -> a ]
     | Node {node = s; son = son; brother = DeadEnd} ->
         let tokl =
           match s with
@@ -187,7 +187,7 @@ module Make (Structure : Structure.S) = struct
             fun strm ->
               let bp = loc_bp strm in
               match strm with parser
-              [: a = ps; act = p1 bp a :] -> Action.getf act a
+              [< a = ps; act = p1 bp a >] -> Action.getf act a
         | Some (tokl, last_tok, son) ->
             let p1 = parser_of_tree entry nlevn alevn son in
             let p1 = parser_cont p1 entry nlevn alevn last_tok son in
@@ -207,21 +207,21 @@ module Make (Structure : Structure.S) = struct
             fun strm ->
               let bp = loc_bp strm in
               match strm with parser
-              [ [: a = ps; act = p1 bp a :] -> Action.getf act a
-              | [: a = p2 :] -> a ]
+              [ [< a = ps; act = p1 bp a >] -> Action.getf act a
+              | [< a = p2 >] -> a ]
         | Some (tokl, last_tok, son) ->
             let p1 = parser_of_tree entry nlevn alevn son in
             let p1 = parser_cont p1 entry nlevn alevn last_tok son in
             let p1 = parser_of_token_list p1 tokl in
             let p2 = parser_of_tree entry nlevn alevn bro in
             parser
-            [ [: a = p1 :] -> a
-            | [: a = p2 :] -> a ] ] ]
+            [ [< a = p1 >] -> a
+            | [< a = p2 >] -> a ] ] ]
   and parser_cont p1 entry nlevn alevn s son loc a =
     parser
-    [ [: a = p1 :] -> a
-    | [: a = recover parser_of_tree entry nlevn alevn loc a s son :] -> a
-    | [: :] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
+    [ [< a = p1 >] -> a
+    | [< a = recover parser_of_tree entry nlevn alevn loc a s son >] -> a
+    | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
   and parser_of_token_list p1 tokl =
     loop 1 tokl where rec loop n =
       fun
@@ -236,7 +236,7 @@ module Make (Structure : Structure.S) = struct
               fun strm ->
                 let bp = loc_bp strm in
                 match strm with parser
-                [: a = ps; act = p1 bp a :] -> Action.getf act a
+                [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
               let ps strm =
                 match stream_peek_nth strm n with
@@ -244,7 +244,7 @@ module Make (Structure : Structure.S) = struct
                 | _ -> raise Stream.Failure ]
               in
               let p1 = loop (n + 1) tokl in
-              parser [: tok = ps; s :] ->
+              parser [< tok = ps; s >] ->
                 let act = p1 s in Action.getf act tok ]
       | [Skeyword kwd :: tokl] ->
           match tokl with
@@ -258,7 +258,7 @@ module Make (Structure : Structure.S) = struct
               fun strm ->
                 let bp = loc_bp strm in
                 match strm with parser
-                [: a = ps; act = p1 bp a :] -> Action.getf act a
+                [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
               let ps strm =
                 match stream_peek_nth strm n with
@@ -266,7 +266,7 @@ module Make (Structure : Structure.S) = struct
                 | _ -> raise Stream.Failure ]
               in
               let p1 = loop (n + 1) tokl in
-              parser [: tok = ps; s :] ->
+              parser [< tok = ps; s >] ->
                 let act = p1 s in Action.getf act tok ]
       | _ -> invalid_arg "parser_of_token_list" ]
   and parser_of_symbol entry nlevn =
@@ -279,53 +279,53 @@ module Make (Structure : Structure.S) = struct
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
-          [ [: a = ps; s :] -> loop [a :: al] s
-          | [: :] -> al ]
+          [ [< a = ps; s >] -> loop [a :: al] s
+          | [< >] -> al ]
         in
-        parser [: a = loop [] :] -> Action.mk (List.rev a)
+        parser [< a = loop [] >] -> Action.mk (List.rev a)
     | Slist0sep symb sep ->
         let ps = parser_of_symbol entry nlevn symb in
         let pt = parser_of_symbol entry nlevn sep in
         let rec kont al =
           parser
-          [ [: v = pt; a = ps ?? Failed.symb_failed entry v sep symb;
-               s :] ->
+          [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb;
+               s >] ->
               kont [a :: al] s
-          | [: :] -> al ]
+          | [< >] -> al ]
         in
         parser
-        [ [: a = ps; s :] -> Action.mk (List.rev (kont [a] s))
-        | [: :] -> Action.mk [] ]
+        [ [< a = ps; s >] -> Action.mk (List.rev (kont [a] s))
+        | [< >] -> Action.mk [] ]
     | Slist1 s ->
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
-          [ [: a = ps; s :] -> loop [a :: al] s
-          | [: :] -> al ]
+          [ [< a = ps; s >] -> loop [a :: al] s
+          | [< >] -> al ]
         in
-        parser [: a = ps; s :] -> Action.mk (List.rev (loop [a] s))
+        parser [< a = ps; s >] -> Action.mk (List.rev (loop [a] s))
     | Slist1sep symb sep ->
         let ps = parser_of_symbol entry nlevn symb in
         let pt = parser_of_symbol entry nlevn sep in
         let rec kont al =
           parser
-          [ [: v = pt;
+          [ [< v = pt;
               a =
                 parser
-                [ [: a = ps :] -> a
-                | [: a = parse_top_symb entry symb :] -> a
-                | [: :] ->
+                [ [< a = ps >] -> a
+                | [< a = parse_top_symb entry symb >] -> a
+                | [< >] ->
                     raise (Stream.Error (Failed.symb_failed entry v sep symb)) ];
-              s :] ->
+              s >] ->
               kont [a :: al] s
-          | [: :] -> al ]
+          | [< >] -> al ]
         in
-        parser [: a = ps; s :] -> Action.mk (List.rev (kont [a] s))
+        parser [< a = ps; s >] -> Action.mk (List.rev (kont [a] s))
     | Sopt s ->
         let ps = parser_of_symbol entry nlevn s in
         parser
-        [ [: a = ps :] -> Action.mk (Some a)
-        | [: :] -> Action.mk None ]
+        [ [< a = ps >] -> Action.mk (Some a)
+        | [< >] -> Action.mk None ]
     | Stry s ->
         let ps = parser_of_symbol entry nlevn s in
         try_parser ps
@@ -334,20 +334,20 @@ module Make (Structure : Structure.S) = struct
         fun strm ->
           let bp = loc_bp strm in
           match strm with parser
-          [: (act, loc) = add_loc bp pt :] ->
+          [< (act, loc) = add_loc bp pt >] ->
             Action.getf act loc
-    | Snterm e -> parser [: a = e.estart 0 :] -> a
+    | Snterm e -> parser [< a = e.estart 0 >] -> a
     | Snterml e l ->
-        parser [: a = e.estart (level_number e l) :] -> a
-    | Sself -> parser [: a = entry.estart 0 :] -> a
-    | Snext -> parser [: a = entry.estart nlevn :] -> a
+        parser [< a = e.estart (level_number e l) >] -> a
+    | Sself -> parser [< a = entry.estart 0 >] -> a
+    | Snext -> parser [< a = entry.estart nlevn >] -> a
     | Skeyword kwd ->
         parser
-        [: `(tok, _) when Token.match_keyword kwd tok :] ->
+        [< '(tok, _) when Token.match_keyword kwd tok >] ->
            Action.mk tok
     | Stoken (f, _) ->
         parser
-        [: `(tok,_) when f tok :] -> Action.mk tok ]
+        [< '(tok,_) when f tok >] -> Action.mk tok ]
   and parse_top_symb entry symb strm =
     parser_of_symbol entry 0 (top_symb entry symb) strm;
 
@@ -370,7 +370,7 @@ module Make (Structure : Structure.S) = struct
                 fun levn strm ->
                   let bp = loc_bp strm in
                   match strm with parser
-                  [: (act, loc) = add_loc bp p2; strm :] ->
+                  [< (act, loc) = add_loc bp p2; strm >] ->
                     let a = Action.getf act loc in
                     entry.econtinue levn loc a strm
             | _ ->
@@ -379,10 +379,10 @@ module Make (Structure : Structure.S) = struct
                   else
                     let bp = loc_bp strm in
                     match strm with parser
-                    [ [: (act, loc) = add_loc bp p2 :] ->
+                    [ [< (act, loc) = add_loc bp p2 >] ->
                         let a = Action.getf act loc in
                         entry.econtinue levn loc a strm
-                    | [: act = p1 levn :] -> act ] ] ] ]
+                    | [< act = p1 levn >] -> act ] ] ] ]
   ;
 
   let start_parser_of_entry entry =
@@ -410,8 +410,8 @@ module Make (Structure : Structure.S) = struct
               if levn > clevn then p1 levn bp a strm
               else
                 match strm with parser
-                [ [: act = p1 levn bp a :] -> act
-                | [: (act, loc) = add_loc bp p2 :] ->
+                [ [< act = p1 levn bp a >] -> act
+                | [< (act, loc) = add_loc bp p2 >] ->
                     let a = Action.getf2 act a loc in
                     entry.econtinue levn loc a strm ] ] ]
   ;
@@ -423,8 +423,8 @@ module Make (Structure : Structure.S) = struct
         let p = continue_parser_of_levels entry 0 elev in
         fun levn bp a ->
           parser
-          [ [: a = p levn bp a :] -> a
-          | [: :] -> a ]
+          [ [< a = p levn bp a >] -> a
+          | [< >] -> a ]
     | Dparser _ -> fun _ _ _ -> parser [] ]
   ;
 

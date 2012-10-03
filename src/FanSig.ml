@@ -294,7 +294,7 @@ module Grammar =
         (** [get_filter g] Get the {!Token.Filter} associated to the [g]. *)
         val get_filter : gram -> Token.Filter.t
           
-        type 'a not_filtered
+        (* type 'a not_filtered *)
         
         (** This function is called by the EXTEND ... END syntax. *)
         val extend : 'a Entry.t -> extend_statment -> unit
@@ -315,16 +315,16 @@ module Grammar =
         val lex :
           gram ->
             FanLoc.t ->
-              char Stream.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered
+              char Stream.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered *)
           
         (** Token stream from string. *)
         val lex_string :
           gram ->
-            FanLoc.t -> string -> ((Token.t * FanLoc.t) Stream.t) not_filtered
+            FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
           
         (** Filter a token stream using the {!Token.Filter} module *)
         val filter :
-          gram -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> token_stream
+          gram -> (Token.t * FanLoc.t) Stream.t (*not_filtered*) -> token_stream
           
         (** Lex, filter and parse a stream of character. *)
         val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
@@ -334,7 +334,7 @@ module Grammar =
           
         (** Parse a token stream that is not filtered yet. *)
         val parse_tokens_before_filter :
-          'a Entry.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> 'a
+          'a Entry.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered*) -> 'a
           
         (** Parse a token stream that is already filtered. *)
         val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a
@@ -388,7 +388,7 @@ module Grammar =
         (** Get the {!Token.Filter} associated to the grammar module. *)
         val get_filter : unit -> Token.Filter.t
           
-        type 'a not_filtered
+        (* type 'a not_filtered *)
         
         (** This function is called by the EXTEND ... END syntax. *)
         val extend : 'a Entry.t -> extend_statment -> unit
@@ -407,15 +407,15 @@ module Grammar =
         (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
         (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
-          FanLoc.t -> char Stream.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered
+          FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
           
         (** Token stream from string. *)
         val lex_string :
-          FanLoc.t -> string -> ((Token.t * FanLoc.t) Stream.t) not_filtered
+          FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
           
         (** Filter a token stream using the {!Token.Filter} module *)
         val filter :
-          ((Token.t * FanLoc.t) Stream.t) not_filtered -> token_stream
+          (Token.t * FanLoc.t) Stream.t  -> token_stream
           
         (** Lex, filter and parse a stream of character. *)
         val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
@@ -425,7 +425,7 @@ module Grammar =
           
         (** Parse a token stream that is not filtered yet. *)
         val parse_tokens_before_filter :
-          'a Entry.t -> ((Token.t * FanLoc.t) Stream.t) not_filtered -> 'a
+          'a Entry.t -> (Token.t * FanLoc.t) Stream.t  -> 'a
           
         (** Parse a token stream that is already filtered. *)
         val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a

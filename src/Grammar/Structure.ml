@@ -191,7 +191,7 @@ module Make (Lexer  : FanSig.Lexer) = struct
   let get_filter g = g.gfilter;
   let token_location r = r.cur_loc;
 
-  type not_filtered 'a = 'a;
+  
   let using { gkeywords = table; gfilter = filter; _ } kwd =
     let r = try Hashtbl.find table kwd with
             [ Not_found ->

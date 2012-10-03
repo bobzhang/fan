@@ -36,19 +36,19 @@ module Make (Structure : Structure.S) = struct
   let sfold0 f e _entry _symbl psymb =
     let rec fold accu =
       parser
-      [ [: a = psymb; s :] -> fold (f a accu) s
-      | [: :] -> accu ]
+      [ [< a = psymb; s >] -> fold (f a accu) s
+      | [< >] -> accu ]
     in
-    parser [: a = fold e :] -> a
+    parser [< a = fold e >] -> a
   ;
 
   let sfold1 f e _entry _symbl psymb =
     let rec fold accu =
       parser
-      [ [: a = psymb; s :] -> fold (f a accu) s
-      | [: :] -> accu ]
+      [ [< a = psymb; s >] -> fold (f a accu) s
+      | [< >] -> accu ]
     in
-    parser [: a = psymb; a = fold (f a e) :] -> a
+    parser [< a = psymb; a = fold (f a e) >] -> a
   ;
 
   let sfold0sep f e entry symbl psymb psep =
@@ -59,12 +59,12 @@ module Make (Structure : Structure.S) = struct
     in
     let rec kont accu =
       parser
-      [ [: () = psep; a = psymb ?? failed symbl; s :] -> kont (f a accu) s
-      | [: :] -> accu ]
+      [ [< () = psep; a = psymb ?? failed symbl; s >] -> kont (f a accu) s
+      | [< >] -> accu ]
     in
     parser
-    [ [: a = psymb; s :] -> kont (f a e) s
-    | [: :] -> e ]
+    [ [< a = psymb; s >] -> kont (f a e) s
+    | [< >] -> e ]
   ;
 
   (* let sfold1sep f e entry symbl psymb psep =  (\* FIXME this function was never used*\) *)
@@ -80,16 +80,16 @@ module Make (Structure : Structure.S) = struct
   (*   in *)
   (*   let rec kont accu = *)
   (*     parser *)
-  (*     [ [: () = psep; *)
+  (*     [ [< () = psep; *)
   (*         a = *)
   (*           parser *)
-  (*           [ [: a = psymb :] -> a *)
-  (*           | [: a = parse_top symbl :] -> Obj.magic a *)
-  (*           | [: :] -> raise (Stream.Error (failed symbl)) ]; *)
-  (*         s :] -> *)
+  (*           [ [< a = psymb >] -> a *)
+  (*           | [< a = parse_top symbl >] -> Obj.magic a *)
+  (*           | [< >] -> raise (Stream.Error (failed symbl)) ]; *)
+  (*         s >] -> *)
   (*           kont (f a accu) s *)
-  (*     | [: :] -> accu ] *)
+  (*     | [< >] -> accu ] *)
   (*   in *)
-  (*   parser [: a = psymb; s :] -> kont (f a e) s *)
+  (*   parser [< a = psymb; s >] -> kont (f a e) s *)
   (* ; *)
 end;
