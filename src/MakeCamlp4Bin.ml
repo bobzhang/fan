@@ -47,30 +47,11 @@ module Camlp4Bin
             -> begin
               pa_r (module PreCast) ;
             end
-          (* | ("Parsers"|"", *)
-          (*    "rr" | "reloaded" | "ocamlreloaded"| "camlp4ocamlreloadedparser.cmo") *)
-          (*   -> begin *)
-          (*     pa_rr (module PreCast) ; *)
-          (* end  *)
-          | ("Parsers"|"",
-             "pa_o.cmo"| "o"| "ocaml" | "camlp4ocamlparser.cmo") ->
-               begin
-                 pa_r (module PreCast);
-                 pa_o (module PreCast);
-               end 
           | ("Parsers"|"",
              "pa_rp.cmo" | "rp" | "rparser" | "camlp4ocamlrevisedparserparser.cmo")
             -> begin
               pa_r (module PreCast);
               pa_rp (module PreCast);
-            end 
-          | ("Parsers"|"",
-             "pa_op.cmo"| "op" | "parser" | "camlp4ocamlparserparser.cmo")
-            -> begin
-              pa_r (module PreCast);
-              pa_o (module PreCast) ;
-              pa_rp (module PreCast) ;
-              pa_op (module PreCast);
             end 
           | ("Parsers"|"",
              "pa_extend.cmo" | "pa_extend_m.cmo" | "g" | "grammar" | "camlp4grammarparser.cmo")
@@ -89,18 +70,9 @@ module Camlp4Bin
             -> begin (* no pa_qb any more *)
               pa_rq (module PreCast) ;
             end
-          | ("Parsers"|"",
-             "oq" | "camlp4ocamloriginalquotationexpander.cmo")
-            ->  begin
-              pa_r (module PreCast);
-              pa_o (module PreCast);
-              (* pa_qb;*)
-              pa_oq (module PreCast);
-            end 
           | ("Parsers"|"", "rf") -> begin
               pa_r (module PreCast);
               pa_rp (module PreCast);
-              (* pa_qb; *)
               pa_q (module PreCast);
               pa_g (module PreCast);
               pa_l (module PreCast);
@@ -109,18 +81,6 @@ module Camlp4Bin
           | ("Parsers"|"","debug") -> begin
               pa_debug (module PreCast);
           end
-          | ("Parsers"|"", "of")
-            -> begin
-              pa_r (module PreCast);
-              pa_o (module PreCast);
-              pa_rp (module PreCast);
-              pa_op (module PreCast);
-              (* pa_qb; *)
-              pa_q (module PreCast);
-              pa_g (module PreCast);
-              pa_l (module PreCast);
-              pa_m (module PreCast);
-            end
           | ("Parsers"|"",
              "comp" | "camlp4listcomprehension.cmo") ->
                begin

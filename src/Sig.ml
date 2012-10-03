@@ -200,8 +200,6 @@ module type Camlp4Syntax = sig
   val type_parameters : Gram.Entry.t (Ast.ctyp -> Ast.ctyp);
   val typevars : Gram.Entry.t Ast.ctyp;
   val val_longident : Gram.Entry.t Ast.ident;
-  val value_let : Gram.Entry.t unit;
-  val value_val : Gram.Entry.t unit;
   val with_constr : Gram.Entry.t Ast.with_constr;
   val with_constr_quot : Gram.Entry.t Ast.with_constr;
   val prefixop : Gram.Entry.t Ast.expr;
