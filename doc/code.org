@@ -1270,3 +1270,48 @@ value f : 'a -> 'a = <fun>
    like "bprintf", "ifprintf", "eprintf"
 ** integrating ulex
    an extensible lexer?
+
+
+* Formalize quot-antiquot
+
+  #+BEGIN_SRC ocaml
+  a_INT:
+      [ [ `ANTIQUOT (""|"int"|"`int" as n) s -> mk_anti n s
+        | `INT _ s -> s ] ] 
+  #+END_SRC
+
+
+  #+BEGIN_SRC ocaml
+    expr:
+      | "simple"
+        [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
+        | `ANTIQUOT ("exp"|""|"anti" as n) s ->
+            <:expr< $(anti:mk_anti ~c:"expr" n s) >>
+        | `ANTIQUOT ("`bool" as n) s ->
+            <:expr< $(id:<:ident< $(anti:mk_anti n s) >>) >>
+        | `ANTIQUOT ("tup" as n) s ->
+            <:expr< $(tup: <:expr< $(anti:mk_anti ~c:"expr" n s) >>) >>
+        | `ANTIQUOT ("seq" as n) s ->
+            <:expr< do $(anti:mk_anti ~c:"expr" n s) done >>
+        | s = a_INT -> <:expr< $int:s >>
+        | s = a_INT32 -> <:expr< $int32:s >>
+
+  #+END_SRC
+
+  how
+
+  #+BEGIN_SRC ocaml
+    <:expr< $int:s >>
+
+   QUOTATION "$int:s"
+
+
+   ANTIQUOT "int"  s
+
+
+   parsed by the entry a_INT => "\\$int:"^s  ==>
+
+   Ast.ExInt _loc ("\\$int:" ^ s)
+
+  #+END_SRC
+

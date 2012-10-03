@@ -2,7 +2,7 @@ open Format;;
 open FanUtil;;
 (* module MToken = FanToken.Make(FanLoc) *)
 (* module MLexer = FanLexer.Make(MToken) (\* avoid conflicts with Lexer in compiler *\) *)
-
+#load_rec "FanToken.cmo";;
 #load_rec "FanLexer.cmo";;
 (* test_from_string "2 + 3 (\* (\* (\* \" *\) \" *\) *\) *\) 3 + 4 ";; *)
 
@@ -12,7 +12,7 @@ open FanUtil;;
 (* ESCAPED_IDENT "*" *)
 (* File "<string>", line 1, characters 0-5 *)
 FanConfig.antiquotations := true ;;
-module FanLexer=FanLexer.Make(FanToken);;
+module FanLexer =FanLexer.Make (FanToken);;
 open FanLexer;;
 (*
   test_from_string "$lid";;

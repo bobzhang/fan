@@ -37,11 +37,15 @@ let cvt_int64_literal s =
 let cvt_nativeint_literal s =
   Nativeint.neg (Nativeint.of_string ("-" ^ s));
 
+(* c gives a finer control *)
+let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
+
+let append_eLem el e = el @ [e];
 let is_antiquot s =
   let len = String.length s in
   len > 2 && s.[0] = '\\' && s.[1] = '$';
 
-let handle_antiquot_in_string s term parse loc decorate =
+let handle_antiquot_in_string s term parse loc ~decorate =
   if is_antiquot s then
     let pos = String.index s ':' in
     let name = String.sub s 2 (pos - 2)
@@ -370,3 +374,5 @@ end= struct
 
 
 end;
+
+

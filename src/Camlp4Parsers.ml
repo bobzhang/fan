@@ -1617,8 +1617,8 @@ New syntax:\
     | e -> <:expr< assert $e >> ]
   ;
 
-  let append_eLem el e = el @ [e];
-  let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
+  (* let append_eLem el e = el @ [e]; *)
+  (* let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s; *)
 
   let mksequence _loc =
     fun
@@ -2603,7 +2603,7 @@ New syntax:\
         | i = a_UIDENT -> i ] ]
     ;
     ident:
-      [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
+      [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s -> (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
         | i = a_UIDENT -> <:ident< $uid:i >>
         | i = a_LIDENT -> <:ident< $lid:i >>
@@ -4490,7 +4490,8 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     method! patt = fun
       [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
           let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
-          handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc (fun n p ->
+          handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc
+            ~decorate:(fun n p ->
             match n with
             [ "antisig_item" -> <:patt< Ast.SgAnt $(mloc _loc) $p >>
             | "antistr_item" -> <:patt< Ast.StAnt $(mloc _loc) $p >>
@@ -4514,7 +4515,8 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     method! expr = fun
       [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
           let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
-          handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc (fun n e ->
+          handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc
+            ~decorate:(fun n e ->
             match n with
             [ "`int" -> <:expr< string_of_int $e >>
             | "`int32" -> <:expr< Int32.to_string $e >>

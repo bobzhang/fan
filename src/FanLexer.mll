@@ -637,7 +637,38 @@ let from_stream ?quotations loc strm =
 
 let mk () loc strm =
   from_stream ~quotations:!FanConfig.quotations loc strm
-    
+
+let debug_from_string str =
+  let loc = FanLoc.mk "<string>" in
+  let stream = from_string loc str  in
+  try
+    Stream.iter (fun (t,loc) ->
+    match t with
+    |FanSig.EOI -> raise (Stream.Error "end")
+    | _ ->  fprintf std_formatter "%a@ %a@."
+          Token.print t FanLoc.print loc) stream
+  with
+    Stream.Error _ -> ();;
+
+let debug_from_file file =
+  let loc = FanLoc.mk file in
+  let chan = (open_in file) in
+  let stream = Stream.of_channel  chan in 
+  let stream = from_stream loc stream in begin 
+  try
+    Stream.iter (fun (t,loc) ->
+    match t with
+    |FanSig.EOI -> begin
+        close_in chan;
+        raise (Stream.Error "end");
+    end 
+    | _ ->  fprintf std_formatter "%a@ %a@."
+          Token.print t FanLoc.print loc) stream
+  with
+    Stream.Error _ -> close_in chan;
+  end ;;
+
+
 end
 }
 

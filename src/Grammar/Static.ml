@@ -43,7 +43,7 @@ module Make (Lexer : FanSig.Lexer)
 
   let filter ts = Tools.keep_prev_loc (Token.Filter.filter gram.gfilter ts);
 
-  let parse_tokens_after_filter entry ts = Entry.E.parse_tokens_after_filter entry ts;
+  let parse_tokens_after_filter (entry:Entry.t 'a) ts : 'a= Entry.E.parse_tokens_after_filter entry ts;
 
   let parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter ts);
 
@@ -90,10 +90,34 @@ module Make (Lexer : FanSig.Lexer)
   let extend = Insert.extend;
 
   (* let eoi_entry entry = *)
-  (*   let entry_eoi = Entry.(mk (name entry ^ "_eoi")) in   *)
-  (*   let () = EXTEND (gram:t) entry_eoi: *)
+  (*   let entry_eoi = Entry.(mk (name entry ^ "_eoi")) in *)
+  (*   let () = EXTEND (gram:A.t) entry_eoi: *)
   (*     [[ x = entry; `EOI -> x ]]; *)
-  (*     END in  *)
+  (*     END in *)
   (*   entry_eoi; *)
 
 end;
+
+(*
+(A.extend ( (entry_eoi : 'entry_eoi A.Entry.t) ) (
+         ((fun ()
+           ->
+             (None , (
+              [(None , None , (
+                [((
+                  [( (A.Snterm (A.Entry.obj ( (entry : 'entry A.Entry.t) )))
+                    ); (
+                   (A.Stoken
+                      (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
+                 ), (
+                  (A.Action.mk (
+                   fun (__camlp4_0 :
+                          A.Token.t) ->
+                            fun (x :
+                                   'entry) ->
+                                     fun (_loc :
+                                            FanLoc.t) ->
+                                              (match __camlp4_0 with
+                                              | EOI -> (x : 'entry_eoi)
+                                              | _ -> assert false) )) ))] ))] ))) () ) ))
+ *)  

@@ -244,7 +244,8 @@ module type PRECAST = sig
   module Gram       : FanSig.Grammar.Static  with
                       module Token = Token;
   module Syntax     : Camlp4Syntax with 
-                       module Token   = Token;
+                      module Token   = Token and
+                      module Gram = Gram;
   module Printers : sig
     module OCaml         : PrinterImpl;
     module DumpOCamlAst  : PrinterImpl;
@@ -252,7 +253,7 @@ module type PRECAST = sig
     module Null          : PrinterImpl;
   end;
 
-  module MakeSyntax (U : sig end) : Camlp4Syntax;
+  (* module MakeSyntax (U : sig end) : Camlp4Syntax; *)
 
   (* parser signature *)  
   type parser_fun 'a =

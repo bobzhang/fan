@@ -20,7 +20,7 @@ module Make
     (Gram: FanSig.Grammar.Static with type Token.t = FanSig.camlp4_token):
     Sig.Camlp4Syntax with
        module Token = Gram.Token and
-       module Gram = Gram =   struct
+module Gram = Gram =   struct
   module Ast     = Camlp4Ast;
   module Gram    = Gram;
   module Token   = Gram.Token;

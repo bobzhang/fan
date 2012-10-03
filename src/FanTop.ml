@@ -1,0 +1,110 @@
+
+
+module P = MakePreCast.Make FanLexer.Make ;
+open P;
+open FanSig;  
+external not_filtered : 'a -> Gram.not_filtered 'a = "%identity";
+
+let wrap parse_fun lb =
+  let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
+  let not_filtered_token_stream = Lexer.from_lexbuf lb in
+  let token_stream = Gram.filter (not_filtered not_filtered_token_stream) in
+  try
+    match token_stream with parser
+    [ [: `(EOI, _) :] -> raise End_of_file
+    | [: :] -> parse_fun token_stream ]
+  with
+  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
+        as x -> raise x
+  | x ->
+      let x =
+        match x with
+        [ FanLoc.Exc_located loc x -> do {
+            Toploop.print_location Format.err_formatter loc;
+            x }
+        | x -> x ]
+      in
+      do {
+        Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print x;
+        raise Exit
+      } ];
+
+let toplevel_phrase token_stream =
+  match Gram.parse_tokens_after_filter
+      (Syntax.top_phrase : P.Gram.Entry.t (option Ast.str_item)) token_stream with
+    [ Some str_item ->
+        let str_item =
+          Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item
+        in
+        Ast2pt.phrase str_item
+
+    | None -> raise End_of_file ];
+
+let use_file token_stream =
+  let (pl0, eoi) =
+    loop () where rec loop () =
+      let (pl, stopped_at_directive) =
+        Gram.parse_tokens_after_filter Syntax.use_file token_stream
+      in
+      if stopped_at_directive <> None then
+        match pl with
+        [ [ <:str_item< #load $str:s >> ] ->
+            do { Topdirs.dir_load Format.std_formatter s; loop () }
+        | [ <:str_item< #directory $str:s >> ] ->
+            do { Topdirs.dir_directory s; loop () }
+        | _ -> (pl, False) ]
+      else (pl, True)
+  in
+  let pl =
+    if eoi then []
+    else
+      loop () where rec loop () =
+        let (pl, stopped_at_directive) =
+          Gram.parse_tokens_after_filter Syntax.use_file token_stream
+        in
+        if stopped_at_directive <> None then pl @ loop () else pl
+  in List.map Ast2pt.phrase (pl0 @ pl);
+
+
+let _  =   begin
+    Toploop.parse_toplevel_phrase := wrap toplevel_phrase;
+
+    Toploop.parse_use_file := wrap use_file;
+
+    Syntax.current_warning :=
+    fun loc txt ->
+      Toploop.print_warning  loc Format.err_formatter
+        (Warnings.Camlp4 txt);
+      
+      iter_and_take_callbacks (fun (_, f) -> f ());
+  end;
+
+(* Toploop.parse_toplevel_phrase:= *)
+
+
+
+
+let open Camlp4Parsers in  begin
+   pa_r (module P);
+   pa_rp (module P);
+   (* pa_qb; *)
+   pa_q (module P);
+   pa_g (module P);
+   pa_l (module P);
+   pa_m (module P);
+end;
+(* Camlp4Parsers.pa_r (module P); *)
+(* Camlp4Parsers.pa_rq (module P); *)
+
+
+
+
+
+
+
+
+
+
+
+
+
