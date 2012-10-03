@@ -1315,3 +1315,7 @@ value f : 'a -> 'a = <fun>
 
   #+END_SRC
 
+* concrete syntax design
+  if you design a language very convenient, antiquotation will have
+  some trouble here?
+  <:grammar< $a $b >> ? what's that?

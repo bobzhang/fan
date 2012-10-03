@@ -205,11 +205,9 @@ module Gram = Gram =   struct
   EXTEND Gram
     top_phrase:
       [ [ `EOI -> None ] ]
-    ;
   END;
 
   module AntiquotSyntax = struct
-
     module Ast  = Ast; (* Sig.Camlp4AstToAst Ast;*)
     module Gram = Gram;
     let antiquot_expr = Gram.Entry.mk "antiquot_expr";
@@ -217,17 +215,14 @@ module Gram = Gram =   struct
     EXTEND Gram
       antiquot_expr:
         [ [ x = expr; `EOI -> x ] ]
-      ;
       antiquot_patt:
         [ [ x = patt; `EOI -> x ] ]
-      ;
     END;
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
   end;
 
   module Quotation = Quotation.Make(struct end);
-
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl, stopped_at_directive) = pa loc cs in
@@ -243,15 +238,12 @@ module Gram = Gram =   struct
         in (List.rev pl) @ (loop new_loc)
       | None -> pl ]
     in loop init_loc;
-
   let parse_implem ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse implem) _loc cs in
     <:str_item< $list:l >>;
-
   let parse_interf ?(directive_handler = fun _ -> None) _loc cs =
     let l = wrap directive_handler (Gram.parse interf) _loc cs in
     <:sig_item< $list:l >>;
-
   let print_interf ?input_file:(_) ?output_file:(_) _ = failwith "No interface printer";
   let print_implem ?input_file:(_) ?output_file:(_) _ = failwith "No implementation printer";
   module AstFilters = AstFilters.Make (struct end);

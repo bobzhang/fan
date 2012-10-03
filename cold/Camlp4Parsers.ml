@@ -1578,16 +1578,11 @@ and ('e, 'p) symbol = {
                           [(
                            (Gram.Snterm
                              (Gram.Entry.obj (
-                               (entry : 'entry Gram.Entry.t) ))) ); (
-                           (Gram.Snterm
-                             (Gram.Entry.obj (
-                               (semi_sep : 'semi_sep Gram.Entry.t) ))) )]
-                          ), (
+                               (entry : 'entry Gram.Entry.t) ))) )] ), (
                           (Gram.Action.mk (
-                            fun _ ->
-                             fun (e :
-                               'entry) ->
-                              fun (_loc : FanLoc.t) -> (e : 'e__1) )) ))]
+                            fun (e :
+                              'entry) ->
+                             fun (_loc : FanLoc.t) -> (e : 'e__1) )) ))]
                         ))) )] ), (
                    (Gram.Action.mk (
                      fun (el :
