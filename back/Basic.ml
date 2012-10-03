@@ -37,116 +37,116 @@ let check_valid str =
   
 
 
-module Make (MGram:Camlp4.Sig.Grammar.Static
-            with module Loc = Loc
-            and  module Token = Token)  : Fan_sig.Grammar with
-                     type t 'a = MGram.Entry.t 'a
-                     and type loc = MGram.Loc.t = struct
-  type t 'a = MGram.Entry.t 'a;
-  type loc =  MGram.Loc.t ;
-  (* add an end marker for each parser *)
-  let eoi_entry entry = do{
-    let entry_eoi = MGram.Entry.(mk (name entry)) ;
-    EXTEND MGram entry_eoi:
-      [ [ x =entry ; `EOI -> x ]];
-    END;
-    entry_eoi  
-   };
+(* module Make (MGram:Camlp4.Sig.Grammar.Static *)
+(*             with module Loc = Loc *)
+(*             and  module Token = Token)  : Fan_sig.Grammar with *)
+(*                      type t 'a = MGram.Entry.t 'a *)
+(*                      and type loc = MGram.Loc.t = struct *)
+(*   type t 'a = MGram.Entry.t 'a; *)
+(*   type loc =  MGram.Loc.t ; *)
+(*   (\* add an end marker for each parser *\) *)
+(*   let eoi_entry entry =  *)
+(*     let entry_eoi = MGram.Entry.(mk (name entry)) in  *)
+(*     let () = EXTEND MGram entry_eoi: *)
+(*         [ [ x =entry ; `EOI -> x ]] *)
+(*       END in  *)
+(*     entry_eoi  ; *)
 
 
-  let parse_quot_string_with_filter entry f loc loc_name_opt s  = begin
-    let q = !Camlp4_config.antiquotations ;
-    Camlp4_config.antiquotations := True;
-    let res = MGram.parse_string entry loc s ;  
-    Camlp4_config.antiquotations := q;
-    MetaLoc.loc_name := loc_name_opt ;
-    (* not sure whether this refactoring is correct *)
-    f res
-  end;
 
-  (* given an string input, apply the parser, return the result *)
-  let parse_quot_string entry  loc  loc_name_opt s =
-    parse_quot_string_with_filter entry (fun x -> x) loc
-      loc_name_opt s ;
+(*   let parse_quot_string_with_filter entry f loc loc_name_opt s  = begin *)
+(*     let q = !Camlp4_config.antiquotations ; *)
+(*     Camlp4_config.antiquotations := True; *)
+(*     let res = MGram.parse_string entry loc s ;   *)
+(*     Camlp4_config.antiquotations := q; *)
+(*     MetaLoc.loc_name := loc_name_opt ; *)
+(*     (\* not sure whether this refactoring is correct *\) *)
+(*     f res *)
+(*   end; *)
 
-  (* here entry [does not need] to handle eoi case,
-    we will add eoi automatically.
-    This add quotation utility is for normal
-    It's tailored for ADT DSL paradigm  *)
-  let add_quotation ?antiquot_expander name   ~entry
-     ~mexpr ~mpatt  = (
-    let anti_expr = match antiquot_expander with
-      [ None -> fun x -> x | Some obj -> obj#expr] in
-    let anti_patt = match antiquot_expander with
-      [ None -> fun x -> x | Some obj -> obj#patt] in
-    let entry_eoi = eoi_entry entry in 
-    let expand_expr loc loc_name_opt s = 
-      parse_quot_string entry_eoi loc  loc_name_opt s
-      |> mexpr loc
-      |> anti_expr  in
-    let expand_str_item loc loc_name_opt s =
-      let exp_ast = expand_expr loc loc_name_opt s  in 
-      <:str_item@loc< $exp:exp_ast >> in
-    let expand_patt _loc loc_name_opt s =
-      let exp_ast =
-        parse_quot_string entry_eoi _loc  loc_name_opt s
-        |> mpatt _loc
-        |> anti_patt in 
-      match loc_name_opt with
-      [ None -> exp_ast
-      | Some name ->
-          let rec subst_first_loc =
-          fun
-          [ <:patt@_loc< Ast.$uid:u _ >>
-            -> <:patt< Ast.$uid:u $lid:name >>
-          | <:patt@_loc< $a $b >>
-            -> <:patt< $(subst_first_loc a) $b >>
-          | p -> p ] in
-        subst_first_loc exp_ast ] in
-    let open Quotation in 
-    do {
-      add name DynAst.expr_tag expand_expr;
-      add name DynAst.patt_tag expand_patt;
-      add name DynAst.str_item_tag expand_str_item;
-    }
-);
+(*   (\* given an string input, apply the parser, return the result *\) *)
+(*   let parse_quot_string entry  loc  loc_name_opt s = *)
+(*     parse_quot_string_with_filter entry (fun x -> x) loc *)
+(*       loc_name_opt s ; *)
 
-    let add = Quotation.add;
-    let add_quotation_of_str_item ~name ~entry =
-      add name Quotation.DynAst.str_item_tag
-        (parse_quot_string (eoi_entry entry));
-    let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
-      add name Quotation.DynAst.str_item_tag
-        (parse_quot_string_with_filter (eoi_entry entry) filter);
-    (* will register str_item as well  *) 
-    let add_quotation_of_expr ~name ~entry = begin
-      let expand_fun = parse_quot_string & eoi_entry entry in 
-      let mk_fun loc loc_name_opt s =
-        <:str_item< $(exp:expand_fun loc loc_name_opt s) >> in 
-      let () = add name Quotation.DynAst.expr_tag expand_fun in 
-      let () = add name Quotation.DynAst.str_item_tag mk_fun in
-      ()
-    end ;
-    let add_quotation_of_patt ~name ~entry =
-      add name Quotation.DynAst.patt_tag (parse_quot_string (eoi_entry entry));
-    let add_quotation_of_class_str_item ~name ~entry =
-     add name Quotation.DynAst.class_str_item_tag (parse_quot_string (eoi_entry entry));
-    let add_quotation_of_match_case ~name ~entry =
-      add name Quotation.DynAst.match_case_tag
-        (parse_quot_string (eoi_entry entry));
-end;
+(*   (\* here entry [does not need] to handle eoi case, *)
+(*     we will add eoi automatically. *)
+(*     This add quotation utility is for normal *)
+(*     It's tailored for ADT DSL paradigm  *\) *)
+(*   let add_quotation ?antiquot_expander name   ~entry *)
+(*      ~mexpr ~mpatt  = ( *)
+(*     let anti_expr = match antiquot_expander with *)
+(*       [ None -> fun x -> x | Some obj -> obj#expr] in *)
+(*     let anti_patt = match antiquot_expander with *)
+(*       [ None -> fun x -> x | Some obj -> obj#patt] in *)
+(*     let entry_eoi = eoi_entry entry in  *)
+(*     let expand_expr loc loc_name_opt s =  *)
+(*       parse_quot_string entry_eoi loc  loc_name_opt s *)
+(*       |> mexpr loc *)
+(*       |> anti_expr  in *)
+(*     let expand_str_item loc loc_name_opt s = *)
+(*       let exp_ast = expand_expr loc loc_name_opt s  in  *)
+(*       <:str_item@loc< $exp:exp_ast >> in *)
+(*     let expand_patt _loc loc_name_opt s = *)
+(*       let exp_ast = *)
+(*         parse_quot_string entry_eoi _loc  loc_name_opt s *)
+(*         |> mpatt _loc *)
+(*         |> anti_patt in  *)
+(*       match loc_name_opt with *)
+(*       [ None -> exp_ast *)
+(*       | Some name -> *)
+(*           let rec subst_first_loc = *)
+(*           fun *)
+(*           [ <:patt@_loc< Ast.$uid:u _ >> *)
+(*             -> <:patt< Ast.$uid:u $lid:name >> *)
+(*           | <:patt@_loc< $a $b >> *)
+(*             -> <:patt< $(subst_first_loc a) $b >> *)
+(*           | p -> p ] in *)
+(*         subst_first_loc exp_ast ] in *)
+(*     let open Quotation in  *)
+(*     do { *)
+(*       add name DynAst.expr_tag expand_expr; *)
+(*       add name DynAst.patt_tag expand_patt; *)
+(*       add name DynAst.str_item_tag expand_str_item; *)
+(*     } *)
+(* ); *)
 
-(** Built in MGram  utilities *)
-module Fan_camlp4syntax = Make(Gram);
-let (anti_str_item, anti_expr)
-    =  Fan_camlp4syntax.(
-  (eoi_entry Syntax.str_item,
-  eoi_entry Syntax.expr)
- )
-;
+(*     let add = Quotation.add; *)
+(*     let add_quotation_of_str_item ~name ~entry = *)
+(*       add name Quotation.DynAst.str_item_tag *)
+(*         (parse_quot_string (eoi_entry entry)); *)
+(*     let add_quotation_of_str_item_with_filter ~name ~entry ~filter = *)
+(*       add name Quotation.DynAst.str_item_tag *)
+(*         (parse_quot_string_with_filter (eoi_entry entry) filter); *)
+(*     (\* will register str_item as well  *\)  *)
+(*     let add_quotation_of_expr ~name ~entry = begin *)
+(*       let expand_fun = parse_quot_string & eoi_entry entry in  *)
+(*       let mk_fun loc loc_name_opt s = *)
+(*         <:str_item< $(exp:expand_fun loc loc_name_opt s) >> in  *)
+(*       let () = add name Quotation.DynAst.expr_tag expand_fun in  *)
+(*       let () = add name Quotation.DynAst.str_item_tag mk_fun in *)
+(*       () *)
+(*     end ; *)
+(*     let add_quotation_of_patt ~name ~entry = *)
+(*       add name Quotation.DynAst.patt_tag (parse_quot_string (eoi_entry entry)); *)
+(*     let add_quotation_of_class_str_item ~name ~entry = *)
+(*      add name Quotation.DynAst.class_str_item_tag (parse_quot_string (eoi_entry entry)); *)
+(*     let add_quotation_of_match_case ~name ~entry = *)
+(*       add name Quotation.DynAst.match_case_tag *)
+(*         (parse_quot_string (eoi_entry entry)); *)
+(* end; *)
+
+(* (\** Built in MGram  utilities *\) *)
+(* module Fan_camlp4syntax = Make(Gram); *)
+(* let (anti_str_item, anti_expr) *)
+(*     =  Fan_camlp4syntax.( *)
+(*   (eoi_entry Syntax.str_item, *)
+(*   eoi_entry Syntax.expr) *)
+(*  ) *)
+(* ; *)
 
 
-let is_antiquot_data_ctor s = String.ends_with s "Ant";
+(* let is_antiquot_data_ctor s = String.ends_with s "Ant"; *)
     
 (**
    c means [context] here 
