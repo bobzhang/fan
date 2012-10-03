@@ -542,6 +542,7 @@ module Meta = struct
         <:class_str_item< $cst; $(<:class_str_item<>> ) >> -> cst
       | cst -> cst ];
   end;
-    
-
-
+class reloc _loc = object
+  inherit map ;
+  method! loc _ = _loc;
+end;

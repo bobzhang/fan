@@ -1,5 +1,7 @@
 Meta
 Expr
+Patt
 Ident
+ModuleType
 Ctyp
 ClassExpr

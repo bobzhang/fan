@@ -52,8 +52,37 @@ let handle_antiquot_in_string s term parse loc ~decorate =
     and code = String.sub s (pos + 1) (String.length s - pos - 1) in
     decorate name (parse loc code)
   else term;
+  
+let neg_string n =
+    let len = String.length n in
+    if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
+    else "-" ^ n ;
 
-    
+let rec loop n = fun
+  [ [] -> None
+  | [(x, _)] -> if n = 1 then Some x else None
+  | [_ :: l] -> loop (n - 1) l ];
+
+let stream_peek_nth n strm = loop n (Stream.npeek n strm);
+
+let rec list_remove x = fun
+  [ [(y, _) :: l] when y = x -> l
+  | [d :: l] -> [d :: list_remove x l]
+  | [] -> [] ];
+
+let symbolchar =
+  let list =
+    ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
+       '@'; '^'; '|'; '~'; '\\'] in
+  let rec loop s i =
+    if i == String.length s then True
+    else if List.mem s.[i] list then loop s (i + 1)
+    else False
+  in loop ;
+  
+let stopped_at _loc =
+  Some (FanLoc.move_line 1 _loc) (* FIXME be more precise *);
+
 
 (* either dump to a file or stdout *)    
 let with_open_out_file x f =

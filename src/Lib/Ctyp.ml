@@ -24,3 +24,8 @@ let rec name_tags = fun
   | <:ctyp< `$s >> -> [s]
   | _ -> assert False ];
   
+let rec to_generalized = fun
+    [ <:ctyp< $t1 -> $t2 >> ->
+        let (tl, rt) = to_generalized t2 in
+        ([t1 :: tl], rt)
+    | t -> ([], t) ];

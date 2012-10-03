@@ -1,5 +1,6 @@
 open LibUtil;
 open FanUtil;
+open Lib;
 
 module IdDebugParser = struct
   let name = "Camlp4DebugParser";
@@ -7,10 +8,8 @@ module IdDebugParser = struct
 end;
 
 module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
-  (* open Sig; *)
   include Syntax;
   open FanSig ; (* For FanToken, probably we should fix FanToken as well  *)
-  (* module StringSet = Set.Make String; *)
   module Ast = Camlp4Ast;  
   let debug_mode =
     try
@@ -27,18 +26,11 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       else fun x -> SSet.mem x sections
     with [ Not_found -> fun _ -> False ];
 
-  let rec apply accu =
-    fun
-    [ [] -> accu
-    | [x :: xs] ->
-        let _loc = Ast.loc_of_expr x
-        in apply <:expr< $accu $x >> xs ];
-
   let mk_debug_mode _loc = fun [ None -> <:expr< Debug.mode >>
                                  | Some m -> <:expr< $uid:m.Debug.mode >> ];
 
   let mk_debug _loc m fmt section args =
-    let call = apply <:expr< Debug.printf $str:section $str:fmt >> args in
+    let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
 
 
@@ -69,26 +61,24 @@ module IdGrammarParser = struct
   let name = "Camlp4GrammarParser";
   let version = Sys.ocaml_version;
 end;
+
+let string_of_patt patt =
+  let buf = Buffer.create 42 in
+  let () =
+    Format.bprintf buf "%a@?"
+      (fun fmt p -> Pprintast.pattern fmt (Ast2pt.patt p)) patt in
+  (* let () = Format.bprintf buf "%a@?" pp#patt patt in *)
+  let str = Buffer.contents buf in
+  if str = "" then assert False else str;
+  
 module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
   open FanSig;
   module MetaAst = Ast.Meta.Make Lib.Meta.MetaGhostLoc ;
-  let string_of_patt patt =
-    let buf = Buffer.create 42 in
-    let () =
-      Format.bprintf buf "%a@?"
-        (fun fmt p -> Pprintast.pattern fmt (Ast2pt.patt p)) patt in
-    (* let () = Format.bprintf buf "%a@?" pp#patt patt in *)
-    let str = Buffer.contents buf in
-    if str = "" then assert False else str;
-
   let split_ext = ref False;
-
   type loc = FanLoc.t;
-
   type name 'e = { expr : 'e; tvar : string; loc : loc };
-
   type styp =
     [ STlid of loc and string
     | STapp of loc and styp and styp
@@ -96,8 +86,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     | STself of loc and string
     | STtok of loc
     | STstring_tok of loc
-    | STtyp of Ast.ctyp ]
-  ;
+    | STtyp of Ast.ctyp ] ;
 
   type text 'e 'p =
     [ TXmeta of loc and string and list (text 'e 'p) and 'e and styp
@@ -121,8 +110,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     { label : option string; assoc : option 'e; rules : list (rule 'e 'p) }
   and rule 'e 'p = { prod : list (symbol 'e 'p); action : option 'e }
   and symbol 'e 'p = { used : list string; text : text 'e 'p;
-                       styp : styp; pattern : option 'p }
-  ;
+                       styp : styp; pattern : option 'p } ;
 
   type used = [ Unused | UsedScanned | UsedNotScanned ];
 
@@ -139,12 +127,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           |  _ -> () ])
         rll
     with
-    [ Not_found -> () ]
-  ;
+    [ Not_found -> () ] ;
 
   let  mark_symbol modif ht symb =
-    List.iter (fun e -> mark_used modif ht e) symb.used
-  ;
+    List.iter (fun e -> mark_used modif ht e) symb.used ;
 
   let check_use nl el =
     let ht = Hashtbl.create 301 in
@@ -227,46 +213,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   ;
 
   let meta_action = ref False;
-
-  (*
-    {[
-    
-    ]}
-   *)  
-  let mklistexp _loc =
-    loop True where rec loop top =
-      fun
-      [ [] -> <:expr< [] >>
-      | [e1 :: el] ->
-          let _loc =
-            if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc
-          in
-          <:expr< [$e1 :: $(loop False el)] >> ]
-  ;
-
-  (*
-    {[
-    
-    ]}
-   *)      
-  let mklistpat _loc =
-    loop True where rec loop top =
-      fun
-      [ [] -> <:patt< [] >>
-      | [p1 :: pl] ->
-          let _loc =
-            if top then _loc else FanLoc.merge (Ast.loc_of_patt p1) _loc
-          in
-          <:patt< [$p1 :: $(loop False pl)] >> ]
-  ;
-  (*
-    expand function application 
-   *)
-  let rec expr_fa al =
-    fun
-    [ <:expr< $f $a >> -> expr_fa [a :: al] f
-    | f -> (f, al) ]
-  ;
 
   let rec make_ctyp styp tvar =
     match styp with
@@ -837,15 +783,8 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
-  let rec loop n =
-    fun
-    [ [] -> None
-    | [(x, _)] -> if n = 1 then Some x else None
-    | [_ :: l] -> loop (n - 1) l ];
 
-  let stream_peek_nth n strm = loop n (Stream.npeek n strm);
-
-  (* usual trick *)
+  (* usual trick *) (* FIXME utilities based on Gram *)
   let test_patt_lessminus =
     Gram.Entry.of_parser "test_patt_lessminus"
       (fun strm ->
@@ -875,38 +814,9 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
         in
         skip_patt 1);
 
-  let map _loc p e l =
-    match (p, e) with
-    [ (<:patt< $lid:x >>, <:expr< $lid:y >>) when x = y -> l
-    | _ ->
-        if Ast.is_irrefut_patt p then
-          <:expr< List.map (fun $p -> $e) $l >>
-        else
-          <:expr< List.fold_right
-                    (fun
-                      [ $pat:p when True -> (fun x xs -> [ x :: xs ]) $e
-                      | _ -> (fun l -> l) ])
-                    $l [] >> ];
-
-  let filter _loc p b l =
-    if Ast.is_irrefut_patt p then
-      <:expr< List.filter (fun $p -> $b) $l >>
-    else
-      <:expr< List.filter (fun [ $p when True -> $b | _ -> False ]) $l >>;
-
-  let concat _loc l = <:expr< List.concat $l >>;
-
-  let rec compr _loc e =
-    fun
-    [ [`gen (p, l)] -> map _loc p e l
-    | [`gen (p, l); `cond b :: items] ->
-        compr _loc e [`gen (p, filter _loc p b l) :: items]
-    | [`gen (p, l) :: ([ `gen (_, _) :: _ ] as is )] ->
-        concat _loc (map _loc p (compr _loc e is) l)
-    | _ -> raise Stream.Failure ];
-
   DELETE_RULE Gram expr: "["; sem_expr_for_list; "]" END;
 
+  (* test wheter revised or not hack*)  
   let is_revised =
     try do {
       DELETE_RULE Gram expr: "["; sem_expr_for_list; "::"; expr; "]" END;
@@ -915,41 +825,30 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
 
   let comprehension_or_sem_expr_for_list =
     Gram.Entry.mk "comprehension_or_sem_expr_for_list";
-
   EXTEND Gram
     GLOBAL: expr comprehension_or_sem_expr_for_list;
-
     expr: Level "simple"
-      [ [ "["; e = comprehension_or_sem_expr_for_list; "]" -> e ] ]
-    ;
-
+      [ [ "["; e = comprehension_or_sem_expr_for_list; "]" -> e ] ]  ;
     comprehension_or_sem_expr_for_list:
       [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list ->
             <:expr< [ $e :: $(mk <:expr< [] >>) ] >>
         | e = expr Level "top"; ";" -> <:expr< [$e] >>
-        | e = expr Level "top"; "|"; l = LIST1 item SEP ";" -> compr _loc e l
-        | e = expr Level "top" -> <:expr< [$e] >> ] ]
-    ;
-
+        | e = expr Level "top"; "|"; l = LIST1 item SEP ";" -> Expr.compr _loc e l
+        | e = expr Level "top" -> <:expr< [$e] >> ] ]  ;
     item:
       (* NP: These rules rely on being on this particular order. Which should
              be improved. *)
       [ [ p = TRY [p = patt; "<-" -> p] ; e = expr Level "top" -> `gen (p, e)
-        | e = expr Level "top" -> `cond e ] ]
-    ;
-
+        | e = expr Level "top" -> `cond e ] ] ;
   END;
-
   if is_revised then
     EXTEND Gram
       GLOBAL: expr comprehension_or_sem_expr_for_list;
-
       comprehension_or_sem_expr_for_list:
       [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list; "::"; last = expr ->
             <:expr< [ $e :: $(mk last) ] >>
         | e = expr Level "top"; "::"; last = expr ->
-            <:expr< [ $e :: $last ] >> ] ]
-      ;
+            <:expr< [ $e :: $last ] >> ] ] ;
     END
   else ();
 
@@ -1029,7 +928,6 @@ Added statements:
 
 
 module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
-  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -1039,134 +937,55 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
     | SdUnd of string
     | SdITE of bool and list (item_or_def 'a) and list (item_or_def 'a)
     | SdLazy of Lazy.t 'a ];
-
-  let rec list_remove x =
-    fun
-    [ [(y, _) :: l] when y = x -> l
-    | [d :: l] -> [d :: list_remove x l]
-    | [] -> [] ];
-
   let defined = ref [];
-
   let is_defined i = List.mem_assoc i !defined;
-
-  let bad_patt _loc =
-    FanLoc.raise _loc
-      (Failure
-         "this macro cannot be used in a pattern (see its definition)");
-
-  let substp _loc env =
-    loop where rec loop =
-      fun
-      [ <:expr< $e1 $e2 >> -> <:patt< $(loop e1) $(loop e2) >>
-      | <:expr< >> -> <:patt< >>
-      | <:expr< $lid:x >> ->
-          try List.assoc x env with
-          [ Not_found -> <:patt< $lid:x >> ]
-      | <:expr< $uid:x >> ->
-          try List.assoc x env with
-          [ Not_found -> <:patt< $uid:x >> ]
-      | <:expr< $int:x >> -> <:patt< $int:x >>
-      | <:expr< $str:s >> -> <:patt< $str:s >>
-      | <:expr< ($tup:x) >> -> <:patt< $(tup:loop x) >>
-      | <:expr< $x1, $x2 >> -> <:patt< $(loop x1), $(loop x2) >>
-      | <:expr< { $bi } >> ->
-          let rec substbi = fun
-            [ <:rec_binding< $b1; $b2 >> -> <:patt< $(substbi b1); $(substbi b2) >>
-            | <:rec_binding< $i = $e >> -> <:patt< $i = $(loop e) >>
-            | _ -> bad_patt _loc ]
-          in <:patt< { $(substbi bi) } >>
-      | _ -> bad_patt _loc ];
-
-  class reloc _loc = object
-    inherit Ast.map (* as super *);
-    method! loc _ = _loc;
-    (* method _Loc_t _ = _loc; *)
-  end;
-
-  class subst _loc env = object
-    inherit reloc _loc as super;
-    method! expr =
-      fun
-      [ <:expr< $lid:x >> | <:expr< $uid:x >> as e ->
-          try List.assoc x env with
-          [ Not_found -> super#expr e ]
-      | <:expr@_loc< LOCATION_OF $lid:x >> | <:expr@_loc< LOCATION_OF $uid:x >> as e ->
-          try
-            let loc = Ast.loc_of_expr (List.assoc x env) in
-            let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple loc in
-            <:expr< FanLoc.of_tuple
-              ($`str:a, $`int:b, $`int:c, $`int:d,
-               $`int:e, $`int:f, $`int:g,
-               $(if h then <:expr< True >> else <:expr< False >> )) >>
-          with [ Not_found -> super#expr e ]
-      | e -> super#expr e ];
-
-    method! patt =
-      fun
-      [ <:patt< $lid:x >> | <:patt< $uid:x >> as p ->
-         try substp _loc [] (List.assoc x env) with
-         [ Not_found -> super#patt p ]
-      | p -> super#patt p ];
-  end;
-
   let incorrect_number loc l1 l2 =
     FanLoc.raise loc
       (Failure
         (Printf.sprintf "expected %d parameters; found %d"
             (List.length l2) (List.length l1)));
-
-  let define eo x =
-    do {
+  let define eo x = begin 
       match eo with
       [ Some ([], e) ->
-          EXTEND Gram
-            expr: Level "simple"
-              [ [ UIDENT $x -> (new reloc _loc)#expr e ]]
-            ;
-            patt: Level "simple"
-              [ [ UIDENT $x ->
-                    let p = substp _loc [] e
-                    in (new reloc _loc)#patt p ]]
-            ;
-          END
+        EXTEND Gram
+          expr: Level "simple"
+          [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] ;
+        patt: Level "simple"
+          [ [ UIDENT $x ->
+            let p = Expr.substp _loc [] e
+            in (new Ast.reloc _loc)#patt p ]];
+        END
       | Some (sl, e) ->
           EXTEND Gram
             expr: Level "apply"
-              [ [ UIDENT $x; param = SELF ->
-                    let el =
-                      match param with
-                      [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
-                      | e -> [e] ]
-                    in
-                    if List.length el = List.length sl then
-                      let env = List.combine sl el in
-                      (new subst _loc env)#expr e
-                    else
-                      incorrect_number _loc el sl ] ]
-            ;
-            patt: Level "simple"
-              [ [ UIDENT $x; param = SELF ->
-                    let pl =
-                      match param with
-                      [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
-                      | p -> [p] ]
-                    in
-                    if List.length pl = List.length sl then
-                      let env = List.combine sl pl in
-                      let p = substp _loc env e in
-                      (new reloc _loc)#patt p
-                    else
-                      incorrect_number _loc pl sl ] ]
-            ;
+            [ [ UIDENT $x; param = SELF ->
+              let el =  match param with
+              [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
+              | e -> [e] ]  in
+              if List.length el = List.length sl then
+                let env = List.combine sl el in
+                (new Expr.subst _loc env)#expr e
+              else
+                incorrect_number _loc el sl ] ] ;
+          patt: Level "simple"
+            [ [ UIDENT $x; param = SELF ->
+              let pl = match param with
+              [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
+              | p -> [p] ] in
+              if List.length pl = List.length sl then
+                let env = List.combine sl pl in
+                let p = Expr.substp _loc env e in
+                (new Ast.reloc _loc)#patt p
+              else
+                incorrect_number _loc pl sl ] ];
           END
       | None -> () ];
-      defined := [(x, eo) :: !defined];
-    };
+      defined := [(x, eo) :: !defined]
+    end;
 
   let undef x =
     try
-      do {
+      begin
         let eo = List.assoc x !defined in
         match eo with
         [ Some ([], _) ->
@@ -1181,7 +1000,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             }
         | None -> () ];
         defined := list_remove x !defined;
-      }
+      end
     with
     [ Not_found -> () ];
 
@@ -1227,8 +1046,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
   | [hd::tl] -> (* The evaluation order is important here *)
     let il1 = execute_macro nil cons hd in
     let il2 = execute_macro_list nil cons tl in
-    cons il1 il2 ]
-  ;
+    cons il1 il2 ] ;
 
   (* Stack of conditionals. *)
   let stack = Stack.create () ;
@@ -1255,12 +1073,10 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
     GLOBAL: expr patt str_item sig_item;
     str_item: First
       [ [ x = macro_def ->
-            execute_macro <:str_item<>> (fun a b -> <:str_item< $a; $b >>) x ] ]
-    ;
+            execute_macro <:str_item<>> (fun a b -> <:str_item< $a; $b >>) x ] ];
     sig_item: First
       [ [ x = macro_def_sig ->
-            execute_macro <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) x ] ]
-    ;
+            execute_macro <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) x ] ];
     macro_def:
       [ [ "DEFINE"; i = uident; def = opt_macro_value -> SdDef i def
         | "UNDEF";  i = uident -> SdUnd i
@@ -1269,8 +1085,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         | "IFNDEF"; uident_eval_ifndef; "THEN"; st1 = smlist_then; st2 = else_macro_def ->
             make_SdITE_result st1 st2
         | "INCLUDE"; fname = STRING ->
-            SdLazy (lazy (parse_include_file str_items fname)) ] ]
-    ;
+            SdLazy (lazy (parse_include_file str_items fname)) ] ] ;
     macro_def_sig:
       [ [ "DEFINE"; i = uident -> SdDef i None
         | "UNDEF";  i = uident -> SdUnd i
@@ -1279,84 +1094,67 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         | "IFNDEF"; uident_eval_ifndef; "THEN"; sg1 = sglist_then; sg2 = else_macro_def_sig ->
             make_SdITE_result sg1 sg2
         | "INCLUDE"; fname = STRING ->
-            SdLazy (lazy (parse_include_file sig_items fname)) ] ]
-    ;
+            SdLazy (lazy (parse_include_file sig_items fname)) ] ] ;
     uident_eval_ifdef:
-      [ [ i = uident -> Stack.push (is_defined i) stack ]]
-    ;
+      [ [ i = uident -> Stack.push (is_defined i) stack ]] ;
     uident_eval_ifndef:
-      [ [ i = uident -> Stack.push (not (is_defined i)) stack ]]
-    ;
+      [ [ i = uident -> Stack.push (not (is_defined i)) stack ]] ;
     else_macro_def:
       [ [ "ELSE"; st = smlist_else; endif -> st
-        | endif -> [] ] ]
-    ;
+        | endif -> [] ] ]  ;
     else_macro_def_sig:
       [ [ "ELSE"; st = sglist_else; endif -> st
-        | endif -> [] ] ]
-    ;
+        | endif -> [] ] ]  ;
     else_expr:
       [ [ "ELSE"; e = expr; endif -> e
-      | endif -> <:expr< () >> ] ]
-    ;
+      | endif -> <:expr< () >> ] ] ;
     smlist_then:
       [ [ sml = LIST1 [ d = macro_def; semi ->
                           execute_macro_if_active_branch _loc <:str_item<>> (fun a b -> <:str_item< $a; $b >>) Then d
-                      | si = str_item; semi -> SdStr si ] -> sml ] ]
-    ;
+                      | si = str_item; semi -> SdStr si ] -> sml ] ] ;
     smlist_else:
       [ [ sml = LIST1 [ d = macro_def; semi ->
                           execute_macro_if_active_branch _loc <:str_item<>> (fun a b -> <:str_item< $a; $b >>) Else d
-                      | si = str_item; semi -> SdStr si ] -> sml ] ]
-    ;
+                      | si = str_item; semi -> SdStr si ] -> sml ] ] ;
     sglist_then:
       [ [ sgl = LIST1 [ d = macro_def_sig; semi ->
                           execute_macro_if_active_branch _loc <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) Then d
-                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]
-    ;
+                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]  ;
     sglist_else:
       [ [ sgl = LIST1 [ d = macro_def_sig; semi ->
                           execute_macro_if_active_branch _loc <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) Else d
-                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]
-    ;
+                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]  ;
     endif:
       [ [ "END" -> ()
-        | "ENDIF" -> () ] ]
-    ;
+        | "ENDIF" -> () ] ]  ;
     opt_macro_value:
       [ [ "("; pl = LIST1 [ x = LIDENT -> x ] SEP ","; ")"; "="; e = expr -> Some (pl, e)
         | "="; e = expr -> Some ([], e)
-        | -> None ] ]
-    ;
+        | -> None ] ]  ;
     expr: Level "top"
       [ [ "IFDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
             if is_defined i then e1 else e2
         | "IFNDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
             if is_defined i then e2 else e1
         | "DEFINE"; i = LIDENT; "="; def = expr; "IN"; body = expr ->
-            (new subst _loc [(i, def)])#expr body ] ]
-    ;
+            (new Expr.subst _loc [(i, def)])#expr body ] ] ;
     patt:
       [ [ "IFDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
             if is_defined i then p1 else p2
         | "IFNDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
-            if is_defined i then p2 else p1 ] ]
-    ;
+            if is_defined i then p2 else p1 ] ] ;
     uident:
-      [ [ i = UIDENT -> i ] ]
-    ;
+      [ [ i = UIDENT -> i ] ]  ;
     (* dirty hack to allow polymorphic variants using the introduced keywords. *)
     expr: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
                      | "DEFINE" | "IN" ] -> <:expr< `$uid:kwd >>
-        | "`"; s = a_ident -> <:expr< ` $s >> ] ]
-    ;
+        | "`"; s = a_ident -> <:expr< ` $s >> ] ] ;
     (* idem *)
     patt: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ] ->
             <:patt< `$uid:kwd >>
-        | "`"; s = a_ident -> <:patt< ` $s >> ] ]
-    ;
+        | "`"; s = a_ident -> <:patt< ` $s >> ] ];
   END;
 
   Options.add "-D" (Arg.String parse_def)
@@ -1365,34 +1163,12 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
     "<string> Undefine for IFDEF instruction.";
   Options.add "-I" (Arg.String add_include_dir)
     "<string> Add a directory to INCLUDE search path.";
-
 end;
-
-
-
 module MakeNothing (Syn : Sig.Camlp4Syntax) = struct
- (* open AstFilters; *)
- (* open Ast; *)
  module Ast = Camlp4Ast ;
  (* Remove NOTHING and expanse __FILE__ and __LOCATION__ *)
- let map_expr =
-   fun
-   [ <:expr< $e NOTHING >> | <:expr< fun $(<:patt< NOTHING >> ) -> $e >> -> e
-   | <:expr@_loc< $(lid:"__FILE__") >> -> <:expr< $(`str:FanLoc.file_name _loc) >>
-   | <:expr@_loc< $(lid:"__LOCATION__") >> ->
-     let (a, b, c, d, e, f, g, h) = FanLoc.to_tuple _loc in
-     <:expr< FanLoc.of_tuple
-       ($`str:a, $`int:b, $`int:c, $`int:d,
-        $`int:e, $`int:f, $`int:g,
-        $(if h then <:expr< True >> else <:expr< False >> )) >>
-   | e -> e];
-
- Syn.AstFilters.register_str_item_filter (Ast.map_expr map_expr)#str_item;
-
+ Syn.AstFilters.register_str_item_filter (Ast.map_expr Expr.map_expr)#str_item;
 end;
-
-
-
 
 module IdRevisedParser = struct
   let name = "Camlp4OCamlRevisedParser";
@@ -1427,7 +1203,6 @@ New syntax:\
   ;
   Options.add "-help_seq" (Arg.Unit help_sequences)
     "Print explanations about new sequences and exit.";
-
   Gram.Entry.clear a_CHAR;
   Gram.Entry.clear a_FLOAT;
   Gram.Entry.clear a_INT;
@@ -1573,132 +1348,8 @@ New syntax:\
   Gram.Entry.clear typevars;
   Gram.Entry.clear use_file;
   Gram.Entry.clear val_longident;
-  (* Gram.Entry.clear value_let; *)
-  (* Gram.Entry.clear value_val; *)
   Gram.Entry.clear with_constr;
   Gram.Entry.clear with_constr_quot;
-
-  let neg_string n =
-    let len = String.length n in
-    if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
-    else "-" ^ n
-  ;
-
-  let mkumin _loc f arg =
-    match arg with
-    [ <:expr< $int:n >> -> <:expr< $(int:neg_string n) >>
-    | <:expr< $int32:n >> -> <:expr< $(int32:neg_string n) >>
-    | <:expr< $(int64:n) >> -> <:expr< $(int64:neg_string n) >>
-    | <:expr< $nativeint:n >> -> <:expr< $(nativeint:neg_string n) >>
-    | <:expr< $flo:n >> -> <:expr< $(flo:neg_string n) >>
-    | _ -> <:expr< $(lid:"~" ^ f) $arg >> ];
-
-  let mklistexp _loc last =
-    loop True where rec loop top =
-      fun
-      [ [] ->
-          match last with
-          [ Some e -> e
-          | None -> <:expr< [] >> ]
-      | [e1 :: el] ->
-          let _loc =
-            if top then _loc else FanLoc.merge (Ast.loc_of_expr e1) _loc
-          in
-          <:expr< [$e1 :: $(loop False el)] >> ]
-  ;
-
-  let mkassert _loc =
-    fun
-    [ <:expr< False >> ->
-        <:expr< assert False >> (* this case takes care about
-                                   the special assert false node *)
-    | e -> <:expr< assert $e >> ]
-  ;
-
-  (* let append_eLem el e = el @ [e]; *)
-  (* let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s; *)
-
-  let mksequence _loc =
-    fun
-    [ <:expr< $_; $_ >> | <:expr< $anti:_ >> as e -> <:expr< do { $e } >>
-    | e -> e ]
-  ;
-
-  let mksequence' _loc =
-    fun
-    [ <:expr< $_; $_ >> as e -> <:expr< do { $e } >>
-    | e -> e ]
-  ;
-
-  let rec lid_of_ident =
-    fun
-    [ <:ident< $_ . $i >> -> lid_of_ident i
-    | <:ident< $lid:lid >> -> lid
-    | _                     -> assert False ];
-
-  let module_type_app mt1 mt2 =
-    match (mt1, mt2) with
-    [ (<:module_type@_loc< $id:i1 >>, <:module_type< $id:i2 >>) ->
-        <:module_type< $(id:<:ident< $i1 $i2 >>) >>
-    | _ -> raise Stream.Failure ];
-
-  let module_type_acc mt1 mt2 =
-    match (mt1, mt2) with
-    [ (<:module_type@_loc< $id:i1 >>, <:module_type< $id:i2 >>) ->
-        <:module_type< $(id:<:ident< $i1.$i2 >>) >>
-    | _ -> raise Stream.Failure ];
-
-  let bigarray_get _loc arr arg =
-    let coords =
-      match arg with
-      [ <:expr< ($e1, $e2) >> | <:expr< $e1, $e2 >> ->
-          Ast.list_of_expr e1 (Ast.list_of_expr e2 [])
-      | _ -> [arg] ]
-    in
-    match coords with
-    [
-     [] -> failwith "bigarray_get null list"
-    |[c1] -> <:expr< $arr.{$c1} >>  
-    | [c1; c2] -> <:expr< $arr.{$c1,$c2} >>  
-    | [c1; c2; c3] -> <:expr< $arr.{$c1,$c2,$c3} >> 
-    | [c1;c2;c3::coords] ->
-      <:expr< $arr.{$c1,$c2,$c3,$(Ast.exSem_of_list coords) } >> ]; (* FIXME 1.ExArr, 2. can we just write $list:coords? *)
-  let bigarray_set _loc var newval =
-    match var with
-    [ <:expr<  $arr.{$c1} >> ->
-        Some <:expr< $arr.{$c1} := $newval >> 
-    | <:expr<  $arr.{$c1, $c2} >> ->
-        Some <:expr<  $arr.{$c1, $c2} :=  $newval >>
-    | <:expr<  $arr.{$c1, $c2, $c3} >> ->
-        Some <:expr< $arr.{$c1,$c2,$c3} := $newval >> 
-    |  <:expr< Bigarray.Genarray.get $arr [| $coords |] >> -> (* FIXME how to remove Bigarray here?*)
-        Some <:expr< Bigarray.Genarray.set $arr [| $coords |] $newval >>
-    | _ -> None ];
-
-  let stopped_at _loc =
-    Some (FanLoc.move_line 1 _loc) (* FIXME be more precise *);
-
-  let rec generalized_type_of_type =
-    fun
-    [ <:ctyp< $t1 -> $t2 >> ->
-        let (tl, rt) = generalized_type_of_type t2 in
-        ([t1 :: tl], rt)
-    | t ->
-        ([], t) ]
-  ;
-
-  let symbolchar =
-    let list =
-      ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '='; '>'; '?';
-       '@'; '^'; '|'; '~'; '\\']
-    in
-    let rec loop s i =
-      if i == String.length s then True
-      else if List.mem s.[i] list then loop s (i + 1)
-      else False
-    in
-    loop
-  ;
 
   let setup_op_parser entry p =
     Gram.Entry.setup_parser entry
@@ -1908,9 +1559,9 @@ New syntax:\
         [ mt = SELF; "with"; wc = with_constr ->
             <:module_type< $mt with $wc >> ]
       | "apply"
-        [ mt1 = SELF; mt2 = SELF; dummy -> module_type_app mt1 mt2 ]
+        [ mt1 = SELF; mt2 = SELF; dummy -> ModuleType.app mt1 mt2 ]
       | "."
-        [ mt1 = SELF; "."; mt2 = SELF -> module_type_acc mt1 mt2 ]
+        [ mt1 = SELF; "."; mt2 = SELF -> ModuleType.acc mt1 mt2 ]
       | "sig"
         [ "sig"; sg = sig_items; "end" ->
             <:module_type< sig $sg end >> ]
@@ -1998,18 +1649,18 @@ New syntax:\
             <:expr< fun [ $list:a ] >>
         | "fun"; e = fun_def -> e
         | "match"; e = sequence; "with"; a = match_case ->
-            <:expr< match $(mksequence' _loc e) with [ $a ] >>
+            <:expr< match $(Expr.mksequence' _loc e) with [ $a ] >>
         | "try"; e = sequence; "with"; a = match_case ->
-            <:expr< try $(mksequence' _loc e) with [ $a ] >>
+            <:expr< try $(Expr.mksequence' _loc e) with [ $a ] >>
         | "if"; e1 = SELF; "then"; e2 = SELF; "else"; e3 = SELF ->
             <:expr< if $e1 then $e2 else $e3 >>
-        | "do"; seq = do_sequence -> mksequence _loc seq
+        | "do"; seq = do_sequence -> Expr.mksequence _loc seq
         | "for"; i = a_LIDENT; "="; e1 = sequence; df = direction_flag;
           e2 = sequence; "do"; seq = do_sequence ->
-            <:expr< for $i = $(mksequence' _loc e1) $to:df $(mksequence' _loc e2) do
+            <:expr< for $i = $(Expr.mksequence' _loc e1) $to:df $(Expr.mksequence' _loc e2) do
               { $seq } >>
         | "while"; e = sequence; "do"; seq = do_sequence ->
-            <:expr< while $(mksequence' _loc e) do { $seq } >>
+            <:expr< while $(Expr.mksequence' _loc e) do { $seq } >>
         | "object"; csp = opt_class_self_patt; cst = class_structure; "end" ->
             <:expr< object ($csp) $cst end >> ]
       | "where"
@@ -2019,7 +1670,7 @@ New syntax:\
         [ e1 = SELF; ":="; e2 = SELF; dummy ->
               <:expr< $e1 := $e2 >> 
         | e1 = SELF; "<-"; e2 = SELF; dummy -> (* FIXME should be deleted in original syntax later? *)
-            match bigarray_set _loc e1 e2 with
+            match Expr.bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> <:expr< $e1 <- $e2 >> 
             ]  
@@ -2046,11 +1697,11 @@ New syntax:\
         | e1 = SELF; "lsr"; e2 = SELF -> <:expr< $e1 lsr $e2 >>
         | e1 = SELF; op = infixop4; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
       | "unary minus" NA
-        [ "-"; e = SELF -> mkumin _loc "-" e
-        | "-."; e = SELF -> mkumin _loc "-." e ]
+        [ "-"; e = SELF -> Expr.mkumin _loc "-" e
+        | "-."; e = SELF -> Expr.mkumin _loc "-." e ]
       | "apply" LA
         [ e1 = SELF; e2 = SELF -> <:expr< $e1 $e2 >>
-        | "assert"; e = SELF -> mkassert _loc e
+        | "assert"; e = SELF -> Expr.mkassert _loc e
         | "new"; i = class_longident -> <:expr< new $i >>
         | "lazy"; e = SELF -> <:expr< lazy $e >> ]
       | "label" NA
@@ -2068,7 +1719,7 @@ New syntax:\
       | "." LA
         [ e1 = SELF; "."; "("; e2 = SELF; ")" -> <:expr< $e1 .( $e2 ) >>
         | e1 = SELF; "."; "["; e2 = SELF; "]" -> <:expr< $e1 .[ $e2 ] >>
-        | e1 = SELF; "."; "{"; e2 = comma_expr; "}" -> bigarray_get _loc e1 e2
+        | e1 = SELF; "."; "{"; e2 = comma_expr; "}" -> Expr.bigarray_get _loc e1 e2
         | e1 = SELF; "."; e2 = SELF -> <:expr< $e1 . $e2 >>
         | e = SELF; "#"; lab = label -> <:expr< $e # $lab >> ]
       | "~-" NA
@@ -2110,13 +1761,13 @@ New syntax:\
         | "("; ")" -> <:expr< () >>
         | "("; e = SELF; ":"; t = ctyp; ")" -> <:expr< ($e : $t) >>
         | "("; e = SELF; ","; el = comma_expr; ")" -> <:expr< ( $e, $el ) >>
-        | "("; e = SELF; ";"; seq = sequence; ")" -> mksequence _loc <:expr< $e; $seq >>
-        | "("; e = SELF; ";"; ")" -> mksequence _loc e
+        | "("; e = SELF; ";"; seq = sequence; ")" -> Expr.mksequence _loc <:expr< $e; $seq >>
+        | "("; e = SELF; ";"; ")" -> Expr.mksequence _loc e
         | "("; e = SELF; ":"; t = ctyp; ":>"; t2 = ctyp; ")" ->
             <:expr< ($e : $t :> $t2 ) >>
         | "("; e = SELF; ":>"; t = ctyp; ")" -> <:expr< ($e :> $t) >>
         | "("; e = SELF; ")" -> e
-        | "begin"; seq = sequence; "end" -> mksequence _loc seq
+        | "begin"; seq = sequence; "end" -> Expr.mksequence _loc seq
         | "begin"; "end" -> <:expr< () >>
         | "("; "module"; me = module_expr; ")" ->
             <:expr< (module $me) >>
@@ -2160,11 +1811,11 @@ New syntax:\
       [ [ "let"; rf = opt_rec; bi = binding; "in"; e = expr; k = sequence' ->
             k <:expr< let $rec:rf $bi in $e >>
         | "let"; rf = opt_rec; bi = binding; ";"; el = SELF ->
-            <:expr< let $rec:rf $bi in $(mksequence _loc el) >>
+            <:expr< let $rec:rf $bi in $(Expr.mksequence _loc el) >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = expr; k = sequence' ->
             k <:expr< let module $m = $mb in $e >>
         | "let"; "module"; m = a_UIDENT; mb = module_binding0; ";"; el = SELF ->
-            <:expr< let module $m = $mb in $(mksequence _loc el) >>
+            <:expr< let module $m = $mb in $(Expr.mksequence _loc el) >>
         | "let"; "open"; i = module_longident; "in"; e = SELF ->
             <:expr< let open $id:i in $e >>
         | `ANTIQUOT ("list" as n) s -> <:expr< $(anti:mk_anti ~c:"expr;" n s) >>
@@ -2236,7 +1887,7 @@ New syntax:\
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
         | i = label_longident; e = fun_binding -> <:rec_binding< $i = $e >>
         | i = label_longident ->
-            <:rec_binding< $i = $(lid:lid_of_ident i) >> ] ]
+            <:rec_binding< $i = $(lid:Ident.to_lid i) >> ] ]
     ;
     fun_def:
       [ [ TRY ["("; "type"]; i = a_LIDENT; ")";
@@ -2360,7 +2011,7 @@ New syntax:\
         | `ANTIQUOT ("list" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
         | i = label_longident; "="; p = patt -> <:patt< $i = $p >>
-        | i = label_longident -> <:patt< $i = $(lid:lid_of_ident i) >>
+        | i = label_longident -> <:patt< $i = $(lid:Ident.to_lid i) >>
       ] ]
     ;
     ipatt:
@@ -2553,7 +2204,7 @@ New syntax:\
         | s = a_UIDENT; "of"; t = constructor_arg_list ->
             <:ctyp< $uid:s of $t >>
         | s = a_UIDENT; ":"; t = ctyp ->
-            let (tl, rt) = generalized_type_of_type t in
+            let (tl, rt) = Ctyp.to_generalized t in
             <:ctyp< $uid:s : ($(Ast.tyAnd_of_list tl) -> $rt) >>
         | s = a_UIDENT ->
 	  <:ctyp< $uid:s >>
@@ -3358,8 +3009,6 @@ module IdRevisedParserParser : Sig.Id = struct
 end;
 
 module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
-  (* open Sig; *)
-  (* open FanSig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   type spat_comp =
@@ -3382,37 +3031,28 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
   let peek_fun _loc = <:expr< Stream.peek >>;
   let junk_fun _loc = <:expr< Stream.junk >>;
 
-  (* Parsers. *)
-  (* In syntax generated, many cases are optimisations. *)
-
-  let rec pattern_eq_expression p e =
-    match (p, e) with
+  let rec pattern_eq_expression p e =  match (p, e) with
     [ (<:patt< $lid:a >>, <:expr< $lid:b >>) -> a = b
     | (<:patt< $uid:a >>, <:expr< $uid:b >>) -> a = b
     | (<:patt< $p1 $p2 >>, <:expr< $e1 $e2 >>) ->
         pattern_eq_expression p1 e1 && pattern_eq_expression p2 e2
-    | _ -> False ]
-  ;
+    | _ -> False ] ;
 
   let is_raise e =
     match e with
     [ <:expr< raise $_ >> -> True
-    | _ -> False ]
-  ;
+    | _ -> False ] ;
 
   let is_raise_failure e =
     match e with
     [ <:expr< raise Stream.Failure >> -> True
-    | _ -> False ]
-  ;
+    | _ -> False ] ;
 
-  let rec handle_failure e =
-    match e with
+  let rec handle_failure e =  match e with
     [ <:expr< try $_ with [ Stream.Failure -> $e] >> ->
         handle_failure e
     | <:expr< match $me with [ $a ] >> ->
-        let rec match_case_handle_failure =
-          fun
+        let rec match_case_handle_failure = fun
           [ <:match_case< $a1 | $a2 >> ->
               match_case_handle_failure a1 && match_case_handle_failure a2
           | <:match_case< $pat:_ -> $e >> -> handle_failure e
@@ -3441,8 +3081,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     [ <:expr< $uid:_ >> -> True
     | <:expr< $lid:_ >> -> False
     | <:expr< $x $_ >> -> is_constr_apply x
-    | _ -> False ]
-  ;
+    | _ -> False ];
 
   let rec subst v e =
     let _loc = Ast.loc_of_expr e in
@@ -3511,11 +3150,9 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
           [ <:patt< $lid:v >> -> subst v skont
           | _ -> raise Not_found ]
         with
-        [ Not_found -> <:expr< let $p = $lid:strm_n in $skont >> ] ]
-  ;
+        [ Not_found -> <:expr< let $p = $lid:strm_n in $skont >> ] ];
 
-  let rec stream_pattern _loc epo e ekont =
-    fun
+  let rec stream_pattern _loc epo e ekont = fun
     [ [] ->
         match epo with
         [ Some ep -> <:expr< let $ep = Stream.count $lid:strm_n in $e >>
@@ -3523,17 +3160,14 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     | [(spc, err) :: spcl] ->
         let skont =
           let ekont err =
-            let str =
-              match err with
+            let str = match err with
               [ Some estr -> estr
-              | _ -> <:expr< "" >> ]
-            in
+              | _ -> <:expr< "" >> ] in
             <:expr< raise (Stream.Error $str) >>
           in
           stream_pattern _loc epo e ekont spcl
         in
-        let ckont = ekont err in stream_pattern_component skont ckont spc ]
-  ;
+        let ckont = ekont err in stream_pattern_component skont ckont spc ];
 
   let stream_patterns_term _loc ekont tspel =
     let pel =
@@ -3568,16 +3202,14 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     | spel -> ([], spel) ]
   ;
 
-  let rec parser_cases _loc =
-    fun
+  let rec parser_cases _loc = fun
     [ [] -> <:expr< raise Stream.Failure >>
     | spel ->
         match group_terms spel with
         [ ([], [(spcl, epo, e) :: spel]) ->
             stream_pattern _loc epo e (fun _ -> parser_cases _loc spel) spcl
         | (tspel, spel) ->
-            stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel ] ]
-  ;
+            stream_patterns_term _loc (fun _ -> parser_cases _loc spel) tspel ] ];
 
   let cparser _loc bpo pc =
     let e = parser_cases _loc pc in
@@ -3587,25 +3219,20 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
       | None -> e ]
     in
     let p = <:patt< ($lid:strm_n : Stream.t _) >> in
-    <:expr< fun $p -> $e >>
-  ;
+    <:expr< fun $p -> $e >> ;
 
   let cparser_match _loc me bpo pc =
     let pc = parser_cases _loc pc in
     let e =
       match bpo with
       [ Some bp -> <:expr< let $bp = Stream.count $lid:strm_n in $pc >>
-      | None -> pc ]
-    in
-    let me =
-      match me with
+      | None -> pc ]  in
+    let me =   match me with
       [ <:expr@_loc< $_; $_ >> as e -> <:expr< do { $e } >>
-      | e -> e ]
-    in
+      | e -> e ] in
     match me with
     [ <:expr< $lid:x >> when x = strm_n -> e
-    | _ -> <:expr< let ($lid:strm_n : Stream.t _) = $me in $e >> ]
-  ;
+    | _ -> <:expr< let ($lid:strm_n : Stream.t _) = $me in $e >> ] ;
 
   (* streams *)
 
@@ -3620,8 +3247,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     [ <:expr< $uid:_ >> -> True
     | <:expr< $lid:_ >> -> False
     | <:expr< $x $y >> -> is_cons_apply_not_computing x && not_computing y
-    | _ -> False ]
-  ;
+    | _ -> False ];
 
   let slazy _loc e =
     match e with
@@ -3629,8 +3255,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
         match f with
         [ <:expr< $lid:_ >> -> f
         | _ -> <:expr< fun _ -> $e >> ]
-    | _ -> <:expr< fun _ -> $e >> ]
-  ;
+    | _ -> <:expr< fun _ -> $e >> ] ;
 
   let rec cstream gloc =
     fun
@@ -3645,8 +3270,7 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
         if not_computing e then e else <:expr< Stream.slazy $(slazy _loc e) >>
     | [SeNtr _loc e :: secl] ->
         if not_computing e then <:expr< Stream.iapp $e $(cstream gloc secl) >>
-        else <:expr< Stream.lapp $(slazy _loc e) $(cstream gloc secl) >> ]
-  ;
+        else <:expr< Stream.lapp $(slazy _loc e) $(cstream gloc secl) >> ] ;
   (* Syntax extensions in Revised Syntax grammar *)
 
   EXTEND Gram
@@ -3915,22 +3539,11 @@ end;
 let pa_r (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParser)  (module MakeRevisedParser);
 
-(* let pa_rr = "Camlp4OCamlReloadedParser"; *)
-(* let pa_rr (module P:Sig.PRECAST) = *)
-(*   P.syntax_extension (module IdReloadedParser) (module MakeReloadedParser); *)
-  
-(* let pa_o  = "Camlp4OCamlParser"; *)
-(* let pa_o (module P:Sig.PRECAST) = *)
-(*   P.syntax_extension (module IdParser) (module MakeParser); *)
-  
 (* let pa_rp = "Camlp4OCamlRevisedParserParser"; *)
 let pa_rp (module P:Sig.PRECAST) =
   P.syntax_extension (module IdRevisedParserParser)
     (module MakeRevisedParserParser);
 
-(* let pa_op = "Camlp4OCamlParserParser"; *)
-(* let pa_op (module P:Sig.PRECAST) = *)
-(*   P.syntax_extension (module IdParserParser) (module MakeParserParser); *)
 
 let pa_g (module P:Sig.PRECAST) =
   P.syntax_extension (module IdGrammarParser) (module MakeGrammarParser);
@@ -3952,19 +3565,6 @@ let pa_rq (module P:Sig.PRECAST) =
   let module M1 = OCamlInitSyntax.Make P.Gram in
   let module M2 = MakeRevisedParser M1 in
   let module M3 = MakeQuotationCommon M2 P.Syntax.AntiquotSyntax in ();
-  
-(* let pa_oq = "Camlp4OCamlOriginalQuotationExpander";
-   *unreflective*, quotation syntax use original syntax.
-   Build the whole parser used by quotation.
- *)
-
-(* let pa_oq (module P: Sig.PRECAST)   = *)
-(*   let module Gram = Grammar.Static.Make P.Lexer in *)
-(*   let module M1 = OCamlInitSyntax.Make P.Gram  in *)
-(*   let module M2 = MakeRevisedParser M1 in *)
-(*   let module M3 = MakeParser M2 in *)
-(*   let module M4 = MakeQuotationCommon M3 P.Syntax.AntiquotSyntax in (); *)
-
 
 let pa_l  (module P: Sig.PRECAST) =
   P.syntax_extension (module IdListComprehension) (module MakeListComprehension);
