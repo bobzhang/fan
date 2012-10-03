@@ -54,8 +54,8 @@ module Make =
            | None -> lev.assoc
            | Some (a) ->
               (
-              if (( (a <> ( lev.assoc )) ) && ( !(
-                   (entry.egram).warning_verbose ) ))
+              if (( (a <> ( lev.assoc )) ) && (
+                   ((entry.egram).warning_verbose).contents ))
               then
                begin
                (
@@ -68,8 +68,8 @@ module Make =
          (
          (match lname with
           | Some (n) ->
-             if (( (lname <> ( lev.lname )) ) && ( !(
-                  (entry.egram).warning_verbose ) ))
+             if (( (lname <> ( lev.lname )) ) && (
+                  ((entry.egram).warning_verbose).contents ))
              then
               begin
               (
@@ -248,9 +248,7 @@ module Make =
                      ({node = s; son = son; brother = ( (insert []  bro) )}))
                 | LocAct (old_action, action_list) ->
                    let () =
-                    if !(
-                     (entry.egram).warning_verbose
-                     ) then
+                    if ((entry.egram).warning_verbose).contents then
                      (
                      (eprintf
                        "<W> Grammar extension: in [%s] some rule has been masked@."

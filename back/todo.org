@@ -1,0 +1,45 @@
+#+STARTUP: indent
+#+STARTUP: overview
+#+TAGS: details(d) ideas(i) attention(t) trick(k)
+#+TAGS:  { bad(1) good(2) awesome(3) } question(q)
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+# * shortcut                                                           :awesome:
+#   Shift+Table : display overview
+#   C-c C-c : smart update 
+#   Table : cycle display
+#   C-c {C-f C-b} the same level 
+#   c-c {C-n c-p} 跨级 c-c c-u 上级
+#   M-left 将当前项升高一级 M-right (M-up M-down 将当前分支上下移动
+#   [[链接地址] [链接名称]]
+#   C-c \ 搜索标签 (a+b) (a-b 有a 没b) (a|b) (C-c C-c查询视图中退出)
+#   C-c C-o -- open link at point
+#   C-c C-t [T] todo 
+#   <s 
+
+
+* parsetree dump to camlp4ast
+* add xstrp4 support
+
+
+* support for Hashtbl.t Array.t Map.t
+Map.t is abstract data type, Map.Make is not easy to extend.
+
+
+
+* design a simple language that compiler 
+can understand at compilation time, then there it should be easy to
+use on the fly.
+
+you should tell me enough information about how to make a parser.
+Meta Parser.
+
+
+* match_case tag can be used as view patterns
+design a pattern language
+
+
+* todo
+separate camlp4 from ocaml compiler
+write its own building scripts

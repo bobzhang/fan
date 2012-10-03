@@ -194,7 +194,7 @@ and node = {node:symbol; son:tree; brother:tree}
       Not_found ->
        let r = (ref 0) in ( (Hashtbl.add table kwd r) ); r) in
     (
-    (Token.Filter.keyword_added filter kwd ( (( !r ) = 0) ))
+    (Token.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ))
     );
     (incr r)
 
@@ -204,7 +204,7 @@ and node = {node:symbol; son:tree; brother:tree}
    fun kwd ->
     let r = (Hashtbl.find table kwd) in
     let () = (decr r) in
-    if (( !r ) = 0)
+    if (( r.contents ) = 0)
     then
      begin
      (

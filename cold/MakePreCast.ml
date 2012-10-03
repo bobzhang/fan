@@ -11,9 +11,7 @@ module Make =
 
     module Quotation = (Quotation.Make)(struct end)
 
-    module MakeSyntax = functor (U : sig end) -> (OCamlInitSyntax.Make)(Gram)
-
-    module Syntax = (MakeSyntax)(struct end)
+    module Syntax = (OCamlInitSyntax.Make)(Gram)
 
     type 'a parser_fun =
      (?directive_handler : ('a -> 'a option) ->
@@ -57,7 +55,7 @@ module Make =
      fun m ->
       fun f ->
        (
-       (loaded_modules := ( ( m ) :: !loaded_modules  ))
+       (loaded_modules := ( ( m ) :: loaded_modules.contents  ))
        );
        (Queue.add (m, f) callbacks)
 
@@ -69,7 +67,7 @@ module Make =
      fun f -> fun g -> ( (str_item_parser := f) ); (sig_item_parser := g)
 
     let current_parser =
-     fun ()  -> (( !str_item_parser ), ( !sig_item_parser ))
+     fun ()  -> (( str_item_parser.contents ), ( sig_item_parser.contents ))
 
     let register_str_item_printer = fun f -> (str_item_printer := f)
 
@@ -79,7 +77,9 @@ module Make =
      fun f -> fun g -> ( (str_item_printer := f) ); (sig_item_printer := g)
 
     let current_printer =
-     fun ()  -> (( !str_item_printer ), ( !sig_item_printer ))
+     fun ()
+       ->
+      (( str_item_printer.contents ), ( sig_item_printer.contents ))
 
     let plugin =
      fun ((module
@@ -232,13 +232,15 @@ module Make =
        fun ?directive_handler ->
         fun loc ->
          fun strm ->
-          ((!sig_item_parser) ?directive_handler:directive_handler loc strm)
+          ((sig_item_parser.contents) ?directive_handler:directive_handler
+            loc strm)
 
       let parse_implem =
        fun ?directive_handler ->
         fun loc ->
          fun strm ->
-          ((!str_item_parser) ?directive_handler:directive_handler loc strm)
+          ((str_item_parser.contents) ?directive_handler:directive_handler
+            loc strm)
 
      end
 
@@ -248,14 +250,14 @@ module Make =
        fun ?input_file ->
         fun ?output_file ->
          fun ast ->
-          ((!sig_item_printer) ?input_file:input_file
+          ((sig_item_printer.contents) ?input_file:input_file
             ?output_file:output_file ast)
 
       let print_implem =
        fun ?input_file ->
         fun ?output_file ->
          fun ast ->
-          ((!str_item_printer) ?input_file:input_file
+          ((str_item_printer.contents) ?input_file:input_file
             ?output_file:output_file ast)
 
      end

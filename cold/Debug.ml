@@ -77,13 +77,13 @@ let formatter =
      fun len ->
       for i = pos to (( (pos + len) ) - 1) do
        (
-      if !at_bol then ( (output_string out_channel header) ) else ()
+      if at_bol.contents then ( (output_string out_channel header) ) else ()
       );
        let ch = (String.get buf i) in
        (
        (output_char out_channel ch)
        );
-       (( !at_bol ) := ( (ch = '\010') ))
+       (( at_bol.contents ) := ( (ch = '\010') ))
       done ) ( fun ()  -> (flush out_channel) ))
 
 let printf =

@@ -1,4 +1,4 @@
-open FanUtil
+open LibUtil
 
 module IdAstLifter =
                struct
@@ -15,8 +15,6 @@ module MakeAstLifter =
 
                        module MetaLoc =
                         struct
-                         module Ast = Ast
-
                          let meta_loc_patt =
                           fun _loc ->
                            fun _ ->
@@ -560,7 +558,8 @@ module MakeFoldGenerator =
                                                       (SMap.add id (
                                                         (SMap.find id
                                                           builtin_types) ) (
-                                                        !used_builtins )) ))
+                                                        used_builtins.contents
+                                                        )) ))
                                                     )
                                                    else ()
 
@@ -1733,7 +1732,8 @@ module MakeFoldGenerator =
                                                      fun tyMap ->
                                                       (SMap.fold
                                                         method_of_type_decl (
-                                                        !used_builtins ) (
+                                                        used_builtins.contents
+                                                        ) (
                                                         (SMap.fold
                                                           method_of_type_decl
                                                           tyMap (
@@ -1743,7 +1743,9 @@ module MakeFoldGenerator =
                                                      fun tyMap ->
                                                       (SMap.fold
                                                         class_sig_item_of_type_decl
-                                                        ( !used_builtins ) (
+                                                        (
+                                                        used_builtins.contents
+                                                        ) (
                                                         (SMap.fold
                                                           class_sig_item_of_type_decl
                                                           tyMap (
@@ -2028,14 +2030,18 @@ module MakeFoldGenerator =
                                                         (match s with
                                                          | "Fold" ->
                                                             (generator Fold 
-                                                              c ( !last ) n)
+                                                              c (
+                                                              last.contents )
+                                                              n)
                                                          | "Map" ->
                                                             (generator Map  c
-                                                              ( !last ) n)
+                                                              ( last.contents
+                                                              ) n)
                                                          | "FoldMap" ->
                                                             (generator
                                                               Fold_map  c (
-                                                              !last ) n)
+                                                              last.contents )
+                                                              n)
                                                          | _ -> default) in
                                                   let generate_class_from_module_name =
                                                    fun generator ->
@@ -2101,8 +2107,8 @@ module MakeFoldGenerator =
                                                                     "generated"))),
                                                               Ast.TyNil (_)))) ->
                                                          (generate_class_implem
-                                                           Fold  c ( !last )
-                                                           1)
+                                                           Fold  c (
+                                                           last.contents ) 1)
                                                       | Ast.StCls
                                                          (_loc,
                                                           Ast.CeEq
@@ -2129,8 +2135,8 @@ module MakeFoldGenerator =
                                                                     "generated"))),
                                                               Ast.TyNil (_)))) ->
                                                          (generate_class_implem
-                                                           Map  c ( !last )
-                                                           1)
+                                                           Map  c (
+                                                           last.contents ) 1)
                                                       | Ast.StCls
                                                          (_loc,
                                                           Ast.CeEq
@@ -2194,8 +2200,8 @@ module MakeFoldGenerator =
                                                                   "generated")),
                                                               Ast.TyNil (_)))) ->
                                                          (generate_class_interf
-                                                           Fold  c ( !last )
-                                                           1)
+                                                           Fold  c (
+                                                           last.contents ) 1)
                                                       | Ast.SgCls
                                                          (_loc,
                                                           Ast.CtCol
@@ -2222,8 +2228,8 @@ module MakeFoldGenerator =
                                                                   "generated")),
                                                               Ast.TyNil (_)))) ->
                                                          (generate_class_interf
-                                                           Map  c ( !last )
-                                                           1)
+                                                           Map  c (
+                                                           last.contents ) 1)
                                                       | Ast.SgCls
                                                          (_loc,
                                                           Ast.CtCol

@@ -339,3 +339,30 @@ let raise =
    (match exc with
     | Exc_located (_, _) -> (raise exc)
     | _ -> (raise ( (Exc_located (loc, exc)) )))
+
+let error_report =
+                                                   fun (loc, s) ->
+                                                    (
+                                                    (prerr_endline (
+                                                      (to_string loc) ))
+                                                    );
+                                                    let (start_bol, stop_bol,
+                                                         start_off, stop_off) =
+                                                     (( (start_bol loc) ), (
+                                                      (stop_bol loc) ), (
+                                                      (start_off loc) ), (
+                                                      (stop_off loc) )) in
+                                                    let abs_start_off =
+                                                     (start_bol + start_off) in
+                                                    let abs_stop_off =
+                                                     (stop_bol + stop_off) in
+                                                    let err_location =
+                                                     (String.sub s
+                                                       abs_start_off (
+                                                       ((
+                                                         (abs_stop_off -
+                                                           abs_start_off) ) +
+                                                         1) )) in
+                                                    (prerr_endline (
+                                                      (sprintf "err: ^%s^"
+                                                        err_location) ))

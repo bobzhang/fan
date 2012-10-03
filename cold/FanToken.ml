@@ -37,7 +37,7 @@ let to_string =
                                                        s)
                                                   | ANTIQUOT (n, s) ->
                                                      (sprintf
-                                                       "ANTIQUOT %s: %S" n s)
+                                                       "ANTIQUOT %S: %S" n s)
                                                   | QUOTATION (x) ->
                                                      (sprintf
                                                        "QUOTATION { q_name=%S; q_loc=%S; q_shift=%d; q_contents=%S }"
@@ -193,7 +193,7 @@ module Filter =
        (check_keyword_as_label tok loc ( x.is_kwd ))
        );
        (
-       if !error_on_unknown_keywords then
+       if error_on_unknown_keywords.contents then
         (
         (check_unknown_keywords tok loc)
         )

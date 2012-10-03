@@ -455,7 +455,8 @@ module type Lexer =
       The lexer do not use global (mutable) variables: instantiations
       of [Lexer.mk ()] do not perturb each other. *)
     val mk : unit -> FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t
-      
+    val from_lexbuf:?quotations:bool ->
+      Lexing.lexbuf -> (camlp4_token * Location.t) Stream.t    
   end
   
 

@@ -16,7 +16,8 @@ module Make =
 
     let current_warning = (ref default_warning)
 
-    let print_warning = fun loc -> fun txt -> ((!current_warning) loc txt)
+    let print_warning =
+     fun loc -> fun txt -> ((current_warning.contents) loc txt)
 
     let a_CHAR = (Gram.Entry.mk "a_CHAR")
 
@@ -302,10 +303,6 @@ module Make =
     let use_file = (Gram.Entry.mk "use_file")
 
     let val_longident = (Gram.Entry.mk "val_longident")
-
-    let value_let = (Gram.Entry.mk "value_let")
-
-    let value_val = (Gram.Entry.mk "value_val")
 
     let with_constr = (Gram.Entry.mk "with_constr")
 

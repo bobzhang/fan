@@ -183,13 +183,13 @@ module Make =
           fun s ->
            fun son ->
             fun strm ->
-             if !strict_parsing then
+             if strict_parsing.contents then
               (
               (raise ( (Stream.Error (Failed.tree_failed entry a s son)) ))
               )
              else
               let _ =
-               if !strict_parsing_warning then
+               if strict_parsing_warning.contents then
                 (
                 let msg = (Failed.tree_failed entry a s son) in
                 (

@@ -598,12 +598,6 @@ module type Camlp4Syntax =
                                                                     val val_longident :
                                                                     Ast.ident Gram.Entry.t
 
-                                                                    val value_let :
-                                                                    unit Gram.Entry.t
-
-                                                                    val value_val :
-                                                                    unit Gram.Entry.t
-
                                                                     val with_constr :
                                                                     Ast.with_constr Gram.Entry.t
 
@@ -677,7 +671,9 @@ module type PRECAST =
 
                                               module Syntax :
                                                (Camlp4Syntax with
-                                                module Token = Token)
+                                                module Token = Token
+                                                and module Token = Token
+                                                and module Gram = Gram)
 
                                               module Printers :
                                                sig
@@ -692,10 +688,6 @@ module type PRECAST =
                                                 module Null : PrinterImpl
 
                                                end
-
-                                              module MakeSyntax :
-                                               functor (U : sig end) ->
-                                                Camlp4Syntax
 
                                               type 'a parser_fun =
                                                (?directive_handler :

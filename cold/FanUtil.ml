@@ -1,427 +1,610 @@
-(* utilty modules for Camlp4 *)
-
 open Format
 
-(* copied from otypes.ml Values *)
-let valid_float_lexeme s =
-  let l = String.length s in
-  let rec loop i =
-    if i >= l
-    then s ^ "."
-    else (match s.[i] with | '0' .. '9' | '-' -> loop (i + 1) | _ -> s)
-  in loop 0
-    
-let float_repres f =
-  match classify_float f with
-  | FP_nan -> "nan"
-  | FP_infinite -> if f < 0.0 then "neg_infinity" else "infinity"
-  | _ ->
-      let float_val =
-        let s1 = Printf.sprintf "%.12g" f
-        in
-        if f = (float_of_string s1)
-        then s1
-        else
-          (let s2 = Printf.sprintf "%.15g" f
-          in
-          if f = (float_of_string s2)
-          then s2
-          else Printf.sprintf "%.18g" f)
-      in valid_float_lexeme float_val
+let valid_float_lexeme =
+              fun s ->
+               let l = (String.length s) in
+               let rec loop =
+                fun i ->
+                 if (i >= l) then ( (s ^ ".") )
+                 else
+                  (match (String.get s i) with
+                   | (('0'
+                       | ('1'
+                          | ('2'
+                             | ('3'
+                                | ('4' | ('5' | ('6' | ('7' | ('8' | '9')))))))))
+                      | '-') ->
+                      (loop ( (i + 1) ))
+                   | _ -> s) in
+               (loop 0)
 
-let cvt_int_literal s =
-  - int_of_string ("-" ^ s)
-let cvt_int32_literal s =
-  Int32.neg (Int32.of_string ("-" ^ s))
-let cvt_int64_literal s =
-  Int64.neg (Int64.of_string ("-" ^ s))
-let cvt_nativeint_literal s =
-  Nativeint.neg (Nativeint.of_string ("-" ^ s))
-    
-module SSet = Set.Make (String)
-module SMap = Map.Make (String)
+let float_repres =
+                          fun f ->
+                           (match (classify_float f) with
+                            | FP_nan -> "nan"
+                            | FP_infinite ->
+                               if (f < 0.0) then "neg_infinity"
+                               else "infinity"
+                            | _ ->
+                               let float_val =
+                                let s1 = (Printf.sprintf "%.12g" f) in
+                                if (f = ( (float_of_string s1) )) then s1
+                                else
+                                 let s2 = (Printf.sprintf "%.15g" f) in
+                                 if (f = ( (float_of_string s2) )) then s2
+                                 else (Printf.sprintf "%.18g" f) in
+                               (valid_float_lexeme float_val))
 
-(* either dump to a file or stdout *)    
-let with_open_out_file x f =
-  match x with
-  | Some file -> let oc = open_out_bin file in (f oc; flush oc; close_out oc)
-  | None -> (set_binary_mode_out stdout true; f stdout; flush stdout)
-        
-(* dump binary *)
-let dump_ast magic ast oc =
-  (output_string oc magic; output_value oc ast)
-    
-let dump_pt magic fname pt oc =
-  (output_string oc magic;
-   output_value oc (if fname = "-" then "" else fname);
-   output_value oc pt)
+let cvt_int_literal =
+                                                                 fun s ->
+                                                                  ((~-) (
+                                                                    (int_of_string
+                                                                    (
+                                                                    ("-" ^ s)
+                                                                    )) ))
 
 
-(** Handle Obj utils *)    
-module ObjTools = struct
-  
-  let desc obj =
-    if Obj.is_block obj then
-      "tag = " ^ (string_of_int (Obj.tag obj))
-    else "int_val = " ^ (string_of_int (Obj.obj obj))
-                          
-                          
-  let rec to_string r =
-    if Obj.is_int r   then
-      (let i : int = Obj.magic r in
-      (string_of_int i) ^ (" | CstTag" ^ (string_of_int (i + 1))))
-    else (* Block. *)
-      (let rec get_fields acc = function
-        | 0 -> acc
-        | n -> let n = n - 1 in get_fields ((Obj.field r n) :: acc) n in
-      let rec is_list r =
-        if Obj.is_int r
-        then r = (Obj.repr 0)
-        else (* [] *)
-          (let s = Obj.size r
-          and t = Obj.tag r
-          in (t = 0) && ((s = 2) && (is_list (Obj.field r 1)))) in
-      (* h :: t *)
-      let rec get_list r =
-        if Obj.is_int r
-        then []
-        else
-          (let h = Obj.field r 0
-          and t = get_list (Obj.field r 1)
-          in h :: t) in
-      let opaque name =
-        (* XXX In future, print the address of value 'r'.  Not possible in
-           pure OCaml at the moment.     *)
-        "<" ^ (name ^ ">") in
-      let s = Obj.size r
-      and t = Obj.tag r in
-      (* From the tag, determine the type of block. *)
-      match t with
-      | _ when is_list r -> let fields = get_list r in
-        "[" ^ ((String.concat "; " (List.map to_string fields)) ^ "]")
-      | 0 -> let fields = get_fields [] s in
-        "(" ^ ((String.concat ", " (List.map to_string fields)) ^ ")")
-      | x when x = Obj.lazy_tag ->
-          (* Note that [lazy_tag .. forward_tag] are < no_scan_tag.  Not
-           * clear if very large constructed values could have the same
-           * tag. XXX *)
-          opaque "lazy"
-      | x when x = Obj.closure_tag -> opaque "closure"
-      | x when x = Obj.object_tag ->  let fields = get_fields [] s in
-        let (_class, id, slots) =
-          (match fields with
-          | h :: h' :: t -> (h, h', t)
-          | _ -> assert false)  in
-        (* No information on decoding the class (first field).  So just print
-         * out the ID and the slots. *)
-        "Object #" ^
-        ((to_string id) ^
-         (" (" ^
-          ((String.concat ", " (List.map to_string slots)) ^
-           ")")))
-      | x when x = Obj.infix_tag -> opaque "infix"
-      | x when x = Obj.forward_tag -> opaque "forward"
-      | x when x < Obj.no_scan_tag ->
-          let fields = get_fields [] s in
-          "Tag" ^
-          ((string_of_int t) ^
-           (" (" ^
-            ((String.concat ", " (List.map to_string fields)) ^
-             ")")))
-      | x when x = Obj.string_tag ->
-          "\"" ^ ((String.escaped (Obj.magic r : string)) ^ "\"")
-      | x when x = Obj.double_tag ->
-          float_repres (Obj.magic r : float)
-      | x when x = Obj.abstract_tag -> opaque "abstract"
-      | x when x = Obj.custom_tag -> opaque "custom"
-      | x when x = Obj.final_tag -> opaque "final"
-      | _ -> failwith
-            ("ObjTools.to_string: unknown tag (" ^
-             ((string_of_int t) ^ ")")))
+let cvt_int32_literal =
+ fun s -> (Int32.neg ( (Int32.of_string ( ("-" ^ s) )) ))
 
-        (*
-          {[
-          ObjTools.print std_formatter (Obj.repr [|32;1;2|]);;
-          (32 | CstTag33, 1 | CstTag2, 2 | CstTag3)- : unit = ()
-          ObjTools.print_desc std_formatter (Obj.repr [|32;1;2|]);;
-          tag = 0- : unit = ()
-          ]}
-         *)        
-  let print ppf (x:Obj.t) = fprintf ppf "%s" (to_string x)
-  let print_desc ppf (x:Obj.t) = fprintf ppf "%s" (desc x)
-end
+let cvt_int64_literal =
+                                                            fun s ->
+                                                             (Int64.neg (
+                                                               (Int64.of_string
+                                                                 ( ("-" ^ s)
+                                                                 )) ))
 
 
-(********************************************************************)
-module ErrorHandler = struct
-  let default_handler ppf x =
-    let x = Obj.repr x in
-    (fprintf ppf "Camlp4: Uncaught exception: %s"
-       (Obj.obj (Obj.field (Obj.field x 0) 0) : string);
-     if (Obj.size x) > 1  then
-       (pp_print_string ppf " (";
-        for i = 1 to (Obj.size x) - 1 do
-          if i > 1 then pp_print_string ppf ", " else ();
-          ObjTools.print ppf (Obj.field x i)
-        done;
-        pp_print_char ppf ')')
-     else ();
-     fprintf ppf "@.")
-  let handler = ref (fun ppf default_handler exn -> default_handler ppf exn)
-  let register f =
-    let current_handler = !handler in
-    handler :=
-    fun ppf default_handler exn ->
-      try f ppf exn with | exn -> current_handler ppf default_handler exn
-          
-  module Register (Error : FanSig.Error) = struct
-    let _ =
-      let current_handler = !handler in
-      handler :=
-      fun ppf default_handler ->
-        function
-          | Error.E x -> Error.print ppf x
-          | x -> current_handler ppf default_handler x
-  end
-      
-  let gen_print ppf default_handler =   function
-    | Out_of_memory -> fprintf ppf "Out of memory"
-    | Assert_failure ((file, line, char)) ->
-        fprintf ppf "Assertion failed, file %S, line %d, char %d" file line
-          char
-    | Match_failure ((file, line, char)) ->
-        fprintf ppf "Pattern matching failed, file %S, line %d, char %d" file
-          line char
-    | Failure str -> fprintf ppf "Failure: %S" str
-    | Invalid_argument str -> fprintf ppf "Invalid argument: %S" str
-    | Sys_error str -> fprintf ppf "I/O error: %S" str
-    | Stream.Failure -> fprintf ppf "Parse failure"
-    | Stream.Error str -> fprintf ppf "Parse error: %s" str
-    | x -> !handler ppf default_handler x
-          
-  let print ppf = gen_print ppf default_handler
-      
-  let try_print ppf = gen_print ppf (fun _ -> raise)
-      
-  let to_string exn =
-    let buf = Buffer.create 128 in
-    let () = bprintf buf "%a" print exn in Buffer.contents buf
-      
-  let try_to_string exn =
-    let buf = Buffer.create 128 in
-    let () = bprintf buf "%a" try_print exn in Buffer.contents buf
-      
-end
+let cvt_nativeint_literal =
+ fun s -> (Nativeint.neg ( (Nativeint.of_string ( ("-" ^ s) )) ))
+
+let mk_anti =
+                                                                    fun ?
+                                                                    (c = "") ->
+                                                                    fun n ->
+                                                                    fun s ->
+                                                                    ("\\$" ^
+                                                                    (
+                                                                    (n ^ (
+                                                                    (c ^ (
+                                                                    (":" ^ s)
+                                                                    )) )) ))
 
 
-(********************************************************************************)
-module Options :sig
-  type spec_list = (string * Arg.spec * string) list
-        
-  val init : spec_list -> unit
-      
-  val add : string -> Arg.spec -> string -> unit
-      
-(** Add an option to the command line options. *)
-  val print_usage_list : spec_list -> unit
-  val ext_spec_list : unit -> spec_list
-  val parse : (string -> unit) -> string array -> string list
-end= struct
-  type spec_list = (string * Arg.spec * string) list
+let append_eLem = fun el -> fun e -> (el @ ( [e] ))
 
-  open Format
-    
-  let rec action_arg s sl =
-    function
-      | Arg.Unit f -> if s = "" then (f (); Some sl) else None
-      | Arg.Bool f ->
-          if s = ""
-          then
-            (match sl with
-            | s :: sl ->
-                (try (f (bool_of_string s); Some sl)
-                with | Invalid_argument "bool_of_string" -> None)
-            | [] -> None)
-          else
-            (try (f (bool_of_string s); Some sl)
-            with | Invalid_argument "bool_of_string" -> None)
-      | Arg.Set r -> if s = "" then (r := true; Some sl) else None
-      | Arg.Clear r -> if s = "" then (r := false; Some sl) else None
-      | Arg.Rest f -> (List.iter f (s :: sl); Some [])
-      | Arg.String f ->
-          if s = ""
-          then (match sl with | s :: sl -> (f s; Some sl) | [] -> None)
-          else (f s; Some sl)
-      | Arg.Set_string r ->
-          if s = ""
-          then (match sl with | s :: sl -> (r := s; Some sl) | [] -> None)
-          else (r := s; Some sl)
-      | Arg.Int f ->
-          if s = ""
-          then
-            (match sl with
-            | s :: sl ->
-                (try (f (int_of_string s); Some sl)
-                with | Failure "int_of_string" -> None)
-            | [] -> None)
-          else
-            (try (f (int_of_string s); Some sl)
-            with | Failure "int_of_string" -> None)
-      | Arg.Set_int r ->
-          if s = ""
-          then
-            (match sl with
-            | s :: sl ->
-                (try (r := int_of_string s; Some sl)
-                with | Failure "int_of_string" -> None)
-            | [] -> None)
-          else
-            (try (r := int_of_string s; Some sl)
-            with | Failure "int_of_string" -> None)
-      | Arg.Float f ->
-          if s = ""
-          then
-            (match sl with
-            | s :: sl -> (f (float_of_string s); Some sl)
-            | [] -> None)
-          else (f (float_of_string s); Some sl)
-      | Arg.Set_float r ->
-          if s = ""
-          then
-            (match sl with
-            | s :: sl -> (r := float_of_string s; Some sl)
-            | [] -> None)
-          else (r := float_of_string s; Some sl)
-      | Arg.Tuple specs ->
-          let rec action_args s sl =
-            (function
-              | [] -> Some sl
-              | spec :: spec_list ->
-                  (match action_arg s sl spec with
-                  | None -> action_args "" [] spec_list
-                  | Some (s :: sl) -> action_args s sl spec_list
-                  | Some sl -> action_args "" sl spec_list))
-          in action_args s sl specs
-      | Arg.Symbol (syms, f) ->
-          (match if s = "" then sl else s :: sl with
-          | s :: sl when List.mem s syms -> (f s; Some sl)
-          | _ -> None)
-            
-  let common_start s1 s2 =
-    let rec loop i =
-      if (i == (String.length s1)) || (i == (String.length s2))
-      then i
-      else if s1.[i] == s2.[i] then loop (i + 1) else i
-    in loop 0
-      
-  let parse_arg fold s sl =
-    fold
-      (fun (name, action, _) acu ->
-        let i = common_start s name
-        in
-        if i == (String.length name)
-        then
-          (try action_arg (String.sub s i ((String.length s) - i)) sl action
-          with | Arg.Bad _ -> acu)
-        else acu)
-      None
-      
-  let rec parse_aux fold anon_fun =
-    function
-      | [] -> []
-      | s :: sl ->
-          if ((String.length s) > 1) && (s.[0] = '-')
-          then
-            (match parse_arg fold s sl with
-            | Some sl -> parse_aux fold anon_fun sl
-            | None -> s :: (parse_aux fold anon_fun sl))
-          else ((anon_fun s : unit); parse_aux fold anon_fun sl)
-              
-  let align_doc key s =
-    let s =
-      let rec loop i =
-        if i = (String.length s)
-        then ""
-        else
-          if s.[i] = ' '
-          then loop (i + 1)
-          else String.sub s i ((String.length s) - i)
-      in loop 0 in
-    let (p, s) =
-      if (String.length s) > 0
-      then
-        if s.[0] = '<'
-        then
-          (let rec loop i =
-            if i = (String.length s)
-            then ("", s)
-            else
-              if s.[i] <> '>'
-              then loop (i + 1)
+let is_antiquot =
+                                                      fun s ->
+                                                       let len =
+                                                        (String.length s) in
+                                                       (( (len > 2) ) && (
+                                                         ((
+                                                           ((
+                                                             (String.get s 0)
+                                                             ) = '\\') ) && (
+                                                           ((
+                                                             (String.get s 1)
+                                                             ) = '$') )) ))
+
+
+let handle_antiquot_in_string =
+ fun s ->
+  fun term ->
+   fun parse ->
+    fun loc ->
+     fun ~decorate ->
+      if (is_antiquot s) then
+       (
+       let pos = (String.index s ':') in
+       let name = (String.sub s 2 ( (pos - 2) ))
+       and code =
+        (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1)
+          )) in
+       (decorate name ( (parse loc code) ))
+       )
+      else term
+
+let neg_string =
+                  fun n ->
+                   let len = (String.length n) in
+                   if (( (len > 0) ) && ( (( (String.get n 0) ) = '-') )) then
+                    (
+                    (String.sub n 1 ( (len - 1) ))
+                    )
+                   else ("-" ^ n)
+
+let rec loop =
+                                    fun n ->
+                                     function
+                                     | [] -> (None)
+                                     | ((x, _) :: []) ->
+                                        if (n = 1) then ( (Some (x)) )
+                                        else (None)
+                                     | (_ :: l) -> (loop ( (n - 1) ) l)
+
+
+let stream_peek_nth = fun n -> fun strm -> (loop n ( (Stream.npeek n strm) ))
+
+
+let rec list_remove =
+ fun x ->
+  function
+  | ((y, _) :: l) when (y = x) -> l
+  | (d :: l) -> ( d ) :: (list_remove x l) 
+  | [] -> ([])
+
+let symbolchar =
+                 let list =
+                  ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<';
+                   '='; '>'; '?'; '@'; '^'; '|'; '~'; '\\'] in
+                 let rec loop =
+                  fun s ->
+                   fun i ->
+                    if (i == ( (String.length s) )) then true 
+                    else if (List.mem ( (String.get s i) ) list) then
+                          (
+                          (loop s ( (i + 1) ))
+                          )
+                    else (false) in
+                 loop
+
+let stopped_at =
+                        fun _loc -> (Some (FanLoc.move_line 1 _loc))
+
+
+let with_open_out_file =
+ fun x ->
+  fun f ->
+   (match x with
+    | Some (file) ->
+       let oc = (open_out_bin file) in
+       (
+       (f oc)
+       );
+       (
+       (flush oc)
+       );
+       (close_out oc)
+    | None ->
+       ( (set_binary_mode_out stdout true ) ); ( (f stdout) ); (flush stdout))
+
+
+let dump_ast =
+ fun magic ->
+  fun ast -> fun oc -> ( (output_string oc magic) ); (output_value oc ast)
+
+
+let dump_pt =
+ fun magic ->
+  fun fname ->
+   fun pt ->
+    fun oc ->
+     (
+     (output_string oc magic)
+     );
+     (
+     (output_value oc ( if (fname = "-") then "" else fname ))
+     );
+     (output_value oc pt)
+
+let char_of_char_token =
+                            fun loc ->
+                             fun s ->
+                              (try (TokenEval.char s) with
+                               (Failure (_) as exn) -> (FanLoc.raise loc exn))
+
+
+let string_of_string_token =
+ fun loc ->
+  fun s ->
+   (try (TokenEval.string s) with
+    (Failure (_) as exn) -> (FanLoc.raise loc exn))
+
+let remove_underscores =
+                                                      fun s ->
+                                                       let l =
+                                                        (String.length s) in
+                                                       let buf =
+                                                        (Buffer.create l) in
+                                                       let () =
+                                                        (String.iter (
+                                                          fun ch ->
+                                                           if (ch <> '_') then
+                                                            (
+                                                            (ignore (
+                                                              (Buffer.add_char
+                                                                buf ch) ))
+                                                            )
+                                                           else () ) s) in
+                                                       (Buffer.contents buf)
+
+
+module ErrorHandler =
+ struct
+  let default_handler =
+   fun ppf ->
+    fun x ->
+     let x = (Obj.repr x) in
+     (
+     (fprintf ppf "Camlp4: Uncaught exception: %s" (
+       (let open Obj in (obj ( (field ( (field x 0) ) 0) )) : string) ))
+     );
+     (
+     if (( (Obj.size x) ) > 1)
+     then
+      begin
+      (
+      (pp_print_string ppf " (")
+      );
+      for i = 1 to (( (Obj.size x) ) - 1) do
+       (
+      if (i > 1) then ( (pp_print_string ppf ", ") ) else ()
+      );
+       (pp_print_string ppf ( (BatPervasives.dump ( (Obj.field x i) )) ))
+      done;
+      (pp_print_char ppf ')')
+     end else ()
+     );
+     (fprintf ppf "@.")
+
+  let handler =
+   (ref (
+     fun ppf -> fun default_handler -> fun exn -> (default_handler ppf exn)
+     ))
+
+  let register =
+   fun f ->
+    let current_handler = handler.contents in
+    (handler := (
+      fun ppf ->
+       fun default_handler ->
+        fun exn ->
+         (try (f ppf exn) with
+          exn -> (current_handler ppf default_handler exn)) ))
+
+  module Register =
+   functor (Error : FanSig.Error) ->
+    struct
+     let _ = let current_handler = handler.contents in
+             (handler := (
+               fun ppf ->
+                fun default_handler ->
+                 function
+                 | Error.E (x) -> (Error.print ppf x)
+                 | x -> (current_handler ppf default_handler x) ))
+
+    end
+
+  let gen_print =
+   fun ppf ->
+    fun default_handler ->
+     function
+     | Out_of_memory -> (fprintf ppf "Out of memory")
+     | Assert_failure (file, line, char) ->
+        (fprintf ppf "Assertion failed, file %S, line %d, char %d" file line
+          char)
+     | Match_failure (file, line, char) ->
+        (fprintf ppf "Pattern matching failed, file %S, line %d, char %d"
+          file line char)
+     | Failure (str) -> (fprintf ppf "Failure: %S" str)
+     | Invalid_argument (str) -> (fprintf ppf "Invalid argument: %S" str)
+     | Sys_error (str) -> (fprintf ppf "I/O error: %S" str)
+     | Stream.Failure -> (fprintf ppf "Parse failure")
+     | Stream.Error (str) -> (fprintf ppf "Parse error: %s" str)
+     | x -> ((handler.contents) ppf default_handler x)
+
+  let print = fun ppf -> (gen_print ppf default_handler)
+
+  let try_print = fun ppf -> (gen_print ppf ( fun _ -> raise ))
+
+  let to_string =
+   fun exn ->
+    let buf = (Buffer.create 128) in
+    let () = (bprintf buf "%a" print exn) in (Buffer.contents buf)
+
+  let try_to_string =
+   fun exn ->
+    let buf = (Buffer.create 128) in
+    let () = (bprintf buf "%a" try_print exn) in (Buffer.contents buf)
+
+ end
+
+module Options :
+       sig
+        type spec_list = (string * Arg.spec * string) list
+
+        val init : (spec_list -> unit)
+
+        val add : (string -> (Arg.spec -> (string -> unit)))
+
+        val print_usage_list : (spec_list -> unit)
+
+        val ext_spec_list : (unit -> spec_list)
+
+        val parse : ((string -> unit) -> (string array -> string list))
+
+       end =
+       struct
+        type spec_list = (string * Arg.spec * string) list
+
+        open Format
+
+        let rec action_arg =
+         fun s ->
+          fun sl ->
+           function
+           | Arg.Unit (f) ->
+              if (s = "")
+              then
+               begin
+               ( (f () ) ); (Some (sl))
+              end else (None)
+           | Arg.Bool (f) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) ->
+                   (try ( (f ( (bool_of_string s) )) ); (Some (sl)) with
+                    Invalid_argument ("bool_of_string") -> (None))
+                | [] -> (None))
+               )
               else
-                (let p = String.sub s 0 (i + 1) in
-                let rec loop i =
-                  if i >= (String.length s)
-                  then (p, "")
-                  else
-                    if s.[i] = ' '
-                    then loop (i + 1)
-                    else (p, (String.sub s i ((String.length s) - i)))
-                in loop (i + 1))
-          in loop 0)
-        else ("", s)
-      else ("", "") in
-    let tab =
-      String.make (max 1 ((16 - (String.length key)) - (String.length p))) ' '
-    in p ^ (tab ^ s)
-             
-  let make_symlist l =
-    match l with
-    | [] -> "<none>"
-    | h :: t -> (List.fold_left (fun x y -> x ^ ("|" ^ y)) ("{" ^ h) t) ^ "}"
-                                                                            
-  let print_usage_list l =
-    List.iter
-      (fun (key, spec, doc) ->
-        match spec with
-        | Arg.Symbol (symbs, _) ->
-            let s = make_symlist symbs in
-            let synt = key ^ (" " ^ s)
-            in eprintf "  %s %s\n" synt (align_doc synt doc)
-        | _ -> eprintf "  %s %s\n" key (align_doc key doc))
-      l
-      
-  let remaining_args argv =
-    let rec loop l i =
-      if i == (Array.length argv) then l else loop (argv.(i) :: l) (i + 1)
-    in List.rev (loop [] (!Arg.current + 1))
-      
-  let init_spec_list = ref []
-      
-  let ext_spec_list = ref []
-      
-  let init spec_list = init_spec_list := spec_list
-      
-  let add name spec descr =
-    ext_spec_list := (name, spec, descr) :: !ext_spec_list
-                                             
-  let fold f init =
-    let spec_list = !init_spec_list @ !ext_spec_list in
-    let specs = Sort.list (fun (k1, _, _) (k2, _, _) -> k1 >= k2) spec_list
-    in List.fold_right f specs init
-      
-  let parse anon_fun argv =
-    let remaining_args = remaining_args argv
-    in parse_aux fold anon_fun remaining_args
-      
-  let ext_spec_list () = !ext_spec_list
-      
+               (try ( (f ( (bool_of_string s) )) ); (Some (sl)) with
+                Invalid_argument ("bool_of_string") -> (None))
+           | Arg.Set (r) ->
+              if (s = "")
+              then
+               begin
+               ( (r := true ) ); (Some (sl))
+              end else (None)
+           | Arg.Clear (r) ->
+              if (s = "")
+              then
+               begin
+               ( (r := false ) ); (Some (sl))
+              end else (None)
+           | Arg.Rest (f) ->
+              ( (List.iter f ( ( s ) :: sl  )) ); (Some (([])))
+           | Arg.String (f) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) -> ( (f s) ); (Some (sl))
+                | [] -> (None))
+               )
+              else begin
+               ( (f s) ); (Some (sl))
+              end
+           | Arg.Set_string (r) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) -> ( (r := s) ); (Some (sl))
+                | [] -> (None))
+               )
+              else begin
+               ( (r := s) ); (Some (sl))
+              end
+           | Arg.Int (f) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) ->
+                   (try ( (f ( (int_of_string s) )) ); (Some (sl)) with
+                    Failure ("int_of_string") -> (None))
+                | [] -> (None))
+               )
+              else
+               (try ( (f ( (int_of_string s) )) ); (Some (sl)) with
+                Failure ("int_of_string") -> (None))
+           | Arg.Set_int (r) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) ->
+                   (try ( (r := ( (int_of_string s) )) ); (Some (sl)) with
+                    Failure ("int_of_string") -> (None))
+                | [] -> (None))
+               )
+              else
+               (try ( (r := ( (int_of_string s) )) ); (Some (sl)) with
+                Failure ("int_of_string") -> (None))
+           | Arg.Float (f) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) -> ( (f ( (float_of_string s) )) ); (Some (sl))
+                | [] -> (None))
+               )
+              else begin
+               ( (f ( (float_of_string s) )) ); (Some (sl))
+              end
+           | Arg.Set_float (r) ->
+              if (s = "") then
+               (
+               (match sl with
+                | (s :: sl) ->
+                   ( (r := ( (float_of_string s) )) ); (Some (sl))
+                | [] -> (None))
+               )
+              else begin
+               ( (r := ( (float_of_string s) )) ); (Some (sl))
+              end
+           | Arg.Tuple (specs) ->
+              let rec action_args =
+               fun s ->
+                fun sl ->
+                 function
+                 | [] -> (Some (sl))
+                 | (spec :: spec_list) ->
+                    (match (action_arg s sl spec) with
+                     | None -> (action_args "" []  spec_list)
+                     | Some ((s :: sl)) -> (action_args s sl spec_list)
+                     | Some (sl) -> (action_args "" sl spec_list)) in
+              (action_args s sl specs)
+           | Arg.Symbol (syms, f) ->
+              (match if (s = "") then sl else ( s ) :: sl  with
+               | (s :: sl) when (List.mem s syms) -> ( (f s) ); (Some (sl))
+               | _ -> (None))
 
+        let common_start =
+         fun s1 ->
+          fun s2 ->
+           let rec loop =
+            fun i ->
+             if (( (i == ( (String.length s1) )) ) || (
+                  (i == ( (String.length s2) )) )) then
+              i
+             else if (( (String.get s1 i) ) == ( (String.get s2 i) )) then
+                   (
+                   (loop ( (i + 1) ))
+                   )
+             else i in
+           (loop 0)
 
-end
-(********************************************************************************)
+        let parse_arg =
+         fun fold ->
+          fun s ->
+           fun sl ->
+            (fold (
+              fun (name, action, _) ->
+               fun acu ->
+                let i = (common_start s name) in
+                if (i == ( (String.length name) )) then
+                 (
+                 (try
+                   (action_arg (
+                     (String.sub s i ( (( (String.length s) ) - i) )) ) sl
+                     action)
+                  with
+                  Arg.Bad (_) -> acu)
+                 )
+                else acu ) None )
 
-let (|>)  x f  = f x 
-let uncurry f (x,y) = f x y
-let flip f x y = f y x
-let failwithf fmt = ksprintf failwith fmt 
+        let rec parse_aux =
+         fun fold ->
+          fun anon_fun ->
+           function
+           | [] -> ([])
+           | (s :: sl) ->
+              if (( (( (String.length s) ) > 1) ) && (
+                   (( (String.get s 0) ) = '-') )) then
+               (
+               (match (parse_arg fold s sl) with
+                | Some (sl) -> (parse_aux fold anon_fun sl)
+                | None -> ( s ) :: (parse_aux fold anon_fun sl) )
+               )
+              else begin
+               ( ((anon_fun s) : unit) ); (parse_aux fold anon_fun sl)
+              end
+
+        let align_doc =
+         fun key ->
+          fun s ->
+           let s =
+            let rec loop =
+             fun i ->
+              if (i = ( (String.length s) )) then ""
+              else if (( (String.get s i) ) = ' ') then
+                    (
+                    (loop ( (i + 1) ))
+                    )
+              else (String.sub s i ( (( (String.length s) ) - i) )) in
+            (loop 0) in
+           let (p, s) =
+            if (( (String.length s) ) > 0) then
+             (
+             if (( (String.get s 0) ) = '<') then
+              (
+              let rec loop =
+               fun i ->
+                if (i = ( (String.length s) )) then ("", s)
+                else if (( (String.get s i) ) <> '>') then
+                      (
+                      (loop ( (i + 1) ))
+                      )
+                else
+                 let p = (String.sub s 0 ( (i + 1) )) in
+                 let rec loop =
+                  fun i ->
+                   if (i >= ( (String.length s) )) then (p, "")
+                   else if (( (String.get s i) ) = ' ') then
+                         (
+                         (loop ( (i + 1) ))
+                         )
+                   else
+                    (p, ( (String.sub s i ( (( (String.length s) ) - i) )) )) in
+                 (loop ( (i + 1) )) in
+              (loop 0)
+              )
+             else ("", s)
+             )
+            else ("", "") in
+           let tab =
+            (String.make (
+              (max 1 (
+                (( (16 - ( (String.length key) )) ) - ( (String.length p) ))
+                )) ) ' ') in
+           (p ^ ( (tab ^ s) ))
+
+        let make_symlist =
+         fun l ->
+          (match l with
+           | [] -> "<none>"
+           | (h :: t) ->
+              ((
+                (List.fold_left ( fun x -> fun y -> (x ^ ( ("|" ^ y) )) ) (
+                  ("{" ^ h) ) t) ) ^ "}"))
+
+        let print_usage_list =
+         fun l ->
+          (List.iter (
+            fun (key, spec, doc) ->
+             (match spec with
+              | Arg.Symbol (symbs, _) ->
+                 let s = (make_symlist symbs) in
+                 let synt = (key ^ ( (" " ^ s) )) in
+                 (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
+              | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc) ))) ) l)
+
+        let remaining_args =
+         fun argv ->
+          let rec loop =
+           fun l ->
+            fun i ->
+             if (i == ( (Array.length argv) )) then l
+             else (loop ( ( ( argv.(i) ) ) :: l  ) ( (i + 1) )) in
+          (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
+
+        let init_spec_list = (ref [] )
+
+        let ext_spec_list = (ref [] )
+
+        let init = fun spec_list -> (init_spec_list := spec_list)
+
+        let add =
+         fun name ->
+          fun spec ->
+           fun descr ->
+            (ext_spec_list := (
+              ( (name, spec, descr) ) :: ext_spec_list.contents  ))
+
+        let fold =
+         fun f ->
+          fun init ->
+           let spec_list =
+            (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
+           let specs =
+            (Sort.list ( fun (k1, _, _) -> fun (k2, _, _) -> (k1 >= k2) )
+              spec_list) in
+           (List.fold_right f specs init)
+
+        let parse =
+         fun anon_fun ->
+          fun argv ->
+           let remaining_args = (remaining_args argv) in
+           (parse_aux fold anon_fun remaining_args)
+
+        let ext_spec_list = fun ()  -> ext_spec_list.contents
+
+       end

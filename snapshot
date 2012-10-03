@@ -1,6 +1,6 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-set -e
+# set -e
 make cleantmp
 ocamlbuild $(find src | grep ml$ | perl -pe 's|.*?/|tmp/|')
 # needs copy mll mlpack as well

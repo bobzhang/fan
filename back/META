@@ -1,0 +1,4 @@
+name="camlp4util"
+description="utils for camlp4"
+requires="camlp4.link"
+archive="camlp4util.cma"

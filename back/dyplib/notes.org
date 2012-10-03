@@ -1,0 +1,198 @@
+#+STARTUP: indent
+#+STARTUP: overview
+#+TAGS: details(d) ideas(i) attention(t) trick(k)
+#+TAGS:  { bad(1) good(2) awesome(3) } question(q)
+#+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
+#+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
+
+# * shortcut                                                           :awesome:
+#   Shift+Table : display overview
+#   C-c C-c : smart update 
+#   Table : cycle display
+#   C-c {C-f C-b} the same level 
+#   c-c {C-n c-p} 跨级 c-c c-u 上级
+#   M-left 将当前项升高一级 M-right (M-up M-down 将当前分支上下移动
+#   [[链接地址] [链接名称]]
+#   C-c \ 搜索标签 (a+b) (a-b 有a 没b) (a|b) (C-c C-c查询视图中退出)
+#   C-c C-o -- open link at point
+#   C-c C-t [T] todo 
+#   <s 
+
+
+# * Felix
+# >On Thu, 2007-07-19 at 10:08 +0200, dypgen-GANU6spQydw@...org wrote:
+# >
+# >>Maybe you can try to delete the rules of Felix that are causing the
+# >>ambiguity when csyntax is opened.
+# >
+# >I'm not sure how to delete a rule. The function to delete
+
+# You just have to use
+# dyp.remove_rule <- [your_rule];
+# It is like adding a rule except you don't have to bother with a user action.
+
+# >rules is more or less useless, because it requires you
+# >keep an exact copy of the rule.
+
+# Why ?
+
+# >
+# >Felix doesn't create rules that way because it is effectively
+# >impossible to get the type right. Type inference fails
+# >due to recursion and polymorphic variants. This is normally
+# >fixed by a full coercion, however that requires knowing
+# >the full type name. I have no idea what the type should be.
+# >I gave up on keeping 'compiled' rules.
+# >
+# >The rules are bad .. they are applied to 'dyp' toolbox thing,
+# >but they also *contain* a dyp toolbox thing .. circular type.
+# >The variant type breaks the circularity .. but ONLY if you can
+# >make a closed type, which includes the full type of the
+# >toolbox also depending on the variant containing itself ...
+# >APPLYing the rule like
+# >
+# >	dyp.add_rules <- rule ..
+# >
+# >
+# >closes the recursion, but
+# >
+# >	let r = rule in
+# >
+# >doesn't... Hope this waffle makes sense :)
+
+# You don't have to bother with dypgen_toolbox when deleting
+# a rule because the type of an action doesn't depend on it.
+# (The type of user actions does but when you delete a rule you don't
+# consider its user action.)
+# The type of a rule is not recursive and has no functionnal part.
+
+# >
+# >Felix just keeps the rules 'as written' by the user,
+# >and translates them when required.
+# >
+# >The point is you can't delete the translated rule because
+# >it is physically a different Ocaml term.
+
+# It should only need to be structurally equal to the existing
+# rule you want to delete, not physically.
+# Otherwise it's a bug in dypgen.
+
+# Emmanuel
+
+
+
+* Examples
+
+** calc
+
+* source
+** dyp.mli
+#+BEGIN_SRC tuareg
+type token_name = int
+#+END_SRC
+
+#+BEGIN_SRC tuareg 
+type regexp =
+  Automaton.regexp =
+  | RE_Char of char
+  | RE_Char_set of (char * char) list
+  | RE_Char_set_exclu of (char * char) list
+  | RE_String of string
+  | RE_Alt of regexp list
+  | RE_Seq of regexp list
+  | RE_Star of regexp
+  | RE_Plus of regexp
+  | RE_Option of regexp
+  | RE_Name of string
+  | RE_Eof_char
+#+END_SRC
+
+#+BEGIN_SRC tuareg (* [dypgen_toolbox] *)
+(* the record dyp has type dypgen_toolbox *)
+  type ('token,'obj,'data,'local_data,'lexbuf) dypgen_toolbox = {
+    parser_pilot: ('token,'obj,'data,'local_data,'lexbuf) parser_pilot;
+    global_data: 'data; 
+    local_data: 'local_data;
+    last_local_data: 'local_data;
+    next_lexeme: unit -> string list;
+    symbol_start: unit -> int;
+    symbol_start_pos: unit -> Lexing.position;
+    symbol_end: unit -> int;
+    symbol_end_pos: unit -> Lexing.position;
+    rhs_start: int -> int;
+    rhs_start_pos: int -> Lexing.position;
+    rhs_end: int -> int;
+    rhs_end_pos: int -> Lexing.position;
+    print_state: out_channel -> unit;
+    print_grammar: out_channel -> unit;
+  }
+(** parser_pilot describes the current parser with information such as
+  the current grammar, its corresponding parse table and the current
+ global and local data
+*)
+#+END_SRC
+
+#+BEGIN_SRC tuareg (* [dyp_action] *)
+  type ('token,'obj,'gd,'ld,'lexbuf) dyp_action =
+  | Add_rules of
+      (rule * (('token, 'obj, 'gd, 'ld, 'lexbuf) dypgen_toolbox ->
+       ('obj list -> 'obj * ('token, 'obj, 'gd, 'ld,'lexbuf) dyp_action list))) list
+  | Bind_to_cons of (string * string) list
+  | Dont_shift
+  | Global_data of 'gd
+  | Keep_grammar
+  | Local_data of 'ld
+  | Next_grammar of out_channel
+  | Next_state of out_channel
+  | Parser of ('token, 'obj,'gd,'ld,'lexbuf) parsing_device
+  | Relation of string list list
+#+END_SRC
+
+#+BEGIN_SRC tuareg (* [parser_pilot] *)
+  type ('token,'obj,'global_data,'local_data,'lexbuf) parser_pilot = {
+    pp_dev: ('token,'obj,'global_data,'local_data,'lexbuf) parsing_device;
+    pp_par: ('token,'obj,'global_data,'local_data,'lexbuf) parser_parameters;
+    pp_gd: 'global_data;
+    pp_ld: 'local_data;
+  }
+#+END_SRC
+
+#+BEGIN_SRC tuareg (* [lexparse] *)
+(**
+[lexparse] makes it possible to parse for any non terminal symbol of
+the grammar when you use dypgen as the lexer generator
+*)
+  val lexparse: ('token,'obj,'global_data,'local_data,'obj dyplexbuf) parser_pilot ->
+    string -> ?global_data:'global_data -> ?local_data:'local_data ->
+    ?match_len:[`longest|`shortest] -> ?choose_token:[`first|`all] ->
+    'obj dyplexbuf -> (('obj * string) list)
+#+END_SRC
+
+#+BEGIN_SRC tuareg (* [parse] *)
+(**
+[parse dyp.parser_pilot "expr" lexfun lexbuf]
+if you want to have access to your lexer inside the actions, you may
+put it in [global_data] or [local_data]
+
+[parse (My_parser.pp()) "program" lexfun lexbuf]
+*)
+  val parse:
+    ('token,'obj,'global_data,'local_data,'lexbuf) parser_pilot ->
+    string ->
+    ?global_data:'global_data ->
+    ?local_data:'local_data ->
+    ?match_len:[`longest|`shortest] ->
+    ?lexpos:('lexbuf -> (Lexing.position * Lexing.position )) ->
+    ('lexbuf -> 'token) ->
+    'lexbuf -> (('obj * string) list)
+#+END_SRC
+
+#+BEGIN_SRC tuareg 
+  val update_pp:
+    ('token,'obj,'global_data,'local_data,'lexbuf) parser_pilot ->
+    ('token,'obj,'global_data,'local_data,'lexbuf) dyp_action list ->
+    ('token,'obj,'global_data,'local_data,'lexbuf) parser_pilot
+#+END_SRC
+
+
+

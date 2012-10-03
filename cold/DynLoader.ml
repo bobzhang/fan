@@ -100,7 +100,7 @@ module Make =
            fun _path ->
             fun file ->
              (
-             if (not ( !_initialized )) then
+             if (not ( _initialized.contents )) then
               (
               (try
                 (

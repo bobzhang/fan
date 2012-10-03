@@ -58,10 +58,10 @@ module Make =
            fun pos_tag ->
             fun name ->
              let str = (DynAst.string_of_tag pos_tag) in
-             (match ((!translate) name) with
+             (match ((translate.contents) name) with
               | "" ->
                  (try (Hashtbl.find default_tbl str) with
-                  Not_found -> !default)
+                  Not_found -> default.contents)
               | name -> name)
 
           let find =
@@ -69,7 +69,8 @@ module Make =
             fun tag ->
              let key =
               (( (expander_name tag name) ), ( (Exp_key.pack tag () ) )) in
-             (Exp_fun.unpack tag ( (List.assoc key ( !expanders_table )) ))
+             (Exp_fun.unpack tag (
+               (List.assoc key ( expanders_table.contents )) ))
 
           let add =
            fun name ->
@@ -77,7 +78,7 @@ module Make =
              fun f ->
               let elt =
                ((name, ( (Exp_key.pack tag () ) )), ( (Exp_fun.pack tag f) )) in
-              (expanders_table := ( ( elt ) :: !expanders_table  ))
+              (expanders_table := ( ( elt ) :: expanders_table.contents  ))
 
           let dump_file = (ref None )
 
@@ -93,7 +94,7 @@ module Make =
             let print =
              fun ppf ->
               fun (name, position, ctx, exn) ->
-               let name = if (name = "") then ( !default ) else name in
+               let name = if (name = "") then ( default.contents ) else name in
                let pp =
                 fun x ->
                  (fprintf ppf "@?@[<2>While %s %S in a position of %S:" x
@@ -104,7 +105,7 @@ module Make =
                     (
                     (pp "finding quotation")
                     );
-                    if (( !expanders_table ) = [] ) then
+                    if (( expanders_table.contents ) = [] ) then
                      (
                      (fprintf ppf
                        "@ There is no quotation expander available.")
@@ -118,14 +119,15 @@ module Make =
                      (List.iter (
                        fun ((s, t), _) ->
                         (fprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                          s Exp_key.print_tag t) ) ( !expanders_table ))
+                          s Exp_key.print_tag t) ) ( expanders_table.contents
+                       ))
                      );
                      (fprintf ppf "@]")
                     end
                  | Expanding -> (pp "expanding quotation")
                  | ParsingResult (loc, str) ->
                     let () = (pp "parsing result of quotation") in
-                    (match !dump_file with
+                    (match dump_file.contents with
                      | Some (dump_file) ->
                         let () = (fprintf ppf " dumping result...\n") in
                         (try

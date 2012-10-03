@@ -37,7 +37,8 @@ module Make =
     fun entry ->
      fun ts ->
       ((try
-         let p = if !trace_parser then Format.fprintf else Format.ifprintf in
+         let p =
+          if trace_parser.contents then Format.fprintf else Format.ifprintf in
          let () = (p Format.err_formatter "@[<4>%s@ " ( entry.ename )) in
          let res = ((entry.estart) 0 ts) in
          let () = (p Format.err_formatter "@]@.") in res
