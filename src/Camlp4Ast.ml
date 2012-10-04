@@ -28,6 +28,15 @@ external loc_of_ident : ident -> FanLoc.t = "%field0";
 
 let ghost = FanLoc.ghost;
 
+
+(*
+  {[
+  is_module_longident <:ident< A.B.t >> ; 
+  - : bool = false
+  is_module_longident <:ident< A.B >> ; 
+  - : bool = true
+  ]}
+ *)
 let rec is_module_longident = fun
   [ <:ident< $_.$i >> -> is_module_longident i
   | <:ident< $i1 $i2 >> ->
@@ -48,7 +57,24 @@ let ident_of_expr =
     [ <:expr< $id:i >> -> i
     | <:expr< $_ $_ >> -> error ()
     | t -> self t ];
+(*
+  {[
+  ident_of_ctyp <:ctyp< list int >> ; ;
+  Exception: Invalid_argument "ident_of_ctyp: this type is not an identifier".
 
+  ident_of_ctyp <:ctyp< A.B >> ; ;     
+  - : ident =
+  IdAcc (, IdUid (, "A"),
+  IdUid (, "B"))
+
+  <:ctyp< A.B >> ; ;
+  - : ctyp =
+  TyId (, IdAcc (, IdUid (, "A"), IdUid (, "B")))
+
+  ident_of_ctyp <:ctyp< (A B).t >> ; ;
+  - : ident =
+  IdAcc (, IdApp (, IdUid (, "A"), IdUid (, "B")), IdLid (, "t"))  ]}
+ *)
 let ident_of_ctyp =
   let error () =
     invalid_arg "ident_of_ctyp: this type is not an identifier" in
