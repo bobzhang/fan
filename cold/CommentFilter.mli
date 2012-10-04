@@ -1,8 +1,6 @@
 module Make :
  functor (Token : FanSig.Camlp4Token) ->
   sig
-   open Token
-
    type t
 
    val mk : (unit -> t)

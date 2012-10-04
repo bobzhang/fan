@@ -11,7 +11,7 @@ let wrap parse_fun lb =
   let token_stream = Gram.filter  not_filtered_token_stream in
   try
     match token_stream with parser
-    [ [< '(EOI, _) >] -> raise End_of_file
+    [ [< (EOI, _) >] -> raise End_of_file
     | [< >] -> parse_fun token_stream ]
   with
   [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
@@ -105,7 +105,7 @@ end;
 
 
 
-
+(* parser [ [<x;'z;'y>] -> z ] *)
 
 
 

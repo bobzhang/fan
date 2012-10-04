@@ -17,7 +17,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 module Make (Token : FanSig.Camlp4Token) : sig
-  open Token;
+  (* open Token; *)
 
   type t;
 

@@ -8,9 +8,6 @@ module Make (Structure : Structure.S) = struct
   let empty_entry ename _ =
     raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
 
-  (* let rec stream_map f = parser *)
-  (*   [ [< 'x; strm >] -> [< '(f x); stream_map f strm >] *)
-  (*   | [< >] -> [< >] ]; *)
 
   let keep_prev_loc strm =
     match Stream.peek strm with
@@ -22,9 +19,9 @@ module Make (Structure : Structure.S) = struct
         (*      go prev_loc strm1 >] *)
         (* else *)
           match strm1 with parser
-          [ [< '(tok,cur_loc); strm >] ->
-              [< '(tok, {prev_loc; cur_loc; prev_loc_only = False});
-                 go cur_loc strm >]
+          [ [< (tok,cur_loc); 'strm >] ->
+              [< (tok, {prev_loc; cur_loc; prev_loc_only = False});
+                 'go cur_loc strm >]
           | [< >] -> [< >] ]
       in go init_loc strm ];
 

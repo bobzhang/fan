@@ -1337,7 +1337,7 @@ New syntax:\
   let setup_op_parser entry p =
     Gram.Entry.setup_parser entry
       (parser
-        [< '(KEYWORD x | SYMBOL x, ti) when p x >] ->
+        [< (KEYWORD x | SYMBOL x, ti) when p x >] ->
           let _loc = Gram.token_location ti in
           <:expr< $lid:x >>);
 
@@ -1377,14 +1377,14 @@ New syntax:\
 
   let rec infix_kwds_filter =
     parser
-    [ [< '((KEYWORD "(", _) as tok); xs >] ->
+    [ [< ((KEYWORD "(", _) as tok); 'xs >] ->
         match xs with parser
-        [ [< '(KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
-             '(KEYWORD ")", _); xs >] ->
-                [< '(LIDENT i, _loc); infix_kwds_filter xs >]
-        | [< xs >] ->
-                [< 'tok; infix_kwds_filter xs >] ]
-    | [< 'x; xs >] -> [< 'x; infix_kwds_filter xs >] ];
+        [ [< (KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+             (KEYWORD ")", _); 'xs >] ->
+                [< (LIDENT i, _loc); '(infix_kwds_filter xs) >]
+        | [< 'xs >] ->
+                [< tok; '(infix_kwds_filter xs) >] ]
+    | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >] ];
 
   Token.Filter.define_filter (Gram.get_filter ())
     (fun f strm -> infix_kwds_filter (f strm));
@@ -1393,20 +1393,20 @@ New syntax:\
     let symb1 = Gram.parse_tokens_after_filter expr in
     let symb =
       parser
-      [ [< '(ANTIQUOT ("list" as n) s, ti) >] ->
+      [ [< (ANTIQUOT ("list" as n) s, ti) >] ->
         let _loc = Gram.token_location ti in
         <:expr< $(anti:mk_anti ~c:"expr;" n s) >>
       | [< a = symb1 >] -> a ]
     in
     let rec kont al =
       parser
-      [ [< '(KEYWORD ";", _); a = symb; s >] ->
+      [ [< (KEYWORD ";", _); a = symb; 's >] ->
         let _loc = FanLoc.merge (Ast.loc_of_expr al)
                              (Ast.loc_of_expr a) in
         kont <:expr< $al; $a >> s
       | [< >] -> al ]
     in
-    parser [< a = symb; s >] -> kont a s
+    parser [< a = symb; 's >] -> kont a s
   end;
 
   EXTEND Gram
@@ -3026,9 +3026,9 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
         | _ -> <:expr< fun _ -> $e >> ]
     | _ -> <:expr< fun _ -> $e >> ] ;
 
-  let rec cstream gloc =
+  let rec cstream gloc = 
     fun
-    [ [] -> let _loc = gloc in <:expr< Stream.sempty >>
+    [ [] -> let _loc = gloc in <:expr< [< >] >>
     | [SeTrm _loc e] ->
         if not_computing e then <:expr< Stream.ising $e >>
         else <:expr< Stream.lsing $(slazy _loc e) >>
@@ -3051,51 +3051,56 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
         | "match"; e = sequence; "with"; "parser"; po = OPT parser_ipatt;
           pcl = parser_case_list ->
             cparser_match _loc e po pcl ] ]
+    parser_ipatt:
+      [ [ i = a_LIDENT -> <:patt< $lid:i >>  | "_" -> <:patt< _ >>  ] ]        
     parser_case_list:
       [ [ "["; pcl = LIST0 parser_case SEP "|"; "]" -> pcl
         | pc = parser_case -> [pc] ] ]
     parser_case:
-      [ [ stream_begin; sp = stream_patt; stream_end; po = OPT parser_ipatt; "->"; e = expr ->
-            (sp, po, e) ] ]
-    stream_begin:
-      [ [ "[<" -> () ] ]
-    stream_end:
-      [ [ ">]" -> () ] ]
-    stream_quot:
-      [ [ "'" -> () ] ]
-    stream_expr:
-      [ [ e = expr -> e ] ]
+      [ [ stream_begin; sp = stream_patt; stream_end; po = OPT parser_ipatt; "->"; e = expr
+          ->   (sp, po, e) ] ]
+    stream_begin: [ [ "[<" -> () ] ] stream_end: [ [ ">]" -> () ] ]
+    stream_quot:  [ [ "'" -> () ] ]
+    stream_expr:  [ [ e = expr -> e ] ]
     stream_patt:
       [ [ spc = stream_patt_comp -> [(spc, None)]
-        | spc = stream_patt_comp; ";"; sp = stream_patt_comp_err_list ->
-            [(spc, None) :: sp]
+        | spc = stream_patt_comp; ";"; sp = stream_patt_comp_err_list
+          ->    [(spc, None) :: sp]
         | -> [] ] ]
+    (* stream_patt_comp: (\* FIXME here *\) *)
+    (*   [ [ stream_quot; p = patt; eo = OPT [ "when"; e = stream_expr -> e ] *)
+    (*       ->  SpTrm _loc p eo *)
+    (*     | p = patt; "="; e = stream_expr -> SpNtr _loc p e *)
+    (*     | p = patt -> SpStr _loc p ] ] *)
+    stream_patt_comp: (* FIXME here *)
+      [ [ p = patt; eo = OPT [ "when"; e = stream_expr -> e ]
+          ->  SpTrm _loc p eo
+        | p = patt; "="; e = stream_expr -> SpNtr _loc p e
+        | stream_quot; p = patt -> SpStr _loc p ] ]
+        
     stream_patt_comp_err:
-      [ [ spc = stream_patt_comp; eo = OPT [ "??"; e = stream_expr -> e ] ->
-            (spc, eo) ] ]
+      [ [ spc = stream_patt_comp; eo = OPT [ "??"; e = stream_expr -> e ]
+          ->  (spc, eo) ] ]
     stream_patt_comp_err_list:
       [ [ spc = stream_patt_comp_err -> [spc]
         | spc = stream_patt_comp_err; ";" -> [spc]
         | spc = stream_patt_comp_err; ";"; sp = stream_patt_comp_err_list ->
             [spc :: sp] ] ]
-    stream_patt_comp:
-      [ [ stream_quot; p = patt; eo = OPT [ "when"; e = stream_expr -> e ] -> SpTrm _loc p eo
-        | p = patt; "="; e = stream_expr -> SpNtr _loc p e
-        | p = patt -> SpStr _loc p ] ]
-    parser_ipatt:
-      [ [ i = a_LIDENT -> <:patt< $lid:i >>
-        | "_" -> <:patt< _ >>  ] ]
     expr: Level "simple"
-      [ [ stream_begin; stream_end -> <:expr< $(cstream _loc []) >>
-        | stream_begin; sel = stream_expr_comp_list; stream_end ->
-            <:expr< $(cstream _loc sel) >> ] ]
+      [ [ stream_begin; stream_end -> <:expr< [< >] >>
+        | stream_begin; sel = stream_expr_comp_list; stream_end
+          ->  cstream _loc sel] ]
     stream_expr_comp_list:
       [ [ se = stream_expr_comp; ";"; sel = stream_expr_comp_list -> [se :: sel]
         | se = stream_expr_comp; ";" -> [se]
         | se = stream_expr_comp -> [se] ] ]
-    stream_expr_comp:
-      [ [ stream_quot; e = stream_expr -> SeTrm _loc e
-        | e = stream_expr -> SeNtr _loc e ] ]
+    (* stream_expr_comp: (\* FIXME *\) *)
+    (*   [ [ stream_quot; e = stream_expr -> SeTrm _loc e *)
+    (*     | e = stream_expr -> SeNtr _loc e ] ] *)
+    stream_expr_comp: (* FIXME *)
+      [ [  e = stream_expr -> SeTrm _loc e
+        | stream_quot;e = stream_expr -> SeNtr _loc e ] ]
+        
   END;
 
 end;

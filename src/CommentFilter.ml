@@ -17,10 +17,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 module Make (Token : FanSig.Camlp4Token) = struct
-  open Token;
-
   type t = (Stream.t (string * FanLoc.t) * Queue.t (string * FanLoc.t));
-
   let mk () =
     let q = Queue.create () in
     let f _ =
@@ -31,14 +28,14 @@ module Make (Token : FanSig.Camlp4Token) = struct
   let filter (_, q) =
     let rec self =
       parser
-      [ [: ` (FanSig.COMMENT x, loc); xs :] ->
+      [ [< (FanSig.COMMENT x, loc); 'xs >] ->
             do { Queue.add (x, loc) q;
                  debug comments "add: %S at %a@\n" x FanLoc.dump loc in
                  self xs }
-      | [: ` x; xs :] ->
+      | [< x; 'xs >] ->
           (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
-          [: ` x; self xs :]
-      | [: :] -> [: :] ]
+          [< x; 'self xs >]
+      | [< >] -> [< >] ]
     in self;
 
   let take_list (_, q) =

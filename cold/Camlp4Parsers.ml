@@ -38520,10 +38520,10 @@ module MakeRevisedParserParser =
                                                                     'stream_expr Gram.Entry.t) in
                                                                     let grammar_entry_create =
                                                                     Gram.Entry.mk in
-                                                                    let stream_patt =
+                                                                    let parser_ipatt =
                                                                     ((grammar_entry_create
-                                                                    "stream_patt") :
-                                                                    'stream_patt Gram.Entry.t)
+                                                                    "parser_ipatt") :
+                                                                    'parser_ipatt Gram.Entry.t)
                                                                     and stream_expr_comp =
                                                                     ((grammar_entry_create
                                                                     "stream_expr_comp") :
@@ -38532,14 +38532,6 @@ module MakeRevisedParserParser =
                                                                     ((grammar_entry_create
                                                                     "stream_expr_comp_list") :
                                                                     'stream_expr_comp_list Gram.Entry.t)
-                                                                    and parser_ipatt =
-                                                                    ((grammar_entry_create
-                                                                    "parser_ipatt") :
-                                                                    'parser_ipatt Gram.Entry.t)
-                                                                    and stream_patt_comp =
-                                                                    ((grammar_entry_create
-                                                                    "stream_patt_comp") :
-                                                                    'stream_patt_comp Gram.Entry.t)
                                                                     and stream_patt_comp_err_list =
                                                                     ((grammar_entry_create
                                                                     "stream_patt_comp_err_list") :
@@ -38547,7 +38539,15 @@ module MakeRevisedParserParser =
                                                                     and stream_patt_comp_err =
                                                                     ((grammar_entry_create
                                                                     "stream_patt_comp_err") :
-                                                                    'stream_patt_comp_err Gram.Entry.t) in
+                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    and stream_patt_comp =
+                                                                    ((grammar_entry_create
+                                                                    "stream_patt_comp") :
+                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    and stream_patt =
+                                                                    ((grammar_entry_create
+                                                                    "stream_patt") :
+                                                                    'stream_patt Gram.Entry.t) in
                                                                     (
                                                                     (Gram.extend
                                                                     (
@@ -38667,6 +38667,73 @@ module MakeRevisedParserParser =
                                                                     po
                                                                     pcl) :
                                                                     'expr)
+                                                                    ))
+                                                                    ))]
+                                                                    ))]
+                                                                    )))
+                                                                    ()
+                                                                    )
+                                                                    ))
+                                                                    );
+                                                                    (
+                                                                    (Gram.extend
+                                                                    (
+                                                                    (parser_ipatt :
+                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    )
+                                                                    (
+                                                                    ((fun ()
+                                                                     ->
+                                                                    (None
+                                                                    ,
+                                                                    (
+                                                                    [(None
+                                                                    ,
+                                                                    None
+                                                                    ,
+                                                                    (
+                                                                    [((
+                                                                    [(
+                                                                    (Gram.Skeyword
+                                                                    ("_"))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.PaAny
+                                                                    (_loc)) :
+                                                                    'parser_ipatt)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (a_LIDENT :
+                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (i :
+                                                                    'a_LIDENT) ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((Ast.PaId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    i))
+                                                                    ))) :
+                                                                    'parser_ipatt)
                                                                     ))
                                                                     ))]
                                                                     ))]
@@ -38867,7 +38934,7 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Skeyword
-                                                                    ("[:"))
+                                                                    ("[<"))
                                                                     )]
                                                                     ),
                                                                     (
@@ -38906,7 +38973,7 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Skeyword
-                                                                    (":]"))
+                                                                    (">]"))
                                                                     )]
                                                                     ),
                                                                     (
@@ -38945,7 +39012,7 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Skeyword
-                                                                    ("`"))
+                                                                    ("'"))
                                                                     )]
                                                                     ),
                                                                     (
@@ -39108,6 +39175,159 @@ module MakeRevisedParserParser =
                                                                     (
                                                                     (Gram.extend
                                                                     (
+                                                                    (stream_patt_comp :
+                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    )
+                                                                    (
+                                                                    ((fun ()
+                                                                     ->
+                                                                    (None
+                                                                    ,
+                                                                    (
+                                                                    [(None
+                                                                    ,
+                                                                    None
+                                                                    ,
+                                                                    (
+                                                                    [((
+                                                                    [(
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (stream_quot :
+                                                                    'stream_quot Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (patt :
+                                                                    'patt Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (p :
+                                                                    'patt) ->
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((SpStr
+                                                                    (_loc,
+                                                                    p)) :
+                                                                    'stream_patt_comp)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (patt :
+                                                                    'patt Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Skeyword
+                                                                    ("="))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (stream_expr :
+                                                                    'stream_expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (e :
+                                                                    'stream_expr) ->
+                                                                    fun _ ->
+                                                                    fun (p :
+                                                                    'patt) ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((SpNtr
+                                                                    (_loc,
+                                                                    p,
+                                                                    e)) :
+                                                                    'stream_patt_comp)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (patt :
+                                                                    'patt Gram.Entry.t)
+                                                                    )))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Sopt
+                                                                    (Gram.srules
+                                                                    stream_patt_comp
+                                                                    (
+                                                                    [((
+                                                                    [(
+                                                                    (Gram.Skeyword
+                                                                    ("when"))
+                                                                    );
+                                                                    (
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (stream_expr :
+                                                                    'stream_expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (e :
+                                                                    'stream_expr) ->
+                                                                    fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    (e :
+                                                                    'e__28)
+                                                                    ))
+                                                                    ))]
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (eo :
+                                                                    'e__28 option) ->
+                                                                    fun (p :
+                                                                    'patt) ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((SpTrm
+                                                                    (_loc,
+                                                                    p,
+                                                                    eo)) :
+                                                                    'stream_patt_comp)
+                                                                    ))
+                                                                    ))]
+                                                                    ))]
+                                                                    )))
+                                                                    ()
+                                                                    )
+                                                                    ))
+                                                                    );
+                                                                    (
+                                                                    (Gram.extend
+                                                                    (
                                                                     (stream_patt_comp_err :
                                                                     'stream_patt_comp_err Gram.Entry.t)
                                                                     )
@@ -39159,7 +39379,7 @@ module MakeRevisedParserParser =
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (e :
-                                                                    'e__28)
+                                                                    'e__29)
                                                                     ))
                                                                     ))]
                                                                     )))
@@ -39169,7 +39389,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.Action.mk
                                                                     (
                                                                     fun (eo :
-                                                                    'e__28 option) ->
+                                                                    'e__29 option) ->
                                                                     fun (spc :
                                                                     'stream_patt_comp) ->
                                                                     fun (_loc :
@@ -39290,226 +39510,6 @@ module MakeRevisedParserParser =
                                                                     (
                                                                     (Gram.extend
                                                                     (
-                                                                    (stream_patt_comp :
-                                                                    'stream_patt_comp Gram.Entry.t)
-                                                                    )
-                                                                    (
-                                                                    ((fun ()
-                                                                     ->
-                                                                    (None
-                                                                    ,
-                                                                    (
-                                                                    [(None
-                                                                    ,
-                                                                    None
-                                                                    ,
-                                                                    (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (patt :
-                                                                    'patt Gram.Entry.t)
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (p :
-                                                                    'patt) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((SpStr
-                                                                    (_loc,
-                                                                    p)) :
-                                                                    'stream_patt_comp)
-                                                                    ))
-                                                                    ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (patt :
-                                                                    'patt Gram.Entry.t)
-                                                                    )))
-                                                                    );
-                                                                    (
-                                                                    (Gram.Skeyword
-                                                                    ("="))
-                                                                    );
-                                                                    (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (e :
-                                                                    'stream_expr) ->
-                                                                    fun _ ->
-                                                                    fun (p :
-                                                                    'patt) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((SpNtr
-                                                                    (_loc,
-                                                                    p,
-                                                                    e)) :
-                                                                    'stream_patt_comp)
-                                                                    ))
-                                                                    ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (stream_quot :
-                                                                    'stream_quot Gram.Entry.t)
-                                                                    )))
-                                                                    );
-                                                                    (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (patt :
-                                                                    'patt Gram.Entry.t)
-                                                                    )))
-                                                                    );
-                                                                    (
-                                                                    (Gram.Sopt
-                                                                    (Gram.srules
-                                                                    stream_patt_comp
-                                                                    (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Skeyword
-                                                                    ("when"))
-                                                                    );
-                                                                    (
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (e :
-                                                                    'stream_expr) ->
-                                                                    fun _ ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (e :
-                                                                    'e__29)
-                                                                    ))
-                                                                    ))]
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (eo :
-                                                                    'e__29 option) ->
-                                                                    fun (p :
-                                                                    'patt) ->
-                                                                    fun _ ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((SpTrm
-                                                                    (_loc,
-                                                                    p,
-                                                                    eo)) :
-                                                                    'stream_patt_comp)
-                                                                    ))
-                                                                    ))]
-                                                                    ))]
-                                                                    )))
-                                                                    ()
-                                                                    )
-                                                                    ))
-                                                                    );
-                                                                    (
-                                                                    (Gram.extend
-                                                                    (
-                                                                    (parser_ipatt :
-                                                                    'parser_ipatt Gram.Entry.t)
-                                                                    )
-                                                                    (
-                                                                    ((fun ()
-                                                                     ->
-                                                                    (None
-                                                                    ,
-                                                                    (
-                                                                    [(None
-                                                                    ,
-                                                                    None
-                                                                    ,
-                                                                    (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Skeyword
-                                                                    ("_"))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun _ ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((Ast.PaAny
-                                                                    (_loc)) :
-                                                                    'parser_ipatt)
-                                                                    ))
-                                                                    ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
-                                                                    (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (i :
-                                                                    'a_LIDENT) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((Ast.PaId
-                                                                    (_loc,
-                                                                    (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    i))
-                                                                    ))) :
-                                                                    'parser_ipatt)
-                                                                    ))
-                                                                    ))]
-                                                                    ))]
-                                                                    )))
-                                                                    ()
-                                                                    )
-                                                                    ))
-                                                                    );
-                                                                    (
-                                                                    (Gram.extend
-                                                                    (
                                                                     (expr :
                                                                     'expr Gram.Entry.t)
                                                                     )
@@ -39593,10 +39593,22 @@ module MakeRevisedParserParser =
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((cstream
-                                                                    _loc
-                                                                    []
-                                                                    ) :
+                                                                    ((Ast.ExId
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdAcc
+                                                                    (_loc,
+                                                                    (
+                                                                    (Ast.IdUid
+                                                                    (_loc,
+                                                                    "Stream"))
+                                                                    ),
+                                                                    (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "sempty"))
+                                                                    )))
+                                                                    ))) :
                                                                     'expr)
                                                                     ))
                                                                     ))]
@@ -39729,29 +39741,6 @@ module MakeRevisedParserParser =
                                                                     (Gram.Snterm
                                                                     (Gram.Entry.obj
                                                                     (
-                                                                    (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
-                                                                    )))
-                                                                    )]
-                                                                    ),
-                                                                    (
-                                                                    (Gram.Action.mk
-                                                                    (
-                                                                    fun (e :
-                                                                    'stream_expr) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((SeNtr
-                                                                    (_loc,
-                                                                    e)) :
-                                                                    'stream_expr_comp)
-                                                                    ))
-                                                                    ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Snterm
-                                                                    (Gram.Entry.obj
-                                                                    (
                                                                     (stream_quot :
                                                                     'stream_quot Gram.Entry.t)
                                                                     )))
@@ -39771,6 +39760,29 @@ module MakeRevisedParserParser =
                                                                     fun (e :
                                                                     'stream_expr) ->
                                                                     fun _ ->
+                                                                    fun (_loc :
+                                                                    FanLoc.t) ->
+                                                                    ((SeNtr
+                                                                    (_loc,
+                                                                    e)) :
+                                                                    'stream_expr_comp)
+                                                                    ))
+                                                                    ));
+                                                                    ((
+                                                                    [(
+                                                                    (Gram.Snterm
+                                                                    (Gram.Entry.obj
+                                                                    (
+                                                                    (stream_expr :
+                                                                    'stream_expr Gram.Entry.t)
+                                                                    )))
+                                                                    )]
+                                                                    ),
+                                                                    (
+                                                                    (Gram.Action.mk
+                                                                    (
+                                                                    fun (e :
+                                                                    'stream_expr) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     ((SeTrm

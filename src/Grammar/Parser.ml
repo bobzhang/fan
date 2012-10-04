@@ -244,7 +244,7 @@ module Make (Structure : Structure.S) = struct
                 | _ -> raise Stream.Failure ]
               in
               let p1 = loop (n + 1) tokl in
-              parser [< tok = ps; s >] ->
+              parser [< tok = ps; 's >] ->
                 let act = p1 s in Action.getf act tok ]
       | [Skeyword kwd :: tokl] ->
           match tokl with
@@ -266,7 +266,7 @@ module Make (Structure : Structure.S) = struct
                 | _ -> raise Stream.Failure ]
               in
               let p1 = loop (n + 1) tokl in
-              parser [< tok = ps; s >] ->
+              parser [< tok = ps; 's >] ->
                 let act = p1 s in Action.getf act tok ]
       | _ -> invalid_arg "parser_of_token_list" ]
   and parser_of_symbol entry nlevn =
@@ -279,7 +279,7 @@ module Make (Structure : Structure.S) = struct
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
-          [ [< a = ps; s >] -> loop [a :: al] s
+          [ [< a = ps; 's >] -> loop [a :: al] s
           | [< >] -> al ]
         in
         parser [< a = loop [] >] -> Action.mk (List.rev a)
@@ -289,21 +289,21 @@ module Make (Structure : Structure.S) = struct
         let rec kont al =
           parser
           [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb;
-               s >] ->
+               's >] ->
               kont [a :: al] s
           | [< >] -> al ]
         in
         parser
-        [ [< a = ps; s >] -> Action.mk (List.rev (kont [a] s))
+        [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
         | [< >] -> Action.mk [] ]
     | Slist1 s ->
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
-          [ [< a = ps; s >] -> loop [a :: al] s
+          [ [< a = ps; 's >] -> loop [a :: al] s
           | [< >] -> al ]
         in
-        parser [< a = ps; s >] -> Action.mk (List.rev (loop [a] s))
+        parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s))
     | Slist1sep symb sep ->
         let ps = parser_of_symbol entry nlevn symb in
         let pt = parser_of_symbol entry nlevn sep in
@@ -316,11 +316,11 @@ module Make (Structure : Structure.S) = struct
                 | [< a = parse_top_symb entry symb >] -> a
                 | [< >] ->
                     raise (Stream.Error (Failed.symb_failed entry v sep symb)) ];
-              s >] ->
+              's >] ->
               kont [a :: al] s
           | [< >] -> al ]
         in
-        parser [< a = ps; s >] -> Action.mk (List.rev (kont [a] s))
+        parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
     | Sopt s ->
         let ps = parser_of_symbol entry nlevn s in
         parser
@@ -343,11 +343,11 @@ module Make (Structure : Structure.S) = struct
     | Snext -> parser [< a = entry.estart nlevn >] -> a
     | Skeyword kwd ->
         parser
-        [< '(tok, _) when Token.match_keyword kwd tok >] ->
+        [< (tok, _) when Token.match_keyword kwd tok >] ->
            Action.mk tok
     | Stoken (f, _) ->
         parser
-        [< '(tok,_) when f tok >] -> Action.mk tok ]
+        [< (tok,_) when f tok >] -> Action.mk tok ]
   and parse_top_symb entry symb strm =
     parser_of_symbol entry 0 (top_symb entry symb) strm;
 
@@ -370,7 +370,7 @@ module Make (Structure : Structure.S) = struct
                 fun levn strm ->
                   let bp = loc_bp strm in
                   match strm with parser
-                  [< (act, loc) = add_loc bp p2; strm >] ->
+                  [< (act, loc) = add_loc bp p2; 'strm >] ->
                     let a = Action.getf act loc in
                     entry.econtinue levn loc a strm
             | _ ->

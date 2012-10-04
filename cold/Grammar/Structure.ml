@@ -183,7 +183,6 @@ and node = {node:symbol; son:tree; brother:tree}
  let get_filter = fun g -> g.gfilter
 
  let token_location = fun r -> r.cur_loc
- type 'a not_filtered = 'a
 
  let using =
   fun {gkeywords = table;

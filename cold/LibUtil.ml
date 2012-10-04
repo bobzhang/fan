@@ -286,84 +286,104 @@ module Hashtbl =
 
                                        end
 
-module ErrorMonad =
+module Stream =
                                              struct
-                                              type log = string
+                                              include BatStream
 
-                                              type 'a result =
-                                                 Left of 'a | Right of log
-
-                                              let return =
-                                               fun x -> (Left (x))
-
-                                              let fail = fun x -> (Right (x))
-
-                                              let ( >>= ) =
-                                               fun ma ->
-                                                fun f ->
-                                                 (match ma with
-                                                  | Left (v) -> (f v)
-                                                  | Right (x) -> (Right (x)))
-
-                                              let bind = (>>=)
-
-                                              let map =
-                                               fun f ->
-                                                function
-                                                | Left (v) -> (Left (f v))
-                                                | Right (s) -> (Right (s))
-
-                                              let ( >>| ) =
-                                               fun ma ->
-                                                fun (str, f) ->
-                                                 (match ma with
-                                                  | Left (v) -> (f v)
-                                                  | Right (x) ->
-                                                     (Right (x ^ str)))
-
-                                              let ( >>? ) =
-                                               fun ma ->
-                                                fun str ->
-                                                 (match ma with
-                                                  | Left (_) -> ma
-                                                  | Right (x) ->
-                                                     (Right (x ^ str)))
-
-                                              let ( <|> ) =
-                                               fun fa ->
-                                                fun fb ->
-                                                 fun a ->
-                                                  (match (fa a) with
-                                                   | (Left (_) as x) -> x
-                                                   | Right (str) ->
-                                                      (( (fb a) ) >>? str))
-
-                                              let unwrap =
-                                               fun f ->
-                                                fun a ->
-                                                 (match (f a) with
-                                                  | Left (res) -> res
-                                                  | Right (msg) ->
-                                                     (failwith msg))
-
-                                              let mapi_m =
-                                               fun f ->
-                                                fun xs ->
-                                                 let rec aux =
-                                                  fun acc ->
-                                                   fun xs ->
-                                                    (match xs with
-                                                     | [] -> (return [] )
-                                                     | (x :: xs) ->
-                                                        (( (f x acc) ) >>= (
-                                                          fun x ->
-                                                           ((
-                                                             (aux ( (acc + 1)
-                                                               ) xs) ) >>= (
-                                                             fun xs ->
-                                                              (return (
-                                                                ( x ) :: xs 
-                                                                )) )) ))) in
-                                                 (aux 0 xs)
+                                              include Stream
 
                                              end
+
+module ErrorMonad =
+                                                   struct
+                                                    type log = string
+
+                                                    type 'a result =
+                                                       Left of 'a
+                                                     | Right of log
+
+                                                    let return =
+                                                     fun x -> (Left (x))
+
+                                                    let fail =
+                                                     fun x -> (Right (x))
+
+                                                    let ( >>= ) =
+                                                     fun ma ->
+                                                      fun f ->
+                                                       (match ma with
+                                                        | Left (v) -> (f v)
+                                                        | Right (x) ->
+                                                           (Right (x)))
+
+                                                    let bind = (>>=)
+
+                                                    let map =
+                                                     fun f ->
+                                                      function
+                                                      | Left (v) ->
+                                                         (Left (f v))
+                                                      | Right (s) ->
+                                                         (Right (s))
+
+                                                    let ( >>| ) =
+                                                     fun ma ->
+                                                      fun (str, f) ->
+                                                       (match ma with
+                                                        | Left (v) -> (f v)
+                                                        | Right (x) ->
+                                                           (Right (x ^ str)))
+
+                                                    let ( >>? ) =
+                                                     fun ma ->
+                                                      fun str ->
+                                                       (match ma with
+                                                        | Left (_) -> ma
+                                                        | Right (x) ->
+                                                           (Right (x ^ str)))
+
+                                                    let ( <|> ) =
+                                                     fun fa ->
+                                                      fun fb ->
+                                                       fun a ->
+                                                        (match (fa a) with
+                                                         | (Left (_) as x) ->
+                                                            x
+                                                         | Right (str) ->
+                                                            (( (fb a) ) >>?
+                                                              str))
+
+                                                    let unwrap =
+                                                     fun f ->
+                                                      fun a ->
+                                                       (match (f a) with
+                                                        | Left (res) -> res
+                                                        | Right (msg) ->
+                                                           (failwith msg))
+
+                                                    let mapi_m =
+                                                     fun f ->
+                                                      fun xs ->
+                                                       let rec aux =
+                                                        fun acc ->
+                                                         fun xs ->
+                                                          (match xs with
+                                                           | [] ->
+                                                              (return [] )
+                                                           | (x :: xs) ->
+                                                              (( (f x acc) )
+                                                                >>= (
+                                                                fun x ->
+                                                                 ((
+                                                                   (aux (
+                                                                    (acc + 1)
+                                                                    ) xs) )
+                                                                   >>= (
+                                                                   fun xs ->
+                                                                    (return (
+                                                                    ( x ) ::
+                                                                    xs  )) ))
+                                                                ))) in
+                                                       (aux 0 xs)
+
+                                                   end

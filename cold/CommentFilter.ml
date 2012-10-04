@@ -1,8 +1,6 @@
 module Make =
  functor (Token : FanSig.Camlp4Token) ->
   struct
-   open Token
-
    type t = ((string * FanLoc.t) Stream.t * (string * FanLoc.t) Queue.t)
 
    let mk =

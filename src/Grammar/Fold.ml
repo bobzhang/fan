@@ -36,7 +36,7 @@ module Make (Structure : Structure.S) = struct
   let sfold0 f e _entry _symbl psymb =
     let rec fold accu =
       parser
-      [ [< a = psymb; s >] -> fold (f a accu) s
+      [ [< a = psymb; 's >] -> fold (f a accu) s
       | [< >] -> accu ]
     in
     parser [< a = fold e >] -> a
@@ -45,7 +45,7 @@ module Make (Structure : Structure.S) = struct
   let sfold1 f e _entry _symbl psymb =
     let rec fold accu =
       parser
-      [ [< a = psymb; s >] -> fold (f a accu) s
+      [ [< a = psymb; 's >] -> fold (f a accu) s
       | [< >] -> accu ]
     in
     parser [< a = psymb; a = fold (f a e) >] -> a
@@ -59,11 +59,10 @@ module Make (Structure : Structure.S) = struct
     in
     let rec kont accu =
       parser
-      [ [< () = psep; a = psymb ?? failed symbl; s >] -> kont (f a accu) s
-      | [< >] -> accu ]
-    in
+      [ [< () = psep; a = psymb ?? failed symbl; 's >] -> kont (f a accu) s
+      | [< >] -> accu ] in
     parser
-    [ [< a = psymb; s >] -> kont (f a e) s
+    [ [< a = psymb; 's >] -> kont (f a e) s
     | [< >] -> e ]
   ;
 
@@ -90,6 +89,6 @@ module Make (Structure : Structure.S) = struct
   (*           kont (f a accu) s *)
   (*     | [< >] -> accu ] *)
   (*   in *)
-  (*   parser [< a = psymb; s >] -> kont (f a e) s *)
+  (*   parser [< a = psymb; 's >] -> kont (f a e) 's *)
   (* ; *)
 end;
