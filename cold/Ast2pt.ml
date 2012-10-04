@@ -83,32 +83,31 @@ let ident_tag =
                              | Ast.IdAcc
                                 (_, Ast.IdLid (_, "*predef*"),
                                  Ast.IdLid (_, "option")) ->
-                                (( (ldot ( (lident "*predef*") ) "option") ),
-                                 `lident)
+                                (Some
+                                  (( (ldot ( (lident "*predef*") ) "option")
+                                   ), `lident))
                              | Ast.IdAcc (_, i1, i2) ->
-                                (self i2 ( (Some (self i1 acc)) ))
+                                (self i2 ( (self i1 acc) ))
                              | Ast.IdApp (_, i1, i2) ->
-                                let i' =
-                                 (Lapply
-                                   (( (fst ( (self i1 None ) )) ), (
-                                    (fst ( (self i2 None ) )) ))) in
-                                let x =
-                                 (match acc with
-                                  | None -> i'
-                                  | _ ->
-                                     (error ( (Camlp4Ast.loc_of_ident i) )
-                                       "invalid long identifier")) in
-                                (x, `app)
+                                (match
+                                   (( (self i1 None ) ), ( (self i2 None ) ),
+                                    acc) with
+                                 | (Some (l, _), Some (r, _), None) ->
+                                    (Some (( (Lapply (l, r)) ), `app))
+                                 | _ ->
+                                    (error ( (Camlp4Ast.loc_of_ident i) )
+                                      "invalid long identifer"))
                              | Ast.IdUid (_, s) ->
-                                let x =
-                                 (match acc with
-                                  | None -> (lident s)
-                                  | Some (acc, (`uident | `app)) ->
-                                     (ldot acc s)
-                                  | _ ->
-                                     (error ( (Camlp4Ast.loc_of_ident i) )
-                                       "invalid long identifier")) in
-                                (x, `uident)
+                                (match (acc, s) with
+                                 | (None, "") -> (None)
+                                 | (None, s) ->
+                                    (Some (( (lident s) ), `uident))
+                                 | (Some (_, (`uident | `app)), "") -> acc
+                                 | (Some (x, (`uident | `app)), s) ->
+                                    (Some (( (ldot x s) ), `uident))
+                                 | _ ->
+                                    (error ( (Camlp4Ast.loc_of_ident i) )
+                                      "invalid long identifier"))
                              | Ast.IdLid (_, s) ->
                                 let x =
                                  (match acc with
@@ -118,64 +117,69 @@ let ident_tag =
                                   | _ ->
                                      (error ( (loc_of_ident i) )
                                        "invalid long identifier")) in
-                                (x, `lident)
+                                (Some (x, `lident))
                              | _ ->
                                 (error ( (loc_of_ident i) )
                                   "invalid long identifier")) in
-                         (self i None )
+                         (match (self i None ) with
+                          | Some (x) -> x
+                          | None ->
+                             (error ( (loc_of_ident i) )
+                               "invalid long identifier "))
 
 let ident_noloc =
-                                          fun ?conv_lid ->
-                                           fun i ->
-                                            (fst (
-                                              (ident_tag ?conv_lid:conv_lid
-                                                i) ))
+                                                              fun ?conv_lid ->
+                                                               fun i ->
+                                                                (fst (
+                                                                  (ident_tag
+                                                                    ?conv_lid:conv_lid
+                                                                    i) ))
+
 
 let ident =
-                                                        fun ?conv_lid ->
-                                                         fun i ->
-                                                          (with_loc (
-                                                            (ident_noloc
-                                                              ?conv_lid:conv_lid
-                                                              i) ) (
-                                                            (loc_of_ident i)
-                                                            ))
+ fun ?conv_lid ->
+  fun i ->
+   (with_loc ( (ident_noloc ?conv_lid:conv_lid i) ) ( (loc_of_ident i) ))
+
 
 let long_lident =
-                                                                 fun msg ->
-                                                                  fun id ->
-                                                                   (match
-                                                                    (ident_tag
-                                                                    id) with
-                                                                    | (i,
-                                                                    `lident) ->
-                                                                    (with_loc
-                                                                    i (
-                                                                    (loc_of_ident
-                                                                    id) ))
-                                                                    | 
-                                                                    _ ->
-                                                                    (error (
-                                                                    (loc_of_ident
-                                                                    id) )
-                                                                    msg))
+ fun msg ->
+  fun id ->
+   (match (ident_tag id) with
+    | (i, `lident) -> (with_loc i ( (loc_of_ident id) ))
+    | _ -> (error ( (loc_of_ident id) ) msg))
+
+let long_type_ident =
+                                                (long_lident
+                                                  "invalid long identifier type")
 
 
-let long_type_ident = (long_lident "invalid long identifier type")
-
-let long_class_ident =
-                                                                    (long_lident
-                                                                    "invalid class name")
-
+let long_class_ident = (long_lident "invalid class name")
 
 let long_uident_noloc =
- fun ?(conv_con = fun x -> x) ->
-  fun i ->
-   (match (ident_tag i) with
-    | (Ldot (i, s), `uident) -> (ldot i ( (conv_con s) ))
-    | (Lident (s), `uident) -> (lident ( (conv_con s) ))
-    | (i, `app) -> i
-    | _ -> (error ( (loc_of_ident i) ) "uppercase identifier expected"))
+                                                            fun ?(conv_con =
+                                                                  fun x -> x) ->
+                                                             fun i ->
+                                                              (match
+                                                                 (ident_tag
+                                                                   i) with
+                                                               | (Ldot (i, s),
+                                                                  `uident) ->
+                                                                  (ldot i (
+                                                                    (conv_con
+                                                                    s) ))
+                                                               | (Lident (s),
+                                                                  `uident) ->
+                                                                  (lident (
+                                                                    (conv_con
+                                                                    s) ))
+                                                               | (i, `app) ->
+                                                                  i
+                                                               | _ ->
+                                                                  (error (
+                                                                    (loc_of_ident
+                                                                    i) )
+                                                                    "uppercase identifier expected"))
 
 
 let long_uident =

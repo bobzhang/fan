@@ -496,7 +496,10 @@ and ('e, 'p) symbol = {
  type used = Unused | UsedScanned | UsedNotScanned
 
  let _loc = FanLoc.ghost
- let gm = "Camlp4Grammar__"
+
+ let grammar_module_name = (ref ( (Ast.IdUid (_loc, "")) ))
+
+ let gm = fun ()  -> grammar_module_name.contents
 
  let mark_used =
   fun modif ->
@@ -589,72 +592,70 @@ and ('e, 'p) symbol = {
          r.prod )) ) []  rl)
 
  let retype_rule_list_without_patterns =
-  fun ?(gm = "Gram") ->
-   fun _loc ->
-    fun rl ->
-     (try
-       (List.map (
-         function
-         | {prod = (({pattern = None; styp = STtok (_); _ } as s) :: []);
-            action = None} ->
-            {prod = (
-              [{s with
-                pattern = (
-                 (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) )))))
-                 )}] );
-             action = (
-              (Some
-                ((Ast.ExApp
-                   (_loc, (
-                    (Ast.ExId
-                      (_loc, (
-                       (Ast.IdAcc
-                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                          (Ast.IdLid (_loc, "string_of_token")) ))) )))
-                    ), ( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) )))
-                    ))))) )}
-         | {prod = (({pattern = None; _ } as s) :: []);
-            action = None} ->
-            {prod = (
-              [{s with
-                pattern = (
-                 (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) )))))
-                 )}] );
-             action = (
-              (Some ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}
-         | ({prod = []; action = Some (_)} as r) -> r
-         | _ -> (raise Exit ) ) rl)
-      with
-      Exit -> rl)
+  fun _loc ->
+   fun rl ->
+    (try
+      (List.map (
+        function
+        | {prod = (({pattern = None; styp = STtok (_); _ } as s) :: []);
+           action = None} ->
+           {prod = (
+             [{s with
+               pattern = (
+                (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}]
+             );
+            action = (
+             (Some
+               ((Ast.ExApp
+                  (_loc, (
+                   (Ast.ExId
+                     (_loc, (
+                      (Ast.IdAcc
+                        (_loc, ( (gm () ) ), (
+                         (Ast.IdLid (_loc, "string_of_token")) ))) ))) ),
+                   ( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))) )))))
+             )}
+        | {prod = (({pattern = None; _ } as s) :: []);
+           action = None} ->
+           {prod = (
+             [{s with
+               pattern = (
+                (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}]
+             );
+            action = (
+             (Some ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}
+        | ({prod = []; action = Some (_)} as r) -> r
+        | _ -> (raise Exit ) ) rl)
+     with
+     Exit -> rl)
  let meta_action = (ref false )
 
- let rec make_ctyp =
-  fun ?(gm = "Gram") ->
-   fun styp ->
-    fun tvar ->
-     (match styp with
-      | STlid (_loc, s) -> (Ast.TyId (_loc, ( (Ast.IdLid (_loc, s)) )))
-      | STapp (_loc, t1, t2) ->
-         (Ast.TyApp
-           (_loc, ( (make_ctyp t1 tvar) ), ( (make_ctyp t2 tvar) )))
-      | STquo (_loc, s) -> (Ast.TyQuo (_loc, s))
-      | STself (_loc, x) ->
-         if (tvar = "") then
-          (
-          (FanLoc.raise _loc (
-            (Stream.Error
-              ("'" ^ ( (x ^ "' illegal in anonymous entry level") ))) ))
-          )
-         else (Ast.TyQuo (_loc, tvar))
-      | STtok (_loc) ->
-         (Ast.TyId
-           (_loc, (
-            (Ast.IdAcc
-              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-               (Ast.IdLid (_loc, "token")) ))) )))
-      | STstring_tok (_loc) ->
-         (Ast.TyId (_loc, ( (Ast.IdLid (_loc, "string")) )))
-      | STtyp (t) -> t)
+ let make_ctyp =
+  fun styp ->
+   fun tvar ->
+    let rec aux =
+     function
+     | STlid (_loc, s) -> (Ast.TyId (_loc, ( (Ast.IdLid (_loc, s)) )))
+     | STapp (_loc, t1, t2) ->
+        (Ast.TyApp (_loc, ( (aux t1) ), ( (aux t2) )))
+     | STquo (_loc, s) -> (Ast.TyQuo (_loc, s))
+     | STself (_loc, x) ->
+        if (tvar = "") then
+         (
+         (FanLoc.raise _loc (
+           (Stream.Error
+             ("'" ^ ( (x ^ "' illegal in anonymous entry level") ))) ))
+         )
+        else (Ast.TyQuo (_loc, tvar))
+     | STtok (_loc) ->
+        (Ast.TyId
+          (_loc, (
+           (Ast.IdAcc
+             (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "token")) ))) )))
+     | STstring_tok (_loc) ->
+        (Ast.TyId (_loc, ( (Ast.IdLid (_loc, "string")) )))
+     | STtyp (t) -> t in
+    (aux styp)
 
  let make_ctyp_patt =
   fun styp ->
@@ -678,168 +679,166 @@ and ('e, 'p) symbol = {
 
  let text_of_action =
   fun _loc ->
-   fun ?(gm = "Gram") ->
-    fun psl ->
-     fun (rtvar :
-       string) ->
-      fun (act :
-        Ast.expr option) ->
-       fun (tvar :
-         string) ->
-        let locid =
-         (Ast.PaId
-           (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) ))) in
-        let act =
-         (match act with
-          | Some (act) -> act
-          | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))) in
-        let (tok_match_pl, act, _) =
-         (List.fold_left (
-           fun ((tok_match_pl, act, i) as accu) ->
-            function
-            | {pattern = None; _ } -> accu
-            | {pattern = Some (p); _ } when (Ast.is_irrefut_patt p) ->
-               accu
-            | {pattern =
-                Some
-                 (Ast.PaAli
-                   (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))),
-                    Ast.PaId (_, Ast.IdLid (_, s)))); _ } ->
-               (tok_match_pl, (
-                (Ast.ExLet
-                  (_loc, Ast.ReNil , (
-                   (Ast.BiEq
-                     (_loc, (
-                      (Ast.PaId (_loc, ( (Ast.IdLid (_loc, s)) ))) ), (
-                      (Ast.ExApp
+   fun psl ->
+    fun (rtvar :
+      string) ->
+     fun (act :
+       Ast.expr option) ->
+      fun (tvar :
+        string) ->
+       let locid =
+        (Ast.PaId
+          (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) ))) in
+       let act =
+        (match act with
+         | Some (act) -> act
+         | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))) in
+       let (tok_match_pl, act, _) =
+        (List.fold_left (
+          fun ((tok_match_pl, act, i) as accu) ->
+           function
+           | {pattern = None; _ } -> accu
+           | {pattern = Some (p); _ } when (Ast.is_irrefut_patt p) ->
+              accu
+           | {pattern =
+               Some
+                (Ast.PaAli
+                  (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))),
+                   Ast.PaId (_, Ast.IdLid (_, s)))); _ } ->
+              (tok_match_pl, (
+               (Ast.ExLet
+                 (_loc, Ast.ReNil , (
+                  (Ast.BiEq
+                    (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, s)) )))
+                     ), (
+                     (Ast.ExApp
+                       (_loc, (
+                        (Ast.ExId
+                          (_loc, (
+                           (Ast.IdAcc
+                             (_loc, ( (gm () ) ), (
+                              (Ast.IdLid (_loc, "string_of_token")) )))
+                           ))) ), (
+                        (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) )))
+                     ))) ), act)) ), i)
+           | {pattern = Some (p);
+              text = TXtok (_, _, _); _ } ->
+              let id = ("__camlp4_" ^ ( (string_of_int i) )) in
+              ((
+               (Some
+                 (match tok_match_pl with
+                  | None ->
+                     (( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
+                      p)
+                  | Some (tok_pl, match_pl) ->
+                     ((
+                      (Ast.ExCom
                         (_loc, (
-                         (Ast.ExId
-                           (_loc, (
-                            (Ast.IdAcc
-                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                               (Ast.IdLid (_loc, "string_of_token")) )))
-                            ))) ), (
-                         (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) )))
-                      ))) ), act)) ), i)
-            | {pattern = Some (p);
-               text = TXtok (_, _, _); _ } ->
-               let id = ("__camlp4_" ^ ( (string_of_int i) )) in
-               ((
-                (Some
-                  (match tok_match_pl with
-                   | None ->
-                      (( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
-                       p)
-                   | Some (tok_pl, match_pl) ->
-                      ((
-                       (Ast.ExCom
-                         (_loc, (
-                          (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) )))
-                          ), tok_pl)) ), (
-                       (Ast.PaCom (_loc, p, match_pl)) )))) ), act, (
-                (succ i) ))
-            | _ -> accu ) (None , act, 0) psl) in
-        let e =
-         let e1 = (Ast.ExTyc (_loc, act, ( (Ast.TyQuo (_loc, rtvar)) ))) in
-         let e2 =
-          (match tok_match_pl with
-           | None -> e1
-           | Some (Ast.ExCom (_, t1, t2), Ast.PaCom (_, p1, p2)) ->
-              (Ast.ExMat
-                (_loc, (
-                 (Ast.ExTup (_loc, ( (Ast.ExCom (_loc, t1, t2)) ))) ), (
-                 (Ast.McOr
-                   (_loc, (
-                    (Ast.McArr
-                      (_loc, (
-                       (Ast.PaTup (_loc, ( (Ast.PaCom (_loc, p1, p2)) )))
-                       ), ( (Ast.ExNil (_loc)) ), e1)) ), (
-                    (Ast.McArr
-                      (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
-                       ), ( (Ast.ExAsf (_loc)) ))) ))) )))
-           | Some (tok, match_) ->
-              (Ast.ExMat
-                (_loc, tok, (
-                 (Ast.McOr
-                   (_loc, (
-                    (Ast.McArr (_loc, match_, ( (Ast.ExNil (_loc)) ), e1))
-                    ), (
-                    (Ast.McArr
-                      (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
-                       ), ( (Ast.ExAsf (_loc)) ))) ))) )))) in
-         (Ast.ExFun
-           (_loc, (
-            (Ast.McArr
-              (_loc, (
-               (Ast.PaTyc
-                 (_loc, locid, (
-                  (Ast.TyId
-                    (_loc, (
-                     (Ast.IdAcc
-                       (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
-                        (Ast.IdLid (_loc, "t")) ))) ))) ))) ), (
-               (Ast.ExNil (_loc)) ), e2)) ))) in
-        let (txt, _) =
-         (List.fold_left (
-           fun (txt, i) ->
-            fun s ->
-             (match s.pattern with
-              | (None | Some (Ast.PaAny (_))) ->
-                 ((
-                  (Ast.ExFun
-                    (_loc, (
-                     (Ast.McArr
-                       (_loc, ( (Ast.PaAny (_loc)) ), (
-                        (Ast.ExNil (_loc)) ), txt)) ))) ), i)
-              | Some
-                 (Ast.PaAli
-                   (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))), p)) ->
-                 let p = (make_ctyp_patt ( s.styp ) tvar p) in
-                 ((
-                  (Ast.ExFun
-                    (_loc, (
-                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
-                     ))) ), i)
-              | Some (p) when (Ast.is_irrefut_patt p) ->
-                 let p = (make_ctyp_patt ( s.styp ) tvar p) in
-                 ((
-                  (Ast.ExFun
-                    (_loc, (
-                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
-                     ))) ), i)
-              | Some (_) ->
-                 let p =
-                  (make_ctyp_patt ( s.styp ) tvar (
-                    (Ast.PaId
-                      (_loc, (
-                       (Ast.IdLid
-                         (_loc, ( ("__camlp4_" ^ ( (string_of_int i) ))
-                          ))) ))) )) in
-                 ((
-                  (Ast.ExFun
-                    (_loc, (
-                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
-                     ))) ), ( (succ i) ))) ) (e, 0) psl) in
-        let txt =
-         if meta_action.contents then
-          (
-          (Ast.ExApp
-            (_loc, (
-             (Ast.ExId
+                         (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
+                         tok_pl)) ), ( (Ast.PaCom (_loc, p, match_pl)) ))))
+               ), act, ( (succ i) ))
+           | _ -> accu ) (None , act, 0) psl) in
+       let e =
+        let e1 = (Ast.ExTyc (_loc, act, ( (Ast.TyQuo (_loc, rtvar)) ))) in
+        let e2 =
+         (match tok_match_pl with
+          | None -> e1
+          | Some (Ast.ExCom (_, t1, t2), Ast.PaCom (_, p1, p2)) ->
+             (Ast.ExMat
                (_loc, (
-                (Ast.IdAcc
-                  (_loc, ( (Ast.IdUid (_loc, "Obj")) ), (
-                   (Ast.IdLid (_loc, "magic")) ))) ))) ), (
-             (MetaAst.Expr.meta_expr _loc txt) )))
-          )
-         else txt in
-        (Ast.ExApp
+                (Ast.ExTup (_loc, ( (Ast.ExCom (_loc, t1, t2)) ))) ), (
+                (Ast.McOr
+                  (_loc, (
+                   (Ast.McArr
+                     (_loc, (
+                      (Ast.PaTup (_loc, ( (Ast.PaCom (_loc, p1, p2)) )))
+                      ), ( (Ast.ExNil (_loc)) ), e1)) ), (
+                   (Ast.McArr
+                     (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
+                      ), ( (Ast.ExAsf (_loc)) ))) ))) )))
+          | Some (tok, match_) ->
+             (Ast.ExMat
+               (_loc, tok, (
+                (Ast.McOr
+                  (_loc, (
+                   (Ast.McArr (_loc, match_, ( (Ast.ExNil (_loc)) ), e1))
+                   ), (
+                   (Ast.McArr
+                     (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
+                      ), ( (Ast.ExAsf (_loc)) ))) ))) )))) in
+        (Ast.ExFun
           (_loc, (
-           (Ast.ExId
+           (Ast.McArr
              (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdLid (_loc, "mk_action")) ))) ))) ), txt))
+              (Ast.PaTyc
+                (_loc, locid, (
+                 (Ast.TyId
+                   (_loc, (
+                    (Ast.IdAcc
+                      (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
+                       (Ast.IdLid (_loc, "t")) ))) ))) ))) ), (
+              (Ast.ExNil (_loc)) ), e2)) ))) in
+       let (txt, _) =
+        (List.fold_left (
+          fun (txt, i) ->
+           fun s ->
+            (match s.pattern with
+             | (None | Some (Ast.PaAny (_))) ->
+                ((
+                 (Ast.ExFun
+                   (_loc, (
+                    (Ast.McArr
+                      (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
+                       ), txt)) ))) ), i)
+             | Some
+                (Ast.PaAli
+                  (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))), p)) ->
+                let p = (make_ctyp_patt ( s.styp ) tvar p) in
+                ((
+                 (Ast.ExFun
+                   (_loc, (
+                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
+                 ), i)
+             | Some (p) when (Ast.is_irrefut_patt p) ->
+                let p = (make_ctyp_patt ( s.styp ) tvar p) in
+                ((
+                 (Ast.ExFun
+                   (_loc, (
+                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
+                 ), i)
+             | Some (_) ->
+                let p =
+                 (make_ctyp_patt ( s.styp ) tvar (
+                   (Ast.PaId
+                     (_loc, (
+                      (Ast.IdLid
+                        (_loc, ( ("__camlp4_" ^ ( (string_of_int i) )) )))
+                      ))) )) in
+                ((
+                 (Ast.ExFun
+                   (_loc, (
+                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
+                 ), ( (succ i) ))) ) (e, 0) psl) in
+       let txt =
+        if meta_action.contents then
+         (
+         (Ast.ExApp
+           (_loc, (
+            (Ast.ExId
+              (_loc, (
+               (Ast.IdAcc
+                 (_loc, ( (Ast.IdUid (_loc, "Obj")) ), (
+                  (Ast.IdLid (_loc, "magic")) ))) ))) ), (
+            (MetaAst.Expr.meta_expr _loc txt) )))
+         )
+        else txt in
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExId
+            (_loc, (
+             (Ast.IdAcc
+               (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "mk_action")) )))
+             ))) ), txt))
 
  let srules =
   fun loc ->
@@ -853,24 +852,62 @@ and ('e, 'p) symbol = {
          (sl, ac) ) rl)
 
  let rec make_expr =
-  fun ?(gm = "Gram") ->
-   fun entry ->
-    fun tvar ->
-     function
-     | TXmeta (_loc, n, tl, e, t) ->
-        let el =
-         (List.fold_right (
-           fun t ->
-            fun el ->
+  fun entry ->
+   fun tvar ->
+    function
+    | TXmeta (_loc, n, tl, e, t) ->
+       let el =
+        (List.fold_right (
+          fun t ->
+           fun el ->
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExApp
+                 (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
+                  ), ( (make_expr entry "" t) ))) ), el)) ) tl (
+          (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExApp
+            (_loc, (
              (Ast.ExApp
                (_loc, (
-                (Ast.ExApp
+                (Ast.ExId
                   (_loc, (
-                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) ))) ), (
-                   (make_expr entry "" t) ))) ), el)) ) tl (
-           (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
-        (Ast.ExApp
-          (_loc, (
+                   (Ast.IdAcc
+                     (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Smeta"))
+                      ))) ))) ), ( (Ast.ExStr (_loc, n)) ))) ), el)) ), (
+          (Ast.ExApp
+            (_loc, (
+             (Ast.ExId
+               (_loc, (
+                (Ast.IdAcc
+                  (_loc, ( (gm () ) ), (
+                   (Ast.IdAcc
+                     (_loc, ( (Ast.IdUid (_loc, "Action")) ), (
+                      (Ast.IdLid (_loc, "mk")) ))) ))) ))) ), (
+             (make_ctyp_expr t tvar e) ))) )))
+    | TXlist (_loc, min, t, ts) ->
+       let txt = (make_expr entry "" ( t.text )) in
+       (match (min, ts) with
+        | (false, None) ->
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExId
+                (_loc, (
+                 (Ast.IdAcc
+                   (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Slist0")) )))
+                 ))) ), txt))
+        | (true, None) ->
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExId
+                (_loc, (
+                 (Ast.IdAcc
+                   (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Slist1")) )))
+                 ))) ), txt))
+        | (false, Some (s)) ->
+           let x = (make_expr entry tvar ( s.text )) in
            (Ast.ExApp
              (_loc, (
               (Ast.ExApp
@@ -878,190 +915,144 @@ and ('e, 'p) symbol = {
                  (Ast.ExId
                    (_loc, (
                     (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                       (Ast.IdUid (_loc, "Smeta")) ))) ))) ), (
-                 (Ast.ExStr (_loc, n)) ))) ), el)) ), (
+                      (_loc, ( (gm () ) ), (
+                       (Ast.IdUid (_loc, "Slist0sep")) ))) ))) ), txt))
+              ), x))
+        | (true, Some (s)) ->
+           let x = (make_expr entry tvar ( s.text )) in
            (Ast.ExApp
              (_loc, (
-              (Ast.ExId
+              (Ast.ExApp
                 (_loc, (
-                 (Ast.IdAcc
-                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.ExId
+                   (_loc, (
                     (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, "Action")) ), (
-                       (Ast.IdLid (_loc, "mk")) ))) ))) ))) ), (
-              (make_ctyp_expr t tvar e) ))) )))
-     | TXlist (_loc, min, t, ts) ->
-        let txt = (make_expr entry "" ( t.text )) in
-        (match (min, ts) with
-         | (false, None) ->
+                      (_loc, ( (gm () ) ), (
+                       (Ast.IdUid (_loc, "Slist1sep")) ))) ))) ), txt))
+              ), x)))
+    | TXnext (_loc) ->
+       (Ast.ExId
+         (_loc, (
+          (Ast.IdAcc
+            (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Snext")) ))) )))
+    | TXnterm (_loc, n, lev) ->
+       (match lev with
+        | Some (lab) ->
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExId
+                   (_loc, (
+                    (Ast.IdAcc
+                      (_loc, ( (gm () ) ), (
+                       (Ast.IdUid (_loc, "Snterml")) ))) ))) ), (
+                 (Ast.ExApp
+                   (_loc, (
+                    (Ast.ExId
+                      (_loc, (
+                       (Ast.IdAcc
+                         (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "obj"))
+                          ))) ))) ), (
+                    (Ast.ExTyc
+                      (_loc, ( n.expr ), (
+                       (Ast.TyApp
+                         (_loc, (
+                          (Ast.TyId
+                            (_loc, (
+                             (Ast.IdAcc
+                               (_loc, ( (gm () ) ), (
+                                (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                          (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) )))
+              ), ( (Ast.ExStr (_loc, lab)) )))
+        | None ->
+           if (( n.tvar ) = tvar) then
+            (
+            (Ast.ExId
+              (_loc, (
+               (Ast.IdAcc
+                 (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Sself")) )))
+               )))
+            )
+           else
             (Ast.ExApp
               (_loc, (
                (Ast.ExId
                  (_loc, (
                   (Ast.IdAcc
-                    (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                     (Ast.IdUid (_loc, "Slist0")) ))) ))) ), txt))
-         | (true, None) ->
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExId
-                 (_loc, (
-                  (Ast.IdAcc
-                    (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                     (Ast.IdUid (_loc, "Slist1")) ))) ))) ), txt))
-         | (false, Some (s)) ->
-            let x = (make_expr entry tvar ( s.text )) in
-            (Ast.ExApp
-              (_loc, (
+                    (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Snterm"))
+                     ))) ))) ), (
                (Ast.ExApp
                  (_loc, (
                   (Ast.ExId
                     (_loc, (
                      (Ast.IdAcc
-                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdUid (_loc, "Slist0sep")) ))) ))) ), txt))
-               ), x))
-         | (true, Some (s)) ->
-            let x = (make_expr entry tvar ( s.text )) in
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExId
-                    (_loc, (
-                     (Ast.IdAcc
-                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdUid (_loc, "Slist1sep")) ))) ))) ), txt))
-               ), x)))
-     | TXnext (_loc) ->
-        (Ast.ExId
-          (_loc, (
-           (Ast.IdAcc
-             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-              (Ast.IdUid (_loc, "Snext")) ))) )))
-     | TXnterm (_loc, n, lev) ->
-        (match lev with
-         | Some (lab) ->
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExId
-                    (_loc, (
-                     (Ast.IdAcc
-                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdUid (_loc, "Snterml")) ))) ))) ), (
-                  (Ast.ExApp
-                    (_loc, (
-                     (Ast.ExId
+                       (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "obj"))
+                        ))) ))) ), (
+                  (Ast.ExTyc
+                    (_loc, ( n.expr ), (
+                     (Ast.TyApp
                        (_loc, (
-                        (Ast.IdAcc
-                          (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                           (Ast.IdLid (_loc, "obj")) ))) ))) ), (
-                     (Ast.ExTyc
-                       (_loc, ( n.expr ), (
-                        (Ast.TyApp
+                        (Ast.TyId
                           (_loc, (
-                           (Ast.TyId
-                             (_loc, (
-                              (Ast.IdAcc
-                                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                                 (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                           (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) )))
-               ), ( (Ast.ExStr (_loc, lab)) )))
-         | None ->
-            if (( n.tvar ) = tvar) then
-             (
+                           (Ast.IdAcc
+                             (_loc, ( (gm () ) ), (
+                              (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                        (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) ))))
+    | TXopt (_loc, t) ->
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExId
+            (_loc, (
+             (Ast.IdAcc
+               (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Sopt")) ))) )))
+          ), ( (make_expr entry "" t) )))
+    | TXtry (_loc, t) ->
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExId
+            (_loc, (
+             (Ast.IdAcc
+               (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Stry")) ))) )))
+          ), ( (make_expr entry "" t) )))
+    | TXrules (_loc, rl) ->
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExApp
+            (_loc, (
              (Ast.ExId
                (_loc, (
                 (Ast.IdAcc
-                  (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                   (Ast.IdUid (_loc, "Sself")) ))) )))
-             )
-            else
-             (Ast.ExApp
-               (_loc, (
-                (Ast.ExId
-                  (_loc, (
-                   (Ast.IdAcc
-                     (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                      (Ast.IdUid (_loc, "Snterm")) ))) ))) ), (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExId
-                     (_loc, (
-                      (Ast.IdAcc
-                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                         (Ast.IdLid (_loc, "obj")) ))) ))) ), (
-                   (Ast.ExTyc
-                     (_loc, ( n.expr ), (
-                      (Ast.TyApp
-                        (_loc, (
-                         (Ast.TyId
-                           (_loc, (
-                            (Ast.IdAcc
-                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                         (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) ))))
-     | TXopt (_loc, t) ->
-        (Ast.ExApp
-          (_loc, (
-           (Ast.ExId
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdUid (_loc, "Sopt")) ))) ))) ), (
-           (make_expr entry "" t) )))
-     | TXtry (_loc, t) ->
-        (Ast.ExApp
-          (_loc, (
-           (Ast.ExId
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdUid (_loc, "Stry")) ))) ))) ), (
-           (make_expr entry "" t) )))
-     | TXrules (_loc, rl) ->
-        (Ast.ExApp
-          (_loc, (
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExId
-                (_loc, (
-                 (Ast.IdAcc
-                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                    (Ast.IdLid (_loc, "srules")) ))) ))) ), ( entry.expr
-              ))) ), ( (make_expr_rules _loc entry rl "") )))
-     | TXself (_loc) ->
-        (Ast.ExId
-          (_loc, (
-           (Ast.IdAcc
-             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-              (Ast.IdUid (_loc, "Sself")) ))) )))
-     | TXkwd (_loc, kwd) ->
-        (Ast.ExApp
-          (_loc, (
-           (Ast.ExId
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdUid (_loc, "Skeyword")) ))) ))) ), (
-           (Ast.ExStr (_loc, kwd)) )))
-     | TXtok (_loc, match_fun, descr) ->
-        (Ast.ExApp
-          (_loc, (
-           (Ast.ExId
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdUid (_loc, "Stoken")) ))) ))) ), (
-           (Ast.ExTup
-             (_loc, (
-              (Ast.ExCom
-                (_loc, match_fun, (
-                 (Ast.ExStr (_loc, ( (Ast.safe_string_escaped descr) )))
-                 ))) ))) )))
+                  (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "srules")) )))
+                ))) ), ( entry.expr ))) ), (
+          (make_expr_rules _loc entry rl "") )))
+    | TXself (_loc) ->
+       (Ast.ExId
+         (_loc, (
+          (Ast.IdAcc
+            (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Sself")) ))) )))
+    | TXkwd (_loc, kwd) ->
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExId
+            (_loc, (
+             (Ast.IdAcc
+               (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Skeyword")) )))
+             ))) ), ( (Ast.ExStr (_loc, kwd)) )))
+    | TXtok (_loc, match_fun, descr) ->
+       (Ast.ExApp
+         (_loc, (
+          (Ast.ExId
+            (_loc, (
+             (Ast.IdAcc
+               (_loc, ( (gm () ) ), ( (Ast.IdUid (_loc, "Stoken")) ))) )))
+          ), (
+          (Ast.ExTup
+            (_loc, (
+             (Ast.ExCom
+               (_loc, match_fun, (
+                (Ast.ExStr (_loc, ( (Ast.safe_string_escaped descr) )))
+                ))) ))) )))
  and make_expr_rules =
   fun _loc ->
    fun n ->
@@ -1124,242 +1115,221 @@ and ('e, 'p) symbol = {
    fun min -> fun sep -> fun symb -> (TXlist (loc, min, symb, sep))
 
  let text_of_entry =
-  fun ?(gm = "Gram") ->
-   fun _loc ->
-    fun e ->
-     let ent =
-      let x = e.name in
-      let _loc = (e.name).loc in
-      (Ast.ExTyc
-        (_loc, ( x.expr ), (
-         (Ast.TyApp
-           (_loc, (
-            (Ast.TyId
-              (_loc, (
-               (Ast.IdAcc
-                 (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                  (Ast.IdLid (_loc, "t")) ))) ))) ), (
-            (Ast.TyQuo (_loc, ( x.tvar ))) ))) ))) in
-     let pos =
-      (match e.pos with
-       | Some (pos) ->
-          (Ast.ExApp
-            (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
-             pos))
-       | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-     let txt =
-      (List.fold_right (
-        fun level ->
-         fun txt ->
-          let lab =
-           (match level.label with
-            | Some (lab) ->
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ), (
-                  (Ast.ExStr (_loc, lab)) )))
-            | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-          let ass =
-           (match level.assoc with
-            | Some (ass) ->
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
-                  ass))
-            | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-          let txt =
-           let rl =
-            (srules _loc ( (e.name).tvar ) ( level.rules ) (
-              (e.name).tvar )) in
-           let e = (make_expr_rules _loc ( e.name ) rl ( (e.name).tvar )) in
-           (Ast.ExApp
+  fun _loc ->
+   fun e ->
+    let ent =
+     let x = e.name in
+     let _loc = (e.name).loc in
+     (Ast.ExTyc
+       (_loc, ( x.expr ), (
+        (Ast.TyApp
+          (_loc, (
+           (Ast.TyId
              (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "t")) ))) ))) ),
+           ( (Ast.TyQuo (_loc, ( x.tvar ))) ))) ))) in
+    let pos =
+     (match e.pos with
+      | Some (pos) ->
+         (Ast.ExApp
+           (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
+            pos))
+      | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+    let txt =
+     (List.fold_right (
+       fun level ->
+        fun txt ->
+         let lab =
+          (match level.label with
+           | Some (lab) ->
               (Ast.ExApp
-                (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
-                 ), (
-                 (Ast.ExTup
-                   (_loc, (
-                    (Ast.ExCom
-                      (_loc, lab, ( (Ast.ExCom (_loc, ass, e)) ))) ))) )))
-              ), txt)) in
-          txt ) ( e.levels ) (
-        (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
-     (ent, pos, txt)
+                (_loc, (
+                 (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ), (
+                 (Ast.ExStr (_loc, lab)) )))
+           | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+         let ass =
+          (match level.assoc with
+           | Some (ass) ->
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
+                 ass))
+           | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+         let txt =
+          let rl =
+           (srules _loc ( (e.name).tvar ) ( level.rules ) ( (e.name).tvar
+             )) in
+          let e = (make_expr_rules _loc ( e.name ) rl ( (e.name).tvar )) in
+          (Ast.ExApp
+            (_loc, (
+             (Ast.ExApp
+               (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
+                ), (
+                (Ast.ExTup
+                  (_loc, (
+                   (Ast.ExCom (_loc, lab, ( (Ast.ExCom (_loc, ass, e)) )))
+                   ))) ))) ), txt)) in
+         txt ) ( e.levels ) (
+       (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
+    (ent, pos, txt)
 
  let let_in_of_extend =
-  fun ?(gm = "Gram") ->
-   fun _loc ->
-    fun gram ->
-     fun gl ->
-      fun el ->
-       fun args ->
-        (match gl with
-         | None -> args
-         | Some (nl) ->
-            (
-            (check_use nl el)
-            );
-            let ll =
-             let same_tvar =
-              fun e -> fun n -> (( (e.name).tvar ) = ( n.tvar )) in
-             (List.fold_right (
-               fun e ->
-                fun ll ->
-                 (match (e.name).expr with
-                  | Ast.ExId (_, Ast.IdLid (_, _)) ->
-                     if (List.exists ( (same_tvar e) ) nl) then ll
-                     else if (List.exists ( (same_tvar e) ) ll) then ll
-                     else ( ( e.name ) ) :: ll 
-                  | _ -> ll) ) el [] ) in
-            let local_binding_of_name =
-             function
-             | {expr = Ast.ExId (_, Ast.IdLid (_, i));
-                tvar = x;
-                loc = _loc} ->
-                (Ast.BiEq
-                  (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) )))
-                   ), (
-                   (Ast.ExTyc
+  fun _loc ->
+   fun gram ->
+    fun gl ->
+     fun el ->
+      fun args ->
+       (match gl with
+        | None -> args
+        | Some (nl) ->
+           (
+           (check_use nl el)
+           );
+           let ll =
+            let same_tvar =
+             fun e -> fun n -> (( (e.name).tvar ) = ( n.tvar )) in
+            (List.fold_right (
+              fun e ->
+               fun ll ->
+                (match (e.name).expr with
+                 | Ast.ExId (_, Ast.IdLid (_, _)) ->
+                    if (List.exists ( (same_tvar e) ) nl) then ll
+                    else if (List.exists ( (same_tvar e) ) ll) then ll
+                    else ( ( e.name ) ) :: ll 
+                 | _ -> ll) ) el [] ) in
+           let local_binding_of_name =
+            function
+            | {expr = Ast.ExId (_, Ast.IdLid (_, i));
+               tvar = x;
+               loc = _loc} ->
+               (Ast.BiEq
+                 (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) ),
+                  (
+                  (Ast.ExTyc
+                    (_loc, (
+                     (Ast.ExApp
+                       (_loc, (
+                        (Ast.ExId
+                          (_loc, (
+                           (Ast.IdLid (_loc, "grammar_entry_create")) )))
+                        ), ( (Ast.ExStr (_loc, i)) ))) ), (
+                     (Ast.TyApp
+                       (_loc, (
+                        (Ast.TyId
+                          (_loc, (
+                           (Ast.IdAcc
+                             (_loc, ( (gm () ) ), (
+                              (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                        (Ast.TyQuo (_loc, x)) ))) ))) )))
+            | _ -> (failwith "internal error in the Grammar extension") in
+           let expr_of_name =
+            fun {expr = e;
+             tvar = x;
+             loc = _loc} ->
+             (Ast.ExTyc
+               (_loc, e, (
+                (Ast.TyApp
+                  (_loc, (
+                   (Ast.TyId
                      (_loc, (
-                      (Ast.ExApp
-                        (_loc, (
-                         (Ast.ExId
-                           (_loc, (
-                            (Ast.IdLid (_loc, "grammar_entry_create")) )))
-                         ), ( (Ast.ExStr (_loc, i)) ))) ), (
-                      (Ast.TyApp
-                        (_loc, (
-                         (Ast.TyId
-                           (_loc, (
-                            (Ast.IdAcc
-                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                         (Ast.TyQuo (_loc, x)) ))) ))) )))
-             | _ -> (failwith "internal error in the Grammar extension") in
-            let expr_of_name =
-             fun {expr = e;
-              tvar = x;
-              loc = _loc} ->
-              (Ast.ExTyc
-                (_loc, e, (
-                 (Ast.TyApp
-                   (_loc, (
-                    (Ast.TyId
-                      (_loc, (
-                       (Ast.IdAcc
-                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                          (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                    (Ast.TyQuo (_loc, x)) ))) ))) in
-            let e =
-             (match ll with
-              | [] -> args
-              | (x :: xs) ->
-                 let locals =
-                  (List.fold_right (
-                    fun name ->
-                     fun acc ->
-                      (Ast.BiAnd
-                        (_loc, acc, ( (local_binding_of_name name) ))) )
-                    xs ( (local_binding_of_name x) )) in
-                 let entry_mk =
-                  (match gram with
-                   | Some (g) ->
-                      (Ast.ExApp
-                        (_loc, (
-                         (Ast.ExId
-                           (_loc, (
-                            (Ast.IdAcc
-                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                               (Ast.IdLid (_loc, "mk")) ))) ))) ), (
-                         (Ast.ExId (_loc, g)) )))
-                   | None ->
-                      (Ast.ExId
-                        (_loc, (
-                         (Ast.IdAcc
-                           (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                            (Ast.IdLid (_loc, "mk")) ))) )))) in
-                 (Ast.ExLet
-                   (_loc, Ast.ReNil , (
-                    (Ast.BiEq
-                      (_loc, (
-                       (Ast.PaId
-                         (_loc, (
-                          (Ast.IdLid (_loc, "grammar_entry_create")) )))
-                       ), entry_mk)) ), (
-                    (Ast.ExLet (_loc, Ast.ReNil , locals, args)) )))) in
-            (match nl with
-             | [] -> e
+                      (Ast.IdAcc
+                        (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "t")) )))
+                      ))) ), ( (Ast.TyQuo (_loc, x)) ))) ))) in
+           let e =
+            (match ll with
+             | [] -> args
              | (x :: xs) ->
-                let globals =
+                let locals =
                  (List.fold_right (
                    fun name ->
                     fun acc ->
                      (Ast.BiAnd
-                       (_loc, acc, (
-                        (Ast.BiEq
-                          (_loc, ( (Ast.PaAny (_loc)) ), (
-                           (expr_of_name name) ))) ))) ) xs (
+                       (_loc, acc, ( (local_binding_of_name name) ))) )
+                   xs ( (local_binding_of_name x) )) in
+                let entry_mk =
+                 (match gram with
+                  | Some (g) ->
+                     (Ast.ExApp
+                       (_loc, (
+                        (Ast.ExId
+                          (_loc, (
+                           (Ast.IdAcc
+                             (_loc, ( (gm () ) ), (
+                              (Ast.IdLid (_loc, "mk")) ))) ))) ), (
+                        (Ast.ExId (_loc, g)) )))
+                  | None ->
+                     (Ast.ExId
+                       (_loc, (
+                        (Ast.IdAcc
+                          (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "mk"))
+                           ))) )))) in
+                (Ast.ExLet
+                  (_loc, Ast.ReNil , (
                    (Ast.BiEq
-                     (_loc, ( (Ast.PaAny (_loc)) ), ( (expr_of_name x) )))
-                   )) in
-                (Ast.ExLet (_loc, Ast.ReNil , globals, e))))
-
- class subst gmod =
-  object
-   inherit Ast.map as super
-   method! ident =
-    function
-    | Ast.IdUid (_, x) when (x = gm) -> gmod
-    | x -> (super#ident x)
-  end
-
- let subst_gmod = fun ast -> fun gmod -> ((((new subst) gmod)#expr) ast)
+                     (_loc, (
+                      (Ast.PaId
+                        (_loc, (
+                         (Ast.IdLid (_loc, "grammar_entry_create")) )))
+                      ), entry_mk)) ), (
+                   (Ast.ExLet (_loc, Ast.ReNil , locals, args)) )))) in
+           (match nl with
+            | [] -> e
+            | (x :: xs) ->
+               let globals =
+                (List.fold_right (
+                  fun name ->
+                   fun acc ->
+                    (Ast.BiAnd
+                      (_loc, acc, (
+                       (Ast.BiEq
+                         (_loc, ( (Ast.PaAny (_loc)) ), (
+                          (expr_of_name name) ))) ))) ) xs (
+                  (Ast.BiEq
+                    (_loc, ( (Ast.PaAny (_loc)) ), ( (expr_of_name x) )))
+                  )) in
+               (Ast.ExLet (_loc, Ast.ReNil , globals, e))))
 
  let text_of_functorial_extend =
-  fun ?(gm = "Gram") ->
-   fun _loc ->
-    fun gmod ->
-     fun gram ->
-      fun gl ->
-       fun el ->
-        let args =
-         let el =
-          (List.map (
-            fun e ->
-             let (ent, pos, txt) = (text_of_entry ( (e.name).loc ) e) in
-             (Ast.ExApp
-               (_loc, (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExId
-                     (_loc, (
-                      (Ast.IdAcc
-                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                         (Ast.IdLid (_loc, "extend")) ))) ))) ), ent)) ),
-                (
-                (Ast.ExApp
-                  (_loc, (
-                   (Ast.ExFun
-                     (_loc, (
-                      (Ast.McArr
-                        (_loc, (
-                         (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-                         ), ( (Ast.ExNil (_loc)) ), (
-                         (Ast.ExTup
-                           (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) )))
-                      ))) ), (
-                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) )))
-            ) el) in
-         (match el with
-          | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-          | (e :: []) -> e
-          | (e :: el) ->
-             (Ast.ExSeq
-               (_loc, (
-                (List.fold_left (
-                  fun acc -> fun x -> (Ast.ExSem (_loc, acc, x)) ) e el)
-                )))) in
-        (subst_gmod ( (let_in_of_extend _loc gram gl el args) ) gmod)
+  fun _loc ->
+   fun gram ->
+    fun gl ->
+     fun el ->
+      let args =
+       let el =
+        (List.map (
+          fun e ->
+           let (ent, pos, txt) = (text_of_entry ( (e.name).loc ) e) in
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExId
+                   (_loc, (
+                    (Ast.IdAcc
+                      (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "extend"))
+                       ))) ))) ), ent)) ), (
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExFun
+                   (_loc, (
+                    (Ast.McArr
+                      (_loc, (
+                       (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ),
+                       ( (Ast.ExNil (_loc)) ), (
+                       (Ast.ExTup
+                         (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) ))) )))
+                 ), ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) )))
+              ))) ) el) in
+       (match el with
+        | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
+        | (e :: []) -> e
+        | (e :: el) ->
+           (Ast.ExSeq
+             (_loc, (
+              (List.fold_left (
+                fun acc -> fun x -> (Ast.ExSem (_loc, acc, x)) ) e el) )))) in
+      (let_in_of_extend _loc gram gl el args)
 
  let wildcarder =
   object (self)
@@ -1447,6 +1417,9 @@ and ('e, 'p) symbol = {
          and qualid = ((grammar_entry_create "qualid") : 'qualid Gram.t)
          and qualuid =
           ((grammar_entry_create "qualuid") : 'qualuid Gram.t)
+         and delete_rule_header =
+          ((grammar_entry_create "delete_rule_header") :
+            'delete_rule_header Gram.t)
          and delete_rule_body =
           ((grammar_entry_create "delete_rule_body") :
             'delete_rule_body Gram.t)
@@ -1493,11 +1466,13 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) )] ), (
                    (Gram.mk_action (
-                     fun (g :
+                     fun (t :
                        'qualuid) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       ((None , g) : 'extend_header) )) ));
+                       (let old = (gm () ) in
+                        let () = (grammar_module_name := t) in
+                        (None , old) : 'extend_header) )) ));
                   ((
                    [( (Gram.Skeyword ("(")) ); (
                     (Gram.Snterm (Gram.obj ( (qualid : 'qualid Gram.t) )))
@@ -1515,7 +1490,9 @@ and ('e, 'p) symbol = {
                          fun _ ->
                           fun (_loc :
                             FanLoc.t) ->
-                           ((( (Some (i)) ), t) : 'extend_header) )) ))]
+                           (let old = (gm () ) in
+                            let () = (grammar_module_name := t) in
+                            (( (Some (i)) ), old) : 'extend_header) )) ))]
                  ))] ))) () ) ))
          );
          (
@@ -1549,13 +1526,15 @@ and ('e, 'p) symbol = {
                        'e__1 list) ->
                       fun (global_list :
                         'global option) ->
-                       fun ((gram, g) :
+                       fun ((gram, old) :
                          'extend_header) ->
                         fun (_loc :
                           FanLoc.t) ->
-                         ((text_of_functorial_extend _loc g gram
-                            global_list el) : 'extend_body) )) ))] ))] )))
-             () ) ))
+                         (let res =
+                           (text_of_functorial_extend _loc gram
+                             global_list el) in
+                          let () = (grammar_module_name := old) in res :
+                           'extend_body) )) ))] ))] ))) () ) ))
          );
          (
          (Gram.extend ( (delete_rule_body : 'delete_rule_body Gram.t) ) (
@@ -1566,7 +1545,9 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) ); (
+                      (Gram.obj (
+                        (delete_rule_header : 'delete_rule_header Gram.t)
+                        ))) ); (
                     (Gram.Snterm (Gram.obj ( (name : 'name Gram.t) ))) );
                     ( (Gram.Skeyword (":")) ); (
                     (Gram.Slist0sep
@@ -1582,24 +1563,44 @@ and ('e, 'p) symbol = {
                       fun _ ->
                        fun (n :
                          'name) ->
-                        fun (g :
-                          'qualuid) ->
+                        fun (old :
+                          'delete_rule_header) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (let (e, b) = (expr_of_delete_rule _loc n sl) in
-                           (subst_gmod (
-                             (Ast.ExApp
-                               (_loc, (
-                                (Ast.ExApp
-                                  (_loc, (
-                                   (Ast.ExId
-                                     (_loc, (
-                                      (Ast.IdAcc
-                                        (_loc, ( (Ast.IdUid (_loc, gm))
-                                         ), (
-                                         (Ast.IdLid (_loc, "delete_rule"))
-                                         ))) ))) ), e)) ), b)) ) g) :
+                           let res =
+                            (Ast.ExApp
+                              (_loc, (
+                               (Ast.ExApp
+                                 (_loc, (
+                                  (Ast.ExId
+                                    (_loc, (
+                                     (Ast.IdAcc
+                                       (_loc, ( (gm () ) ), (
+                                        (Ast.IdLid (_loc, "delete_rule"))
+                                        ))) ))) ), e)) ), b)) in
+                           let () = (grammar_module_name := old) in res :
                             'delete_rule_body) )) ))] ))] ))) () ) ))
+         );
+         (
+         (Gram.extend ( (delete_rule_header : 'delete_rule_header Gram.t)
+           ) (
+           ((fun ()
+               ->
+              (None , (
+               [(None , None , (
+                 [((
+                   [(
+                    (Gram.Snterm
+                      (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) )] ), (
+                   (Gram.mk_action (
+                     fun (g :
+                       'qualuid) ->
+                      fun (_loc :
+                        FanLoc.t) ->
+                       (let old = (gm () ) in
+                        let () = (grammar_module_name := g) in old :
+                         'delete_rule_header) )) ))] ))] ))) () ) ))
          );
          (
          (Gram.extend ( (qualuid : 'qualuid Gram.t) ) (
@@ -2763,12 +2764,48 @@ and ('e, 'p) symbol = {
 
  let sfold =
   fun _loc ->
-   fun ?(gm = "Gram") ->
-    fun n ->
-     fun foldfun ->
-      fun f ->
-       fun e ->
-        fun s ->
+   fun n ->
+    fun foldfun ->
+     fun f ->
+      fun e ->
+       fun s ->
+        let styp = (STquo (_loc, ( (new_type_var () ) ))) in
+        let e =
+         (Ast.ExApp
+           (_loc, (
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExId
+                 (_loc, (
+                  (Ast.IdAcc
+                    (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, foldfun)) )))
+                  ))) ), f)) ), e)) in
+        let t =
+         (STapp
+           (_loc, (
+            (STapp
+              (_loc, (
+               (STtyp
+                 ((Ast.TyApp
+                    (_loc, (
+                     (Ast.TyId
+                       (_loc, (
+                        (Ast.IdAcc
+                          (_loc, ( (gm () ) ), (
+                           (Ast.IdLid (_loc, "fold")) ))) ))) ), (
+                     (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
+        {used = ( s.used );
+         text = ( (TXmeta (_loc, n, ( [( s.text )] ), e, t)) );
+         styp = styp; pattern = None }
+
+ let sfoldsep =
+  fun _loc ->
+   fun n ->
+    fun foldfun ->
+     fun f ->
+      fun e ->
+       fun s ->
+        fun sep ->
          let styp = (STquo (_loc, ( (new_type_var () ) ))) in
          let e =
           (Ast.ExApp
@@ -2778,8 +2815,8 @@ and ('e, 'p) symbol = {
                 (Ast.ExId
                   (_loc, (
                    (Ast.IdAcc
-                     (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                      (Ast.IdLid (_loc, foldfun)) ))) ))) ), f)) ), e)) in
+                     (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, foldfun))
+                      ))) ))) ), f)) ), e)) in
          let t =
           (STapp
             (_loc, (
@@ -2791,51 +2828,13 @@ and ('e, 'p) symbol = {
                       (Ast.TyId
                         (_loc, (
                          (Ast.IdAcc
-                           (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                            (Ast.IdLid (_loc, "fold")) ))) ))) ), (
+                           (_loc, ( (gm () ) ), (
+                            (Ast.IdLid (_loc, "foldsep")) ))) ))) ), (
                       (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
-         {used = ( s.used );
-          text = ( (TXmeta (_loc, n, ( [( s.text )] ), e, t)) );
+         {used = ( (( s.used ) @ ( sep.used )) );
+          text = (
+           (TXmeta (_loc, n, ( [( s.text ); ( sep.text )] ), e, t)) );
           styp = styp; pattern = None }
-
- let sfoldsep =
-  fun ?(gm = "Gram") ->
-   fun _loc ->
-    fun n ->
-     fun foldfun ->
-      fun f ->
-       fun e ->
-        fun s ->
-         fun sep ->
-          let styp = (STquo (_loc, ( (new_type_var () ) ))) in
-          let e =
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId
-                   (_loc, (
-                    (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                       (Ast.IdLid (_loc, foldfun)) ))) ))) ), f)) ), e)) in
-          let t =
-           (STapp
-             (_loc, (
-              (STapp
-                (_loc, (
-                 (STtyp
-                   ((Ast.TyApp
-                      (_loc, (
-                       (Ast.TyId
-                         (_loc, (
-                          (Ast.IdAcc
-                            (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                             (Ast.IdLid (_loc, "foldsep")) ))) ))) ), (
-                       (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
-          {used = ( (( s.used ) @ ( sep.used )) );
-           text = (
-            (TXmeta (_loc, n, ( [( s.text ); ( sep.text )] ), e, t)) );
-           styp = styp; pattern = None }
 
  let _ = let _ = (symbol : 'symbol Gram.t) in
          let grammar_entry_create = Gram.mk in

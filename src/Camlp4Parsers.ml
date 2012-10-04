@@ -116,7 +116,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   let _loc = FanLoc.ghost;
   (* let gm = "Camlp4Grammar__"; *)
-  let grammar_module_name = ref <:ident< Gram >>;
+  (* let grammar_module_name = ref <:ident< Gram >>; *)
+  let grammar_module_name = ref <:ident< $(uid:"")>> ;
   let gm () = !grammar_module_name;
     
   let mark_used modif ht n =
@@ -307,7 +308,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       else txt  in
     <:expr< $(id:gm()).mk_action $txt >>
   ;
-
   let srules loc t rl tvar =
     List.map
       (fun r ->
@@ -548,32 +548,35 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ "EXTEND"; e = extend_body; "END" -> e
         | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] 
     extend_header:
-      [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> begin
-        (* grammar_module_name := t; *)
-        (Some i,t)
-      end
-        | g = qualuid -> begin
-            (* grammar_module_name := g; *)
-            (None,g)
+      [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> 
+        let old=gm() in 
+        let () = grammar_module_name := t in
+        (Some i,old)
+        | t = qualuid -> begin
+            let old = gm() in
+            let () = grammar_module_name := t in 
+            (None,old)
         end] ]
     extend_body:
-      [ [ (gram,gmod) = extend_header; global_list = OPT global;
+      [ [ (gram,old) = extend_header; global_list = OPT global;
           el = LIST1 [ e = entry  -> e ] -> (* semi_sep removed *)
-            let old = gm () in
-            let () = grammar_module_name := gmod in 
             let res = text_of_functorial_extend _loc  gram global_list el in 
             let () = grammar_module_name := old in
             res 
         ] ] 
     delete_rule_body:
-      [ [ g = qualuid; n = name; ":"; sl = LIST0 symbol SEP semi_sep -> 
-        let old = gm () in 
-        let () = grammar_module_name := g  in
+      [ [ old = delete_rule_header; n = name; ":"; sl = LIST0 symbol SEP semi_sep -> 
         let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
         let res =  <:expr< $(id:gm()).delete_rule $e $b >>  in
         let () = grammar_module_name := old  in 
         res
-        ] ] 
+        ] ]
+     delete_rule_header: (*for side effets, parser action *)
+        [[ g = qualuid ->
+          let old = gm () in
+          let () = grammar_module_name := g in
+          old
+         ]]
     qualuid:
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | i = UIDENT -> <:ident< $uid:i >> ] ] 

@@ -395,5 +395,19 @@ two printers
 
   $uid?:blabla
 
+
+  #+BEGIN_SRC ocaml
+  <:expr< $a.$b>> == ExAcc
+  let _ = (Ast.ExAcc (_loc, a, b))
+  #+END_SRC
+
+  #+BEGIN_SRC ocaml
+  <:expr< $(id:<:ident< $a.$b>>) >> == IdAcc
+  let _ = (Ast.ExId (_loc, ( (Ast.IdAcc (_loc, a, b)) )))
+  #+END_SRC
+
+  Take care =ExAcc= two fields are of type =expr= or the definition of
+  =ExAcc= is wrong?
+
 * Wishes
   hope to expose float_repres

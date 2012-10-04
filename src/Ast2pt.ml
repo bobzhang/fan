@@ -474,7 +474,16 @@ let override_flag loc = fun
   
 
 
-
+(*
+  {[
+  Ast2pt.expr (Ast.ExId (_loc, ( (Ast.IdAcc (_loc, Ast.IdUid (_loc, "U"), Ast.IdLid(_loc,"g"))) )));;
+  - : Parsetree.expression =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "U", "g"); loc = };
+  pexp_loc = }
+  ]}
+ *)
 let rec expr = fun (* expr -> expression*)
   [ ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
     let (e, l) =
