@@ -4,8 +4,9 @@ module Make (Lexer : Sig.Lexer)
   module Delete    = Delete.Make    Structure;
   module Insert    = Insert.Make    Structure;
   module Entry     = Entry.Make     Structure;
+  include Entry;   
   module Fold      = Fold.Make      Structure;
-  module Tools     = Tools.Make     Structure;
+  (* module Tools     = Tools.Make     Structure; *)
 
   include Structure;
 

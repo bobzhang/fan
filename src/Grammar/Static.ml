@@ -5,11 +5,8 @@ module Make (Lexer : Sig.Lexer)
   module Structure = Structure.Make Lexer;
   module Delete = Delete.Make Structure;
   module Insert = Insert.Make Structure;
-  module Fold = Fold.Make Structure;
-  module Tools = Tools.Make Structure;
-  
   include Structure;
-
+  module Fold = Fold.Make Structure;
   let gram =
     let gkeywords = Hashtbl.create 301 in
     {
@@ -19,23 +16,15 @@ module Make (Lexer : Sig.Lexer)
       warning_verbose = ref True; (* FIXME *)
       error_verbose = FanConfig.verbose
     };
-
-  module Entry = struct
-    module E = Entry.Make Structure;
-    type t 'a = E.t 'a;
-    let mk = E.mk gram;
-    let of_parser name strm = E.of_parser gram name strm;
-    let setup_parser = E.setup_parser;
-    let name = E.name;
-    let print = E.print;
-    let clear = E.clear;
-    let dump = E.dump;
-
-    let obj x = x;
-  end;
-  include Entry;  
-  let trace_parser = Entry.E.trace_parser;
     
+  module Entry = struct
+    include Entry.Make Structure;
+
+    let mk = mk gram;
+    let of_parser name strm = of_parser gram name strm;
+  end;
+  include Entry;      
+  
   let get_filter () = gram.gfilter;
 
   let lex loc cs = gram.glexer loc cs;
@@ -43,8 +32,6 @@ module Make (Lexer : Sig.Lexer)
   let lex_string loc str = lex loc (Stream.of_string str);
 
   let filter ts = Tools.keep_prev_loc (Token.Filter.filter gram.gfilter ts);
-
-  let parse_origin_tokens (entry:Entry.t 'a) ts : 'a= Entry.E.parse_origin_tokens entry ts;
 
   let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
 

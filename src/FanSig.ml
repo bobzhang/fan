@@ -186,7 +186,14 @@ module type SEntry =           sig
             val clear : 'a t -> unit
               
           end
-        
+module type DEntry = sig
+  include SEntry
+  type gram 
+  (** Make a new entry from the given name. *)
+  val mk : gram -> string -> 'a t
+  (** Make a new entry from a name and an hand made token parser. *)
+  val of_parser : gram -> string -> (token_stream -> 'a) -> 'a t
+end
 
 
 
@@ -290,36 +297,11 @@ module Grammar =
         (** Make a new grammar. *)
         val mk : unit -> gram
           
-        module Entry :
-          sig
-            (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-            type 'a t
+        module Entry :DEntry with
+        type token_stream:=token_stream and
+        type internal_entry := internal_entry and
+        type gram := gram     
             
-            (** Make a new entry from the given name. *)
-            val mk : gram -> string -> 'a t
-              
-            (** Make a new entry from a name and an hand made token parser. *)
-            val of_parser : gram -> string -> (token_stream -> 'a) -> 'a t
-              
-            (** Clear the entry and setup this parser instead. *)
-            val setup_parser : 'a t -> (token_stream -> 'a) -> unit
-              
-            (** Get the entry name. *)
-            val name : 'a t -> string
-              
-            (** Print the given entry into the given formatter. *)
-            val print : Format.formatter -> 'a t -> unit
-              
-            (** Same as {!print} but show the left-factorization. *)
-            val dump : Format.formatter -> 'a t -> unit
-              
-            (**/**)
-            val obj : 'a t -> internal_entry
-              
-            val clear : 'a t -> unit
-              
-          end
           
         (**/**)
         (** [get_filter g] Get the {!Token.Filter} associated to the [g]. *)
