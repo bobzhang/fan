@@ -2043,9 +2043,9 @@ New syntax:\
         | "'"; i = a_ident -> <:ctyp< '$lid:i >>
         | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
         | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i >>
-        | "+"; "_" -> Ast.TyAnP _loc 
-        | "-"; "_" -> Ast.TyAnM _loc
-        | "_" -> Ast.TyAny _loc] ]
+        | "+"; "_" -> Ast.TyAnP _loc  
+        | "-"; "_" -> Ast.TyAnM _loc  
+        | "_" -> <:ctyp< _ >>  ] ]
     ctyp:
       [ "==" LA
         [ t1 = SELF; "=="; t2 = SELF -> <:ctyp< $t1 == $t2 >> ]
