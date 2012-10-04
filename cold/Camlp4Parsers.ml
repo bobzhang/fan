@@ -141,23 +141,21 @@ module MakeDebugParser =
                                                         )))
 
                                                let _ = let _ =
-                                                        (expr :
-                                                          'expr Gram.Entry.t) in
+                                                        (expr : 'expr Gram.t) in
                                                        let grammar_entry_create =
-                                                        Gram.Entry.mk in
+                                                        Gram.mk in
                                                        let end_or_in =
                                                         ((grammar_entry_create
                                                            "end_or_in") :
-                                                          'end_or_in Gram.Entry.t)
+                                                          'end_or_in Gram.t)
                                                        and start_debug =
                                                         ((grammar_entry_create
                                                            "start_debug") :
-                                                          'start_debug Gram.Entry.t) in
+                                                          'start_debug Gram.t) in
                                                        (
                                                        (Gram.extend (
                                                          (expr :
-                                                           'expr Gram.Entry.t)
-                                                         ) (
+                                                           'expr Gram.t) ) (
                                                          ((fun ()
                                                              ->
                                                             (None , (
@@ -166,10 +164,10 @@ module MakeDebugParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (start_debug :
-                                                                    'start_debug Gram.Entry.t)
+                                                                    'start_debug Gram.t)
                                                                     ))) ); (
                                                                   (Gram.Stoken
                                                                     ((
@@ -199,18 +197,18 @@ module MakeDebugParser =
                                                                     ((
                                                                     Gram.Snterml
                                                                     ((
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )) ),
                                                                     "."))))
                                                                   ); (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (end_or_in :
-                                                                    'end_or_in Gram.Entry.t)
+                                                                    'end_or_in Gram.t)
                                                                     ))) )] ),
                                                                  (
                                                                  (Gram.Action.mk
@@ -287,7 +285,7 @@ module MakeDebugParser =
                                                        (
                                                        (Gram.extend (
                                                          (end_or_in :
-                                                           'end_or_in Gram.Entry.t)
+                                                           'end_or_in Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -300,10 +298,10 @@ module MakeDebugParser =
                                                                     ("in"))
                                                                   ); (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     ))) )] ),
                                                                  (
                                                                  (Gram.Action.mk
@@ -334,7 +332,7 @@ module MakeDebugParser =
                                                        );
                                                        (Gram.extend (
                                                          (start_debug :
-                                                           'start_debug Gram.Entry.t)
+                                                           'start_debug Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -963,9 +961,7 @@ and ('e, 'p) symbol = {
                       (_loc, (
                        (Ast.IdAcc
                          (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                          (Ast.IdAcc
-                            (_loc, ( (Ast.IdUid (_loc, "Entry")) ), (
-                             (Ast.IdLid (_loc, "obj")) ))) ))) ))) ), (
+                          (Ast.IdLid (_loc, "obj")) ))) ))) ), (
                     (Ast.ExTyc
                       (_loc, ( n.expr ), (
                        (Ast.TyApp
@@ -973,10 +969,7 @@ and ('e, 'p) symbol = {
                           (Ast.TyId
                             (_loc, (
                              (Ast.IdAcc
-                               (_loc, (
-                                (Ast.IdAcc
-                                  (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                                   (Ast.IdUid (_loc, "Entry")) ))) ), (
+                               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
                                 (Ast.IdLid (_loc, "t")) ))) ))) ), (
                           (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) )))
               ), ( (Ast.ExStr (_loc, lab)) )))
@@ -1003,9 +996,7 @@ and ('e, 'p) symbol = {
                     (_loc, (
                      (Ast.IdAcc
                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdAcc
-                          (_loc, ( (Ast.IdUid (_loc, "Entry")) ), (
-                           (Ast.IdLid (_loc, "obj")) ))) ))) ))) ), (
+                        (Ast.IdLid (_loc, "obj")) ))) ))) ), (
                   (Ast.ExTyc
                     (_loc, ( n.expr ), (
                      (Ast.TyApp
@@ -1013,10 +1004,7 @@ and ('e, 'p) symbol = {
                         (Ast.TyId
                           (_loc, (
                            (Ast.IdAcc
-                             (_loc, (
-                              (Ast.IdAcc
-                                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                                 (Ast.IdUid (_loc, "Entry")) ))) ), (
+                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
                         (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) ))))
     | TXopt (_loc, t) ->
@@ -1151,10 +1139,7 @@ and ('e, 'p) symbol = {
            (Ast.TyId
              (_loc, (
               (Ast.IdAcc
-                (_loc, (
-                 (Ast.IdAcc
-                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                    (Ast.IdUid (_loc, "Entry")) ))) ), (
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
                  (Ast.IdLid (_loc, "t")) ))) ))) ), (
            (Ast.TyQuo (_loc, ( x.tvar ))) ))) ))) in
     let pos =
@@ -1247,10 +1232,7 @@ and ('e, 'p) symbol = {
                         (Ast.TyId
                           (_loc, (
                            (Ast.IdAcc
-                             (_loc, (
-                              (Ast.IdAcc
-                                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                                 (Ast.IdUid (_loc, "Entry")) ))) ), (
+                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
                         (Ast.TyQuo (_loc, x)) ))) ))) )))
             | _ -> (failwith "internal error in the Grammar extension") in
@@ -1265,10 +1247,7 @@ and ('e, 'p) symbol = {
                    (Ast.TyId
                      (_loc, (
                       (Ast.IdAcc
-                        (_loc, (
-                         (Ast.IdAcc
-                           (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                            (Ast.IdUid (_loc, "Entry")) ))) ), (
+                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
                          (Ast.IdLid (_loc, "t")) ))) ))) ), (
                    (Ast.TyQuo (_loc, x)) ))) ))) in
            let e =
@@ -1291,18 +1270,14 @@ and ('e, 'p) symbol = {
                           (_loc, (
                            (Ast.IdAcc
                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                              (Ast.IdAcc
-                                (_loc, ( (Ast.IdUid (_loc, "Entry")) ), (
-                                 (Ast.IdLid (_loc, "mk")) ))) ))) ))) ),
-                        ( (Ast.ExId (_loc, g)) )))
+                              (Ast.IdLid (_loc, "mk")) ))) ))) ), (
+                        (Ast.ExId (_loc, g)) )))
                   | None ->
                      (Ast.ExId
                        (_loc, (
                         (Ast.IdAcc
                           (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, "Entry")) ), (
-                              (Ast.IdLid (_loc, "mk")) ))) ))) )))) in
+                           (Ast.IdLid (_loc, "mk")) ))) )))) in
                 (Ast.ExLet
                   (_loc, Ast.ReNil , (
                    (Ast.BiEq
@@ -1426,7 +1401,7 @@ and ('e, 'p) symbol = {
      let text = (TXtok (_loc, match_fun, descr)) in
      {used = [] ; text = text; styp = t; pattern = ( (Some (p)) )}
 
- let symbol = (Gram.Entry.mk "symbol")
+ let symbol = (Gram.mk "symbol")
 
  let check_not_tok =
   fun s ->
@@ -1439,54 +1414,45 @@ and ('e, 'p) symbol = {
     | _ -> ())
  let _ = (FanConfig.antiquotations := true )
 
- let _ = let _ = (expr : 'expr Gram.Entry.t)
-         and _ = (symbol : 'symbol Gram.Entry.t) in
-         let grammar_entry_create = Gram.Entry.mk in
+ let _ = let _ = (expr : 'expr Gram.t)
+         and _ = (symbol : 'symbol Gram.t) in
+         let grammar_entry_create = Gram.mk in
          let extend_header =
           ((grammar_entry_create "extend_header") :
-            'extend_header Gram.Entry.t)
+            'extend_header Gram.t)
          and semi_sep =
-          ((grammar_entry_create "semi_sep") : 'semi_sep Gram.Entry.t)
-         and string =
-          ((grammar_entry_create "string") : 'string Gram.Entry.t)
-         and name = ((grammar_entry_create "name") : 'name Gram.Entry.t)
+          ((grammar_entry_create "semi_sep") : 'semi_sep Gram.t)
+         and string = ((grammar_entry_create "string") : 'string Gram.t)
+         and name = ((grammar_entry_create "name") : 'name Gram.t)
          and comma_patt =
-          ((grammar_entry_create "comma_patt") :
-            'comma_patt Gram.Entry.t)
+          ((grammar_entry_create "comma_patt") : 'comma_patt Gram.t)
          and pattern =
-          ((grammar_entry_create "pattern") : 'pattern Gram.Entry.t)
+          ((grammar_entry_create "pattern") : 'pattern Gram.t)
          and psymbol =
-          ((grammar_entry_create "psymbol") : 'psymbol Gram.Entry.t)
-         and rule = ((grammar_entry_create "rule") : 'rule Gram.Entry.t)
+          ((grammar_entry_create "psymbol") : 'psymbol Gram.t)
+         and rule = ((grammar_entry_create "rule") : 'rule Gram.t)
          and rule_list =
-          ((grammar_entry_create "rule_list") : 'rule_list Gram.Entry.t)
-         and assoc =
-          ((grammar_entry_create "assoc") : 'assoc Gram.Entry.t)
-         and level =
-          ((grammar_entry_create "level") : 'level Gram.Entry.t)
+          ((grammar_entry_create "rule_list") : 'rule_list Gram.t)
+         and assoc = ((grammar_entry_create "assoc") : 'assoc Gram.t)
+         and level = ((grammar_entry_create "level") : 'level Gram.t)
          and level_list =
-          ((grammar_entry_create "level_list") :
-            'level_list Gram.Entry.t)
+          ((grammar_entry_create "level_list") : 'level_list Gram.t)
          and position =
-          ((grammar_entry_create "position") : 'position Gram.Entry.t)
-         and entry =
-          ((grammar_entry_create "entry") : 'entry Gram.Entry.t)
-         and global =
-          ((grammar_entry_create "global") : 'global Gram.Entry.t)
+          ((grammar_entry_create "position") : 'position Gram.t)
+         and entry = ((grammar_entry_create "entry") : 'entry Gram.t)
+         and global = ((grammar_entry_create "global") : 'global Gram.t)
          and t_qualid =
-          ((grammar_entry_create "t_qualid") : 't_qualid Gram.Entry.t)
-         and qualid =
-          ((grammar_entry_create "qualid") : 'qualid Gram.Entry.t)
+          ((grammar_entry_create "t_qualid") : 't_qualid Gram.t)
+         and qualid = ((grammar_entry_create "qualid") : 'qualid Gram.t)
          and qualuid =
-          ((grammar_entry_create "qualuid") : 'qualuid Gram.Entry.t)
+          ((grammar_entry_create "qualuid") : 'qualuid Gram.t)
          and delete_rule_body =
           ((grammar_entry_create "delete_rule_body") :
-            'delete_rule_body Gram.Entry.t)
+            'delete_rule_body Gram.t)
          and extend_body =
-          ((grammar_entry_create "extend_body") :
-            'extend_body Gram.Entry.t) in
+          ((grammar_entry_create "extend_body") : 'extend_body Gram.t) in
          (
-         (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
+         (Gram.extend ( (expr : 'expr Gram.t) ) (
            ((fun ()
                ->
               (( (Some ((FanSig.Grammar.After ("top")))) ), (
@@ -1494,10 +1460,9 @@ and ('e, 'p) symbol = {
                  [((
                    [( (Gram.Skeyword ("DELETE_RULE")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (delete_rule_body :
-                          'delete_rule_body Gram.Entry.t) ))) ); (
-                    (Gram.Skeyword ("END")) )] ), (
+                      (Gram.obj (
+                        (delete_rule_body : 'delete_rule_body Gram.t) )))
+                    ); ( (Gram.Skeyword ("END")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (e :
@@ -1507,9 +1472,8 @@ and ('e, 'p) symbol = {
                   ((
                    [( (Gram.Skeyword ("EXTEND")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (extend_body : 'extend_body Gram.Entry.t) ))) );
-                    ( (Gram.Skeyword ("END")) )] ), (
+                      (Gram.obj ( (extend_body : 'extend_body Gram.t) )))
+                    ); ( (Gram.Skeyword ("END")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (e :
@@ -1518,7 +1482,7 @@ and ('e, 'p) symbol = {
                    ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (extend_header : 'extend_header Gram.Entry.t) ) (
+         (Gram.extend ( (extend_header : 'extend_header Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1526,8 +1490,7 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (qualuid : 'qualuid Gram.Entry.t)
-                        ))) )] ), (
+                      (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) )] ), (
                    (Gram.Action.mk (
                      fun (g :
                        'qualuid) ->
@@ -1536,12 +1499,10 @@ and ('e, 'p) symbol = {
                        ((None , g) : 'extend_header) )) ));
                   ((
                    [( (Gram.Skeyword ("(")) ); (
+                    (Gram.Snterm (Gram.obj ( (qualid : 'qualid Gram.t) )))
+                    ); ( (Gram.Skeyword (":")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (qualid : 'qualid Gram.Entry.t)
-                        ))) ); ( (Gram.Skeyword (":")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (t_qualid : 't_qualid Gram.Entry.t) ))) ); (
+                      (Gram.obj ( (t_qualid : 't_qualid Gram.t) ))) ); (
                     (Gram.Skeyword (")")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
@@ -1557,7 +1518,7 @@ and ('e, 'p) symbol = {
                  ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (extend_body : 'extend_body Gram.Entry.t) ) (
+         (Gram.extend ( (extend_body : 'extend_body Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1565,20 +1526,18 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (extend_header : 'extend_header Gram.Entry.t) )))
-                    ); (
+                      (Gram.obj ( (extend_header : 'extend_header Gram.t)
+                        ))) ); (
                     (Gram.Sopt
                       ((Gram.Snterm
-                         (Gram.Entry.obj (
-                           (global : 'global Gram.Entry.t) ))))) ); (
+                         (Gram.obj ( (global : 'global Gram.t) ))))) ); (
                     (Gram.Slist1
                       (Gram.srules extend_body (
                         [((
                           [(
                            (Gram.Snterm
-                             (Gram.Entry.obj (
-                               (entry : 'entry Gram.Entry.t) ))) )] ), (
+                             (Gram.obj ( (entry : 'entry Gram.t) ))) )]
+                          ), (
                           (Gram.Action.mk (
                             fun (e :
                               'entry) ->
@@ -1598,8 +1557,7 @@ and ('e, 'p) symbol = {
              () ) ))
          );
          (
-         (Gram.extend (
-           (delete_rule_body : 'delete_rule_body Gram.Entry.t) ) (
+         (Gram.extend ( (delete_rule_body : 'delete_rule_body Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1607,20 +1565,16 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (qualuid : 'qualuid Gram.Entry.t)
-                        ))) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (name : 'name Gram.Entry.t) )))
-                    ); ( (Gram.Skeyword (":")) ); (
+                      (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) ); (
+                    (Gram.Snterm (Gram.obj ( (name : 'name Gram.t) ))) );
+                    ( (Gram.Skeyword (":")) ); (
                     (Gram.Slist0sep
                       ((
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (symbol : 'symbol Gram.Entry.t) ))) ), (
+                         (Gram.obj ( (symbol : 'symbol Gram.t) ))) ), (
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (semi_sep : 'semi_sep Gram.Entry.t) ))) ))) )]
-                   ), (
+                         (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (sl :
                        'symbol list) ->
@@ -1647,7 +1601,7 @@ and ('e, 'p) symbol = {
                             'delete_rule_body) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (qualuid : 'qualuid Gram.Entry.t) ) (
+         (Gram.extend ( (qualuid : 'qualuid Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1684,7 +1638,7 @@ and ('e, 'p) symbol = {
                            'qualuid) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (qualid : 'qualid Gram.Entry.t) ) (
+         (Gram.extend ( (qualid : 'qualid Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1733,7 +1687,7 @@ and ('e, 'p) symbol = {
                            'qualid) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (t_qualid : 't_qualid Gram.Entry.t) ) (
+         (Gram.extend ( (t_qualid : 't_qualid Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1779,7 +1733,7 @@ and ('e, 'p) symbol = {
                            't_qualid) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (global : 'global Gram.Entry.t) ) (
+         (Gram.extend ( (global : 'global Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1793,12 +1747,11 @@ and ('e, 'p) symbol = {
                        | _ -> (false) ), "UIDENT (\"GLOBAL\")")) ); (
                     (Gram.Skeyword (":")) ); (
                     (Gram.Slist1
-                      ((Gram.Snterm
-                         (Gram.Entry.obj ( (name : 'name Gram.Entry.t) )))))
+                      ((Gram.Snterm (Gram.obj ( (name : 'name Gram.t) )))))
                     ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (semi_sep : 'semi_sep Gram.Entry.t) ))) )] ), (
+                      (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )] ),
+                   (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (sl :
@@ -1813,24 +1766,21 @@ and ('e, 'p) symbol = {
                            | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (entry : 'entry Gram.Entry.t) ) (
+         (Gram.extend ( (entry : 'entry Gram.t) ) (
            ((fun ()
                ->
               (None , (
                [(None , None , (
                  [((
-                   [(
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (name : 'name Gram.Entry.t) )))
+                   [( (Gram.Snterm (Gram.obj ( (name : 'name Gram.t) )))
                     ); ( (Gram.Skeyword (":")) ); (
                     (Gram.Sopt
                       ((Gram.Snterm
-                         (Gram.Entry.obj (
-                           (position : 'position Gram.Entry.t) ))))) ); (
+                         (Gram.obj ( (position : 'position Gram.t) )))))
+                    ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (level_list : 'level_list Gram.Entry.t) ))) )] ),
-                   (
+                      (Gram.obj ( (level_list : 'level_list Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (ll :
                        'level_list) ->
@@ -1845,7 +1795,7 @@ and ('e, 'p) symbol = {
                      )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (position : 'position Gram.Entry.t) ) (
+         (Gram.extend ( (position : 'position Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1860,9 +1810,8 @@ and ('e, 'p) symbol = {
                        | _ -> (false) ),
                        "UIDENT ((\"Before\" | \"After\") | \"Level\")"))
                     ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (string : 'string Gram.Entry.t)
-                        ))) )] ), (
+                    (Gram.Snterm (Gram.obj ( (string : 'string Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (n :
                        'string) ->
@@ -1913,7 +1862,7 @@ and ('e, 'p) symbol = {
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (level_list : 'level_list Gram.Entry.t) ) (
+         (Gram.extend ( (level_list : 'level_list Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1923,8 +1872,8 @@ and ('e, 'p) symbol = {
                     (Gram.Slist0sep
                       ((
                        (Gram.Snterm
-                         (Gram.Entry.obj ( (level : 'level Gram.Entry.t)
-                           ))) ), ( (Gram.Skeyword ("|")) ))) ); (
+                         (Gram.obj ( (level : 'level Gram.t) ))) ), (
+                       (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
@@ -1935,7 +1884,7 @@ and ('e, 'p) symbol = {
                  ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (level : 'level Gram.Entry.t) ) (
+         (Gram.extend ( (level : 'level Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -1960,11 +1909,10 @@ and ('e, 'p) symbol = {
                                 'e__2) )) ))] ))) ); (
                     (Gram.Sopt
                       ((Gram.Snterm
-                         (Gram.Entry.obj ( (assoc : 'assoc Gram.Entry.t)
-                           ))))) ); (
+                         (Gram.obj ( (assoc : 'assoc Gram.t) ))))) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (rule_list : 'rule_list Gram.Entry.t) ))) )] ), (
+                      (Gram.obj ( (rule_list : 'rule_list Gram.t) ))) )]
+                   ), (
                    (Gram.Action.mk (
                      fun (rules :
                        'rule_list) ->
@@ -1978,7 +1926,7 @@ and ('e, 'p) symbol = {
                            'level) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (assoc : 'assoc Gram.Entry.t) ) (
+         (Gram.extend ( (assoc : 'assoc Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2027,7 +1975,7 @@ and ('e, 'p) symbol = {
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (rule_list : 'rule_list Gram.Entry.t) ) (
+         (Gram.extend ( (rule_list : 'rule_list Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2036,8 +1984,7 @@ and ('e, 'p) symbol = {
                    [( (Gram.Skeyword ("[")) ); (
                     (Gram.Slist1sep
                       ((
-                       (Gram.Snterm
-                         (Gram.Entry.obj ( (rule : 'rule Gram.Entry.t) )))
+                       (Gram.Snterm (Gram.obj ( (rule : 'rule Gram.t) )))
                        ), ( (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
                    (Gram.Action.mk (
@@ -2059,7 +2006,7 @@ and ('e, 'p) symbol = {
                  ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (rule : 'rule Gram.Entry.t) ) (
+         (Gram.extend ( (rule : 'rule Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2069,12 +2016,10 @@ and ('e, 'p) symbol = {
                     (Gram.Slist0sep
                       ((
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (psymbol : 'psymbol Gram.Entry.t) ))) ), (
+                         (Gram.obj ( (psymbol : 'psymbol Gram.t) ))) ), (
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (semi_sep : 'semi_sep Gram.Entry.t) ))) ))) )]
-                   ), (
+                         (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (psl :
                        'psymbol list) ->
@@ -2086,15 +2031,12 @@ and ('e, 'p) symbol = {
                     (Gram.Slist0sep
                       ((
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (psymbol : 'psymbol Gram.Entry.t) ))) ), (
+                         (Gram.obj ( (psymbol : 'psymbol Gram.t) ))) ), (
                        (Gram.Snterm
-                         (Gram.Entry.obj (
-                           (semi_sep : 'semi_sep Gram.Entry.t) ))) ))) );
-                    ( (Gram.Skeyword ("->")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (expr : 'expr Gram.Entry.t) )))
-                    )] ), (
+                         (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )))
+                    ); ( (Gram.Skeyword ("->")) ); (
+                    (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) )]
+                   ), (
                    (Gram.Action.mk (
                      fun (act :
                        'expr) ->
@@ -2107,16 +2049,15 @@ and ('e, 'p) symbol = {
                            'rule) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (psymbol : 'psymbol Gram.Entry.t) ) (
+         (Gram.extend ( (psymbol : 'psymbol Gram.t) ) (
            ((fun ()
                ->
               (None , (
                [(None , None , (
                  [((
                    [(
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (symbol : 'symbol Gram.Entry.t)
-                        ))) )] ), (
+                    (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
@@ -2124,11 +2065,10 @@ and ('e, 'p) symbol = {
                   ((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (pattern : 'pattern Gram.Entry.t)
-                        ))) ); ( (Gram.Skeyword ("=")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (symbol : 'symbol Gram.Entry.t)
-                        ))) )] ), (
+                      (Gram.obj ( (pattern : 'pattern Gram.t) ))) ); (
+                    (Gram.Skeyword ("=")) ); (
+                    (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
@@ -2201,9 +2141,8 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | LIDENT (_) -> (true) | _ -> (false)
                        ), "LIDENT _")) ); ( (Gram.Skeyword ("=")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (symbol : 'symbol Gram.Entry.t)
-                        ))) )] ), (
+                    (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
@@ -2255,7 +2194,7 @@ and ('e, 'p) symbol = {
                                 )}) : 'psymbol) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (symbol : 'symbol Gram.Entry.t) ) (
+         (Gram.extend ( (symbol : 'symbol Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2323,9 +2262,8 @@ and ('e, 'p) symbol = {
                               | UIDENT ("SEP") -> (true)
                               | _ -> (false) ), "UIDENT (\"SEP\")")) ); (
                            (Gram.Snterm
-                             (Gram.Entry.obj (
-                               (symbol : 'symbol Gram.Entry.t) ))) )] ),
-                          (
+                             (Gram.obj ( (symbol : 'symbol Gram.t) ))) )]
+                          ), (
                           (Gram.Action.mk (
                             fun (t :
                               'symbol) ->
@@ -2380,9 +2318,7 @@ and ('e, 'p) symbol = {
                        fun _ -> fun (_loc : FanLoc.t) -> (s_t : 'symbol)
                      )) ));
                   ((
-                   [(
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (name : 'name Gram.Entry.t) )))
+                   [( (Gram.Snterm (Gram.obj ( (name : 'name Gram.t) )))
                     ); (
                     (Gram.Sopt
                       (Gram.srules symbol (
@@ -2427,9 +2363,8 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) ); ( (Gram.Skeyword (".")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (qualid : 'qualid Gram.Entry.t)
-                        ))) ); (
+                    (Gram.Snterm (Gram.obj ( (qualid : 'qualid Gram.t) )))
+                    ); (
                     (Gram.Sopt
                       (Gram.srules symbol (
                         [((
@@ -2611,9 +2546,8 @@ and ('e, 'p) symbol = {
                      )) ));
                   ((
                    [( (Gram.Skeyword ("`")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (patt : 'patt Gram.Entry.t) )))
-                    )] ), (
+                    (Gram.Snterm (Gram.obj ( (patt : 'patt Gram.t) ))) )]
+                   ), (
                    (Gram.Action.mk (
                      fun (p :
                        'patt) ->
@@ -2626,8 +2560,7 @@ and ('e, 'p) symbol = {
                    [( (Gram.Skeyword ("[")) ); (
                     (Gram.Slist0sep
                       ((
-                       (Gram.Snterm
-                         (Gram.Entry.obj ( (rule : 'rule Gram.Entry.t) )))
+                       (Gram.Snterm (Gram.obj ( (rule : 'rule Gram.t) )))
                        ), ( (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
                    (Gram.Action.mk (
@@ -2683,7 +2616,7 @@ and ('e, 'p) symbol = {
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (pattern : 'pattern Gram.Entry.t) ) (
+         (Gram.extend ( (pattern : 'pattern Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2692,9 +2625,8 @@ and ('e, 'p) symbol = {
                    [( (Gram.Skeyword ("(")) ); Gram.Sself ; (
                     (Gram.Skeyword (",")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (comma_patt : 'comma_patt Gram.Entry.t) ))) ); (
-                    (Gram.Skeyword (")")) )] ), (
+                      (Gram.obj ( (comma_patt : 'comma_patt Gram.t) )))
+                    ); ( (Gram.Skeyword (")")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (p2 :
@@ -2738,7 +2670,7 @@ and ('e, 'p) symbol = {
                          'pattern) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (comma_patt : 'comma_patt Gram.Entry.t) ) (
+         (Gram.extend ( (comma_patt : 'comma_patt Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2746,8 +2678,7 @@ and ('e, 'p) symbol = {
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (pattern : 'pattern Gram.Entry.t)
-                        ))) )] ), (
+                      (Gram.obj ( (pattern : 'pattern Gram.t) ))) )] ), (
                    (Gram.Action.mk (
                      fun (p :
                        'pattern) ->
@@ -2767,16 +2698,15 @@ and ('e, 'p) symbol = {
                  ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (name : 'name Gram.Entry.t) ) (
+         (Gram.extend ( (name : 'name Gram.t) ) (
            ((fun ()
                ->
               (None , (
                [(None , None , (
                  [((
                    [(
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (qualid : 'qualid Gram.Entry.t)
-                        ))) )] ), (
+                    (Gram.Snterm (Gram.obj ( (qualid : 'qualid Gram.t) )))
+                    )] ), (
                    (Gram.Action.mk (
                      fun (il :
                        'qualid) ->
@@ -2785,7 +2715,7 @@ and ('e, 'p) symbol = {
                        ((mk_name _loc il) : 'name) )) ))] ))] ))) () ) ))
          );
          (
-         (Gram.extend ( (string : 'string Gram.Entry.t) ) (
+         (Gram.extend ( (string : 'string Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2820,7 +2750,7 @@ and ('e, 'p) symbol = {
                         (Ast.ExStr (_loc, s)) : 'string) )) ))] ))] )))
              () ) ))
          );
-         (Gram.extend ( (semi_sep : 'semi_sep Gram.Entry.t) ) (
+         (Gram.extend ( (semi_sep : 'semi_sep Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -2904,13 +2834,12 @@ and ('e, 'p) symbol = {
            (TXmeta (_loc, n, ( [( s.text ); ( sep.text )] ), e, t)) );
           styp = styp; pattern = None }
 
- let _ = let _ = (symbol : 'symbol Gram.Entry.t) in
-         let grammar_entry_create = Gram.Entry.mk in
+ let _ = let _ = (symbol : 'symbol Gram.t) in
+         let grammar_entry_create = Gram.mk in
          let simple_expr =
-          ((grammar_entry_create "simple_expr") :
-            'simple_expr Gram.Entry.t) in
+          ((grammar_entry_create "simple_expr") : 'simple_expr Gram.t) in
          (
-         (Gram.extend ( (symbol : 'symbol Gram.Entry.t) ) (
+         (Gram.extend ( (symbol : 'symbol Gram.t) ) (
            ((fun ()
                ->
               (( (Some ((FanSig.Grammar.Level ("top")))) ), (
@@ -2923,13 +2852,11 @@ and ('e, 'p) symbol = {
                        | UIDENT ("FOLD1") -> (true)
                        | _ -> (false) ), "UIDENT (\"FOLD1\")")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    Gram.Sself ; (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); Gram.Sself ; (
                     (Gram.Stoken
                       ((
                        function | UIDENT ("SEP") -> (true) | _ -> (false)
@@ -2962,13 +2889,11 @@ and ('e, 'p) symbol = {
                        | UIDENT ("FOLD0") -> (true)
                        | _ -> (false) ), "UIDENT (\"FOLD0\")")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    Gram.Sself ; (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); Gram.Sself ; (
                     (Gram.Stoken
                       ((
                        function | UIDENT ("SEP") -> (true) | _ -> (false)
@@ -3001,13 +2926,11 @@ and ('e, 'p) symbol = {
                        | UIDENT ("FOLD1") -> (true)
                        | _ -> (false) ), "UIDENT (\"FOLD1\")")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    Gram.Sself ] ), (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); Gram.Sself ] ), (
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
@@ -3032,13 +2955,11 @@ and ('e, 'p) symbol = {
                        | UIDENT ("FOLD0") -> (true)
                        | _ -> (false) ), "UIDENT (\"FOLD0\")")) ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); (
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (simple_expr : 'simple_expr Gram.Entry.t) ))) );
-                    Gram.Sself ] ), (
+                      (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
+                    ); Gram.Sself ] ), (
                    (Gram.Action.mk (
                      fun (s :
                        'symbol) ->
@@ -3056,16 +2977,15 @@ and ('e, 'p) symbol = {
                                 'symbol)
                            | _ -> assert false) )) ))] ))] ))) () ) ))
          );
-         (Gram.extend ( (simple_expr : 'simple_expr Gram.Entry.t) ) (
+         (Gram.extend ( (simple_expr : 'simple_expr Gram.t) ) (
            ((fun ()
                ->
               (None , (
                [(None , None , (
                  [((
                    [( (Gram.Skeyword ("(")) ); (
-                    (Gram.Snterm
-                      (Gram.Entry.obj ( (expr : 'expr Gram.Entry.t) )))
-                    ); ( (Gram.Skeyword (")")) )] ), (
+                    (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) );
+                    ( (Gram.Skeyword (")")) )] ), (
                    (Gram.Action.mk (
                      fun _ ->
                       fun (e :
@@ -3075,8 +2995,8 @@ and ('e, 'p) symbol = {
                   ((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj (
-                        (a_LIDENT : 'a_LIDENT Gram.Entry.t) ))) )] ), (
+                      (Gram.obj ( (a_LIDENT : 'a_LIDENT Gram.t) ))) )] ),
+                   (
                    (Gram.Action.mk (
                      fun (i :
                        'a_LIDENT) ->
@@ -3114,7 +3034,7 @@ module MakeListComprehension =
               module Ast = Camlp4Ast
 
               let test_patt_lessminus =
-               (Gram.Entry.of_parser "test_patt_lessminus" (
+               (Gram.of_parser "test_patt_lessminus" (
                  fun strm ->
                   let rec skip_patt =
                    fun n ->
@@ -3154,9 +3074,9 @@ module MakeListComprehension =
               let _ = (Gram.delete_rule expr (
                         [( (Gram.Skeyword ("[")) ); (
                          (Gram.Snterm
-                           (Gram.Entry.obj (
+                           (Gram.obj (
                              (sem_expr_for_list :
-                               'sem_expr_for_list Gram.Entry.t) ))) ); (
+                               'sem_expr_for_list Gram.t) ))) ); (
                          (Gram.Skeyword ("]")) )] ))
 
               let is_revised =
@@ -3165,12 +3085,10 @@ module MakeListComprehension =
                 (Gram.delete_rule expr (
                   [( (Gram.Skeyword ("[")) ); (
                    (Gram.Snterm
-                     (Gram.Entry.obj (
-                       (sem_expr_for_list :
-                         'sem_expr_for_list Gram.Entry.t) ))) ); (
-                   (Gram.Skeyword ("::")) ); (
-                   (Gram.Snterm
-                     (Gram.Entry.obj ( (expr : 'expr Gram.Entry.t) ))) );
+                     (Gram.obj (
+                       (sem_expr_for_list : 'sem_expr_for_list Gram.t) )))
+                   ); ( (Gram.Skeyword ("::")) ); (
+                   (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) );
                    ( (Gram.Skeyword ("]")) )] ))
                 );
                  (true)
@@ -3178,18 +3096,17 @@ module MakeListComprehension =
                 Not_found -> (false))
 
               let comprehension_or_sem_expr_for_list =
-               (Gram.Entry.mk "comprehension_or_sem_expr_for_list")
+               (Gram.mk "comprehension_or_sem_expr_for_list")
 
-              let _ = let _ = (expr : 'expr Gram.Entry.t)
+              let _ = let _ = (expr : 'expr Gram.t)
                       and _ =
                        (comprehension_or_sem_expr_for_list :
-                         'comprehension_or_sem_expr_for_list Gram.Entry.t) in
-                      let grammar_entry_create = Gram.Entry.mk in
+                         'comprehension_or_sem_expr_for_list Gram.t) in
+                      let grammar_entry_create = Gram.mk in
                       let item =
-                       ((grammar_entry_create "item") :
-                         'item Gram.Entry.t) in
+                       ((grammar_entry_create "item") : 'item Gram.t) in
                       (
-                      (Gram.extend ( (expr : 'expr Gram.Entry.t) ) (
+                      (Gram.extend ( (expr : 'expr Gram.t) ) (
                         ((fun ()
                             ->
                            (( (Some ((FanSig.Grammar.Level ("simple"))))
@@ -3198,9 +3115,9 @@ module MakeListComprehension =
                               [((
                                 [( (Gram.Skeyword ("[")) ); (
                                  (Gram.Snterm
-                                   (Gram.Entry.obj (
+                                   (Gram.obj (
                                      (comprehension_or_sem_expr_for_list :
-                                       'comprehension_or_sem_expr_for_list Gram.Entry.t)
+                                       'comprehension_or_sem_expr_for_list Gram.t)
                                      ))) ); ( (Gram.Skeyword ("]")) )] ),
                                 (
                                 (Gram.Action.mk (
@@ -3214,8 +3131,7 @@ module MakeListComprehension =
                       (
                       (Gram.extend (
                         (comprehension_or_sem_expr_for_list :
-                          'comprehension_or_sem_expr_for_list Gram.Entry.t)
-                        ) (
+                          'comprehension_or_sem_expr_for_list Gram.t) ) (
                         ((fun ()
                             ->
                            (None , (
@@ -3224,9 +3140,8 @@ module MakeListComprehension =
                                 [(
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) )] ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) )] ), (
                                 (Gram.Action.mk (
                                   fun (e :
                                     'expr) ->
@@ -3250,17 +3165,15 @@ module MakeListComprehension =
                                 [(
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) ); ( (Gram.Skeyword ("|")) );
-                                 (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) ); ( (Gram.Skeyword ("|"))
+                                 ); (
                                  (Gram.Slist1sep
                                    ((
                                     (Gram.Snterm
-                                      (Gram.Entry.obj (
-                                        (item : 'item Gram.Entry.t) )))
-                                    ), ( (Gram.Skeyword (";")) ))) )] ),
-                                (
+                                      (Gram.obj ( (item : 'item Gram.t)
+                                        ))) ), ( (Gram.Skeyword (";")) )))
+                                 )] ), (
                                 (Gram.Action.mk (
                                   fun (l :
                                     'item list) ->
@@ -3276,10 +3189,9 @@ module MakeListComprehension =
                                 [(
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) ); ( (Gram.Skeyword (";")) )]
-                                ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) ); ( (Gram.Skeyword (";"))
+                                 )] ), (
                                 (Gram.Action.mk (
                                   fun _ ->
                                    fun (e :
@@ -3304,15 +3216,14 @@ module MakeListComprehension =
                                 [(
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) ); ( (Gram.Skeyword (";")) );
-                                 (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) ); ( (Gram.Skeyword (";"))
+                                 ); (
                                  (Gram.Snterm
-                                   (Gram.Entry.obj (
+                                   (Gram.obj (
                                      (sem_expr_for_list :
-                                       'sem_expr_for_list Gram.Entry.t)
-                                     ))) )] ), (
+                                       'sem_expr_for_list Gram.t) ))) )]
+                                ), (
                                 (Gram.Action.mk (
                                   fun (mk :
                                     'sem_expr_for_list) ->
@@ -3337,7 +3248,7 @@ module MakeListComprehension =
                                         'comprehension_or_sem_expr_for_list)
                                   )) ))] ))] ))) () ) ))
                       );
-                      (Gram.extend ( (item : 'item Gram.Entry.t) ) (
+                      (Gram.extend ( (item : 'item Gram.t) ) (
                         ((fun ()
                             ->
                            (None , (
@@ -3346,9 +3257,8 @@ module MakeListComprehension =
                                 [(
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) )] ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) )] ), (
                                 (Gram.Action.mk (
                                   fun (e :
                                     'expr) ->
@@ -3362,10 +3272,9 @@ module MakeListComprehension =
                                      [((
                                        [(
                                         (Gram.Snterm
-                                          (Gram.Entry.obj (
-                                            (patt : 'patt Gram.Entry.t)
-                                            ))) ); (
-                                        (Gram.Skeyword ("<-")) )] ), (
+                                          (Gram.obj (
+                                            (patt : 'patt Gram.t) ))) );
+                                        ( (Gram.Skeyword ("<-")) )] ), (
                                        (Gram.Action.mk (
                                          fun _ ->
                                           fun (p :
@@ -3375,9 +3284,8 @@ module MakeListComprehension =
                                             (p : 'e__7) )) ))] ))) ); (
                                  (Gram.Snterml
                                    ((
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) )) ),
-                                    "top")) )] ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) ))
+                                    ), "top")) )] ), (
                                 (Gram.Action.mk (
                                   fun (e :
                                     'expr) ->
@@ -3390,14 +3298,14 @@ module MakeListComprehension =
 
               let _ = if is_revised then
                        (
-                       let _ = (expr : 'expr Gram.Entry.t)
+                       let _ = (expr : 'expr Gram.t)
                        and _ =
                         (comprehension_or_sem_expr_for_list :
-                          'comprehension_or_sem_expr_for_list Gram.Entry.t) in
+                          'comprehension_or_sem_expr_for_list Gram.t) in
                        (Gram.extend (
                          (comprehension_or_sem_expr_for_list :
-                           'comprehension_or_sem_expr_for_list Gram.Entry.t)
-                         ) (
+                           'comprehension_or_sem_expr_for_list Gram.t) )
+                         (
                          ((fun ()
                              ->
                             (None , (
@@ -3406,14 +3314,12 @@ module MakeListComprehension =
                                  [(
                                   (Gram.Snterml
                                     ((
-                                     (Gram.Entry.obj (
-                                       (expr : 'expr Gram.Entry.t) )) ),
-                                     "top")) ); ( (Gram.Skeyword ("::"))
-                                  ); (
+                                     (Gram.obj ( (expr : 'expr Gram.t) ))
+                                     ), "top")) ); (
+                                  (Gram.Skeyword ("::")) ); (
                                   (Gram.Snterm
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) ))) )]
-                                 ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) )))
+                                  )] ), (
                                  (Gram.Action.mk (
                                    fun (last :
                                      'expr) ->
@@ -3436,20 +3342,17 @@ module MakeListComprehension =
                                  [(
                                   (Gram.Snterml
                                     ((
-                                     (Gram.Entry.obj (
-                                       (expr : 'expr Gram.Entry.t) )) ),
-                                     "top")) ); ( (Gram.Skeyword (";"))
-                                  ); (
+                                     (Gram.obj ( (expr : 'expr Gram.t) ))
+                                     ), "top")) ); (
+                                  (Gram.Skeyword (";")) ); (
                                   (Gram.Snterm
-                                    (Gram.Entry.obj (
+                                    (Gram.obj (
                                       (sem_expr_for_list :
-                                        'sem_expr_for_list Gram.Entry.t)
-                                      ))) ); ( (Gram.Skeyword ("::")) );
-                                  (
+                                        'sem_expr_for_list Gram.t) ))) );
+                                  ( (Gram.Skeyword ("::")) ); (
                                   (Gram.Snterm
-                                    (Gram.Entry.obj (
-                                      (expr : 'expr Gram.Entry.t) ))) )]
-                                 ), (
+                                    (Gram.obj ( (expr : 'expr Gram.t) )))
+                                  )] ), (
                                  (Gram.Action.mk (
                                    fun (last :
                                      'expr) ->
@@ -3527,8 +3430,8 @@ module MakeMacroParser =
                               (match eo with
                                | Some ([], e) ->
                                   (
-                                  (Gram.extend (
-                                    (expr : 'expr Gram.Entry.t) ) (
+                                  (Gram.extend ( (expr : 'expr Gram.t) )
+                                    (
                                     ((fun ()
                                         ->
                                        ((
@@ -3559,8 +3462,8 @@ module MakeMacroParser =
                                                  | _ -> assert false) ))
                                             ))] ))] ))) () ) ))
                                   );
-                                  (Gram.extend (
-                                    (patt : 'patt Gram.Entry.t) ) (
+                                  (Gram.extend ( (patt : 'patt Gram.t) )
+                                    (
                                     ((fun ()
                                         ->
                                        ((
@@ -3595,8 +3498,8 @@ module MakeMacroParser =
                                             ))] ))] ))) () ) ))
                                | Some (sl, e) ->
                                   (
-                                  (Gram.extend (
-                                    (expr : 'expr Gram.Entry.t) ) (
+                                  (Gram.extend ( (expr : 'expr Gram.t) )
+                                    (
                                     ((fun ()
                                         ->
                                        ((
@@ -3651,8 +3554,8 @@ module MakeMacroParser =
                                                   | _ -> assert false) ))
                                             ))] ))] ))) () ) ))
                                   );
-                                  (Gram.extend (
-                                    (patt : 'patt Gram.Entry.t) ) (
+                                  (Gram.extend ( (patt : 'patt Gram.t) )
+                                    (
                                     ((fun ()
                                         ->
                                        ((
@@ -3877,76 +3780,71 @@ module MakeMacroParser =
                                   else nil in
                                  (SdStr (item))
 
-                           let _ = let _ =
-                                    (expr : 'expr Gram.Entry.t)
+                           let _ = let _ = (expr : 'expr Gram.t)
                                    and _ =
-                                    (sig_item :
-                                      'sig_item Gram.Entry.t)
+                                    (sig_item : 'sig_item Gram.t)
                                    and _ =
-                                    (str_item :
-                                      'str_item Gram.Entry.t)
-                                   and _ =
-                                    (patt : 'patt Gram.Entry.t) in
-                                   let grammar_entry_create =
-                                    Gram.Entry.mk in
+                                    (str_item : 'str_item Gram.t)
+                                   and _ = (patt : 'patt Gram.t) in
+                                   let grammar_entry_create = Gram.mk in
                                    let macro_def =
                                     ((grammar_entry_create
                                        "macro_def") :
-                                      'macro_def Gram.Entry.t)
+                                      'macro_def Gram.t)
                                    and uident =
                                     ((grammar_entry_create "uident") :
-                                      'uident Gram.Entry.t)
+                                      'uident Gram.t)
                                    and opt_macro_value =
                                     ((grammar_entry_create
                                        "opt_macro_value") :
-                                      'opt_macro_value Gram.Entry.t)
+                                      'opt_macro_value Gram.t)
                                    and endif =
                                     ((grammar_entry_create "endif") :
-                                      'endif Gram.Entry.t)
+                                      'endif Gram.t)
                                    and sglist_else =
                                     ((grammar_entry_create
                                        "sglist_else") :
-                                      'sglist_else Gram.Entry.t)
+                                      'sglist_else Gram.t)
                                    and sglist_then =
                                     ((grammar_entry_create
                                        "sglist_then") :
-                                      'sglist_then Gram.Entry.t)
+                                      'sglist_then Gram.t)
                                    and smlist_else =
                                     ((grammar_entry_create
                                        "smlist_else") :
-                                      'smlist_else Gram.Entry.t)
+                                      'smlist_else Gram.t)
                                    and smlist_then =
                                     ((grammar_entry_create
                                        "smlist_then") :
-                                      'smlist_then Gram.Entry.t)
+                                      'smlist_then Gram.t)
                                    and else_expr =
                                     ((grammar_entry_create
                                        "else_expr") :
-                                      'else_expr Gram.Entry.t)
+                                      'else_expr Gram.t)
                                    and else_macro_def_sig =
                                     ((grammar_entry_create
                                        "else_macro_def_sig") :
-                                      'else_macro_def_sig Gram.Entry.t)
+                                      'else_macro_def_sig Gram.t)
                                    and else_macro_def =
                                     ((grammar_entry_create
                                        "else_macro_def") :
-                                      'else_macro_def Gram.Entry.t)
+                                      'else_macro_def Gram.t)
                                    and uident_eval_ifndef =
                                     ((grammar_entry_create
                                        "uident_eval_ifndef") :
-                                      'uident_eval_ifndef Gram.Entry.t)
+                                      'uident_eval_ifndef Gram.t)
                                    and uident_eval_ifdef =
                                     ((grammar_entry_create
                                        "uident_eval_ifdef") :
-                                      'uident_eval_ifdef Gram.Entry.t)
+                                      'uident_eval_ifdef Gram.t)
                                    and macro_def_sig =
                                     ((grammar_entry_create
                                        "macro_def_sig") :
-                                      'macro_def_sig Gram.Entry.t) in
+                                      'macro_def_sig Gram.t) in
                                    (
                                    (Gram.extend (
-                                     (str_item :
-                                       'str_item Gram.Entry.t) ) (
+                                     (str_item : 'str_item Gram.t) )
+                                     (
                                      ((fun ()
                                          ->
                                         ((
@@ -3957,9 +3855,9 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (macro_def :
-                                                    'macro_def Gram.Entry.t)
+                                                    'macro_def Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (x :
@@ -3978,8 +3876,8 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (sig_item :
-                                       'sig_item Gram.Entry.t) ) (
+                                     (sig_item : 'sig_item Gram.t) )
+                                     (
                                      ((fun ()
                                          ->
                                         ((
@@ -3990,9 +3888,9 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (macro_def_sig :
-                                                    'macro_def_sig Gram.Entry.t)
+                                                    'macro_def_sig Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (x :
@@ -4011,8 +3909,8 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (macro_def :
-                                       'macro_def Gram.Entry.t) ) (
+                                     (macro_def : 'macro_def Gram.t)
+                                     ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4048,21 +3946,21 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident_eval_ifndef :
-                                                    'uident_eval_ifndef Gram.Entry.t)
+                                                    'uident_eval_ifndef Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (smlist_then :
-                                                    'smlist_then Gram.Entry.t)
+                                                    'smlist_then Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_macro_def :
-                                                    'else_macro_def Gram.Entry.t)
+                                                    'else_macro_def Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (st2 :
@@ -4083,21 +3981,21 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident_eval_ifdef :
-                                                    'uident_eval_ifdef Gram.Entry.t)
+                                                    'uident_eval_ifdef Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (smlist_then :
-                                                    'smlist_then Gram.Entry.t)
+                                                    'smlist_then Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_macro_def :
-                                                    'else_macro_def Gram.Entry.t)
+                                                    'else_macro_def Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (st2 :
@@ -4118,9 +4016,9 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("UNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (i :
@@ -4135,14 +4033,14 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("DEFINE")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (opt_macro_value :
-                                                    'opt_macro_value Gram.Entry.t)
+                                                    'opt_macro_value Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (def :
@@ -4159,8 +4057,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (macro_def_sig :
-                                       'macro_def_sig Gram.Entry.t) )
-                                     (
+                                       'macro_def_sig Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4197,21 +4094,21 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident_eval_ifndef :
-                                                    'uident_eval_ifndef Gram.Entry.t)
+                                                    'uident_eval_ifndef Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (sglist_then :
-                                                    'sglist_then Gram.Entry.t)
+                                                    'sglist_then Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_macro_def_sig :
-                                                    'else_macro_def_sig Gram.Entry.t)
+                                                    'else_macro_def_sig Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (sg2 :
@@ -4232,21 +4129,21 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident_eval_ifdef :
-                                                    'uident_eval_ifdef Gram.Entry.t)
+                                                    'uident_eval_ifdef Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (sglist_then :
-                                                    'sglist_then Gram.Entry.t)
+                                                    'sglist_then Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_macro_def_sig :
-                                                    'else_macro_def_sig Gram.Entry.t)
+                                                    'else_macro_def_sig Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (sg2 :
@@ -4267,9 +4164,9 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("UNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (i :
@@ -4285,9 +4182,9 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("DEFINE")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (i :
@@ -4302,8 +4199,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (uident_eval_ifdef :
-                                       'uident_eval_ifdef Gram.Entry.t)
-                                     ) (
+                                       'uident_eval_ifdef Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4311,9 +4207,9 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (i :
@@ -4329,8 +4225,8 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (uident_eval_ifndef :
-                                       'uident_eval_ifndef Gram.Entry.t)
-                                     ) (
+                                       'uident_eval_ifndef Gram.t) )
+                                     (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4338,9 +4234,9 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (i :
@@ -4357,8 +4253,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (else_macro_def :
-                                       'else_macro_def Gram.Entry.t)
-                                     ) (
+                                       'else_macro_def Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4366,10 +4261,10 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
@@ -4382,15 +4277,15 @@ module MakeMacroParser =
                                               (Gram.Skeyword ("ELSE"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (smlist_else :
-                                                    'smlist_else Gram.Entry.t)
+                                                    'smlist_else Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (st :
@@ -4405,8 +4300,8 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (else_macro_def_sig :
-                                       'else_macro_def_sig Gram.Entry.t)
-                                     ) (
+                                       'else_macro_def_sig Gram.t) )
+                                     (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4414,10 +4309,10 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
@@ -4430,15 +4325,15 @@ module MakeMacroParser =
                                               (Gram.Skeyword ("ELSE"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (sglist_else :
-                                                    'sglist_else Gram.Entry.t)
+                                                    'sglist_else Gram.t)
                                                   ))) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (st :
@@ -4452,8 +4347,8 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (else_expr :
-                                       'else_expr Gram.Entry.t) ) (
+                                     (else_expr : 'else_expr Gram.t)
+                                     ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4461,10 +4356,10 @@ module MakeMacroParser =
                                            [((
                                              [(
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (_loc :
@@ -4480,15 +4375,15 @@ module MakeMacroParser =
                                               (Gram.Skeyword ("ELSE"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (expr :
-                                                    'expr Gram.Entry.t)
-                                                  ))) ); (
+                                                    'expr Gram.t) )))
+                                              ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (e :
@@ -4502,7 +4397,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (smlist_then :
-                                       'smlist_then Gram.Entry.t) ) (
+                                       'smlist_then Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4515,16 +4410,14 @@ module MakeMacroParser =
                                                   [((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (str_item :
-                                                           'str_item Gram.Entry.t)
+                                                           'str_item Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4538,16 +4431,14 @@ module MakeMacroParser =
                                                    ((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (macro_def :
-                                                           'macro_def Gram.Entry.t)
+                                                           'macro_def Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4581,7 +4472,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (smlist_else :
-                                       'smlist_else Gram.Entry.t) ) (
+                                       'smlist_else Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4594,16 +4485,14 @@ module MakeMacroParser =
                                                   [((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (str_item :
-                                                           'str_item Gram.Entry.t)
+                                                           'str_item Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4617,16 +4506,14 @@ module MakeMacroParser =
                                                    ((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (macro_def :
-                                                           'macro_def Gram.Entry.t)
+                                                           'macro_def Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4660,7 +4547,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (sglist_then :
-                                       'sglist_then Gram.Entry.t) ) (
+                                       'sglist_then Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4673,16 +4560,14 @@ module MakeMacroParser =
                                                   [((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (sig_item :
-                                                           'sig_item Gram.Entry.t)
+                                                           'sig_item Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4696,16 +4581,14 @@ module MakeMacroParser =
                                                    ((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (macro_def_sig :
-                                                           'macro_def_sig Gram.Entry.t)
+                                                           'macro_def_sig Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4739,7 +4622,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (sglist_else :
-                                       'sglist_else Gram.Entry.t) ) (
+                                       'sglist_else Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4752,16 +4635,14 @@ module MakeMacroParser =
                                                   [((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (sig_item :
-                                                           'sig_item Gram.Entry.t)
+                                                           'sig_item Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4775,16 +4656,14 @@ module MakeMacroParser =
                                                    ((
                                                     [(
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (macro_def_sig :
-                                                           'macro_def_sig Gram.Entry.t)
+                                                           'macro_def_sig Gram.t)
                                                          ))) ); (
                                                      (Gram.Snterm
-                                                       (Gram.Entry.obj
-                                                         (
+                                                       (Gram.obj (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ))) )] ), (
                                                     (Gram.Action.mk (
                                                       fun _ ->
@@ -4817,8 +4696,7 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (endif : 'endif Gram.Entry.t) )
-                                     (
+                                     (endif : 'endif Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4846,8 +4724,7 @@ module MakeMacroParser =
                                    (
                                    (Gram.extend (
                                      (opt_macro_value :
-                                       'opt_macro_value Gram.Entry.t)
-                                     ) (
+                                       'opt_macro_value Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -4863,10 +4740,10 @@ module MakeMacroParser =
                                              [( (Gram.Skeyword ("="))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (expr :
-                                                    'expr Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'expr Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun (e :
                                                  'expr) ->
@@ -4913,10 +4790,10 @@ module MakeMacroParser =
                                               (Gram.Skeyword ("="))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (expr :
-                                                    'expr Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'expr Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun (e :
                                                  'expr) ->
@@ -4933,7 +4810,7 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (expr : 'expr Gram.Entry.t) ) (
+                                     (expr : 'expr Gram.t) ) (
                                      ((fun ()
                                          ->
                                         ((
@@ -4983,16 +4860,16 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); Gram.Sself ; (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_expr :
-                                                    'else_expr Gram.Entry.t)
+                                                    'else_expr Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (e2 :
@@ -5015,16 +4892,16 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); Gram.Sself ; (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (else_expr :
-                                                    'else_expr Gram.Entry.t)
+                                                    'else_expr Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (e2 :
@@ -5046,7 +4923,7 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (patt : 'patt Gram.Entry.t) ) (
+                                     (patt : 'patt Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -5056,19 +4933,19 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFNDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); Gram.Sself ; (
                                               (Gram.Skeyword ("ELSE"))
                                               ); Gram.Sself ; (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (p2 :
@@ -5092,19 +4969,19 @@ module MakeMacroParser =
                                               (Gram.Skeyword
                                                 ("IFDEF")) ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (uident :
-                                                    'uident Gram.Entry.t)
+                                                    'uident Gram.t)
                                                   ))) ); (
                                               (Gram.Skeyword ("THEN"))
                                               ); Gram.Sself ; (
                                               (Gram.Skeyword ("ELSE"))
                                               ); Gram.Sself ; (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (endif :
-                                                    'endif Gram.Entry.t)
-                                                  ))) )] ), (
+                                                    'endif Gram.t) )))
+                                              )] ), (
                                              (Gram.Action.mk (
                                                fun _ ->
                                                 fun (p2 :
@@ -5127,8 +5004,7 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (uident : 'uident Gram.Entry.t)
-                                     ) (
+                                     (uident : 'uident Gram.t) ) (
                                      ((fun ()
                                          ->
                                         (None , (
@@ -5155,7 +5031,7 @@ module MakeMacroParser =
                                    );
                                    (
                                    (Gram.extend (
-                                     (expr : 'expr Gram.Entry.t) ) (
+                                     (expr : 'expr Gram.t) ) (
                                      ((fun ()
                                          ->
                                         ((
@@ -5167,9 +5043,9 @@ module MakeMacroParser =
                                              [( (Gram.Skeyword ("`"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (a_ident :
-                                                    'a_ident Gram.Entry.t)
+                                                    'a_ident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (s :
@@ -5298,7 +5174,7 @@ module MakeMacroParser =
                                          ))) () ) ))
                                    );
                                    (Gram.extend (
-                                     (patt : 'patt Gram.Entry.t) ) (
+                                     (patt : 'patt Gram.t) ) (
                                      ((fun ()
                                          ->
                                         ((
@@ -5310,9 +5186,9 @@ module MakeMacroParser =
                                              [( (Gram.Skeyword ("`"))
                                               ); (
                                               (Gram.Snterm
-                                                (Gram.Entry.obj (
+                                                (Gram.obj (
                                                   (a_ident :
-                                                    'a_ident Gram.Entry.t)
+                                                    'a_ident Gram.t)
                                                   ))) )] ), (
                                              (Gram.Action.mk (
                                                fun (s :
@@ -5484,451 +5360,451 @@ module MakeRevisedParser =
                                                          )
                                                          "Print explanations about new sequences and exit.")
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_CHAR)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_FLOAT)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_INT)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_INT32)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_INT64)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_LABEL)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_LIDENT)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_NATIVEINT)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_OPTLABEL)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_STRING)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_UIDENT)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          a_ident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          amp_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          and_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          match_case)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          match_case0)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          match_case_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          binding_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          rec_binding_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_description)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_expr_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_fun_binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_fun_def)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_info_for_class_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_info_for_class_type)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_longident_and_param)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_name_and_param)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_sig_item)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_sig_item_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_signature)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_str_item)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_str_item_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_structure)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type_longident_and_param)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type_plus)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          class_type_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          comma_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          comma_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          comma_ipatt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          comma_patt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          comma_type_parameter)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          constrain)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          constructor_arg_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          constructor_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          constructor_declarations)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ctyp_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          cvalue_binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          direction_flag)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          dummy)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          eq_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          expr_eoi)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          expr_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          field_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          field_expr_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          fun_binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          fun_def)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ident_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          implem)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          interf)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ipatt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          ipatt_tcon)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_declaration_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_expr_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_ipatt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_ipatt_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_patt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          label_patt_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          labeled_ipatt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          let_binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          meth_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          meth_decl)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_binding)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_binding0)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_binding_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_expr_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_longident_with_app)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_rec_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_type)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          module_type_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          more_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          name_tags)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_as_lident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_class_self_patt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_class_self_type)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_comma_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_dot_dot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_eq_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_meth_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_mutable)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_polyt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_private)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_rec)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_virtual)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          opt_when_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          patt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          patt_as_patt_opt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          patt_eoi)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          patt_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          patt_tcon)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          phrase)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          poly_type)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          row_field)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sem_expr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sem_expr_for_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sem_patt)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sem_patt_for_list)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          semi)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sequence)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sig_item)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sig_item_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          sig_items)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          star_ctyp)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          str_item)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          str_item_quot)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          str_items)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          top_phrase)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_constraint)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_declaration)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_ident_and_parameters)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_kind)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_longident_and_parameters)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_parameter)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          type_parameters)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          typevars)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          use_file)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          val_longident)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          with_constr)
 
-                                               let _ = (Gram.Entry.clear
+                                               let _ = (Gram.clear
                                                          with_constr_quot)
 
                                                let setup_op_parser =
                                                 fun entry ->
                                                  fun p ->
-                                                  (Gram.Entry.setup_parser
+                                                  (Gram.setup_parser
                                                     entry (
                                                     fun (__strm :
                                                       _ Stream.t) ->
@@ -6312,7 +6188,7 @@ module MakeRevisedParser =
                                                              (f strm)
                                                              )) ))
 
-                                               let _ = (Gram.Entry.setup_parser
+                                               let _ = (Gram.setup_parser
                                                          sem_expr (
                                                          let symb1 =
                                                           (Gram.parse_origin_tokens
@@ -6406,541 +6282,541 @@ module MakeRevisedParser =
 
                                                let _ = let _ =
                                                         (a_CHAR :
-                                                          'a_CHAR Gram.Entry.t)
+                                                          'a_CHAR Gram.t)
                                                        and _ =
                                                         (override_flag_quot :
-                                                          'override_flag_quot Gram.Entry.t)
+                                                          'override_flag_quot Gram.t)
                                                        and _ =
                                                         (row_var_flag_quot :
-                                                          'row_var_flag_quot Gram.Entry.t)
+                                                          'row_var_flag_quot Gram.t)
                                                        and _ =
                                                         (virtual_flag_quot :
-                                                          'virtual_flag_quot Gram.Entry.t)
+                                                          'virtual_flag_quot Gram.t)
                                                        and _ =
                                                         (private_flag_quot :
-                                                          'private_flag_quot Gram.Entry.t)
+                                                          'private_flag_quot Gram.t)
                                                        and _ =
                                                         (mutable_flag_quot :
-                                                          'mutable_flag_quot Gram.Entry.t)
+                                                          'mutable_flag_quot Gram.t)
                                                        and _ =
                                                         (direction_flag_quot :
-                                                          'direction_flag_quot Gram.Entry.t)
+                                                          'direction_flag_quot Gram.t)
                                                        and _ =
                                                         (rec_flag_quot :
-                                                          'rec_flag_quot Gram.Entry.t)
+                                                          'rec_flag_quot Gram.t)
                                                        and _ =
                                                         (package_type :
-                                                          'package_type Gram.Entry.t)
+                                                          'package_type Gram.t)
                                                        and _ =
                                                         (do_sequence :
-                                                          'do_sequence Gram.Entry.t)
+                                                          'do_sequence Gram.t)
                                                        and _ =
                                                         (infixop4 :
-                                                          'infixop4 Gram.Entry.t)
+                                                          'infixop4 Gram.t)
                                                        and _ =
                                                         (infixop3 :
-                                                          'infixop3 Gram.Entry.t)
+                                                          'infixop3 Gram.t)
                                                        and _ =
                                                         (infixop2 :
-                                                          'infixop2 Gram.Entry.t)
+                                                          'infixop2 Gram.t)
                                                        and _ =
                                                         (infixop1 :
-                                                          'infixop1 Gram.Entry.t)
+                                                          'infixop1 Gram.t)
                                                        and _ =
                                                         (infixop0 :
-                                                          'infixop0 Gram.Entry.t)
+                                                          'infixop0 Gram.t)
                                                        and _ =
                                                         (with_constr_quot :
-                                                          'with_constr_quot Gram.Entry.t)
+                                                          'with_constr_quot Gram.t)
                                                        and _ =
                                                         (with_constr :
-                                                          'with_constr Gram.Entry.t)
+                                                          'with_constr Gram.t)
                                                        and _ =
                                                         (val_longident :
-                                                          'val_longident Gram.Entry.t)
+                                                          'val_longident Gram.t)
                                                        and _ =
                                                         (use_file :
-                                                          'use_file Gram.Entry.t)
+                                                          'use_file Gram.t)
                                                        and _ =
                                                         (typevars :
-                                                          'typevars Gram.Entry.t)
+                                                          'typevars Gram.t)
                                                        and _ =
                                                         (type_parameters :
-                                                          'type_parameters Gram.Entry.t)
+                                                          'type_parameters Gram.t)
                                                        and _ =
                                                         (type_parameter :
-                                                          'type_parameter Gram.Entry.t)
+                                                          'type_parameter Gram.t)
                                                        and _ =
                                                         (type_longident_and_parameters :
-                                                          'type_longident_and_parameters Gram.Entry.t)
+                                                          'type_longident_and_parameters Gram.t)
                                                        and _ =
                                                         (type_longident :
-                                                          'type_longident Gram.Entry.t)
+                                                          'type_longident Gram.t)
                                                        and _ =
                                                         (type_kind :
-                                                          'type_kind Gram.Entry.t)
+                                                          'type_kind Gram.t)
                                                        and _ =
                                                         (type_ident_and_parameters :
-                                                          'type_ident_and_parameters Gram.Entry.t)
+                                                          'type_ident_and_parameters Gram.t)
                                                        and _ =
                                                         (type_declaration :
-                                                          'type_declaration Gram.Entry.t)
+                                                          'type_declaration Gram.t)
                                                        and _ =
                                                         (type_constraint :
-                                                          'type_constraint Gram.Entry.t)
+                                                          'type_constraint Gram.t)
                                                        and _ =
                                                         (top_phrase :
-                                                          'top_phrase Gram.Entry.t)
+                                                          'top_phrase Gram.t)
                                                        and _ =
                                                         (str_items :
-                                                          'str_items Gram.Entry.t)
+                                                          'str_items Gram.t)
                                                        and _ =
                                                         (str_item_quot :
-                                                          'str_item_quot Gram.Entry.t)
+                                                          'str_item_quot Gram.t)
                                                        and _ =
                                                         (str_item :
-                                                          'str_item Gram.Entry.t)
+                                                          'str_item Gram.t)
                                                        and _ =
                                                         (star_ctyp :
-                                                          'star_ctyp Gram.Entry.t)
+                                                          'star_ctyp Gram.t)
                                                        and _ =
                                                         (sig_items :
-                                                          'sig_items Gram.Entry.t)
+                                                          'sig_items Gram.t)
                                                        and _ =
                                                         (sig_item_quot :
-                                                          'sig_item_quot Gram.Entry.t)
+                                                          'sig_item_quot Gram.t)
                                                        and _ =
                                                         (sig_item :
-                                                          'sig_item Gram.Entry.t)
+                                                          'sig_item Gram.t)
                                                        and _ =
                                                         (sequence :
-                                                          'sequence Gram.Entry.t)
+                                                          'sequence Gram.t)
                                                        and _ =
                                                         (semi :
-                                                          'semi Gram.Entry.t)
+                                                          'semi Gram.t)
                                                        and _ =
                                                         (sem_patt_for_list :
-                                                          'sem_patt_for_list Gram.Entry.t)
+                                                          'sem_patt_for_list Gram.t)
                                                        and _ =
                                                         (sem_patt :
-                                                          'sem_patt Gram.Entry.t)
+                                                          'sem_patt Gram.t)
                                                        and _ =
                                                         (sem_expr_for_list :
-                                                          'sem_expr_for_list Gram.Entry.t)
+                                                          'sem_expr_for_list Gram.t)
                                                        and _ =
                                                         (sem_expr :
-                                                          'sem_expr Gram.Entry.t)
+                                                          'sem_expr Gram.t)
                                                        and _ =
                                                         (row_field :
-                                                          'row_field Gram.Entry.t)
+                                                          'row_field Gram.t)
                                                        and _ =
                                                         (poly_type :
-                                                          'poly_type Gram.Entry.t)
+                                                          'poly_type Gram.t)
                                                        and _ =
                                                         (phrase :
-                                                          'phrase Gram.Entry.t)
+                                                          'phrase Gram.t)
                                                        and _ =
                                                         (patt_tcon :
-                                                          'patt_tcon Gram.Entry.t)
+                                                          'patt_tcon Gram.t)
                                                        and _ =
                                                         (patt_quot :
-                                                          'patt_quot Gram.Entry.t)
+                                                          'patt_quot Gram.t)
                                                        and _ =
                                                         (patt_eoi :
-                                                          'patt_eoi Gram.Entry.t)
+                                                          'patt_eoi Gram.t)
                                                        and _ =
                                                         (patt_as_patt_opt :
-                                                          'patt_as_patt_opt Gram.Entry.t)
+                                                          'patt_as_patt_opt Gram.t)
                                                        and _ =
                                                         (patt :
-                                                          'patt Gram.Entry.t)
+                                                          'patt Gram.t)
                                                        and _ =
                                                         (opt_when_expr :
-                                                          'opt_when_expr Gram.Entry.t)
+                                                          'opt_when_expr Gram.t)
                                                        and _ =
                                                         (opt_virtual :
-                                                          'opt_virtual Gram.Entry.t)
+                                                          'opt_virtual Gram.t)
                                                        and _ =
                                                         (opt_rec :
-                                                          'opt_rec Gram.Entry.t)
+                                                          'opt_rec Gram.t)
                                                        and _ =
                                                         (opt_private :
-                                                          'opt_private Gram.Entry.t)
+                                                          'opt_private Gram.t)
                                                        and _ =
                                                         (opt_polyt :
-                                                          'opt_polyt Gram.Entry.t)
+                                                          'opt_polyt Gram.t)
                                                        and _ =
                                                         (opt_mutable :
-                                                          'opt_mutable Gram.Entry.t)
+                                                          'opt_mutable Gram.t)
                                                        and _ =
                                                         (opt_meth_list :
-                                                          'opt_meth_list Gram.Entry.t)
+                                                          'opt_meth_list Gram.t)
                                                        and _ =
                                                         (opt_expr :
-                                                          'opt_expr Gram.Entry.t)
+                                                          'opt_expr Gram.t)
                                                        and _ =
                                                         (opt_eq_ctyp :
-                                                          'opt_eq_ctyp Gram.Entry.t)
+                                                          'opt_eq_ctyp Gram.t)
                                                        and _ =
                                                         (opt_dot_dot :
-                                                          'opt_dot_dot Gram.Entry.t)
+                                                          'opt_dot_dot Gram.t)
                                                        and _ =
                                                         (opt_comma_ctyp :
-                                                          'opt_comma_ctyp Gram.Entry.t)
+                                                          'opt_comma_ctyp Gram.t)
                                                        and _ =
                                                         (opt_class_self_type :
-                                                          'opt_class_self_type Gram.Entry.t)
+                                                          'opt_class_self_type Gram.t)
                                                        and _ =
                                                         (opt_class_self_patt :
-                                                          'opt_class_self_patt Gram.Entry.t)
+                                                          'opt_class_self_patt Gram.t)
                                                        and _ =
                                                         (opt_as_lident :
-                                                          'opt_as_lident Gram.Entry.t)
+                                                          'opt_as_lident Gram.t)
                                                        and _ =
                                                         (name_tags :
-                                                          'name_tags Gram.Entry.t)
+                                                          'name_tags Gram.t)
                                                        and _ =
                                                         (more_ctyp :
-                                                          'more_ctyp Gram.Entry.t)
+                                                          'more_ctyp Gram.t)
                                                        and _ =
                                                         (module_type_quot :
-                                                          'module_type_quot Gram.Entry.t)
+                                                          'module_type_quot Gram.t)
                                                        and _ =
                                                         (module_type :
-                                                          'module_type Gram.Entry.t)
+                                                          'module_type Gram.t)
                                                        and _ =
                                                         (module_rec_declaration :
-                                                          'module_rec_declaration Gram.Entry.t)
+                                                          'module_rec_declaration Gram.t)
                                                        and _ =
                                                         (module_longident_with_app :
-                                                          'module_longident_with_app Gram.Entry.t)
+                                                          'module_longident_with_app Gram.t)
                                                        and _ =
                                                         (module_longident :
-                                                          'module_longident Gram.Entry.t)
+                                                          'module_longident Gram.t)
                                                        and _ =
                                                         (module_expr_quot :
-                                                          'module_expr_quot Gram.Entry.t)
+                                                          'module_expr_quot Gram.t)
                                                        and _ =
                                                         (module_expr :
-                                                          'module_expr Gram.Entry.t)
+                                                          'module_expr Gram.t)
                                                        and _ =
                                                         (module_declaration :
-                                                          'module_declaration Gram.Entry.t)
+                                                          'module_declaration Gram.t)
                                                        and _ =
                                                         (module_binding_quot :
-                                                          'module_binding_quot Gram.Entry.t)
+                                                          'module_binding_quot Gram.t)
                                                        and _ =
                                                         (module_binding0 :
-                                                          'module_binding0 Gram.Entry.t)
+                                                          'module_binding0 Gram.t)
                                                        and _ =
                                                         (module_binding :
-                                                          'module_binding Gram.Entry.t)
+                                                          'module_binding Gram.t)
                                                        and _ =
                                                         (meth_decl :
-                                                          'meth_decl Gram.Entry.t)
+                                                          'meth_decl Gram.t)
                                                        and _ =
                                                         (meth_list :
-                                                          'meth_list Gram.Entry.t)
+                                                          'meth_list Gram.t)
                                                        and _ =
                                                         (let_binding :
-                                                          'let_binding Gram.Entry.t)
+                                                          'let_binding Gram.t)
                                                        and _ =
                                                         (labeled_ipatt :
-                                                          'labeled_ipatt Gram.Entry.t)
+                                                          'labeled_ipatt Gram.t)
                                                        and _ =
                                                         (label_patt_list :
-                                                          'label_patt_list Gram.Entry.t)
+                                                          'label_patt_list Gram.t)
                                                        and _ =
                                                         (label_patt :
-                                                          'label_patt Gram.Entry.t)
+                                                          'label_patt Gram.t)
                                                        and _ =
                                                         (label_longident :
-                                                          'label_longident Gram.Entry.t)
+                                                          'label_longident Gram.t)
                                                        and _ =
                                                         (label_ipatt_list :
-                                                          'label_ipatt_list Gram.Entry.t)
+                                                          'label_ipatt_list Gram.t)
                                                        and _ =
                                                         (label_ipatt :
-                                                          'label_ipatt Gram.Entry.t)
+                                                          'label_ipatt Gram.t)
                                                        and _ =
                                                         (label_expr_list :
-                                                          'label_expr_list Gram.Entry.t)
+                                                          'label_expr_list Gram.t)
                                                        and _ =
                                                         (label_expr :
-                                                          'label_expr Gram.Entry.t)
+                                                          'label_expr Gram.t)
                                                        and _ =
                                                         (label_declaration_list :
-                                                          'label_declaration_list Gram.Entry.t)
+                                                          'label_declaration_list Gram.t)
                                                        and _ =
                                                         (label_declaration :
-                                                          'label_declaration Gram.Entry.t)
+                                                          'label_declaration Gram.t)
                                                        and _ =
                                                         (label :
-                                                          'label Gram.Entry.t)
+                                                          'label Gram.t)
                                                        and _ =
                                                         (ipatt_tcon :
-                                                          'ipatt_tcon Gram.Entry.t)
+                                                          'ipatt_tcon Gram.t)
                                                        and _ =
                                                         (ipatt :
-                                                          'ipatt Gram.Entry.t)
+                                                          'ipatt Gram.t)
                                                        and _ =
                                                         (interf :
-                                                          'interf Gram.Entry.t)
+                                                          'interf Gram.t)
                                                        and _ =
                                                         (implem :
-                                                          'implem Gram.Entry.t)
+                                                          'implem Gram.t)
                                                        and _ =
                                                         (ident_quot :
-                                                          'ident_quot Gram.Entry.t)
+                                                          'ident_quot Gram.t)
                                                        and _ =
                                                         (ident :
-                                                          'ident Gram.Entry.t)
+                                                          'ident Gram.t)
                                                        and _ =
                                                         (fun_def :
-                                                          'fun_def Gram.Entry.t)
+                                                          'fun_def Gram.t)
                                                        and _ =
                                                         (fun_binding :
-                                                          'fun_binding Gram.Entry.t)
+                                                          'fun_binding Gram.t)
                                                        and _ =
                                                         (field_expr_list :
-                                                          'field_expr_list Gram.Entry.t)
+                                                          'field_expr_list Gram.t)
                                                        and _ =
                                                         (field_expr :
-                                                          'field_expr Gram.Entry.t)
+                                                          'field_expr Gram.t)
                                                        and _ =
                                                         (expr_quot :
-                                                          'expr_quot Gram.Entry.t)
+                                                          'expr_quot Gram.t)
                                                        and _ =
                                                         (expr_eoi :
-                                                          'expr_eoi Gram.Entry.t)
+                                                          'expr_eoi Gram.t)
                                                        and _ =
                                                         (expr :
-                                                          'expr Gram.Entry.t)
+                                                          'expr Gram.t)
                                                        and _ =
                                                         (eq_expr :
-                                                          'eq_expr Gram.Entry.t)
+                                                          'eq_expr Gram.t)
                                                        and _ =
                                                         (dummy :
-                                                          'dummy Gram.Entry.t)
+                                                          'dummy Gram.t)
                                                        and _ =
                                                         (direction_flag :
-                                                          'direction_flag Gram.Entry.t)
+                                                          'direction_flag Gram.t)
                                                        and _ =
                                                         (cvalue_binding :
-                                                          'cvalue_binding Gram.Entry.t)
+                                                          'cvalue_binding Gram.t)
                                                        and _ =
                                                         (ctyp_quot :
-                                                          'ctyp_quot Gram.Entry.t)
+                                                          'ctyp_quot Gram.t)
                                                        and _ =
                                                         (ctyp :
-                                                          'ctyp Gram.Entry.t)
+                                                          'ctyp Gram.t)
                                                        and _ =
                                                         (constructor_declarations :
-                                                          'constructor_declarations Gram.Entry.t)
+                                                          'constructor_declarations Gram.t)
                                                        and _ =
                                                         (constructor_declaration :
-                                                          'constructor_declaration Gram.Entry.t)
+                                                          'constructor_declaration Gram.t)
                                                        and _ =
                                                         (constructor_arg_list :
-                                                          'constructor_arg_list Gram.Entry.t)
+                                                          'constructor_arg_list Gram.t)
                                                        and _ =
                                                         (constrain :
-                                                          'constrain Gram.Entry.t)
+                                                          'constrain Gram.t)
                                                        and _ =
                                                         (comma_type_parameter :
-                                                          'comma_type_parameter Gram.Entry.t)
+                                                          'comma_type_parameter Gram.t)
                                                        and _ =
                                                         (comma_patt :
-                                                          'comma_patt Gram.Entry.t)
+                                                          'comma_patt Gram.t)
                                                        and _ =
                                                         (comma_ipatt :
-                                                          'comma_ipatt Gram.Entry.t)
+                                                          'comma_ipatt Gram.t)
                                                        and _ =
                                                         (comma_expr :
-                                                          'comma_expr Gram.Entry.t)
+                                                          'comma_expr Gram.t)
                                                        and _ =
                                                         (comma_ctyp :
-                                                          'comma_ctyp Gram.Entry.t)
+                                                          'comma_ctyp Gram.t)
                                                        and _ =
                                                         (class_type_quot :
-                                                          'class_type_quot Gram.Entry.t)
+                                                          'class_type_quot Gram.t)
                                                        and _ =
                                                         (class_type_plus :
-                                                          'class_type_plus Gram.Entry.t)
+                                                          'class_type_plus Gram.t)
                                                        and _ =
                                                         (class_type_longident_and_param :
-                                                          'class_type_longident_and_param Gram.Entry.t)
+                                                          'class_type_longident_and_param Gram.t)
                                                        and _ =
                                                         (class_type_longident :
-                                                          'class_type_longident Gram.Entry.t)
+                                                          'class_type_longident Gram.t)
                                                        and _ =
                                                         (class_type_declaration :
-                                                          'class_type_declaration Gram.Entry.t)
+                                                          'class_type_declaration Gram.t)
                                                        and _ =
                                                         (class_type :
-                                                          'class_type Gram.Entry.t)
+                                                          'class_type Gram.t)
                                                        and _ =
                                                         (class_structure :
-                                                          'class_structure Gram.Entry.t)
+                                                          'class_structure Gram.t)
                                                        and _ =
                                                         (class_str_item_quot :
-                                                          'class_str_item_quot Gram.Entry.t)
+                                                          'class_str_item_quot Gram.t)
                                                        and _ =
                                                         (class_str_item :
-                                                          'class_str_item Gram.Entry.t)
+                                                          'class_str_item Gram.t)
                                                        and _ =
                                                         (class_signature :
-                                                          'class_signature Gram.Entry.t)
+                                                          'class_signature Gram.t)
                                                        and _ =
                                                         (class_sig_item_quot :
-                                                          'class_sig_item_quot Gram.Entry.t)
+                                                          'class_sig_item_quot Gram.t)
                                                        and _ =
                                                         (class_sig_item :
-                                                          'class_sig_item Gram.Entry.t)
+                                                          'class_sig_item Gram.t)
                                                        and _ =
                                                         (class_name_and_param :
-                                                          'class_name_and_param Gram.Entry.t)
+                                                          'class_name_and_param Gram.t)
                                                        and _ =
                                                         (class_longident_and_param :
-                                                          'class_longident_and_param Gram.Entry.t)
+                                                          'class_longident_and_param Gram.t)
                                                        and _ =
                                                         (class_longident :
-                                                          'class_longident Gram.Entry.t)
+                                                          'class_longident Gram.t)
                                                        and _ =
                                                         (class_info_for_class_type :
-                                                          'class_info_for_class_type Gram.Entry.t)
+                                                          'class_info_for_class_type Gram.t)
                                                        and _ =
                                                         (class_info_for_class_expr :
-                                                          'class_info_for_class_expr Gram.Entry.t)
+                                                          'class_info_for_class_expr Gram.t)
                                                        and _ =
                                                         (class_fun_def :
-                                                          'class_fun_def Gram.Entry.t)
+                                                          'class_fun_def Gram.t)
                                                        and _ =
                                                         (class_fun_binding :
-                                                          'class_fun_binding Gram.Entry.t)
+                                                          'class_fun_binding Gram.t)
                                                        and _ =
                                                         (class_expr_quot :
-                                                          'class_expr_quot Gram.Entry.t)
+                                                          'class_expr_quot Gram.t)
                                                        and _ =
                                                         (class_expr :
-                                                          'class_expr Gram.Entry.t)
+                                                          'class_expr Gram.t)
                                                        and _ =
                                                         (class_description :
-                                                          'class_description Gram.Entry.t)
+                                                          'class_description Gram.t)
                                                        and _ =
                                                         (class_declaration :
-                                                          'class_declaration Gram.Entry.t)
+                                                          'class_declaration Gram.t)
                                                        and _ =
                                                         (binding_quot :
-                                                          'binding_quot Gram.Entry.t)
+                                                          'binding_quot Gram.t)
                                                        and _ =
                                                         (binding :
-                                                          'binding Gram.Entry.t)
+                                                          'binding Gram.t)
                                                        and _ =
                                                         (match_case_quot :
-                                                          'match_case_quot Gram.Entry.t)
+                                                          'match_case_quot Gram.t)
                                                        and _ =
                                                         (match_case0 :
-                                                          'match_case0 Gram.Entry.t)
+                                                          'match_case0 Gram.t)
                                                        and _ =
                                                         (match_case :
-                                                          'match_case Gram.Entry.t)
+                                                          'match_case Gram.t)
                                                        and _ =
                                                         (and_ctyp :
-                                                          'and_ctyp Gram.Entry.t)
+                                                          'and_ctyp Gram.t)
                                                        and _ =
                                                         (amp_ctyp :
-                                                          'amp_ctyp Gram.Entry.t)
+                                                          'amp_ctyp Gram.t)
                                                        and _ =
                                                         (a_ident :
-                                                          'a_ident Gram.Entry.t)
+                                                          'a_ident Gram.t)
                                                        and _ =
                                                         (a_UIDENT :
-                                                          'a_UIDENT Gram.Entry.t)
+                                                          'a_UIDENT Gram.t)
                                                        and _ =
                                                         (a_STRING :
-                                                          'a_STRING Gram.Entry.t)
+                                                          'a_STRING Gram.t)
                                                        and _ =
                                                         (a_OPTLABEL :
-                                                          'a_OPTLABEL Gram.Entry.t)
+                                                          'a_OPTLABEL Gram.t)
                                                        and _ =
                                                         (a_NATIVEINT :
-                                                          'a_NATIVEINT Gram.Entry.t)
+                                                          'a_NATIVEINT Gram.t)
                                                        and _ =
                                                         (rec_binding_quot :
-                                                          'rec_binding_quot Gram.Entry.t)
+                                                          'rec_binding_quot Gram.t)
                                                        and _ =
                                                         (a_LIDENT :
-                                                          'a_LIDENT Gram.Entry.t)
+                                                          'a_LIDENT Gram.t)
                                                        and _ =
                                                         (a_LABEL :
-                                                          'a_LABEL Gram.Entry.t)
+                                                          'a_LABEL Gram.t)
                                                        and _ =
                                                         (a_INT64 :
-                                                          'a_INT64 Gram.Entry.t)
+                                                          'a_INT64 Gram.t)
                                                        and _ =
                                                         (a_INT32 :
-                                                          'a_INT32 Gram.Entry.t)
+                                                          'a_INT32 Gram.t)
                                                        and _ =
                                                         (a_INT :
-                                                          'a_INT Gram.Entry.t)
+                                                          'a_INT Gram.t)
                                                        and _ =
                                                         (a_FLOAT :
-                                                          'a_FLOAT Gram.Entry.t) in
+                                                          'a_FLOAT Gram.t) in
                                                        let grammar_entry_create =
-                                                        Gram.Entry.mk in
+                                                        Gram.mk in
                                                        let infixop5 =
                                                         ((grammar_entry_create
                                                            "infixop5") :
-                                                          'infixop5 Gram.Entry.t)
+                                                          'infixop5 Gram.t)
                                                        and string_list =
                                                         ((grammar_entry_create
                                                            "string_list") :
-                                                          'string_list Gram.Entry.t)
+                                                          'string_list Gram.t)
                                                        and opt_override =
                                                         ((grammar_entry_create
                                                            "opt_override") :
-                                                          'opt_override Gram.Entry.t)
+                                                          'opt_override Gram.t)
                                                        and unquoted_typevars =
                                                         ((grammar_entry_create
                                                            "unquoted_typevars") :
-                                                          'unquoted_typevars Gram.Entry.t)
+                                                          'unquoted_typevars Gram.t)
                                                        and value_val_opt_override =
                                                         ((grammar_entry_create
                                                            "value_val_opt_override") :
-                                                          'value_val_opt_override Gram.Entry.t)
+                                                          'value_val_opt_override Gram.t)
                                                        and method_opt_override =
                                                         ((grammar_entry_create
                                                            "method_opt_override") :
-                                                          'method_opt_override Gram.Entry.t)
+                                                          'method_opt_override Gram.t)
                                                        and module_longident_dot_lparen =
                                                         ((grammar_entry_create
                                                            "module_longident_dot_lparen") :
-                                                          'module_longident_dot_lparen Gram.Entry.t)
+                                                          'module_longident_dot_lparen Gram.t)
                                                        and optional_type_parameter =
                                                         ((grammar_entry_create
                                                            "optional_type_parameter") :
-                                                          'optional_type_parameter Gram.Entry.t)
+                                                          'optional_type_parameter Gram.t)
                                                        and fun_def_cont_no_when =
                                                         ((grammar_entry_create
                                                            "fun_def_cont_no_when") :
-                                                          'fun_def_cont_no_when Gram.Entry.t)
+                                                          'fun_def_cont_no_when Gram.t)
                                                        and fun_def_cont =
                                                         ((grammar_entry_create
                                                            "fun_def_cont") :
-                                                          'fun_def_cont Gram.Entry.t)
+                                                          'fun_def_cont Gram.t)
                                                        and sequence' =
                                                         ((grammar_entry_create
                                                            "sequence'") :
-                                                          'sequence' Gram.Entry.t)
+                                                          'sequence' Gram.t)
                                                        and infixop6 =
                                                         ((grammar_entry_create
                                                            "infixop6") :
-                                                          'infixop6 Gram.Entry.t) in
+                                                          'infixop6 Gram.t) in
                                                        (
                                                        (Gram.extend (
                                                          (module_expr :
-                                                           'module_expr Gram.Entry.t)
+                                                           'module_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -6958,10 +6834,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_items :
-                                                                    'str_items Gram.Entry.t)
+                                                                    'str_items Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -6994,10 +6870,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7006,10 +6882,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7092,10 +6968,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7104,10 +6980,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (package_type :
-                                                                    'package_type Gram.Entry.t)
+                                                                    'package_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7153,10 +7029,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7214,10 +7090,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7246,10 +7122,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7360,7 +7236,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (str_item :
-                                                           'str_item Gram.Entry.t)
+                                                           'str_item Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -7374,10 +7250,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7493,10 +7369,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_declaration :
-                                                                    'class_type_declaration Gram.Entry.t)
+                                                                    'class_type_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7521,10 +7397,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_declaration :
-                                                                    'class_declaration Gram.Entry.t)
+                                                                    'class_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7552,10 +7428,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7564,10 +7440,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7604,18 +7480,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding0 :
-                                                                    'module_binding0 Gram.Entry.t)
+                                                                    'module_binding0 Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7624,10 +7500,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7663,18 +7539,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7714,18 +7590,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7734,10 +7610,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7772,10 +7648,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_declaration :
-                                                                    'type_declaration Gram.Entry.t)
+                                                                    'type_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7799,10 +7675,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7830,10 +7706,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7842,10 +7718,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7878,10 +7754,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding :
-                                                                    'module_binding Gram.Entry.t)
+                                                                    'module_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7906,18 +7782,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding0 :
-                                                                    'module_binding0 Gram.Entry.t)
+                                                                    'module_binding0 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7944,10 +7820,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -7971,10 +7847,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7983,10 +7859,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -7995,10 +7871,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (string_list :
-                                                                    'string_list Gram.Entry.t)
+                                                                    'string_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8030,10 +7906,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declaration :
-                                                                    'constructor_declaration Gram.Entry.t)
+                                                                    'constructor_declaration Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8042,10 +7918,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident :
-                                                                    'type_longident Gram.Entry.t)
+                                                                    'type_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8076,10 +7952,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declaration :
-                                                                    'constructor_declaration Gram.Entry.t)
+                                                                    'constructor_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8104,7 +7980,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_binding0 :
-                                                           'module_binding0 Gram.Entry.t)
+                                                           'module_binding0 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -8121,10 +7997,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8146,10 +8022,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8158,10 +8034,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8189,10 +8065,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8201,10 +8077,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8241,7 +8117,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_binding :
-                                                           'module_binding Gram.Entry.t)
+                                                           'module_binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -8254,10 +8130,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8266,10 +8142,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8278,10 +8154,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8366,10 +8242,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8378,10 +8254,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8544,7 +8420,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_type :
-                                                           'module_type Gram.Entry.t)
+                                                           'module_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -8566,10 +8442,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8626,10 +8502,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (with_constr :
-                                                                    'with_constr Gram.Entry.t)
+                                                                    'with_constr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8662,10 +8538,10 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (dummy :
-                                                                    'dummy Gram.Entry.t)
+                                                                    'dummy Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8729,10 +8605,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sig_items :
-                                                                    'sig_items Gram.Entry.t)
+                                                                    'sig_items Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -8776,10 +8652,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8828,10 +8704,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8851,10 +8727,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident_with_app :
-                                                                    'module_longident_with_app Gram.Entry.t)
+                                                                    'module_longident_with_app Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -8965,7 +8841,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sig_item :
-                                                           'sig_item Gram.Entry.t)
+                                                           'sig_item Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -8987,10 +8863,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_declaration :
-                                                                    'class_type_declaration Gram.Entry.t)
+                                                                    'class_type_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9015,10 +8891,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_description :
-                                                                    'class_description Gram.Entry.t)
+                                                                    'class_description Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9042,10 +8918,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9054,10 +8930,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9085,10 +8961,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_declaration :
-                                                                    'type_declaration Gram.Entry.t)
+                                                                    'type_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9112,10 +8988,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9143,10 +9019,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9179,10 +9055,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9191,10 +9067,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9227,10 +9103,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_rec_declaration :
-                                                                    'module_rec_declaration Gram.Entry.t)
+                                                                    'module_rec_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9255,18 +9131,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_declaration :
-                                                                    'module_declaration Gram.Entry.t)
+                                                                    'module_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9293,10 +9169,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9320,10 +9196,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9332,10 +9208,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9344,10 +9220,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (string_list :
-                                                                    'string_list Gram.Entry.t)
+                                                                    'string_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9379,10 +9255,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declaration :
-                                                                    'constructor_declaration Gram.Entry.t)
+                                                                    'constructor_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9494,7 +9370,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_declaration :
-                                                           'module_declaration Gram.Entry.t)
+                                                           'module_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -9511,10 +9387,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9523,10 +9399,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9564,10 +9440,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9588,7 +9464,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_rec_declaration :
-                                                           'module_rec_declaration Gram.Entry.t)
+                                                           'module_rec_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -9601,10 +9477,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9613,10 +9489,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9756,7 +9632,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (with_constr :
-                                                           'with_constr Gram.Entry.t)
+                                                           'with_constr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -9773,10 +9649,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9785,10 +9661,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident_with_app :
-                                                                    'module_longident_with_app Gram.Entry.t)
+                                                                    'module_longident_with_app Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9816,10 +9692,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident_and_parameters :
-                                                                    'type_longident_and_parameters Gram.Entry.t)
+                                                                    'type_longident_and_parameters Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9828,10 +9704,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9881,10 +9757,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9933,10 +9809,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9945,10 +9821,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident_with_app :
-                                                                    'module_longident_with_app Gram.Entry.t)
+                                                                    'module_longident_with_app Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -9976,10 +9852,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident_and_parameters :
-                                                                    'type_longident_and_parameters Gram.Entry.t)
+                                                                    'type_longident_and_parameters Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -9988,10 +9864,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10041,10 +9917,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10206,7 +10082,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (expr :
-                                                           'expr Gram.Entry.t)
+                                                           'expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -10225,18 +10101,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_class_self_patt :
-                                                                    'opt_class_self_patt Gram.Entry.t)
+                                                                    'opt_class_self_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_structure :
-                                                                    'class_structure Gram.Entry.t)
+                                                                    'class_structure Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10268,10 +10144,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10280,10 +10156,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (do_sequence :
-                                                                    'do_sequence Gram.Entry.t)
+                                                                    'do_sequence Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10315,10 +10191,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10327,26 +10203,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (direction_flag :
-                                                                    'direction_flag Gram.Entry.t)
+                                                                    'direction_flag Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10355,10 +10231,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (do_sequence :
-                                                                    'do_sequence Gram.Entry.t)
+                                                                    'do_sequence Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10404,10 +10280,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (do_sequence :
-                                                                    'do_sequence Gram.Entry.t)
+                                                                    'do_sequence Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10470,10 +10346,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10482,10 +10358,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (match_case :
-                                                                    'match_case Gram.Entry.t)
+                                                                    'match_case Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10517,10 +10393,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10529,10 +10405,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (match_case :
-                                                                    'match_case Gram.Entry.t)
+                                                                    'match_case Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10564,10 +10440,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_def :
-                                                                    'fun_def Gram.Entry.t)
+                                                                    'fun_def Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10595,10 +10471,10 @@ module MakeRevisedParser =
                                                                   (Gram.Slist0sep
                                                                     ((
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (match_case0 :
-                                                                    'match_case0 Gram.Entry.t)
+                                                                    'match_case0 Gram.t)
                                                                     )))
                                                                     ),
                                                                     (
@@ -10640,10 +10516,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10682,18 +10558,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding0 :
-                                                                    'module_binding0 Gram.Entry.t)
+                                                                    'module_binding0 Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10731,18 +10607,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -10787,18 +10663,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (let_binding :
-                                                                    'let_binding Gram.Entry.t)
+                                                                    'let_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10838,10 +10714,10 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (dummy :
-                                                                    'dummy Gram.Entry.t)
+                                                                    'dummy Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10881,10 +10757,10 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (dummy :
-                                                                    'dummy Gram.Entry.t)
+                                                                    'dummy Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -10930,10 +10806,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop6 :
-                                                                    'infixop6 Gram.Entry.t)
+                                                                    'infixop6 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -10973,10 +10849,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop5 :
-                                                                    'infixop5 Gram.Entry.t)
+                                                                    'infixop5 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11016,10 +10892,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop0 :
-                                                                    'infixop0 Gram.Entry.t)
+                                                                    'infixop0 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11059,10 +10935,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop1 :
-                                                                    'infixop1 Gram.Entry.t)
+                                                                    'infixop1 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11102,10 +10978,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop2 :
-                                                                    'infixop2 Gram.Entry.t)
+                                                                    'infixop2 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11145,10 +11021,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop3 :
-                                                                    'infixop3 Gram.Entry.t)
+                                                                    'infixop3 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11340,10 +11216,10 @@ module MakeRevisedParser =
                                                                  [Gram.Sself
                                                                   ; (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (infixop4 :
-                                                                    'infixop4 Gram.Entry.t)
+                                                                    'infixop4 Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -11573,10 +11449,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_longident :
-                                                                    'class_longident Gram.Entry.t)
+                                                                    'class_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -11650,10 +11526,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -11681,10 +11557,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -11802,10 +11678,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -11833,10 +11709,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -11879,10 +11755,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -11939,10 +11815,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_expr :
-                                                                    'comma_expr Gram.Entry.t)
+                                                                    'comma_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12047,10 +11923,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (prefixop :
-                                                                    'prefixop Gram.Entry.t)
+                                                                    'prefixop Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -12119,10 +11995,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12131,10 +12007,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (package_type :
-                                                                    'package_type Gram.Entry.t)
+                                                                    'package_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12176,10 +12052,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12235,10 +12111,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12295,10 +12171,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12340,10 +12216,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12352,10 +12228,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12427,10 +12303,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12472,10 +12348,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_expr :
-                                                                    'comma_expr Gram.Entry.t)
+                                                                    'comma_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12517,10 +12393,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12579,10 +12455,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (field_expr_list :
-                                                                    'field_expr_list Gram.Entry.t)
+                                                                    'field_expr_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12649,10 +12525,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr_list :
-                                                                    'label_expr_list Gram.Entry.t)
+                                                                    'label_expr_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12687,10 +12563,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr_list :
-                                                                    'label_expr_list Gram.Entry.t)
+                                                                    'label_expr_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12723,10 +12599,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_expr :
-                                                                    'sem_expr Gram.Entry.t)
+                                                                    'sem_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12780,10 +12656,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_expr_for_list :
-                                                                    'sem_expr_for_list Gram.Entry.t)
+                                                                    'sem_expr_for_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12819,10 +12695,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_expr_for_list :
-                                                                    'sem_expr_for_list Gram.Entry.t)
+                                                                    'sem_expr_for_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12884,10 +12760,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -12909,10 +12785,10 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (val_longident :
-                                                                    'val_longident Gram.Entry.t)
+                                                                    'val_longident Gram.t)
                                                                     )))))
                                                                   )]
                                                                  ), (
@@ -12933,18 +12809,18 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident_dot_lparen :
-                                                                    'module_longident_dot_lparen Gram.Entry.t)
+                                                                    'module_longident_dot_lparen Gram.t)
                                                                     )))))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -12971,10 +12847,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_CHAR :
-                                                                    'a_CHAR Gram.Entry.t)
+                                                                    'a_CHAR Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -12993,10 +12869,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_STRING :
-                                                                    'a_STRING Gram.Entry.t)
+                                                                    'a_STRING Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13015,10 +12891,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_FLOAT :
-                                                                    'a_FLOAT Gram.Entry.t)
+                                                                    'a_FLOAT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13037,10 +12913,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_NATIVEINT :
-                                                                    'a_NATIVEINT Gram.Entry.t)
+                                                                    'a_NATIVEINT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13059,10 +12935,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT64 :
-                                                                    'a_INT64 Gram.Entry.t)
+                                                                    'a_INT64 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13081,10 +12957,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT32 :
-                                                                    'a_INT32 Gram.Entry.t)
+                                                                    'a_INT32 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13103,10 +12979,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT :
-                                                                    'a_INT Gram.Entry.t)
+                                                                    'a_INT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13361,7 +13237,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (do_sequence :
-                                                           'do_sequence Gram.Entry.t)
+                                                           'do_sequence Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13399,10 +13275,10 @@ module MakeRevisedParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -13493,10 +13369,10 @@ module MakeRevisedParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -13536,7 +13412,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (infixop5 :
-                                                           'infixop5 Gram.Entry.t)
+                                                           'infixop5 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13610,7 +13486,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (infixop6 :
-                                                           'infixop6 Gram.Entry.t)
+                                                           'infixop6 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13684,7 +13560,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sem_expr_for_list :
-                                                           'sem_expr_for_list Gram.Entry.t)
+                                                           'sem_expr_for_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13695,10 +13571,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -13733,10 +13609,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -13776,10 +13652,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -13829,7 +13705,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (comma_expr :
-                                                           'comma_expr Gram.Entry.t)
+                                                           'comma_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13841,10 +13717,10 @@ module MakeRevisedParser =
                                                                  [(
                                                                   (Gram.Snterml
                                                                     ((
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     ))
                                                                     ),
                                                                     "top"))
@@ -13936,7 +13812,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (dummy :
-                                                           'dummy Gram.Entry.t)
+                                                           'dummy Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13960,7 +13836,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sequence' :
-                                                           'sequence' Gram.Entry.t)
+                                                           'sequence' Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -13975,10 +13851,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14031,7 +13907,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sequence :
-                                                           'sequence Gram.Entry.t)
+                                                           'sequence Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14042,18 +13918,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence' :
-                                                                    'sequence' Gram.Entry.t)
+                                                                    'sequence' Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14126,10 +14002,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_longident :
-                                                                    'module_longident Gram.Entry.t)
+                                                                    'module_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14168,18 +14044,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding0 :
-                                                                    'module_binding0 Gram.Entry.t)
+                                                                    'module_binding0 Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14225,18 +14101,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_binding0 :
-                                                                    'module_binding0 Gram.Entry.t)
+                                                                    'module_binding0 Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14245,18 +14121,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence' :
-                                                                    'sequence' Gram.Entry.t)
+                                                                    'sequence' Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14293,18 +14169,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14345,18 +14221,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14365,18 +14241,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence' :
-                                                                    'sequence' Gram.Entry.t)
+                                                                    'sequence' Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14411,7 +14287,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (binding :
-                                                           'binding Gram.Entry.t)
+                                                           'binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14424,10 +14300,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (let_binding :
-                                                                    'let_binding Gram.Entry.t)
+                                                                    'let_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14537,10 +14413,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14633,7 +14509,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (let_binding :
-                                                           'let_binding Gram.Entry.t)
+                                                           'let_binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14644,18 +14520,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_binding :
-                                                                    'fun_binding Gram.Entry.t)
+                                                                    'fun_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14680,7 +14556,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (fun_binding :
-                                                           'fun_binding Gram.Entry.t)
+                                                           'fun_binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14693,10 +14569,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (cvalue_binding :
-                                                                    'cvalue_binding Gram.Entry.t)
+                                                                    'cvalue_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14715,10 +14591,10 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))))
                                                                   );
                                                                   Gram.Sself
@@ -14778,10 +14654,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14814,7 +14690,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (match_case :
-                                                           'match_case Gram.Entry.t)
+                                                           'match_case Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14825,10 +14701,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14837,10 +14713,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14873,10 +14749,10 @@ module MakeRevisedParser =
                                                                   (Gram.Slist0sep
                                                                     ((
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (match_case0 :
-                                                                    'match_case0 Gram.Entry.t)
+                                                                    'match_case0 Gram.t)
                                                                     )))
                                                                     ),
                                                                     (
@@ -14908,7 +14784,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (match_case0 :
-                                                           'match_case0 Gram.Entry.t)
+                                                           'match_case0 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -14919,18 +14795,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt_as_patt_opt :
-                                                                    'patt_as_patt_opt Gram.Entry.t)
+                                                                    'patt_as_patt_opt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_when_expr :
-                                                                    'opt_when_expr Gram.Entry.t)
+                                                                    'opt_when_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -14939,10 +14815,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -14989,10 +14865,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15001,10 +14877,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15072,10 +14948,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15219,7 +15095,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_when_expr :
-                                                           'opt_when_expr Gram.Entry.t)
+                                                           'opt_when_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15245,10 +15121,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15269,7 +15145,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (patt_as_patt_opt :
-                                                           'patt_as_patt_opt Gram.Entry.t)
+                                                           'patt_as_patt_opt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15280,10 +15156,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15300,10 +15176,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15312,10 +15188,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15341,7 +15217,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_expr_list :
-                                                           'label_expr_list Gram.Entry.t)
+                                                           'label_expr_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15352,10 +15228,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr :
-                                                                    'label_expr Gram.Entry.t)
+                                                                    'label_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15372,10 +15248,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr :
-                                                                    'label_expr Gram.Entry.t)
+                                                                    'label_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15397,10 +15273,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr :
-                                                                    'label_expr Gram.Entry.t)
+                                                                    'label_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15432,7 +15308,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_expr :
-                                                           'label_expr Gram.Entry.t)
+                                                           'label_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15443,10 +15319,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15477,18 +15353,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_binding :
-                                                                    'fun_binding Gram.Entry.t)
+                                                                    'fun_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15576,10 +15452,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15717,7 +15593,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (fun_def :
-                                                           'fun_def Gram.Entry.t)
+                                                           'fun_def Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15730,18 +15606,18 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_def_cont :
-                                                                    'fun_def_cont Gram.Entry.t)
+                                                                    'fun_def_cont Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15798,10 +15674,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15810,10 +15686,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_def_cont_no_when :
-                                                                    'fun_def_cont_no_when Gram.Entry.t)
+                                                                    'fun_def_cont_no_when Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15840,7 +15716,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (fun_def_cont :
-                                                           'fun_def_cont Gram.Entry.t)
+                                                           'fun_def_cont Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -15857,10 +15733,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15886,10 +15762,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -15898,10 +15774,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -15925,10 +15801,10 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))))
                                                                   );
                                                                   Gram.Sself
@@ -15993,10 +15869,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16005,10 +15881,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_def_cont_no_when :
-                                                                    'fun_def_cont_no_when Gram.Entry.t)
+                                                                    'fun_def_cont_no_when Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -16041,7 +15917,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (fun_def_cont_no_when :
-                                                           'fun_def_cont_no_when Gram.Entry.t)
+                                                           'fun_def_cont_no_when Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -16058,10 +15934,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -16081,18 +15957,18 @@ module MakeRevisedParser =
                                                                   (Gram.Stry
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_def_cont :
-                                                                    'fun_def_cont Gram.Entry.t)
+                                                                    'fun_def_cont Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -16149,10 +16025,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16185,7 +16061,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (patt :
-                                                           'patt Gram.Entry.t)
+                                                           'patt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -16323,10 +16199,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt_tcon :
-                                                                    'patt_tcon Gram.Entry.t)
+                                                                    'patt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16335,10 +16211,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16377,10 +16253,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt_tcon :
-                                                                    'patt_tcon Gram.Entry.t)
+                                                                    'patt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16537,18 +16413,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt_tcon :
-                                                                    'patt_tcon Gram.Entry.t)
+                                                                    'patt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (eq_expr :
-                                                                    'eq_expr Gram.Entry.t)
+                                                                    'eq_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16613,18 +16489,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt_tcon :
-                                                                    'patt_tcon Gram.Entry.t)
+                                                                    'patt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (eq_expr :
-                                                                    'eq_expr Gram.Entry.t)
+                                                                    'eq_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -16869,10 +16745,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident :
-                                                                    'type_longident Gram.Entry.t)
+                                                                    'type_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -16896,10 +16772,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -16982,10 +16858,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_patt :
-                                                                    'comma_patt Gram.Entry.t)
+                                                                    'comma_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17061,10 +16937,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17124,10 +17000,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17136,10 +17012,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (package_type :
-                                                                    'package_type Gram.Entry.t)
+                                                                    'package_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17185,10 +17061,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17244,10 +17120,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt_list :
-                                                                    'label_patt_list Gram.Entry.t)
+                                                                    'label_patt_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17276,10 +17152,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_patt :
-                                                                    'sem_patt Gram.Entry.t)
+                                                                    'sem_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17333,10 +17209,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_patt_for_list :
-                                                                    'sem_patt_for_list Gram.Entry.t)
+                                                                    'sem_patt_for_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17372,10 +17248,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_patt_for_list :
-                                                                    'sem_patt_for_list Gram.Entry.t)
+                                                                    'sem_patt_for_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -17437,10 +17313,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_FLOAT :
-                                                                    'a_FLOAT Gram.Entry.t)
+                                                                    'a_FLOAT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17467,10 +17343,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_NATIVEINT :
-                                                                    'a_NATIVEINT Gram.Entry.t)
+                                                                    'a_NATIVEINT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17497,10 +17373,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT64 :
-                                                                    'a_INT64 Gram.Entry.t)
+                                                                    'a_INT64 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17527,10 +17403,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT32 :
-                                                                    'a_INT32 Gram.Entry.t)
+                                                                    'a_INT32 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17557,10 +17433,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT :
-                                                                    'a_INT Gram.Entry.t)
+                                                                    'a_INT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17583,10 +17459,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_CHAR :
-                                                                    'a_CHAR Gram.Entry.t)
+                                                                    'a_CHAR Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17605,10 +17481,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_STRING :
-                                                                    'a_STRING Gram.Entry.t)
+                                                                    'a_STRING Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17627,10 +17503,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_FLOAT :
-                                                                    'a_FLOAT Gram.Entry.t)
+                                                                    'a_FLOAT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17649,10 +17525,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_NATIVEINT :
-                                                                    'a_NATIVEINT Gram.Entry.t)
+                                                                    'a_NATIVEINT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17671,10 +17547,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT64 :
-                                                                    'a_INT64 Gram.Entry.t)
+                                                                    'a_INT64 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17693,10 +17569,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT32 :
-                                                                    'a_INT32 Gram.Entry.t)
+                                                                    'a_INT32 Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17715,10 +17591,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_INT :
-                                                                    'a_INT Gram.Entry.t)
+                                                                    'a_INT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17737,10 +17613,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ident :
-                                                                    'ident Gram.Entry.t)
+                                                                    'ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -17908,7 +17784,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (comma_patt :
-                                                           'comma_patt Gram.Entry.t)
+                                                           'comma_patt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -17919,10 +17795,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18012,7 +17888,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sem_patt :
-                                                           'sem_patt Gram.Entry.t)
+                                                           'sem_patt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -18025,10 +17901,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18045,10 +17921,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18115,10 +17991,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18150,7 +18026,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sem_patt_for_list :
-                                                           'sem_patt_for_list Gram.Entry.t)
+                                                           'sem_patt_for_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -18161,10 +18037,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18199,10 +18075,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18242,10 +18118,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18295,7 +18171,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_patt_list :
-                                                           'label_patt_list Gram.Entry.t)
+                                                           'label_patt_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -18306,10 +18182,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt :
-                                                                    'label_patt Gram.Entry.t)
+                                                                    'label_patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18326,10 +18202,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt :
-                                                                    'label_patt Gram.Entry.t)
+                                                                    'label_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18351,10 +18227,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt :
-                                                                    'label_patt Gram.Entry.t)
+                                                                    'label_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18392,10 +18268,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt :
-                                                                    'label_patt Gram.Entry.t)
+                                                                    'label_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18428,10 +18304,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_patt :
-                                                                    'label_patt Gram.Entry.t)
+                                                                    'label_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18463,7 +18339,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_patt :
-                                                           'label_patt Gram.Entry.t)
+                                                           'label_patt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -18474,10 +18350,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18508,10 +18384,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18520,10 +18396,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18681,7 +18557,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ipatt :
-                                                           'ipatt Gram.Entry.t)
+                                                           'ipatt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -18708,10 +18584,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -18743,10 +18619,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_ipatt :
-                                                                    'comma_ipatt Gram.Entry.t)
+                                                                    'comma_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18822,10 +18698,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18885,10 +18761,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18897,10 +18773,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (package_type :
-                                                                    'package_type Gram.Entry.t)
+                                                                    'package_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -18946,10 +18822,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19141,10 +19017,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt_list :
-                                                                    'label_ipatt_list Gram.Entry.t)
+                                                                    'label_ipatt_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19172,7 +19048,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (labeled_ipatt :
-                                                           'labeled_ipatt Gram.Entry.t)
+                                                           'labeled_ipatt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19183,10 +19059,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19206,7 +19082,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (comma_ipatt :
-                                                           'comma_ipatt Gram.Entry.t)
+                                                           'comma_ipatt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19219,10 +19095,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19312,7 +19188,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_ipatt_list :
-                                                           'label_ipatt_list Gram.Entry.t)
+                                                           'label_ipatt_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19323,10 +19199,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt :
-                                                                    'label_ipatt Gram.Entry.t)
+                                                                    'label_ipatt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19343,10 +19219,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt :
-                                                                    'label_ipatt Gram.Entry.t)
+                                                                    'label_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19368,10 +19244,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt :
-                                                                    'label_ipatt Gram.Entry.t)
+                                                                    'label_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19409,10 +19285,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt :
-                                                                    'label_ipatt Gram.Entry.t)
+                                                                    'label_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19445,10 +19321,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_ipatt :
-                                                                    'label_ipatt Gram.Entry.t)
+                                                                    'label_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19480,7 +19356,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_ipatt :
-                                                           'label_ipatt Gram.Entry.t)
+                                                           'label_ipatt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19491,10 +19367,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19503,10 +19379,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19664,7 +19540,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_declaration :
-                                                           'type_declaration Gram.Entry.t)
+                                                           'type_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19677,28 +19553,28 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_ident_and_parameters :
-                                                                    'type_ident_and_parameters Gram.Entry.t)
+                                                                    'type_ident_and_parameters Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_eq_ctyp :
-                                                                    'opt_eq_ctyp Gram.Entry.t)
+                                                                    'opt_eq_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Slist0
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constrain :
-                                                                    'constrain Gram.Entry.t)
+                                                                    'constrain Gram.t)
                                                                     )))))
                                                                   )]
                                                                  ), (
@@ -19886,7 +19762,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (constrain :
-                                                           'constrain Gram.Entry.t)
+                                                           'constrain Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19901,10 +19777,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -19913,10 +19789,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19941,7 +19817,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_eq_ctyp :
-                                                           'opt_eq_ctyp Gram.Entry.t)
+                                                           'opt_eq_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -19967,10 +19843,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_kind :
-                                                                    'type_kind Gram.Entry.t)
+                                                                    'type_kind Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -19991,7 +19867,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_kind :
-                                                           'type_kind Gram.Entry.t)
+                                                           'type_kind Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20002,10 +19878,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20025,7 +19901,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_ident_and_parameters :
-                                                           'type_ident_and_parameters Gram.Entry.t)
+                                                           'type_ident_and_parameters Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20036,20 +19912,20 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Slist0
                                                                     ((
                                                                     Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (optional_type_parameter :
-                                                                    'optional_type_parameter Gram.Entry.t)
+                                                                    'optional_type_parameter Gram.t)
                                                                     )))))
                                                                   )]
                                                                  ), (
@@ -20072,7 +19948,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_longident_and_parameters :
-                                                           'type_longident_and_parameters Gram.Entry.t)
+                                                           'type_longident_and_parameters Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20083,18 +19959,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident :
-                                                                    'type_longident Gram.Entry.t)
+                                                                    'type_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_parameters :
-                                                                    'type_parameters Gram.Entry.t)
+                                                                    'type_parameters Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20121,7 +19997,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_parameters :
-                                                           'type_parameters Gram.Entry.t)
+                                                           'type_parameters Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20143,10 +20019,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_parameter :
-                                                                    'type_parameter Gram.Entry.t)
+                                                                    'type_parameter Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20168,10 +20044,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_parameter :
-                                                                    'type_parameter Gram.Entry.t)
+                                                                    'type_parameter Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -20202,7 +20078,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_parameter :
-                                                           'type_parameter Gram.Entry.t)
+                                                           'type_parameter Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20221,10 +20097,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20253,10 +20129,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20281,10 +20157,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20393,7 +20269,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (optional_type_parameter :
-                                                           'optional_type_parameter Gram.Entry.t)
+                                                           'optional_type_parameter Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20470,10 +20346,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20502,10 +20378,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20530,10 +20406,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -20642,7 +20518,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ctyp :
-                                                           'ctyp Gram.Entry.t)
+                                                           'ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -20695,10 +20571,10 @@ module MakeRevisedParser =
                                                                   (
                                                                   (Gram.Snterml
                                                                     ((
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     ))
                                                                     ),
                                                                     "alias"))
@@ -20765,10 +20641,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (typevars :
-                                                                    'typevars Gram.Entry.t)
+                                                                    'typevars Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -20839,10 +20715,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_OPTLABEL :
-                                                                    'a_OPTLABEL Gram.Entry.t)
+                                                                    'a_OPTLABEL Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -20870,10 +20746,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -20903,10 +20779,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LABEL :
-                                                                    'a_LABEL Gram.Entry.t)
+                                                                    'a_LABEL Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -20934,10 +20810,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21075,10 +20951,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (package_type :
-                                                                    'package_type Gram.Entry.t)
+                                                                    'package_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21108,10 +20984,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_meth_list :
-                                                                    'opt_meth_list Gram.Entry.t)
+                                                                    'opt_meth_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21138,10 +21014,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_longident :
-                                                                    'class_longident Gram.Entry.t)
+                                                                    'class_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -21165,10 +21041,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration_list :
-                                                                    'label_declaration_list Gram.Entry.t)
+                                                                    'label_declaration_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21197,10 +21073,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21209,10 +21085,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (name_tags :
-                                                                    'name_tags Gram.Entry.t)
+                                                                    'name_tags Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21245,10 +21121,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21281,10 +21157,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21293,10 +21169,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (name_tags :
-                                                                    'name_tags Gram.Entry.t)
+                                                                    'name_tags Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21334,10 +21210,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21371,10 +21247,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21438,10 +21314,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21471,10 +21347,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declarations :
-                                                                    'constructor_declarations Gram.Entry.t)
+                                                                    'constructor_declarations Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21556,10 +21432,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (star_ctyp :
-                                                                    'star_ctyp Gram.Entry.t)
+                                                                    'star_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -21592,10 +21468,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -21618,10 +21494,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -21849,10 +21725,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -21875,7 +21751,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (star_ctyp :
-                                                           'star_ctyp Gram.Entry.t)
+                                                           'star_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -21886,10 +21762,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22026,7 +21902,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (constructor_declarations :
-                                                           'constructor_declarations Gram.Entry.t)
+                                                           'constructor_declarations Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22037,10 +21913,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22063,10 +21939,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22075,10 +21951,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22122,10 +21998,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22134,10 +22010,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_arg_list :
-                                                                    'constructor_arg_list Gram.Entry.t)
+                                                                    'constructor_arg_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22326,7 +22202,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (constructor_declaration :
-                                                           'constructor_declaration Gram.Entry.t)
+                                                           'constructor_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22337,10 +22213,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22363,10 +22239,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22375,10 +22251,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_arg_list :
-                                                                    'constructor_arg_list Gram.Entry.t)
+                                                                    'constructor_arg_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22497,7 +22373,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (constructor_arg_list :
-                                                           'constructor_arg_list Gram.Entry.t)
+                                                           'constructor_arg_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22508,10 +22384,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22601,7 +22477,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_declaration_list :
-                                                           'label_declaration_list Gram.Entry.t)
+                                                           'label_declaration_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22612,10 +22488,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration :
-                                                                    'label_declaration Gram.Entry.t)
+                                                                    'label_declaration Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22632,10 +22508,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration :
-                                                                    'label_declaration Gram.Entry.t)
+                                                                    'label_declaration Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22657,10 +22533,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration :
-                                                                    'label_declaration Gram.Entry.t)
+                                                                    'label_declaration Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22692,7 +22568,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_declaration :
-                                                           'label_declaration Gram.Entry.t)
+                                                           'label_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22703,10 +22579,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22719,10 +22595,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22758,10 +22634,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -22770,10 +22646,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22937,7 +22813,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_ident :
-                                                           'a_ident Gram.Entry.t)
+                                                           'a_ident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -22948,10 +22824,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22968,10 +22844,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -22991,7 +22867,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ident :
-                                                           'ident Gram.Entry.t)
+                                                           'ident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23002,10 +22878,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -23103,10 +22979,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23125,10 +23001,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23201,7 +23077,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_longident :
-                                                           'module_longident Gram.Entry.t)
+                                                           'module_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23212,10 +23088,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23234,10 +23110,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -23324,7 +23200,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_longident_with_app :
-                                                           'module_longident_with_app Gram.Entry.t)
+                                                           'module_longident_with_app Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23421,10 +23297,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23497,7 +23373,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_longident_dot_lparen :
-                                                           'module_longident_dot_lparen Gram.Entry.t)
+                                                           'module_longident_dot_lparen Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23508,10 +23384,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -23540,10 +23416,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -23640,7 +23516,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_longident :
-                                                           'type_longident Gram.Entry.t)
+                                                           'type_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23737,10 +23613,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23759,10 +23635,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23835,7 +23711,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label_longident :
-                                                           'label_longident Gram.Entry.t)
+                                                           'label_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23846,10 +23722,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23868,10 +23744,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -23958,7 +23834,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type_longident :
-                                                           'class_type_longident Gram.Entry.t)
+                                                           'class_type_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -23969,10 +23845,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_longident :
-                                                                    'type_longident Gram.Entry.t)
+                                                                    'type_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -23992,7 +23868,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (val_longident :
-                                                           'val_longident Gram.Entry.t)
+                                                           'val_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24003,10 +23879,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ident :
-                                                                    'ident Gram.Entry.t)
+                                                                    'ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24026,7 +23902,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_longident :
-                                                           'class_longident Gram.Entry.t)
+                                                           'class_longident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24037,10 +23913,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_longident :
-                                                                    'label_longident Gram.Entry.t)
+                                                                    'label_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24060,7 +23936,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_declaration :
-                                                           'class_declaration Gram.Entry.t)
+                                                           'class_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24073,18 +23949,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_info_for_class_expr :
-                                                                    'class_info_for_class_expr Gram.Entry.t)
+                                                                    'class_info_for_class_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_fun_binding :
-                                                                    'class_fun_binding Gram.Entry.t)
+                                                                    'class_fun_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24223,7 +24099,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_fun_binding :
-                                                           'class_fun_binding Gram.Entry.t)
+                                                           'class_fun_binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24234,10 +24110,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -24265,10 +24141,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_plus :
-                                                                    'class_type_plus Gram.Entry.t)
+                                                                    'class_type_plus Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -24277,10 +24153,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_expr :
-                                                                    'class_expr Gram.Entry.t)
+                                                                    'class_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24308,10 +24184,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_expr :
-                                                                    'class_expr Gram.Entry.t)
+                                                                    'class_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24332,7 +24208,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_info_for_class_type :
-                                                           'class_info_for_class_type Gram.Entry.t)
+                                                           'class_info_for_class_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24343,18 +24219,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_virtual :
-                                                                    'opt_virtual Gram.Entry.t)
+                                                                    'opt_virtual Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_name_and_param :
-                                                                    'class_name_and_param Gram.Entry.t)
+                                                                    'class_name_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24386,7 +24262,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_info_for_class_expr :
-                                                           'class_info_for_class_expr Gram.Entry.t)
+                                                           'class_info_for_class_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24397,18 +24273,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_virtual :
-                                                                    'opt_virtual Gram.Entry.t)
+                                                                    'opt_virtual Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_name_and_param :
-                                                                    'class_name_and_param Gram.Entry.t)
+                                                                    'class_name_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24440,7 +24316,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_name_and_param :
-                                                           'class_name_and_param Gram.Entry.t)
+                                                           'class_name_and_param Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24451,10 +24327,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24475,10 +24351,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -24487,10 +24363,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_type_parameter :
-                                                                    'comma_type_parameter Gram.Entry.t)
+                                                                    'comma_type_parameter Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -24519,7 +24395,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (comma_type_parameter :
-                                                           'comma_type_parameter Gram.Entry.t)
+                                                           'comma_type_parameter Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24530,10 +24406,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_parameter :
-                                                                    'type_parameter Gram.Entry.t)
+                                                                    'type_parameter Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24623,7 +24499,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_comma_ctyp :
-                                                           'opt_comma_ctyp Gram.Entry.t)
+                                                           'opt_comma_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24649,10 +24525,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_ctyp :
-                                                                    'comma_ctyp Gram.Entry.t)
+                                                                    'comma_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -24678,7 +24554,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (comma_ctyp :
-                                                           'comma_ctyp Gram.Entry.t)
+                                                           'comma_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24689,10 +24565,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24782,7 +24658,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_fun_def :
-                                                           'class_fun_def Gram.Entry.t)
+                                                           'class_fun_def Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24797,10 +24673,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_expr :
-                                                                    'class_expr Gram.Entry.t)
+                                                                    'class_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24818,10 +24694,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -24848,7 +24724,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_expr :
-                                                           'class_expr Gram.Entry.t)
+                                                           'class_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -24866,18 +24742,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -24914,18 +24790,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (labeled_ipatt :
-                                                                    'labeled_ipatt Gram.Entry.t)
+                                                                    'labeled_ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_fun_def :
-                                                                    'class_fun_def Gram.Entry.t)
+                                                                    'class_fun_def Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -24958,10 +24834,10 @@ module MakeRevisedParser =
                                                                   ; (
                                                                   (Gram.Snterml
                                                                     ((
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     ))
                                                                     ),
                                                                     "label"))
@@ -25024,10 +24900,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type :
-                                                                    'class_type Gram.Entry.t)
+                                                                    'class_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25060,18 +24936,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_class_self_patt :
-                                                                    'opt_class_self_patt Gram.Entry.t)
+                                                                    'opt_class_self_patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_structure :
-                                                                    'class_structure Gram.Entry.t)
+                                                                    'class_structure Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25099,10 +24975,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_longident_and_param :
-                                                                    'class_longident_and_param Gram.Entry.t)
+                                                                    'class_longident_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25209,7 +25085,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_longident_and_param :
-                                                           'class_longident_and_param Gram.Entry.t)
+                                                           'class_longident_and_param Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -25220,10 +25096,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_longident :
-                                                                    'class_longident Gram.Entry.t)
+                                                                    'class_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25248,10 +25124,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_longident :
-                                                                    'class_longident Gram.Entry.t)
+                                                                    'class_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25260,10 +25136,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_ctyp :
-                                                                    'comma_ctyp Gram.Entry.t)
+                                                                    'comma_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25296,7 +25172,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_structure :
-                                                           'class_structure Gram.Entry.t)
+                                                           'class_structure Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -25313,18 +25189,18 @@ module MakeRevisedParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_str_item :
-                                                                    'class_str_item Gram.Entry.t)
+                                                                    'class_str_item Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -25376,10 +25252,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -25480,7 +25356,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_class_self_patt :
-                                                           'opt_class_self_patt Gram.Entry.t)
+                                                           'opt_class_self_patt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -25506,10 +25382,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25518,10 +25394,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25554,10 +25430,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25583,7 +25459,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_str_item :
-                                                           'class_str_item Gram.Entry.t)
+                                                           'class_str_item Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -25600,10 +25476,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25623,18 +25499,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_constraint :
-                                                                    'type_constraint Gram.Entry.t)
+                                                                    'type_constraint Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25643,10 +25519,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25670,18 +25546,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (method_opt_override :
-                                                                    'method_opt_override Gram.Entry.t)
+                                                                    'method_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25690,10 +25566,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25702,10 +25578,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25747,42 +25623,42 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (method_opt_override :
-                                                                    'method_opt_override Gram.Entry.t)
+                                                                    'method_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_polyt :
-                                                                    'opt_polyt Gram.Entry.t)
+                                                                    'opt_polyt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (fun_binding :
-                                                                    'fun_binding Gram.Entry.t)
+                                                                    'fun_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25813,10 +25689,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (method_opt_override :
-                                                                    'method_opt_override Gram.Entry.t)
+                                                                    'method_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25825,18 +25701,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25845,10 +25721,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25890,10 +25766,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (value_val_opt_override :
-                                                                    'value_val_opt_override Gram.Entry.t)
+                                                                    'value_val_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25902,18 +25778,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_mutable :
-                                                                    'opt_mutable Gram.Entry.t)
+                                                                    'opt_mutable Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25922,10 +25798,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -25967,18 +25843,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (value_val_opt_override :
-                                                                    'value_val_opt_override Gram.Entry.t)
+                                                                    'value_val_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_mutable :
-                                                                    'opt_mutable Gram.Entry.t)
+                                                                    'opt_mutable Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25987,10 +25863,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -25999,10 +25875,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26044,34 +25920,34 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (value_val_opt_override :
-                                                                    'value_val_opt_override Gram.Entry.t)
+                                                                    'value_val_opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_mutable :
-                                                                    'opt_mutable Gram.Entry.t)
+                                                                    'opt_mutable Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (cvalue_binding :
-                                                                    'cvalue_binding Gram.Entry.t)
+                                                                    'cvalue_binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26103,26 +25979,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_override :
-                                                                    'opt_override Gram.Entry.t)
+                                                                    'opt_override Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_expr :
-                                                                    'class_expr Gram.Entry.t)
+                                                                    'class_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_as_lident :
-                                                                    'opt_as_lident Gram.Entry.t)
+                                                                    'opt_as_lident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26240,7 +26116,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (method_opt_override :
-                                                           'method_opt_override Gram.Entry.t)
+                                                           'method_opt_override Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26339,7 +26215,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (value_val_opt_override :
-                                                           'value_val_opt_override Gram.Entry.t)
+                                                           'value_val_opt_override Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26438,7 +26314,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_as_lident :
-                                                           'opt_as_lident Gram.Entry.t)
+                                                           'opt_as_lident Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26463,10 +26339,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26487,7 +26363,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_polyt :
-                                                           'opt_polyt Gram.Entry.t)
+                                                           'opt_polyt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26513,10 +26389,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26537,7 +26413,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (cvalue_binding :
-                                                           'cvalue_binding Gram.Entry.t)
+                                                           'cvalue_binding Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26552,10 +26428,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26564,10 +26440,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26599,10 +26475,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26611,10 +26487,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26623,10 +26499,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26671,10 +26547,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26683,10 +26559,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26718,10 +26594,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (unquoted_typevars :
-                                                                    'unquoted_typevars Gram.Entry.t)
+                                                                    'unquoted_typevars Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26730,10 +26606,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26742,10 +26618,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26782,10 +26658,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26806,7 +26682,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (label :
-                                                           'label Gram.Entry.t)
+                                                           'label Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26817,10 +26693,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -26840,7 +26716,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type :
-                                                           'class_type Gram.Entry.t)
+                                                           'class_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -26855,18 +26731,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_class_self_type :
-                                                                    'opt_class_self_type Gram.Entry.t)
+                                                                    'opt_class_self_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_signature :
-                                                                    'class_signature Gram.Entry.t)
+                                                                    'class_signature Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -26894,10 +26770,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_longident_and_param :
-                                                                    'class_type_longident_and_param Gram.Entry.t)
+                                                                    'class_type_longident_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27004,7 +26880,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type_longident_and_param :
-                                                           'class_type_longident_and_param Gram.Entry.t)
+                                                           'class_type_longident_and_param Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27015,10 +26891,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_longident :
-                                                                    'class_type_longident Gram.Entry.t)
+                                                                    'class_type_longident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27043,10 +26919,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_longident :
-                                                                    'class_type_longident Gram.Entry.t)
+                                                                    'class_type_longident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27055,10 +26931,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_ctyp :
-                                                                    'comma_ctyp Gram.Entry.t)
+                                                                    'comma_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27091,7 +26967,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type_plus :
-                                                           'class_type_plus Gram.Entry.t)
+                                                           'class_type_plus Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27102,10 +26978,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type :
-                                                                    'class_type Gram.Entry.t)
+                                                                    'class_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27126,10 +27002,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27167,7 +27043,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_class_self_type :
-                                                           'opt_class_self_type Gram.Entry.t)
+                                                           'opt_class_self_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27193,10 +27069,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27222,7 +27098,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_signature :
-                                                           'class_signature Gram.Entry.t)
+                                                           'class_signature Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27239,18 +27115,18 @@ module MakeRevisedParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_sig_item :
-                                                                    'class_sig_item Gram.Entry.t)
+                                                                    'class_sig_item Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -27302,10 +27178,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -27406,7 +27282,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_sig_item :
-                                                           'class_sig_item Gram.Entry.t)
+                                                           'class_sig_item Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27417,18 +27293,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_constraint :
-                                                                    'type_constraint Gram.Entry.t)
+                                                                    'type_constraint Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27437,10 +27313,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27468,10 +27344,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27480,10 +27356,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27492,10 +27368,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27527,18 +27403,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27547,10 +27423,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27585,18 +27461,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27605,10 +27481,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27640,26 +27516,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_mutable :
-                                                                    'opt_mutable Gram.Entry.t)
+                                                                    'opt_mutable Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_virtual :
-                                                                    'opt_virtual Gram.Entry.t)
+                                                                    'opt_virtual Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27668,10 +27544,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27705,10 +27581,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type :
-                                                                    'class_type Gram.Entry.t)
+                                                                    'class_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -27820,7 +27696,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (type_constraint :
-                                                           'type_constraint Gram.Entry.t)
+                                                           'type_constraint Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27864,7 +27740,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_description :
-                                                           'class_description Gram.Entry.t)
+                                                           'class_description Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -27875,10 +27751,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_info_for_class_type :
-                                                                    'class_info_for_class_type Gram.Entry.t)
+                                                                    'class_info_for_class_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -27887,10 +27763,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_plus :
-                                                                    'class_type_plus Gram.Entry.t)
+                                                                    'class_type_plus Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28030,7 +27906,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type_declaration :
-                                                           'class_type_declaration Gram.Entry.t)
+                                                           'class_type_declaration Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28043,10 +27919,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_info_for_class_type :
-                                                                    'class_info_for_class_type Gram.Entry.t)
+                                                                    'class_info_for_class_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28055,10 +27931,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type :
-                                                                    'class_type Gram.Entry.t)
+                                                                    'class_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28198,7 +28074,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (field_expr_list :
-                                                           'field_expr_list Gram.Entry.t)
+                                                           'field_expr_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28209,10 +28085,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (field_expr :
-                                                                    'field_expr Gram.Entry.t)
+                                                                    'field_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28229,10 +28105,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (field_expr :
-                                                                    'field_expr Gram.Entry.t)
+                                                                    'field_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28254,10 +28130,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (field_expr :
-                                                                    'field_expr Gram.Entry.t)
+                                                                    'field_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28289,7 +28165,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (field_expr :
-                                                           'field_expr Gram.Entry.t)
+                                                           'field_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28300,10 +28176,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label :
-                                                                    'label Gram.Entry.t)
+                                                                    'label Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28313,10 +28189,10 @@ module MakeRevisedParser =
                                                                   (
                                                                   (Gram.Snterml
                                                                     ((
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     ))
                                                                     ),
                                                                     "top"))
@@ -28442,7 +28318,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (meth_list :
-                                                           'meth_list Gram.Entry.t)
+                                                           'meth_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28453,18 +28329,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (meth_decl :
-                                                                    'meth_decl Gram.Entry.t)
+                                                                    'meth_decl Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_dot_dot :
-                                                                    'opt_dot_dot Gram.Entry.t)
+                                                                    'opt_dot_dot Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28484,10 +28360,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (meth_decl :
-                                                                    'meth_decl Gram.Entry.t)
+                                                                    'meth_decl Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28496,10 +28372,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_dot_dot :
-                                                                    'opt_dot_dot Gram.Entry.t)
+                                                                    'opt_dot_dot Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28520,10 +28396,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (meth_decl :
-                                                                    'meth_decl Gram.Entry.t)
+                                                                    'meth_decl Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28560,7 +28436,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (meth_decl :
-                                                           'meth_decl Gram.Entry.t)
+                                                           'meth_decl Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28571,10 +28447,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -28583,10 +28459,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (poly_type :
-                                                                    'poly_type Gram.Entry.t)
+                                                                    'poly_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28750,7 +28626,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_meth_list :
-                                                           'opt_meth_list Gram.Entry.t)
+                                                           'opt_meth_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28761,10 +28637,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_dot_dot :
-                                                                    'opt_dot_dot Gram.Entry.t)
+                                                                    'opt_dot_dot Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28787,10 +28663,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (meth_list :
-                                                                    'meth_list Gram.Entry.t)
+                                                                    'meth_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28815,7 +28691,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (poly_type :
-                                                           'poly_type Gram.Entry.t)
+                                                           'poly_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28826,10 +28702,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28849,7 +28725,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (package_type :
-                                                           'package_type Gram.Entry.t)
+                                                           'package_type Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28860,10 +28736,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -28883,7 +28759,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (typevars :
-                                                           'typevars Gram.Entry.t)
+                                                           'typevars Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -28900,10 +28776,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29032,7 +28908,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (unquoted_typevars :
-                                                           'unquoted_typevars Gram.Entry.t)
+                                                           'unquoted_typevars Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29045,10 +28921,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29180,7 +29056,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (row_field :
-                                                           'row_field Gram.Entry.t)
+                                                           'row_field Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29191,10 +29067,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29215,10 +29091,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -29227,10 +29103,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (amp_ctyp :
-                                                                    'amp_ctyp Gram.Entry.t)
+                                                                    'amp_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29262,10 +29138,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -29278,10 +29154,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (amp_ctyp :
-                                                                    'amp_ctyp Gram.Entry.t)
+                                                                    'amp_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29314,10 +29190,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29457,7 +29333,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (amp_ctyp :
-                                                           'amp_ctyp Gram.Entry.t)
+                                                           'amp_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29468,10 +29344,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29561,7 +29437,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (name_tags :
-                                                           'name_tags Gram.Entry.t)
+                                                           'name_tags Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29576,10 +29452,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29670,7 +29546,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (eq_expr :
-                                                           'eq_expr Gram.Entry.t)
+                                                           'eq_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29701,10 +29577,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29732,7 +29608,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (patt_tcon :
-                                                           'patt_tcon Gram.Entry.t)
+                                                           'patt_tcon Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29743,10 +29619,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29763,10 +29639,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -29775,10 +29651,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -29804,7 +29680,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ipatt :
-                                                           'ipatt Gram.Entry.t)
+                                                           'ipatt Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -29823,10 +29699,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt_tcon :
-                                                                    'ipatt_tcon Gram.Entry.t)
+                                                                    'ipatt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -29835,10 +29711,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -29877,10 +29753,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt_tcon :
-                                                                    'ipatt_tcon Gram.Entry.t)
+                                                                    'ipatt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -30037,18 +29913,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt_tcon :
-                                                                    'ipatt_tcon Gram.Entry.t)
+                                                                    'ipatt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (eq_expr :
-                                                                    'eq_expr Gram.Entry.t)
+                                                                    'eq_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -30113,18 +29989,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt_tcon :
-                                                                    'ipatt_tcon Gram.Entry.t)
+                                                                    'ipatt_tcon Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (eq_expr :
-                                                                    'eq_expr Gram.Entry.t)
+                                                                    'eq_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -30368,7 +30244,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ipatt_tcon :
-                                                           'ipatt_tcon Gram.Entry.t)
+                                                           'ipatt_tcon Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30379,10 +30255,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -30399,10 +30275,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ipatt :
-                                                                    'ipatt Gram.Entry.t)
+                                                                    'ipatt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -30411,10 +30287,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -30440,7 +30316,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (direction_flag :
-                                                           'direction_flag Gram.Entry.t)
+                                                           'direction_flag Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30527,7 +30403,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_private :
-                                                           'opt_private Gram.Entry.t)
+                                                           'opt_private Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30609,7 +30485,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_mutable :
-                                                           'opt_mutable Gram.Entry.t)
+                                                           'opt_mutable Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30691,7 +30567,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_virtual :
-                                                           'opt_virtual Gram.Entry.t)
+                                                           'opt_virtual Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30773,7 +30649,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_dot_dot :
-                                                           'opt_dot_dot Gram.Entry.t)
+                                                           'opt_dot_dot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30855,7 +30731,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_rec :
-                                                           'opt_rec Gram.Entry.t)
+                                                           'opt_rec Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -30937,7 +30813,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_override :
-                                                           'opt_override Gram.Entry.t)
+                                                           'opt_override Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31021,7 +30897,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (opt_expr :
-                                                           'opt_expr Gram.Entry.t)
+                                                           'opt_expr Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31043,10 +30919,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31066,7 +30942,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (interf :
-                                                           'interf Gram.Entry.t)
+                                                           'interf Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31113,18 +30989,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sig_item :
-                                                                    'sig_item Gram.Entry.t)
+                                                                    'sig_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -31157,26 +31033,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31211,7 +31087,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sig_items :
-                                                           'sig_items Gram.Entry.t)
+                                                           'sig_items Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31228,18 +31104,18 @@ module MakeRevisedParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sig_item :
-                                                                    'sig_item Gram.Entry.t)
+                                                                    'sig_item Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -31291,10 +31167,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -31395,7 +31271,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (implem :
-                                                           'implem Gram.Entry.t)
+                                                           'implem Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31442,18 +31318,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -31486,26 +31362,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31540,7 +31416,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (str_items :
-                                                           'str_items Gram.Entry.t)
+                                                           'str_items Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31557,18 +31433,18 @@ module MakeRevisedParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -31620,10 +31496,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -31724,7 +31600,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (top_phrase :
-                                                           'top_phrase Gram.Entry.t)
+                                                           'top_phrase Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31768,10 +31644,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (phrase :
-                                                                    'phrase Gram.Entry.t)
+                                                                    'phrase Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31792,7 +31668,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (use_file :
-                                                           'use_file Gram.Entry.t)
+                                                           'use_file Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31839,18 +31715,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -31883,26 +31759,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31937,7 +31813,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (phrase :
-                                                           'phrase Gram.Entry.t)
+                                                           'phrase Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -31948,18 +31824,18 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -31981,26 +31857,26 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -32027,7 +31903,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_INT :
-                                                           'a_INT Gram.Entry.t)
+                                                           'a_INT Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32122,7 +31998,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_INT32 :
-                                                           'a_INT32 Gram.Entry.t)
+                                                           'a_INT32 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32217,7 +32093,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_INT64 :
-                                                           'a_INT64 Gram.Entry.t)
+                                                           'a_INT64 Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32312,7 +32188,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_NATIVEINT :
-                                                           'a_NATIVEINT Gram.Entry.t)
+                                                           'a_NATIVEINT Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32407,7 +32283,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_FLOAT :
-                                                           'a_FLOAT Gram.Entry.t)
+                                                           'a_FLOAT Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32502,7 +32378,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_CHAR :
-                                                           'a_CHAR Gram.Entry.t)
+                                                           'a_CHAR Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32597,7 +32473,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_UIDENT :
-                                                           'a_UIDENT Gram.Entry.t)
+                                                           'a_UIDENT Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32688,7 +32564,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_LIDENT :
-                                                           'a_LIDENT Gram.Entry.t)
+                                                           'a_LIDENT Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32779,7 +32655,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_LABEL :
-                                                           'a_LABEL Gram.Entry.t)
+                                                           'a_LABEL Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32878,7 +32754,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_OPTLABEL :
-                                                           'a_OPTLABEL Gram.Entry.t)
+                                                           'a_OPTLABEL Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -32977,7 +32853,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (a_STRING :
-                                                           'a_STRING Gram.Entry.t)
+                                                           'a_STRING Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33072,7 +32948,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (string_list :
-                                                           'string_list Gram.Entry.t)
+                                                           'string_list Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33211,7 +33087,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (semi :
-                                                           'semi Gram.Entry.t)
+                                                           'semi Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33240,7 +33116,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (expr_quot :
-                                                           'expr_quot Gram.Entry.t)
+                                                           'expr_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33262,10 +33138,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33282,10 +33158,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33294,10 +33170,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_expr :
-                                                                    'sem_expr Gram.Entry.t)
+                                                                    'sem_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33320,10 +33196,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33332,10 +33208,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_expr :
-                                                                    'comma_expr Gram.Entry.t)
+                                                                    'comma_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33361,7 +33237,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (patt_quot :
-                                                           'patt_quot Gram.Entry.t)
+                                                           'patt_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33383,10 +33259,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33403,10 +33279,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33415,10 +33291,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33455,10 +33331,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33467,10 +33343,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sem_patt :
-                                                                    'sem_patt Gram.Entry.t)
+                                                                    'sem_patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33493,10 +33369,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33505,10 +33381,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_patt :
-                                                                    'comma_patt Gram.Entry.t)
+                                                                    'comma_patt Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33534,7 +33410,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ctyp_quot :
-                                                           'ctyp_quot Gram.Entry.t)
+                                                           'ctyp_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -33556,10 +33432,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33576,10 +33452,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33588,10 +33464,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_arg_list :
-                                                                    'constructor_arg_list Gram.Entry.t)
+                                                                    'constructor_arg_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33614,10 +33490,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33626,10 +33502,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (amp_ctyp :
-                                                                    'amp_ctyp Gram.Entry.t)
+                                                                    'amp_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33652,10 +33528,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33664,10 +33540,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (star_ctyp :
-                                                                    'star_ctyp Gram.Entry.t)
+                                                                    'star_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33690,10 +33566,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33702,10 +33578,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33714,10 +33590,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration_list :
-                                                                    'label_declaration_list Gram.Entry.t)
+                                                                    'label_declaration_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33748,10 +33624,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33760,10 +33636,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33786,10 +33662,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33802,10 +33678,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (amp_ctyp :
-                                                                    'amp_ctyp Gram.Entry.t)
+                                                                    'amp_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33814,10 +33690,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (row_field :
-                                                                    'row_field Gram.Entry.t)
+                                                                    'row_field Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33849,10 +33725,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33865,10 +33741,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (amp_ctyp :
-                                                                    'amp_ctyp Gram.Entry.t)
+                                                                    'amp_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33892,10 +33768,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33904,10 +33780,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_arg_list :
-                                                                    'constructor_arg_list Gram.Entry.t)
+                                                                    'constructor_arg_list Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33916,10 +33792,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declarations :
-                                                                    'constructor_declarations Gram.Entry.t)
+                                                                    'constructor_declarations Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33950,10 +33826,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -33962,10 +33838,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_arg_list :
-                                                                    'constructor_arg_list Gram.Entry.t)
+                                                                    'constructor_arg_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -33988,10 +33864,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34000,10 +33876,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (constructor_declarations :
-                                                                    'constructor_declarations Gram.Entry.t)
+                                                                    'constructor_declarations Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34026,10 +33902,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34038,10 +33914,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_declaration_list :
-                                                                    'label_declaration_list Gram.Entry.t)
+                                                                    'label_declaration_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34064,10 +33940,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (more_ctyp :
-                                                                    'more_ctyp Gram.Entry.t)
+                                                                    'more_ctyp Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34076,10 +33952,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (comma_ctyp :
-                                                                    'comma_ctyp Gram.Entry.t)
+                                                                    'comma_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34105,7 +33981,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (more_ctyp :
-                                                           'more_ctyp Gram.Entry.t)
+                                                           'more_ctyp Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34116,10 +33992,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (type_parameter :
-                                                                    'type_parameter Gram.Entry.t)
+                                                                    'type_parameter Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34136,10 +34012,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ctyp :
-                                                                    'ctyp Gram.Entry.t)
+                                                                    'ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34160,10 +34036,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_ident :
-                                                                    'a_ident Gram.Entry.t)
+                                                                    'a_ident Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34207,7 +34083,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (str_item_quot :
-                                                           'str_item_quot Gram.Entry.t)
+                                                           'str_item_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34229,10 +34105,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34249,18 +34125,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (str_item :
-                                                                    'str_item Gram.Entry.t)
+                                                                    'str_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -34296,18 +34172,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34333,7 +34209,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (sig_item_quot :
-                                                           'sig_item_quot Gram.Entry.t)
+                                                           'sig_item_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34355,10 +34231,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sig_item :
-                                                                    'sig_item Gram.Entry.t)
+                                                                    'sig_item Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34375,18 +34251,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sig_item :
-                                                                    'sig_item Gram.Entry.t)
+                                                                    'sig_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -34422,18 +34298,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_expr :
-                                                                    'opt_expr Gram.Entry.t)
+                                                                    'opt_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34459,7 +34335,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_type_quot :
-                                                           'module_type_quot Gram.Entry.t)
+                                                           'module_type_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34481,10 +34357,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34504,7 +34380,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_expr_quot :
-                                                           'module_expr_quot Gram.Entry.t)
+                                                           'module_expr_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34526,10 +34402,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34549,7 +34425,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (match_case_quot :
-                                                           'match_case_quot Gram.Entry.t)
+                                                           'match_case_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34573,10 +34449,10 @@ module MakeRevisedParser =
                                                                   (Gram.Slist0sep
                                                                     ((
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (match_case0 :
-                                                                    'match_case0 Gram.Entry.t)
+                                                                    'match_case0 Gram.t)
                                                                     )))
                                                                     ),
                                                                     (
@@ -34602,7 +34478,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (binding_quot :
-                                                           'binding_quot Gram.Entry.t)
+                                                           'binding_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34624,10 +34500,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (binding :
-                                                                    'binding Gram.Entry.t)
+                                                                    'binding Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34647,7 +34523,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (rec_binding_quot :
-                                                           'rec_binding_quot Gram.Entry.t)
+                                                           'rec_binding_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34669,10 +34545,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (label_expr_list :
-                                                                    'label_expr_list Gram.Entry.t)
+                                                                    'label_expr_list Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34692,7 +34568,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (module_binding_quot :
-                                                           'module_binding_quot Gram.Entry.t)
+                                                           'module_binding_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -34714,10 +34590,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34726,10 +34602,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34738,10 +34614,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34768,10 +34644,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34780,10 +34656,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34826,10 +34702,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -34838,10 +34714,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_expr :
-                                                                    'module_expr Gram.Entry.t)
+                                                                    'module_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -34902,10 +34778,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (module_type :
-                                                                    'module_type Gram.Entry.t)
+                                                                    'module_type Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35062,7 +34938,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (ident_quot :
-                                                           'ident_quot Gram.Entry.t)
+                                                           'ident_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35224,10 +35100,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35246,10 +35122,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_UIDENT :
-                                                                    'a_UIDENT Gram.Entry.t)
+                                                                    'a_UIDENT Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35322,7 +35198,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_expr_quot :
-                                                           'class_expr_quot Gram.Entry.t)
+                                                           'class_expr_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35344,10 +35220,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_expr :
-                                                                    'class_expr Gram.Entry.t)
+                                                                    'class_expr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35380,18 +35256,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ident :
-                                                                    'ident Gram.Entry.t)
+                                                                    'ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_comma_ctyp :
-                                                                    'opt_comma_ctyp Gram.Entry.t)
+                                                                    'opt_comma_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35436,10 +35312,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_name_and_param :
-                                                                    'class_name_and_param Gram.Entry.t)
+                                                                    'class_name_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35521,7 +35397,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_type_quot :
-                                                           'class_type_quot Gram.Entry.t)
+                                                           'class_type_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35543,10 +35419,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_type_plus :
-                                                                    'class_type_plus Gram.Entry.t)
+                                                                    'class_type_plus Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35579,18 +35455,18 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (ident :
-                                                                    'ident Gram.Entry.t)
+                                                                    'ident Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_comma_ctyp :
-                                                                    'opt_comma_ctyp Gram.Entry.t)
+                                                                    'opt_comma_ctyp Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35635,10 +35511,10 @@ module MakeRevisedParser =
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_name_and_param :
-                                                                    'class_name_and_param Gram.Entry.t)
+                                                                    'class_name_and_param Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35745,7 +35621,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_str_item_quot :
-                                                           'class_str_item_quot Gram.Entry.t)
+                                                           'class_str_item_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35767,10 +35643,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_str_item :
-                                                                    'class_str_item Gram.Entry.t)
+                                                                    'class_str_item Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35787,18 +35663,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_str_item :
-                                                                    'class_str_item Gram.Entry.t)
+                                                                    'class_str_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -35833,7 +35709,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (class_sig_item_quot :
-                                                           'class_sig_item_quot Gram.Entry.t)
+                                                           'class_sig_item_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35855,10 +35731,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_sig_item :
-                                                                    'class_sig_item Gram.Entry.t)
+                                                                    'class_sig_item Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35875,18 +35751,18 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (class_sig_item :
-                                                                    'class_sig_item Gram.Entry.t)
+                                                                    'class_sig_item Gram.t)
                                                                     )))
                                                                   );
                                                                   (
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (semi :
-                                                                    'semi Gram.Entry.t)
+                                                                    'semi Gram.t)
                                                                     )))
                                                                   );
                                                                   Gram.Sself
@@ -35921,7 +35797,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (with_constr_quot :
-                                                           'with_constr_quot Gram.Entry.t)
+                                                           'with_constr_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35943,10 +35819,10 @@ module MakeRevisedParser =
                                                                 ((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (with_constr :
-                                                                    'with_constr Gram.Entry.t)
+                                                                    'with_constr Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -35966,7 +35842,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (rec_flag_quot :
-                                                           'rec_flag_quot Gram.Entry.t)
+                                                           'rec_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -35977,10 +35853,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_rec :
-                                                                    'opt_rec Gram.Entry.t)
+                                                                    'opt_rec Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36000,7 +35876,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (direction_flag_quot :
-                                                           'direction_flag_quot Gram.Entry.t)
+                                                           'direction_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36011,10 +35887,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (direction_flag :
-                                                                    'direction_flag Gram.Entry.t)
+                                                                    'direction_flag Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36034,7 +35910,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (mutable_flag_quot :
-                                                           'mutable_flag_quot Gram.Entry.t)
+                                                           'mutable_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36045,10 +35921,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_mutable :
-                                                                    'opt_mutable Gram.Entry.t)
+                                                                    'opt_mutable Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36068,7 +35944,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (private_flag_quot :
-                                                           'private_flag_quot Gram.Entry.t)
+                                                           'private_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36079,10 +35955,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_private :
-                                                                    'opt_private Gram.Entry.t)
+                                                                    'opt_private Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36102,7 +35978,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (virtual_flag_quot :
-                                                           'virtual_flag_quot Gram.Entry.t)
+                                                           'virtual_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36113,10 +35989,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_virtual :
-                                                                    'opt_virtual Gram.Entry.t)
+                                                                    'opt_virtual Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36136,7 +36012,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (row_var_flag_quot :
-                                                           'row_var_flag_quot Gram.Entry.t)
+                                                           'row_var_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36147,10 +36023,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_dot_dot :
-                                                                    'opt_dot_dot Gram.Entry.t)
+                                                                    'opt_dot_dot Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36170,7 +36046,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (override_flag_quot :
-                                                           'override_flag_quot Gram.Entry.t)
+                                                           'override_flag_quot Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36181,10 +36057,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (opt_override :
-                                                                    'opt_override Gram.Entry.t)
+                                                                    'opt_override Gram.t)
                                                                     )))
                                                                   )]
                                                                  ), (
@@ -36204,7 +36080,7 @@ module MakeRevisedParser =
                                                        (
                                                        (Gram.extend (
                                                          (patt_eoi :
-                                                           'patt_eoi Gram.Entry.t)
+                                                           'patt_eoi Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36215,10 +36091,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -36260,7 +36136,7 @@ module MakeRevisedParser =
                                                        );
                                                        (Gram.extend (
                                                          (expr_eoi :
-                                                           'expr_eoi Gram.Entry.t)
+                                                           'expr_eoi Gram.t)
                                                          ) (
                                                          ((fun ()
                                                              ->
@@ -36271,10 +36147,10 @@ module MakeRevisedParser =
                                                                [((
                                                                  [(
                                                                   (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                   );
                                                                   (
@@ -36362,27 +36238,27 @@ module MakeRevisedParserParser =
                                                                 Ast.expr
 
                                                             let stream_expr =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "stream_expr")
 
                                                             let stream_begin =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "stream_begin")
 
                                                             let stream_end =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "stream_end")
 
                                                             let stream_quot =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "stream_quot")
 
                                                             let parser_case =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "parser_case")
 
                                                             let parser_case_list =
-                                                             (Gram.Entry.mk
+                                                             (Gram.mk
                                                                "parser_case_list")
 
                                                             let strm_n =
@@ -38499,60 +38375,60 @@ module MakeRevisedParserParser =
 
                                                             let _ = let _ =
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     and _ =
                                                                     (parser_case_list :
-                                                                    'parser_case_list Gram.Entry.t)
+                                                                    'parser_case_list Gram.t)
                                                                     and _ =
                                                                     (parser_case :
-                                                                    'parser_case Gram.Entry.t)
+                                                                    'parser_case Gram.t)
                                                                     and _ =
                                                                     (stream_quot :
-                                                                    'stream_quot Gram.Entry.t)
+                                                                    'stream_quot Gram.t)
                                                                     and _ =
                                                                     (stream_end :
-                                                                    'stream_end Gram.Entry.t)
+                                                                    'stream_end Gram.t)
                                                                     and _ =
                                                                     (stream_begin :
-                                                                    'stream_begin Gram.Entry.t)
+                                                                    'stream_begin Gram.t)
                                                                     and _ =
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t) in
+                                                                    'stream_expr Gram.t) in
                                                                     let grammar_entry_create =
-                                                                    Gram.Entry.mk in
+                                                                    Gram.mk in
                                                                     let parser_ipatt =
                                                                     ((grammar_entry_create
                                                                     "parser_ipatt") :
-                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    'parser_ipatt Gram.t)
                                                                     and stream_expr_comp =
                                                                     ((grammar_entry_create
                                                                     "stream_expr_comp") :
-                                                                    'stream_expr_comp Gram.Entry.t)
+                                                                    'stream_expr_comp Gram.t)
                                                                     and stream_expr_comp_list =
                                                                     ((grammar_entry_create
                                                                     "stream_expr_comp_list") :
-                                                                    'stream_expr_comp_list Gram.Entry.t)
+                                                                    'stream_expr_comp_list Gram.t)
                                                                     and stream_patt_comp_err_list =
                                                                     ((grammar_entry_create
                                                                     "stream_patt_comp_err_list") :
-                                                                    'stream_patt_comp_err_list Gram.Entry.t)
+                                                                    'stream_patt_comp_err_list Gram.t)
                                                                     and stream_patt_comp_err =
                                                                     ((grammar_entry_create
                                                                     "stream_patt_comp_err") :
-                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    'stream_patt_comp_err Gram.t)
                                                                     and stream_patt_comp =
                                                                     ((grammar_entry_create
                                                                     "stream_patt_comp") :
-                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    'stream_patt_comp Gram.t)
                                                                     and stream_patt =
                                                                     ((grammar_entry_create
                                                                     "stream_patt") :
-                                                                    'stream_patt Gram.Entry.t) in
+                                                                    'stream_patt Gram.t) in
                                                                     (
                                                                     (Gram.extend
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38575,10 +38451,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (sequence :
-                                                                    'sequence Gram.Entry.t)
+                                                                    'sequence Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -38592,18 +38468,18 @@ module MakeRevisedParserParser =
                                                                     (
                                                                     (Gram.Sopt
                                                                     ((Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_ipatt :
-                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    'parser_ipatt Gram.t)
                                                                     )))))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_case_list :
-                                                                    'parser_case_list Gram.Entry.t)
+                                                                    'parser_case_list Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -38637,18 +38513,18 @@ module MakeRevisedParserParser =
                                                                     (
                                                                     (Gram.Sopt
                                                                     ((Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_ipatt :
-                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    'parser_ipatt Gram.t)
                                                                     )))))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_case_list :
-                                                                    'parser_case_list Gram.Entry.t)
+                                                                    'parser_case_list Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -38679,7 +38555,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (parser_ipatt :
-                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    'parser_ipatt Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38712,10 +38588,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (a_LIDENT :
-                                                                    'a_LIDENT Gram.Entry.t)
+                                                                    'a_LIDENT Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -38746,7 +38622,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (parser_case_list :
-                                                                    'parser_case_list Gram.Entry.t)
+                                                                    'parser_case_list Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38762,10 +38638,10 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_case :
-                                                                    'parser_case Gram.Entry.t)
+                                                                    'parser_case Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -38789,10 +38665,10 @@ module MakeRevisedParserParser =
                                                                     (Gram.Slist0sep
                                                                     ((
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_case :
-                                                                    'parser_case Gram.Entry.t)
+                                                                    'parser_case Gram.t)
                                                                     )))
                                                                     ),
                                                                     (
@@ -38828,7 +38704,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (parser_case :
-                                                                    'parser_case Gram.Entry.t)
+                                                                    'parser_case Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38844,35 +38720,35 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_begin :
-                                                                    'stream_begin Gram.Entry.t)
+                                                                    'stream_begin Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt :
-                                                                    'stream_patt Gram.Entry.t)
+                                                                    'stream_patt Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_end :
-                                                                    'stream_end Gram.Entry.t)
+                                                                    'stream_end Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Sopt
                                                                     ((Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (parser_ipatt :
-                                                                    'parser_ipatt Gram.Entry.t)
+                                                                    'parser_ipatt Gram.t)
                                                                     )))))
                                                                     );
                                                                     (
@@ -38881,10 +38757,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -38918,7 +38794,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_begin :
-                                                                    'stream_begin Gram.Entry.t)
+                                                                    'stream_begin Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38957,7 +38833,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_end :
-                                                                    'stream_end Gram.Entry.t)
+                                                                    'stream_end Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -38996,7 +38872,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_quot :
-                                                                    'stream_quot Gram.Entry.t)
+                                                                    'stream_quot Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39035,7 +38911,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39051,10 +38927,10 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39079,7 +38955,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_patt :
-                                                                    'stream_patt Gram.Entry.t)
+                                                                    'stream_patt Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39106,10 +38982,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp :
-                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    'stream_patt_comp Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39118,10 +38994,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp_err_list :
-                                                                    'stream_patt_comp_err_list Gram.Entry.t)
+                                                                    'stream_patt_comp_err_list Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39146,10 +39022,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp :
-                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    'stream_patt_comp Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39176,7 +39052,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_patt_comp :
-                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    'stream_patt_comp Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39192,18 +39068,18 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_quot :
-                                                                    'stream_quot Gram.Entry.t)
+                                                                    'stream_quot Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39224,10 +39100,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39236,10 +39112,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39263,10 +39139,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (patt :
-                                                                    'patt Gram.Entry.t)
+                                                                    'patt Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39281,10 +39157,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39329,7 +39205,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_patt_comp_err :
-                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    'stream_patt_comp_err Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39345,10 +39221,10 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp :
-                                                                    'stream_patt_comp Gram.Entry.t)
+                                                                    'stream_patt_comp Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39363,10 +39239,10 @@ module MakeRevisedParserParser =
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39409,7 +39285,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_patt_comp_err_list :
-                                                                    'stream_patt_comp_err_list Gram.Entry.t)
+                                                                    'stream_patt_comp_err_list Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39425,10 +39301,10 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp_err :
-                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    'stream_patt_comp_err Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39457,10 +39333,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp_err :
-                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    'stream_patt_comp_err Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39483,10 +39359,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_patt_comp_err :
-                                                                    'stream_patt_comp_err Gram.Entry.t)
+                                                                    'stream_patt_comp_err Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39511,7 +39387,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (expr :
-                                                                    'expr Gram.Entry.t)
+                                                                    'expr Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39530,26 +39406,26 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_begin :
-                                                                    'stream_begin Gram.Entry.t)
+                                                                    'stream_begin Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr_comp_list :
-                                                                    'stream_expr_comp_list Gram.Entry.t)
+                                                                    'stream_expr_comp_list Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_end :
-                                                                    'stream_end Gram.Entry.t)
+                                                                    'stream_end Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39571,18 +39447,18 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_begin :
-                                                                    'stream_begin Gram.Entry.t)
+                                                                    'stream_begin Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_end :
-                                                                    'stream_end Gram.Entry.t)
+                                                                    'stream_end Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39622,7 +39498,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_expr_comp_list :
-                                                                    'stream_expr_comp_list Gram.Entry.t)
+                                                                    'stream_expr_comp_list Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39638,10 +39514,10 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr_comp :
-                                                                    'stream_expr_comp Gram.Entry.t)
+                                                                    'stream_expr_comp Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39659,10 +39535,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr_comp :
-                                                                    'stream_expr_comp Gram.Entry.t)
+                                                                    'stream_expr_comp Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39685,10 +39561,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr_comp :
-                                                                    'stream_expr_comp Gram.Entry.t)
+                                                                    'stream_expr_comp Gram.t)
                                                                     )))
                                                                     );
                                                                     (
@@ -39723,7 +39599,7 @@ module MakeRevisedParserParser =
                                                                     (Gram.extend
                                                                     (
                                                                     (stream_expr_comp :
-                                                                    'stream_expr_comp Gram.Entry.t)
+                                                                    'stream_expr_comp Gram.t)
                                                                     )
                                                                     (
                                                                     ((fun ()
@@ -39739,18 +39615,18 @@ module MakeRevisedParserParser =
                                                                     [((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_quot :
-                                                                    'stream_quot Gram.Entry.t)
+                                                                    'stream_quot Gram.t)
                                                                     )))
                                                                     );
                                                                     (
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -39771,10 +39647,10 @@ module MakeRevisedParserParser =
                                                                     ((
                                                                     [(
                                                                     (Gram.Snterm
-                                                                    (Gram.Entry.obj
+                                                                    (Gram.obj
                                                                     (
                                                                     (stream_expr :
-                                                                    'stream_expr Gram.Entry.t)
+                                                                    'stream_expr Gram.t)
                                                                     )))
                                                                     )]
                                                                     ),
@@ -40535,7 +40411,7 @@ module MakeQuotationCommon =
       fun entry ->
        fun mexpr ->
         fun mpatt ->
-         let entry_eoi = (Gram.Entry.mk ( (Gram.Entry.name entry) )) in
+         let entry_eoi = (Gram.mk ( (Gram.name entry) )) in
          let parse_quot_string =
           fun entry ->
            fun loc ->
@@ -40593,7 +40469,7 @@ module MakeQuotationCommon =
                   | p -> p in
                  (subst_first_loc exp_ast)) in
          (
-         (Gram.extend ( (entry_eoi : 'entry_eoi Gram.Entry.t) ) (
+         (Gram.extend ( (entry_eoi : 'entry_eoi Gram.t) ) (
            ((fun ()
                ->
               (None , (
@@ -40601,8 +40477,7 @@ module MakeQuotationCommon =
                  [((
                    [(
                     (Gram.Snterm
-                      (Gram.Entry.obj ( (entry : 'entry Gram.Entry.t)
-                        ))) ); (
+                      (Gram.obj ( (entry : 'entry Gram.t) ))) ); (
                     (Gram.Stoken
                       (( function | EOI -> (true) | _ -> (false) ),
                        "EOI")) )] ), (

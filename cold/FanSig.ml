@@ -156,61 +156,88 @@ module type DynLoader =
   end
   
 
+module type SEntry = sig
+            (** The abstract type of grammar entries. The type parameter is the type
+          of the semantic actions that are associated with this entry. *)
+  type 'a t
+  type token_stream   (* := *)
+  type internal_entry (* := *)
+  type extend_statment (* := *)
+  type delete_statment (* := *)              
+  type action (* := *)
+  type symbol (* := *)
+  type ('a, 'b, 'c) fold
+  type ('a, 'b, 'c) foldsep
+  type token       
+  val mk : string -> 'a t
+ (** Make a new entry from a name and an hand made token parser. *)
+  val of_parser : string -> (token_stream -> 'a) -> 'a t
+ (** Clear the entry and setup this parser instead. *)
+  val setup_parser : 'a t -> (token_stream -> 'a) -> unit
+  val name : 'a t -> string
+  (** Print the given entry into the given formatter. *)
+  val print : Format.formatter -> 'a t -> unit
+  (** Same as {!print} but show the left-factorization. *)
+  val dump : Format.formatter -> 'a t -> unit
+  val obj : 'a t -> internal_entry
+  val clear : 'a t -> unit
+  (** This function is called by the EXTEND ... END syntax. *)
+  val extend : 'a t -> extend_statment -> unit
+  (** The delete rule. *)
+  val delete_rule : 'a t -> delete_statment -> unit
+  val srules : 'a t -> ((symbol list) * action) list -> symbol
+  val sfold0 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
+  val sfold1 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
+  val sfold0sep : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) foldsep
+ (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
+      (** Lex, filter and parse a stream of character. *)
+  val parse : 'a t -> FanLoc.t -> char Stream.t -> 'a
+      (** Same as {!parse} but from a string. *)
+  val parse_string : 'a t -> FanLoc.t -> string -> 'a
+      (** Parse a token stream that is not filtered yet. *)
+  val filter_and_parse_tokens :
+      'a t -> (token * FanLoc.t) Stream.t (* not_filtered*) -> 'a
+          (** Parse a token stream that is already filtered. *)
+  val parse_origin_tokens : 'a t -> token_stream -> 'a
+end
+module type DEntry = sig
+  include SEntry
+  type gram 
+  (** Make a new entry from the given name. *)
+  val mk : gram -> string -> 'a t
+  (** Make a new entry from a name and an hand made token parser. *)
+  val of_parser : gram -> string -> (token_stream -> 'a) -> 'a t
+end
 
-
-
-(** A signature for grammars. *)
 module Grammar =
   struct
     (** Internal signature for sematantic actions of grammars,
       not for the casual user. These functions are unsafe. *)
-    module type Action =
-      sig
+    module type Action = sig
         type t
-        
         val mk : 'a -> t
-          
         val get : t -> 'a
-          
         val getf : t -> 'a -> 'b
-          
         val getf2 : t -> 'a -> 'b -> 'c
-          
       end
-      
     type assoc = | NA | RA | LA
-    
     type position =
       | First | Last | Before of string | After of string | Level of string
-    
-    (** Common signature for {!Sig.Grammar.Static} and {!Sig.Grammar.Dynamic}. *)
-    module type Structure =
-      sig
-
-          
+    module type Structure =  sig
         module Action : Action
-          
         module Token : Token 
-          
         type gram =
           { gfilter : Token.Filter.t;
             gkeywords : (string, int ref) Hashtbl.t;
             glexer : FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t;
             warning_verbose : bool ref; error_verbose : bool ref
           }
-        
         type internal_entry
-        
         type tree
-        
         type token_pattern = ((Token.t -> bool) * string)
-        
         type token_info
-        
         type token_stream = (Token.t * token_info) Stream.t
-        
         val token_location : token_info -> FanLoc.t
-          
         type symbol =
           | Smeta of string * symbol list * Action.t
           | Snterm of internal_entry
@@ -226,224 +253,65 @@ module Grammar =
           | Stoken of token_pattern
           | Skeyword of string
           | Stree of tree
-        
         type production_rule = ((symbol list) * Action.t)
-        
         type single_extend_statment =
           ((string option) * (assoc option) * (production_rule list))
-        
         type extend_statment =
           ((position option) * (single_extend_statment list))
-        
         type delete_statment = symbol list
-        
         type ('a, 'b, 'c) fold =
           internal_entry ->
             symbol list -> ('a Stream.t -> 'b) -> 'a Stream.t -> 'c
-        
         type ('a, 'b, 'c) foldsep =
           internal_entry ->
             symbol list ->
               ('a Stream.t -> 'b) ->
                 ('a Stream.t -> unit) -> 'a Stream.t -> 'c
-        
       end
-      
-    (** Signature for Camlp4 grammars. Here the dynamic means that you can produce as
-      many grammar lets as needed with a single grammar module.
-      If you do not need many grammar lets it's preferable to use a static one. *)
     module type Dynamic =
       sig
         include Structure
-          
-        (** Make a new grammar. *)
         val mk : unit -> gram
-          
-        module Entry :
-          sig
-            (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-            type 'a t
-            
-            (** Make a new entry from the given name. *)
-            val mk : gram -> string -> 'a t
-              
-            (** Make a new entry from a name and an hand made token parser. *)
-            val of_parser : gram -> string -> (token_stream -> 'a) -> 'a t
-              
-            (** Clear the entry and setup this parser instead. *)
-            val setup_parser : 'a t -> (token_stream -> 'a) -> unit
-              
-            (** Get the entry name. *)
-            val name : 'a t -> string
-              
-            (** Print the given entry into the given formatter. *)
-            val print : Format.formatter -> 'a t -> unit
-              
-            (** Same as {!print} but show the left-factorization. *)
-            val dump : Format.formatter -> 'a t -> unit
-              
-            (**/**)
-            val obj : 'a t -> internal_entry
-              
-            val clear : 'a t -> unit
-              
-          end
-          
-        (**/**)
-        (** [get_filter g] Get the {!Token.Filter} associated to the [g]. *)
+        include DEntry  with
+        type token_stream:=token_stream
+        and  type internal_entry := internal_entry
+        and type gram := gram
+        and type action := Action.t
+        and type extend_statment := extend_statment
+        and type delete_statment := delete_statment
+        and type symbol := symbol
+        and type ('a,'b,'c)fold :=('a,'b,'c)fold
+        and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
+        and type token :=Token.t
         val get_filter : gram -> Token.Filter.t
-          
-        (* type 'a not_filtered *)
-        
-        (** This function is called by the EXTEND ... END syntax. *)
-        val extend : 'a Entry.t -> extend_statment -> unit
-          
-        (** The delete rule. *)
-        val delete_rule : 'a Entry.t -> delete_statment -> unit
-          
-        val srules : 'a Entry.t -> ((symbol list) * Action.t) list -> symbol
-          
-        val sfold0 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
-          
-        val sfold1 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
-          
-        val sfold0sep : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) foldsep
-          
-        (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
-        (** Use the lexer to produce a non filtered token stream from a char stream. *)
-        val lex :
-          gram ->
-            FanLoc.t ->
-              char Stream.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered *)
-          
-        (** Token stream from string. *)
-        val lex_string :
-          gram ->
-            FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
-          
-        (** Filter a token stream using the {!Token.Filter} module *)
-        val filter :
-          gram -> (Token.t * FanLoc.t) Stream.t (*not_filtered*) -> token_stream
-          
-        (** Lex, filter and parse a stream of character. *)
-        val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
-          
-        (** Same as {!parse} but from a string. *)
-        val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
-          
-        (** Parse a token stream that is not filtered yet. *)
-        val filter_and_parse_tokens :
-          'a Entry.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered*) -> 'a
-          
-        (** Parse a token stream that is already filtered. *)
-        val parse_origin_tokens : 'a Entry.t -> token_stream -> 'a
+        val lex : gram -> FanLoc.t ->
+              char Stream.t -> (Token.t * FanLoc.t) Stream.t
+        val lex_string : gram -> FanLoc.t ->
+          string -> (Token.t * FanLoc.t) Stream.t
+        val filter :   gram -> (Token.t * FanLoc.t) Stream.t -> token_stream
           
       end
-      
-    (** Signature for Camlp4 grammars. Here the static means that there is only
-      one grammar let by grammar module. If you do not need to store the grammar
-      let it's preferable to use a static one. *)
     module type Static =
       sig
         include Structure
-          
-        (** Whether trace parser or not *)
         val trace_parser : bool ref
-          
         val gram : gram
-          
-        module Entry :
-          sig
-            (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-            type 'a t
-            
-            (** Make a new entry from the given name. *)
-            val mk : string -> 'a t
-              
-            (** Make a new entry from a name and an hand made token parser. *)
-            val of_parser : string -> (token_stream -> 'a) -> 'a t
-              
-            (** Clear the entry and setup this parser instead. *)
-            val setup_parser : 'a t -> (token_stream -> 'a) -> unit
-              
-            (** Get the entry name. *)
-            val name : 'a t -> string
-              
-            (** Print the given entry into the given formatter. *)
-            val print : Format.formatter -> 'a t -> unit
-              
-            (** Same as {!print} but show the left-factorization. *)
-            val dump : Format.formatter -> 'a t -> unit
-              
-            (**/**)
-            val obj : 'a t -> internal_entry
-              
-            val clear : 'a t -> unit
-              
-          end
-          
-        (**/**)
-        (** Get the {!Token.Filter} associated to the grammar module. *)
+        include SEntry with
+        type token_stream := token_stream
+        and type internal_entry := internal_entry
+        and type action := Action.t
+        and type extend_statment := extend_statment
+        and type delete_statment := delete_statment
+        and type symbol := symbol
+        and type ('a,'b,'c)fold :=('a,'b,'c)fold
+        and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
+        and type token :=Token.t
         val get_filter : unit -> Token.Filter.t
-          
-        (* type 'a not_filtered *)
-        
-        (** This function is called by the EXTEND ... END syntax. *)
-        val extend : 'a Entry.t -> extend_statment -> unit
-          
-        (** The delete rule. *)
-        val delete_rule : 'a Entry.t -> delete_statment -> unit
-          
-        val srules : 'a Entry.t -> ((symbol list) * Action.t) list -> symbol
-          
-        val sfold0 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
-          
-        val sfold1 : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) fold
-          
-        val sfold0sep : ('a -> 'b -> 'b) -> 'b -> (_, 'a, 'b) foldsep
-          
-        (* let sfold1sep : ('a -> 'b -> 'b) -> 'b -> foldsep _ 'a 'b; *)
-        (** Use the lexer to produce a non filtered token stream from a char stream. *)
         val lex :
-          FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
-          
-        (** Token stream from string. *)
+          FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t 
         val lex_string :
-          FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t (* not_filtered*)
-          
-        (** Filter a token stream using the {!Token.Filter} module *)
+          FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t 
         val filter :
           (Token.t * FanLoc.t) Stream.t  -> token_stream
-          
-        (** Lex, filter and parse a stream of character. *)
-        val parse : 'a Entry.t -> FanLoc.t -> char Stream.t -> 'a
-          
-        (** Same as {!parse} but from a string. *)
-        val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
-          
-        (** filter a token stream then parse it. *)
-        val filter_and_parse_tokens:
-          'a Entry.t -> (Token.t * FanLoc.t) Stream.t  -> 'a
-          
-        (** Parse a token stream that is already filtered. *)
-        val parse_origin_tokens : 'a Entry.t -> token_stream -> 'a
-          
       end
-      
   end
-  
-
-
-
-
-
-
-(** A signature for lexers. *)
-  
-
-
-
-
-

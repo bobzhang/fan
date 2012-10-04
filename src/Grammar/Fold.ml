@@ -20,51 +20,33 @@
  * - Nicolas Pouillard: refactoring
  *)
 module Make (Structure : Structure.S) = struct
-  (* open Structure; *)
-  (* open Format; *)
-  module Parse = Parser.Make Structure;
   module Fail = Failed.Make Structure;
-  (* open FanSig.Grammar; *)
-
-  (* Prevent from implict usage. *)
-  module Stream = struct
-    type t 'a = Stream.t 'a;
-    exception Failure = Stream.Failure;
-    exception Error = Stream.Error;
-  end;
-
   let sfold0 f e _entry _symbl psymb =
     let rec fold accu =
       parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
       | [< >] -> accu ]
-    in
-    parser [< a = fold e >] -> a
-  ;
+    in parser [< a = fold e >] -> a;
 
   let sfold1 f e _entry _symbl psymb =
     let rec fold accu =
       parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
-      | [< >] -> accu ]
-    in
-    parser [< a = psymb; a = fold (f a e) >] -> a
-  ;
+      | [< >] -> accu ] in
+    parser [< a = psymb; a = fold (f a e) >] -> a;
 
   let sfold0sep f e entry symbl psymb psep =
     let failed =
       fun
       [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
-      | _ -> "failed" ]
-    in
+      | _ -> "failed" ] in
     let rec kont accu =
       parser
       [ [< () = psep; a = psymb ?? failed symbl; 's >] -> kont (f a accu) s
       | [< >] -> accu ] in
     parser
     [ [< a = psymb; 's >] -> kont (f a e) s
-    | [< >] -> e ]
-  ;
+    | [< >] -> e ] ;
 
   (* let sfold1sep f e entry symbl psymb psep =  (\* FIXME this function was never used*\) *)
   (*   let failed = *)

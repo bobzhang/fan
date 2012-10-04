@@ -350,14 +350,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         [ Some lab ->
             <:expr<
               $uid:gm.Snterml
-                ($uid:gm.Entry.obj ($(n.expr) : $uid:gm.Entry.t '$(n.tvar)))
+                ($uid:gm.obj ($(n.expr) : $uid:gm.t '$(n.tvar)))
                 $str:lab >>
         | None ->
             if n.tvar = tvar then <:expr< $uid:gm.Sself >>
             else
               <:expr<
                 $uid:gm.Snterm
-                    ($uid:gm.Entry.obj ($(n.expr) : $uid:gm.Entry.t '$(n.tvar))) >> ]
+                    ($uid:gm.obj ($(n.expr) : $uid:gm.t '$(n.tvar))) >> ]
     | TXopt _loc t -> <:expr< $uid:gm.Sopt $(make_expr entry "" t) >>
     | TXtry _loc t -> <:expr< $uid:gm.Stry $(make_expr entry "" t) >>
     | TXrules _loc rl ->
@@ -405,7 +405,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     let ent =
       let x = e.name in
       let _loc = e.name.loc in
-      <:expr< ($(x.expr) : $uid:gm.Entry.t '$(x.tvar)) >>   in
+      <:expr< ($(x.expr) : $uid:gm.t '$(x.tvar)) >>   in
     let pos =
       match e.pos with
       [ Some pos -> <:expr< Some $pos >>
@@ -446,10 +446,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
               | _ -> ll ])  el [] in
         let local_binding_of_name = fun
           [ {expr = <:expr< $lid:i >> ; tvar = x; loc = _loc} ->
-            <:binding< $lid:i =  (grammar_entry_create $str:i : $uid:gm.Entry.t '$x) >>
+            <:binding< $lid:i =  (grammar_entry_create $str:i : $uid:gm.t '$x) >>
           | _ -> failwith "internal error in the Grammar extension" ]  in
         let expr_of_name {expr = e; tvar = x; loc = _loc} =
-          <:expr< ($e : $uid:gm.Entry.t '$x) >> in
+          <:expr< ($e : $uid:gm.t '$x) >> in
         let e = match ll with
           [ [] -> args
           | [x::xs] ->
@@ -459,8 +459,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                     <:binding< $acc and $(local_binding_of_name name) >>)
                   xs (local_binding_of_name x) in
               let entry_mk =  match gram with
-              [ Some g -> <:expr< $uid:gm.Entry.mk $id:g >>
-              | None   -> <:expr< $uid:gm.Entry.mk >> ] in <:expr<
+              [ Some g -> <:expr< $uid:gm.mk $id:g >>
+              | None   -> <:expr< $uid:gm.mk >> ] in <:expr<
               let grammar_entry_create = $entry_mk in
               let $locals in $args >> ] in
           match nl with
@@ -536,7 +536,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     let text = TXtok _loc match_fun descr in
     {used = []; text = text; styp = t; pattern = Some p };
 
-  let symbol = Gram.Entry.mk "symbol";
+  let symbol = Gram.mk "symbol";
 
   (* FIXME why deprecate such syntax *)  
   let check_not_tok s =
@@ -769,7 +769,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
 
   (* usual trick *) (* FIXME utilities based on Gram *)
   let test_patt_lessminus =
-    Gram.Entry.of_parser "test_patt_lessminus"
+    Gram.of_parser "test_patt_lessminus"
       (fun strm ->
         let rec skip_patt n =
           match stream_peek_nth n strm with
@@ -807,7 +807,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
     } with [ Not_found -> False ];
 
   let comprehension_or_sem_expr_for_list =
-    Gram.Entry.mk "comprehension_or_sem_expr_for_list";
+    Gram.mk "comprehension_or_sem_expr_for_list";
   EXTEND Gram
     GLOBAL: expr comprehension_or_sem_expr_for_list;
     expr: Level "simple"
@@ -1186,156 +1186,156 @@ New syntax:\
   ;
   Options.add "-help_seq" (Arg.Unit help_sequences)
     "Print explanations about new sequences and exit.";
-  Gram.Entry.clear a_CHAR;
-  Gram.Entry.clear a_FLOAT;
-  Gram.Entry.clear a_INT;
-  Gram.Entry.clear a_INT32;
-  Gram.Entry.clear a_INT64;
-  Gram.Entry.clear a_LABEL;
-  Gram.Entry.clear a_LIDENT;
-  Gram.Entry.clear a_NATIVEINT;
-  Gram.Entry.clear a_OPTLABEL;
-  Gram.Entry.clear a_STRING;
-  Gram.Entry.clear a_UIDENT;
-  Gram.Entry.clear a_ident;
-  Gram.Entry.clear amp_ctyp;
-  Gram.Entry.clear and_ctyp;
-  Gram.Entry.clear match_case;
-  Gram.Entry.clear match_case0;
-  Gram.Entry.clear match_case_quot;
-  Gram.Entry.clear binding;
-  Gram.Entry.clear binding_quot;
-  Gram.Entry.clear rec_binding_quot;
-  Gram.Entry.clear class_declaration;
-  Gram.Entry.clear class_description;
-  Gram.Entry.clear class_expr;
-  Gram.Entry.clear class_expr_quot;
-  Gram.Entry.clear class_fun_binding;
-  Gram.Entry.clear class_fun_def;
-  Gram.Entry.clear class_info_for_class_expr;
-  Gram.Entry.clear class_info_for_class_type;
-  Gram.Entry.clear class_longident;
-  Gram.Entry.clear class_longident_and_param;
-  Gram.Entry.clear class_name_and_param;
-  Gram.Entry.clear class_sig_item;
-  Gram.Entry.clear class_sig_item_quot;
-  Gram.Entry.clear class_signature;
-  Gram.Entry.clear class_str_item;
-  Gram.Entry.clear class_str_item_quot;
-  Gram.Entry.clear class_structure;
-  Gram.Entry.clear class_type;
-  Gram.Entry.clear class_type_declaration;
-  Gram.Entry.clear class_type_longident;
-  Gram.Entry.clear class_type_longident_and_param;
-  Gram.Entry.clear class_type_plus;
-  Gram.Entry.clear class_type_quot;
-  Gram.Entry.clear comma_ctyp;
-  Gram.Entry.clear comma_expr;
-  Gram.Entry.clear comma_ipatt;
-  Gram.Entry.clear comma_patt;
-  Gram.Entry.clear comma_type_parameter;
-  Gram.Entry.clear constrain;
-  Gram.Entry.clear constructor_arg_list;
-  Gram.Entry.clear constructor_declaration;
-  Gram.Entry.clear constructor_declarations;
-  Gram.Entry.clear ctyp;
-  Gram.Entry.clear ctyp_quot;
-  Gram.Entry.clear cvalue_binding;
-  Gram.Entry.clear direction_flag;
-  Gram.Entry.clear dummy;
-  Gram.Entry.clear eq_expr;
-  Gram.Entry.clear expr;
-  Gram.Entry.clear expr_eoi;
-  Gram.Entry.clear expr_quot;
-  Gram.Entry.clear field_expr;
-  Gram.Entry.clear field_expr_list;
-  Gram.Entry.clear fun_binding;
-  Gram.Entry.clear fun_def;
-  Gram.Entry.clear ident;
-  Gram.Entry.clear ident_quot;
-  Gram.Entry.clear implem;
-  Gram.Entry.clear interf;
-  Gram.Entry.clear ipatt;
-  Gram.Entry.clear ipatt_tcon;
-  Gram.Entry.clear label;
-  Gram.Entry.clear label_declaration;
-  Gram.Entry.clear label_declaration_list;
-  Gram.Entry.clear label_expr_list;
-  Gram.Entry.clear label_expr;
-  Gram.Entry.clear label_ipatt;
-  Gram.Entry.clear label_ipatt_list;
-  Gram.Entry.clear label_longident;
-  Gram.Entry.clear label_patt;
-  Gram.Entry.clear label_patt_list;
-  Gram.Entry.clear labeled_ipatt;
-  Gram.Entry.clear let_binding;
-  Gram.Entry.clear meth_list;
-  Gram.Entry.clear meth_decl;
-  Gram.Entry.clear module_binding;
-  Gram.Entry.clear module_binding0;
-  Gram.Entry.clear module_binding_quot;
-  Gram.Entry.clear module_declaration;
-  Gram.Entry.clear module_expr;
-  Gram.Entry.clear module_expr_quot;
-  Gram.Entry.clear module_longident;
-  Gram.Entry.clear module_longident_with_app;
-  Gram.Entry.clear module_rec_declaration;
-  Gram.Entry.clear module_type;
-  Gram.Entry.clear module_type_quot;
-  Gram.Entry.clear more_ctyp;
-  Gram.Entry.clear name_tags;
-  Gram.Entry.clear opt_as_lident;
-  Gram.Entry.clear opt_class_self_patt;
-  Gram.Entry.clear opt_class_self_type;
-  Gram.Entry.clear opt_comma_ctyp;
-  Gram.Entry.clear opt_dot_dot;
-  Gram.Entry.clear opt_eq_ctyp;
-  Gram.Entry.clear opt_expr;
-  Gram.Entry.clear opt_meth_list;
-  Gram.Entry.clear opt_mutable;
-  Gram.Entry.clear opt_polyt;
-  Gram.Entry.clear opt_private;
-  Gram.Entry.clear opt_rec;
-  Gram.Entry.clear opt_virtual;
-  Gram.Entry.clear opt_when_expr;
-  Gram.Entry.clear patt;
-  Gram.Entry.clear patt_as_patt_opt;
-  Gram.Entry.clear patt_eoi;
-  Gram.Entry.clear patt_quot;
-  Gram.Entry.clear patt_tcon;
-  Gram.Entry.clear phrase;
-  Gram.Entry.clear poly_type;
-  Gram.Entry.clear row_field;
-  Gram.Entry.clear sem_expr;
-  Gram.Entry.clear sem_expr_for_list;
-  Gram.Entry.clear sem_patt;
-  Gram.Entry.clear sem_patt_for_list;
-  Gram.Entry.clear semi;
-  Gram.Entry.clear sequence;
-  Gram.Entry.clear sig_item;
-  Gram.Entry.clear sig_item_quot;
-  Gram.Entry.clear sig_items;
-  Gram.Entry.clear star_ctyp;
-  Gram.Entry.clear str_item;
-  Gram.Entry.clear str_item_quot;
-  Gram.Entry.clear str_items;
-  Gram.Entry.clear top_phrase;
-  Gram.Entry.clear type_constraint;
-  Gram.Entry.clear type_declaration;
-  Gram.Entry.clear type_ident_and_parameters;
-  Gram.Entry.clear type_kind;
-  Gram.Entry.clear type_longident;
-  Gram.Entry.clear type_longident_and_parameters;
-  Gram.Entry.clear type_parameter;
-  Gram.Entry.clear type_parameters;
-  Gram.Entry.clear typevars;
-  Gram.Entry.clear use_file;
-  Gram.Entry.clear val_longident;
-  Gram.Entry.clear with_constr;
-  Gram.Entry.clear with_constr_quot;
+  Gram.clear a_CHAR;
+  Gram.clear a_FLOAT;
+  Gram.clear a_INT;
+  Gram.clear a_INT32;
+  Gram.clear a_INT64;
+  Gram.clear a_LABEL;
+  Gram.clear a_LIDENT;
+  Gram.clear a_NATIVEINT;
+  Gram.clear a_OPTLABEL;
+  Gram.clear a_STRING;
+  Gram.clear a_UIDENT;
+  Gram.clear a_ident;
+  Gram.clear amp_ctyp;
+  Gram.clear and_ctyp;
+  Gram.clear match_case;
+  Gram.clear match_case0;
+  Gram.clear match_case_quot;
+  Gram.clear binding;
+  Gram.clear binding_quot;
+  Gram.clear rec_binding_quot;
+  Gram.clear class_declaration;
+  Gram.clear class_description;
+  Gram.clear class_expr;
+  Gram.clear class_expr_quot;
+  Gram.clear class_fun_binding;
+  Gram.clear class_fun_def;
+  Gram.clear class_info_for_class_expr;
+  Gram.clear class_info_for_class_type;
+  Gram.clear class_longident;
+  Gram.clear class_longident_and_param;
+  Gram.clear class_name_and_param;
+  Gram.clear class_sig_item;
+  Gram.clear class_sig_item_quot;
+  Gram.clear class_signature;
+  Gram.clear class_str_item;
+  Gram.clear class_str_item_quot;
+  Gram.clear class_structure;
+  Gram.clear class_type;
+  Gram.clear class_type_declaration;
+  Gram.clear class_type_longident;
+  Gram.clear class_type_longident_and_param;
+  Gram.clear class_type_plus;
+  Gram.clear class_type_quot;
+  Gram.clear comma_ctyp;
+  Gram.clear comma_expr;
+  Gram.clear comma_ipatt;
+  Gram.clear comma_patt;
+  Gram.clear comma_type_parameter;
+  Gram.clear constrain;
+  Gram.clear constructor_arg_list;
+  Gram.clear constructor_declaration;
+  Gram.clear constructor_declarations;
+  Gram.clear ctyp;
+  Gram.clear ctyp_quot;
+  Gram.clear cvalue_binding;
+  Gram.clear direction_flag;
+  Gram.clear dummy;
+  Gram.clear eq_expr;
+  Gram.clear expr;
+  Gram.clear expr_eoi;
+  Gram.clear expr_quot;
+  Gram.clear field_expr;
+  Gram.clear field_expr_list;
+  Gram.clear fun_binding;
+  Gram.clear fun_def;
+  Gram.clear ident;
+  Gram.clear ident_quot;
+  Gram.clear implem;
+  Gram.clear interf;
+  Gram.clear ipatt;
+  Gram.clear ipatt_tcon;
+  Gram.clear label;
+  Gram.clear label_declaration;
+  Gram.clear label_declaration_list;
+  Gram.clear label_expr_list;
+  Gram.clear label_expr;
+  Gram.clear label_ipatt;
+  Gram.clear label_ipatt_list;
+  Gram.clear label_longident;
+  Gram.clear label_patt;
+  Gram.clear label_patt_list;
+  Gram.clear labeled_ipatt;
+  Gram.clear let_binding;
+  Gram.clear meth_list;
+  Gram.clear meth_decl;
+  Gram.clear module_binding;
+  Gram.clear module_binding0;
+  Gram.clear module_binding_quot;
+  Gram.clear module_declaration;
+  Gram.clear module_expr;
+  Gram.clear module_expr_quot;
+  Gram.clear module_longident;
+  Gram.clear module_longident_with_app;
+  Gram.clear module_rec_declaration;
+  Gram.clear module_type;
+  Gram.clear module_type_quot;
+  Gram.clear more_ctyp;
+  Gram.clear name_tags;
+  Gram.clear opt_as_lident;
+  Gram.clear opt_class_self_patt;
+  Gram.clear opt_class_self_type;
+  Gram.clear opt_comma_ctyp;
+  Gram.clear opt_dot_dot;
+  Gram.clear opt_eq_ctyp;
+  Gram.clear opt_expr;
+  Gram.clear opt_meth_list;
+  Gram.clear opt_mutable;
+  Gram.clear opt_polyt;
+  Gram.clear opt_private;
+  Gram.clear opt_rec;
+  Gram.clear opt_virtual;
+  Gram.clear opt_when_expr;
+  Gram.clear patt;
+  Gram.clear patt_as_patt_opt;
+  Gram.clear patt_eoi;
+  Gram.clear patt_quot;
+  Gram.clear patt_tcon;
+  Gram.clear phrase;
+  Gram.clear poly_type;
+  Gram.clear row_field;
+  Gram.clear sem_expr;
+  Gram.clear sem_expr_for_list;
+  Gram.clear sem_patt;
+  Gram.clear sem_patt_for_list;
+  Gram.clear semi;
+  Gram.clear sequence;
+  Gram.clear sig_item;
+  Gram.clear sig_item_quot;
+  Gram.clear sig_items;
+  Gram.clear star_ctyp;
+  Gram.clear str_item;
+  Gram.clear str_item_quot;
+  Gram.clear str_items;
+  Gram.clear top_phrase;
+  Gram.clear type_constraint;
+  Gram.clear type_declaration;
+  Gram.clear type_ident_and_parameters;
+  Gram.clear type_kind;
+  Gram.clear type_longident;
+  Gram.clear type_longident_and_parameters;
+  Gram.clear type_parameter;
+  Gram.clear type_parameters;
+  Gram.clear typevars;
+  Gram.clear use_file;
+  Gram.clear val_longident;
+  Gram.clear with_constr;
+  Gram.clear with_constr_quot;
 
   let setup_op_parser entry p =
-    Gram.Entry.setup_parser entry
+    Gram.setup_parser entry
       (parser
         [< (KEYWORD x | SYMBOL x, ti) when p x >] ->
           let _loc = Gram.token_location ti in
@@ -1389,7 +1389,7 @@ New syntax:\
   Token.Filter.define_filter (Gram.get_filter ())
     (fun f strm -> infix_kwds_filter (f strm));
 
-  Gram.Entry.setup_parser sem_expr begin
+  Gram.setup_parser sem_expr begin
     let symb1 = Gram.parse_origin_tokens expr in
     let symb =
       parser
@@ -2789,12 +2789,12 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     [ SeTrm of FanLoc.t and Ast.expr | SeNtr of FanLoc.t and Ast.expr ]
   ;
 
-  let stream_expr = Gram.Entry.mk "stream_expr";
-  let stream_begin = Gram.Entry.mk "stream_begin";
-  let stream_end = Gram.Entry.mk "stream_end";
-  let stream_quot = Gram.Entry.mk "stream_quot";
-  let parser_case = Gram.Entry.mk "parser_case";
-  let parser_case_list = Gram.Entry.mk "parser_case_list";
+  let stream_expr = Gram.mk "stream_expr";
+  let stream_begin = Gram.mk "stream_begin";
+  let stream_end = Gram.mk "stream_end";
+  let stream_quot = Gram.mk "stream_quot";
+  let parser_case = Gram.mk "parser_case";
+  let parser_case_list = Gram.mk "parser_case_list";
 
   let strm_n = "__strm";
   let peek_fun _loc = <:expr< Stream.peek >>;
@@ -3208,7 +3208,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   end;
 
   let add_quotation name entry mexpr mpatt =
-    let entry_eoi = Gram.Entry.mk (Gram.Entry.name entry) in
+    let entry_eoi = Gram.mk (Gram.name entry) in
     let parse_quot_string entry loc s =
       let q = !FanConfig.antiquotations in
       let () = FanConfig.antiquotations := True in

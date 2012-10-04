@@ -82,8 +82,7 @@ let toplevel_phrase =
  fun token_stream ->
   (match
      (Gram.parse_origin_tokens (
-       (Syntax.top_phrase : Ast.str_item option P.Gram.Entry.t) )
-       token_stream) with
+       (Syntax.top_phrase : Ast.str_item option P.Gram.t) ) token_stream) with
    | Some (str_item) ->
       let str_item =
        (Syntax.AstFilters.fold_topphrase_filters (

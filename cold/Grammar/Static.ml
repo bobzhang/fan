@@ -11,11 +11,9 @@ module Make =
 
                               module Insert = (Insert.Make)(Structure)
 
-                              module Fold = (Fold.Make)(Structure)
-
-                              module Tools = (Tools.Make)(Structure)
-
                               include Structure
+
+                              module Fold = (Fold.Make)(Structure)
 
                               let gram =
                                let gkeywords = (Hashtbl.create 301) in
@@ -26,33 +24,13 @@ module Make =
                                 warning_verbose = ( (ref true ) );
                                 error_verbose = FanConfig.verbose}
 
-                              module Entry =
-                               struct
-                                module E = (Entry.Make)(Structure)
+                              include (Entry.Make)(Structure)
 
-                                type 'a t = 'a E.t
+                              let mk = (mk gram)
 
-                                let mk = (E.mk gram)
-
-                                let of_parser =
-                                 fun name ->
-                                  fun strm -> (E.of_parser gram name strm)
-
-                                let setup_parser = E.setup_parser
-
-                                let name = E.name
-
-                                let print = E.print
-
-                                let clear = E.clear
-
-                                let dump = E.dump
-
-                                let obj = fun x -> x
-
-                               end
-
-                              let trace_parser = Entry.E.trace_parser
+                              let of_parser =
+                               fun name ->
+                                fun strm -> (of_parser gram name strm)
 
                               let get_filter = fun ()  -> gram.gfilter
 
@@ -69,13 +47,6 @@ module Make =
                                 (Tools.keep_prev_loc (
                                   (Token.Filter.filter ( gram.gfilter ) ts)
                                   ))
-
-                              let parse_origin_tokens =
-                               fun (entry :
-                                 'a Entry.t) ->
-                                fun ts ->
-                                 ((Entry.E.parse_origin_tokens entry ts) :
-                                   'a)
 
                               let filter_and_parse_tokens =
                                fun entry ->

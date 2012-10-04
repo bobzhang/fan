@@ -7,11 +7,9 @@ module Make =
 
    module Insert = (Insert.Make)(Structure)
 
-   module Entry = (Entry.Make)(Structure)
+   include (Entry.Make)(Structure)
 
    module Fold = (Fold.Make)(Structure)
-
-   module Tools = (Tools.Make)(Structure)
 
    include Structure
 
@@ -35,9 +33,6 @@ module Make =
     fun g ->
      fun ts ->
       (Tools.keep_prev_loc ( (Token.Filter.filter ( g.gfilter ) ts) ))
-
-   let parse_origin_tokens =
-    fun entry -> fun ts -> (Entry.parse_origin_tokens entry ts)
 
    let filter_and_parse_tokens =
     fun entry ->

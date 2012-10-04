@@ -118,509 +118,509 @@ module type Camlp4Syntax =
 
                                                                     val interf :
                                                                     (Ast.sig_item list *
-                                                                    FanLoc.t option) Gram.Entry.t
+                                                                    FanLoc.t option) Gram.t
 
                                                                     val implem :
                                                                     (Ast.str_item list *
-                                                                    FanLoc.t option) Gram.Entry.t
+                                                                    FanLoc.t option) Gram.t
 
                                                                     val top_phrase :
-                                                                    Ast.str_item option Gram.Entry.t
+                                                                    Ast.str_item option Gram.t
 
                                                                     val use_file :
                                                                     (Ast.str_item list *
-                                                                    FanLoc.t option) Gram.Entry.t
+                                                                    FanLoc.t option) Gram.t
 
                                                                     val a_CHAR :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_FLOAT :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_INT :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_INT32 :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_INT64 :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_LABEL :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_LIDENT :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_NATIVEINT :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_OPTLABEL :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_STRING :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_UIDENT :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val a_ident :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val amp_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val and_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val match_case :
-                                                                    Ast.match_case Gram.Entry.t
+                                                                    Ast.match_case Gram.t
 
                                                                     val match_case0 :
-                                                                    Ast.match_case Gram.Entry.t
+                                                                    Ast.match_case Gram.t
 
                                                                     val match_case_quot :
-                                                                    Ast.match_case Gram.Entry.t
+                                                                    Ast.match_case Gram.t
 
                                                                     val binding :
-                                                                    Ast.binding Gram.Entry.t
+                                                                    Ast.binding Gram.t
 
                                                                     val binding_quot :
-                                                                    Ast.binding Gram.Entry.t
+                                                                    Ast.binding Gram.t
 
                                                                     val rec_binding_quot :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                                    Ast.rec_binding Gram.t
 
                                                                     val class_declaration :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_description :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_expr :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_expr_quot :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_fun_binding :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_fun_def :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_info_for_class_expr :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_info_for_class_type :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val class_longident_and_param :
-                                                                    Ast.class_expr Gram.Entry.t
+                                                                    Ast.class_expr Gram.t
 
                                                                     val class_name_and_param :
                                                                     (string *
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                                    Ast.ctyp) Gram.t
 
                                                                     val class_sig_item :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                                    Ast.class_sig_item Gram.t
 
                                                                     val class_sig_item_quot :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                                    Ast.class_sig_item Gram.t
 
                                                                     val class_signature :
-                                                                    Ast.class_sig_item Gram.Entry.t
+                                                                    Ast.class_sig_item Gram.t
 
                                                                     val class_str_item :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                                    Ast.class_str_item Gram.t
 
                                                                     val class_str_item_quot :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                                    Ast.class_str_item Gram.t
 
                                                                     val class_structure :
-                                                                    Ast.class_str_item Gram.Entry.t
+                                                                    Ast.class_str_item Gram.t
 
                                                                     val class_type :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_type_declaration :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_type_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val class_type_longident_and_param :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_type_plus :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val class_type_quot :
-                                                                    Ast.class_type Gram.Entry.t
+                                                                    Ast.class_type Gram.t
 
                                                                     val comma_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val comma_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val comma_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val comma_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val comma_type_parameter :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val constrain :
                                                                     (Ast.ctyp *
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                                    Ast.ctyp) Gram.t
 
                                                                     val constructor_arg_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val constructor_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val constructor_declarations :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val ctyp_quot :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val cvalue_binding :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val direction_flag :
-                                                                    Ast.direction_flag Gram.Entry.t
+                                                                    Ast.direction_flag Gram.t
 
                                                                     val direction_flag_quot :
-                                                                    Ast.direction_flag Gram.Entry.t
+                                                                    Ast.direction_flag Gram.t
 
                                                                     val dummy :
-                                                                    unit Gram.Entry.t
+                                                                    unit Gram.t
 
                                                                     val eq_expr :
                                                                     (string
                                                                     ->
                                                                     (Ast.patt
                                                                     ->
-                                                                    Ast.patt)) Gram.Entry.t
+                                                                    Ast.patt)) Gram.t
 
                                                                     val expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val expr_eoi :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val expr_quot :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val field_expr :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                                    Ast.rec_binding Gram.t
 
                                                                     val field_expr_list :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                                    Ast.rec_binding Gram.t
 
                                                                     val fun_binding :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val fun_def :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val ident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val ident_quot :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val ipatt_tcon :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val label :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val label_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val label_declaration_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val label_expr :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                                    Ast.rec_binding Gram.t
 
                                                                     val label_expr_list :
-                                                                    Ast.rec_binding Gram.Entry.t
+                                                                    Ast.rec_binding Gram.t
 
                                                                     val label_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val label_ipatt_list :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val label_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val label_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val label_patt_list :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val labeled_ipatt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val let_binding :
-                                                                    Ast.binding Gram.Entry.t
+                                                                    Ast.binding Gram.t
 
                                                                     val meth_list :
                                                                     (Ast.ctyp *
-                                                                    Ast.row_var_flag) Gram.Entry.t
+                                                                    Ast.row_var_flag) Gram.t
 
                                                                     val meth_decl :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val module_binding :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                                    Ast.module_binding Gram.t
 
                                                                     val module_binding0 :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                                    Ast.module_expr Gram.t
 
                                                                     val module_binding_quot :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                                    Ast.module_binding Gram.t
 
                                                                     val module_declaration :
-                                                                    Ast.module_type Gram.Entry.t
+                                                                    Ast.module_type Gram.t
 
                                                                     val module_expr :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                                    Ast.module_expr Gram.t
 
                                                                     val module_expr_quot :
-                                                                    Ast.module_expr Gram.Entry.t
+                                                                    Ast.module_expr Gram.t
 
                                                                     val module_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val module_longident_with_app :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val module_rec_declaration :
-                                                                    Ast.module_binding Gram.Entry.t
+                                                                    Ast.module_binding Gram.t
 
                                                                     val module_type :
-                                                                    Ast.module_type Gram.Entry.t
+                                                                    Ast.module_type Gram.t
 
                                                                     val package_type :
-                                                                    Ast.module_type Gram.Entry.t
+                                                                    Ast.module_type Gram.t
 
                                                                     val module_type_quot :
-                                                                    Ast.module_type Gram.Entry.t
+                                                                    Ast.module_type Gram.t
 
                                                                     val more_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val name_tags :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_as_lident :
-                                                                    string Gram.Entry.t
+                                                                    string Gram.t
 
                                                                     val opt_class_self_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val opt_class_self_type :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_comma_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_dot_dot :
-                                                                    Ast.row_var_flag Gram.Entry.t
+                                                                    Ast.row_var_flag Gram.t
 
                                                                     val row_var_flag_quot :
-                                                                    Ast.row_var_flag Gram.Entry.t
+                                                                    Ast.row_var_flag Gram.t
 
                                                                     val opt_eq_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val opt_meth_list :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_mutable :
-                                                                    Ast.mutable_flag Gram.Entry.t
+                                                                    Ast.mutable_flag Gram.t
 
                                                                     val mutable_flag_quot :
-                                                                    Ast.mutable_flag Gram.Entry.t
+                                                                    Ast.mutable_flag Gram.t
 
                                                                     val opt_override :
-                                                                    Ast.override_flag Gram.Entry.t
+                                                                    Ast.override_flag Gram.t
 
                                                                     val override_flag_quot :
-                                                                    Ast.override_flag Gram.Entry.t
+                                                                    Ast.override_flag Gram.t
 
                                                                     val opt_polyt :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val opt_private :
-                                                                    Ast.private_flag Gram.Entry.t
+                                                                    Ast.private_flag Gram.t
 
                                                                     val private_flag_quot :
-                                                                    Ast.private_flag Gram.Entry.t
+                                                                    Ast.private_flag Gram.t
 
                                                                     val opt_rec :
-                                                                    Ast.rec_flag Gram.Entry.t
+                                                                    Ast.rec_flag Gram.t
 
                                                                     val rec_flag_quot :
-                                                                    Ast.rec_flag Gram.Entry.t
+                                                                    Ast.rec_flag Gram.t
 
                                                                     val opt_virtual :
-                                                                    Ast.virtual_flag Gram.Entry.t
+                                                                    Ast.virtual_flag Gram.t
 
                                                                     val virtual_flag_quot :
-                                                                    Ast.virtual_flag Gram.Entry.t
+                                                                    Ast.virtual_flag Gram.t
 
                                                                     val opt_when_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val patt_as_patt_opt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val patt_eoi :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val patt_quot :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val patt_tcon :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val phrase :
-                                                                    Ast.str_item Gram.Entry.t
+                                                                    Ast.str_item Gram.t
 
                                                                     val poly_type :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val row_field :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val sem_expr :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val sem_expr_for_list :
                                                                     (Ast.expr
                                                                     ->
-                                                                    Ast.expr) Gram.Entry.t
+                                                                    Ast.expr) Gram.t
 
                                                                     val sem_patt :
-                                                                    Ast.patt Gram.Entry.t
+                                                                    Ast.patt Gram.t
 
                                                                     val sem_patt_for_list :
                                                                     (Ast.patt
                                                                     ->
-                                                                    Ast.patt) Gram.Entry.t
+                                                                    Ast.patt) Gram.t
 
                                                                     val semi :
-                                                                    unit Gram.Entry.t
+                                                                    unit Gram.t
 
                                                                     val sequence :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val do_sequence :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val sig_item :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                                    Ast.sig_item Gram.t
 
                                                                     val sig_item_quot :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                                    Ast.sig_item Gram.t
 
                                                                     val sig_items :
-                                                                    Ast.sig_item Gram.Entry.t
+                                                                    Ast.sig_item Gram.t
 
                                                                     val star_ctyp :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val str_item :
-                                                                    Ast.str_item Gram.Entry.t
+                                                                    Ast.str_item Gram.t
 
                                                                     val str_item_quot :
-                                                                    Ast.str_item Gram.Entry.t
+                                                                    Ast.str_item Gram.t
 
                                                                     val str_items :
-                                                                    Ast.str_item Gram.Entry.t
+                                                                    Ast.str_item Gram.t
 
                                                                     val type_constraint :
-                                                                    unit Gram.Entry.t
+                                                                    unit Gram.t
 
                                                                     val type_declaration :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val type_ident_and_parameters :
                                                                     (string *
-                                                                    Ast.ctyp list) Gram.Entry.t
+                                                                    Ast.ctyp list) Gram.t
 
                                                                     val type_kind :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val type_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val type_longident_and_parameters :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val type_parameter :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val type_parameters :
                                                                     (Ast.ctyp
                                                                     ->
-                                                                    Ast.ctyp) Gram.Entry.t
+                                                                    Ast.ctyp) Gram.t
 
                                                                     val typevars :
-                                                                    Ast.ctyp Gram.Entry.t
+                                                                    Ast.ctyp Gram.t
 
                                                                     val val_longident :
-                                                                    Ast.ident Gram.Entry.t
+                                                                    Ast.ident Gram.t
 
                                                                     val with_constr :
-                                                                    Ast.with_constr Gram.Entry.t
+                                                                    Ast.with_constr Gram.t
 
                                                                     val with_constr_quot :
-                                                                    Ast.with_constr Gram.Entry.t
+                                                                    Ast.with_constr Gram.t
 
                                                                     val prefixop :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val infixop0 :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val infixop1 :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val infixop2 :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val infixop3 :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     val infixop4 :
-                                                                    Ast.expr Gram.Entry.t
+                                                                    Ast.expr Gram.t
 
                                                                     end
 

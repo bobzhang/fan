@@ -3,13 +3,9 @@ module Make (Lexer : Sig.Lexer)
   module Structure = Structure.Make Lexer;
   module Delete    = Delete.Make    Structure;
   module Insert    = Insert.Make    Structure;
-  module Entry     = Entry.Make     Structure;
-  include Entry;   
+  include Entry.Make Structure;   
   module Fold      = Fold.Make      Structure;
-  (* module Tools     = Tools.Make     Structure; *)
-
   include Structure;
-
   let mk () =
     let gkeywords = Hashtbl.create 301 in
     {
@@ -27,8 +23,6 @@ module Make (Lexer : Sig.Lexer)
   let lex_string g loc str = lex g loc (Stream.of_string str);
 
   let filter g ts = Tools.keep_prev_loc (Token.Filter.filter g.gfilter ts);
-
-  let parse_origin_tokens entry ts = Entry.parse_origin_tokens entry ts;
 
   let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry.egram ts);
 

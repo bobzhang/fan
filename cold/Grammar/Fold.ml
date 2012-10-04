@@ -1,19 +1,7 @@
 module Make =
  functor (Structure : Structure.S) ->
   struct
-   module Parse = (Parser.Make)(Structure)
-
    module Fail = (Failed.Make)(Structure)
-
-   module Stream =
-    struct
-     type 'a t = 'a Stream.t
-
-     exception Failure = Stream.Failure
-
-     exception Error = Stream.Error
-
-    end
 
    let sfold0 =
     fun f ->
