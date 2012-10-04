@@ -556,7 +556,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let old = gm() in
             let () = grammar_module_name := t in 
             (None,old)
-        end] ]
+        end
+        (* | -> (None,gm()) FIXME*)
+      ] ]
     extend_body:
       [ [ (gram,old) = extend_header; global_list = OPT global;
           el = LIST1 [ e = entry  -> e ] -> (* semi_sep removed *)

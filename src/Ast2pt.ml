@@ -476,11 +476,24 @@ let override_flag loc = fun
 
 (*
   {[
-  Ast2pt.expr (Ast.ExId (_loc, ( (Ast.IdAcc (_loc, Ast.IdUid (_loc, "U"), Ast.IdLid(_loc,"g"))) )));;
+  expr (Ast.ExId (_loc, ( (Ast.IdAcc (_loc, Ast.IdUid (_loc, "U"), Ast.IdLid(_loc,"g"))) )));;
   - : Parsetree.expression =
   {Parsetree.pexp_desc =
   Parsetree.Pexp_ident
   {Asttypes.txt = Longident.Ldot (Longident.Lident "U", "g"); loc = };
+  pexp_loc = }
+
+  expr <:expr< $(uid:"A").b >> ; ;       
+  - : Parsetree.expression =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "A", "b"); loc = };
+  pexp_loc = }
+  expr <:expr< $(uid:"").b >> ; ; 
+  - : Parsetree.expression =
+  {Parsetree.pexp_desc =
+  Parsetree.Pexp_ident
+  {Asttypes.txt = Longident.Ldot (Longident.Lident "", "b"); loc = };
   pexp_loc = }
   ]}
  *)
