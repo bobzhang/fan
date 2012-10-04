@@ -183,16 +183,13 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   ;
 
   let new_type_var =
-    let i = ref 0 in fun () -> do { incr i; "e__" ^ string_of_int !i }
-  ;
+    let i = ref 0 in fun () -> do { incr i; "e__" ^ string_of_int !i } ;
 
   let used_of_rule_list rl =
     List.fold_left
-      (fun nl r -> List.fold_left (fun nl s -> s.used @ nl) nl r.prod) []
-      rl
-  ;
+      (fun nl r -> List.fold_left (fun nl s -> s.used @ nl) nl r.prod) [] rl ;
 
-  let retype_rule_list_without_patterns _loc rl =
+  let retype_rule_list_without_patterns ?(gm="Gram")_loc rl =
     try
       List.map
         (fun
@@ -209,12 +206,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | _ -> raise Exit ])
         rl
     with
-    [ Exit -> rl ]
-  ;
+    [ Exit -> rl ];
 
   let meta_action = ref False;
 
-  let rec make_ctyp styp tvar =
+  let rec make_ctyp ?(gm="Gram") styp tvar =
     match styp with
     [ STlid _loc s -> <:ctyp< $lid:s >>
     | STapp _loc t1 t2 -> <:ctyp< $(make_ctyp t1 tvar) $(make_ctyp t2 tvar) >>
@@ -226,8 +222,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         else <:ctyp< '$tvar >>
     | STtok _loc -> <:ctyp< $uid:gm.token >> (*FIXME*)
     | STstring_tok _loc -> <:ctyp< string >>
-    | STtyp t -> t ]
-  ;
+    | STtyp t -> t ] ;
 
   (*
     {[
@@ -250,7 +245,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     ('j, Ast.patt) symbol list
     ]}
    *)    
-  let text_of_action _loc (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
+  let text_of_action _loc ?(gm="Gram") (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
     let locid = <:patt< $(lid: !FanLoc.name) >> in (* default is [_loc]*)
     let act = match act with
       [ Some act -> act
@@ -273,8 +268,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                         (<:expr< $lid:id, $tok_pl >>, <:patt< $p, $match_pl >>)]),
                act, succ i)
           | _ -> accu ])
-        (None, act, 0) psl
-    in
+        (None, act, 0) psl  in
     let e =
       let e1 = <:expr< ($act : '$rtvar) >> in
       let e2 =
@@ -323,7 +317,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       rl
   ;
 
-  let rec make_expr entry tvar =
+  let rec make_expr ?(gm="Gram")entry tvar =
     fun
     [ TXmeta _loc n tl e t ->
         let el =
@@ -401,7 +395,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     {expr = <:expr< $id:i >>; tvar = tvar_of_ident i; loc = _loc};
 
   let slist loc min sep symb = TXlist loc min symb sep ;
-  let text_of_entry _loc e =
+  let text_of_entry ?(gm="Gram") _loc e =
     let ent =
       let x = e.name in
       let _loc = e.name.loc in
@@ -430,7 +424,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     (ent, pos, txt)
   ;
   (* [gl] is the name  list option *)   
-  let let_in_of_extend _loc gram gl el args =
+  let let_in_of_extend ?(gm="Gram")_loc gram gl el args =
     match gl with
     [ None -> args
     | Some nl -> begin
@@ -490,7 +484,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   (* the [gl] is global entry name list, [el] is entry list
      [gram] is the grammar, [gmod] is the [Gram] module
    *)
-  let text_of_functorial_extend _loc gmod gram gl el =
+  let text_of_functorial_extend ?(gm="Gram")_loc gmod gram gl el =
     let args =
       let el =
         List.map
@@ -562,7 +556,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             text_of_functorial_extend _loc g gram global_list el ] ] 
     delete_rule_body:
       [ [ g = qualuid; n = name; ":"; sl = LIST0 symbol SEP semi_sep ->
-            let (e, b) = expr_of_delete_rule _loc n sl in
+            let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
             subst_gmod <:expr< $uid:gm.delete_rule $e $b >> g ] ] 
     qualuid:
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
@@ -696,7 +690,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ ";" -> () ] ]
   END;
 
-
   (*
   EXTEND Gram
     symbol: Level "top"
@@ -706,26 +699,23 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             sslist _loc min sep s
         | UIDENT "SOPT"; s = SELF ->
             ssopt _loc s ] ]
-    ;
   END;
   *)
 
-  let sfold _loc n foldfun f e s =
+  let sfold _loc ?(gm="Gram") n foldfun f e s =
     let styp = STquo _loc (new_type_var ()) in
     let e = <:expr< $uid:gm.$lid:foldfun $f $e >> in
     let t = STapp _loc (STapp _loc (STtyp <:ctyp< $uid:gm.fold _ >>) s.styp) styp in
-    {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None }
-  ;
+    {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None } ;
 
-  let sfoldsep _loc n foldfun f e s sep =
+  let sfoldsep ?(gm="Gram") _loc n foldfun f e s sep =
     let styp = STquo _loc (new_type_var ()) in
     let e = <:expr< $uid:gm.$lid:foldfun $f $e >> in
     let t =
       STapp _loc (STapp _loc (STtyp <:ctyp< $uid:gm.foldsep _ >>) s.styp) styp
     in
     {used = s.used @ sep.used; text = TXmeta _loc n [s.text; sep.text] e t;
-    styp = styp; pattern = None}
-  ;
+    styp = styp; pattern = None} ;
 
   EXTEND Gram
     GLOBAL: symbol;

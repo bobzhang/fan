@@ -64,6 +64,7 @@ and node = {node:symbol; son:tree; brother:tree}
   (position option * single_extend_statment list)
 
  type delete_statment = symbol list
+ type token = Token.t
 
  type ('a, 'b, 'c) fold =
   (internal_entry ->
@@ -81,12 +82,18 @@ and node = {node:symbol; son:tree; brother:tree}
 
  val removing : (gram -> (string -> unit))
 
+ val mk_action : ('a -> Action.t)
+
+ val string_of_token : (Token.t -> string)
+
 end
 
 module Make =
       functor (Lexer : Sig.Lexer) ->
        struct
         module Token = Lexer.Token
+
+        type token = Token.t
 
         module Action : FanSig.Grammar.Action =
          struct
@@ -199,6 +206,9 @@ and node = {node:symbol; son:tree; brother:tree}
     (Token.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ))
     );
     (incr r)
+ let mk_action = Action.mk
+
+ let string_of_token = Token.extract_string
 
  let removing =
   fun {gkeywords = table;

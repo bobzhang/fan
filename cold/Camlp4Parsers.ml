@@ -211,25 +211,25 @@ module MakeDebugParser =
                                                                     'end_or_in Gram.t)
                                                                     ))) )] ),
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'end_or_in) ->
                                                                     fun (args :
                                                                     'expr list) ->
                                                                     fun (fmt :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (section :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (m :
                                                                     'start_debug) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (let fmt =
-                                                                    (Gram.Token.extract_string
+                                                                    (Gram.string_of_token
                                                                     fmt) in
                                                                     let section =
-                                                                    (Gram.Token.extract_string
+                                                                    (Gram.string_of_token
                                                                     section) in
                                                                     (
                                                                     match
@@ -304,7 +304,7 @@ module MakeDebugParser =
                                                                     'expr Gram.t)
                                                                     ))) )] ),
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -320,7 +320,7 @@ module MakeDebugParser =
                                                                   (Gram.Skeyword
                                                                     ("end"))
                                                                   )] ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -353,10 +353,10 @@ module MakeDebugParser =
                                                                     ),
                                                                     "LIDENT (\"camlp4_debug\")"))
                                                                   )] ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -385,10 +385,10 @@ module MakeDebugParser =
                                                                     ),
                                                                     "LIDENT (\"debug\")"))
                                                                   )] ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -589,75 +589,72 @@ and ('e, 'p) symbol = {
          r.prod )) ) []  rl)
 
  let retype_rule_list_without_patterns =
-  fun _loc ->
-   fun rl ->
-    (try
-      (List.map (
-        function
-        | {prod = (({pattern = None; styp = STtok (_); _ } as s) :: []);
-           action = None} ->
-           {prod = (
-             [{s with
-               pattern = (
-                (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}]
-             );
-            action = (
-             (Some
-               ((Ast.ExApp
-                  (_loc, (
-                   (Ast.ExId
-                     (_loc, (
-                      (Ast.IdAcc
-                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                         (Ast.IdAcc
-                           (_loc, ( (Ast.IdUid (_loc, "Token")) ), (
-                            (Ast.IdLid (_loc, "extract_string")) ))) )))
-                      ))) ), (
-                   (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))) ))))) )}
-        | {prod = (({pattern = None; _ } as s) :: []);
-           action = None} ->
-           {prod = (
-             [{s with
-               pattern = (
-                (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}]
-             );
-            action = (
-             (Some ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}
-        | ({prod = []; action = Some (_)} as r) -> r
-        | _ -> (raise Exit ) ) rl)
-     with
-     Exit -> rl)
+  fun ?(gm = "Gram") ->
+   fun _loc ->
+    fun rl ->
+     (try
+       (List.map (
+         function
+         | {prod = (({pattern = None; styp = STtok (_); _ } as s) :: []);
+            action = None} ->
+            {prod = (
+              [{s with
+                pattern = (
+                 (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) )))))
+                 )}] );
+             action = (
+              (Some
+                ((Ast.ExApp
+                   (_loc, (
+                    (Ast.ExId
+                      (_loc, (
+                       (Ast.IdAcc
+                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                          (Ast.IdLid (_loc, "string_of_token")) ))) )))
+                    ), ( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) )))
+                    ))))) )}
+         | {prod = (({pattern = None; _ } as s) :: []);
+            action = None} ->
+            {prod = (
+              [{s with
+                pattern = (
+                 (Some ((Ast.PaId (_loc, ( (Ast.IdLid (_loc, "x")) )))))
+                 )}] );
+             action = (
+              (Some ((Ast.ExId (_loc, ( (Ast.IdLid (_loc, "x")) ))))) )}
+         | ({prod = []; action = Some (_)} as r) -> r
+         | _ -> (raise Exit ) ) rl)
+      with
+      Exit -> rl)
  let meta_action = (ref false )
 
  let rec make_ctyp =
-  fun styp ->
-   fun tvar ->
-    (match styp with
-     | STlid (_loc, s) -> (Ast.TyId (_loc, ( (Ast.IdLid (_loc, s)) )))
-     | STapp (_loc, t1, t2) ->
-        (Ast.TyApp
-          (_loc, ( (make_ctyp t1 tvar) ), ( (make_ctyp t2 tvar) )))
-     | STquo (_loc, s) -> (Ast.TyQuo (_loc, s))
-     | STself (_loc, x) ->
-        if (tvar = "") then
-         (
-         (FanLoc.raise _loc (
-           (Stream.Error
-             ("'" ^ ( (x ^ "' illegal in anonymous entry level") ))) ))
-         )
-        else (Ast.TyQuo (_loc, tvar))
-     | STtok (_loc) ->
-        (Ast.TyId
-          (_loc, (
-           (Ast.IdAcc
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdUid (_loc, "Token")) ))) ), (
-              (Ast.IdLid (_loc, "t")) ))) )))
-     | STstring_tok (_loc) ->
-        (Ast.TyId (_loc, ( (Ast.IdLid (_loc, "string")) )))
-     | STtyp (t) -> t)
+  fun ?(gm = "Gram") ->
+   fun styp ->
+    fun tvar ->
+     (match styp with
+      | STlid (_loc, s) -> (Ast.TyId (_loc, ( (Ast.IdLid (_loc, s)) )))
+      | STapp (_loc, t1, t2) ->
+         (Ast.TyApp
+           (_loc, ( (make_ctyp t1 tvar) ), ( (make_ctyp t2 tvar) )))
+      | STquo (_loc, s) -> (Ast.TyQuo (_loc, s))
+      | STself (_loc, x) ->
+         if (tvar = "") then
+          (
+          (FanLoc.raise _loc (
+            (Stream.Error
+              ("'" ^ ( (x ^ "' illegal in anonymous entry level") ))) ))
+          )
+         else (Ast.TyQuo (_loc, tvar))
+      | STtok (_loc) ->
+         (Ast.TyId
+           (_loc, (
+            (Ast.IdAcc
+              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+               (Ast.IdLid (_loc, "token")) ))) )))
+      | STstring_tok (_loc) ->
+         (Ast.TyId (_loc, ( (Ast.IdLid (_loc, "string")) )))
+      | STtyp (t) -> t)
 
  let make_ctyp_patt =
   fun styp ->
@@ -681,170 +678,168 @@ and ('e, 'p) symbol = {
 
  let text_of_action =
   fun _loc ->
-   fun psl ->
-    fun (rtvar :
-      string) ->
-     fun (act :
-       Ast.expr option) ->
-      fun (tvar :
-        string) ->
-       let locid =
-        (Ast.PaId
-          (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) ))) in
-       let act =
-        (match act with
-         | Some (act) -> act
-         | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))) in
-       let (tok_match_pl, act, _) =
-        (List.fold_left (
-          fun ((tok_match_pl, act, i) as accu) ->
-           function
-           | {pattern = None; _ } -> accu
-           | {pattern = Some (p); _ } when (Ast.is_irrefut_patt p) ->
-              accu
-           | {pattern =
-               Some
-                (Ast.PaAli
-                  (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))),
-                   Ast.PaId (_, Ast.IdLid (_, s)))); _ } ->
-              (tok_match_pl, (
-               (Ast.ExLet
-                 (_loc, Ast.ReNil , (
-                  (Ast.BiEq
-                    (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, s)) )))
-                     ), (
-                     (Ast.ExApp
-                       (_loc, (
-                        (Ast.ExId
-                          (_loc, (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                              (Ast.IdAcc
-                                (_loc, ( (Ast.IdUid (_loc, "Token")) ), (
-                                 (Ast.IdLid (_loc, "extract_string")) )))
-                              ))) ))) ), (
-                        (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) )))
-                     ))) ), act)) ), i)
-           | {pattern = Some (p);
-              text = TXtok (_, _, _); _ } ->
-              let id = ("__camlp4_" ^ ( (string_of_int i) )) in
-              ((
-               (Some
-                 (match tok_match_pl with
-                  | None ->
-                     (( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
-                      p)
-                  | Some (tok_pl, match_pl) ->
-                     ((
-                      (Ast.ExCom
-                        (_loc, (
-                         (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
-                         tok_pl)) ), ( (Ast.PaCom (_loc, p, match_pl)) ))))
-               ), act, ( (succ i) ))
-           | _ -> accu ) (None , act, 0) psl) in
-       let e =
-        let e1 = (Ast.ExTyc (_loc, act, ( (Ast.TyQuo (_loc, rtvar)) ))) in
-        let e2 =
-         (match tok_match_pl with
-          | None -> e1
-          | Some (Ast.ExCom (_, t1, t2), Ast.PaCom (_, p1, p2)) ->
-             (Ast.ExMat
-               (_loc, (
-                (Ast.ExTup (_loc, ( (Ast.ExCom (_loc, t1, t2)) ))) ), (
-                (Ast.McOr
-                  (_loc, (
-                   (Ast.McArr
+   fun ?(gm = "Gram") ->
+    fun psl ->
+     fun (rtvar :
+       string) ->
+      fun (act :
+        Ast.expr option) ->
+       fun (tvar :
+         string) ->
+        let locid =
+         (Ast.PaId
+           (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) ))) in
+        let act =
+         (match act with
+          | Some (act) -> act
+          | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))) in
+        let (tok_match_pl, act, _) =
+         (List.fold_left (
+           fun ((tok_match_pl, act, i) as accu) ->
+            function
+            | {pattern = None; _ } -> accu
+            | {pattern = Some (p); _ } when (Ast.is_irrefut_patt p) ->
+               accu
+            | {pattern =
+                Some
+                 (Ast.PaAli
+                   (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))),
+                    Ast.PaId (_, Ast.IdLid (_, s)))); _ } ->
+               (tok_match_pl, (
+                (Ast.ExLet
+                  (_loc, Ast.ReNil , (
+                   (Ast.BiEq
                      (_loc, (
-                      (Ast.PaTup (_loc, ( (Ast.PaCom (_loc, p1, p2)) )))
-                      ), ( (Ast.ExNil (_loc)) ), e1)) ), (
-                   (Ast.McArr
-                     (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
-                      ), ( (Ast.ExAsf (_loc)) ))) ))) )))
-          | Some (tok, match_) ->
-             (Ast.ExMat
-               (_loc, tok, (
-                (Ast.McOr
-                  (_loc, (
-                   (Ast.McArr (_loc, match_, ( (Ast.ExNil (_loc)) ), e1))
-                   ), (
-                   (Ast.McArr
-                     (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
-                      ), ( (Ast.ExAsf (_loc)) ))) ))) )))) in
-        (Ast.ExFun
-          (_loc, (
-           (Ast.McArr
-             (_loc, (
-              (Ast.PaTyc
-                (_loc, locid, (
-                 (Ast.TyId
-                   (_loc, (
-                    (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
-                       (Ast.IdLid (_loc, "t")) ))) ))) ))) ), (
-              (Ast.ExNil (_loc)) ), e2)) ))) in
-       let (txt, _) =
-        (List.fold_left (
-          fun (txt, i) ->
-           fun s ->
-            (match s.pattern with
-             | (None | Some (Ast.PaAny (_))) ->
-                ((
-                 (Ast.ExFun
+                      (Ast.PaId (_loc, ( (Ast.IdLid (_loc, s)) ))) ), (
+                      (Ast.ExApp
+                        (_loc, (
+                         (Ast.ExId
+                           (_loc, (
+                            (Ast.IdAcc
+                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                               (Ast.IdLid (_loc, "string_of_token")) )))
+                            ))) ), (
+                         (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) )))
+                      ))) ), act)) ), i)
+            | {pattern = Some (p);
+               text = TXtok (_, _, _); _ } ->
+               let id = ("__camlp4_" ^ ( (string_of_int i) )) in
+               ((
+                (Some
+                  (match tok_match_pl with
+                   | None ->
+                      (( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) ))) ),
+                       p)
+                   | Some (tok_pl, match_pl) ->
+                      ((
+                       (Ast.ExCom
+                         (_loc, (
+                          (Ast.ExId (_loc, ( (Ast.IdLid (_loc, id)) )))
+                          ), tok_pl)) ), (
+                       (Ast.PaCom (_loc, p, match_pl)) )))) ), act, (
+                (succ i) ))
+            | _ -> accu ) (None , act, 0) psl) in
+        let e =
+         let e1 = (Ast.ExTyc (_loc, act, ( (Ast.TyQuo (_loc, rtvar)) ))) in
+         let e2 =
+          (match tok_match_pl with
+           | None -> e1
+           | Some (Ast.ExCom (_, t1, t2), Ast.PaCom (_, p1, p2)) ->
+              (Ast.ExMat
+                (_loc, (
+                 (Ast.ExTup (_loc, ( (Ast.ExCom (_loc, t1, t2)) ))) ), (
+                 (Ast.McOr
                    (_loc, (
                     (Ast.McArr
+                      (_loc, (
+                       (Ast.PaTup (_loc, ( (Ast.PaCom (_loc, p1, p2)) )))
+                       ), ( (Ast.ExNil (_loc)) ), e1)) ), (
+                    (Ast.McArr
                       (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
-                       ), txt)) ))) ), i)
-             | Some
-                (Ast.PaAli
-                  (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))), p)) ->
-                let p = (make_ctyp_patt ( s.styp ) tvar p) in
-                ((
-                 (Ast.ExFun
+                       ), ( (Ast.ExAsf (_loc)) ))) ))) )))
+           | Some (tok, match_) ->
+              (Ast.ExMat
+                (_loc, tok, (
+                 (Ast.McOr
                    (_loc, (
-                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
-                 ), i)
-             | Some (p) when (Ast.is_irrefut_patt p) ->
-                let p = (make_ctyp_patt ( s.styp ) tvar p) in
-                ((
-                 (Ast.ExFun
-                   (_loc, (
-                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
-                 ), i)
-             | Some (_) ->
-                let p =
-                 (make_ctyp_patt ( s.styp ) tvar (
-                   (Ast.PaId
-                     (_loc, (
-                      (Ast.IdLid
-                        (_loc, ( ("__camlp4_" ^ ( (string_of_int i) )) )))
-                      ))) )) in
-                ((
-                 (Ast.ExFun
-                   (_loc, (
-                    (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt)) )))
-                 ), ( (succ i) ))) ) (e, 0) psl) in
-       let txt =
-        if meta_action.contents then
-         (
-         (Ast.ExApp
+                    (Ast.McArr (_loc, match_, ( (Ast.ExNil (_loc)) ), e1))
+                    ), (
+                    (Ast.McArr
+                      (_loc, ( (Ast.PaAny (_loc)) ), ( (Ast.ExNil (_loc))
+                       ), ( (Ast.ExAsf (_loc)) ))) ))) )))) in
+         (Ast.ExFun
            (_loc, (
-            (Ast.ExId
+            (Ast.McArr
               (_loc, (
-               (Ast.IdAcc
-                 (_loc, ( (Ast.IdUid (_loc, "Obj")) ), (
-                  (Ast.IdLid (_loc, "magic")) ))) ))) ), (
-            (MetaAst.Expr.meta_expr _loc txt) )))
-         )
-        else txt in
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExId
+               (Ast.PaTyc
+                 (_loc, locid, (
+                  (Ast.TyId
+                    (_loc, (
+                     (Ast.IdAcc
+                       (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
+                        (Ast.IdLid (_loc, "t")) ))) ))) ))) ), (
+               (Ast.ExNil (_loc)) ), e2)) ))) in
+        let (txt, _) =
+         (List.fold_left (
+           fun (txt, i) ->
+            fun s ->
+             (match s.pattern with
+              | (None | Some (Ast.PaAny (_))) ->
+                 ((
+                  (Ast.ExFun
+                    (_loc, (
+                     (Ast.McArr
+                       (_loc, ( (Ast.PaAny (_loc)) ), (
+                        (Ast.ExNil (_loc)) ), txt)) ))) ), i)
+              | Some
+                 (Ast.PaAli
+                   (_, Ast.PaApp (_, _, Ast.PaTup (_, Ast.PaAny (_))), p)) ->
+                 let p = (make_ctyp_patt ( s.styp ) tvar p) in
+                 ((
+                  (Ast.ExFun
+                    (_loc, (
+                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
+                     ))) ), i)
+              | Some (p) when (Ast.is_irrefut_patt p) ->
+                 let p = (make_ctyp_patt ( s.styp ) tvar p) in
+                 ((
+                  (Ast.ExFun
+                    (_loc, (
+                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
+                     ))) ), i)
+              | Some (_) ->
+                 let p =
+                  (make_ctyp_patt ( s.styp ) tvar (
+                    (Ast.PaId
+                      (_loc, (
+                       (Ast.IdLid
+                         (_loc, ( ("__camlp4_" ^ ( (string_of_int i) ))
+                          ))) ))) )) in
+                 ((
+                  (Ast.ExFun
+                    (_loc, (
+                     (Ast.McArr (_loc, p, ( (Ast.ExNil (_loc)) ), txt))
+                     ))) ), ( (succ i) ))) ) (e, 0) psl) in
+        let txt =
+         if meta_action.contents then
+          (
+          (Ast.ExApp
             (_loc, (
-             (Ast.IdAcc
-               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+             (Ast.ExId
+               (_loc, (
                 (Ast.IdAcc
-                  (_loc, ( (Ast.IdUid (_loc, "Action")) ), (
-                   (Ast.IdLid (_loc, "mk")) ))) ))) ))) ), txt))
+                  (_loc, ( (Ast.IdUid (_loc, "Obj")) ), (
+                   (Ast.IdLid (_loc, "magic")) ))) ))) ), (
+             (MetaAst.Expr.meta_expr _loc txt) )))
+          )
+         else txt in
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExId
+             (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.IdLid (_loc, "mk_action")) ))) ))) ), txt))
 
  let srules =
   fun loc ->
@@ -858,213 +853,215 @@ and ('e, 'p) symbol = {
          (sl, ac) ) rl)
 
  let rec make_expr =
-  fun entry ->
-   fun tvar ->
-    function
-    | TXmeta (_loc, n, tl, e, t) ->
-       let el =
-        (List.fold_right (
-          fun t ->
-           fun el ->
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExApp
-                 (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
-                  ), ( (make_expr entry "" t) ))) ), el)) ) tl (
-          (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExApp
-            (_loc, (
+  fun ?(gm = "Gram") ->
+   fun entry ->
+    fun tvar ->
+     function
+     | TXmeta (_loc, n, tl, e, t) ->
+        let el =
+         (List.fold_right (
+           fun t ->
+            fun el ->
              (Ast.ExApp
                (_loc, (
-                (Ast.ExId
+                (Ast.ExApp
                   (_loc, (
-                   (Ast.IdAcc
-                     (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                      (Ast.IdUid (_loc, "Smeta")) ))) ))) ), (
-                (Ast.ExStr (_loc, n)) ))) ), el)) ), (
-          (Ast.ExApp
-            (_loc, (
-             (Ast.ExId
-               (_loc, (
-                (Ast.IdAcc
-                  (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                   (Ast.IdAcc
-                     (_loc, ( (Ast.IdUid (_loc, "Action")) ), (
-                      (Ast.IdLid (_loc, "mk")) ))) ))) ))) ), (
-             (make_ctyp_expr t tvar e) ))) )))
-    | TXlist (_loc, min, t, ts) ->
-       let txt = (make_expr entry "" ( t.text )) in
-       (match (min, ts) with
-        | (false, None) ->
+                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) ))) ), (
+                   (make_expr entry "" t) ))) ), el)) ) tl (
+           (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExId
+                   (_loc, (
+                    (Ast.IdAcc
+                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                       (Ast.IdUid (_loc, "Smeta")) ))) ))) ), (
+                 (Ast.ExStr (_loc, n)) ))) ), el)) ), (
            (Ast.ExApp
              (_loc, (
               (Ast.ExId
                 (_loc, (
                  (Ast.IdAcc
                    (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                    (Ast.IdUid (_loc, "Slist0")) ))) ))) ), txt))
-        | (true, None) ->
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExId
-                (_loc, (
-                 (Ast.IdAcc
-                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                    (Ast.IdUid (_loc, "Slist1")) ))) ))) ), txt))
-        | (false, Some (s)) ->
-           let x = (make_expr entry tvar ( s.text )) in
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId
-                   (_loc, (
                     (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                       (Ast.IdUid (_loc, "Slist0sep")) ))) ))) ), txt))
-              ), x))
-        | (true, Some (s)) ->
-           let x = (make_expr entry tvar ( s.text )) in
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId
-                   (_loc, (
-                    (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                       (Ast.IdUid (_loc, "Slist1sep")) ))) ))) ), txt))
-              ), x)))
-    | TXnext (_loc) ->
-       (Ast.ExId
-         (_loc, (
-          (Ast.IdAcc
-            (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-             (Ast.IdUid (_loc, "Snext")) ))) )))
-    | TXnterm (_loc, n, lev) ->
-       (match lev with
-        | Some (lab) ->
-           (Ast.ExApp
-             (_loc, (
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId
-                   (_loc, (
-                    (Ast.IdAcc
-                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                       (Ast.IdUid (_loc, "Snterml")) ))) ))) ), (
-                 (Ast.ExApp
-                   (_loc, (
-                    (Ast.ExId
-                      (_loc, (
-                       (Ast.IdAcc
-                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                          (Ast.IdLid (_loc, "obj")) ))) ))) ), (
-                    (Ast.ExTyc
-                      (_loc, ( n.expr ), (
-                       (Ast.TyApp
-                         (_loc, (
-                          (Ast.TyId
-                            (_loc, (
-                             (Ast.IdAcc
-                               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                                (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                          (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) )))
-              ), ( (Ast.ExStr (_loc, lab)) )))
-        | None ->
-           if (( n.tvar ) = tvar) then
-            (
-            (Ast.ExId
-              (_loc, (
-               (Ast.IdAcc
-                 (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                  (Ast.IdUid (_loc, "Sself")) ))) )))
-            )
-           else
+                      (_loc, ( (Ast.IdUid (_loc, "Action")) ), (
+                       (Ast.IdLid (_loc, "mk")) ))) ))) ))) ), (
+              (make_ctyp_expr t tvar e) ))) )))
+     | TXlist (_loc, min, t, ts) ->
+        let txt = (make_expr entry "" ( t.text )) in
+        (match (min, ts) with
+         | (false, None) ->
             (Ast.ExApp
               (_loc, (
                (Ast.ExId
                  (_loc, (
                   (Ast.IdAcc
                     (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                     (Ast.IdUid (_loc, "Snterm")) ))) ))) ), (
+                     (Ast.IdUid (_loc, "Slist0")) ))) ))) ), txt))
+         | (true, None) ->
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExId
+                 (_loc, (
+                  (Ast.IdAcc
+                    (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                     (Ast.IdUid (_loc, "Slist1")) ))) ))) ), txt))
+         | (false, Some (s)) ->
+            let x = (make_expr entry tvar ( s.text )) in
+            (Ast.ExApp
+              (_loc, (
                (Ast.ExApp
                  (_loc, (
                   (Ast.ExId
                     (_loc, (
                      (Ast.IdAcc
                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdLid (_loc, "obj")) ))) ))) ), (
-                  (Ast.ExTyc
-                    (_loc, ( n.expr ), (
-                     (Ast.TyApp
+                        (Ast.IdUid (_loc, "Slist0sep")) ))) ))) ), txt))
+               ), x))
+         | (true, Some (s)) ->
+            let x = (make_expr entry tvar ( s.text )) in
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExId
+                    (_loc, (
+                     (Ast.IdAcc
+                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                        (Ast.IdUid (_loc, "Slist1sep")) ))) ))) ), txt))
+               ), x)))
+     | TXnext (_loc) ->
+        (Ast.ExId
+          (_loc, (
+           (Ast.IdAcc
+             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+              (Ast.IdUid (_loc, "Snext")) ))) )))
+     | TXnterm (_loc, n, lev) ->
+        (match lev with
+         | Some (lab) ->
+            (Ast.ExApp
+              (_loc, (
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExId
+                    (_loc, (
+                     (Ast.IdAcc
+                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                        (Ast.IdUid (_loc, "Snterml")) ))) ))) ), (
+                  (Ast.ExApp
+                    (_loc, (
+                     (Ast.ExId
                        (_loc, (
-                        (Ast.TyId
+                        (Ast.IdAcc
+                          (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                           (Ast.IdLid (_loc, "obj")) ))) ))) ), (
+                     (Ast.ExTyc
+                       (_loc, ( n.expr ), (
+                        (Ast.TyApp
                           (_loc, (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                              (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                        (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) ))))
-    | TXopt (_loc, t) ->
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExId
-            (_loc, (
-             (Ast.IdAcc
-               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                (Ast.IdUid (_loc, "Sopt")) ))) ))) ), (
-          (make_expr entry "" t) )))
-    | TXtry (_loc, t) ->
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExId
-            (_loc, (
-             (Ast.IdAcc
-               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                (Ast.IdUid (_loc, "Stry")) ))) ))) ), (
-          (make_expr entry "" t) )))
-    | TXrules (_loc, rl) ->
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExApp
-            (_loc, (
+                           (Ast.TyId
+                             (_loc, (
+                              (Ast.IdAcc
+                                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                                 (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                           (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) )))
+               ), ( (Ast.ExStr (_loc, lab)) )))
+         | None ->
+            if (( n.tvar ) = tvar) then
+             (
              (Ast.ExId
                (_loc, (
                 (Ast.IdAcc
                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                   (Ast.IdLid (_loc, "srules")) ))) ))) ), ( entry.expr
-             ))) ), ( (make_expr_rules _loc entry rl "") )))
-    | TXself (_loc) ->
-       (Ast.ExId
-         (_loc, (
-          (Ast.IdAcc
-            (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-             (Ast.IdUid (_loc, "Sself")) ))) )))
-    | TXkwd (_loc, kwd) ->
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExId
-            (_loc, (
-             (Ast.IdAcc
-               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                (Ast.IdUid (_loc, "Skeyword")) ))) ))) ), (
-          (Ast.ExStr (_loc, kwd)) )))
-    | TXtok (_loc, match_fun, descr) ->
-       (Ast.ExApp
-         (_loc, (
-          (Ast.ExId
-            (_loc, (
-             (Ast.IdAcc
-               (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                (Ast.IdUid (_loc, "Stoken")) ))) ))) ), (
-          (Ast.ExTup
-            (_loc, (
-             (Ast.ExCom
-               (_loc, match_fun, (
-                (Ast.ExStr (_loc, ( (Ast.safe_string_escaped descr) )))
-                ))) ))) )))
+                   (Ast.IdUid (_loc, "Sself")) ))) )))
+             )
+            else
+             (Ast.ExApp
+               (_loc, (
+                (Ast.ExId
+                  (_loc, (
+                   (Ast.IdAcc
+                     (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                      (Ast.IdUid (_loc, "Snterm")) ))) ))) ), (
+                (Ast.ExApp
+                  (_loc, (
+                   (Ast.ExId
+                     (_loc, (
+                      (Ast.IdAcc
+                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                         (Ast.IdLid (_loc, "obj")) ))) ))) ), (
+                   (Ast.ExTyc
+                     (_loc, ( n.expr ), (
+                      (Ast.TyApp
+                        (_loc, (
+                         (Ast.TyId
+                           (_loc, (
+                            (Ast.IdAcc
+                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                         (Ast.TyQuo (_loc, ( n.tvar ))) ))) ))) ))) ))))
+     | TXopt (_loc, t) ->
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExId
+             (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.IdUid (_loc, "Sopt")) ))) ))) ), (
+           (make_expr entry "" t) )))
+     | TXtry (_loc, t) ->
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExId
+             (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.IdUid (_loc, "Stry")) ))) ))) ), (
+           (make_expr entry "" t) )))
+     | TXrules (_loc, rl) ->
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExId
+                (_loc, (
+                 (Ast.IdAcc
+                   (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                    (Ast.IdLid (_loc, "srules")) ))) ))) ), ( entry.expr
+              ))) ), ( (make_expr_rules _loc entry rl "") )))
+     | TXself (_loc) ->
+        (Ast.ExId
+          (_loc, (
+           (Ast.IdAcc
+             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+              (Ast.IdUid (_loc, "Sself")) ))) )))
+     | TXkwd (_loc, kwd) ->
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExId
+             (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.IdUid (_loc, "Skeyword")) ))) ))) ), (
+           (Ast.ExStr (_loc, kwd)) )))
+     | TXtok (_loc, match_fun, descr) ->
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExId
+             (_loc, (
+              (Ast.IdAcc
+                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                 (Ast.IdUid (_loc, "Stoken")) ))) ))) ), (
+           (Ast.ExTup
+             (_loc, (
+              (Ast.ExCom
+                (_loc, match_fun, (
+                 (Ast.ExStr (_loc, ( (Ast.safe_string_escaped descr) )))
+                 ))) ))) )))
  and make_expr_rules =
   fun _loc ->
    fun n ->
@@ -1127,182 +1124,185 @@ and ('e, 'p) symbol = {
    fun min -> fun sep -> fun symb -> (TXlist (loc, min, symb, sep))
 
  let text_of_entry =
-  fun _loc ->
-   fun e ->
-    let ent =
-     let x = e.name in
-     let _loc = (e.name).loc in
-     (Ast.ExTyc
-       (_loc, ( x.expr ), (
-        (Ast.TyApp
-          (_loc, (
-           (Ast.TyId
-             (_loc, (
-              (Ast.IdAcc
-                (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                 (Ast.IdLid (_loc, "t")) ))) ))) ), (
-           (Ast.TyQuo (_loc, ( x.tvar ))) ))) ))) in
-    let pos =
-     (match e.pos with
-      | Some (pos) ->
-         (Ast.ExApp
-           (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
-            pos))
-      | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-    let txt =
-     (List.fold_right (
-       fun level ->
-        fun txt ->
-         let lab =
-          (match level.label with
-           | Some (lab) ->
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ), (
-                 (Ast.ExStr (_loc, lab)) )))
-           | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-         let ass =
-          (match level.assoc with
-           | Some (ass) ->
-              (Ast.ExApp
-                (_loc, (
-                 (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
-                 ass))
-           | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
-         let txt =
-          let rl =
-           (srules _loc ( (e.name).tvar ) ( level.rules ) ( (e.name).tvar
-             )) in
-          let e = (make_expr_rules _loc ( e.name ) rl ( (e.name).tvar )) in
+  fun ?(gm = "Gram") ->
+   fun _loc ->
+    fun e ->
+     let ent =
+      let x = e.name in
+      let _loc = (e.name).loc in
+      (Ast.ExTyc
+        (_loc, ( x.expr ), (
+         (Ast.TyApp
+           (_loc, (
+            (Ast.TyId
+              (_loc, (
+               (Ast.IdAcc
+                 (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                  (Ast.IdLid (_loc, "t")) ))) ))) ), (
+            (Ast.TyQuo (_loc, ( x.tvar ))) ))) ))) in
+     let pos =
+      (match e.pos with
+       | Some (pos) ->
           (Ast.ExApp
-            (_loc, (
-             (Ast.ExApp
-               (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
-                ), (
-                (Ast.ExTup
-                  (_loc, (
-                   (Ast.ExCom (_loc, lab, ( (Ast.ExCom (_loc, ass, e)) )))
-                   ))) ))) ), txt)) in
-         txt ) ( e.levels ) (
-       (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
-    (ent, pos, txt)
+            (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
+             pos))
+       | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+     let txt =
+      (List.fold_right (
+        fun level ->
+         fun txt ->
+          let lab =
+           (match level.label with
+            | Some (lab) ->
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ), (
+                  (Ast.ExStr (_loc, lab)) )))
+            | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+          let ass =
+           (match level.assoc with
+            | Some (ass) ->
+               (Ast.ExApp
+                 (_loc, (
+                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "Some")) ))) ),
+                  ass))
+            | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "None")) )))) in
+          let txt =
+           let rl =
+            (srules _loc ( (e.name).tvar ) ( level.rules ) (
+              (e.name).tvar )) in
+           let e = (make_expr_rules _loc ( e.name ) rl ( (e.name).tvar )) in
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExApp
+                (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) )))
+                 ), (
+                 (Ast.ExTup
+                   (_loc, (
+                    (Ast.ExCom
+                      (_loc, lab, ( (Ast.ExCom (_loc, ass, e)) ))) ))) )))
+              ), txt)) in
+          txt ) ( e.levels ) (
+        (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))) )) in
+     (ent, pos, txt)
 
  let let_in_of_extend =
-  fun _loc ->
-   fun gram ->
-    fun gl ->
-     fun el ->
-      fun args ->
-       (match gl with
-        | None -> args
-        | Some (nl) ->
-           (
-           (check_use nl el)
-           );
-           let ll =
-            let same_tvar =
-             fun e -> fun n -> (( (e.name).tvar ) = ( n.tvar )) in
-            (List.fold_right (
-              fun e ->
-               fun ll ->
-                (match (e.name).expr with
-                 | Ast.ExId (_, Ast.IdLid (_, _)) ->
-                    if (List.exists ( (same_tvar e) ) nl) then ll
-                    else if (List.exists ( (same_tvar e) ) ll) then ll
-                    else ( ( e.name ) ) :: ll 
-                 | _ -> ll) ) el [] ) in
-           let local_binding_of_name =
-            function
-            | {expr = Ast.ExId (_, Ast.IdLid (_, i));
-               tvar = x;
-               loc = _loc} ->
-               (Ast.BiEq
-                 (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) ),
-                  (
-                  (Ast.ExTyc
-                    (_loc, (
-                     (Ast.ExApp
-                       (_loc, (
-                        (Ast.ExId
-                          (_loc, (
-                           (Ast.IdLid (_loc, "grammar_entry_create")) )))
-                        ), ( (Ast.ExStr (_loc, i)) ))) ), (
-                     (Ast.TyApp
-                       (_loc, (
-                        (Ast.TyId
-                          (_loc, (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                              (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                        (Ast.TyQuo (_loc, x)) ))) ))) )))
-            | _ -> (failwith "internal error in the Grammar extension") in
-           let expr_of_name =
-            fun {expr = e;
-             tvar = x;
-             loc = _loc} ->
-             (Ast.ExTyc
-               (_loc, e, (
-                (Ast.TyApp
-                  (_loc, (
-                   (Ast.TyId
+  fun ?(gm = "Gram") ->
+   fun _loc ->
+    fun gram ->
+     fun gl ->
+      fun el ->
+       fun args ->
+        (match gl with
+         | None -> args
+         | Some (nl) ->
+            (
+            (check_use nl el)
+            );
+            let ll =
+             let same_tvar =
+              fun e -> fun n -> (( (e.name).tvar ) = ( n.tvar )) in
+             (List.fold_right (
+               fun e ->
+                fun ll ->
+                 (match (e.name).expr with
+                  | Ast.ExId (_, Ast.IdLid (_, _)) ->
+                     if (List.exists ( (same_tvar e) ) nl) then ll
+                     else if (List.exists ( (same_tvar e) ) ll) then ll
+                     else ( ( e.name ) ) :: ll 
+                  | _ -> ll) ) el [] ) in
+            let local_binding_of_name =
+             function
+             | {expr = Ast.ExId (_, Ast.IdLid (_, i));
+                tvar = x;
+                loc = _loc} ->
+                (Ast.BiEq
+                  (_loc, ( (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) )))
+                   ), (
+                   (Ast.ExTyc
                      (_loc, (
-                      (Ast.IdAcc
-                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                         (Ast.IdLid (_loc, "t")) ))) ))) ), (
-                   (Ast.TyQuo (_loc, x)) ))) ))) in
-           let e =
-            (match ll with
-             | [] -> args
+                      (Ast.ExApp
+                        (_loc, (
+                         (Ast.ExId
+                           (_loc, (
+                            (Ast.IdLid (_loc, "grammar_entry_create")) )))
+                         ), ( (Ast.ExStr (_loc, i)) ))) ), (
+                      (Ast.TyApp
+                        (_loc, (
+                         (Ast.TyId
+                           (_loc, (
+                            (Ast.IdAcc
+                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                               (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                         (Ast.TyQuo (_loc, x)) ))) ))) )))
+             | _ -> (failwith "internal error in the Grammar extension") in
+            let expr_of_name =
+             fun {expr = e;
+              tvar = x;
+              loc = _loc} ->
+              (Ast.ExTyc
+                (_loc, e, (
+                 (Ast.TyApp
+                   (_loc, (
+                    (Ast.TyId
+                      (_loc, (
+                       (Ast.IdAcc
+                         (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                          (Ast.IdLid (_loc, "t")) ))) ))) ), (
+                    (Ast.TyQuo (_loc, x)) ))) ))) in
+            let e =
+             (match ll with
+              | [] -> args
+              | (x :: xs) ->
+                 let locals =
+                  (List.fold_right (
+                    fun name ->
+                     fun acc ->
+                      (Ast.BiAnd
+                        (_loc, acc, ( (local_binding_of_name name) ))) )
+                    xs ( (local_binding_of_name x) )) in
+                 let entry_mk =
+                  (match gram with
+                   | Some (g) ->
+                      (Ast.ExApp
+                        (_loc, (
+                         (Ast.ExId
+                           (_loc, (
+                            (Ast.IdAcc
+                              (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                               (Ast.IdLid (_loc, "mk")) ))) ))) ), (
+                         (Ast.ExId (_loc, g)) )))
+                   | None ->
+                      (Ast.ExId
+                        (_loc, (
+                         (Ast.IdAcc
+                           (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                            (Ast.IdLid (_loc, "mk")) ))) )))) in
+                 (Ast.ExLet
+                   (_loc, Ast.ReNil , (
+                    (Ast.BiEq
+                      (_loc, (
+                       (Ast.PaId
+                         (_loc, (
+                          (Ast.IdLid (_loc, "grammar_entry_create")) )))
+                       ), entry_mk)) ), (
+                    (Ast.ExLet (_loc, Ast.ReNil , locals, args)) )))) in
+            (match nl with
+             | [] -> e
              | (x :: xs) ->
-                let locals =
+                let globals =
                  (List.fold_right (
                    fun name ->
                     fun acc ->
                      (Ast.BiAnd
-                       (_loc, acc, ( (local_binding_of_name name) ))) )
-                   xs ( (local_binding_of_name x) )) in
-                let entry_mk =
-                 (match gram with
-                  | Some (g) ->
-                     (Ast.ExApp
-                       (_loc, (
-                        (Ast.ExId
-                          (_loc, (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                              (Ast.IdLid (_loc, "mk")) ))) ))) ), (
-                        (Ast.ExId (_loc, g)) )))
-                  | None ->
-                     (Ast.ExId
-                       (_loc, (
-                        (Ast.IdAcc
-                          (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                           (Ast.IdLid (_loc, "mk")) ))) )))) in
-                (Ast.ExLet
-                  (_loc, Ast.ReNil , (
+                       (_loc, acc, (
+                        (Ast.BiEq
+                          (_loc, ( (Ast.PaAny (_loc)) ), (
+                           (expr_of_name name) ))) ))) ) xs (
                    (Ast.BiEq
-                     (_loc, (
-                      (Ast.PaId
-                        (_loc, (
-                         (Ast.IdLid (_loc, "grammar_entry_create")) )))
-                      ), entry_mk)) ), (
-                   (Ast.ExLet (_loc, Ast.ReNil , locals, args)) )))) in
-           (match nl with
-            | [] -> e
-            | (x :: xs) ->
-               let globals =
-                (List.fold_right (
-                  fun name ->
-                   fun acc ->
-                    (Ast.BiAnd
-                      (_loc, acc, (
-                       (Ast.BiEq
-                         (_loc, ( (Ast.PaAny (_loc)) ), (
-                          (expr_of_name name) ))) ))) ) xs (
-                  (Ast.BiEq
-                    (_loc, ( (Ast.PaAny (_loc)) ), ( (expr_of_name x) )))
-                  )) in
-               (Ast.ExLet (_loc, Ast.ReNil , globals, e))))
+                     (_loc, ( (Ast.PaAny (_loc)) ), ( (expr_of_name x) )))
+                   )) in
+                (Ast.ExLet (_loc, Ast.ReNil , globals, e))))
 
  class subst gmod =
   object
@@ -1316,49 +1316,50 @@ and ('e, 'p) symbol = {
  let subst_gmod = fun ast -> fun gmod -> ((((new subst) gmod)#expr) ast)
 
  let text_of_functorial_extend =
-  fun _loc ->
-   fun gmod ->
-    fun gram ->
-     fun gl ->
-      fun el ->
-       let args =
-        let el =
-         (List.map (
-           fun e ->
-            let (ent, pos, txt) = (text_of_entry ( (e.name).loc ) e) in
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExId
-                    (_loc, (
-                     (Ast.IdAcc
-                       (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                        (Ast.IdLid (_loc, "extend")) ))) ))) ), ent)) ),
-               (
-               (Ast.ExApp
-                 (_loc, (
-                  (Ast.ExFun
-                    (_loc, (
-                     (Ast.McArr
-                       (_loc, (
-                        (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-                        ), ( (Ast.ExNil (_loc)) ), (
-                        (Ast.ExTup
-                          (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) )))
-                     ))) ), (
-                  (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) )))
-           ) el) in
-        (match el with
-         | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-         | (e :: []) -> e
-         | (e :: el) ->
-            (Ast.ExSeq
-              (_loc, (
-               (List.fold_left (
-                 fun acc -> fun x -> (Ast.ExSem (_loc, acc, x)) ) e el)
-               )))) in
-       (subst_gmod ( (let_in_of_extend _loc gram gl el args) ) gmod)
+  fun ?(gm = "Gram") ->
+   fun _loc ->
+    fun gmod ->
+     fun gram ->
+      fun gl ->
+       fun el ->
+        let args =
+         let el =
+          (List.map (
+            fun e ->
+             let (ent, pos, txt) = (text_of_entry ( (e.name).loc ) e) in
+             (Ast.ExApp
+               (_loc, (
+                (Ast.ExApp
+                  (_loc, (
+                   (Ast.ExId
+                     (_loc, (
+                      (Ast.IdAcc
+                        (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                         (Ast.IdLid (_loc, "extend")) ))) ))) ), ent)) ),
+                (
+                (Ast.ExApp
+                  (_loc, (
+                   (Ast.ExFun
+                     (_loc, (
+                      (Ast.McArr
+                        (_loc, (
+                         (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "()")) )))
+                         ), ( (Ast.ExNil (_loc)) ), (
+                         (Ast.ExTup
+                           (_loc, ( (Ast.ExCom (_loc, pos, txt)) ))) )))
+                      ))) ), (
+                   (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) ))) ))) )))
+            ) el) in
+         (match el with
+          | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
+          | (e :: []) -> e
+          | (e :: el) ->
+             (Ast.ExSeq
+               (_loc, (
+                (List.fold_left (
+                  fun acc -> fun x -> (Ast.ExSem (_loc, acc, x)) ) e el)
+                )))) in
+        (subst_gmod ( (let_in_of_extend _loc gram gl el args) ) gmod)
 
  let wildcarder =
   object (self)
@@ -1463,7 +1464,7 @@ and ('e, 'p) symbol = {
                       (Gram.obj (
                         (delete_rule_body : 'delete_rule_body Gram.t) )))
                     ); ( (Gram.Skeyword ("END")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (e :
                         'delete_rule_body) ->
@@ -1474,7 +1475,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (extend_body : 'extend_body Gram.t) )))
                     ); ( (Gram.Skeyword ("END")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (e :
                         'extend_body) ->
@@ -1491,7 +1492,7 @@ and ('e, 'p) symbol = {
                    [(
                     (Gram.Snterm
                       (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (g :
                        'qualuid) ->
                       fun (_loc :
@@ -1504,7 +1505,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (t_qualid : 't_qualid Gram.t) ))) ); (
                     (Gram.Skeyword (")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (t :
                         't_qualid) ->
@@ -1538,12 +1539,12 @@ and ('e, 'p) symbol = {
                            (Gram.Snterm
                              (Gram.obj ( (entry : 'entry Gram.t) ))) )]
                           ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (e :
                               'entry) ->
                              fun (_loc : FanLoc.t) -> (e : 'e__1) )) ))]
                         ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (el :
                        'e__1 list) ->
                       fun (global_list :
@@ -1575,7 +1576,7 @@ and ('e, 'p) symbol = {
                        (Gram.Snterm
                          (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (sl :
                        'symbol list) ->
                       fun _ ->
@@ -1611,12 +1612,12 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (i :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let i = (Gram.Token.extract_string i) in
+                       (let i = (Gram.string_of_token i) in
                         (Ast.IdUid (_loc, i)) : 'qualuid) )) ));
                   ((
                    [(
@@ -1624,15 +1625,15 @@ and ('e, 'p) symbol = {
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) ); ( (Gram.Skeyword (".")) );
                     Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (xs :
                        'qualuid) ->
                       fun _ ->
                        fun (x :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
-                         (let x = (Gram.Token.extract_string x) in
+                         (let x = (Gram.string_of_token x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
                            'qualuid) )) ))] ))] ))) () ) ))
@@ -1648,24 +1649,24 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | LIDENT (_) -> (true) | _ -> (false)
                        ), "LIDENT _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (i :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let i = (Gram.Token.extract_string i) in
+                       (let i = (Gram.string_of_token i) in
                         (Ast.IdLid (_loc, i)) : 'qualid) )) ));
                   ((
                    [(
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (i :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let i = (Gram.Token.extract_string i) in
+                       (let i = (Gram.string_of_token i) in
                         (Ast.IdUid (_loc, i)) : 'qualid) )) ));
                   ((
                    [(
@@ -1673,15 +1674,15 @@ and ('e, 'p) symbol = {
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) ); ( (Gram.Skeyword (".")) );
                     Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (xs :
                        'qualid) ->
                       fun _ ->
                        fun (x :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
-                         (let x = (Gram.Token.extract_string x) in
+                         (let x = (Gram.string_of_token x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
                            'qualid) )) ))] ))] ))) () ) ))
@@ -1700,17 +1701,17 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | LIDENT ("t") -> (true) | _ -> (false)
                        ), "LIDENT (\"t\")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun _ ->
                        fun (x :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
                          (match __camlp4_0 with
                           | LIDENT ("t") ->
-                             (let x = (Gram.Token.extract_string x) in
+                             (let x = (Gram.string_of_token x) in
                               (Ast.IdUid (_loc, x)) : 't_qualid)
                           | _ -> assert false) )) ));
                   ((
@@ -1719,15 +1720,15 @@ and ('e, 'p) symbol = {
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) ); ( (Gram.Skeyword (".")) );
                     Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (xs :
                        't_qualid) ->
                       fun _ ->
                        fun (x :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
-                         (let x = (Gram.Token.extract_string x) in
+                         (let x = (Gram.string_of_token x) in
                           (Ast.IdAcc
                             (_loc, ( (Ast.IdUid (_loc, x)) ), xs)) :
                            't_qualid) )) ))] ))] ))) () ) ))
@@ -1752,13 +1753,13 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )] ),
                    (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (sl :
                         'name list) ->
                        fun _ ->
                         fun (__camlp4_0 :
-                          Gram.Token.t) ->
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (match __camlp4_0 with
@@ -1781,7 +1782,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (level_list : 'level_list Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (ll :
                        'level_list) ->
                       fun (pos :
@@ -1812,11 +1813,11 @@ and ('e, 'p) symbol = {
                     ); (
                     (Gram.Snterm (Gram.obj ( (string : 'string Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (n :
                        'string) ->
                       fun (__camlp4_0 :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
                         (match __camlp4_0 with
@@ -1842,9 +1843,9 @@ and ('e, 'p) symbol = {
                        | UIDENT ("First" | "Last") -> (true)
                        | _ -> (false) ), "UIDENT (\"First\" | \"Last\")"))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -1875,7 +1876,7 @@ and ('e, 'p) symbol = {
                          (Gram.obj ( (level : 'level Gram.t) ))) ), (
                        (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (ll :
                         'level list) ->
@@ -1900,12 +1901,12 @@ and ('e, 'p) symbol = {
                               function
                               | STRING (_) -> (true)
                               | _ -> (false) ), "STRING _")) )] ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (x :
-                              Gram.Token.t) ->
+                              Gram.token) ->
                              fun (_loc :
                                FanLoc.t) ->
-                              (let x = (Gram.Token.extract_string x) in x :
+                              (let x = (Gram.string_of_token x) in x :
                                 'e__2) )) ))] ))) ); (
                     (Gram.Sopt
                       ((Gram.Snterm
@@ -1913,7 +1914,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (rule_list : 'rule_list Gram.t) ))) )]
                    ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (rules :
                        'rule_list) ->
                       fun (ass :
@@ -1936,9 +1937,9 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT (_)")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -1955,9 +1956,9 @@ and ('e, 'p) symbol = {
                        | UIDENT (("LA" | "RA") | "NA") -> (true)
                        | _ -> (false) ),
                        "UIDENT ((\"LA\" | \"RA\") | \"NA\")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -1987,7 +1988,7 @@ and ('e, 'p) symbol = {
                        (Gram.Snterm (Gram.obj ( (rule : 'rule Gram.t) )))
                        ), ( (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (rules :
                         'rule list) ->
@@ -1999,7 +2000,7 @@ and ('e, 'p) symbol = {
                   ((
                    [( (Gram.Skeyword ("[")) ); ( (Gram.Skeyword ("]")) )]
                    ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun _ ->
                        fun (_loc : FanLoc.t) -> (([]) : 'rule_list) )) ))]
@@ -2020,7 +2021,7 @@ and ('e, 'p) symbol = {
                        (Gram.Snterm
                          (Gram.obj ( (semi_sep : 'semi_sep Gram.t) ))) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (psl :
                        'psymbol list) ->
                       fun (_loc :
@@ -2037,7 +2038,7 @@ and ('e, 'p) symbol = {
                     ); ( (Gram.Skeyword ("->")) ); (
                     (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) )]
                    ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (act :
                        'expr) ->
                       fun _ ->
@@ -2058,7 +2059,7 @@ and ('e, 'p) symbol = {
                    [(
                     (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun (_loc : FanLoc.t) -> (s : 'psymbol) )) ));
@@ -2069,7 +2070,7 @@ and ('e, 'p) symbol = {
                     (Gram.Skeyword ("=")) ); (
                     (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun _ ->
@@ -2110,26 +2111,26 @@ and ('e, 'p) symbol = {
                               function
                               | STRING (_) -> (true)
                               | _ -> (false) ), "STRING _")) )] ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (s :
-                              Gram.Token.t) ->
+                              Gram.token) ->
                              fun (__camlp4_0 :
-                               Gram.Token.t) ->
+                               Gram.token) ->
                               fun (_loc :
                                 FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
-                                   (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__3)
+                                   (let s = (Gram.string_of_token s) in s :
+                                     'e__3)
                                 | _ -> assert false) )) ))] ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (lev :
                        'e__3 option) ->
                       fun (i :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
-                        (let i = (Gram.Token.extract_string i) in
+                        (let i = (Gram.string_of_token i) in
                          let name =
                           (mk_name _loc ( (Ast.IdLid (_loc, i)) )) in
                          let text = (TXnterm (_loc, name, lev)) in
@@ -2143,15 +2144,15 @@ and ('e, 'p) symbol = {
                        ), "LIDENT _")) ); ( (Gram.Skeyword ("=")) ); (
                     (Gram.Snterm (Gram.obj ( (symbol : 'symbol Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun _ ->
                        fun (p :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
-                         (let p = (Gram.Token.extract_string p) in
+                         (let p = (Gram.string_of_token p) in
                           (match s.pattern with
                            | Some
                               (Ast.PaApp
@@ -2205,11 +2206,11 @@ and ('e, 'p) symbol = {
                       ((
                        function | UIDENT ("TRY") -> (true) | _ -> (false)
                        ), "UIDENT (\"TRY\")")) ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun (__camlp4_0 :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
                         (match __camlp4_0 with
@@ -2225,11 +2226,11 @@ and ('e, 'p) symbol = {
                       ((
                        function | UIDENT ("OPT") -> (true) | _ -> (false)
                        ), "UIDENT (\"OPT\")")) ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun (__camlp4_0 :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
                         (match __camlp4_0 with
@@ -2264,23 +2265,23 @@ and ('e, 'p) symbol = {
                            (Gram.Snterm
                              (Gram.obj ( (symbol : 'symbol Gram.t) ))) )]
                           ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (t :
                               'symbol) ->
                              fun (__camlp4_0 :
-                               Gram.Token.t) ->
+                               Gram.token) ->
                               fun (_loc :
                                 FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("SEP") -> (t : 'e__4)
                                 | _ -> assert false) )) ))] ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (sep :
                        'e__4 option) ->
                       fun (s :
                         'symbol) ->
                        fun (__camlp4_0 :
-                         Gram.Token.t) ->
+                         Gram.token) ->
                         fun (_loc :
                           FanLoc.t) ->
                          (match __camlp4_0 with
@@ -2311,7 +2312,7 @@ and ('e, 'p) symbol = {
                  [((
                    [( (Gram.Skeyword ("(")) ); Gram.Sself ; (
                     (Gram.Skeyword (")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (s_t :
                         'symbol) ->
@@ -2335,19 +2336,19 @@ and ('e, 'p) symbol = {
                               function
                               | STRING (_) -> (true)
                               | _ -> (false) ), "STRING _")) )] ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (s :
-                              Gram.Token.t) ->
+                              Gram.token) ->
                              fun (__camlp4_0 :
-                               Gram.Token.t) ->
+                               Gram.token) ->
                               fun (_loc :
                                 FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
-                                   (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__6)
+                                   (let s = (Gram.string_of_token s) in s :
+                                     'e__6)
                                 | _ -> assert false) )) ))] ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (lev :
                        'e__6 option) ->
                       fun (n :
@@ -2380,29 +2381,29 @@ and ('e, 'p) symbol = {
                               function
                               | STRING (_) -> (true)
                               | _ -> (false) ), "STRING _")) )] ), (
-                          (Gram.Action.mk (
+                          (Gram.mk_action (
                             fun (s :
-                              Gram.Token.t) ->
+                              Gram.token) ->
                              fun (__camlp4_0 :
-                               Gram.Token.t) ->
+                               Gram.token) ->
                               fun (_loc :
                                 FanLoc.t) ->
                                (match __camlp4_0 with
                                 | UIDENT ("Level") ->
-                                   (let s = (Gram.Token.extract_string s) in
-                                    s : 'e__5)
+                                   (let s = (Gram.string_of_token s) in s :
+                                     'e__5)
                                 | _ -> assert false) )) ))] ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (lev :
                        'e__5 option) ->
                       fun (il :
                         'qualid) ->
                        fun _ ->
                         fun (i :
-                          Gram.Token.t) ->
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
-                          (let i = (Gram.Token.extract_string i) in
+                          (let i = (Gram.string_of_token i) in
                            let n =
                             (mk_name _loc (
                               (Ast.IdAcc
@@ -2416,12 +2417,12 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | STRING (_) -> (true) | _ -> (false)
                        ), "STRING _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let s = (Gram.Token.extract_string s) in
+                       (let s = (Gram.string_of_token s) in
                         {used = [] ; text = ( (TXkwd (_loc, s)) );
                          styp = ( (STtok (_loc)) ); pattern = None } :
                          'symbol) )) ));
@@ -2435,16 +2436,16 @@ and ('e, 'p) symbol = {
                        function
                        | ANTIQUOT ("", _) -> (true)
                        | _ -> (false) ), "ANTIQUOT (\"\", _)")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (x :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
                         (match __camlp4_0 with
                          | ANTIQUOT ("", s) ->
-                            (let x = (Gram.Token.extract_string x) in
+                            (let x = (Gram.string_of_token x) in
                              let e = (AntiquotSyntax.parse_expr _loc s) in
                              let match_fun =
                               (Ast.ExFun
@@ -2510,15 +2511,15 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | STRING (_) -> (true) | _ -> (false)
                        ), "STRING _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (x :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (_loc :
                          FanLoc.t) ->
-                        (let s = (Gram.Token.extract_string s) in
-                         let x = (Gram.Token.extract_string x) in
+                        (let s = (Gram.string_of_token s) in
+                         let x = (Gram.string_of_token x) in
                          (mk_tok _loc (
                            (Ast.PaApp
                              (_loc, (
@@ -2530,12 +2531,12 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | UIDENT (_) -> (true) | _ -> (false)
                        ), "UIDENT _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (x :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let x = (Gram.Token.extract_string x) in
+                       (let x = (Gram.string_of_token x) in
                         (mk_tok _loc (
                           (Ast.PaApp
                             (_loc, (
@@ -2548,7 +2549,7 @@ and ('e, 'p) symbol = {
                    [( (Gram.Skeyword ("`")) ); (
                     (Gram.Snterm (Gram.obj ( (patt : 'patt Gram.t) ))) )]
                    ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (p :
                        'patt) ->
                       fun _ ->
@@ -2563,7 +2564,7 @@ and ('e, 'p) symbol = {
                        (Gram.Snterm (Gram.obj ( (rule : 'rule Gram.t) )))
                        ), ( (Gram.Skeyword ("|")) ))) ); (
                     (Gram.Skeyword ("]")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (rl :
                         'rule list) ->
@@ -2585,9 +2586,9 @@ and ('e, 'p) symbol = {
                        function
                        | UIDENT ("NEXT") -> (true)
                        | _ -> (false) ), "UIDENT (\"NEXT\")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -2603,9 +2604,9 @@ and ('e, 'p) symbol = {
                        function
                        | UIDENT ("SELF") -> (true)
                        | _ -> (false) ), "UIDENT (\"SELF\")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -2627,7 +2628,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (comma_patt : 'comma_patt Gram.t) )))
                     ); ( (Gram.Skeyword (")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (p2 :
                         'comma_patt) ->
@@ -2643,14 +2644,14 @@ and ('e, 'p) symbol = {
                   ((
                    [( (Gram.Skeyword ("(")) ); Gram.Sself ; (
                     (Gram.Skeyword (")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (p :
                         'pattern) ->
                        fun _ -> fun (_loc : FanLoc.t) -> (p : 'pattern)
                      )) ));
                   (( [( (Gram.Skeyword ("_")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (_loc :
                         FanLoc.t) ->
@@ -2660,12 +2661,12 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | LIDENT (_) -> (true) | _ -> (false)
                        ), "LIDENT _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (i :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let i = (Gram.Token.extract_string i) in
+                       (let i = (Gram.string_of_token i) in
                         (Ast.PaId (_loc, ( (Ast.IdLid (_loc, i)) ))) :
                          'pattern) )) ))] ))] ))) () ) ))
          );
@@ -2679,14 +2680,14 @@ and ('e, 'p) symbol = {
                    [(
                     (Gram.Snterm
                       (Gram.obj ( (pattern : 'pattern Gram.t) ))) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (p :
                        'pattern) ->
                       fun (_loc : FanLoc.t) -> (p : 'comma_patt) )) ));
                   ((
                    [Gram.Sself ; ( (Gram.Skeyword (",")) ); Gram.Sself ]
                    ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (p2 :
                        'comma_patt) ->
                       fun _ ->
@@ -2707,7 +2708,7 @@ and ('e, 'p) symbol = {
                    [(
                     (Gram.Snterm (Gram.obj ( (qualid : 'qualid Gram.t) )))
                     )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (il :
                        'qualid) ->
                       fun (_loc :
@@ -2727,9 +2728,9 @@ and ('e, 'p) symbol = {
                        function
                        | ANTIQUOT ("", _) -> (true)
                        | _ -> (false) ), "ANTIQUOT (\"\", _)")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
                        (match __camlp4_0 with
@@ -2741,12 +2742,12 @@ and ('e, 'p) symbol = {
                     (Gram.Stoken
                       (( function | STRING (_) -> (true) | _ -> (false)
                        ), "STRING _")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (_loc :
                         FanLoc.t) ->
-                       (let s = (Gram.Token.extract_string s) in
+                       (let s = (Gram.string_of_token s) in
                         (Ast.ExStr (_loc, s)) : 'string) )) ))] ))] )))
              () ) ))
          );
@@ -2756,54 +2757,18 @@ and ('e, 'p) symbol = {
               (None , (
                [(None , None , (
                  [(( [( (Gram.Skeyword (";")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ -> fun (_loc : FanLoc.t) -> (() : 'semi_sep)
                      )) ))] ))] ))) () ) ))
 
  let sfold =
   fun _loc ->
-   fun n ->
-    fun foldfun ->
-     fun f ->
-      fun e ->
-       fun s ->
-        let styp = (STquo (_loc, ( (new_type_var () ) ))) in
-        let e =
-         (Ast.ExApp
-           (_loc, (
-            (Ast.ExApp
-              (_loc, (
-               (Ast.ExId
-                 (_loc, (
-                  (Ast.IdAcc
-                    (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                     (Ast.IdLid (_loc, foldfun)) ))) ))) ), f)) ), e)) in
-        let t =
-         (STapp
-           (_loc, (
-            (STapp
-              (_loc, (
-               (STtyp
-                 ((Ast.TyApp
-                    (_loc, (
-                     (Ast.TyId
-                       (_loc, (
-                        (Ast.IdAcc
-                          (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                           (Ast.IdLid (_loc, "fold")) ))) ))) ), (
-                     (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
-        {used = ( s.used );
-         text = ( (TXmeta (_loc, n, ( [( s.text )] ), e, t)) );
-         styp = styp; pattern = None }
-
- let sfoldsep =
-  fun _loc ->
-   fun n ->
-    fun foldfun ->
-     fun f ->
-      fun e ->
-       fun s ->
-        fun sep ->
+   fun ?(gm = "Gram") ->
+    fun n ->
+     fun foldfun ->
+      fun f ->
+       fun e ->
+        fun s ->
          let styp = (STquo (_loc, ( (new_type_var () ) ))) in
          let e =
           (Ast.ExApp
@@ -2827,12 +2792,50 @@ and ('e, 'p) symbol = {
                         (_loc, (
                          (Ast.IdAcc
                            (_loc, ( (Ast.IdUid (_loc, gm)) ), (
-                            (Ast.IdLid (_loc, "foldsep")) ))) ))) ), (
+                            (Ast.IdLid (_loc, "fold")) ))) ))) ), (
                       (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
-         {used = ( (( s.used ) @ ( sep.used )) );
-          text = (
-           (TXmeta (_loc, n, ( [( s.text ); ( sep.text )] ), e, t)) );
+         {used = ( s.used );
+          text = ( (TXmeta (_loc, n, ( [( s.text )] ), e, t)) );
           styp = styp; pattern = None }
+
+ let sfoldsep =
+  fun ?(gm = "Gram") ->
+   fun _loc ->
+    fun n ->
+     fun foldfun ->
+      fun f ->
+       fun e ->
+        fun s ->
+         fun sep ->
+          let styp = (STquo (_loc, ( (new_type_var () ) ))) in
+          let e =
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExApp
+                (_loc, (
+                 (Ast.ExId
+                   (_loc, (
+                    (Ast.IdAcc
+                      (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                       (Ast.IdLid (_loc, foldfun)) ))) ))) ), f)) ), e)) in
+          let t =
+           (STapp
+             (_loc, (
+              (STapp
+                (_loc, (
+                 (STtyp
+                   ((Ast.TyApp
+                      (_loc, (
+                       (Ast.TyId
+                         (_loc, (
+                          (Ast.IdAcc
+                            (_loc, ( (Ast.IdUid (_loc, gm)) ), (
+                             (Ast.IdLid (_loc, "foldsep")) ))) ))) ), (
+                       (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ), styp)) in
+          {used = ( (( s.used ) @ ( sep.used )) );
+           text = (
+            (TXmeta (_loc, n, ( [( s.text ); ( sep.text )] ), e, t)) );
+           styp = styp; pattern = None }
 
  let _ = let _ = (symbol : 'symbol Gram.t) in
          let grammar_entry_create = Gram.mk in
@@ -2861,11 +2864,11 @@ and ('e, 'p) symbol = {
                       ((
                        function | UIDENT ("SEP") -> (true) | _ -> (false)
                        ), "UIDENT (\"SEP\")")) ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (sep :
                        'symbol) ->
                       fun (__camlp4_1 :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (s :
                          'symbol) ->
                         fun (e :
@@ -2873,7 +2876,7 @@ and ('e, 'p) symbol = {
                          fun (f :
                            'simple_expr) ->
                           fun (__camlp4_0 :
-                            Gram.Token.t) ->
+                            Gram.token) ->
                            fun (_loc :
                              FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
@@ -2898,11 +2901,11 @@ and ('e, 'p) symbol = {
                       ((
                        function | UIDENT ("SEP") -> (true) | _ -> (false)
                        ), "UIDENT (\"SEP\")")) ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (sep :
                        'symbol) ->
                       fun (__camlp4_1 :
-                        Gram.Token.t) ->
+                        Gram.token) ->
                        fun (s :
                          'symbol) ->
                         fun (e :
@@ -2910,7 +2913,7 @@ and ('e, 'p) symbol = {
                          fun (f :
                            'simple_expr) ->
                           fun (__camlp4_0 :
-                            Gram.Token.t) ->
+                            Gram.token) ->
                            fun (_loc :
                              FanLoc.t) ->
                             (match (__camlp4_1, __camlp4_0) with
@@ -2931,7 +2934,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
                     ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun (e :
@@ -2939,7 +2942,7 @@ and ('e, 'p) symbol = {
                        fun (f :
                          'simple_expr) ->
                         fun (__camlp4_0 :
-                          Gram.Token.t) ->
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (match __camlp4_0 with
@@ -2960,7 +2963,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (simple_expr : 'simple_expr Gram.t) )))
                     ); Gram.Sself ] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (s :
                        'symbol) ->
                       fun (e :
@@ -2968,7 +2971,7 @@ and ('e, 'p) symbol = {
                        fun (f :
                          'simple_expr) ->
                         fun (__camlp4_0 :
-                          Gram.Token.t) ->
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (match __camlp4_0 with
@@ -2986,7 +2989,7 @@ and ('e, 'p) symbol = {
                    [( (Gram.Skeyword ("(")) ); (
                     (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) );
                     ( (Gram.Skeyword (")")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun _ ->
                       fun (e :
                         'expr) ->
@@ -2997,7 +3000,7 @@ and ('e, 'p) symbol = {
                     (Gram.Snterm
                       (Gram.obj ( (a_LIDENT : 'a_LIDENT Gram.t) ))) )] ),
                    (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (i :
                        'a_LIDENT) ->
                       fun (_loc :
@@ -3120,7 +3123,7 @@ module MakeListComprehension =
                                        'comprehension_or_sem_expr_for_list Gram.t)
                                      ))) ); ( (Gram.Skeyword ("]")) )] ),
                                 (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun _ ->
                                    fun (e :
                                      'comprehension_or_sem_expr_for_list) ->
@@ -3142,7 +3145,7 @@ module MakeListComprehension =
                                    ((
                                     (Gram.obj ( (expr : 'expr Gram.t) ))
                                     ), "top")) )] ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun (e :
                                     'expr) ->
                                    fun (_loc :
@@ -3174,7 +3177,7 @@ module MakeListComprehension =
                                       (Gram.obj ( (item : 'item Gram.t)
                                         ))) ), ( (Gram.Skeyword (";")) )))
                                  )] ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun (l :
                                     'item list) ->
                                    fun _ ->
@@ -3192,7 +3195,7 @@ module MakeListComprehension =
                                     (Gram.obj ( (expr : 'expr Gram.t) ))
                                     ), "top")) ); ( (Gram.Skeyword (";"))
                                  )] ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun _ ->
                                    fun (e :
                                      'expr) ->
@@ -3224,7 +3227,7 @@ module MakeListComprehension =
                                      (sem_expr_for_list :
                                        'sem_expr_for_list Gram.t) ))) )]
                                 ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun (mk :
                                     'sem_expr_for_list) ->
                                    fun _ ->
@@ -3259,7 +3262,7 @@ module MakeListComprehension =
                                    ((
                                     (Gram.obj ( (expr : 'expr Gram.t) ))
                                     ), "top")) )] ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun (e :
                                     'expr) ->
                                    fun (_loc :
@@ -3275,7 +3278,7 @@ module MakeListComprehension =
                                           (Gram.obj (
                                             (patt : 'patt Gram.t) ))) );
                                         ( (Gram.Skeyword ("<-")) )] ), (
-                                       (Gram.Action.mk (
+                                       (Gram.mk_action (
                                          fun _ ->
                                           fun (p :
                                             'patt) ->
@@ -3286,7 +3289,7 @@ module MakeListComprehension =
                                    ((
                                     (Gram.obj ( (expr : 'expr Gram.t) ))
                                     ), "top")) )] ), (
-                                (Gram.Action.mk (
+                                (Gram.mk_action (
                                   fun (e :
                                     'expr) ->
                                    fun (p :
@@ -3320,7 +3323,7 @@ module MakeListComprehension =
                                   (Gram.Snterm
                                     (Gram.obj ( (expr : 'expr Gram.t) )))
                                   )] ), (
-                                 (Gram.Action.mk (
+                                 (Gram.mk_action (
                                    fun (last :
                                      'expr) ->
                                     fun _ ->
@@ -3353,7 +3356,7 @@ module MakeListComprehension =
                                   (Gram.Snterm
                                     (Gram.obj ( (expr : 'expr Gram.t) )))
                                   )] ), (
-                                 (Gram.Action.mk (
+                                 (Gram.mk_action (
                                    fun (last :
                                      'expr) ->
                                     fun _ ->
@@ -3449,9 +3452,9 @@ module MakeMacroParser =
                                                    (true)
                                                 | _ -> (false) ),
                                                 "$UIDENT x")) )] ), (
-                                            (Gram.Action.mk (
+                                            (Gram.mk_action (
                                               fun (__camlp4_0 :
-                                                Gram.Token.t) ->
+                                                Gram.token) ->
                                                fun (_loc :
                                                  FanLoc.t) ->
                                                 (match __camlp4_0 with
@@ -3481,9 +3484,9 @@ module MakeMacroParser =
                                                    (true)
                                                 | _ -> (false) ),
                                                 "$UIDENT x")) )] ), (
-                                            (Gram.Action.mk (
+                                            (Gram.mk_action (
                                               fun (__camlp4_0 :
-                                                Gram.Token.t) ->
+                                                Gram.token) ->
                                                fun (_loc :
                                                  FanLoc.t) ->
                                                 (match __camlp4_0 with
@@ -3518,11 +3521,11 @@ module MakeMacroParser =
                                                 | _ -> (false) ),
                                                 "$UIDENT x")) );
                                              Gram.Sself ] ), (
-                                            (Gram.Action.mk (
+                                            (Gram.mk_action (
                                               fun (param :
                                                 'expr) ->
                                                fun (__camlp4_0 :
-                                                 Gram.Token.t) ->
+                                                 Gram.token) ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
                                                  (match __camlp4_0 with
@@ -3574,11 +3577,11 @@ module MakeMacroParser =
                                                 | _ -> (false) ),
                                                 "$UIDENT x")) );
                                              Gram.Sself ] ), (
-                                            (Gram.Action.mk (
+                                            (Gram.mk_action (
                                               fun (param :
                                                 'patt) ->
                                                fun (__camlp4_0 :
-                                                 Gram.Token.t) ->
+                                                 Gram.token) ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
                                                  (match __camlp4_0 with
@@ -3859,7 +3862,7 @@ module MakeMacroParser =
                                                   (macro_def :
                                                     'macro_def Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (x :
                                                  'macro_def) ->
                                                 fun (_loc :
@@ -3892,7 +3895,7 @@ module MakeMacroParser =
                                                   (macro_def_sig :
                                                     'macro_def_sig Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (x :
                                                  'macro_def_sig) ->
                                                 fun (_loc :
@@ -3926,14 +3929,14 @@ module MakeMacroParser =
                                                     (true)
                                                  | _ -> (false) ),
                                                  "STRING _")) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (fname :
-                                                 Gram.Token.t) ->
+                                                 Gram.token) ->
                                                 fun _ ->
                                                  fun (_loc :
                                                    FanLoc.t) ->
                                                   (let fname =
-                                                    (Gram.Token.extract_string
+                                                    (Gram.string_of_token
                                                       fname) in
                                                    (SdLazy
                                                      (lazy (
@@ -3962,7 +3965,7 @@ module MakeMacroParser =
                                                   (else_macro_def :
                                                     'else_macro_def Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (st2 :
                                                  'else_macro_def) ->
                                                 fun (st1 :
@@ -3997,7 +4000,7 @@ module MakeMacroParser =
                                                   (else_macro_def :
                                                     'else_macro_def Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (st2 :
                                                  'else_macro_def) ->
                                                 fun (st1 :
@@ -4020,7 +4023,7 @@ module MakeMacroParser =
                                                   (uident :
                                                     'uident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
                                                  'uident) ->
                                                 fun _ ->
@@ -4042,7 +4045,7 @@ module MakeMacroParser =
                                                   (opt_macro_value :
                                                     'opt_macro_value Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (def :
                                                  'opt_macro_value) ->
                                                 fun (i :
@@ -4073,14 +4076,14 @@ module MakeMacroParser =
                                                     (true)
                                                  | _ -> (false) ),
                                                  "STRING _")) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (fname :
-                                                 Gram.Token.t) ->
+                                                 Gram.token) ->
                                                 fun _ ->
                                                  fun (_loc :
                                                    FanLoc.t) ->
                                                   (let fname =
-                                                    (Gram.Token.extract_string
+                                                    (Gram.string_of_token
                                                       fname) in
                                                    (SdLazy
                                                      (lazy (
@@ -4110,7 +4113,7 @@ module MakeMacroParser =
                                                   (else_macro_def_sig :
                                                     'else_macro_def_sig Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sg2 :
                                                  'else_macro_def_sig) ->
                                                 fun (sg1 :
@@ -4145,7 +4148,7 @@ module MakeMacroParser =
                                                   (else_macro_def_sig :
                                                     'else_macro_def_sig Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sg2 :
                                                  'else_macro_def_sig) ->
                                                 fun (sg1 :
@@ -4168,7 +4171,7 @@ module MakeMacroParser =
                                                   (uident :
                                                     'uident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
                                                  'uident) ->
                                                 fun _ ->
@@ -4186,7 +4189,7 @@ module MakeMacroParser =
                                                   (uident :
                                                     'uident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
                                                  'uident) ->
                                                 fun _ ->
@@ -4211,7 +4214,7 @@ module MakeMacroParser =
                                                   (uident :
                                                     'uident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
                                                  'uident) ->
                                                 fun (_loc :
@@ -4238,7 +4241,7 @@ module MakeMacroParser =
                                                   (uident :
                                                     'uident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
                                                  'uident) ->
                                                 fun (_loc :
@@ -4265,7 +4268,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
@@ -4286,7 +4289,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (st :
                                                   'smlist_else) ->
@@ -4313,7 +4316,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
@@ -4334,7 +4337,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (st :
                                                   'sglist_else) ->
@@ -4360,7 +4363,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
@@ -4384,7 +4387,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (e :
                                                   'expr) ->
@@ -4419,7 +4422,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (si :
                                                          'str_item) ->
@@ -4440,7 +4443,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (d :
                                                          'macro_def) ->
@@ -4461,7 +4464,7 @@ module MakeMacroParser =
                                                             d) :
                                                            'e__8) ))
                                                     ))] ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sml :
                                                  'e__8 list) ->
                                                 fun (_loc :
@@ -4494,7 +4497,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (si :
                                                          'str_item) ->
@@ -4515,7 +4518,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (d :
                                                          'macro_def) ->
@@ -4536,7 +4539,7 @@ module MakeMacroParser =
                                                             d) :
                                                            'e__9) ))
                                                     ))] ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sml :
                                                  'e__9 list) ->
                                                 fun (_loc :
@@ -4569,7 +4572,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (si :
                                                          'sig_item) ->
@@ -4590,7 +4593,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (d :
                                                          'macro_def_sig) ->
@@ -4611,7 +4614,7 @@ module MakeMacroParser =
                                                             d) :
                                                            'e__10) ))
                                                     ))] ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sgl :
                                                  'e__10 list) ->
                                                 fun (_loc :
@@ -4644,7 +4647,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (si :
                                                          'sig_item) ->
@@ -4665,7 +4668,7 @@ module MakeMacroParser =
                                                          (semi :
                                                            'semi Gram.t)
                                                          ))) )] ), (
-                                                    (Gram.Action.mk (
+                                                    (Gram.mk_action (
                                                       fun _ ->
                                                        fun (d :
                                                          'macro_def_sig) ->
@@ -4686,7 +4689,7 @@ module MakeMacroParser =
                                                             d) :
                                                            'e__11) ))
                                                     ))] ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (sgl :
                                                  'e__11 list) ->
                                                 fun (_loc :
@@ -4705,7 +4708,7 @@ module MakeMacroParser =
                                              [(
                                               (Gram.Skeyword
                                                 ("ENDIF")) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
@@ -4714,7 +4717,7 @@ module MakeMacroParser =
                                              [(
                                               (Gram.Skeyword ("END"))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
@@ -4730,7 +4733,7 @@ module MakeMacroParser =
                                         (None , (
                                          [(None , None , (
                                            [([] , (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (_loc :
                                                  FanLoc.t) ->
                                                 ((None) :
@@ -4744,7 +4747,7 @@ module MakeMacroParser =
                                                   (expr :
                                                     'expr Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (e :
                                                  'expr) ->
                                                 fun _ ->
@@ -4772,14 +4775,14 @@ module MakeMacroParser =
                                                          ),
                                                          "LIDENT _"))
                                                       )] ), (
-                                                     (Gram.Action.mk
+                                                     (Gram.mk_action
                                                        (
                                                        fun (x :
-                                                         Gram.Token.t) ->
+                                                         Gram.token) ->
                                                         fun (_loc :
                                                           FanLoc.t) ->
                                                          (let x =
-                                                           (Gram.Token.extract_string
+                                                           (Gram.string_of_token
                                                              x) in
                                                           x : 'e__12)
                                                        )) ))] )) ), (
@@ -4794,7 +4797,7 @@ module MakeMacroParser =
                                                   (expr :
                                                     'expr Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (e :
                                                  'expr) ->
                                                 fun _ ->
@@ -4833,7 +4836,7 @@ module MakeMacroParser =
                                               ); Gram.Sself ; (
                                               (Gram.Skeyword ("IN"))
                                               ); Gram.Sself ] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (body :
                                                  'expr) ->
                                                 fun _ ->
@@ -4841,12 +4844,12 @@ module MakeMacroParser =
                                                    'expr) ->
                                                   fun _ ->
                                                    fun (i :
-                                                     Gram.Token.t) ->
+                                                     Gram.token) ->
                                                     fun _ ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
                                                       (let i =
-                                                        (Gram.Token.extract_string
+                                                        (Gram.string_of_token
                                                           i) in
                                                        ((((new
                                                             Expr.subst)
@@ -4871,7 +4874,7 @@ module MakeMacroParser =
                                                   (else_expr :
                                                     'else_expr Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (e2 :
                                                  'else_expr) ->
                                                 fun (e1 :
@@ -4903,7 +4906,7 @@ module MakeMacroParser =
                                                   (else_expr :
                                                     'else_expr Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (e2 :
                                                  'else_expr) ->
                                                 fun (e1 :
@@ -4946,7 +4949,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (p2 :
                                                   'patt) ->
@@ -4982,7 +4985,7 @@ module MakeMacroParser =
                                                   (endif :
                                                     'endif Gram.t) )))
                                               )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun _ ->
                                                 fun (p2 :
                                                   'patt) ->
@@ -5018,13 +5021,13 @@ module MakeMacroParser =
                                                     (true)
                                                  | _ -> (false) ),
                                                  "UIDENT _")) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (i :
-                                                 Gram.Token.t) ->
+                                                 Gram.token) ->
                                                 fun (_loc :
                                                   FanLoc.t) ->
                                                  (let i =
-                                                   (Gram.Token.extract_string
+                                                   (Gram.string_of_token
                                                      i) in
                                                   i : 'uident) )) ))]
                                            ))] ))) () ) ))
@@ -5047,7 +5050,7 @@ module MakeMacroParser =
                                                   (a_ident :
                                                     'a_ident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (s :
                                                  'a_ident) ->
                                                 fun _ ->
@@ -5064,12 +5067,12 @@ module MakeMacroParser =
                                                   [(
                                                    (Gram.Skeyword
                                                      ("IN")) )] ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5077,12 +5080,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("DEFINE")) )]
                                                   ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5090,24 +5093,24 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("ENDIF")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
                                                   [(
                                                    (Gram.Skeyword
                                                      ("END")) )] ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5115,12 +5118,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("ELSE")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5128,12 +5131,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("THEN")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5141,12 +5144,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("IFNDEF")) )]
                                                   ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ));
                                                  ((
@@ -5154,15 +5157,15 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("IFDEF")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__13)
                                                     )) ))] )) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (kwd :
                                                  'e__13) ->
                                                 fun _ ->
@@ -5190,7 +5193,7 @@ module MakeMacroParser =
                                                   (a_ident :
                                                     'a_ident Gram.t)
                                                   ))) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (s :
                                                  'a_ident) ->
                                                 fun _ ->
@@ -5208,24 +5211,24 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("ENDIF")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ));
                                                  ((
                                                   [(
                                                    (Gram.Skeyword
                                                      ("END")) )] ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ));
                                                  ((
@@ -5233,12 +5236,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("ELSE")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ));
                                                  ((
@@ -5246,12 +5249,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("THEN")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ));
                                                  ((
@@ -5259,12 +5262,12 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("IFNDEF")) )]
                                                   ), (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ));
                                                  ((
@@ -5272,15 +5275,15 @@ module MakeMacroParser =
                                                    (Gram.Skeyword
                                                      ("IFDEF")) )] ),
                                                   (
-                                                  (Gram.Action.mk (
+                                                  (Gram.mk_action (
                                                     fun (x :
-                                                      Gram.Token.t) ->
+                                                      Gram.token) ->
                                                      fun (_loc :
                                                        FanLoc.t) ->
-                                                      ((Gram.Token.extract_string
+                                                      ((Gram.string_of_token
                                                          x) : 'e__14)
                                                     )) ))] )) )] ), (
-                                             (Gram.Action.mk (
+                                             (Gram.mk_action (
                                                fun (kwd :
                                                  'e__14) ->
                                                 fun _ ->
@@ -6845,7 +6848,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (st :
@@ -6899,7 +6902,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -6935,7 +6938,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me2 :
                                                                     'module_expr) ->
@@ -6991,7 +6994,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -7040,7 +7043,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -7066,7 +7069,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (me :
@@ -7101,7 +7104,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (mt :
@@ -7129,7 +7132,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'module_longident) ->
@@ -7158,10 +7161,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -7200,10 +7203,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"mexp\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -7257,7 +7260,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -7286,10 +7289,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -7328,10 +7331,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"stri\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -7376,7 +7379,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ctd :
                                                                     'class_type_declaration) ->
@@ -7404,7 +7407,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cd :
                                                                     'class_declaration) ->
@@ -7447,7 +7450,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -7507,7 +7510,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -7554,7 +7557,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (bi :
                                                                     'binding) ->
@@ -7617,7 +7620,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'expr) ->
@@ -7655,7 +7658,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (td :
                                                                     'type_declaration) ->
@@ -7682,7 +7685,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'module_longident) ->
@@ -7725,7 +7728,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -7761,7 +7764,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mb :
                                                                     'module_binding) ->
@@ -7797,7 +7800,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mb :
                                                                     'module_binding0) ->
@@ -7827,7 +7830,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -7878,7 +7881,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (sl :
                                                                     'string_list) ->
@@ -7925,7 +7928,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'type_longident) ->
@@ -7959,7 +7962,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'constructor_declaration) ->
@@ -8004,7 +8007,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -8041,7 +8044,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -8090,7 +8093,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mb :
                                                                     'module_binding0) ->
@@ -8161,7 +8164,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -8198,10 +8201,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8261,7 +8264,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -8270,7 +8273,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8313,10 +8316,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8360,10 +8363,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"module_binding\" | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8398,7 +8401,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b2 :
                                                                     'module_binding) ->
@@ -8464,7 +8467,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -8509,7 +8512,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (wc :
                                                                     'with_constr) ->
@@ -8545,7 +8548,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (mt2 :
@@ -8576,7 +8579,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt2 :
                                                                     'module_type) ->
@@ -8616,7 +8619,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (sg :
@@ -8659,7 +8662,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -8685,7 +8688,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (mt :
@@ -8711,7 +8714,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -8734,7 +8737,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'module_longident_with_app) ->
@@ -8763,10 +8766,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8805,10 +8808,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"mtyp\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -8870,7 +8873,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ctd :
                                                                     'class_type_declaration) ->
@@ -8898,7 +8901,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cd :
                                                                     'class_description) ->
@@ -8937,7 +8940,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -8968,7 +8971,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'type_declaration) ->
@@ -8995,7 +8998,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'module_longident) ->
@@ -9026,7 +9029,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -9074,7 +9077,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -9110,7 +9113,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mb :
                                                                     'module_rec_declaration) ->
@@ -9146,7 +9149,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_declaration) ->
@@ -9176,7 +9179,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -9227,7 +9230,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (sl :
                                                                     'string_list) ->
@@ -9262,7 +9265,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'constructor_declaration) ->
@@ -9292,10 +9295,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -9334,10 +9337,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"sigi\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -9412,7 +9415,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_declaration) ->
@@ -9447,7 +9450,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -9496,7 +9499,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -9529,10 +9532,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -9571,10 +9574,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"module_binding\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -9610,7 +9613,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (m2 :
                                                                     'module_rec_declaration) ->
@@ -9668,7 +9671,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i2 :
                                                                     'module_longident_with_app) ->
@@ -9711,7 +9714,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -9764,13 +9767,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -9828,7 +9831,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i2 :
                                                                     'module_longident_with_app) ->
@@ -9871,7 +9874,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -9924,13 +9927,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -9979,10 +9982,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -10021,10 +10024,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"with_constr\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -10060,7 +10063,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (wc2 :
                                                                     'with_constr) ->
@@ -10120,7 +10123,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (cst :
@@ -10163,7 +10166,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (seq :
                                                                     'do_sequence) ->
@@ -10238,7 +10241,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (seq :
                                                                     'do_sequence) ->
@@ -10287,7 +10290,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (seq :
                                                                     'do_sequence) ->
@@ -10318,7 +10321,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e3 :
                                                                     'expr) ->
@@ -10365,7 +10368,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (a :
                                                                     'match_case) ->
@@ -10412,7 +10415,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (a :
                                                                     'match_case) ->
@@ -10447,7 +10450,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_def) ->
@@ -10487,7 +10490,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (a :
@@ -10529,7 +10532,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -10579,7 +10582,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -10628,7 +10631,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'expr) ->
@@ -10678,7 +10681,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (lb :
                                                                     'let_binding) ->
@@ -10721,7 +10724,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e2 :
@@ -10764,7 +10767,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e2 :
@@ -10815,7 +10818,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -10858,7 +10861,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -10901,7 +10904,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -10944,7 +10947,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -10987,7 +10990,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11030,7 +11033,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11061,7 +11064,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11099,7 +11102,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11137,7 +11140,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11175,7 +11178,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11225,7 +11228,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11256,7 +11259,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11294,7 +11297,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11332,7 +11335,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11377,7 +11380,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11399,7 +11402,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11429,7 +11432,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11456,7 +11459,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'class_longident) ->
@@ -11477,7 +11480,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11496,7 +11499,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11533,7 +11536,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -11570,7 +11573,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11606,12 +11609,12 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -11648,12 +11651,12 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -11685,7 +11688,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -11722,7 +11725,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11762,7 +11765,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (lab :
                                                                     'label) ->
@@ -11787,7 +11790,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'expr) ->
@@ -11826,7 +11829,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e2 :
@@ -11860,7 +11863,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e2 :
@@ -11894,7 +11897,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e2 :
@@ -11932,7 +11935,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -11955,7 +11958,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -12018,7 +12021,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pt :
@@ -12063,7 +12066,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (me :
@@ -12088,7 +12091,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12122,7 +12125,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (seq :
@@ -12147,7 +12150,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -12182,7 +12185,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -12239,7 +12242,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t2 :
@@ -12276,7 +12279,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12314,7 +12317,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (seq :
@@ -12359,7 +12362,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (el :
@@ -12404,7 +12407,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -12432,7 +12435,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12466,7 +12469,7 @@ module MakeRevisedParser =
                                                                     (">}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (fel :
@@ -12490,7 +12493,7 @@ module MakeRevisedParser =
                                                                     (">}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12536,7 +12539,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (el :
@@ -12574,7 +12577,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (el :
@@ -12610,7 +12613,7 @@ module MakeRevisedParser =
                                                                     ("|]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (el :
@@ -12634,7 +12637,7 @@ module MakeRevisedParser =
                                                                     ("|]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12667,7 +12670,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (mk_list :
@@ -12711,7 +12714,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (last :
@@ -12737,7 +12740,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -12767,7 +12770,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_ident) ->
@@ -12792,7 +12795,7 @@ module MakeRevisedParser =
                                                                     )))))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'val_longident) ->
@@ -12828,7 +12831,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -12854,7 +12857,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_CHAR) ->
@@ -12876,7 +12879,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_STRING) ->
@@ -12898,7 +12901,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_FLOAT) ->
@@ -12920,7 +12923,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_NATIVEINT) ->
@@ -12942,7 +12945,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT64) ->
@@ -12964,7 +12967,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT32) ->
@@ -12986,7 +12989,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT) ->
@@ -13016,10 +13019,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"seq\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13065,10 +13068,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"tup\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13114,10 +13117,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"`bool\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13164,10 +13167,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"exp\" | \"\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13210,10 +13213,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13251,7 +13254,7 @@ module MakeRevisedParser =
                                                                     ("done"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -13287,7 +13290,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (seq :
@@ -13301,7 +13304,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (seq :
                                                                     'e__17) ->
@@ -13328,7 +13331,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -13341,7 +13344,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -13381,7 +13384,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (seq :
@@ -13396,7 +13399,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (seq :
                                                                     'e__15) ->
@@ -13432,13 +13435,13 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((Gram.Token.extract_string
+                                                                    ((Gram.string_of_token
                                                                     x) :
                                                                     'e__18)
                                                                     ))
@@ -13450,13 +13453,13 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((Gram.Token.extract_string
+                                                                    ((Gram.string_of_token
                                                                     x) :
                                                                     'e__18)
                                                                     ))
@@ -13464,7 +13467,7 @@ module MakeRevisedParser =
                                                                     ))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'e__18) ->
@@ -13506,13 +13509,13 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((Gram.Token.extract_string
+                                                                    ((Gram.string_of_token
                                                                     x) :
                                                                     'e__19)
                                                                     ))
@@ -13524,13 +13527,13 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((Gram.Token.extract_string
+                                                                    ((Gram.string_of_token
                                                                     x) :
                                                                     'e__19)
                                                                     ))
@@ -13538,7 +13541,7 @@ module MakeRevisedParser =
                                                                     ))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'e__19) ->
@@ -13578,7 +13581,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -13620,7 +13623,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -13665,7 +13668,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (el :
                                                                     'sem_expr_for_list) ->
@@ -13726,7 +13729,7 @@ module MakeRevisedParser =
                                                                     "top"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -13754,10 +13757,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -13790,7 +13793,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'comma_expr) ->
@@ -13822,7 +13825,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -13858,7 +13861,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (el :
                                                                     'sequence) ->
@@ -13880,7 +13883,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -13892,7 +13895,7 @@ module MakeRevisedParser =
                                                                  ));
                                                                 ([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -13933,7 +13936,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (k :
                                                                     'sequence') ->
@@ -13964,10 +13967,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -14015,7 +14018,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'sequence) ->
@@ -14065,7 +14068,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (el :
                                                                     'sequence) ->
@@ -14136,7 +14139,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (k :
                                                                     'sequence') ->
@@ -14190,7 +14193,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (el :
                                                                     'sequence) ->
@@ -14256,7 +14259,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (k :
                                                                     'sequence') ->
@@ -14307,7 +14310,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b :
                                                                     'let_binding) ->
@@ -14326,7 +14329,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b2 :
                                                                     'binding) ->
@@ -14361,10 +14364,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -14420,13 +14423,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -14475,10 +14478,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"binding\" | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -14535,7 +14538,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_binding) ->
@@ -14576,7 +14579,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (bi :
                                                                     'cvalue_binding) ->
@@ -14600,7 +14603,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_binding) ->
@@ -14640,7 +14643,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -14667,7 +14670,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_binding) ->
@@ -14720,7 +14723,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -14765,7 +14768,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (l :
@@ -14822,7 +14825,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -14884,7 +14887,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -14893,7 +14896,7 @@ module MakeRevisedParser =
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -14955,13 +14958,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15014,10 +15017,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15061,10 +15064,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"match_case\" | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15105,7 +15108,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -15128,7 +15131,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (w :
                                                                     'expr) ->
@@ -15163,7 +15166,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -15195,7 +15198,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'patt) ->
@@ -15235,7 +15238,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b1 :
                                                                     'label_expr) ->
@@ -15259,7 +15262,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (b1 :
@@ -15286,7 +15289,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b2 :
                                                                     'label_expr_list) ->
@@ -15326,7 +15329,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'label_longident) ->
@@ -15368,7 +15371,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_binding) ->
@@ -15401,10 +15404,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15459,13 +15462,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15514,10 +15517,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15560,10 +15563,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"rec_binding\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -15621,7 +15624,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (w,
@@ -15660,7 +15663,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -15693,7 +15696,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_def_cont_no_when) ->
@@ -15740,7 +15743,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -15781,7 +15784,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -15810,7 +15813,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (w,
@@ -15855,7 +15858,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -15888,7 +15891,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_def_cont_no_when) ->
@@ -15941,7 +15944,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -15972,7 +15975,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (w,
@@ -16011,7 +16014,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -16038,7 +16041,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_def_cont_no_when) ->
@@ -16082,7 +16085,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'patt) ->
@@ -16115,7 +16118,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'patt) ->
@@ -16147,7 +16150,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -16166,7 +16169,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'patt) ->
@@ -16222,7 +16225,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -16264,7 +16267,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -16303,10 +16306,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16356,10 +16359,10 @@ module MakeRevisedParser =
                                                                     "LIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16432,7 +16435,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (f :
@@ -16442,7 +16445,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16508,7 +16511,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (f :
@@ -16517,7 +16520,7 @@ module MakeRevisedParser =
                                                                     'patt_tcon) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -16555,10 +16558,10 @@ module MakeRevisedParser =
                                                                     "LIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16603,10 +16606,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16664,13 +16667,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -16715,12 +16718,12 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -16752,7 +16755,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'type_longident) ->
@@ -16779,7 +16782,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_ident) ->
@@ -16809,10 +16812,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -16836,7 +16839,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -16869,7 +16872,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pl :
@@ -16907,7 +16910,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p2 :
@@ -16948,7 +16951,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -16977,7 +16980,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -17023,7 +17026,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pt :
@@ -17072,7 +17075,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (m :
@@ -17097,7 +17100,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -17131,7 +17134,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pl :
@@ -17163,7 +17166,7 @@ module MakeRevisedParser =
                                                                     ("|]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pl :
@@ -17187,7 +17190,7 @@ module MakeRevisedParser =
                                                                     ("|]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -17220,7 +17223,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (mk_list :
@@ -17264,7 +17267,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (last :
@@ -17290,7 +17293,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -17320,7 +17323,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_FLOAT) ->
@@ -17350,7 +17353,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_NATIVEINT) ->
@@ -17380,7 +17383,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT64) ->
@@ -17410,7 +17413,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT32) ->
@@ -17440,7 +17443,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT) ->
@@ -17466,7 +17469,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_CHAR) ->
@@ -17488,7 +17491,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_STRING) ->
@@ -17510,7 +17513,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_FLOAT) ->
@@ -17532,7 +17535,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_NATIVEINT) ->
@@ -17554,7 +17557,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT64) ->
@@ -17576,7 +17579,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT32) ->
@@ -17598,7 +17601,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_INT) ->
@@ -17620,7 +17623,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'ident) ->
@@ -17650,10 +17653,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"`bool\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -17698,10 +17701,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"tup\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -17749,10 +17752,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -17802,7 +17805,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -17830,10 +17833,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -17866,7 +17869,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'comma_patt) ->
@@ -17908,7 +17911,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -17932,7 +17935,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -17961,10 +17964,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18004,7 +18007,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'sem_patt) ->
@@ -18044,7 +18047,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -18086,7 +18089,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -18131,7 +18134,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (pl :
                                                                     'sem_patt_for_list) ->
@@ -18189,7 +18192,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p1 :
                                                                     'label_patt) ->
@@ -18213,7 +18216,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p1 :
@@ -18246,7 +18249,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -18283,7 +18286,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -18317,7 +18320,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'label_patt_list) ->
@@ -18357,7 +18360,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'label_longident) ->
@@ -18403,7 +18406,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -18437,10 +18440,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18481,10 +18484,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18522,10 +18525,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18571,7 +18574,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -18591,7 +18594,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_LIDENT) ->
@@ -18630,7 +18633,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pl :
@@ -18668,7 +18671,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p2 :
@@ -18709,7 +18712,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -18738,7 +18741,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -18784,7 +18787,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pt :
@@ -18833,7 +18836,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (m :
@@ -18858,7 +18861,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -18891,10 +18894,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18930,10 +18933,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"tup\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -18981,10 +18984,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19028,7 +19031,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (pl :
@@ -19066,7 +19069,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
@@ -19102,7 +19105,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
@@ -19130,10 +19133,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19166,7 +19169,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'comma_ipatt) ->
@@ -19206,7 +19209,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p1 :
                                                                     'label_ipatt) ->
@@ -19230,7 +19233,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p1 :
@@ -19263,7 +19266,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -19300,7 +19303,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -19334,7 +19337,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p2 :
                                                                     'label_ipatt_list) ->
@@ -19386,7 +19389,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
@@ -19419,10 +19422,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19458,10 +19461,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19505,10 +19508,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19578,7 +19581,7 @@ module MakeRevisedParser =
                                                                     )))))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cl :
                                                                     'constrain list) ->
@@ -19608,7 +19611,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'type_declaration) ->
@@ -19641,10 +19644,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19680,10 +19683,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19727,10 +19730,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -19796,7 +19799,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -19827,7 +19830,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -19850,7 +19853,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (tk :
                                                                     'type_kind) ->
@@ -19885,7 +19888,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -19929,7 +19932,7 @@ module MakeRevisedParser =
                                                                     )))))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (tpl :
                                                                     'optional_type_parameter list) ->
@@ -19974,7 +19977,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (tpl :
                                                                     'type_parameters) ->
@@ -20007,7 +20010,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -20026,7 +20029,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'type_parameter) ->
@@ -20053,7 +20056,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'type_parameters) ->
@@ -20104,7 +20107,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20136,7 +20139,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20164,7 +20167,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20194,10 +20197,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -20235,10 +20238,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -20283,7 +20286,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -20303,7 +20306,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -20324,7 +20327,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -20353,7 +20356,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20385,7 +20388,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20413,7 +20416,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -20443,10 +20446,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -20484,10 +20487,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -20539,7 +20542,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20580,7 +20583,7 @@ module MakeRevisedParser =
                                                                     "alias"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -20610,7 +20613,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20654,7 +20657,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20688,7 +20691,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20724,7 +20727,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -20759,7 +20762,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -20788,7 +20791,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -20823,7 +20826,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -20854,7 +20857,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20898,7 +20901,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -20962,7 +20965,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -20995,7 +20998,7 @@ module MakeRevisedParser =
                                                                     (">"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -21021,7 +21024,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'class_longident) ->
@@ -21052,7 +21055,7 @@ module MakeRevisedParser =
                                                                     ("}"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -21096,7 +21099,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (ntl :
@@ -21132,7 +21135,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (rfl :
@@ -21180,7 +21183,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (ntl :
@@ -21221,7 +21224,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (rfl :
@@ -21258,7 +21261,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (rfl :
@@ -21287,7 +21290,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -21325,7 +21328,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (rfl :
@@ -21358,7 +21361,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -21382,7 +21385,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -21408,7 +21411,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -21443,7 +21446,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (tl :
@@ -21475,7 +21478,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -21501,7 +21504,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -21534,10 +21537,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21573,10 +21576,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"id\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21622,10 +21625,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"tup\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21673,10 +21676,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21708,7 +21711,7 @@ module MakeRevisedParser =
                                                                     ("_"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -21732,7 +21735,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -21769,7 +21772,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -21788,7 +21791,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'star_ctyp) ->
@@ -21822,10 +21825,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21868,10 +21871,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -21920,7 +21923,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_UIDENT) ->
@@ -21958,7 +21961,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -22017,7 +22020,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'constructor_arg_list) ->
@@ -22050,7 +22053,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'constructor_declarations) ->
@@ -22083,10 +22086,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22122,10 +22125,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22168,10 +22171,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22220,7 +22223,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (s :
                                                                     'a_UIDENT) ->
@@ -22258,7 +22261,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'constructor_arg_list) ->
@@ -22299,10 +22302,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22339,10 +22342,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22391,7 +22394,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -22410,7 +22413,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'constructor_arg_list) ->
@@ -22444,10 +22447,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22495,7 +22498,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t1 :
                                                                     'label_declaration) ->
@@ -22519,7 +22522,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t1 :
@@ -22546,7 +22549,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'label_declaration_list) ->
@@ -22602,7 +22605,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -22653,7 +22656,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -22694,10 +22697,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22733,10 +22736,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22779,10 +22782,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22831,7 +22834,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -22851,7 +22854,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -22891,7 +22894,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'ident) ->
@@ -22938,13 +22941,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'ident) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -22986,7 +22989,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -23008,7 +23011,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -23041,10 +23044,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23095,7 +23098,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -23123,7 +23126,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'module_longident) ->
@@ -23164,10 +23167,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23217,7 +23220,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'module_longident_with_app) ->
@@ -23248,7 +23251,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'module_longident_with_app) ->
@@ -23282,7 +23285,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (i :
@@ -23304,7 +23307,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -23337,10 +23340,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23399,7 +23402,7 @@ module MakeRevisedParser =
                                                                     ("("))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -23429,7 +23432,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'module_longident_dot_lparen) ->
@@ -23478,12 +23481,12 @@ module MakeRevisedParser =
                                                                     ("("))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23533,7 +23536,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'type_longident) ->
@@ -23564,7 +23567,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'type_longident) ->
@@ -23598,7 +23601,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (i :
@@ -23620,7 +23623,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -23642,7 +23645,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -23675,10 +23678,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23729,7 +23732,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -23757,7 +23760,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'label_longident) ->
@@ -23798,10 +23801,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -23852,7 +23855,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'type_longident) ->
@@ -23886,7 +23889,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'ident) ->
@@ -23920,7 +23923,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'label_longident) ->
@@ -23964,7 +23967,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_fun_binding) ->
@@ -23996,10 +23999,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -24038,10 +24041,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"cdcl\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -24077,7 +24080,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (c2 :
                                                                     'class_declaration) ->
@@ -24119,7 +24122,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cfb :
                                                                     'class_fun_binding) ->
@@ -24160,7 +24163,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_expr) ->
@@ -24191,7 +24194,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_expr) ->
@@ -24234,7 +24237,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (i,
@@ -24288,7 +24291,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (i,
@@ -24334,7 +24337,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -24374,7 +24377,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (x :
@@ -24413,7 +24416,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'type_parameter) ->
@@ -24441,10 +24444,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -24477,7 +24480,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'comma_type_parameter) ->
@@ -24509,7 +24512,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -24536,7 +24539,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (x :
@@ -24572,7 +24575,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -24600,10 +24603,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -24636,7 +24639,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'comma_ctyp) ->
@@ -24680,7 +24683,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_expr) ->
@@ -24703,7 +24706,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_fun_def) ->
@@ -24763,7 +24766,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_expr) ->
@@ -24805,7 +24808,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_fun_def) ->
@@ -24843,7 +24846,7 @@ module MakeRevisedParser =
                                                                     "label"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -24876,7 +24879,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (ce :
@@ -24911,7 +24914,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (ct :
@@ -24955,7 +24958,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (cst :
@@ -24982,7 +24985,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce :
                                                                     'class_longident_and_param) ->
@@ -25009,10 +25012,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -25050,10 +25053,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"cexp\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -25103,7 +25106,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ci :
                                                                     'class_longident) ->
@@ -25147,7 +25150,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -25205,7 +25208,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (cst :
@@ -25219,7 +25222,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'e__24 list) ->
@@ -25261,13 +25264,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cst :
                                                                     'class_structure) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -25320,10 +25323,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"cst\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -25366,7 +25369,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -25405,7 +25408,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -25441,7 +25444,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -25483,7 +25486,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (se :
                                                                     'expr) ->
@@ -25526,7 +25529,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -25585,7 +25588,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -25662,7 +25665,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'fun_binding) ->
@@ -25728,7 +25731,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -25805,7 +25808,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -25882,7 +25885,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -25951,7 +25954,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'cvalue_binding) ->
@@ -26002,7 +26005,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (pb :
                                                                     'opt_as_lident) ->
@@ -26038,10 +26041,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -26080,10 +26083,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"cst\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -26130,7 +26133,7 @@ module MakeRevisedParser =
                                                                     ("method"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -26163,10 +26166,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -26199,7 +26202,7 @@ module MakeRevisedParser =
                                                                     ("!"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -26229,7 +26232,7 @@ module MakeRevisedParser =
                                                                     ("val"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -26262,10 +26265,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -26298,7 +26301,7 @@ module MakeRevisedParser =
                                                                     ("!"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun _ ->
@@ -26324,7 +26327,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -26346,7 +26349,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -26373,7 +26376,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -26396,7 +26399,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -26447,7 +26450,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -26506,7 +26509,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -26566,7 +26569,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -26625,7 +26628,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -26665,7 +26668,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -26700,7 +26703,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -26750,7 +26753,7 @@ module MakeRevisedParser =
                                                                     ("end"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (csg :
@@ -26777,7 +26780,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct :
                                                                     'class_type_longident_and_param) ->
@@ -26804,10 +26807,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -26845,10 +26848,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"ctyp\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -26898,7 +26901,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'class_type_longident) ->
@@ -26942,7 +26945,7 @@ module MakeRevisedParser =
                                                                     ("]"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -26985,7 +26988,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct :
                                                                     'class_type) ->
@@ -27019,7 +27022,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct :
                                                                     'class_type_plus) ->
@@ -27053,7 +27056,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -27080,7 +27083,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (t :
@@ -27131,7 +27134,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (csg :
@@ -27145,7 +27148,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'e__25 list) ->
@@ -27187,13 +27190,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (csg :
                                                                     'class_signature) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27246,10 +27249,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"csg\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27320,7 +27323,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'ctyp) ->
@@ -27375,7 +27378,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -27430,7 +27433,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -27488,7 +27491,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -27551,7 +27554,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -27588,7 +27591,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cs :
                                                                     'class_type) ->
@@ -27618,10 +27621,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27660,10 +27663,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"csg\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27710,7 +27713,7 @@ module MakeRevisedParser =
                                                                     ("constraint"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -27725,7 +27728,7 @@ module MakeRevisedParser =
                                                                     ("type"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -27770,7 +27773,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct :
                                                                     'class_type_plus) ->
@@ -27803,10 +27806,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27845,10 +27848,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"typ\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -27884,7 +27887,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cd2 :
                                                                     'class_description) ->
@@ -27938,7 +27941,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct :
                                                                     'class_type) ->
@@ -27971,10 +27974,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28013,10 +28016,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"typ\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28052,7 +28055,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (cd2 :
                                                                     'class_type_declaration) ->
@@ -28092,7 +28095,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b1 :
                                                                     'field_expr) ->
@@ -28116,7 +28119,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (b1 :
@@ -28143,7 +28146,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b2 :
                                                                     'field_expr_list) ->
@@ -28198,7 +28201,7 @@ module MakeRevisedParser =
                                                                     "top"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -28236,10 +28239,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28283,10 +28286,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"bi\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28344,7 +28347,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (v :
                                                                     'opt_dot_dot) ->
@@ -28379,7 +28382,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (v :
                                                                     'opt_dot_dot) ->
@@ -28409,7 +28412,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (ml,
@@ -28466,7 +28469,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'poly_type) ->
@@ -28507,10 +28510,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28546,10 +28549,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28592,10 +28595,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28644,7 +28647,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (v :
                                                                     'opt_dot_dot) ->
@@ -28670,7 +28673,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (ml,
@@ -28709,7 +28712,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -28743,7 +28746,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'module_type) ->
@@ -28783,7 +28786,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -28813,10 +28816,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28853,10 +28856,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -28887,7 +28890,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'typevars) ->
@@ -28928,7 +28931,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -28961,10 +28964,10 @@ module MakeRevisedParser =
                                                                     "QUOTATION (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29001,10 +29004,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29035,7 +29038,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'unquoted_typevars) ->
@@ -29074,7 +29077,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -29110,7 +29113,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'amp_ctyp) ->
@@ -29161,7 +29164,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'amp_ctyp) ->
@@ -29197,7 +29200,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -29219,7 +29222,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'row_field) ->
@@ -29253,10 +29256,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29299,10 +29302,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29351,7 +29354,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -29379,10 +29382,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"list\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29415,7 +29418,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'amp_ctyp) ->
@@ -29459,7 +29462,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_ident) ->
@@ -29478,7 +29481,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t2 :
                                                                     'name_tags) ->
@@ -29512,10 +29515,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -29556,7 +29559,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -29584,7 +29587,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -29626,7 +29629,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'patt) ->
@@ -29658,7 +29661,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -29722,7 +29725,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (e :
@@ -29764,7 +29767,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (p :
@@ -29803,10 +29806,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -29856,10 +29859,10 @@ module MakeRevisedParser =
                                                                     "LIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -29932,7 +29935,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (f :
@@ -29942,7 +29945,7 @@ module MakeRevisedParser =
                                                                     fun _ ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -30008,7 +30011,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (f :
@@ -30017,7 +30020,7 @@ module MakeRevisedParser =
                                                                     'ipatt_tcon) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30055,10 +30058,10 @@ module MakeRevisedParser =
                                                                     "LIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -30103,10 +30106,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -30164,13 +30167,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -30215,12 +30218,12 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30262,7 +30265,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (p :
                                                                     'ipatt) ->
@@ -30294,7 +30297,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (t :
                                                                     'ctyp) ->
@@ -30343,10 +30346,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"to\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30373,7 +30376,7 @@ module MakeRevisedParser =
                                                                     ("downto"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30388,7 +30391,7 @@ module MakeRevisedParser =
                                                                     ("to"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30413,7 +30416,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30440,10 +30443,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"private\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30470,7 +30473,7 @@ module MakeRevisedParser =
                                                                     ("private"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30495,7 +30498,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30522,10 +30525,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"mutable\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30552,7 +30555,7 @@ module MakeRevisedParser =
                                                                     ("mutable"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30577,7 +30580,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30604,10 +30607,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"virtual\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30634,7 +30637,7 @@ module MakeRevisedParser =
                                                                     ("virtual"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30659,7 +30662,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30686,10 +30689,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"..\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30716,7 +30719,7 @@ module MakeRevisedParser =
                                                                     (".."))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30741,7 +30744,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30768,10 +30771,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"rec\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30798,7 +30801,7 @@ module MakeRevisedParser =
                                                                     ("rec"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30823,7 +30826,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30851,10 +30854,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -30882,7 +30885,7 @@ module MakeRevisedParser =
                                                                     ("!"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -30907,7 +30910,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -30926,7 +30929,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -30966,10 +30969,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31006,7 +31009,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (sil,
@@ -31056,7 +31059,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (dp :
@@ -31120,7 +31123,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (sg :
@@ -31134,7 +31137,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'e__26 list) ->
@@ -31176,13 +31179,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (sg :
                                                                     'sig_items) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31235,10 +31238,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"sigi\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31295,10 +31298,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31335,7 +31338,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (sil,
@@ -31385,7 +31388,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (dp :
@@ -31449,7 +31452,7 @@ module MakeRevisedParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (st :
@@ -31463,7 +31466,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (l :
                                                                     'e__27 list) ->
@@ -31505,13 +31508,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (st :
                                                                     'str_items) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31564,10 +31567,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"stri\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31624,10 +31627,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31651,7 +31654,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ph :
                                                                     'phrase) ->
@@ -31692,10 +31695,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31732,7 +31735,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (sil,
@@ -31782,7 +31785,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (dp :
@@ -31839,7 +31842,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (st :
@@ -31880,7 +31883,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (dp :
@@ -31929,10 +31932,10 @@ module MakeRevisedParser =
                                                                     "INT (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -31968,10 +31971,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"int\") | \"`int\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32024,10 +32027,10 @@ module MakeRevisedParser =
                                                                     "INT32 (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32063,10 +32066,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"int32\") | \"`int32\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32119,10 +32122,10 @@ module MakeRevisedParser =
                                                                     "INT64 (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32158,10 +32161,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"int64\") | \"`int64\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32214,10 +32217,10 @@ module MakeRevisedParser =
                                                                     "NATIVEINT (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32253,10 +32256,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"nativeint\") | \"`nativeint\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32309,10 +32312,10 @@ module MakeRevisedParser =
                                                                     "FLOAT (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32348,10 +32351,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"flo\") | \"`flo\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32404,10 +32407,10 @@ module MakeRevisedParser =
                                                                     "CHAR (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32443,10 +32446,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"chr\") | \"`chr\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32498,10 +32501,10 @@ module MakeRevisedParser =
                                                                     "UIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32535,10 +32538,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"uid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32589,10 +32592,10 @@ module MakeRevisedParser =
                                                                     "LIDENT (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32626,10 +32629,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32680,10 +32683,10 @@ module MakeRevisedParser =
                                                                     "LABEL (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32724,11 +32727,11 @@ module MakeRevisedParser =
                                                                     (":"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -32779,10 +32782,10 @@ module MakeRevisedParser =
                                                                     "OPTLABEL (_)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32823,11 +32826,11 @@ module MakeRevisedParser =
                                                                     (":"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -32879,10 +32882,10 @@ module MakeRevisedParser =
                                                                     "STRING (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32918,10 +32921,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (((\"\" | \"str\") | \"`str\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -32974,10 +32977,10 @@ module MakeRevisedParser =
                                                                     "STRING (_, _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -33016,12 +33019,12 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (xs :
                                                                     'string_list) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -33058,10 +33061,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"\" | \"str_list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -33101,7 +33104,7 @@ module MakeRevisedParser =
                                                                     (";"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (_loc :
@@ -33126,7 +33129,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -33145,7 +33148,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e :
                                                                     'expr) ->
@@ -33177,7 +33180,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'sem_expr) ->
@@ -33215,7 +33218,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (e2 :
                                                                     'comma_expr) ->
@@ -33247,7 +33250,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -33266,7 +33269,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'patt) ->
@@ -33298,7 +33301,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'patt) ->
@@ -33350,7 +33353,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'sem_patt) ->
@@ -33388,7 +33391,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'comma_patt) ->
@@ -33420,7 +33423,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -33439,7 +33442,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'more_ctyp) ->
@@ -33471,7 +33474,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'constructor_arg_list) ->
@@ -33509,7 +33512,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'amp_ctyp) ->
@@ -33547,7 +33550,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'star_ctyp) ->
@@ -33597,7 +33600,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (z :
                                                                     'label_declaration_list) ->
@@ -33643,7 +33646,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'more_ctyp) ->
@@ -33697,7 +33700,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (z :
                                                                     'row_field) ->
@@ -33748,7 +33751,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'amp_ctyp) ->
@@ -33799,7 +33802,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (z :
                                                                     'constructor_declarations) ->
@@ -33845,7 +33848,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'constructor_arg_list) ->
@@ -33883,7 +33886,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'constructor_declarations) ->
@@ -33921,7 +33924,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'label_declaration_list) ->
@@ -33959,7 +33962,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (y :
                                                                     'comma_ctyp) ->
@@ -33999,7 +34002,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'type_parameter) ->
@@ -34019,7 +34022,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'ctyp) ->
@@ -34043,7 +34046,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'a_ident) ->
@@ -34064,7 +34067,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'more_ctyp) ->
@@ -34093,7 +34096,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34112,7 +34115,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (st :
                                                                     'str_item) ->
@@ -34142,7 +34145,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (st2 :
                                                                     'str_item_quot) ->
@@ -34187,7 +34190,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (dp :
                                                                     'opt_expr) ->
@@ -34219,7 +34222,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34238,7 +34241,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (sg :
                                                                     'sig_item) ->
@@ -34268,7 +34271,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (sg2 :
                                                                     'sig_item_quot) ->
@@ -34313,7 +34316,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (dp :
                                                                     'opt_expr) ->
@@ -34345,7 +34348,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34364,7 +34367,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'module_type) ->
@@ -34390,7 +34393,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34409,7 +34412,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'module_expr) ->
@@ -34435,7 +34438,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34461,7 +34464,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'match_case0 list) ->
@@ -34488,7 +34491,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34507,7 +34510,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'binding) ->
@@ -34533,7 +34536,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34552,7 +34555,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'label_expr_list) ->
@@ -34578,7 +34581,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -34621,7 +34624,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -34663,7 +34666,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
@@ -34721,7 +34724,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (me :
                                                                     'module_expr) ->
@@ -34730,7 +34733,7 @@ module MakeRevisedParser =
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -34785,13 +34788,13 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (mt :
                                                                     'module_type) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -34833,10 +34836,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT (\"\", _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -34879,10 +34882,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((\"module_binding\" | \"anti\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -34916,7 +34919,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (b2 :
                                                                     'module_binding_quot) ->
@@ -34955,7 +34958,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'ident_quot) ->
@@ -34986,7 +34989,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (j :
                                                                     'ident_quot) ->
@@ -35020,7 +35023,7 @@ module MakeRevisedParser =
                                                                     (")"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun _ ->
                                                                     fun (i :
@@ -35059,13 +35062,13 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'ident_quot) ->
                                                                     fun _ ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -35107,7 +35110,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_LIDENT) ->
@@ -35129,7 +35132,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (i :
                                                                     'a_UIDENT) ->
@@ -35162,10 +35165,10 @@ module MakeRevisedParser =
                                                                     "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -35208,7 +35211,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -35227,7 +35230,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'class_expr) ->
@@ -35271,14 +35274,14 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ot :
                                                                     'opt_comma_ctyp) ->
                                                                     fun (i :
                                                                     'ident) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -35319,7 +35322,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (i,
@@ -35350,7 +35353,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce2 :
                                                                     'class_expr_quot) ->
@@ -35375,7 +35378,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ce2 :
                                                                     'class_expr_quot) ->
@@ -35407,7 +35410,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -35426,7 +35429,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'class_type_plus) ->
@@ -35470,14 +35473,14 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ot :
                                                                     'opt_comma_ctyp) ->
                                                                     fun (i :
                                                                     'ident) ->
                                                                     fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -35518,7 +35521,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (
                                                                     (i,
@@ -35549,7 +35552,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct2 :
                                                                     'class_type_quot) ->
@@ -35574,7 +35577,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct2 :
                                                                     'class_type_quot) ->
@@ -35599,7 +35602,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (ct2 :
                                                                     'class_type_quot) ->
@@ -35631,7 +35634,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -35650,7 +35653,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'class_str_item) ->
@@ -35680,7 +35683,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x2 :
                                                                     'class_str_item_quot) ->
@@ -35719,7 +35722,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -35738,7 +35741,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'class_sig_item) ->
@@ -35768,7 +35771,7 @@ module MakeRevisedParser =
                                                                   Gram.Sself
                                                                   ]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x2 :
                                                                     'class_sig_item_quot) ->
@@ -35807,7 +35810,7 @@ module MakeRevisedParser =
                                                                (
                                                                [([] ,
                                                                  (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (_loc :
                                                                     FanLoc.t) ->
@@ -35826,7 +35829,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'with_constr) ->
@@ -35860,7 +35863,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_rec) ->
@@ -35894,7 +35897,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'direction_flag) ->
@@ -35928,7 +35931,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_mutable) ->
@@ -35962,7 +35965,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_private) ->
@@ -35996,7 +35999,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_virtual) ->
@@ -36030,7 +36033,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_dot_dot) ->
@@ -36064,7 +36067,7 @@ module MakeRevisedParser =
                                                                     )))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (x :
                                                                     'opt_override) ->
@@ -36112,10 +36115,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (x :
                                                                     'patt) ->
                                                                     fun (_loc :
@@ -36168,10 +36171,10 @@ module MakeRevisedParser =
                                                                     "EOI"))
                                                                   )]
                                                                  ), (
-                                                                 (Gram.Action.mk
+                                                                 (Gram.mk_action
                                                                    (
                                                                    fun (__camlp4_0 :
-                                                                    Gram.Token.t) ->
+                                                                    Gram.token) ->
                                                                     fun (x :
                                                                     'expr) ->
                                                                     fun (_loc :
@@ -38484,7 +38487,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (pcl :
                                                                     'parser_case_list) ->
@@ -38529,7 +38532,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (pcl :
                                                                     'parser_case_list) ->
@@ -38575,7 +38578,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
@@ -38596,7 +38599,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (i :
                                                                     'a_LIDENT) ->
@@ -38646,7 +38649,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (pc :
                                                                     'parser_case) ->
@@ -38682,7 +38685,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (pcl :
@@ -38765,7 +38768,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'expr) ->
@@ -38814,7 +38817,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
@@ -38853,7 +38856,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
@@ -38892,7 +38895,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (_loc :
@@ -38935,7 +38938,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'expr) ->
@@ -38971,7 +38974,7 @@ module MakeRevisedParserParser =
                                                                     [([]
                                                                     ,
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
@@ -39002,7 +39005,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (sp :
                                                                     'stream_patt_comp_err_list) ->
@@ -39030,7 +39033,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (spc :
                                                                     'stream_patt_comp) ->
@@ -39084,7 +39087,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (p :
                                                                     'patt) ->
@@ -39120,7 +39123,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'stream_expr) ->
@@ -39165,7 +39168,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'stream_expr) ->
@@ -39180,7 +39183,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (eo :
                                                                     'e__28 option) ->
@@ -39247,7 +39250,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'stream_expr) ->
@@ -39262,7 +39265,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (eo :
                                                                     'e__29 option) ->
@@ -39315,7 +39318,7 @@ module MakeRevisedParserParser =
                                                                     ]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (sp :
                                                                     'stream_patt_comp_err_list) ->
@@ -39345,7 +39348,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (spc :
@@ -39367,7 +39370,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (spc :
                                                                     'stream_patt_comp_err) ->
@@ -39430,7 +39433,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (sel :
@@ -39463,7 +39466,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun _ ->
@@ -39522,7 +39525,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (se :
                                                                     'stream_expr_comp) ->
@@ -39547,7 +39550,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun _ ->
                                                                     fun (se :
@@ -39575,7 +39578,7 @@ module MakeRevisedParserParser =
                                                                     ]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (sel :
                                                                     'stream_expr_comp_list) ->
@@ -39631,7 +39634,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'stream_expr) ->
@@ -39655,7 +39658,7 @@ module MakeRevisedParserParser =
                                                                     )]
                                                                     ),
                                                                     (
-                                                                    (Gram.Action.mk
+                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (e :
                                                                     'stream_expr) ->
@@ -40481,9 +40484,9 @@ module MakeQuotationCommon =
                     (Gram.Stoken
                       (( function | EOI -> (true) | _ -> (false) ),
                        "EOI")) )] ), (
-                   (Gram.Action.mk (
+                   (Gram.mk_action (
                      fun (__camlp4_0 :
-                       Gram.Token.t) ->
+                       Gram.token) ->
                       fun (x :
                         'entry) ->
                        fun (_loc :

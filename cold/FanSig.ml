@@ -166,9 +166,9 @@ module type SEntry = sig
   type delete_statment (* := *)              
   type action (* := *)
   type symbol (* := *)
-  type ('a, 'b, 'c) fold
-  type ('a, 'b, 'c) foldsep
-  type token       
+  type ('a, 'b, 'c) fold (* := *)
+  type ('a, 'b, 'c) foldsep (* := *)
+  type token       (* = *)
   val mk : string -> 'a t
  (** Make a new entry from a name and an hand made token parser. *)
   val of_parser : string -> (token_stream -> 'a) -> 'a t
@@ -199,6 +199,8 @@ module type SEntry = sig
       'a t -> (token * FanLoc.t) Stream.t (* not_filtered*) -> 'a
           (** Parse a token stream that is already filtered. *)
   val parse_origin_tokens : 'a t -> token_stream -> 'a
+  val mk_action: 'a->action  (*Action.mk*)
+  val string_of_token:token -> string     (* Token.extract_string*)
 end
 module type DEntry = sig
   include SEntry
@@ -282,7 +284,8 @@ module Grammar =
         and type symbol := symbol
         and type ('a,'b,'c)fold :=('a,'b,'c)fold
         and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
-        and type token :=Token.t
+        and type token =Token.t
+              
         val get_filter : gram -> Token.Filter.t
         val lex : gram -> FanLoc.t ->
               char Stream.t -> (Token.t * FanLoc.t) Stream.t
@@ -305,7 +308,7 @@ module Grammar =
         and type symbol := symbol
         and type ('a,'b,'c)fold :=('a,'b,'c)fold
         and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
-        and type token :=Token.t
+        and type token =Token.t
         val get_filter : unit -> Token.Filter.t
         val lex :
           FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t 

@@ -364,9 +364,9 @@ module Make =
                        (Gram.Stoken
                          (( function | EOI -> (true) | _ -> (false) ), "EOI"))
                        )] ), (
-                      (Gram.Action.mk (
+                      (Gram.mk_action (
                         fun (__camlp4_0 :
-                          Gram.Token.t) ->
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (match __camlp4_0 with
@@ -394,9 +394,9 @@ module Make =
                  (Gram.Stoken
                    (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
                 ), (
-                (Gram.Action.mk (
+                (Gram.mk_action (
                   fun (__camlp4_0 :
-                    Gram.Token.t) ->
+                    Gram.token) ->
                    fun (x :
                      'expr) ->
                     fun (_loc :
@@ -415,9 +415,9 @@ module Make =
                  (Gram.Stoken
                    (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
                 ), (
-                (Gram.Action.mk (
+                (Gram.mk_action (
                   fun (__camlp4_0 :
-                    Gram.Token.t) ->
+                    Gram.token) ->
                    fun (x :
                      'patt) ->
                     fun (_loc :
