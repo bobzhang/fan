@@ -199,7 +199,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           (* ...; [ "foo" ]; ... ==> ...; (x = [ "foo" ] -> Gram.Token.extract_string x); ... *)
         [ {prod = [({pattern = None; styp = STtok _ ;_} as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
-              action = Some <:expr< $uid:gm.Token.extract_string x >>}
+              action = Some <:expr< $uid:gm.string_of_token x >>}
           (* ...; [ symb ]; ... ==> ...; (x = [ symb ] -> x); ... *)
         | {prod = [({pattern = None; _ } as s)]; action = None} ->
             {prod = [{ (s) with pattern = Some <:patt< x >> }];
@@ -224,7 +224,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else <:ctyp< '$tvar >>
-    | STtok _loc -> <:ctyp< $uid:gm.Token.t >>
+    | STtok _loc -> <:ctyp< $uid:gm.token >> (*FIXME*)
     | STstring_tok _loc -> <:ctyp< string >>
     | STtyp t -> t ]
   ;
@@ -263,7 +263,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           | { pattern = Some p ; _} when Ast.is_irrefut_patt p -> accu
           | { pattern = Some <:patt< ($_ $(tup:<:patt< _ >>) as $lid:s) >> ; _} ->
               (tok_match_pl,
-               <:expr< let $lid:s = $uid:gm.Token.extract_string $lid:s
+               <:expr< let $lid:s = $uid:gm.string_of_token $lid:s
                        in $act >>, i)
           | { pattern = Some p; text=TXtok _ _ _ ; _ } ->
               let id = "__camlp4_"^string_of_int i in
@@ -311,7 +311,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         <:expr< Obj.magic $(MetaAst.Expr.meta_expr _loc txt) >>
       else txt
     in
-    <:expr< $uid:gm.Action.mk $txt >>
+    <:expr< $uid:gm.mk_action $txt >>
   ;
 
   let srules loc t rl tvar =

@@ -69,7 +69,7 @@ module type S = sig
   type extend_statment =
     (option position * list single_extend_statment);
   type delete_statment = list symbol;
-
+  type token = Token.t;
   type fold 'a 'b 'c =
     internal_entry -> list symbol ->
       (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
@@ -82,13 +82,16 @@ module type S = sig
   val get_filter : gram -> Token.Filter.t;
 
   (* Useful functions *)
-  val using : gram -> string -> unit;
-  val removing : gram -> string -> unit;
+  val using: gram -> string -> unit;
+  val removing: gram -> string -> unit;
+  val mk_action: 'a -> Action.t;
+  val string_of_token:Token.t -> string;
 end;
 
 
 module Make (Lexer  : Sig.Lexer) = struct
   module Token = Lexer.Token;
+  type token=Token.t;
   module Action : FanSig.Grammar.Action = struct
     type  t     = Obj.t   ;
     let mk    = Obj.repr;
@@ -184,7 +187,8 @@ module Make (Lexer  : Sig.Lexer) = struct
                 let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
     in do { Token.Filter.keyword_added filter kwd (r.contents = 0);
             incr r };
-
+  let mk_action=Action.mk;
+  let string_of_token=Token.extract_string  ;
   let removing { gkeywords = table; gfilter = filter; _ } kwd =
     let r = Hashtbl.find table kwd in
     let () = decr r in
@@ -194,86 +198,3 @@ module Make (Lexer  : Sig.Lexer) = struct
     } else ();
 end;
 
-(*
-let iter_entry f e =
-  let treated = ref [] in
-  let rec do_entry e =
-    if List.memq e treated.val then ()
-    else do {
-      treated.val := [e :: treated.val];
-      f e;
-      match e.edesc with
-      [ Dlevels ll -> List.iter do_level ll
-      | Dparser _ -> () ]
-    }
-  and do_level lev = do { do_tree lev.lsuffix; do_tree lev.lprefix }
-  and do_tree =
-    fun
-    [ Node n -> do_node n
-    | LocAct _ _ | DeadEnd -> () ]
-  and do_node n = do { do_symbol n.node; do_tree n.son; do_tree n.brother }
-  and do_symbol =
-    fun
-    [ Smeta _ sl _ -> List.iter do_symbol sl
-    | Snterm e | Snterml e _ -> do_entry e
-    | Slist0 s | Slist1 s | Sopt s | Stry s -> do_symbol s
-    | Slist0sep s1 s2 | Slist1sep s1 s2 -> do { do_symbol s1; do_symbol s2 }
-    | Stree t -> do_tree t
-    | Sself | Snext | Stoken _ | Stoken_fun _ -> () ]
-  in
-  do_entry e
-;
-
-let fold_entry f e init =
-  let treated = ref [] in
-  let rec do_entry accu e =
-    if List.memq e treated.val then accu
-    else do {
-      treated.val := [e :: treated.val];
-      let accu = f e accu in
-      match e.edesc with
-      [ Dlevels ll -> List.fold_left do_level accu ll
-      | Dparser _ -> accu ]
-    }
-  and do_level accu lev =
-    let accu = do_tree accu lev.lsuffix in
-    do_tree accu lev.lprefix
-  and do_tree accu =
-    fun
-    [ Node n -> do_node accu n
-    | LocAct _ _ | DeadEnd -> accu ]
-  and do_node accu n =
-    let accu = do_symbol accu n.node in
-    let accu = do_tree accu n.son in
-    do_tree accu n.brother
-  and do_symbol accu =
-    fun
-    [ Smeta _ sl _ -> List.fold_left do_symbol accu sl
-    | Snterm e | Snterml e _ -> do_entry accu e
-    | Slist0 s | Slist1 s | Sopt s | Stry s -> do_symbol accu s
-    | Slist0sep s1 s2 | Slist1sep s1 s2 ->
-        let accu = do_symbol accu s1 in
-        do_symbol accu s2
-    | Stree t -> do_tree accu t
-    | Sself | Snext | Stoken _ | Stoken_fun _ -> accu ]
-  in
-  do_entry init e
-;
-
-let is_level_labelled n lev =
-  match lev.lname with
-  [ Some n1 -> n = n1
-  | None -> False ]
-;
-
-let tokens g con =
-  let list = ref [] in
-  do {
-    Hashtbl.iter
-      (fun (p_con, p_prm) c ->
-         if p_con = con then list.val := [(p_prm, c.val) :: list.val] else ())
-      g.gtokens;
-    list.val
-  }
-;
-*)
