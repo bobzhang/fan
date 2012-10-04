@@ -393,5 +393,7 @@ two printers
   bit_match
   parser_match
 
+  $uid?:blabla
+
 * Wishes
   hope to expose float_repres

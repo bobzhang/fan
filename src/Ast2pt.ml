@@ -43,33 +43,55 @@ let mkrf = fun
     | _ -> assert False ];
 
 
+(*
+  {[
+  ident_tag <:ident< $(uid:"").B.t>>
+  - : Longident.t * [> `app | `lident | `uident ] =
+  (Longident.Ldot (Longident.Lident "B", "t"), `lident)
 
+  ident_tag <:ident< A B >>
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), `app)
+
+  ident_tag <:ident< (A B).t>>
+  (Longident.Ldot
+  (Longident.Lapply (Longident.Lident "A", Longident.Lident "B"), "t"),
+  `lident)
+
+  ident_tag <:ident< B.C >>
+  (Longident.Ldot (Longident.Lident "B", "C"), `uident)
+
+  ident_tag <:ident< B.u.g>>
+  Exception: FanLoc.Exc_located (, Failure "invalid long identifier").
+
+  ]}
+
+  If "", just remove it, this behavior should appear in other identifier as well FIXME
+ *)
 let ident_tag ?(conv_lid = fun x -> x) i =
   let rec self i acc =  match i with
     [ <:ident< $(lid:"*predef*").$(lid:"option") >> ->
-      (ldot (lident "*predef*") "option", `lident)
+      (Some ((ldot (lident "*predef*") "option"), `lident))
     | <:ident< $i1.$i2 >> ->
-        self i2 (Some (self i1 acc))
-    | <:ident< $i1 $i2 >> ->
-        let i' = Lapply (fst (self i1 None)) (fst (self i2 None)) in
-        let x =  match acc with
-        [ None -> i'
+        self i2 (self i1 acc) (* take care of the order *)
+    | <:ident< $i1 $i2 >> -> match ((self i1 None), (self i2 None),acc) with
+        (* FIXME uid required here, more precise *)
+        [ (Some (l,_),Some (r,_),None) ->
+          Some(Lapply l r,`app)
+        | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifer" ]
+    | <:ident< $uid:s >> -> match (acc,s) with
+        [ (None,"") -> None 
+        | (None,s) -> Some (lident s ,`uident) 
+        | (Some (_, `uident | `app) ,"") -> acc
+        | (Some (x, `uident | `app), s) -> Some (ldot x s, `uident)
         | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
-        in (x, `app)
-    | <:ident< $uid:s >> ->
-        let x = match acc with
-        [ None -> lident s
-        | Some (acc, `uident | `app) -> ldot acc s
-        | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier" ]
-        in (x, `uident)
     | <:ident< $lid:s >> ->
           let x = match acc with
             [ None -> lident (conv_lid s)
             | Some (acc, `uident | `app) -> ldot acc (conv_lid s)
             | _ -> error (loc_of_ident i) "invalid long identifier" ]
-          in (x, `lident)
+          in Some (x, `lident)
     | _ -> error (loc_of_ident i) "invalid long identifier" ]
-  in self i None;
+  in match self i None with [Some x -> x | None -> error (loc_of_ident i) "invalid long identifier "];
 
 let ident_noloc ?conv_lid i = fst (ident_tag ?conv_lid i);
 
@@ -115,7 +137,7 @@ let ctyp_long_id t = match t with
 let predef_option loc =
   TyId (loc, IdAcc (loc, IdLid (loc, "*predef*"), IdLid (loc, "option")));
 
-let rec ctyp = fun
+let rec ctyp = fun (* ctyp -> core_type *)
   [ TyId loc i ->
     let li = long_type_ident i in
     mktyp loc (Ptyp_constr li [])
