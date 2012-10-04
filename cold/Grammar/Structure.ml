@@ -4,8 +4,7 @@ module type S =
                       sig
                        module Token : FanSig.Token
 
-                       module Lexer :
-                        (FanSig.Lexer with module Token = Token)
+                       module Lexer : (Sig.Lexer with module Token = Token)
 
                        module Action : FanSig.Grammar.Action
 
@@ -85,7 +84,7 @@ and node = {node:symbol; son:tree; brother:tree}
 end
 
 module Make =
-      functor (Lexer : FanSig.Lexer) ->
+      functor (Lexer : Sig.Lexer) ->
        struct
         module Token = Lexer.Token
 
@@ -118,6 +117,10 @@ module Make =
                             prev_loc:FanLoc.t;
                             cur_loc:FanLoc.t;
                             prev_loc_only:bool}
+
+       let ghost_token_info =
+        {prev_loc = FanLoc.ghost; cur_loc = FanLoc.ghost;
+         prev_loc_only = false }
 
        type token_stream = (Token.t * token_info) Stream.t
 

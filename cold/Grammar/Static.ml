@@ -3,7 +3,7 @@ open LibUtil
 open Format
 
 module Make =
-                            functor (Lexer : FanSig.Lexer) ->
+                            functor (Lexer : Sig.Lexer) ->
                              struct
                               module Structure = (Structure.Make)(Lexer)
 
@@ -70,32 +70,39 @@ module Make =
                                   (Token.Filter.filter ( gram.gfilter ) ts)
                                   ))
 
-                              let parse_tokens_after_filter =
+                              let parse_origin_tokens =
                                fun (entry :
                                  'a Entry.t) ->
                                 fun ts ->
-                                 ((Entry.E.parse_tokens_after_filter entry
-                                    ts) : 'a)
+                                 ((Entry.E.parse_origin_tokens entry ts) :
+                                   'a)
 
-                              let parse_tokens_before_filter =
+                              let filter_and_parse_tokens =
                                fun entry ->
                                 fun ts ->
-                                 (parse_tokens_after_filter entry (
-                                   (filter ts) ))
+                                 (parse_origin_tokens entry ( (filter ts) ))
 
                               let parse =
                                fun entry ->
                                 fun loc ->
                                  fun cs ->
-                                  (parse_tokens_before_filter entry (
+                                  (filter_and_parse_tokens entry (
                                     (lex loc cs) ))
 
                               let parse_string =
                                fun entry ->
                                 fun loc ->
                                  fun str ->
-                                  (parse_tokens_before_filter entry (
+                                  (filter_and_parse_tokens entry (
                                     (lex_string loc str) ))
+
+                              let debug_origin_token_stream =
+                               fun entry ->
+                                fun tokens ->
+                                 (parse_origin_tokens entry (
+                                   (Stream.map (
+                                     fun t -> (t, ghost_token_info) ) tokens)
+                                   ))
 
                               let parse_string_safe =
                                fun entry ->

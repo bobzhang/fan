@@ -43,14 +43,16 @@ module Make (Lexer : Sig.Lexer)
 
   let filter ts = Tools.keep_prev_loc (Token.Filter.filter gram.gfilter ts);
 
-  let parse_tokens_after_filter (entry:Entry.t 'a) ts : 'a= Entry.E.parse_tokens_after_filter entry ts;
+  let parse_origin_tokens (entry:Entry.t 'a) ts : 'a= Entry.E.parse_origin_tokens entry ts;
 
-  let parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter ts);
+  let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
 
-  let parse entry loc cs = parse_tokens_before_filter entry (lex loc cs);
+  let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs);
 
-  let parse_string entry loc str = parse_tokens_before_filter entry (lex_string loc str);
+  let parse_string entry loc str = filter_and_parse_tokens entry (lex_string loc str);
 
+  let debug_origin_token_stream entry tokens=
+    parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);
   (* with a special exception handler *)  
   let parse_string_safe entry loc s =
     try

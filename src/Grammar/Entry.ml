@@ -65,14 +65,14 @@ module Make (Structure : Structure.S) = struct
   let filter entry ts =
     keep_prev_loc (Token.Filter.filter (get_filter entry.egram) ts);
 
-  let parse_tokens_after_filter entry ts = Action.get (action_parse entry ts);
+  let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
 
-  let parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter entry ts);
+  let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry ts);
 
-  let parse entry loc cs = parse_tokens_before_filter entry (lex entry loc cs);
+  let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs);
 
   let parse_string entry loc str =
-    parse_tokens_before_filter entry (lex_string entry loc str);
+    filter_and_parse_tokens entry (lex_string entry loc str);
 
   let of_parser g n (p : Stream.t (Token.t * token_info) -> 'a) : t 'a =
     let f ts = Action.mk (p ts) in

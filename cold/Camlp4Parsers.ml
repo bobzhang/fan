@@ -6315,7 +6315,7 @@ module MakeRevisedParser =
                                                let _ = (Gram.Entry.setup_parser
                                                          sem_expr (
                                                          let symb1 =
-                                                          (Gram.parse_tokens_after_filter
+                                                          (Gram.parse_origin_tokens
                                                             expr) in
                                                          let symb =
                                                           fun (__strm :

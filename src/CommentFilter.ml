@@ -28,10 +28,11 @@ module Make (Token : FanSig.Camlp4Token) = struct
   let filter (_, q) =
     let rec self =
       parser
-      [ [< (FanSig.COMMENT x, loc); 'xs >] ->
-            do { Queue.add (x, loc) q;
-                 debug comments "add: %S at %a@\n" x FanLoc.dump loc in
-                 self xs }
+      [ [< (FanSig.COMMENT x, loc); 'xs >] -> begin
+        Queue.add (x, loc) q;
+        debug comments "add: %S at %a@\n" x FanLoc.dump loc in
+        self xs
+      end
       | [< x; 'xs >] ->
           (* debug comments "Found %a at %a@." Token.print x FanLoc.dump loc in *)
           [< x; 'self xs >]

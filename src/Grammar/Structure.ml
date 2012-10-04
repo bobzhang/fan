@@ -1,22 +1,3 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
 open FanSig.Grammar;
 
 module type S = sig
@@ -124,11 +105,16 @@ module Make (Lexer  : Sig.Lexer) = struct
       warning_verbose : ref bool;
       error_verbose   : ref bool };
 
-  type token_info = { prev_loc : FanLoc.t
-                    ; cur_loc : FanLoc.t
-                    ; prev_loc_only : bool
-                    };
-
+  type token_info = {
+      prev_loc : FanLoc.t;
+      cur_loc : FanLoc.t ;
+      prev_loc_only : bool
+    };
+  let ghost_token_info = {
+    prev_loc=FanLoc.ghost;
+    cur_loc = FanLoc.ghost;
+    prev_loc_only = False;
+  };  
   type token_stream = Stream.t (Token.t * token_info);
 
   type efun = token_stream -> Action.t;

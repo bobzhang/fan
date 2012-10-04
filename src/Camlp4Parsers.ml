@@ -1390,7 +1390,7 @@ New syntax:\
     (fun f strm -> infix_kwds_filter (f strm));
 
   Gram.Entry.setup_parser sem_expr begin
-    let symb1 = Gram.parse_tokens_after_filter expr in
+    let symb1 = Gram.parse_origin_tokens expr in
     let symb =
       parser
       [ [< (ANTIQUOT ("list" as n) s, ti) >] ->

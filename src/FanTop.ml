@@ -30,7 +30,7 @@ let wrap parse_fun lb =
       } ];
 
 let toplevel_phrase token_stream =
-  match Gram.parse_tokens_after_filter
+  match Gram.parse_origin_tokens
       (Syntax.top_phrase : P.Gram.Entry.t (option Ast.str_item)) token_stream with
     [ Some str_item ->
         let str_item =
@@ -44,7 +44,7 @@ let use_file token_stream =
   let (pl0, eoi) =
     loop () where rec loop () =
       let (pl, stopped_at_directive) =
-        Gram.parse_tokens_after_filter Syntax.use_file token_stream
+        Gram.parse_origin_tokens Syntax.use_file token_stream
       in
       if stopped_at_directive <> None then
         match pl with
@@ -60,7 +60,7 @@ let use_file token_stream =
     else
       loop () where rec loop () =
         let (pl, stopped_at_directive) =
-          Gram.parse_tokens_after_filter Syntax.use_file token_stream
+          Gram.parse_origin_tokens Syntax.use_file token_stream
         in
         if stopped_at_directive <> None then pl @ loop () else pl
   in List.map Ast2pt.phrase (pl0 @ pl);

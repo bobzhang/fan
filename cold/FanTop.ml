@@ -81,7 +81,7 @@ let wrap =
 let toplevel_phrase =
  fun token_stream ->
   (match
-     (Gram.parse_tokens_after_filter (
+     (Gram.parse_origin_tokens (
        (Syntax.top_phrase : Ast.str_item option P.Gram.Entry.t) )
        token_stream) with
    | Some (str_item) ->
@@ -98,7 +98,7 @@ let use_file =
                                         fun ()
                                           ->
                                          let (pl, stopped_at_directive) =
-                                          (Gram.parse_tokens_after_filter
+                                          (Gram.parse_origin_tokens
                                             Syntax.use_file token_stream) in
                                          if (stopped_at_directive <> None ) then
                                           (
@@ -130,7 +130,7 @@ let use_file =
                                          fun ()
                                            ->
                                           let (pl, stopped_at_directive) =
-                                           (Gram.parse_tokens_after_filter
+                                           (Gram.parse_origin_tokens
                                              Syntax.use_file token_stream) in
                                           if (stopped_at_directive <> None ) then
                                            (

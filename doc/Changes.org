@@ -390,7 +390,8 @@ two printers
   do't =open Batteries= by default.
   For operators, define your own to enhance them.
 
-
+  bit_match
+  parser_match
 
 * Wishes
   hope to expose float_repres

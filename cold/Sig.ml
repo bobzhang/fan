@@ -648,166 +648,194 @@ module type PrinterPlugin =
 module type ParserPlugin = functor (Syn : Camlp4Syntax) -> ParserImpl
 
 
+module type Lexer =
+ sig
+  module Token : FanSig.Token
+
+  module Error : FanSig.Error
+
+  val mk :
+   (unit -> (FanLoc.t -> (char Stream.t -> (Token.t * FanLoc.t) Stream.t)))
+
+  val from_lexbuf :
+   (?quotations : bool -> (Lexing.lexbuf -> (Token.t * Location.t) Stream.t))
+
+  val from_string :
+   (?quotations : bool ->
+    (Location.t -> (string -> (Token.t * Location.t) Stream.t)))
+
+  val from_stream :
+   (?quotations : bool ->
+    (Location.t -> (char Stream.t -> (Token.t * Location.t) Stream.t)))
+
+  val mk :
+   (unit ->
+    (Location.t -> (char Stream.t -> (Token.t * Location.t) Stream.t)))
+
+  val debug_from_string : (string -> unit)
+
+  val debug_from_file : (string -> unit)
+
+ end
+
 module type LEXER =
- functor (Token : FanSig.Camlp4Token) ->
-  (FanSig.Lexer with module Token = Token)
+       functor (Token : FanSig.Camlp4Token) ->
+        (Lexer with module Token = Token)
 
 module type PRECAST =
-                                             sig
-                                              type token =
-                                               FanSig.camlp4_token
+                                            sig
+                                             type token = FanSig.camlp4_token
 
-                                              module Token :
-                                               (FanSig.Token with type  t =
-                                                FanSig.camlp4_token)
+                                             module Token :
+                                              (FanSig.Token with type  t =
+                                               FanSig.camlp4_token)
 
-                                              module Lexer :
-                                               (FanSig.Lexer with
-                                                module Token = Token)
+                                             module Lexer :
+                                              (Lexer with module Token =
+                                               Token)
 
-                                              module Gram :
-                                               (FanSig.Grammar.Static with
-                                                module Token = Token)
+                                             module Gram :
+                                              (FanSig.Grammar.Static with
+                                               module Token = Token)
 
-                                              module Syntax :
-                                               (Camlp4Syntax with
-                                                module Token = Token
-                                                and module Token = Token
-                                                and module Gram = Gram)
+                                             module Syntax :
+                                              (Camlp4Syntax with
+                                               module Token = Token
+                                               and module Token = Token
+                                               and module Gram = Gram)
 
-                                              module Printers :
-                                               sig
-                                                module OCaml : PrinterImpl
+                                             module Printers :
+                                              sig
+                                               module OCaml : PrinterImpl
 
-                                                module DumpOCamlAst :
-                                                 PrinterImpl
+                                               module DumpOCamlAst :
+                                                PrinterImpl
 
-                                                module DumpCamlp4Ast :
-                                                 PrinterImpl
+                                               module DumpCamlp4Ast :
+                                                PrinterImpl
 
-                                                module Null : PrinterImpl
+                                               module Null : PrinterImpl
 
-                                               end
+                                              end
 
-                                              type 'a parser_fun =
-                                               (?directive_handler :
-                                                ('a -> 'a option) ->
-                                                (FanLoc.t ->
-                                                 (char Stream.t -> 'a)))
+                                             type 'a parser_fun =
+                                              (?directive_handler :
+                                               ('a -> 'a option) ->
+                                               (FanLoc.t ->
+                                                (char Stream.t -> 'a)))
 
-                                              type 'a printer_fun =
-                                               (?input_file : string ->
-                                                (?output_file : string ->
-                                                 ('a -> unit)))
+                                             type 'a printer_fun =
+                                              (?input_file : string ->
+                                               (?output_file : string ->
+                                                ('a -> unit)))
 
-                                              val loaded_modules :
-                                               string list ref
+                                             val loaded_modules :
+                                              string list ref
 
-                                              val iter_and_take_callbacks :
-                                               (((string * (unit -> unit)) ->
-                                                 unit) -> unit)
+                                             val iter_and_take_callbacks :
+                                              (((string * (unit -> unit)) ->
+                                                unit) -> unit)
 
-                                              val register_str_item_parser :
-                                               (Ast.str_item parser_fun ->
-                                                unit)
+                                             val register_str_item_parser :
+                                              (Ast.str_item parser_fun ->
+                                               unit)
 
-                                              val register_sig_item_parser :
+                                             val register_sig_item_parser :
+                                              (Ast.sig_item parser_fun ->
+                                               unit)
+
+                                             val register_parser :
+                                              (Ast.str_item parser_fun ->
                                                (Ast.sig_item parser_fun ->
-                                                unit)
+                                                unit))
 
-                                              val register_parser :
-                                               (Ast.str_item parser_fun ->
-                                                (Ast.sig_item parser_fun ->
-                                                 unit))
+                                             val current_parser :
+                                              (unit ->
+                                               (Ast.str_item parser_fun *
+                                                Ast.sig_item parser_fun))
 
-                                              val current_parser :
-                                               (unit ->
-                                                (Ast.str_item parser_fun *
-                                                 Ast.sig_item parser_fun))
+                                             val plugin :
+                                              ((module Id ) ->
+                                               ((module PLUGIN ) -> unit))
 
-                                              val plugin :
-                                               ((module Id ) ->
-                                                ((module PLUGIN ) -> unit))
+                                             val syntax_plugin :
+                                              ((module Id ) ->
+                                               ((module SyntaxPlugin 
+                                                ) -> unit))
 
-                                              val syntax_plugin :
-                                               ((module Id ) ->
-                                                ((module SyntaxPlugin 
-                                                 ) -> unit))
+                                             val syntax_extension :
+                                              ((module Id ) ->
+                                               ((module SyntaxExtension 
+                                                ) -> unit))
 
-                                              val syntax_extension :
-                                               ((module Id ) ->
-                                                ((module SyntaxExtension 
-                                                 ) -> unit))
+                                             val printer_plugin :
+                                              ((module Id ) ->
+                                               ((module PrinterPlugin 
+                                                ) -> unit))
 
-                                              val printer_plugin :
-                                               ((module Id ) ->
-                                                ((module PrinterPlugin 
-                                                 ) -> unit))
+                                             val replace_printer :
+                                              ((module Id ) ->
+                                               ((module PrinterImpl ) ->
+                                                unit))
 
-                                              val replace_printer :
-                                               ((module Id ) ->
-                                                ((module PrinterImpl 
-                                                 ) -> unit))
+                                             val replace_parser :
+                                              ((module Id ) ->
+                                               ((module ParserImpl ) -> unit))
 
-                                              val replace_parser :
-                                               ((module Id ) ->
-                                                ((module ParserImpl ) ->
-                                                 unit))
+                                             val parser_plugin :
+                                              ((module Id ) ->
+                                               ((module ParserPlugin 
+                                                ) -> unit))
 
-                                              val parser_plugin :
-                                               ((module Id ) ->
-                                                ((module ParserPlugin 
-                                                 ) -> unit))
+                                             val enable_ocaml_printer :
+                                              (unit -> unit)
 
-                                              val enable_ocaml_printer :
-                                               (unit -> unit)
+                                             val enable_dump_ocaml_ast_printer :
+                                              (unit -> unit)
 
-                                              val enable_dump_ocaml_ast_printer :
-                                               (unit -> unit)
+                                             val enable_dump_camlp4_ast_printer :
+                                              (unit -> unit)
 
-                                              val enable_dump_camlp4_ast_printer :
-                                               (unit -> unit)
+                                             val enable_null_printer :
+                                              (unit -> unit)
 
-                                              val enable_null_printer :
-                                               (unit -> unit)
+                                             val enable_auto :
+                                              ((unit -> bool) -> unit)
 
-                                              val enable_auto :
-                                               ((unit -> bool) -> unit)
+                                             val register_str_item_printer :
+                                              (Ast.str_item printer_fun ->
+                                               unit)
 
-                                              val register_str_item_printer :
-                                               (Ast.str_item printer_fun ->
-                                                unit)
+                                             val register_sig_item_printer :
+                                              (Ast.sig_item printer_fun ->
+                                               unit)
 
-                                              val register_sig_item_printer :
+                                             val register_printer :
+                                              (Ast.str_item printer_fun ->
                                                (Ast.sig_item printer_fun ->
-                                                unit)
+                                                unit))
 
-                                              val register_printer :
-                                               (Ast.str_item printer_fun ->
-                                                (Ast.sig_item printer_fun ->
-                                                 unit))
+                                             val current_printer :
+                                              (unit ->
+                                               (Ast.str_item printer_fun *
+                                                Ast.sig_item printer_fun))
 
-                                              val current_printer :
-                                               (unit ->
-                                                (Ast.str_item printer_fun *
-                                                 Ast.sig_item printer_fun))
+                                             val declare_dyn_module :
+                                              (string ->
+                                               ((unit -> unit) -> unit))
 
-                                              val declare_dyn_module :
-                                               (string ->
-                                                ((unit -> unit) -> unit))
+                                             module CurrentParser :
+                                              ParserImpl
 
-                                              module CurrentParser :
-                                               ParserImpl
+                                             module CurrentPrinter :
+                                              PrinterImpl
 
-                                              module CurrentPrinter :
-                                               PrinterImpl
-
-                                             end
+                                            end
 
 module type PRECAST_PLUGIN =
-                                                   sig
-                                                    val apply :
-                                                     ((module PRECAST 
-                                                      ) -> unit)
+                                                  sig
+                                                   val apply :
+                                                    ((module PRECAST 
+                                                     ) -> unit)
 
-                                                   end
+                                                  end

@@ -333,11 +333,11 @@ module Grammar =
         val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
           
         (** Parse a token stream that is not filtered yet. *)
-        val parse_tokens_before_filter :
+        val filter_and_parse_tokens :
           'a Entry.t -> (Token.t * FanLoc.t) Stream.t (* not_filtered*) -> 'a
           
         (** Parse a token stream that is already filtered. *)
-        val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a
+        val parse_origin_tokens : 'a Entry.t -> token_stream -> 'a
           
       end
       
@@ -423,12 +423,12 @@ module Grammar =
         (** Same as {!parse} but from a string. *)
         val parse_string : 'a Entry.t -> FanLoc.t -> string -> 'a
           
-        (** Parse a token stream that is not filtered yet. *)
-        val parse_tokens_before_filter :
+        (** filter a token stream then parse it. *)
+        val filter_and_parse_tokens:
           'a Entry.t -> (Token.t * FanLoc.t) Stream.t  -> 'a
           
         (** Parse a token stream that is already filtered. *)
-        val parse_tokens_after_filter : 'a Entry.t -> token_stream -> 'a
+        val parse_origin_tokens : 'a Entry.t -> token_stream -> 'a
           
       end
       

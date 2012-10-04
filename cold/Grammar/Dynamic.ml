@@ -1,5 +1,5 @@
 module Make =
- functor (Lexer : FanSig.Lexer) ->
+ functor (Lexer : Sig.Lexer) ->
   struct
    module Structure = (Structure.Make)(Lexer)
 
@@ -36,26 +36,25 @@ module Make =
      fun ts ->
       (Tools.keep_prev_loc ( (Token.Filter.filter ( g.gfilter ) ts) ))
 
-   let parse_tokens_after_filter =
-    fun entry -> fun ts -> (Entry.parse_tokens_after_filter entry ts)
+   let parse_origin_tokens =
+    fun entry -> fun ts -> (Entry.parse_origin_tokens entry ts)
 
-   let parse_tokens_before_filter =
+   let filter_and_parse_tokens =
     fun entry ->
-     fun ts ->
-      (parse_tokens_after_filter entry ( (filter ( entry.egram ) ts) ))
+     fun ts -> (parse_origin_tokens entry ( (filter ( entry.egram ) ts) ))
 
    let parse =
     fun entry ->
      fun loc ->
       fun cs ->
-       (parse_tokens_before_filter entry ( (lex ( entry.egram ) loc cs) ))
+       (filter_and_parse_tokens entry ( (lex ( entry.egram ) loc cs) ))
 
    let parse_string =
     fun entry ->
      fun loc ->
       fun str ->
-       (parse_tokens_before_filter entry (
-         (lex_string ( entry.egram ) loc str) ))
+       (filter_and_parse_tokens entry ( (lex_string ( entry.egram ) loc str)
+         ))
 
    let delete_rule = Delete.delete_rule
 

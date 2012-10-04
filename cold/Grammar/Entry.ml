@@ -62,23 +62,22 @@ module Make =
       (keep_prev_loc (
         (Token.Filter.filter ( (get_filter ( entry.egram )) ) ts) ))
 
-   let parse_tokens_after_filter =
+   let parse_origin_tokens =
     fun entry -> fun ts -> (Action.get ( (action_parse entry ts) ))
 
-   let parse_tokens_before_filter =
-    fun entry ->
-     fun ts -> (parse_tokens_after_filter entry ( (filter entry ts) ))
+   let filter_and_parse_tokens =
+    fun entry -> fun ts -> (parse_origin_tokens entry ( (filter entry ts) ))
 
    let parse =
     fun entry ->
      fun loc ->
-      fun cs -> (parse_tokens_before_filter entry ( (lex entry loc cs) ))
+      fun cs -> (filter_and_parse_tokens entry ( (lex entry loc cs) ))
 
    let parse_string =
     fun entry ->
      fun loc ->
       fun str ->
-       (parse_tokens_before_filter entry ( (lex_string entry loc str) ))
+       (filter_and_parse_tokens entry ( (lex_string entry loc str) ))
 
    let of_parser =
     fun g ->

@@ -1,21 +1,3 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
 module Make (Lexer : Sig.Lexer)
 = struct
   module Structure = Structure.Make Lexer;
@@ -45,14 +27,14 @@ module Make (Lexer : Sig.Lexer)
 
   let filter g ts = Tools.keep_prev_loc (Token.Filter.filter g.gfilter ts);
 
-  let parse_tokens_after_filter entry ts = Entry.parse_tokens_after_filter entry ts;
+  let parse_origin_tokens entry ts = Entry.parse_origin_tokens entry ts;
 
-  let parse_tokens_before_filter entry ts = parse_tokens_after_filter entry (filter entry.egram ts);
+  let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry.egram ts);
 
-  let parse entry loc cs = parse_tokens_before_filter entry (lex entry.egram loc cs);
+  let parse entry loc cs = filter_and_parse_tokens entry (lex entry.egram loc cs);
 
   let parse_string entry loc str =
-    parse_tokens_before_filter entry (lex_string entry.egram loc str);
+    filter_and_parse_tokens entry (lex_string entry.egram loc str);
 
   let delete_rule = Delete.delete_rule;
 
