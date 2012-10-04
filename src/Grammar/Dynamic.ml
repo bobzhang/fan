@@ -16,7 +16,7 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-module Make (Lexer : FanSig.Lexer)
+module Make (Lexer : Sig.Lexer)
 = struct
   module Structure = Structure.Make Lexer;
   module Delete    = Delete.Make    Structure;

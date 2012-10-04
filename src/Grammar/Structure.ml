@@ -22,7 +22,7 @@ open FanSig.Grammar;
 module type S = sig
 
   module Token        : FanSig.Token; 
-  module Lexer        : FanSig.Lexer  with  module Token = Token;
+  module Lexer        : Sig.Lexer  with  module Token = Token;
   module Action       : FanSig.Grammar.Action;
 
   type gram =
@@ -106,7 +106,7 @@ module type S = sig
 end;
 
 
-module Make (Lexer  : FanSig.Lexer) = struct
+module Make (Lexer  : Sig.Lexer) = struct
   module Token = Lexer.Token;
   module Action : FanSig.Grammar.Action = struct
     type  t     = Obj.t   ;

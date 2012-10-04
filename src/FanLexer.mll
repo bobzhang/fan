@@ -1,8 +1,5 @@
 (* The lexer definition *)
 
-(* Know bugs:
-   quotation doesnot handle comment
- *)
 
 {
 

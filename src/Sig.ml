@@ -230,14 +230,43 @@ module type PrinterPlugin = functor (Syn:Camlp4Syntax) -> PrinterImpl;
 module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
 (* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 
+
+module type Lexer = sig
+    module Token : FanSig.Token ;
+    module Error : FanSig.Error;
+    (** The constructor for a lexing function. The character stream is the input
+      stream to be lexed. The result is a stream of pairs of a token and
+      a location.
+      The lexer do not use global (mutable) variables: instantiations
+      of [Lexer.mk ()] do not perturb each other. *)
+    val mk : unit -> FanLoc.t ->  Stream.t char ->  Stream.t (Token.t *  FanLoc.t);
+    val from_lexbuf:?quotations:bool ->
+      Lexing.lexbuf ->  Stream.t (Token.t*  Location.t);
+    val from_string :
+        ?quotations:bool ->
+        Location.t -> string -> Stream.t (Token.t * Location.t);
+    val from_stream :
+        ?quotations:bool ->
+          Location.t ->
+             Stream.t char ->  Stream.t (Token.t *  Location.t);
+    val mk :
+        unit ->
+        Location.t ->
+         Stream.t char -> Stream.t (Token.t*  Location.t) ;
+    val debug_from_string : string -> unit;
+    val debug_from_file : string -> unit;
+        
+  end;
+  
+
 module type LEXER =  functor (Token: FanSig.Camlp4Token)
-  -> FanSig.Lexer with  module Token = Token;
+  -> Lexer with  module Token = Token;
 
 module type PRECAST = sig
   type token = FanSig.camlp4_token ;
   module Token      : FanSig.Token  with 
                       type t = FanSig.camlp4_token;
-  module Lexer      : FanSig.Lexer  with 
+  module Lexer      : Lexer  with 
                       module Token = Token;
   module Gram       : FanSig.Grammar.Static  with
                       module Token = Token;

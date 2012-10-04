@@ -441,23 +441,6 @@ module Grammar =
 
 
 (** A signature for lexers. *)
-module type Lexer =
-  sig
-    (* module FanLoc : FanLoc *)
-      
-    module Token : Token (* with module FanLoc = FanLoc *)
-      
-    module Error : Error
-      
-    (** The constructor for a lexing function. The character stream is the input
-      stream to be lexed. The result is a stream of pairs of a token and
-      a location.
-      The lexer do not use global (mutable) variables: instantiations
-      of [Lexer.mk ()] do not perturb each other. *)
-    val mk : unit -> FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t
-    val from_lexbuf:?quotations:bool ->
-      Lexing.lexbuf -> (camlp4_token * Location.t) Stream.t    
-  end
   
 
 
