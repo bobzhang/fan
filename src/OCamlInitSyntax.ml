@@ -174,8 +174,6 @@ module Gram = Gram =   struct
   let typevars = Gram.Entry.mk "typevars";
   let use_file = Gram.Entry.mk "use_file";
   let val_longident = Gram.Entry.mk "val_longident";
-  (* let value_let = Gram.Entry.mk "value_let"; *)
-  (* let value_val = Gram.Entry.mk "value_val"; *)
   let with_constr = Gram.Entry.mk "with_constr";
   let expr_quot = Gram.Entry.mk "quotation of expression";
   let patt_quot = Gram.Entry.mk "quotation of pattern";

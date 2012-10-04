@@ -156,6 +156,37 @@ module type DynLoader =
   end
   
 
+module type SEntry =           sig
+            (** The abstract type of grammar entries. The type parameter is the type
+          of the semantic actions that are associated with this entry. *)
+            type 'a t
+            type token_stream   (* := *)
+            type internal_entry (* := *)
+            (** Make a new entry from the given name. *)
+            val mk : string -> 'a t
+              
+            (** Make a new entry from a name and an hand made token parser. *)
+            val of_parser : string -> (token_stream -> 'a) -> 'a t
+              
+            (** Clear the entry and setup this parser instead. *)
+            val setup_parser : 'a t -> (token_stream -> 'a) -> unit
+              
+            (** Get the entry name. *)
+            val name : 'a t -> string
+              
+            (** Print the given entry into the given formatter. *)
+            val print : Format.formatter -> 'a t -> unit
+              
+            (** Same as {!print} but show the left-factorization. *)
+            val dump : Format.formatter -> 'a t -> unit
+              
+            (**/**)
+            val obj : 'a t -> internal_entry
+              
+            val clear : 'a t -> unit
+              
+          end
+        
 
 
 
@@ -353,38 +384,14 @@ module Grammar =
           
         val gram : gram
           
-        module Entry :
-          sig
-            (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
-            type 'a t
-            
-            (** Make a new entry from the given name. *)
-            val mk : string -> 'a t
-              
-            (** Make a new entry from a name and an hand made token parser. *)
-            val of_parser : string -> (token_stream -> 'a) -> 'a t
-              
-            (** Clear the entry and setup this parser instead. *)
-            val setup_parser : 'a t -> (token_stream -> 'a) -> unit
-              
-            (** Get the entry name. *)
-            val name : 'a t -> string
-              
-            (** Print the given entry into the given formatter. *)
-            val print : Format.formatter -> 'a t -> unit
-              
-            (** Same as {!print} but show the left-factorization. *)
-            val dump : Format.formatter -> 'a t -> unit
-              
-            (**/**)
-            val obj : 'a t -> internal_entry
-              
-            val clear : 'a t -> unit
-              
-          end
-          
+        module Entry : SEntry with
+        type token_stream := token_stream and
+        type internal_entry := internal_entry
         (**/**)
+        include SEntry with
+        type token_stream := token_stream and
+        type internal_entry := internal_entry
+            
         (** Get the {!Token.Filter} associated to the grammar module. *)
         val get_filter : unit -> Token.Filter.t
           

@@ -33,6 +33,7 @@ module Make (Lexer : Sig.Lexer)
 
     let obj x = x;
   end;
+  include Entry;  
   let trace_parser = Entry.E.trace_parser;
     
   let get_filter () = gram.gfilter;
