@@ -210,10 +210,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   let meta_action = ref False;
 
-  let rec make_ctyp ?(gm="Gram") styp tvar =
-    match styp with
+  let  make_ctyp ?(gm="Gram") styp tvar =
+    let rec aux  = fun  
     [ STlid _loc s -> <:ctyp< $lid:s >>
-    | STapp _loc t1 t2 -> <:ctyp< $(make_ctyp t1 tvar) $(make_ctyp t2 tvar) >>
+    | STapp _loc t1 t2 -> <:ctyp< $(aux t1) $(aux t2 ) >>
     | STquo _loc s -> <:ctyp< '$s >>
     | STself _loc x ->
         if tvar = "" then
@@ -222,7 +222,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         else <:ctyp< '$tvar >>
     | STtok _loc -> <:ctyp< $uid:gm.token >> (*FIXME*)
     | STstring_tok _loc -> <:ctyp< string >>
-    | STtyp t -> t ] ;
+    | STtyp t -> t ] in aux styp ;
 
   (*
     {[
@@ -298,8 +298,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
               let p = make_ctyp_patt s.styp tvar
                         <:patt< $(lid:"__camlp4_"^string_of_int i) >> in
               (<:expr< fun $p -> $txt >>, succ i) ])
-        (e, 0) psl
-    in
+        (e, 0) psl in
     let txt =
       if !meta_action then
         <:expr< Obj.magic $(MetaAst.Expr.meta_expr _loc txt) >>
@@ -314,8 +313,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         let sl = [ s.text | s <- r.prod ] in
         let ac = text_of_action loc r.prod t r.action tvar in
         (sl, ac))
-      rl
-  ;
+      rl ;
 
   let rec make_expr ?(gm="Gram")entry tvar =
     fun
