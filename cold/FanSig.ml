@@ -211,8 +211,13 @@ module type DEntry = sig
   val of_parser : gram -> string -> (token_stream -> 'a) -> 'a t
 end
 
-module Grammar =
-  struct
+
+
+type assoc =
+    [ `NA|`RA|`LA]
+type position =
+    [ `First | `Last | `Before of string | `After of string | `Level of string]
+module Grammar = struct
     (** Internal signature for sematantic actions of grammars,
       not for the casual user. These functions are unsafe. *)
     module type Action = sig

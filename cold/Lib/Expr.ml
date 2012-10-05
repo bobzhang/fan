@@ -2,22 +2,22 @@ open Camlp4Ast
 
 open FanUtil
 
-let rec sep_expr_acc =
-                               fun l ->
+let rec sep_expr =
+                               fun acc ->
                                 function
                                 | Ast.ExAcc (_, e1, e2) ->
-                                   (sep_expr_acc ( (sep_expr_acc l e2) ) e1)
+                                   (sep_expr ( (sep_expr acc e2) ) e1)
                                 | (Ast.ExId (loc, Ast.IdUid (_, s)) as e) ->
-                                   (match l with
+                                   (match acc with
                                     | [] -> [(loc, [] , e)]
                                     | ((loc', sl, e) :: l) ->
                                        (
                                         (( (FanLoc.merge loc loc') ), (
                                          ( s ) :: sl  ), e) ) :: l )
                                 | Ast.ExId (_, (Ast.IdAcc (_, _, _) as i)) ->
-                                   (sep_expr_acc l ( (Ident.normalize_acc i)
-                                     ))
-                                | e -> ( (( (loc_of_expr e) ), [] , e) ) :: l 
+                                   (sep_expr acc ( (Ident.normalize_acc i) ))
+                                | e ->
+                                   ( (( (loc_of_expr e) ), [] , e) ) :: acc 
 
 
 let rec fa =

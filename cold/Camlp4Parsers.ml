@@ -1461,7 +1461,12 @@ and ('e, 'p) symbol = {
                ->
               (None , (
                [(None , None , (
-                 [((
+                 [([] , (
+                   (Gram.mk_action (
+                     fun (_loc :
+                       FanLoc.t) ->
+                      ((None , ( (gm () ) )) : 'extend_header) )) ));
+                  ((
                    [(
                     (Gram.Snterm
                       (Gram.obj ( (qualuid : 'qualuid Gram.t) ))) )] ), (

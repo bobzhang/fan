@@ -595,8 +595,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ n = name; ":"; pos = OPT position; ll = level_list ->
             {name = n; pos = pos; levels = ll} ] ]
     position:
-      [ [ `UIDENT ("First"|"Last" as x ) -> <:expr< FanSig.Grammar.$uid:x >>
-        | `UIDENT ("Before" | "After" | "Level" as x) ; n = string -> <:expr< FanSig.Grammar.$uid:x $n >>
+      [ [ `UIDENT ("First"|"Last" as x ) ->
+         <:expr< `$uid:x >>
+        (* <:expr< FanSig.Grammar.$uid:x >> *)
+        | `UIDENT ("Before" | "After" | "Level" as x) ; n = string ->
+            <:expr< ` $uid:x  $n >> (*FIXME string escape?*)
+            (* <:expr< FanSig.Grammar.$uid:x $n >> *)
         ] ]
     level_list:
       [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
@@ -605,7 +609,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             {label = lab; assoc = ass; rules = rules} ] ]
     assoc:
       [
-       [ `UIDENT ("LA"|"RA"|"NA" as x) -> <:expr< FanSig.Grammar.$uid:x >>
+       [ `UIDENT ("LA"|"RA"|"NA" as x) ->
+         <:expr< `$uid:x >> 
+         (* <:expr< FanSig.Grammar.$uid:x >> *)
        | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x 
       ] ]
     rule_list:
