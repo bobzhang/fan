@@ -17,6 +17,19 @@ let _ = begin
   Hashtbl.replace Toploop.directive_table "pwd"
     (Toploop.Directive_none (fun () -> prerr_endline (Sys.getcwd ())))
 end
+
+let _ = begin
+
+  Hashtbl.replace Toploop.directive_table "useo"
+    (Toploop.Directive_string (fun file ->
+      let old = !Toploop.parse_use_file in
+      let () = Toploop.parse_use_file:=Parse.use_file in
+      let () = try
+        ignore(Toploop.use_file Format.std_formatter file)
+      with
+        exn -> begin Toploop.parse_use_file := old; raise exn end in 
+      Toploop.parse_use_file := old))
+end
 let (|-) f g x = g (f x );;
     
 let interface_of_string =

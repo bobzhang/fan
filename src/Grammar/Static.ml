@@ -63,10 +63,10 @@ module Make (Lexer : Sig.Lexer)
   let extend = Insert.extend;
   (* let eoi_entry entry = *)
   (*   let entry_eoi = Entry.(mk (name entry ^ "_eoi")) in *)
-    (* let () = EXTEND Gram entry_eoi: *)
-    (*   [[ x = entry; `EOI -> x ]] *)
-    (*   END in *)
-    (* entry_eoi; *)
+  (*   let () = EXTEND  entry_eoi: *)
+  (*     [[ x = entry; `EOI -> x ]] *)
+  (*     END in *)
+  (*   entry_eoi; *)
 
 end;
 

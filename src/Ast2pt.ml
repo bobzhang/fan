@@ -500,7 +500,7 @@ let override_flag loc = fun
 let rec expr = fun (* expr -> expression*)
   [ ExAcc loc _ _ | <:expr@loc< $(id:<:ident< $_ . $_ >>) >> as e ->
     let (e, l) =
-      match Expr.sep_expr_acc [] e with
+      match Expr.sep_expr [] e with
       [ [(loc, ml, <:expr@sloc< $uid:s >>) :: l] ->
         let ca = constructors_arity () in
         (mkexp loc (Pexp_construct (mkli sloc (conv_con s) ml) None ca), l)

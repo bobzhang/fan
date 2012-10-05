@@ -3,42 +3,42 @@ open FanUtil;
 
 (*
   {[
-  sep_expr_acc <:expr< A.B.g.h >>
-
-  [(, ["A"; "B"], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "g")));
-  (, [], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "h")))]
+  
+  sep_expr [] <:expr< A.B.g.h>>; ;
+  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")))]
 
   The first two dots are IdAcc, the last dot is ExAcc
 
-  sep_expr_acc <:expr< A.B.g.h + 3 >>
-
+  sep_expr [] <:expr< A.B.g.h + 3 >>
   [(, [],
-  Camlp4Ast.Ast.ExApp (,
-   Camlp4Ast.Ast.ExApp (, Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "+")),
-    Camlp4Ast.Ast.ExAcc (,
-     Camlp4Ast.Ast.ExId (,
-      Camlp4Ast.Ast.IdAcc (, Camlp4Ast.Ast.IdUid (, "A"),
-       Camlp4Ast.Ast.IdAcc (, Camlp4Ast.Ast.IdUid (, "B"),
-        Camlp4Ast.Ast.IdLid (, "g")))),
-     Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "h")))),
-   Camlp4Ast.Ast.ExInt (, "3")))]
+  ExApp (,
+   ExApp (, ExId (, IdLid (, "+")),
+    ExAcc (,
+     ExId (, IdAcc (, IdUid (, "A"), IdAcc (, IdUid (, "B"), IdLid (, "g")))),
+     ExId (, IdLid (, "h")))),
+   ExInt (, "3")))]
 
-  sep_expr_acc <:expr< A.B.g.h.i>>
-  [(, ["A"; "B"], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "g")));
-  (, [], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "h")));
-  (, [], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "i")))]
+
+  sep_expr [] <:expr< A.B.g.h.i>>; ;
+  [(, ["A"; "B"], ExId (, IdLid (, "g"))); (, [], ExId (, IdLid (, "h")));
+  (, [], ExId (, IdLid (, "i")))]
+
+  sep_expr [] <:expr< $(uid:"").t >> ; ;
+  - : (Camlp4Ast.Ast.loc * string list * Camlp4Ast.Ast.expr) list =
+  [(, [""], Camlp4Ast.Ast.ExId (, Camlp4Ast.Ast.IdLid (, "t")))]
+
   ]}
  *)
-let rec sep_expr_acc l = fun
+let rec sep_expr acc = fun
   [ <:expr< $e1.$e2>> ->
-    sep_expr_acc (sep_expr_acc l e2) e1
+    sep_expr (sep_expr acc e2) e1
   | <:expr@loc< $uid:s >> as e ->
-      match l with
+      match acc with
       [ [] -> [(loc, [], e)]
       | [(loc', sl, e) :: l] -> [(FanLoc.merge loc loc', [s :: sl], e) :: l] ]
   | <:expr< $(id:(<:ident< $_.$_ >> as i)) >> ->
-      sep_expr_acc l (Ident.normalize_acc i)
-  | e -> [(loc_of_expr e, [], e) :: l] ];
+      sep_expr acc (Ident.normalize_acc i)
+  | e -> [(loc_of_expr e, [], e) :: acc] ];
 
 
 let rec fa al = fun

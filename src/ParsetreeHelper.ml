@@ -52,9 +52,9 @@ let array_function loc str name = with_loc (array_function_no_loc str name) loc;
   {[
   mkli FanLoc.ghost "a" ["b";"c";"d"];;
   - : Longident.t Location.loc =
-  {Location.txt =
-  Longident.Ldot
-  (Longident.Ldot (Longident.Ldot (Longident.Lident "b", "c"), "d"), "a");
+  {txt =
+  Ldot
+  (Ldot (Ldot (Lident "b", "c"), "d"), "a");
   loc = }
   ]}
   FIXME performance problem  
@@ -66,7 +66,7 @@ let mkli sloc s (list: list string) =
     | [ x;y::z ] ->
         List.fold_left ldot (ldot (lident x ) y) (z@[s])
     ] in
-  with_loc (aux list) sloc ;
+  with_loc (aux (List.filter (fun s -> s<>"") list)) sloc ;
 
 
 let varify_constructors var_names = (* string list -> Parsetree.core_type -> Parsetree.core_type *)
