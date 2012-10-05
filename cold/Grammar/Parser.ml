@@ -9,8 +9,6 @@ module Make =
 
    open Structure
 
-   open FanSig.Grammar
-
    module StreamOrig = Stream
 
    let njunk =

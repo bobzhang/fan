@@ -75,6 +75,13 @@ module Make =
                                      fun t -> (t, ghost_token_info) ) tokens)
                                    ))
 
+                              let debug_filtered_token_stream =
+                               fun entry ->
+                                fun tokens ->
+                                 (filter_and_parse_tokens entry (
+                                   (Stream.map ( fun t -> (t, FanLoc.ghost) )
+                                     tokens) ))
+
                               let parse_string_safe =
                                fun entry ->
                                 fun loc ->

@@ -292,6 +292,54 @@ module Stream =
 
                                               include Stream
 
+                                              let rev =
+                                               fun strm ->
+                                                let rec aux =
+                                                 fun (__strm :
+                                                   _ Stream.t) ->
+                                                  (match
+                                                     (Stream.peek __strm) with
+                                                   | Some (x) ->
+                                                      (
+                                                      (Stream.junk __strm)
+                                                      );
+                                                      let xs = __strm in
+                                                      (Stream.lapp (
+                                                        fun _ -> (aux xs) ) (
+                                                        (Stream.ising x) ))
+                                                   | _ -> Stream.sempty) in
+                                                (aux strm)
+
+                                              let tail =
+                                               fun (__strm :
+                                                 _ Stream.t) ->
+                                                (match
+                                                   (Stream.peek __strm) with
+                                                 | Some (_) ->
+                                                    (
+                                                    (Stream.junk __strm)
+                                                    );
+                                                    __strm
+                                                 | _ -> Stream.sempty)
+
+                                              let rec map =
+                                               fun f ->
+                                                fun (__strm :
+                                                  _ Stream.t) ->
+                                                 (match
+                                                    (Stream.peek __strm) with
+                                                  | Some (x) ->
+                                                     (
+                                                     (Stream.junk __strm)
+                                                     );
+                                                     let xs = __strm in
+                                                     (Stream.lcons (
+                                                       fun _ -> (f x) ) (
+                                                       (Stream.slazy (
+                                                         fun _ -> (map f xs)
+                                                         )) ))
+                                                  | _ -> Stream.sempty)
+
                                              end
 
 module ErrorMonad =
