@@ -591,6 +591,9 @@ module Default = struct
                                         A"-annot";
                                         A"-w";
                                         A"+a-4-32";
+                                        A"-unsafe";
+                                        A"-inline";
+                                        A"100";
                                         (* A"-4"; *)
                                         (* A "-warn-error"; *)
                                         (* A "A" *)

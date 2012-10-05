@@ -201,6 +201,8 @@ module type SEntry = sig
   val parse_origin_tokens : 'a t -> token_stream -> 'a
   val mk_action: 'a->action  (*Action.mk*)
   val string_of_token:token -> string     (* Token.extract_string*)
+  val debug_origin_token_stream: 'a t ->  token Stream.t  -> 'a
+  val debug_filtered_token_stream: 'a t ->  token Stream.t  -> 'a
 end
 module type DEntry = sig
   include SEntry
@@ -227,9 +229,6 @@ module Grammar = struct
         val getf : t -> 'a -> 'b
         val getf2 : t -> 'a -> 'b -> 'c
       end
-    (* type assoc = | NA | RA | LA *)
-    (* type position = *)
-    (*   | First | Last | Before of string | After of string | Level of string *)
     module type Structure =  sig
         module Action : Action
         module Token : Token 

@@ -29,6 +29,8 @@ module Make (Lexer : Sig.Lexer)
   let parse_string entry loc str = filter_and_parse_tokens entry (lex_string loc str);
   let debug_origin_token_stream entry tokens=
     parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);
+  let debug_filtered_token_stream entry tokens =
+    filter_and_parse_tokens entry (Stream.map (fun t -> (t,FanLoc.ghost)) tokens);
   (* with a special exception handler *)  
   let parse_string_safe entry loc s =
     try

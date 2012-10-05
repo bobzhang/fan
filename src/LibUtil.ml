@@ -148,6 +148,22 @@ end;
 module Stream = struct
   include BatStream;
   include Stream;
+  let rev strm=
+    let rec aux = parser
+    [ [< x ; 'xs>] -> [< 'aux xs ; x >]
+    | [< >] -> [< >] ] in
+    aux strm;
+  let tail = parser
+    [ [< _; 'xs >] -> [< 'xs >]
+    | [< >] -> [<>]];
+  let rec map f = parser
+    [ [< x; 'xs >] -> [< f x; 'map f xs >]
+    | [< >] -> [< >] ];
+   (* let rec filter f = parser *)
+   (*  [ [< x; 'xs>] -> [<>]]    *)
+  (* value rec map f = parser *)
+  (*   [ [: `x; xs :] -> [: `f x ; map f xs :] *)
+  (*   | [: :] -> [: :] ];   *)
 end;
 (* ugly module, removed it later *)  
 module ErrorMonad = struct     

@@ -3,41 +3,35 @@
 module P = MakePreCast.Make FanLexer.Make ;
 open P;
 open FanSig;  
-(* external not_filtered : 'a -> Gram.not_filtered 'a = "%identity"; *)
-
-let wrap parse_fun lb =
-  let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
-  let not_filtered_token_stream = Lexer.from_lexbuf lb in
-  let token_stream = Gram.filter  not_filtered_token_stream in
-  try
-    match token_stream with parser
-    [ [< (EOI, _) >] -> raise End_of_file
-    | [< >] -> parse_fun token_stream ]
-  with
-  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
+  let wrap parse_fun lb =
+    let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
+    let not_filtered_token_stream = Lexer.from_lexbuf lb in
+    let token_stream = Gram.filter  not_filtered_token_stream in
+    try  match token_stream with parser
+      [ [< (EOI, _) >] -> raise End_of_file
+      | [< >] -> parse_fun token_stream ]
+    with
+    [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
         as x -> raise x
-  | x ->
-      let x =
-        match x with
-        [ FanLoc.Exc_located loc x -> do {
-            Toploop.print_location Format.err_formatter loc;
-            x }
-        | x -> x ]
-      in
-      do {
-        Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print x;
-        raise Exit
-      } ];
+    | x ->
+        let x =
+          match x with
+         [ FanLoc.Exc_located loc x -> begin
+              Toploop.print_location Format.err_formatter loc;
+              x
+            end
+          | x -> x ] in begin
+              Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print x;
+              raise Exit
+          end ];
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens
       (Syntax.top_phrase : P.Gram.t (option Ast.str_item)) token_stream with
     [ Some str_item ->
         let str_item =
-          Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item
-        in
+          Syntax.AstFilters.fold_topphrase_filters (fun t filter -> filter t) str_item in
         Ast2pt.phrase str_item
-
     | None -> raise End_of_file ];
 
 let use_file token_stream =
