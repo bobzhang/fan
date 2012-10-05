@@ -1,4 +1,4 @@
-open FanSig.Grammar;
+open FanSig;
 
 module type S = sig
 
@@ -35,7 +35,7 @@ module type S = sig
     [ Dlevels of list level
     | Dparser of token_stream -> Action.t ]
   and level =
-    { assoc   : assoc         ;
+    { assoc   : FanSig.assoc         ;
       lname   : option string ;
       lsuffix : tree          ;
       lprefix : tree          }
@@ -65,9 +65,9 @@ module type S = sig
 
   type production_rule = (list symbol * Action.t);
   type single_extend_statment =
-    (option string * option assoc * list production_rule);
+    (option string * option FanSig.assoc * list production_rule);
   type extend_statment =
-    (option position * list single_extend_statment);
+    (option FanSig.position * list single_extend_statment);
   type delete_statment = list symbol;
   type token = Token.t;
   type fold 'a 'b 'c =

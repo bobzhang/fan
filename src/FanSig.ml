@@ -227,9 +227,9 @@ module Grammar = struct
         val getf : t -> 'a -> 'b
         val getf2 : t -> 'a -> 'b -> 'c
       end
-    type assoc = | NA | RA | LA
-    type position =
-      | First | Last | Before of string | After of string | Level of string
+    (* type assoc = | NA | RA | LA *)
+    (* type position = *)
+    (*   | First | Last | Before of string | After of string | Level of string *)
     module type Structure =  sig
         module Action : Action
         module Token : Token 

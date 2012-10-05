@@ -1429,7 +1429,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (expr : 'expr Gram.t) ) (
            ((fun ()
                ->
-              (( (Some ((FanSig.Grammar.After ("top")))) ), (
+              (( (Some (`After "top")) ), (
                [(None , None , (
                  [((
                    [( (Gram.Skeyword ("DELETE_RULE")) ); (
@@ -1829,17 +1829,8 @@ and ('e, 'p) symbol = {
                         (match __camlp4_0 with
                          | UIDENT ((("Before" | "After") | "Level") as x) ->
                             ((Ast.ExApp
-                               (_loc, (
-                                (Ast.ExId
-                                  (_loc, (
-                                   (Ast.IdAcc
-                                     (_loc, (
-                                      (Ast.IdUid (_loc, "FanSig")) ), (
-                                      (Ast.IdAcc
-                                        (_loc, (
-                                         (Ast.IdUid (_loc, "Grammar")) ),
-                                         ( (Ast.IdUid (_loc, x)) ))) )))
-                                   ))) ), n)) : 'position)
+                               (_loc, ( (Ast.ExVrn (_loc, x)) ), n)) :
+                              'position)
                          | _ -> assert false) )) ));
                   ((
                    [(
@@ -1856,16 +1847,7 @@ and ('e, 'p) symbol = {
                         FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT (("First" | "Last") as x) ->
-                           ((Ast.ExId
-                              (_loc, (
-                               (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
-                                  (
-                                  (Ast.IdAcc
-                                    (_loc, (
-                                     (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, x)) ))) ))) ))) :
-                             'position)
+                           ((Ast.ExVrn (_loc, x)) : 'position)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -1969,16 +1951,7 @@ and ('e, 'p) symbol = {
                         FanLoc.t) ->
                        (match __camlp4_0 with
                         | UIDENT ((("LA" | "RA") | "NA") as x) ->
-                           ((Ast.ExId
-                              (_loc, (
-                               (Ast.IdAcc
-                                 (_loc, ( (Ast.IdUid (_loc, "FanSig")) ),
-                                  (
-                                  (Ast.IdAcc
-                                    (_loc, (
-                                     (Ast.IdUid (_loc, "Grammar")) ), (
-                                     (Ast.IdUid (_loc, x)) ))) ))) ))) :
-                             'assoc)
+                           ((Ast.ExVrn (_loc, x)) : 'assoc)
                         | _ -> assert false) )) ))] ))] ))) () ) ))
          );
          (
@@ -2205,7 +2178,7 @@ and ('e, 'p) symbol = {
            ((fun ()
                ->
               (None , (
-               [(( (Some ("top")) ), ( (Some ((FanSig.Grammar.NA))) ), (
+               [(( (Some ("top")) ), ( (Some (`NA)) ), (
                  [((
                    [(
                     (Gram.Stoken
@@ -2849,7 +2822,7 @@ and ('e, 'p) symbol = {
          (Gram.extend ( (symbol : 'symbol Gram.t) ) (
            ((fun ()
                ->
-              (( (Some ((FanSig.Grammar.Level ("top")))) ), (
+              (( (Some (`Level "top")) ), (
                [(None , None , (
                  [((
                    [(
@@ -3116,8 +3089,7 @@ module MakeListComprehension =
                       (Gram.extend ( (expr : 'expr Gram.t) ) (
                         ((fun ()
                             ->
-                           (( (Some ((FanSig.Grammar.Level ("simple"))))
-                            ), (
+                           (( (Some (`Level "simple")) ), (
                             [(None , None , (
                               [((
                                 [( (Gram.Skeyword ("[")) ); (
@@ -3441,10 +3413,7 @@ module MakeMacroParser =
                                     (
                                     ((fun ()
                                         ->
-                                       ((
-                                        (Some
-                                          ((FanSig.Grammar.Level
-                                             ("simple")))) ), (
+                                       (( (Some (`Level "simple")) ), (
                                         [(None , None , (
                                           [((
                                             [(
@@ -3473,10 +3442,7 @@ module MakeMacroParser =
                                     (
                                     ((fun ()
                                         ->
-                                       ((
-                                        (Some
-                                          ((FanSig.Grammar.Level
-                                             ("simple")))) ), (
+                                       (( (Some (`Level "simple")) ), (
                                         [(None , None , (
                                           [((
                                             [(
@@ -3509,10 +3475,7 @@ module MakeMacroParser =
                                     (
                                     ((fun ()
                                         ->
-                                       ((
-                                        (Some
-                                          ((FanSig.Grammar.Level
-                                             ("apply")))) ), (
+                                       (( (Some (`Level "apply")) ), (
                                         [(None , None , (
                                           [((
                                             [(
@@ -3565,10 +3528,7 @@ module MakeMacroParser =
                                     (
                                     ((fun ()
                                         ->
-                                       ((
-                                        (Some
-                                          ((FanSig.Grammar.Level
-                                             ("simple")))) ), (
+                                       (( (Some (`Level "simple")) ), (
                                         [(None , None , (
                                           [((
                                             [(
@@ -3854,10 +3814,7 @@ module MakeMacroParser =
                                      (
                                      ((fun ()
                                          ->
-                                        ((
-                                         (Some
-                                           ((FanSig.Grammar.First)))
-                                         ), (
+                                        (( (Some (`First)) ), (
                                          [(None , None , (
                                            [((
                                              [(
@@ -3887,10 +3844,7 @@ module MakeMacroParser =
                                      (
                                      ((fun ()
                                          ->
-                                        ((
-                                         (Some
-                                           ((FanSig.Grammar.First)))
-                                         ), (
+                                        (( (Some (`First)) ), (
                                          [(None , None , (
                                            [((
                                              [(
@@ -4820,10 +4774,7 @@ module MakeMacroParser =
                                      (expr : 'expr Gram.t) ) (
                                      ((fun ()
                                          ->
-                                        ((
-                                         (Some
-                                           ((FanSig.Grammar.Level
-                                              ("top")))) ), (
+                                        (( (Some (`Level "top")) ), (
                                          [(None , None , (
                                            [((
                                              [(
@@ -5041,10 +4992,8 @@ module MakeMacroParser =
                                      (expr : 'expr Gram.t) ) (
                                      ((fun ()
                                          ->
-                                        ((
-                                         (Some
-                                           ((FanSig.Grammar.Before
-                                              ("simple")))) ), (
+                                        (( (Some (`Before "simple"))
+                                         ), (
                                          [(None , None , (
                                            [((
                                              [( (Gram.Skeyword ("`"))
@@ -5184,10 +5133,8 @@ module MakeMacroParser =
                                      (patt : 'patt Gram.t) ) (
                                      ((fun ()
                                          ->
-                                        ((
-                                         (Some
-                                           ((FanSig.Grammar.Before
-                                              ("simple")))) ), (
+                                        (( (Some (`Before "simple"))
+                                         ), (
                                          [(None , None , (
                                            [((
                                              [( (Gram.Skeyword ("`"))
@@ -7995,7 +7942,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -8132,7 +8079,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -9385,7 +9332,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -9479,7 +9426,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -9647,7 +9594,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -10099,7 +10046,7 @@ module MakeRevisedParser =
                                                                  ("top"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -10710,7 +10657,7 @@ module MakeRevisedParser =
                                                                  (":="))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -10807,7 +10754,7 @@ module MakeRevisedParser =
                                                                  ("||"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -10850,7 +10797,7 @@ module MakeRevisedParser =
                                                                  ("&&"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -10893,7 +10840,7 @@ module MakeRevisedParser =
                                                                  ("<"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -10936,7 +10883,7 @@ module MakeRevisedParser =
                                                                  ("^"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -10979,7 +10926,7 @@ module MakeRevisedParser =
                                                                  ("+"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -11022,7 +10969,7 @@ module MakeRevisedParser =
                                                                  ("*"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -11217,7 +11164,7 @@ module MakeRevisedParser =
                                                                  ("**"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -11374,7 +11321,7 @@ module MakeRevisedParser =
                                                                  ("unary minus"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -11426,7 +11373,7 @@ module MakeRevisedParser =
                                                                  ("apply"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -11524,7 +11471,7 @@ module MakeRevisedParser =
                                                                  ("label"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -11752,7 +11699,7 @@ module MakeRevisedParser =
                                                                  ("."))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -11925,7 +11872,7 @@ module MakeRevisedParser =
                                                                  ("~-"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -14302,7 +14249,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -14571,7 +14518,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -15731,7 +15678,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -15932,7 +15879,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -16078,7 +16025,7 @@ module MakeRevisedParser =
                                                                  ("|"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -16111,7 +16058,7 @@ module MakeRevisedParser =
                                                                  (".."))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -16144,7 +16091,7 @@ module MakeRevisedParser =
                                                                  ("apply"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -17903,7 +17850,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -19097,7 +19044,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -19555,7 +19502,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -20535,7 +20482,7 @@ module MakeRevisedParser =
                                                                  ("=="))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -20568,7 +20515,7 @@ module MakeRevisedParser =
                                                                  ("private"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -20606,7 +20553,7 @@ module MakeRevisedParser =
                                                                  ("alias"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -20639,7 +20586,7 @@ module MakeRevisedParser =
                                                                  ("forall"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -20684,7 +20631,7 @@ module MakeRevisedParser =
                                                                  ("arrow"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.RA)))
+                                                                 (`RA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -20717,7 +20664,7 @@ module MakeRevisedParser =
                                                                  ("label"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -20853,7 +20800,7 @@ module MakeRevisedParser =
                                                                  ("apply"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -20894,7 +20841,7 @@ module MakeRevisedParser =
                                                                  ("."))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -23951,7 +23898,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -24834,7 +24781,7 @@ module MakeRevisedParser =
                                                                  ("apply"))
                                                                ), (
                                                                (Some
-                                                                 ((FanSig.Grammar.NA)))
+                                                                 (`NA))
                                                                ), (
                                                                [((
                                                                  [Gram.Sself
@@ -25474,7 +25421,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -27921,7 +27868,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -28774,7 +28721,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -28923,7 +28870,7 @@ module MakeRevisedParser =
                                                              [(None ,
                                                                (
                                                                (Some
-                                                                 ((FanSig.Grammar.LA)))
+                                                                 (`LA))
                                                                ), (
                                                                [((
                                                                  [(
@@ -38442,8 +38389,8 @@ module MakeRevisedParserParser =
                                                                      ->
                                                                     ((
                                                                     (Some
-                                                                    ((FanSig.Grammar.Level
-                                                                    ("top"))))
+                                                                    (`Level
+                                                                    "top"))
                                                                     ),
                                                                     (
                                                                     [(None
@@ -39401,8 +39348,8 @@ module MakeRevisedParserParser =
                                                                      ->
                                                                     ((
                                                                     (Some
-                                                                    ((FanSig.Grammar.Level
-                                                                    ("simple"))))
+                                                                    (`Level
+                                                                    "simple"))
                                                                     ),
                                                                     (
                                                                     [(None

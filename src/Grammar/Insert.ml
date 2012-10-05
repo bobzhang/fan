@@ -1,29 +1,8 @@
-(* -*- camlp4r -*- *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-
 module Make (Structure : Structure.S) = struct
   module Tools = Tools.Make Structure;
   module Parser = Parser.Make Structure;
   open Structure;
   open Format;
-  open FanSig.Grammar;
 
   let is_before s1 s2 =
     match (s1, s2) with
@@ -54,7 +33,7 @@ module Make (Structure : Structure.S) = struct
     let assoc =
       match assoc with
       [ Some a -> a
-      | None -> LA ]
+      | None -> `LA ]
     in
     {assoc = assoc; lname = lname; lsuffix = DeadEnd; lprefix = DeadEnd}
   ;
@@ -94,9 +73,9 @@ module Make (Structure : Structure.S) = struct
 
   let get_level entry position levs =
     match position with
-    [ Some First -> ([], empty_lev, levs)
-    | Some Last -> (levs, empty_lev, [])
-    | Some (Level n) ->
+    [ Some `First -> ([], empty_lev, levs)
+    | Some `Last -> (levs, empty_lev, [])
+    | Some (`Level n) ->
         let rec get =
           fun
           [ [] ->
@@ -113,7 +92,7 @@ module Make (Structure : Structure.S) = struct
                 ([lev :: levs1], rlev, levs2) ]
         in
         get levs
-    | Some (Before n) ->
+    | Some (`Before n) ->
         let rec get =
           fun
           [ [] ->
@@ -130,7 +109,7 @@ module Make (Structure : Structure.S) = struct
                 ([lev :: levs1], rlev, levs2) ]
         in
         get levs
-    | Some (After n) ->
+    | Some (`After n) ->
         let rec get =
           fun
           [ [] ->

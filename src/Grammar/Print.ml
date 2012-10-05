@@ -20,7 +20,7 @@
 module Make (Structure : Structure.S) = struct
   open Structure;
   open Format;
-  open FanSig.Grammar;
+  (* open FanSig.Grammar; *)
 
   let rec flatten_tree =
     fun
@@ -111,9 +111,9 @@ module Make (Structure : Structure.S) = struct
             [ Some n -> fprintf ppf "%S@;<1 2>" n
             | None -> () ];
             match lev.assoc with
-            [ LA -> fprintf ppf "LA"
-            | RA -> fprintf ppf "RA"
-            | NA -> fprintf ppf "NA" ];
+            [ `LA -> fprintf ppf "LA"
+            | `RA -> fprintf ppf "RA"
+            | `NA -> fprintf ppf "NA" ];
             fprintf ppf "@]@;<1 2>";
             print_level ppf pp_force_newline rules;
             fun ppf -> fprintf ppf "@,| "
@@ -136,7 +136,7 @@ end;
 module MakeDump (Structure : Structure.S) = struct
   open Structure;
   open Format;
-  open FanSig.Grammar;
+  (* open FanSig.Grammar; *)
 
   type brothers = [ Bro of symbol and list brothers ];
 
@@ -243,9 +243,9 @@ module MakeDump (Structure : Structure.S) = struct
             [ Some n -> fprintf ppf "%S@;<1 2>" n
             | None -> () ];
             match lev.assoc with
-            [ LA -> fprintf ppf "LA"
-            | RA -> fprintf ppf "RA"
-            | NA -> fprintf ppf "NA" ];
+            [ `LA -> fprintf ppf "LA"
+            | `RA -> fprintf ppf "RA"
+            | `NA -> fprintf ppf "NA" ];
             fprintf ppf "@]@;<1 2>";
             fprintf ppf "@[<v2>suffix:@ ";
             print_tree ppf lev.lsuffix;

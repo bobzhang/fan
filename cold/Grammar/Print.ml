@@ -5,8 +5,6 @@ module Make =
 
    open Format
 
-   open FanSig.Grammar
-
    let rec flatten_tree =
     function
     | DeadEnd -> ([])
@@ -123,9 +121,9 @@ module Make =
            );
            (
            (match lev.assoc with
-            | LA -> (fprintf ppf "LA")
-            | RA -> (fprintf ppf "RA")
-            | NA -> (fprintf ppf "NA"))
+            | `LA -> (fprintf ppf "LA")
+            | `RA -> (fprintf ppf "RA")
+            | `NA -> (fprintf ppf "NA"))
            );
            (
            (fprintf ppf "@]@;<1 2>")
@@ -157,8 +155,6 @@ module MakeDump =
           open Structure
 
           open Format
-
-          open FanSig.Grammar
 
           type brothers = Bro of symbol * brothers list
 
@@ -312,9 +308,9 @@ module MakeDump =
                   );
                   (
                   (match lev.assoc with
-                   | LA -> (fprintf ppf "LA")
-                   | RA -> (fprintf ppf "RA")
-                   | NA -> (fprintf ppf "NA"))
+                   | `LA -> (fprintf ppf "LA")
+                   | `RA -> (fprintf ppf "RA")
+                   | `NA -> (fprintf ppf "NA"))
                   );
                   (
                   (fprintf ppf "@]@;<1 2>")

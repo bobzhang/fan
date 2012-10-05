@@ -9,8 +9,6 @@ module Make =
 
    open Format
 
-   open FanSig.Grammar
-
    let is_before =
     fun s1 ->
      fun s2 ->
@@ -40,7 +38,7 @@ module Make =
    let empty_lev =
     fun lname ->
      fun assoc ->
-      let assoc = (match assoc with | Some (a) -> a | None -> (LA)) in
+      let assoc = (match assoc with | Some (a) -> a | None -> `LA) in
       {assoc = assoc; lname = lname; lsuffix = DeadEnd ; lprefix = DeadEnd }
 
    let change_lev =
@@ -90,9 +88,9 @@ module Make =
      fun position ->
       fun levs ->
        (match position with
-        | Some (First) -> ([] , empty_lev, levs)
-        | Some (Last) -> (levs, empty_lev, [] )
-        | Some (Level (n)) ->
+        | Some (`First) -> ([] , empty_lev, levs)
+        | Some (`Last) -> (levs, empty_lev, [] )
+        | Some ((`Level n)) ->
            let rec get =
             function
             | [] ->
@@ -111,7 +109,7 @@ module Make =
                 let (levs1, rlev, levs2) = (get levs) in
                 (( ( lev ) :: levs1  ), rlev, levs2) in
            (get levs)
-        | Some (Before (n)) ->
+        | Some ((`Before n)) ->
            let rec get =
             function
             | [] ->
@@ -130,7 +128,7 @@ module Make =
                 let (levs1, rlev, levs2) = (get levs) in
                 (( ( lev ) :: levs1  ), rlev, levs2) in
            (get levs)
-        | Some (After (n)) ->
+        | Some ((`After n)) ->
            let rec get =
             function
             | [] ->

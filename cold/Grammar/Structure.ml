@@ -1,26 +1,26 @@
-open FanSig.Grammar
+open FanSig
 
 module type S =
-                      sig
-                       module Token : FanSig.Token
+              sig
+               module Token : FanSig.Token
 
-                       module Lexer : (Sig.Lexer with module Token = Token)
+               module Lexer : (Sig.Lexer with module Token = Token)
 
-                       module Action : FanSig.Grammar.Action
+               module Action : FanSig.Grammar.Action
 
-                       type gram = {
-                                     gfilter:Token.Filter.t;
-                                     gkeywords:(string, int ref) Hashtbl.t;
-                                     glexer:(FanLoc.t ->
-                                             (char Stream.t ->
-                                              (Token.t * FanLoc.t) Stream.t));
-                                     warning_verbose:bool ref;
-                                     error_verbose:bool ref}
+               type gram = {
+                             gfilter:Token.Filter.t;
+                             gkeywords:(string, int ref) Hashtbl.t;
+                             glexer:(FanLoc.t ->
+                                     (char Stream.t ->
+                                      (Token.t * FanLoc.t) Stream.t));
+                             warning_verbose:bool ref;
+                             error_verbose:bool ref}
 
-                       type token_info = {
-                                           prev_loc:FanLoc.t;
-                                           cur_loc:FanLoc.t;
-                                           prev_loc_only:bool}
+               type token_info = {
+                                   prev_loc:FanLoc.t;
+                                   cur_loc:FanLoc.t;
+                                   prev_loc_only:bool}
 
  type token_stream = (Token.t * token_info) Stream.t
 
@@ -36,7 +36,11 @@ module type S =
                                             (FanLoc.t -> (Action.t -> efun)));
                          mutable edesc:desc}
 and desc = Dlevels of level list | Dparser of (token_stream -> Action.t)
-and level = {assoc:assoc; lname:string option; lsuffix:tree; lprefix:tree}
+and level = {
+              assoc:FanSig.assoc;
+              lname:string option;
+              lsuffix:tree;
+              lprefix:tree}
 and symbol =
     Smeta of string * symbol list * Action.t
   | Snterm of internal_entry
@@ -58,10 +62,10 @@ and node = {node:symbol; son:tree; brother:tree}
  type production_rule = (symbol list * Action.t)
 
  type single_extend_statment =
-  (string option * assoc option * production_rule list)
+  (string option * FanSig.assoc option * production_rule list)
 
  type extend_statment =
-  (position option * single_extend_statment list)
+  (FanSig.position option * single_extend_statment list)
 
  type delete_statment = symbol list
  type token = Token.t
