@@ -64,8 +64,7 @@ let delete_rule_in_tree entry =
   in
   delete_in_tree
 ;
-let rec decr_keyw_use gram =
-  fun
+let rec decr_keyw_use gram = fun
   [ Skeyword kwd -> removing gram kwd
   | Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
   | Slist0 s | Slist1 s | Sopt s | Stry s -> decr_keyw_use gram s

@@ -23,7 +23,12 @@ module type S = sig
 
   type efun = token_stream -> Action.t;
 
-  type token_pattern = ((Token.t -> bool) * string);
+  (* maybe could be improved
+     {[
+     The second part is a description
+     ]}
+   *)
+  type token_pattern = ((Token.t -> bool) * string); 
 
   type internal_entry =
     { egram     : gram;

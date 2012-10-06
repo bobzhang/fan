@@ -10,8 +10,7 @@ module Make (Structure : Structure.S) = struct
     | (Skeyword _ | Stoken _, _) -> True
     | _ -> False ]
   ;
-  let rec derive_eps =
-    fun
+  let rec derive_eps = fun
     [ Slist0 _ | Slist0sep _ _ | Sopt _ -> True
     | Stry s -> derive_eps s
     | Stree t -> tree_derive_eps t
@@ -176,8 +175,7 @@ module Make (Structure : Structure.S) = struct
 
 
   let insert_tokens gram symbols =
-    let rec insert =
-      fun
+    let rec insert = fun
       [ Smeta _ sl _ -> List.iter insert sl
       | Slist0 s | Slist1 s | Sopt s | Stry s -> insert s
       | Slist0sep s t -> do { insert s; insert t }
