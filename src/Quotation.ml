@@ -42,7 +42,7 @@ module type S = sig
       result is dumped in the file [fname]. *)
   val dump_file : ref (option string);
 
-  module Error : FanSig.Error;
+  (* module Error : FanSig.Error; *)
 
 end;
 
@@ -88,41 +88,36 @@ let default = ref "";
 
   let dump_file = ref None;
 
-  module Error = struct
-    type error =
+
+  type quotation_error_message =
       [ Finding
       | Expanding
-      | ParsingResult of FanLoc.t and string
-      (* | Locating  *)]; (* FIXME locating never used to build values *)
-    type t = (string * string * error * exn);
-    exception E of t;
+      | ParsingResult of FanLoc.t and string];
 
-    let print ppf (name, position, ctx, exn) =
-      let name = if name = "" then !default else name in
-      let pp x = fprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position in
+  type quotation_error = (string * string * quotation_error_message * exn);
+  exception Quotation of quotation_error;
+
+  let quotation_error_to_string (name, position, ctx, exn) =
+    let ppf = Buffer.create 30 in
+    let name = if name = "" then !default else name in
+    let pp x = bprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position in
       let () =
         match ctx with
         [ Finding -> begin
-            pp "finding quotation";
-            if expanders_table.contents = [] then
-              fprintf ppf "@ There is no quotation expander available."
-            else
-              begin
-                fprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
-                List.iter begin fun ((s,t),_) ->
-                  fprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                    s Exp_key.print_tag t
-                end !expanders_table;
-                fprintf ppf "@]"
-              end
+          pp "finding quotation";
+          bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
+          List.iter begin fun ((s,t),_) ->
+            bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
+              s Exp_key.print_tag t
+          end !expanders_table;
+          bprintf ppf "@]";
           end
-        | Expanding -> pp "expanding quotation"
-        (* | Locating -> pp "parsing" *)
-        | ParsingResult loc str ->
-          let () = pp "parsing result of quotation" in
-          match !dump_file with
-          [ Some dump_file ->
-              let () = fprintf ppf " dumping result...\n" in
+        | Expanding ->  pp "expanding quotation"
+        | ParsingResult loc str -> begin
+            pp "parsing result of quotation" ;
+            match !dump_file with
+            [ Some dump_file ->
+              let () = bprintf ppf " dumping result...\n" in
               try
                 let oc = open_out_bin dump_file in
                 begin
@@ -130,52 +125,50 @@ let default = ref "";
                   output_string oc "\n";
                   flush oc;
                   close_out oc;
-                  fprintf ppf "%a:" FanLoc.print (FanLoc.set_file_name dump_file loc);
+                  bprintf ppf "%a:" FanLoc.print (FanLoc.set_file_name dump_file loc);
                 end
               with _ ->
-                fprintf ppf
+                bprintf ppf
                   "Error while dumping result in file %S; dump aborted"
                   dump_file
-          | None ->
-              fprintf ppf
-                "\n(consider setting variable Quotation.dump_file, or using the -QD option)"
-          ]
-        ]
-      in fprintf ppf "@\n%a@]@." FanUtil.ErrorHandler.print exn;
+             | None ->
+                  bprintf ppf
+                    "\n(consider setting variable Quotation.dump_file, or using the -QD option)"
+            ]
+        end
+        ] in
+      let () = bprintf ppf "@\n%s@]@." (Printexc.to_string exn)in Buffer.contents ppf;
 
-    let to_string x =
-      let b = Buffer.create 50 in
-      let () = bprintf b "%a" print x in Buffer.contents b;
-  end;
-  let module M = FanUtil.ErrorHandler.Register Error in ();
-  open Error;
+  Printexc.register_printer (fun
+    [ Quotation x -> Some (quotation_error_to_string x )
+    | _ -> None]);
 
   let expand_quotation loc expander pos_tag quot =
     debug quot "expand_quotation: name: %s, str: %S@." quot.q_name quot.q_contents in
     let open FanSig in
     let loc_name_opt = if quot.q_loc = "" then None else Some quot.q_loc in
     try expander loc loc_name_opt quot.q_contents with
-    [ FanLoc.Exc_located _ (Error.E _) as exc ->
+    [ FanLoc.Exc_located _ (Quotation _) as exc ->
         raise exc
     | FanLoc.Exc_located iloc exc ->
-        let exc1 = Error.E (quot.q_name, pos_tag, Expanding, exc) in
+        let exc1 = Quotation (quot.q_name, pos_tag, Expanding, exc) in
         raise (FanLoc.Exc_located iloc exc1)
     | exc ->
-        let exc1 = Error.E (quot.q_name, pos_tag, Expanding, exc) in
+        let exc1 = Quotation (quot.q_name, pos_tag, Expanding, exc) in
         raise (FanLoc.Exc_located loc exc1) ];
 
   let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in 
     try parse loc str with
-    [ FanLoc.Exc_located iloc (Error.E (n, pos_tag, Expanding, exc)) ->
+    [ FanLoc.Exc_located iloc (Quotation (n, pos_tag, Expanding, exc)) ->
         let ctx = ParsingResult iloc quot.q_contents in
-        let exc1 = Error.E (n, pos_tag, ctx, exc) in
+        let exc1 = Quotation (n, pos_tag, ctx, exc) in
         raise (FanLoc.Exc_located iloc exc1)
-    | FanLoc.Exc_located iloc (Error.E _ as exc) ->
+    | FanLoc.Exc_located iloc (Quotation _ as exc) ->
         raise (FanLoc.Exc_located iloc exc)
     | FanLoc.Exc_located iloc exc ->
         let ctx = ParsingResult iloc quot.q_contents in
-        let exc1 = Error.E (quot.q_name, pos_tag, ctx, exc) in
+        let exc1 = Quotation (quot.q_name, pos_tag, ctx, exc) in
         raise (FanLoc.Exc_located iloc exc1) ];
 
   let expand loc quotation tag =
@@ -186,12 +179,11 @@ let default = ref "";
     let expander =
       try find name tag
       with
-      [ FanLoc.Exc_located _ (Error.E _) as exc -> raise exc
+      [ FanLoc.Exc_located _ (Quotation _) as exc -> raise exc
       | FanLoc.Exc_located qloc exc ->
-          raise (FanLoc.Exc_located qloc (Error.E (name, pos_tag, Finding, exc)))
+          raise (FanLoc.Exc_located qloc (Quotation (name, pos_tag, Finding, exc)))
       | exc ->
-          raise (FanLoc.Exc_located loc (Error.E (name, pos_tag, Finding, exc))) ]
-    in
+          raise (FanLoc.Exc_located loc (Quotation (name, pos_tag, Finding, exc))) ] in
     let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
     expand_quotation loc expander pos_tag quotation;
 

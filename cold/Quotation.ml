@@ -22,8 +22,6 @@ module type S =
 
   val dump_file : string option ref
 
-  module Error : FanSig.Error
-
  end
 
 module Make =
@@ -82,90 +80,78 @@ module Make =
 
           let dump_file = (ref None )
 
-          module Error =
-           struct
-            type error =
-               Finding | Expanding | ParsingResult of FanLoc.t * string
+          type quotation_error_message =
+             Finding | Expanding | ParsingResult of FanLoc.t * string
 
-            type t = (string * string * error * exn)
+          type quotation_error =
+           (string * string * quotation_error_message * exn)
 
-            exception E of t
+          exception Quotation of quotation_error
 
-            let print =
-             fun ppf ->
-              fun (name, position, ctx, exn) ->
-               let name = if (name = "") then ( default.contents ) else name in
-               let pp =
-                fun x ->
-                 (fprintf ppf "@?@[<2>While %s %S in a position of %S:" x
-                   name position) in
-               let () =
-                (match ctx with
-                 | Finding ->
-                    (
-                    (pp "finding quotation")
-                    );
-                    if (( expanders_table.contents ) = [] ) then
-                     (
-                     (fprintf ppf
-                       "@ There is no quotation expander available.")
-                     )
-                    else begin
-                     (
-                     (fprintf ppf
-                       "@ @[<hv2>Available quotation expanders are:@\n")
-                     );
-                     (
-                     (List.iter (
-                       fun ((s, t), _) ->
-                        (fprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ "
-                          s Exp_key.print_tag t) ) ( expanders_table.contents
-                       ))
-                     );
-                     (fprintf ppf "@]")
-                    end
-                 | Expanding -> (pp "expanding quotation")
-                 | ParsingResult (loc, str) ->
-                    let () = (pp "parsing result of quotation") in
-                    (match dump_file.contents with
-                     | Some (dump_file) ->
-                        let () = (fprintf ppf " dumping result...\n") in
-                        (try
-                          let oc = (open_out_bin dump_file) in
-                          (
-                          (output_string oc str)
-                          );
-                          (
-                          (output_string oc "\n")
-                          );
-                          (
-                          (flush oc)
-                          );
-                          (
-                          (close_out oc)
-                          );
-                          (fprintf ppf "%a:" FanLoc.print (
-                            (FanLoc.set_file_name dump_file loc) ))
-                         with
-                         _ ->
-                          (fprintf ppf
-                            "Error while dumping result in file %S; dump aborted"
-                            dump_file))
-                     | None ->
-                        (fprintf ppf
-                          "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))) in
-               (fprintf ppf "@\n%a@]@." FanUtil.ErrorHandler.print exn)
-
-            let to_string =
+          let quotation_error_to_string =
+           fun (name, position, ctx, exn) ->
+            let ppf = (Buffer.create 30) in
+            let name = if (name = "") then ( default.contents ) else name in
+            let pp =
              fun x ->
-              let b = (Buffer.create 50) in
-              let () = (bprintf b "%a" print x) in (Buffer.contents b)
+              (bprintf ppf "@?@[<2>While %s %S in a position of %S:" x name
+                position) in
+            let () =
+             (match ctx with
+              | Finding ->
+                 (
+                 (pp "finding quotation")
+                 );
+                 (
+                 (bprintf ppf
+                   "@ @[<hv2>Available quotation expanders are:@\n")
+                 );
+                 (
+                 (List.iter (
+                   fun ((s, t), _) ->
+                    (bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
+                      Exp_key.print_tag t) ) ( expanders_table.contents ))
+                 );
+                 (bprintf ppf "@]")
+              | Expanding -> (pp "expanding quotation")
+              | ParsingResult (loc, str) ->
+                 (
+                 (pp "parsing result of quotation")
+                 );
+                 (match dump_file.contents with
+                  | Some (dump_file) ->
+                     let () = (bprintf ppf " dumping result...\n") in
+                     (try
+                       let oc = (open_out_bin dump_file) in
+                       (
+                       (output_string oc str)
+                       );
+                       (
+                       (output_string oc "\n")
+                       );
+                       (
+                       (flush oc)
+                       );
+                       (
+                       (close_out oc)
+                       );
+                       (bprintf ppf "%a:" FanLoc.print (
+                         (FanLoc.set_file_name dump_file loc) ))
+                      with
+                      _ ->
+                       (bprintf ppf
+                         "Error while dumping result in file %S; dump aborted"
+                         dump_file))
+                  | None ->
+                     (bprintf ppf
+                       "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))) in
+            let () = (bprintf ppf "@\n%s@]@." ( (Printexc.to_string exn) )) in
+            (Buffer.contents ppf)
 
-           end
-
-          let _ = let module M = (FanUtil.ErrorHandler.Register)(Error) in ()
-
-          open Error
+          let _ = (Printexc.register_printer (
+                    function
+                    | Quotation (x) -> (Some (quotation_error_to_string x))
+                    | _ -> (None) ))
 
           let expand_quotation =
            fun loc ->
@@ -177,14 +163,15 @@ module Make =
                let loc_name_opt =
                 if (( quot.q_loc ) = "") then None  else (Some (quot.q_loc)) in
                (try (expander loc loc_name_opt ( quot.q_contents )) with
-                | (FanLoc.Exc_located (_, Error.E (_)) as exc) -> (raise exc)
+                | (FanLoc.Exc_located (_, Quotation (_)) as exc) ->
+                   (raise exc)
                 | FanLoc.Exc_located (iloc, exc) ->
                    let exc1 =
-                    (Error.E (( quot.q_name ), pos_tag, Expanding , exc)) in
+                    (Quotation (( quot.q_name ), pos_tag, Expanding , exc)) in
                    (raise ( (FanLoc.Exc_located (iloc, exc1)) ))
                 | exc ->
                    let exc1 =
-                    (Error.E (( quot.q_name ), pos_tag, Expanding , exc)) in
+                    (Quotation (( quot.q_name ), pos_tag, Expanding , exc)) in
                    (raise ( (FanLoc.Exc_located (loc, exc1)) )))
 
           let parse_quotation_result =
@@ -197,15 +184,16 @@ module Make =
                 FanSig in
                 (try (parse loc str) with
                  | FanLoc.Exc_located
-                    (iloc, Error.E (n, pos_tag, Expanding, exc)) ->
+                    (iloc, Quotation (n, pos_tag, Expanding, exc)) ->
                     let ctx = (ParsingResult (iloc, ( quot.q_contents ))) in
-                    let exc1 = (Error.E (n, pos_tag, ctx, exc)) in
+                    let exc1 = (Quotation (n, pos_tag, ctx, exc)) in
                     (raise ( (FanLoc.Exc_located (iloc, exc1)) ))
-                 | FanLoc.Exc_located (iloc, (Error.E (_) as exc)) ->
+                 | FanLoc.Exc_located (iloc, (Quotation (_) as exc)) ->
                     (raise ( (FanLoc.Exc_located (iloc, exc)) ))
                  | FanLoc.Exc_located (iloc, exc) ->
                     let ctx = (ParsingResult (iloc, ( quot.q_contents ))) in
-                    let exc1 = (Error.E (( quot.q_name ), pos_tag, ctx, exc)) in
+                    let exc1 =
+                     (Quotation (( quot.q_name ), pos_tag, ctx, exc)) in
                     (raise ( (FanLoc.Exc_located (iloc, exc1)) )))
 
           let expand =
@@ -218,16 +206,17 @@ module Make =
               let name = quotation.q_name in
               let expander =
                (try (find name tag) with
-                | (FanLoc.Exc_located (_, Error.E (_)) as exc) -> (raise exc)
+                | (FanLoc.Exc_located (_, Quotation (_)) as exc) ->
+                   (raise exc)
                 | FanLoc.Exc_located (qloc, exc) ->
                    (raise (
                      (FanLoc.Exc_located
-                       (qloc, ( (Error.E (name, pos_tag, Finding , exc)) )))
+                       (qloc, ( (Quotation (name, pos_tag, Finding , exc)) )))
                      ))
                 | exc ->
                    (raise (
                      (FanLoc.Exc_located
-                       (loc, ( (Error.E (name, pos_tag, Finding , exc)) )))
+                       (loc, ( (Quotation (name, pos_tag, Finding , exc)) )))
                      ))) in
               let loc =
                (FanLoc.join ( (FanLoc.move `start ( quotation.q_shift ) loc)

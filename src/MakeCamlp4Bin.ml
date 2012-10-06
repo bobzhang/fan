@@ -14,11 +14,11 @@ module Camlp4Bin
       let add_to_loaded_modules name =
         loaded_modules := SSet.add name !loaded_modules;
 
-      FanUtil.ErrorHandler.register
-            (fun ppf ->
+     Printexc.register_printer
+            (
               fun [ FanLoc.Exc_located loc exn ->
-                fprintf ppf "%a:@\n%a" FanLoc.print loc FanUtil.ErrorHandler.print exn
-                  | exn -> raise exn ]);
+                    Some (sprintf "%s:@\n%s" (FanLoc.to_string loc) (Printexc.to_string exn))
+                  | _ -> None ]);
       module DynLoader = DynLoader.Make (struct end);
       (* let plugins = Hashtbl.create 50;      *)
       let (objext,libext) =
@@ -369,7 +369,7 @@ module Camlp4Bin
                             eprintf "Use option -help for usage@.";
                             exit 2 }
         | Arg.Help _ -> usage ()
-        | exc -> do { eprintf "@[<v0>%a@]@." FanUtil.ErrorHandler.print exc; exit 2 } ];
+        | exc -> do { eprintf "@[<v0>%s@]@." (Printexc.to_string exc); exit 2 } ];
       
       main Sys.argv;
             

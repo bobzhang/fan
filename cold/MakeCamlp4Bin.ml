@@ -36,23 +36,23 @@ module Camlp4Bin =
                                                                     )) ))
 
                                                                     let _ = 
-                                                                    (FanUtil.ErrorHandler.register
+                                                                    (Printexc.register_printer
                                                                     (
-                                                                    fun ppf ->
                                                                     function
                                                                     | FanLoc.Exc_located
                                                                     (loc, exn) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "%a:@\n%a"
-                                                                    FanLoc.print
-                                                                    loc
-                                                                    FanUtil.ErrorHandler.print
-                                                                    exn)
+                                                                    (
+                                                                    Some
+                                                                    (sprintf
+                                                                    "%s:@\n%s"
+                                                                    (
+                                                                    (FanLoc.to_string
+                                                                    loc) ) (
+                                                                    (Printexc.to_string
+                                                                    exn) )))
                                                                     | 
-                                                                    exn ->
-                                                                    (raise
-                                                                    exn) ))
+                                                                    _ ->
+                                                                    (None) ))
 
                                                                     module DynLoader =
                                                                     (DynLoader.Make)
@@ -1088,9 +1088,10 @@ module Camlp4Bin =
                                                                     exc ->
                                                                     (
                                                                     (eprintf
-                                                                    "@[<v0>%a@]@."
-                                                                    FanUtil.ErrorHandler.print
-                                                                    exc)
+                                                                    "@[<v0>%s@]@."
+                                                                    (
+                                                                    (Printexc.to_string
+                                                                    exc) ))
                                                                     );
                                                                     (exit 2))
 

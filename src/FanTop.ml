@@ -21,7 +21,7 @@ open FanSig;
               x
             end
           | x -> x ] in begin
-              Format.eprintf "@[<0>%a@]@." FanUtil.ErrorHandler.print x;
+              Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
               raise Exit
           end ];
 

@@ -233,7 +233,7 @@ module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
 
 module type Lexer = sig
     module Token : FanSig.Token ;
-    module Error : FanSig.Error;
+    (* module Error : FanSig.Error; *)
     (** The constructor for a lexing function. The character stream is the input
       stream to be lexed. The result is a stream of pairs of a token and
       a location.

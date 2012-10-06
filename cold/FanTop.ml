@@ -70,9 +70,10 @@ let wrap =
                                                                     x -> x) in
                                                                     (
                                                                     (Format.eprintf
-                                                                    "@[<0>%a@]@."
-                                                                    FanUtil.ErrorHandler.print
-                                                                    x)
+                                                                    "@[<0>%s@]@."
+                                                                    (
+                                                                    (Printexc.to_string
+                                                                    x) ))
                                                                     );
                                                                     (raise
                                                                     Exit ))

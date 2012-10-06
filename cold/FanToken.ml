@@ -6,72 +6,58 @@ open FanSig
 
 type t = camlp4_token
 
-module Error =
-                                                                struct
-                                                                 type t =
-                                                                    Illegal_token
-                                                                    of 
-                                                                    string
-                                                                  | Keyword_as_label
-                                                                    of 
-                                                                    string
-                                                                  | Illegal_token_pattern
-                                                                    of
-                                                                    string *
-                                                                    string
-                                                                  | Illegal_constructor
-                                                                    of 
-                                                                    string
+type error =
+                                                                  Illegal_token
+                                                                   of 
+                                                                   string
+                                                                | Keyword_as_label
+                                                                   of 
+                                                                   string
+                                                                | Illegal_token_pattern
+                                                                   of
+                                                                   (string *
+                                                                    string)
+                                                                | Illegal_constructor
+                                                                   of 
+                                                                   string
 
-                                                                 exception E
-                                                                  of 
-                                                                  t
 
-                                                                 let print =
-                                                                  fun ppf ->
-                                                                   function
-                                                                   | Illegal_token
-                                                                    (s) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "Illegal token (%s)"
-                                                                    s)
-                                                                   | Keyword_as_label
-                                                                    (kwd) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "`%s' is a keyword, it cannot be used as label name"
-                                                                    kwd)
-                                                                   | Illegal_token_pattern
-                                                                    (p_con,
-                                                                    p_prm) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "Illegal token pattern: %s %S"
-                                                                    p_con
-                                                                    p_prm)
-                                                                   | 
-                                                                   Illegal_constructor
-                                                                    (con) ->
-                                                                    (fprintf
-                                                                    ppf
-                                                                    "Illegal constructor %S"
-                                                                    con)
+exception TokenError of error
 
-                                                                 let to_string =
-                                                                  fun x ->
-                                                                   let b =
-                                                                    (Buffer.create
-                                                                    50) in
-                                                                   let 
-                                                                    () =
-                                                                    (bprintf
-                                                                    b "%a"
-                                                                    print x) in
-                                                                   (Buffer.contents
-                                                                    b)
+let print_basic_error =
+                                fun ppf ->
+                                 function
+                                 | Illegal_token (s) ->
+                                    (fprintf ppf "Illegal token (%s)" s)
+                                 | Keyword_as_label (kwd) ->
+                                    (fprintf ppf
+                                      "`%s' is a keyword, it cannot be used as label name"
+                                      kwd)
+                                 | Illegal_token_pattern (p_con, p_prm) ->
+                                    (fprintf ppf
+                                      "Illegal token pattern: %s %S" p_con
+                                      p_prm)
+                                 | Illegal_constructor (con) ->
+                                    (fprintf ppf "Illegal constructor %S"
+                                      con)
 
-                                                                end
+let string_of_error_msg =
+                                             (to_string_of_printer
+                                               print_basic_error)
+
+let _ = 
+                                                                   (Printexc.register_printer
+                                                                    (
+                                                                    function
+                                                                    | TokenError
+                                                                    (e) ->
+                                                                    (
+                                                                    Some
+                                                                    (string_of_error_msg
+                                                                    e))
+                                                                    | 
+                                                                    _ ->
+                                                                    (None) ))
 
 
 let to_string =
@@ -104,13 +90,13 @@ let to_string =
 
 let err =
  fun error ->
-  fun loc -> (raise ( (FanLoc.Exc_located (loc, ( (Error.E (error)) ))) ))
+  fun loc -> (raise ( (FanLoc.Exc_located (loc, ( (TokenError (error)) ))) ))
 
 
 let error_no_respect_rules =
  fun p_con ->
   fun p_prm ->
-   (raise ( (Error.E ((Error.Illegal_token_pattern (p_con, p_prm)))) ))
+   (raise ( (TokenError ((Illegal_token_pattern (p_con, p_prm)))) ))
 
 
 let check_keyword = fun _ -> (true)
@@ -190,7 +176,7 @@ let check_keyword_as_label =
                        | _ -> "") in
                      if (( (s <> "") ) && ( (is_kwd s) )) then
                       (
-                      (err ( (Error.Keyword_as_label (s)) ) loc)
+                      (err ( (Keyword_as_label (s)) ) loc)
                       )
                      else ()
 
@@ -199,64 +185,48 @@ let check_unknown_keywords =
                                 fun loc ->
                                  (match tok with
                                   | SYMBOL (s) ->
-                                     (err ( (Error.Illegal_token (s)) ) loc)
+                                     (err ( (Illegal_token (s)) ) loc)
                                   | _ -> ())
 
-let _ = let module M =
-                                                       (FanUtil.ErrorHandler.Register)
-                                                        (Error) in
-                                                      ()
-
 module Filter =
-                                                           struct
-                                                            type token_filter =
-                                                             (t,
-                                                              FanLoc.t) stream_filter
+                                               struct
+                                                type token_filter =
+                                                 (t, FanLoc.t) stream_filter
 
-                                                            type t = 
-                                                            {
-                                                              is_kwd:
-                                                               (string ->
-                                                                bool);
-                                                              mutable filter:
-                                                               token_filter}
+                                                type t = {
+                                                           is_kwd:(string ->
+                                                                   bool);
+                                                           mutable filter:
+                                                            token_filter}
 
-                                                            let mk =
-                                                             fun is_kwd ->
-                                                              {is_kwd =
-                                                                is_kwd;
-                                                               filter =
-                                                                ignore_layout}
+                                                let mk =
+                                                 fun is_kwd ->
+                                                  {is_kwd = is_kwd;
+                                                   filter = ignore_layout}
 
-                                                            let filter =
-                                                             fun x ->
-                                                              let f =
-                                                               fun (tok, loc) ->
-                                                                let tok =
-                                                                 (keyword_conversion
-                                                                   tok (
-                                                                   x.is_kwd
-                                                                   )) in
-                                                                (tok, loc) in
-                                                              fun strm ->
-                                                               ((x.filter) (
-                                                                 (Stream.map
-                                                                   f strm) ))
+                                                let filter =
+                                                 fun x ->
+                                                  let f =
+                                                   fun (tok, loc) ->
+                                                    let tok =
+                                                     (keyword_conversion tok
+                                                       ( x.is_kwd )) in
+                                                    (tok, loc) in
+                                                  fun strm ->
+                                                   ((x.filter) (
+                                                     (Stream.map f strm) ))
 
-                                                            let define_filter =
-                                                             fun x ->
-                                                              fun f ->
-                                                               x.filter <-
-                                                                (f ( 
-                                                                  x.filter ))
+                                                let define_filter =
+                                                 fun x ->
+                                                  fun f ->
+                                                   x.filter <-
+                                                    (f ( x.filter ))
 
-                                                            let keyword_added =
-                                                             fun _ ->
-                                                              fun _ ->
-                                                               fun _ -> ()
+                                                let keyword_added =
+                                                 fun _ ->
+                                                  fun _ -> fun _ -> ()
 
-                                                            let keyword_removed =
-                                                             fun _ ->
-                                                              fun _ -> ()
+                                                let keyword_removed =
+                                                 fun _ -> fun _ -> ()
 
-                                                           end
+                                               end

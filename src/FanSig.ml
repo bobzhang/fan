@@ -2,12 +2,12 @@
 (** An Error modules can be registred with
     the {!ErrorHandler.Register}
     functor in order to be well printed. *)
-module type Error = sig
-  type t
-  exception E of t
-  val to_string : t -> string
-  val print : Format.formatter -> t -> unit
-end
+(* module type Error = sig *)
+(*   type t *)
+(*   exception E of t *)
+(*   val to_string : t -> string *)
+(*   val print : Format.formatter -> t -> unit *)
+(* end *)
 
 (** The generic quotation type.
     To see how fields are used here is an example:
@@ -60,7 +60,7 @@ module type Token = sig
       If you do not care about this information just return [()]. *)
   val keyword_removed : t -> string -> unit
   end
-  module Error : Error
+
 end
       
 (** This signature describes tokens for the OCaml and the Revised

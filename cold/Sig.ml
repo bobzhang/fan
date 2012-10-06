@@ -652,8 +652,6 @@ module type Lexer =
  sig
   module Token : FanSig.Token
 
-  module Error : FanSig.Error
-
   val mk :
    (unit -> (FanLoc.t -> (char Stream.t -> (Token.t * FanLoc.t) Stream.t)))
 

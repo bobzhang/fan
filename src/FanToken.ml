@@ -2,31 +2,34 @@ open Format;
 open LibUtil;
 open FanSig;
 type t = camlp4_token;
-module Error = struct
-  type t =
+
+
+type error = 
     [ Illegal_token of string
     | Keyword_as_label of string
-    | Illegal_token_pattern of string and string
-    | Illegal_constructor of string ];
-  
-  exception E of t;
-  
-  let print ppf = fun
-    [ Illegal_token s ->
+    | Illegal_token_pattern of (string * string)
+    | Illegal_constructor of string];
+
+
+exception TokenError of  error;
+
+let print_basic_error ppf = fun
+    [Illegal_token s ->
       fprintf ppf "Illegal token (%s)" s
-    | Keyword_as_label kwd ->
+    |Keyword_as_label kwd ->
         fprintf ppf "`%s' is a keyword, it cannot be used as label name" kwd
-    | Illegal_token_pattern p_con p_prm ->
+    |Illegal_token_pattern (p_con, p_prm) ->
         fprintf ppf "Illegal token pattern: %s %S" p_con p_prm
-    | Illegal_constructor con ->
-        fprintf ppf "Illegal constructor %S" con ];
-    
-  let to_string x =
-    let b = Buffer.create 50 in
-    let () = bprintf b "%a" print x in Buffer.contents b;
-end;
+    |Illegal_constructor con ->
+        fprintf ppf "Illegal constructor %S" con
+    ];
 
+let string_of_error_msg = to_string_of_printer print_basic_error;
 
+Printexc.register_printer (fun
+  [TokenError e -> Some (string_of_error_msg e)
+  | _ -> None]);
+  
 let to_string =fun
   [ KEYWORD s    -> sprintf "KEYWORD %S" s
   | SYMBOL s     -> sprintf "SYMBOL %S" s
@@ -54,11 +57,11 @@ let to_string =fun
   | LINE_DIRECTIVE i (Some s) -> sprintf "LINE_DIRECTIVE %d %S" i s ];
 
 let err error loc =
-  raise (FanLoc.Exc_located loc (Error.E error));
+  raise (FanLoc.Exc_located loc (TokenError error));
     
 
 let error_no_respect_rules p_con p_prm =
-  raise (Error.E (Error.Illegal_token_pattern p_con p_prm));
+  raise (TokenError (Illegal_token_pattern p_con p_prm));
 
 let check_keyword _ = True;
   (* FIXME let lb = Lexing.from_string s in
@@ -102,14 +105,14 @@ let check_keyword_as_label tok loc is_kwd =
   [ LABEL s         -> s
   | OPTLABEL s      -> s
   | _               -> "" ] in
-  if s <> "" && is_kwd s then err (Error.Keyword_as_label s) loc else ();
+  if s <> "" && is_kwd s then err (Keyword_as_label s) loc else ();
     
 let check_unknown_keywords tok loc = match tok with
-  [ SYMBOL s -> err (Error.Illegal_token s) loc
+  [ SYMBOL s -> err (Illegal_token s) loc
   | _        -> () ];
   
 
-let module M = FanUtil.ErrorHandler.Register Error in ();
+(* let module M = FanUtil.ErrorHandler.Register Error in (); *)
 
 module Filter = struct
   type token_filter = stream_filter t FanLoc.t;

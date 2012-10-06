@@ -1,5 +1,24 @@
 
 open Format;
+open LibUtil;
+
+
+let normal_handler = fun
+  [ Out_of_memory ->  Some "Out of memory"
+  | Assert_failure ((file, line, char)) ->
+      Some (sprintf "Assertion failed, file %S, line %d, char %d" file line
+              char)
+  | Match_failure ((file, line, char)) ->
+      Some (sprintf "Pattern matching failed, file %S, line %d, char %d" file
+              line char)
+  | Failure str -> Some (sprintf "Failure: %S" str)
+  | Invalid_argument str -> Some (sprintf "Invalid argument: %S" str)
+  | Sys_error str -> Some (sprintf "I/O error: %S" str)
+  | Stream.Failure -> Some (sprintf "Parse failure")
+  | Stream.Error str -> Some (sprintf  "Parse error: %s" str)
+  | _ -> None];
+    
+Printexc.register_printer normal_handler; 
 
 (* copied from otypes.ml Values *)
 let valid_float_lexeme s =
@@ -129,74 +148,9 @@ let remove_underscores s =
   Buffer.contents buf ;
     
 
-(********************************************************************)
-module ErrorHandler = struct
-  (*
-    {[
-    let a : string = Obj.(obj (field (field (repr (Failure "haha")) 0) 0));;
-    val a : string = "Failure"
-    ]}
-   *)
-  let default_handler ppf x =
-    let x = Obj.repr x in begin 
-      fprintf ppf "Camlp4: Uncaught exception: %s" (Obj.(obj (field (field x 0) 0)) : string);
-      if (Obj.size x) > 1  then begin
-        pp_print_string ppf " (";
-        for i = 1 to (Obj.size x) - 1 do
-          if i > 1 then pp_print_string ppf ", " else ();
-          pp_print_string ppf  (BatPervasives.dump  (Obj.field x i))
-        done;
-        pp_print_char ppf ')'
-      end
-     else ();
-     fprintf ppf "@."
-    end;
-  let handler =
-    ref (fun ppf default_handler exn -> default_handler ppf exn);
-  let register f =
-    let current_handler = !handler in
-    handler :=
-    fun ppf default_handler exn ->
-      try f ppf exn with exn -> current_handler ppf default_handler exn;
-          
-  module Register (Error : FanSig.Error) = struct
-    let _ =
-      let current_handler = !handler in
-      handler :=
-      fun ppf default_handler ->
-        fun
-          [ Error.E x -> Error.print ppf x
-          | x -> current_handler ppf default_handler x];
-  end;
+  
       
-  let gen_print ppf default_handler =   fun
-    [ Out_of_memory -> fprintf ppf "Out of memory"
-    | Assert_failure ((file, line, char)) ->
-        fprintf ppf "Assertion failed, file %S, line %d, char %d" file line
-          char
-    | Match_failure ((file, line, char)) ->
-        fprintf ppf "Pattern matching failed, file %S, line %d, char %d" file
-          line char
-    | Failure str -> fprintf ppf "Failure: %S" str
-    | Invalid_argument str -> fprintf ppf "Invalid argument: %S" str
-    | Sys_error str -> fprintf ppf "I/O error: %S" str
-    | Stream.Failure -> fprintf ppf "Parse failure"
-    | Stream.Error str -> fprintf ppf "Parse error: %s" str
-    | x -> !handler ppf default_handler x];
-          
-  let print ppf = gen_print ppf default_handler;
-      
-  let try_print ppf = gen_print ppf (fun _ -> raise); (* FIXME*)
-      
-  let to_string exn =
-    let buf = Buffer.create 128 in
-    let () = bprintf buf "%a" print exn in Buffer.contents buf;
-      
-  let try_to_string exn =
-    let buf = Buffer.create 128 in
-    let () = bprintf buf "%a" try_print exn in Buffer.contents buf;
-      
-end;
+
 
 
 (********************************************************************************)

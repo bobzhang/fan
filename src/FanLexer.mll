@@ -26,6 +26,7 @@ let mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);            
  *)
 
 open FanUtil
+open LibUtil  
 open Format  
 module Make (Token : FanSig.Camlp4Token)
 = struct
@@ -36,9 +37,9 @@ module Make (Token : FanSig.Camlp4Token)
   (* open Camlp4.Sig *)
   open FanSig
   (* Error report *)
-  module Error = struct
+  (* module Error = struct *)
 
-    type t =
+    type lex_error  =
       | Illegal_character of char
       | Illegal_escape    of string
       | Unterminated_comment
@@ -52,12 +53,10 @@ module Make (Token : FanSig.Camlp4Token)
       | Comment_not_end
       | Literal_overflow of string
 
-    exception E of t
+    exception Lexing_error  of lex_error
 
-    open Format
 
-    let print ppf =
-      function
+    let print_lex_error ppf =  function
       | Illegal_character c ->
           fprintf ppf "Illegal character (%s)" (Char.escaped c)
       | Illegal_escape s ->
@@ -83,12 +82,16 @@ module Make (Token : FanSig.Camlp4Token)
       | Comment_not_end ->
           fprintf ppf "this is not the end of a comment"
 
-    let to_string x =
-      let b = Buffer.create 50 in
-      let () = bprintf b "%a" print x in Buffer.contents b
-  end;;
-
-  let module M = FanUtil.ErrorHandler.Register(Error) in ()
+    (* let to_string x = *)
+    (*   let b = Buffer.create 50 in *)
+    (*   let () = bprintf b "%a" print x in Buffer.contents b *)
+            
+  let lex_error_to_string = to_string_of_printer print_lex_error
+  let _ =
+    Printexc.register_printer (function
+      | Lexing_error e -> Some (lex_error_to_string e)
+      | _ -> None )    
+  (* let module M = FanUtil.ErrorHandler.Register(Error) in () *)
 
   let debug = ref false
   let opt_char_len  = function
@@ -125,7 +128,7 @@ module Make (Token : FanSig.Camlp4Token)
     * end  *)
        
 
-  open Error
+  (* open Error *)
 
   (* To store some context information:
   *   loc       : position of the beginning of a string, quotation and comment
@@ -220,11 +223,11 @@ module Make (Token : FanSig.Camlp4Token)
 	
 
 
-  let err (error:Error.t) (loc:FanLoc.t) =
-    raise(FanLoc.Exc_located(loc, Error.E error))
+  let err (error:lex_error) (loc:FanLoc.t) =
+    raise(FanLoc.Exc_located(loc, Lexing_error error))
 
   let warn error loc =
-    Format.eprintf "Warning: %a: %a@." FanLoc.print loc Error.print error
+    Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
 
   }
 
@@ -408,7 +411,7 @@ and comment c = parse
      | "\"" { store c;
            begin
              try with_curr_loc string c
-             with FanLoc.Exc_located(_, Error.E Unterminated_string) ->
+             with FanLoc.Exc_located(_, Lexing_error Unterminated_string) ->
                err Unterminated_string_in_comment (loc c)
            end;
       Buffer.add_char c.buffer '"';
@@ -506,7 +509,7 @@ and quotation c = parse
     | "\"" {store c;
             begin
               try with_curr_loc string c
-              with FanLoc.Exc_located(_,Error.E Unterminated_string) ->
+              with FanLoc.Exc_located(_,Lexing_error Unterminated_string) ->
                 err Unterminated_string_in_quotation (loc c)
             end;
             Buffer.add_char c.buffer '"';
@@ -571,7 +574,7 @@ and antiquot name depth c  = parse
     | "\"" { store c ;
              begin
                try with_curr_loc string c
-               with FanLoc.Exc_located (_,Error.E Unterminated_string) ->
+               with FanLoc.Exc_located (_,Lexing_error Unterminated_string) ->
                  err Unterminated_string_in_antiquot (loc c)
              end;
              Buffer.add_char c.buffer '"';
