@@ -37,8 +37,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr;
     expr:
-    [ [ m=start_debug;  `LIDENT section;  `STRING (fmt,_) ;
-        args=LIST0 expr Level ".";  x=end_or_in->
+    [ [ start_debug{m};  `LIDENT section;  `STRING (fmt,_) ;
+        LIST0 'expr Level "."{arg}; 'end_or_in{x} ->
       match (x, debug_mode section) with
       [ (None,   False) -> <:expr< () >>
       | (Some e, False) -> e
@@ -47,7 +47,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
     ] ]
     end_or_in:
     [ [ "end" -> None
-      | "in"; e =expr -> Some e
+      | "in"; e = 'expr -> Some e
     ] ]
     start_debug:
     [ [ `LIDENT "debug" -> None
@@ -61,7 +61,7 @@ module IdGrammarParser = struct
   let name = "Camlp4GrammarParser";
   let version = Sys.ocaml_version;
 end;
-(* invoked Ast2pt here *)
+
 let string_of_patt patt =
   let buf = Buffer.create 42 in
   let () =
@@ -523,14 +523,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   EXTEND Gram GLOBAL: expr psymbol;
     expr: After "top"
-      [ [ "EXTEND"; e = extend_body; "END" -> e
-        | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] 
+      [ [ "EXTEND"; e = 'extend_body; "END" -> e
+        | "DELETE_RULE"; e = 'delete_rule_body; "END" -> e ] ] 
     extend_header:
-      [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> 
+      [ [ "("; i = 'qualid; ":"; t = 't_qualid; ")" -> 
         let old=gm() in 
         let () = grammar_module_name := t in
         (Some i,old)
-        | t = qualuid -> begin
+        | t = 'qualuid -> begin
             let old = gm() in
             let () = grammar_module_name := t in 
             (None,old)
@@ -538,50 +538,50 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | -> (None,gm()) (* FIXME *)
       ] ]
     extend_body:
-      [ [ (gram,old) = extend_header; global_list = OPT global;
-          el = LIST1 [ e = entry  -> e ] -> (* semi_sep removed *)
-            let res = text_of_functorial_extend _loc  gram global_list el in 
+      [ [ (gram, old) = 'extend_header; global_list = OPT 'global;
+          el = LIST1 [ e = 'entry  -> e ] -> (* semi_sep removed *)
+            let res = text_of_functorial_extend _loc  gram global_list el in
             let () = grammar_module_name := old in
-            res 
-        ] ] 
+            res
+        ] ]
     delete_rule_body:
-      [ [ old = delete_rule_header; n = name; ":"; sl = LIST0 psymbol SEP semi_sep -> 
+      [ [ old = 'delete_rule_header; n = 'name; ":"; sl = LIST0 'psymbol SEP 'semi_sep -> 
         let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
         let res =  <:expr< $(id:gm()).delete_rule $e $b >>  in
         let () = grammar_module_name := old  in 
         res
         ] ]
      delete_rule_header: (*for side effets, parser action *)
-        [[ g = qualuid ->
+        [[ g = 'qualuid ->
           let old = gm () in
           let () = grammar_module_name := g in
           old
          ]]
     qualuid:
       [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >> ] ] 
+        | `UIDENT x -> <:ident< $uid:x >> ] ] 
     qualid:
       [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | `UIDENT x -> <:ident< $uid:x >>
         | `LIDENT x -> <:ident< $lid:x >> ] ]
     t_qualid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
+      [ [ `UIDENT x ; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+        | `UIDENT x; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
-      [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
+      [ [ `UIDENT "GLOBAL"; ":"; sl = LIST1 'name; 'semi_sep -> sl ] ]
     entry:
-      [ [ n = name; ":"; pos = OPT position; ll = level_list ->
+      [ [ n = 'name; ":"; pos = OPT 'position; ll = 'level_list ->
             {name = n; pos = pos; levels = ll} ] ]
     position:
       [ [ `UIDENT ("First"|"Last" as x ) ->
          <:expr< `$uid:x >>
         (* <:expr< FanSig.Grammar.$uid:x >> *)
-        | `UIDENT ("Before" | "After" | "Level" as x) ; n = string ->
+        | `UIDENT ("Before" | "After" | "Level" as x) ; n = 'string ->
             <:expr< ` $uid:x  $n >> (*FIXME string escape?*)
             (* <:expr< FanSig.Grammar.$uid:x $n >> *)
         ] ]
     level_list:
-      [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
+      [ [ "["; ll = LIST0 'level SEP "|"; "]" -> ll ] ]
     level:
       [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
             {label = lab; assoc = ass; rules = rules} ] ]
@@ -674,14 +674,14 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         (*     let n = mk_name _loc <:ident< $uid:i.$il >> in *)
         (*     {used = [n.tvar]; text = TXnterm _loc n lev; *)
         (*     styp = STquo _loc n.tvar; pattern = None} *)
-        | n = name; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
+        | "'";n = name; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             {used = [n.tvar]; text = TXnterm _loc n lev;
              styp = STquo _loc n.tvar; pattern = None}
-        | s = SELF; "{"; p=pattern; "}"   -> { (s) with pattern = Some p}
+        | p = pattern; "=";s = SELF   -> { (s) with pattern = Some p}
             
         | "("; s_t = SELF; ")" -> s_t ] ]
     pattern:
-      [ [ i = LIDENT -> <:patt< $lid:i >>
+      [ [ `LIDENT i -> <:patt< $lid:i >>
         | "_" -> <:patt< _ >>
         | "("; p = pattern; ")" -> <:patt< $p >>
         | "("; p1 = pattern; ","; p2 = comma_patt; ")" -> <:patt< ( $p1, $p2 ) >>
@@ -2634,15 +2634,6 @@ New syntax:\
         | x = patt -> x
         | -> <:patt<>>
       ] ]
-     (* idea, associate to aave code
-        [ "," -> << $x, $y >>
-          ";" -> << $x; $y >>
-          "|" -> << $x|$y >>
-          "of" -> << $x of $y >>
-          
-        ]
-        
-      *)   
     ctyp_quot:
       [ [ x = more_ctyp; ","; y = comma_ctyp -> <:ctyp< $x, $y >>
         | x = more_ctyp; ";"; y = label_declaration_list -> <:ctyp< $x; $y >>
@@ -3128,7 +3119,93 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   module ME = MetaAst.Expr;
   module MP = MetaAst.Patt;
 
-  let anti_obj = Expr.antiquot_expander ~parse_expr:TheAntiquotSyntax.parse_expr ~parse_patt:TheAntiquotSyntax.parse_patt ; 
+  let antiquot_expander = object
+    inherit Ast.map as super;
+    method! patt = fun
+      [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
+          handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc
+            ~decorate:(fun n p ->
+            match n with
+            [ "antisig_item" -> <:patt< Ast.SgAnt $(mloc _loc) $p >>
+            | "antistr_item" -> <:patt< Ast.StAnt $(mloc _loc) $p >>
+            | "antictyp" -> <:patt< Ast.TyAnt $(mloc _loc) $p >>
+            | "antipatt" -> <:patt< Ast.PaAnt $(mloc _loc) $p >>
+            | "antiexpr" -> <:patt< Ast.ExAnt $(mloc _loc) $p >>
+            | "antimodule_type" -> <:patt< Ast.MtAnt $(mloc _loc) $p >>
+            | "antimodule_expr" -> <:patt< Ast.MeAnt $(mloc _loc) $p >>
+            | "anticlass_type" -> <:patt< Ast.CtAnt $(mloc _loc) $p >>
+            | "anticlass_expr" -> <:patt< Ast.CeAnt $(mloc _loc) $p >>
+            | "anticlass_sig_item" -> <:patt< Ast.CgAnt $(mloc _loc) $p >>
+            | "anticlass_str_item" -> <:patt< Ast.CrAnt $(mloc _loc) $p >>
+            | "antiwith_constr" -> <:patt< Ast.WcAnt $(mloc _loc) $p >>
+            | "antibinding" -> <:patt< Ast.BiAnt $(mloc _loc) $p >>
+            | "antirec_binding" -> <:patt< Ast.RbAnt $(mloc _loc) $p >>
+            | "antimatch_case" -> <:patt< Ast.McAnt $(mloc _loc) $p >>
+            | "antimodule_binding" -> <:patt< Ast.MbAnt $(mloc _loc) $p >>
+            | "antiident" -> <:patt< Ast.IdAnt $(mloc _loc) $p >>
+            | _ -> p ])
+      | p -> super#patt p ];
+    method! expr = fun
+      [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
+          handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc
+            ~decorate:(fun n e ->
+            match n with
+            [ "`int" -> <:expr< string_of_int $e >>
+            | "`int32" -> <:expr< Int32.to_string $e >>
+            | "`int64" -> <:expr< Int64.to_string $e >>
+            | "`nativeint" -> <:expr< Nativeint.to_string $e >>
+            | "`flo" -> <:expr< FanUtil.float_repres $e >>
+            | "`str" -> <:expr< Ast.safe_string_escaped $e >>
+            | "`chr" -> <:expr< Char.escaped $e >>
+            | "`bool" -> <:expr< Ast.IdUid $(mloc _loc) (if $e then "True" else "False") >>
+            | "liststr_item" -> <:expr< Ast.stSem_of_list $e >>
+            | "listsig_item" -> <:expr< Ast.sgSem_of_list $e >>
+            | "listclass_sig_item" -> <:expr< Ast.cgSem_of_list $e >>
+            | "listclass_str_item" -> <:expr< Ast.crSem_of_list $e >>
+            | "listmodule_expr" -> <:expr< Ast.meApp_of_list $e >>
+            | "listmodule_type" -> <:expr< Ast.mtApp_of_list $e >>
+            | "listmodule_binding" -> <:expr< Ast.mbAnd_of_list $e >>
+            | "listbinding" -> <:expr< Ast.biAnd_of_list $e >>
+            | "listbinding;" -> <:expr< Ast.biSem_of_list $e >>
+            | "listrec_binding" -> <:expr< Ast.rbSem_of_list $e >>
+            | "listclass_type" -> <:expr< Ast.ctAnd_of_list $e >>
+            | "listclass_expr" -> <:expr< Ast.ceAnd_of_list $e >>
+            | "listident" -> <:expr< Ast.idAcc_of_list $e >>
+            | "listctypand" -> <:expr< Ast.tyAnd_of_list $e >>
+            | "listctyp;" -> <:expr< Ast.tySem_of_list $e >>
+            | "listctyp*" -> <:expr< Ast.tySta_of_list $e >>
+            | "listctyp|" -> <:expr< Ast.tyOr_of_list $e >>
+            | "listctyp," -> <:expr< Ast.tyCom_of_list $e >>
+            | "listctyp&" -> <:expr< Ast.tyAmp_of_list $e >>
+            | "listwith_constr" -> <:expr< Ast.wcAnd_of_list $e >>
+            | "listmatch_case" -> <:expr< Ast.mcOr_of_list $e >>
+            | "listpatt," -> <:expr< Ast.paCom_of_list $e >>
+            | "listpatt;" -> <:expr< Ast.paSem_of_list $e >>
+            | "listexpr," -> <:expr< Ast.exCom_of_list $e >>
+            | "listexpr;" -> <:expr< Ast.exSem_of_list $e >>
+            | "antisig_item" -> <:expr< Ast.SgAnt $(mloc _loc) $e >>
+            | "antistr_item" -> <:expr< Ast.StAnt $(mloc _loc) $e >>
+            | "antictyp" -> <:expr< Ast.TyAnt $(mloc _loc) $e >>
+            | "antipatt" -> <:expr< Ast.PaAnt $(mloc _loc) $e >>
+            | "antiexpr" -> <:expr< Ast.ExAnt $(mloc _loc) $e >>
+            | "antimodule_type" -> <:expr< Ast.MtAnt $(mloc _loc) $e >>
+            | "antimodule_expr" -> <:expr< Ast.MeAnt $(mloc _loc) $e >>
+            | "anticlass_type" -> <:expr< Ast.CtAnt $(mloc _loc) $e >>
+            | "anticlass_expr" -> <:expr< Ast.CeAnt $(mloc _loc) $e >>
+            | "anticlass_sig_item" -> <:expr< Ast.CgAnt $(mloc _loc) $e >>
+            | "anticlass_str_item" -> <:expr< Ast.CrAnt $(mloc _loc) $e >>
+            | "antiwith_constr" -> <:expr< Ast.WcAnt $(mloc _loc) $e >>
+            | "antibinding" -> <:expr< Ast.BiAnt $(mloc _loc) $e >>
+            | "antirec_binding" -> <:expr< Ast.RbAnt $(mloc _loc) $e >>
+            | "antimatch_case" -> <:expr< Ast.McAnt $(mloc _loc) $e >>
+            | "antimodule_binding" -> <:expr< Ast.MbAnt $(mloc _loc) $e >>
+            | "antiident" -> <:expr< Ast.IdAnt $(mloc _loc) $e >>
+            | _ -> e ])
+      | e -> super#expr e ];
+  end;
+
   let add_quotation name entry mexpr mpatt =
     let entry_eoi = Gram.mk (Gram.name entry) in
     let parse_quot_string entry loc s =
@@ -3140,8 +3217,8 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     let expand_expr loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi loc s in
       let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
-      let meta_ast = mexpr loc ast in (* mexpr and then anti_expander *)
-      let exp_ast = anti_obj#expr meta_ast in
+      let meta_ast = mexpr loc ast in
+      let exp_ast = antiquot_expander#expr meta_ast in
       exp_ast in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
@@ -3149,7 +3226,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     let expand_patt _loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi _loc s in
       let meta_ast = mpatt _loc ast in
-      let exp_ast = anti_obj#patt meta_ast in
+      let exp_ast = antiquot_expander#patt meta_ast in
       match loc_name_opt with
       [ None -> exp_ast
       | Some name ->

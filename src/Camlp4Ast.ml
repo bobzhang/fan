@@ -572,3 +572,15 @@ class reloc _loc = object
   inherit map ;
   method! loc _ = _loc;
 end;
+
+(*
+  {[]}
+ *)  
+let wildcarder = object (self)
+  inherit map as super;
+  method! patt = fun
+  [ <:patt@_loc< $lid:_ >> -> <:patt< _ >>
+  | <:patt< ($p as $_) >> -> self#patt p
+  | p -> super#patt p ];
+end;
+

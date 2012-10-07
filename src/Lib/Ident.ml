@@ -20,4 +20,12 @@ let rec to_lid = fun
   | <:ident< $lid:lid >> -> lid
   | _                     -> assert False ];
 
-  
+
+(*
+  {[
+  ]}
+ *)  
+let rec tvar_of_ident = fun
+  [ <:ident< $lid:x >> | <:ident< $uid:x >> -> x
+  | <:ident< $uid:x.$xs >> -> x ^ "__" ^ tvar_of_ident xs
+  | _ -> failwith "internal error in the Grammar extension" ];

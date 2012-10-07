@@ -1,14 +1,3 @@
-
-(** An Error modules can be registred with
-    the {!ErrorHandler.Register}
-    functor in order to be well printed. *)
-(* module type Error = sig *)
-(*   type t *)
-(*   exception E of t *)
-(*   val to_string : t -> string *)
-(*   val print : Format.formatter -> t -> unit *)
-(* end *)
-
 (** The generic quotation type.
     To see how fields are used here is an example:
     <:q_name@q_loc<q_contents>>
@@ -118,9 +107,6 @@ type camlp4_token =
 (** A signature for specialized tokens. *)
 module type Camlp4Token = Token with type t = camlp4_token
       
-
-      
-
 
 
 (** A signature for dynamic loaders. *)
