@@ -310,4 +310,11 @@ let antiquot_expander ~parse_patt ~parse_expr = object
       | e -> super#expr e ];
   end;
   
-   
+(* let capture_antiquot = object *)
+(*   inherit Ast.map as super; *)
+(*   method! patt = fun *)
+(*   [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p -> *)
+(*     () *)
+(*   | p -> super#patt p *)
+(*   ]; *)
+(* end; *)

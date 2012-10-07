@@ -53,21 +53,19 @@ let wrap =
                                                                     Sys.Break))) as
                                                                     x) ->
                                                                     (raise x)
-                                                                    | 
-                                                                    x ->
-                                                                    let x =
-                                                                    (match
-                                                                    x with
                                                                     | FanLoc.Exc_located
                                                                     (loc, x) ->
                                                                     (
-                                                                    (Toploop.print_location
-                                                                    Format.err_formatter
-                                                                    loc)
+                                                                    (Format.eprintf
+                                                                    "@[<0>Parsing Error:%a%s@]@."
+                                                                    Toploop.print_location
+                                                                    loc (
+                                                                    (Printexc.to_string
+                                                                    x) ))
                                                                     );
-                                                                    x
+                                                                    (raise x)
                                                                     | 
-                                                                    x -> x) in
+                                                                    x ->
                                                                     (
                                                                     (Format.eprintf
                                                                     "@[<0>%s@]@."

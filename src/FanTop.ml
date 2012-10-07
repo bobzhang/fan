@@ -3,27 +3,26 @@
 module P = MakePreCast.Make FanLexer.Make ;
 open P;
 open FanSig;  
-  let wrap parse_fun lb =
-    let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
-    let not_filtered_token_stream = Lexer.from_lexbuf lb in
-    let token_stream = Gram.filter  not_filtered_token_stream in
-    try  match token_stream with parser
-      [ [< (EOI, _) >] -> raise End_of_file
-      | [< >] -> parse_fun token_stream ]
-    with
-    [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
-        as x -> raise x
-    | x ->
-        let x =
-          match x with
-         [ FanLoc.Exc_located loc x -> begin
-              Toploop.print_location Format.err_formatter loc;
-              x
-            end
-          | x -> x ] in begin
-              Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
-              raise Exit
-          end ];
+let wrap parse_fun lb =
+  let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
+  let not_filtered_token_stream = Lexer.from_lexbuf lb in
+  let token_stream = Gram.filter  not_filtered_token_stream in
+  try  match token_stream with parser
+  [ [< (EOI, _) >] -> raise End_of_file
+  | [< >] -> parse_fun token_stream ]
+  with
+  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
+    as x -> raise x
+  | FanLoc.Exc_located loc x -> begin
+      Format.eprintf "@[<0>Parsing Error:%a%s@]@."
+        Toploop.print_location loc (Printexc.to_string x);
+      raise x
+  end
+  | x ->  begin
+      Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
+      raise Exit
+  end ] ;
+
 
 let toplevel_phrase token_stream =
   match Gram.parse_origin_tokens

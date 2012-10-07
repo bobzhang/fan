@@ -10,3 +10,5 @@ true:pkg_batteries
 # <{cold,src}/Lib/{Plongident,Ploc,Ptype,Ptyp,Pexp,Ppat,Pmty,Psig,Pmod,Pstr,Pfield,Pcty,Pcl,Pcf,Pctf}.ml>:pkg_compiler-libs.common
 
 <{cold,src}/Printers/{DumpOCamlAst,DumpCamlp4Ast,Null,OCaml}.cmx>:for-pack(Printers)
+
+<test*.{byte}>:pkg_compiler-libs.common
