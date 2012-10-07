@@ -37,8 +37,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr;
     expr:
-    [ [ m = start_debug; section = LIDENT; fmt = STRING;
-        args = LIST0 expr Level "."; x = end_or_in ->
+    [ [ start_debug{m};  `LIDENT section;  `STRING (fmt,_) ;
+        LIST0 expr Level "."{args};  end_or_in{x} ->
       match (x, debug_mode section) with
       [ (None,   False) -> <:expr< () >>
       | (Some e, False) -> e
@@ -47,11 +47,11 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
     ] ]
     end_or_in:
     [ [ "end" -> None
-      | "in"; e = expr -> Some e
+      | "in"; expr{e} -> Some e
     ] ]
     start_debug:
-    [ [ LIDENT "debug" -> None
-      | LIDENT "camlp4_debug" -> Some "Camlp4"
+    [ [ `LIDENT "debug" -> None
+      | `LIDENT "camlp4_debug" -> Some "Camlp4"
     ] ]
   END;
 
@@ -357,7 +357,9 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         <:expr< $(id:gm()).srules $(entry.expr) $(make_expr_rules _loc entry rl "") >>
     | TXself _loc -> <:expr< $(id:gm()).Sself >>
     | TXkwd _loc kwd -> <:expr< $(id:gm()).Skeyword $str:kwd >>
-    | TXtok _loc match_fun descr ->
+    | TXtok _loc match_fun descr -> (*
+           Stoken (( function | `UIDENT _ -> true | _ -> false ), "`UIDENT (_)")
+        *)
         <:expr< $(id:gm()).Stoken ($match_fun, $`str:descr) >> ]
 
   and make_expr_rules _loc n rl tvar =
@@ -382,6 +384,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     in
     (<:expr< $(n.expr) >>, sl)
   ;
+
 
 
   let mk_name _loc i =
@@ -490,18 +493,22 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       | [e::el] -> <:expr< do { $(List.fold_left (fun acc x -> <:expr< $acc; $x >>) e el) } >>  ]  in
     let_in_of_extend _loc gram gl el args;
 
+
+
+
+ 
   let mk_tok _loc p t =
     let p' = Ast.wildcarder#patt p in
     let match_fun =
       if Ast.is_irrefut_patt p' then
-        <:expr< fun [ $pat:p' -> True ] >>
+        <:expr< fun [ $pat:p' -> True ] >> (* why not p instead of p'*)
       else
         <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
-    let descr = string_of_patt p' in
+    let descr = string_of_patt p' in (* to normalize ?*)
     let text = TXtok _loc match_fun descr in
     {used = []; text = text; styp = t; pattern = Some p };
 
-  let symbol = Gram.mk "symbol";
+  let psymbol = Gram.mk "psymbol";
 
   (* FIXME why deprecate such syntax *)  
   let check_not_tok s =
@@ -514,16 +521,16 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   FanConfig.antiquotations := True;
 
-  EXTEND Gram GLOBAL: expr symbol;
+  EXTEND Gram GLOBAL: expr psymbol;
     expr: After "top"
-      [ [ "EXTEND"; e = extend_body; "END" -> e
-        | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] 
+      [ [ "EXTEND"; extend_body{e}; "END" -> e
+        | "DELETE_RULE"; delete_rule_body{e}; "END" -> e ] ] 
     extend_header:
-      [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> 
+      [ [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
         let old=gm() in 
         let () = grammar_module_name := t in
         (Some i,old)
-        | t = qualuid -> begin
+        |  qualuid{t} -> begin
             let old = gm() in
             let () = grammar_module_name := t in 
             (None,old)
@@ -531,52 +538,52 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | -> (None,gm()) (* FIXME *)
       ] ]
     extend_body:
-      [ [ (gram,old) = extend_header; global_list = OPT global;
-          el = LIST1 [ e = entry  -> e ] -> (* semi_sep removed *)
+      [ [ extend_header{(gram,old)};  OPT global{global_list};
+          LIST1 [ entry{e}  -> e ]{el} -> (* semi_sep removed *)
             let res = text_of_functorial_extend _loc  gram global_list el in 
             let () = grammar_module_name := old in
             res 
         ] ] 
     delete_rule_body:
-      [ [ old = delete_rule_header; n = name; ":"; sl = LIST0 symbol SEP semi_sep -> 
+      [ [ delete_rule_header{old};  name{n}; ":";  LIST0 psymbol SEP semi_sep{sl} -> 
         let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
         let res =  <:expr< $(id:gm()).delete_rule $e $b >>  in
         let () = grammar_module_name := old  in 
         res
         ] ]
      delete_rule_header: (*for side effets, parser action *)
-        [[ g = qualuid ->
+        [[  qualuid{g} ->
           let old = gm () in
           let () = grammar_module_name := g in
           old
          ]]
     qualuid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >> ] ] 
+      [ [ `UIDENT x; ".";  SELF{xs} -> <:ident< $uid:x.$xs >>
+        | `UIDENT x -> <:ident< $uid:x >> ] ] 
     qualid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >>
-        | i = LIDENT -> <:ident< $lid:i >> ] ]
+      [ [ `UIDENT x; "."; SELF{xs} -> <:ident< $uid:x.$xs >>
+        | `UIDENT x -> <:ident< $uid:x >>
+        | `LIDENT x -> <:ident< $lid:x >> ] ]
     t_qualid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
+      [ [ `UIDENT x; "."; SELF{xs} -> <:ident< $uid:x.$xs >>
+        | `UIDENT x; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
-      [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
+      [ [ `UIDENT "GLOBAL"; ":"; LIST1 name{sl}; semi_sep -> sl ] ]
     entry:
-      [ [ n = name; ":"; pos = OPT position; ll = level_list ->
+      [ [  name{n}; ":"; OPT position{pos};  level_list{ll} ->
             {name = n; pos = pos; levels = ll} ] ]
     position:
       [ [ `UIDENT ("First"|"Last" as x ) ->
          <:expr< `$uid:x >>
         (* <:expr< FanSig.Grammar.$uid:x >> *)
-        | `UIDENT ("Before" | "After" | "Level" as x) ; n = string ->
+        | `UIDENT ("Before" | "After" | "Level" as x) ;  string{n} ->
             <:expr< ` $uid:x  $n >> (*FIXME string escape?*)
             (* <:expr< FanSig.Grammar.$uid:x $n >> *)
         ] ]
     level_list:
-      [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
+      [ [ "["; LIST0 level SEP "|"{ll}; "]" -> ll ] ]
     level:
-      [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
+      [ [ OPT [STRING{x} -> x ]{lab};  OPT assoc{ass};  rule_list{rules} ->
             {label = lab; assoc = ass; rules = rules} ] ]
     assoc:
       [
@@ -587,37 +594,39 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       ] ]
     rule_list:
       [ [ "["; "]" -> []
-        | "["; rules = LIST1 rule SEP "|"; "]" ->
+        | "["; LIST1 rule SEP "|"{rules}; "]" ->
             retype_rule_list_without_patterns _loc rules ] ]
     rule:
-      [ [ psl = LIST0 psymbol SEP semi_sep; "->"; act = expr ->
+      [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} ->
             {prod = psl; action = Some act}
-        | psl = LIST0 psymbol SEP semi_sep ->
+        |  LIST0 psymbol SEP semi_sep{psl} ->
             {prod = psl; action = None} ] ]
+    (* psymbol: *)
+      (* [ (\* [ p = LIDENT; "="; s = psymbol -> {(s) with pattern = Some <:patt< $lid:p >> } *\) *)
+            (* match s.pattern with *)
+            (* [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') -> *)
+            (*     let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in *)
+            (*     let p' = <:patt< ($p' as $lid:p) >> in *)
+            (*     let descr = u ^ " _" in *)
+            (*     let text = TXtok _loc match_fun descr in *)
+            (*     { (s) with text = text; pattern = Some p' } *)
+            (* | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ] *)
+        (* | i = LIDENT; lev = OPT [ `UIDENT "Level"; s = STRING -> s ] -> *)
+        (*     let name = mk_name _loc <:ident< $lid:i >> in *)
+        (*     let text = TXnterm _loc name lev in *)
+        (*     let styp = STquo _loc i in *)
+        (*     {used = [i]; text = text; styp = styp; pattern = None} *)
+        (* [ p = pattern; "="; s = psymbol -> *)
+        (*     {(s) with pattern = Some p} *)
+            (* match s.pattern with *)
+            (* [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> -> *)
+            (*     mk_tok _loc <:patt< `$uid:u $p >> s.styp *)
+            (* | _ -> { (s) with pattern = Some p } ] *)
+        (* | s = psymbol -> s ] ] *)
+
     psymbol:
-      [ [ p = LIDENT; "="; s = symbol ->
-            match s.pattern with
-            [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') ->
-                let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
-                let p' = <:patt< ($p' as $lid:p) >> in
-                let descr = u ^ " _" in
-                let text = TXtok _loc match_fun descr in
-                { (s) with text = text; pattern = Some p' }
-            | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
-        | i = LIDENT; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
-            let name = mk_name _loc <:ident< $lid:i >> in
-            let text = TXnterm _loc name lev in
-            let styp = STquo _loc i in
-            {used = [i]; text = text; styp = styp; pattern = None}
-        | p = pattern; "="; s = symbol ->
-            match s.pattern with
-            [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
-                mk_tok _loc <:patt< $uid:u $p >> s.styp
-            | _ -> { (s) with pattern = Some p } ]
-        | s = symbol -> s ] ]
-    symbol:
       [ "top" NA
-        [ `UIDENT ("LIST0"| "LIST1" as x); s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
+        [ `UIDENT ("LIST0"| "LIST1" as x);  SELF{s};  OPT [ `UIDENT "SEP";  psymbol{t} -> t ]{sep} ->
             let () = check_not_tok s in
             let used =  match sep with
               [ Some symb -> symb.used @ s.used
@@ -626,63 +635,66 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let text = slist _loc
                 (match x with ["LIST0" -> False | "LIST1" -> True | _ -> failwithf "only (LIST0|LIST1) allowed here"])  sep s in
             {used = used; text = text; styp = styp; pattern = None}
-        | UIDENT "OPT"; s = SELF ->
+        | `UIDENT "OPT"; SELF{s} ->
             let () = check_not_tok s in
             let styp = STapp _loc (STlid _loc "option") s.styp in
             let text = TXopt _loc s.text in
             {used = s.used; text = text; styp = styp; pattern = None}
-        | UIDENT "TRY"; s = SELF ->
+        | `UIDENT "TRY"; SELF{s} ->
             let text = TXtry _loc s.text in
             {used = s.used; text = text; styp = s.styp; pattern = None} ]
-      | [ UIDENT "SELF" ->
+      | [ `UIDENT "SELF" ->
             {used = []; text = TXself _loc; styp = STself _loc "SELF"; pattern = None}
-        | UIDENT "NEXT" ->
+        | `UIDENT "NEXT" ->
             {used = []; text = TXnext _loc; styp = STself _loc "NEXT"; pattern = None}
-        | "["; rl = LIST0 rule SEP "|"; "]" ->
+        | "[";  LIST0 rule SEP "|"{rl}; "]" ->
             let rl = retype_rule_list_without_patterns _loc rl in
             let t = new_type_var () in
             {used = used_of_rule_list rl;
             text = TXrules _loc (srules _loc t rl "");
             styp = STquo _loc t; pattern = None}
-        | "`"; p = patt -> mk_tok _loc p (STtok _loc)
-        (* parsing UIDENT *)      
-        | x = UIDENT -> mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>
-                               (STstring_tok _loc)
-        | x = UIDENT; s = STRING -> mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc)
+        (* parsing `UIDENT *)                    
+        | TRY "`"; patt{p} -> mk_tok _loc p (STtok _loc) (* support pattern direclty instead*)
+        (* | x = `UIDENT -> mk_tok _loc <:patt< `$uid:x _ >> (\* FIXED singleton tuple *\) *)
+        (*                        (STstring_tok _loc) *)
+        (* Notice that they have different s.styp, then do some simple transformation*)      
+        (* | x = `UIDENT; s = STRING -> mk_tok _loc <:patt< `$uid:x $str:s >> (STtok _loc) *)
               
-        | x = UIDENT; `ANTIQUOT "" s ->
-            let e = AntiquotSyntax.parse_expr _loc s in
-            let match_fun = <:expr< fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in
-            let descr = "$" ^ x ^ " " ^ s in
-            let text = TXtok _loc match_fun descr in
-            let p = <:patt< $uid:x $(tup:<:patt< _ >>) >> in
-            {used = []; text = text; styp = STtok _loc; pattern = Some p }
-        | s = STRING ->
+        (* | x = `UIDENT; `ANTIQUOT "" s -> *)
+        (*     let e = AntiquotSyntax.parse_expr _loc s in *)
+        (*     let match_fun = <:expr< fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in *)
+        (*     let descr = "$" ^ x ^ " " ^ s in *)
+        (*     let text = TXtok _loc match_fun descr in *)
+        (*     let p = <:patt< $uid:x $(tup:<:patt< _ >>) >> in *)
+        (*     {used = []; text = text; styp = STtok _loc; pattern = Some p } *)
+        |  STRING{s} ->
             {used = []; text = TXkwd _loc s;
              styp = STtok _loc; pattern = None }
-        | i = UIDENT; "."; il = qualid;
-          lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
-            let n = mk_name _loc <:ident< $uid:i.$il >> in
+        (* | "'" ; i = `UIDENT; "."; il = qualid; *)
+        (*   lev = OPT [ `UIDENT "Level"; s = STRING -> s ] -> *)
+        (*     let n = mk_name _loc <:ident< $uid:i.$il >> in *)
+        (*     {used = [n.tvar]; text = TXnterm _loc n lev; *)
+        (*     styp = STquo _loc n.tvar; pattern = None} *)
+        |  name{n}; OPT [ `UIDENT "Level";  STRING{s} -> s ]{lev} ->
             {used = [n.tvar]; text = TXnterm _loc n lev;
-            styp = STquo _loc n.tvar; pattern = None}
-        | n = name; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
-            {used = [n.tvar]; text = TXnterm _loc n lev;
-            styp = STquo _loc n.tvar; pattern = None}
-        | "("; s_t = SELF; ")" -> s_t ] ]
+             styp = STquo _loc n.tvar; pattern = None}
+        |  SELF{s}; "{"; pattern{p}; "}"   -> { (s) with pattern = Some p}
+            
+        | "("; SELF{s_t}; ")" -> s_t ] ]
     pattern:
-      [ [ i = LIDENT -> <:patt< $lid:i >>
+        [ [ `LIDENT i -> <:patt< $lid:i >>
         | "_" -> <:patt< _ >>
-        | "("; p = pattern; ")" -> <:patt< $p >>
-        | "("; p1 = pattern; ","; p2 = comma_patt; ")" -> <:patt< ( $p1, $p2 ) >>
+        | "("; pattern{p}; ")" -> <:patt< $p >>
+        | "(";  pattern{p1}; ",";  comma_patt{p2}; ")" -> <:patt< ( $p1, $p2 ) >>
       ] ]
     comma_patt:
-      [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1, $p2 >>
-        | p = pattern -> p
+      [ [  SELF{p1}; ",";  SELF{p2} -> <:patt< $p1, $p2 >>
+        | pattern{p} -> p
       ] ]
     name:
-      [ [ il = qualid -> mk_name _loc il ] ]
+      [ [ qualid{il} -> mk_name _loc il ] ]
     string:
-      [ [ s = STRING -> <:expr< $str:s >>
+      [ [ STRING{s} -> <:expr< $str:s >>
         | `ANTIQUOT "" s -> AntiquotSyntax.parse_expr _loc s ] ]
     semi_sep:
       [ [ ";" -> () ] ]
@@ -692,10 +704,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     symbol: Level "top"
       [ NA
-        [ min = [ UIDENT "SLIST0" -> False | UIDENT "SLIST1" -> True ];
-          s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
+        [ min = [ `UIDENT "SLIST0" -> False | `UIDENT "SLIST1" -> True ];
+          s = SELF; sep = OPT [ `UIDENT "SEP"; t = symbol -> t ] ->
             sslist _loc min sep s
-        | UIDENT "SOPT"; s = SELF ->
+        | `UIDENT "SOPT"; s = SELF ->
             ssopt _loc s ] ]
   END;
   *)
@@ -716,21 +728,21 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     styp = styp; pattern = None} ;
 
   EXTEND Gram
-    GLOBAL: symbol;
-    symbol: Level "top"
-      [ [ UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF ->
+    GLOBAL: psymbol;
+    psymbol: Level "top"
+      [ [ `UIDENT "FOLD0";  simple_expr{f};  simple_expr{e};  SELF{s} ->
             sfold _loc "FOLD0" "sfold0" f e s
-        | UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF ->
+        | `UIDENT "FOLD1"; simple_expr{f}; simple_expr{e};  SELF{s} ->
             sfold _loc "FOLD1" "sfold1" f e s
-        | UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF;
-          UIDENT "SEP"; sep = symbol ->
+        | `UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s};
+          `UIDENT "SEP"; psymbol{sep} ->
             sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep
-        | UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF;
-          UIDENT "SEP"; sep = symbol ->
+        | `UIDENT "FOLD1"; simple_expr{f}; simple_expr{e};  SELF{s};
+          `UIDENT "SEP"; psymbol{sep} ->
             sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep ] ]
     simple_expr:
-      [ [ i = a_LIDENT -> <:expr< $lid:i >>
-        | "("; e = expr; ")" -> e ] ]
+      [ [ a_LIDENT{i} -> <:expr< $lid:i >>
+        | "("; expr{e}; ")" -> e ] ]
   END;
 
   Options.add "-split_ext" (Arg.Set split_ext)
@@ -750,7 +762,6 @@ module IdListComprehension = struct
 end;
 
 module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
-  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;
@@ -769,7 +780,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
           | Some (KEYWORD "{") ->
               skip_patt (ignore_upto "}" (n + 1) + 1)
           | Some (KEYWORD ("as" | "::" | "," | "_"))
-          | Some (LIDENT _ | UIDENT _) -> skip_patt (n + 1)
+          | Some (LIDENT _ | `UIDENT _) -> skip_patt (n + 1)
           | Some _ | None -> raise Stream.Failure ]
         and ignore_upto end_kwd n =
           match stream_peek_nth n strm with
@@ -799,26 +810,26 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr comprehension_or_sem_expr_for_list;
     expr: Level "simple"
-      [ [ "["; e = comprehension_or_sem_expr_for_list; "]" -> e ] ]  
+      [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
     comprehension_or_sem_expr_for_list:
-      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list ->
+      [ [ expr Level "top"{e}; ";"; sem_expr_for_list{mk} ->
             <:expr< [ $e :: $(mk <:expr< [] >>) ] >>
-        | e = expr Level "top"; ";" -> <:expr< [$e] >>
-        | e = expr Level "top"; "|"; l = LIST1 item SEP ";" -> Expr.compr _loc e l
-        | e = expr Level "top" -> <:expr< [$e] >> ] ]  
+        |  expr Level "top"{e}; ";" -> <:expr< [$e] >>
+        | expr Level "top"{e}; "|";  LIST1 item SEP ";"{l} -> Expr.compr _loc e l
+        | expr Level "top"{e} -> <:expr< [$e] >> ] ]  
     item:
       (* NP: These rules rely on being on this particular order. Which should
              be improved. *)
-      [ [ p = TRY [p = patt; "<-" -> p] ; e = expr Level "top" -> `gen (p, e)
-        | e = expr Level "top" -> `cond e ] ] 
+      [ [ TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
+        | expr Level "top"{e} -> `cond e ] ] 
   END;
   if is_revised then
     EXTEND Gram
       GLOBAL: expr comprehension_or_sem_expr_for_list;
       comprehension_or_sem_expr_for_list:
-      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list; "::"; last = expr ->
+      [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::";  expr{last} ->
             <:expr< [ $e :: $(mk last) ] >>
-        | e = expr Level "top"; "::"; last = expr ->
+        | expr Level "top"{e}; "::";  expr{last} ->
             <:expr< [ $e :: $last ] >> ] ] 
     END
   else ();
@@ -920,16 +931,16 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ Some ([], e) ->
         EXTEND Gram
           expr: Level "simple"
-          [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
+          [ [ `UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
-          [ [ UIDENT $x ->
+          [ [ `UIDENT $x ->
             let p = Expr.substp _loc [] e
             in (new Ast.reloc _loc)#patt p ]]
         END
       | Some (sl, e) ->
           EXTEND Gram
             expr: Level "apply"
-            [ [ UIDENT $x; param = SELF ->
+            [ [ `UIDENT $x; param = SELF ->
               let el =  match param with
               [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
               | e -> [e] ]  in
@@ -939,7 +950,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               else
                 incorrect_number _loc el sl ] ] 
           patt: Level "simple"
-            [ [ UIDENT $x; param = SELF ->
+            [ [ `UIDENT $x; param = SELF ->
               let pl = match param with
               [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
               | p -> [p] ] in
@@ -961,13 +972,13 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         match eo with
         [ Some ([], _) ->
             do {
-              DELETE_RULE Gram expr: UIDENT $x END;
-              DELETE_RULE Gram patt: UIDENT $x END;
+              DELETE_RULE Gram expr: `UIDENT $x END;
+              DELETE_RULE Gram patt: `UIDENT $x END;
             }
         | Some (_, _) ->
             do {
-              DELETE_RULE Gram expr: UIDENT $x; SELF END;
-              DELETE_RULE Gram patt: UIDENT $x; SELF END;
+              DELETE_RULE Gram expr: `UIDENT $x; SELF END;
+              DELETE_RULE Gram patt: `UIDENT $x; SELF END;
             }
         | None -> () ];
         defined := list_remove x !defined;
@@ -1115,7 +1126,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         | "IFNDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
             if is_defined i then p2 else p1 ] ] 
     uident:
-      [ [ i = UIDENT -> i ] ]  
+      [ [ i = `UIDENT -> i ] ]  
     (* dirty hack to allow polymorphic variants using the introduced keywords. *)
     expr: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
@@ -3108,9 +3119,93 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
   module ME = MetaAst.Expr;
   module MP = MetaAst.Patt;
 
-  let anti_obj = Expr.antiquot_expander
-      ~parse_expr:TheAntiquotSyntax.parse_expr
-      ~parse_patt:TheAntiquotSyntax.parse_patt;
+  let antiquot_expander = object
+    inherit Ast.map as super;
+    method! patt = fun
+      [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
+          handle_antiquot_in_string s p TheAntiquotSyntax.parse_patt _loc
+            ~decorate:(fun n p ->
+            match n with
+            [ "antisig_item" -> <:patt< Ast.SgAnt $(mloc _loc) $p >>
+            | "antistr_item" -> <:patt< Ast.StAnt $(mloc _loc) $p >>
+            | "antictyp" -> <:patt< Ast.TyAnt $(mloc _loc) $p >>
+            | "antipatt" -> <:patt< Ast.PaAnt $(mloc _loc) $p >>
+            | "antiexpr" -> <:patt< Ast.ExAnt $(mloc _loc) $p >>
+            | "antimodule_type" -> <:patt< Ast.MtAnt $(mloc _loc) $p >>
+            | "antimodule_expr" -> <:patt< Ast.MeAnt $(mloc _loc) $p >>
+            | "anticlass_type" -> <:patt< Ast.CtAnt $(mloc _loc) $p >>
+            | "anticlass_expr" -> <:patt< Ast.CeAnt $(mloc _loc) $p >>
+            | "anticlass_sig_item" -> <:patt< Ast.CgAnt $(mloc _loc) $p >>
+            | "anticlass_str_item" -> <:patt< Ast.CrAnt $(mloc _loc) $p >>
+            | "antiwith_constr" -> <:patt< Ast.WcAnt $(mloc _loc) $p >>
+            | "antibinding" -> <:patt< Ast.BiAnt $(mloc _loc) $p >>
+            | "antirec_binding" -> <:patt< Ast.RbAnt $(mloc _loc) $p >>
+            | "antimatch_case" -> <:patt< Ast.McAnt $(mloc _loc) $p >>
+            | "antimodule_binding" -> <:patt< Ast.MbAnt $(mloc _loc) $p >>
+            | "antiident" -> <:patt< Ast.IdAnt $(mloc _loc) $p >>
+            | _ -> p ])
+      | p -> super#patt p ];
+    method! expr = fun
+      [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
+          let mloc _loc = Lib.Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
+          handle_antiquot_in_string s e TheAntiquotSyntax.parse_expr _loc
+            ~decorate:(fun n e ->
+            match n with
+            [ "`int" -> <:expr< string_of_int $e >>
+            | "`int32" -> <:expr< Int32.to_string $e >>
+            | "`int64" -> <:expr< Int64.to_string $e >>
+            | "`nativeint" -> <:expr< Nativeint.to_string $e >>
+            | "`flo" -> <:expr< FanUtil.float_repres $e >>
+            | "`str" -> <:expr< Ast.safe_string_escaped $e >>
+            | "`chr" -> <:expr< Char.escaped $e >>
+            | "`bool" -> <:expr< Ast.IdUid $(mloc _loc) (if $e then "True" else "False") >>
+            | "liststr_item" -> <:expr< Ast.stSem_of_list $e >>
+            | "listsig_item" -> <:expr< Ast.sgSem_of_list $e >>
+            | "listclass_sig_item" -> <:expr< Ast.cgSem_of_list $e >>
+            | "listclass_str_item" -> <:expr< Ast.crSem_of_list $e >>
+            | "listmodule_expr" -> <:expr< Ast.meApp_of_list $e >>
+            | "listmodule_type" -> <:expr< Ast.mtApp_of_list $e >>
+            | "listmodule_binding" -> <:expr< Ast.mbAnd_of_list $e >>
+            | "listbinding" -> <:expr< Ast.biAnd_of_list $e >>
+            | "listbinding;" -> <:expr< Ast.biSem_of_list $e >>
+            | "listrec_binding" -> <:expr< Ast.rbSem_of_list $e >>
+            | "listclass_type" -> <:expr< Ast.ctAnd_of_list $e >>
+            | "listclass_expr" -> <:expr< Ast.ceAnd_of_list $e >>
+            | "listident" -> <:expr< Ast.idAcc_of_list $e >>
+            | "listctypand" -> <:expr< Ast.tyAnd_of_list $e >>
+            | "listctyp;" -> <:expr< Ast.tySem_of_list $e >>
+            | "listctyp*" -> <:expr< Ast.tySta_of_list $e >>
+            | "listctyp|" -> <:expr< Ast.tyOr_of_list $e >>
+            | "listctyp," -> <:expr< Ast.tyCom_of_list $e >>
+            | "listctyp&" -> <:expr< Ast.tyAmp_of_list $e >>
+            | "listwith_constr" -> <:expr< Ast.wcAnd_of_list $e >>
+            | "listmatch_case" -> <:expr< Ast.mcOr_of_list $e >>
+            | "listpatt," -> <:expr< Ast.paCom_of_list $e >>
+            | "listpatt;" -> <:expr< Ast.paSem_of_list $e >>
+            | "listexpr," -> <:expr< Ast.exCom_of_list $e >>
+            | "listexpr;" -> <:expr< Ast.exSem_of_list $e >>
+            | "antisig_item" -> <:expr< Ast.SgAnt $(mloc _loc) $e >>
+            | "antistr_item" -> <:expr< Ast.StAnt $(mloc _loc) $e >>
+            | "antictyp" -> <:expr< Ast.TyAnt $(mloc _loc) $e >>
+            | "antipatt" -> <:expr< Ast.PaAnt $(mloc _loc) $e >>
+            | "antiexpr" -> <:expr< Ast.ExAnt $(mloc _loc) $e >>
+            | "antimodule_type" -> <:expr< Ast.MtAnt $(mloc _loc) $e >>
+            | "antimodule_expr" -> <:expr< Ast.MeAnt $(mloc _loc) $e >>
+            | "anticlass_type" -> <:expr< Ast.CtAnt $(mloc _loc) $e >>
+            | "anticlass_expr" -> <:expr< Ast.CeAnt $(mloc _loc) $e >>
+            | "anticlass_sig_item" -> <:expr< Ast.CgAnt $(mloc _loc) $e >>
+            | "anticlass_str_item" -> <:expr< Ast.CrAnt $(mloc _loc) $e >>
+            | "antiwith_constr" -> <:expr< Ast.WcAnt $(mloc _loc) $e >>
+            | "antibinding" -> <:expr< Ast.BiAnt $(mloc _loc) $e >>
+            | "antirec_binding" -> <:expr< Ast.RbAnt $(mloc _loc) $e >>
+            | "antimatch_case" -> <:expr< Ast.McAnt $(mloc _loc) $e >>
+            | "antimodule_binding" -> <:expr< Ast.MbAnt $(mloc _loc) $e >>
+            | "antiident" -> <:expr< Ast.IdAnt $(mloc _loc) $e >>
+            | _ -> e ])
+      | e -> super#expr e ];
+  end;
+
   let add_quotation name entry mexpr mpatt =
     let entry_eoi = Gram.mk (Gram.name entry) in
     let parse_quot_string entry loc s =
@@ -3123,7 +3218,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
       let ast = parse_quot_string entry_eoi loc s in
       let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
       let meta_ast = mexpr loc ast in
-      let exp_ast = anti_obj#expr meta_ast in
+      let exp_ast = antiquot_expander#expr meta_ast in
       exp_ast in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in
@@ -3131,7 +3226,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
     let expand_patt _loc loc_name_opt s =
       let ast = parse_quot_string entry_eoi _loc s in
       let meta_ast = mpatt _loc ast in
-      let exp_ast = anti_obj#patt meta_ast in
+      let exp_ast = antiquot_expander#patt meta_ast in
       match loc_name_opt with
       [ None -> exp_ast
       | Some name ->

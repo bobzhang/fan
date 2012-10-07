@@ -114,10 +114,10 @@ let is_antiquot =
 
 
 let handle_antiquot_in_string =
- fun s ->
-  fun term ->
-   fun parse ->
-    fun loc ->
+ fun ~s ->
+  fun ~default ->
+   fun ~parse ->
+    fun ~loc ->
      fun ~decorate ->
       if (is_antiquot s) then
        (
@@ -128,25 +128,25 @@ let handle_antiquot_in_string =
           )) in
        (decorate name ( (parse loc code) ))
        )
-      else term
+      else default
 
 let neg_string =
-                  fun n ->
-                   let len = (String.length n) in
-                   if (( (len > 0) ) && ( (( (String.get n 0) ) = '-') )) then
-                    (
-                    (String.sub n 1 ( (len - 1) ))
-                    )
-                   else ("-" ^ n)
+                     fun n ->
+                      let len = (String.length n) in
+                      if (( (len > 0) ) && ( (( (String.get n 0) ) = '-') )) then
+                       (
+                       (String.sub n 1 ( (len - 1) ))
+                       )
+                      else ("-" ^ n)
 
 let rec loop =
-                                    fun n ->
-                                     function
-                                     | [] -> (None)
-                                     | ((x, _) :: []) ->
-                                        if (n = 1) then ( (Some (x)) )
-                                        else (None)
-                                     | (_ :: l) -> (loop ( (n - 1) ) l)
+                                       fun n ->
+                                        function
+                                        | [] -> (None)
+                                        | ((x, _) :: []) ->
+                                           if (n = 1) then ( (Some (x)) )
+                                           else (None)
+                                        | (_ :: l) -> (loop ( (n - 1) ) l)
 
 
 let stream_peek_nth = fun n -> fun strm -> (loop n ( (Stream.npeek n strm) ))

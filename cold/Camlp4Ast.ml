@@ -19362,3 +19362,24 @@ class reloc _loc =
                                                         method! loc =
                                                          fun _ -> _loc
                                                        end
+
+let wildcarder =
+                                                             object (self)
+                                                              inherit 
+                                                               map as super
+                                                              method! patt =
+                                                               function
+                                                               | Ast.PaId
+                                                                  (_loc,
+                                                                   Ast.IdLid
+                                                                    (_, _)) ->
+                                                                  (Ast.PaAny
+                                                                    (_loc))
+                                                               | Ast.PaAli
+                                                                  (_, p, _) ->
+                                                                  (self#patt
+                                                                    p)
+                                                               | p ->
+                                                                  (super#patt
+                                                                    p)
+                                                             end

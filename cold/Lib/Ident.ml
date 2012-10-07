@@ -18,3 +18,24 @@ let rec to_lid =
                                               (to_lid i)
                                            | Ast.IdLid (_, lid) -> lid
                                            | _ -> assert false
+
+let rec tvar_of_ident =
+                                                                 function
+                                                                 | (Ast.IdLid
+                                                                    (_, x)
+                                                                    | 
+                                                                    Ast.IdUid
+                                                                    (_, x)) ->
+                                                                    x
+                                                                 | Ast.IdAcc
+                                                                    (_,
+                                                                    Ast.IdUid
+                                                                    (_, x),
+                                                                    xs) ->
+                                                                    (x ^ (
+                                                                    ("__" ^ (
+                                                                    (tvar_of_ident
+                                                                    xs) )) ))
+                                                                 | _ ->
+                                                                    (failwith
+                                                                    "internal error in the Grammar extension")

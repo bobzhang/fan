@@ -228,7 +228,7 @@ let antiquot_expander ~parse_patt ~parse_expr = object
   method! patt = fun
     [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p ->
       let mloc _loc = Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
-      handle_antiquot_in_string s p parse_patt _loc
+      handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
         ~decorate:(fun n p ->
             match n with
             [ "antisig_item" -> <:patt< Ast.SgAnt $(mloc _loc) $p >>
@@ -253,8 +253,8 @@ let antiquot_expander ~parse_patt ~parse_expr = object
     method! expr = fun
       [ <:expr@_loc< $anti:s >> | <:expr@_loc< $str:s >> as e ->
           let mloc _loc = Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
-          handle_antiquot_in_string s e parse_expr _loc
-            ~decorate:(fun n e ->
+          handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
+            ~decorate:(fun n e -> (* e is the parsed Ast node already *)
             match n with
             [ "`int" -> <:expr< string_of_int $e >>
             | "`int32" -> <:expr< Int32.to_string $e >>

@@ -1,36 +1,53 @@
-open Camlp4Ast
-
 open FanUtil
 
-let rec sep_expr =
-                               fun acc ->
-                                function
-                                | Ast.ExAcc (_, e1, e2) ->
-                                   (sep_expr ( (sep_expr acc e2) ) e1)
-                                | (Ast.ExId (loc, Ast.IdUid (_, s)) as e) ->
-                                   (match acc with
-                                    | [] -> [(loc, [] , e)]
-                                    | ((loc', sl, e) :: l) ->
-                                       (
-                                        (( (FanLoc.merge loc loc') ), (
-                                         ( s ) :: sl  ), e) ) :: l )
-                                | Ast.ExId (_, (Ast.IdAcc (_, _, _) as i)) ->
-                                   (sep_expr acc ( (Ident.normalize_acc i) ))
-                                | e ->
-                                   ( (( (loc_of_expr e) ), [] , e) ) :: acc 
+module Ast = Camlp4Ast
 
+let rec sep_expr =
+                                       fun acc ->
+                                        function
+                                        | Ast.ExAcc (_, e1, e2) ->
+                                           (sep_expr ( (sep_expr acc e2) )
+                                             e1)
+                                        | (Ast.ExId (loc, Ast.IdUid (_, s)) as
+                                           e) ->
+                                           (match acc with
+                                            | [] -> [(loc, [] , e)]
+                                            | ((loc', sl, e) :: l) ->
+                                               (
+                                                (( (FanLoc.merge loc loc') ),
+                                                 ( ( s ) :: sl  ), e) ) :: l )
+                                        | Ast.ExId
+                                           (_, (Ast.IdAcc (_, _, _) as i)) ->
+                                           (sep_expr acc (
+                                             (Ident.normalize_acc i) ))
+                                        | e ->
+                                           (
+                                            (( (Ast.loc_of_expr e) ), [] , e) ) ::
+                                            acc 
 
 let rec fa =
- fun al ->
-  function | Ast.ExApp (_, f, a) -> (fa ( ( a ) :: al  ) f) | f -> (f, al)
-
+                                                   fun al ->
+                                                    function
+                                                    | Ast.ExApp (_, f, a) ->
+                                                       (fa ( ( a ) :: al  )
+                                                         f)
+                                                    | f -> (f, al)
 
 let rec apply =
- fun accu ->
-  function
-  | [] -> accu
-  | (x :: xs) ->
-     let _loc = (loc_of_expr x) in (apply ( (Ast.ExApp (_loc, accu, x)) ) xs)
+                                                                    fun accu ->
+                                                                    function
+                                                                    | [] ->
+                                                                    accu
+                                                                    | 
+                                                                    (x :: xs) ->
+                                                                    let _loc =
+                                                                    (Ast.loc_of_expr
+                                                                    x) in
+                                                                    (apply (
+                                                                    (Ast.ExApp
+                                                                    (_loc,
+                                                                    accu, x))
+                                                                    ) xs)
 
 
 let mklist =
@@ -41,7 +58,7 @@ let mklist =
     | [] -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) )))
     | (e1 :: el) ->
        let _loc =
-        if top then _loc else (FanLoc.merge ( (loc_of_expr e1) ) _loc) in
+        if top then _loc else (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc) in
        (Ast.ExApp
          (_loc, (
           (Ast.ExApp
@@ -92,7 +109,7 @@ let mklist_last =
          | None -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "[]")) ))))
      | (e1 :: el) ->
         let _loc =
-         if top then _loc else (FanLoc.merge ( (loc_of_expr e1) ) _loc) in
+         if top then _loc else (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc) in
         (Ast.ExApp
           (_loc, (
            (Ast.ExApp
@@ -123,8 +140,9 @@ let bigarray_get =
                                                | (Ast.ExTup
                                                    (_, Ast.ExCom (_, e1, e2))
                                                   | Ast.ExCom (_, e1, e2)) ->
-                                                  (list_of_expr e1 (
-                                                    (list_of_expr e2 [] ) ))
+                                                  (Ast.list_of_expr e1 (
+                                                    (Ast.list_of_expr e2 [] )
+                                                    ))
                                                | _ -> [arg]) in
                                              (match coords with
                                               | [] ->
@@ -243,7 +261,7 @@ let bigarray_get =
                                                             (_loc, c2, (
                                                              (Ast.ExSem
                                                                (_loc, c3, (
-                                                                (exSem_of_list
+                                                                (Ast.exSem_of_list
                                                                   coords) )))
                                                              ))) ))) ))) ))))
 
@@ -391,7 +409,7 @@ let map =
                               Ast.ExId (_, Ast.IdLid (_, y))) when (x = y) ->
                               l
                            | _ ->
-                              if (is_irrefut_patt p) then
+                              if (Ast.is_irrefut_patt p) then
                                (
                                (Ast.ExApp
                                  (_loc, (
@@ -512,7 +530,7 @@ let filter =
   fun p ->
    fun b ->
     fun l ->
-     if (is_irrefut_patt p) then
+     if (Ast.is_irrefut_patt p) then
       (
       (Ast.ExApp
         (_loc, (
@@ -647,7 +665,7 @@ let substp =
 
 class subst _loc env =
                   object
-                   inherit (reloc _loc) as super
+                   inherit (Ast.reloc _loc) as super
                    method! expr =
                     function
                     | ((Ast.ExId (_, Ast.IdLid (_, x))
@@ -661,7 +679,7 @@ class subst _loc env =
                            (_loc, Ast.ExId (_, Ast.IdUid (_, "LOCATION_OF")),
                             Ast.ExId (_, Ast.IdUid (_, x)))) as e) ->
                        (try
-                         let loc = (loc_of_expr ( (List.assoc x env) )) in
+                         let loc = (Ast.loc_of_expr ( (List.assoc x env) )) in
                          let (a, b, c, d, e, f, g, h) = (FanLoc.to_tuple loc) in
                          (Ast.ExApp
                            (_loc, (
@@ -809,3 +827,1090 @@ let map_expr =
                                            (Ast.IdUid (_loc, "False")) ))) )))
                                     ))) ))) )))
                         | e -> e
+
+let antiquot_expander =
+                                   fun ~parse_patt ->
+                                    fun ~parse_expr ->
+                                     object
+                                      inherit Ast.map as super
+                                      method! patt =
+                                       function
+                                       | ((Ast.PaAnt (_loc, s)
+                                           | Ast.PaStr (_loc, s)) as p) ->
+                                          let mloc =
+                                           fun _loc ->
+                                            (Meta.MetaLocQuotation.meta_loc_patt
+                                              _loc _loc) in
+                                          (handle_antiquot_in_string ~s:s
+                                            ~default:p ~parse:parse_patt
+                                            ~loc:_loc ~decorate:(
+                                            fun n ->
+                                             fun p ->
+                                              (match n with
+                                               | "antisig_item" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "SgAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antistr_item" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "StAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antictyp" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "TyAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antipatt" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "PaAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antiexpr" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "ExAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antimodule_type" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MtAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antimodule_expr" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MeAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "anticlass_type" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CtAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "anticlass_expr" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CeAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "anticlass_sig_item" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CgAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "anticlass_str_item" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CrAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antiwith_constr" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "WcAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antibinding" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "BiAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antirec_binding" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "RbAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antimatch_case" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "McAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antimodule_binding" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MbAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | "antiident" ->
+                                                  (Ast.PaApp
+                                                    (_loc, (
+                                                     (Ast.PaApp
+                                                       (_loc, (
+                                                        (Ast.PaId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "IdAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), p))
+                                               | _ -> p) ))
+                                       | p -> (super#patt p)
+                                      method! expr =
+                                       function
+                                       | ((Ast.ExAnt (_loc, s)
+                                           | Ast.ExStr (_loc, s)) as e) ->
+                                          let mloc =
+                                           fun _loc ->
+                                            (Meta.MetaLocQuotation.meta_loc_expr
+                                              _loc _loc) in
+                                          (handle_antiquot_in_string ~s:s
+                                            ~default:e ~parse:parse_expr
+                                            ~loc:_loc ~decorate:(
+                                            fun n ->
+                                             fun e ->
+                                              (match n with
+                                               | "`int" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdLid
+                                                          (_loc,
+                                                           "string_of_int"))
+                                                        ))) ), e))
+                                               | "`int32" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Int32"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "to_string"))
+                                                           ))) ))) ), e))
+                                               | "`int64" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Int64"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "to_string"))
+                                                           ))) ))) ), e))
+                                               | "`nativeint" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc,
+                                                              "Nativeint"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "to_string"))
+                                                           ))) ))) ), e))
+                                               | "`flo" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc,
+                                                              "FanUtil")) ),
+                                                           (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "float_repres"))
+                                                           ))) ))) ), e))
+                                               | "`str" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "safe_string_escaped"))
+                                                           ))) ))) ), e))
+                                               | "`chr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Char"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "escaped")) )))
+                                                        ))) ), e))
+                                               | "`bool" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "IdUid")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), (
+                                                     (Ast.ExIfe
+                                                       (_loc, e, (
+                                                        (Ast.ExStr
+                                                          (_loc, "True")) ),
+                                                        (
+                                                        (Ast.ExStr
+                                                          (_loc, "False")) )))
+                                                     )))
+                                               | "liststr_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "stSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listsig_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "sgSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listclass_sig_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "cgSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listclass_str_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "crSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listmodule_expr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "meApp_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listmodule_type" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "mtApp_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listmodule_binding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "mbAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listbinding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "biAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listbinding;" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "biSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listrec_binding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "rbSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listclass_type" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "ctAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listclass_expr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "ceAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listident" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "idAcc_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctypand" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tyAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctyp;" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tySem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctyp*" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tySta_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctyp|" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tyOr_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctyp," ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tyCom_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listctyp&" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "tyAmp_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listwith_constr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "wcAnd_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listmatch_case" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "mcOr_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listpatt," ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "paCom_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listpatt;" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "paSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listexpr," ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "exCom_of_list"))
+                                                           ))) ))) ), e))
+                                               | "listexpr;" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExId
+                                                       (_loc, (
+                                                        (Ast.IdAcc
+                                                          (_loc, (
+                                                           (Ast.IdUid
+                                                             (_loc, "Ast"))
+                                                           ), (
+                                                           (Ast.IdLid
+                                                             (_loc,
+                                                              "exSem_of_list"))
+                                                           ))) ))) ), e))
+                                               | "antisig_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "SgAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antistr_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "StAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antictyp" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "TyAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antipatt" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "PaAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antiexpr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "ExAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antimodule_type" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MtAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antimodule_expr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MeAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "anticlass_type" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CtAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "anticlass_expr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CeAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "anticlass_sig_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CgAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "anticlass_str_item" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "CrAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antiwith_constr" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "WcAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antibinding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "BiAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antirec_binding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "RbAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antimatch_case" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "McAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antimodule_binding" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "MbAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | "antiident" ->
+                                                  (Ast.ExApp
+                                                    (_loc, (
+                                                     (Ast.ExApp
+                                                       (_loc, (
+                                                        (Ast.ExId
+                                                          (_loc, (
+                                                           (Ast.IdAcc
+                                                             (_loc, (
+                                                              (Ast.IdUid
+                                                                (_loc, "Ast"))
+                                                              ), (
+                                                              (Ast.IdUid
+                                                                (_loc,
+                                                                 "IdAnt")) )))
+                                                           ))) ), (
+                                                        (mloc _loc) ))) ), e))
+                                               | _ -> e) ))
+                                       | e -> (super#expr e)
+                                     end

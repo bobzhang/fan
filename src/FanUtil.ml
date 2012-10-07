@@ -60,17 +60,23 @@ let cvt_nativeint_literal s =
 let mk_anti ?(c = "") n s = "\\$"^n^c^":"^s;
 
 let append_eLem el e = el @ [e];
+
+(*
+  {[
+  "\\$patt:x"
+  ]}
+ *)  
 let is_antiquot s =
   let len = String.length s in
   len > 2 && s.[0] = '\\' && s.[1] = '$';
 
-let handle_antiquot_in_string s term parse loc ~decorate =
+let handle_antiquot_in_string ~s ~default ~parse ~loc ~decorate = (* provide syntax extension for string matching *)
   if is_antiquot s then
     let pos = String.index s ':' in
     let name = String.sub s 2 (pos - 2)
     and code = String.sub s (pos + 1) (String.length s - pos - 1) in
     decorate name (parse loc code)
-  else term;
+  else default;
   
 let neg_string n =
     let len = String.length n in
