@@ -90,8 +90,7 @@ end;
 let revise ()  = begin
   Toploop.parse_toplevel_phrase := revise_parser;
 end;
-(* Camlp4Parsers.pa_r (module P); *)
-(* Camlp4Parsers.pa_rq (module P); *)
+
 
 
 

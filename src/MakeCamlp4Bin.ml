@@ -1,4 +1,5 @@
-open Camlp4Parsers;
+(* open Camlp4Parsers; *)
+open FanParsers;
 open Camlp4Filters;
 open Format;
 open LibUtil;
