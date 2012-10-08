@@ -42,7 +42,7 @@ module type Camlp4Syntax = sig
   module AntiquotSyntax : ParserExpr;
   module Quotation : Quotation.S;
   module AstFilters: AstFilters.S;  
-  include Warning;  
+  include Warning;
   include ParserImpl;
   include PrinterImpl;
   val interf : Gram.t (list Ast.sig_item * option FanLoc.t);

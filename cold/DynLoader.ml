@@ -59,11 +59,6 @@ module Make =
                (
                (include_dir q (
                  (Filename.concat FanConfig.camlp4_standard_library
-                   "Camlp4Parsers") ))
-               );
-               (
-               (include_dir q (
-                 (Filename.concat FanConfig.camlp4_standard_library
                    "Camlp4Printers") ))
                );
                (include_dir q (

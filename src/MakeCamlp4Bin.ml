@@ -1,5 +1,5 @@
-(* open Camlp4Parsers; *)
-open FanParsers;
+open Camlp4Parsers;
+(* open FanParsers; *)
 open Camlp4Filters;
 open Format;
 open LibUtil;
@@ -147,8 +147,8 @@ module Camlp4Bin
           !rcall_callback ();
         };
       
-      let print_warning = eprintf "%a:\n%s@." FanLoc.print;
-
+      
+     let print_warning = eprintf "%a:\n%s@." FanLoc.print;  
       (* camlp4 directive handler *)  
       let rec parse_file dyn_loader name pa getdir =
         let directive_handler = Some (fun ast ->

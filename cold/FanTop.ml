@@ -54,16 +54,17 @@ let wrap =
                                                                     x) ->
                                                                     (raise x)
                                                                     | FanLoc.Exc_located
-                                                                    (loc, x) ->
+                                                                    (loc, y) ->
                                                                     (
                                                                     (Format.eprintf
-                                                                    "@[<0>Parsing Error:%a%s@]@."
+                                                                    "@[<0>%a%s@]@."
                                                                     Toploop.print_location
                                                                     loc (
                                                                     (Printexc.to_string
-                                                                    x) ))
+                                                                    y) ))
                                                                     );
-                                                                    (raise x)
+                                                                    (raise
+                                                                    Exit )
                                                                     | 
                                                                     x ->
                                                                     (
