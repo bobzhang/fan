@@ -114,8 +114,8 @@ let callcc  (type u) (f: cont u-> u)  =
   
 
 module List = struct
-  include BatList;
   include List;
+  include BatList;
 end;
 
 module Char = struct

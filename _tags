@@ -2,9 +2,15 @@
 true:pkg_batteries
 <{cold,src}/Pprintast.ml>: warn_a
 <{cold,src}/Camlp4Printers/**.ml>: use_unix
+
+
 <{cold,src}/Grammar/{Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.cmx>:for-pack(Grammar)
+<{cold,src}/Grammar/{Delete,Dynamic,Entry,Failed,Fold,Insert,Parser,Print,Search,Static,Structure,Tools}.p.cmx>:for-pack(Grammar)
+
 <{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.cmx>:for-pack(Lib)
-<{cold,src}/Fan.{byte,native}>: pkg_dynlink, pkg_compiler-libs.common
+<{cold,src}/Lib/{Meta,Expr,Patt,Ident,ModuleType,Ctyp,ClassExpr}.p.cmx>:for-pack(Lib)
+
+<{cold,src}/Fan.{p.native,byte,native}>: pkg_dynlink, pkg_compiler-libs.common
 <{cold,src}/{Pprintast,FanSig,FanLoc,FanConfig,Ast2pt,Sig,ParsetreeHelper}.{ml,mli}> : pkg_compiler-libs.common
 <{cold,src}/FanTop.{ml,mli}>:pkg_compiler-libs.toplevel
 # <{cold,src}/Lib/{Plongident,Ploc,Ptype,Ptyp,Pexp,Ppat,Pmty,Psig,Pmod,Pstr,Pfield,Pcty,Pcl,Pcf,Pctf}.ml>:pkg_compiler-libs.common
