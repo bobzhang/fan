@@ -115,6 +115,7 @@ let callcc  (type u) (f: cont u-> u)  =
 
 module List = struct
   include BatList;
+  include List;
 end;
 
 module Char = struct
@@ -134,7 +135,7 @@ module Option = struct
 end;
 
 module Buffer = struct
-  include BatBuffer;
+  include BatBuffer ;
   let (+>) buf chr = begin Buffer.add_char buf chr; buf end;
   let (+>>) buf str = begin Buffer.add_string buf str; buf end;  
 end;

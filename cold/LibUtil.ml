@@ -230,9 +230,11 @@ let callcc =
 
 module List =
  struct include BatList
+ include List
  end
 
-module Char = struct include BatChar
+module Char =
+                                             struct include BatChar
  end
 
 
