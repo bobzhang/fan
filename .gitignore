@@ -39,3 +39,4 @@ tmp/*
 tmp*
 *.patch
 stats
+stat/
