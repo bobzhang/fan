@@ -350,6 +350,12 @@ let check x msg =
             function [Loc.raise]. *)
 exception Exc_located of t and exn;
 
+let _ = begin
+  Printexc.register_printer (fun
+  [Exc_located t exn ->
+    Some (sprintf "Exc_located(%s,%s)" (to_string t ) (Printexc.to_string exn))
+  |_ -> None ])
+  end;
 (** The name of the location variable used in grammars and in
     the predefined quotations for OCaml syntax trees. Default: [_loc]. *)
 let name = ref "_loc";

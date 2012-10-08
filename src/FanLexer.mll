@@ -651,7 +651,11 @@ let debug_from_string str =
     | _ ->  fprintf std_formatter "%a@ %a@."
           Token.print t FanLoc.print loc) stream
   with
-    Stream.Error _ -> ();;
+    Stream.Error "end" -> ()
+  | exn -> begin
+      eprintf "@[%s@]@." (Printexc.to_string exn);
+      raise exn
+  end;;
 
 let debug_from_file file =
   let loc = FanLoc.mk file in
