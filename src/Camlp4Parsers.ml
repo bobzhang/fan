@@ -919,7 +919,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       match eo with
       [ Some ([], e) ->
         EXTEND Gram
-          expr: Level "simple"
+        expr: Level "simple"
           [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
           [ [ UIDENT $x ->
@@ -2563,7 +2563,7 @@ New syntax:\
         | si = str_item; semi; (sil, stopped) = SELF -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
     phrase:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr; semi ->
+      [ [ "#"; n = a_LIDENT; dp = opt_expr; ";;" -> (* directive to be the same as normal syntax*)
             <:str_item< # $n $dp >>
         | st = str_item; semi -> st  ] ]
     a_INT:

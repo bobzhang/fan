@@ -38,3 +38,4 @@ let implementation_of_string =
   Lexing.from_string |- Parse.implementation;;
 
 (* consult Topdirs for more utlities *)
+#use "test_fan.ml";;

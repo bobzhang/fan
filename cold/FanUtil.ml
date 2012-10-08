@@ -113,43 +113,73 @@ let is_antiquot =
                                                              ) = '$') )) ))
 
 
+let view_antiquot =
+ fun s ->
+  let len = (String.length s) in
+  if (( (len > 2) ) && (
+       (( (( (String.get s 0) ) = '\\') ) && ( (( (String.get s 1) ) = '$')
+         )) )) then
+   (
+   (try
+     let pos = (String.index s ':') in
+     let name = (String.sub s 2 ( (pos - 2) )) in
+     let code =
+      (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1)
+        )) in
+     (Some (name, code))
+    with
+    Not_found -> (None))
+   )
+  else (None)
+
 let handle_antiquot_in_string =
- fun ~s ->
-  fun ~default ->
-   fun ~parse ->
-    fun ~loc ->
-     fun ~decorate ->
-      if (is_antiquot s) then
-       (
-       let pos = (String.index s ':') in
-       let name = (String.sub s 2 ( (pos - 2) ))
-       and code =
-        (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1)
-          )) in
-       (decorate name ( (parse loc code) ))
-       )
-      else default
+                fun ~s ->
+                 fun ~default ->
+                  fun ~parse ->
+                   fun ~loc ->
+                    fun ~decorate ->
+                     if (is_antiquot s) then
+                      (
+                      let pos = (String.index s ':') in
+                      let name = (String.sub s 2 ( (pos - 2) ))
+                      and code =
+                       (String.sub s ( (pos + 1) ) (
+                         (( (( (String.length s) ) - pos) ) - 1) )) in
+                      (decorate name ( (parse loc code) ))
+                      )
+                     else default
 
 let neg_string =
-                     fun n ->
-                      let len = (String.length n) in
-                      if (( (len > 0) ) && ( (( (String.get n 0) ) = '-') )) then
-                       (
-                       (String.sub n 1 ( (len - 1) ))
-                       )
-                      else ("-" ^ n)
+                                    fun n ->
+                                     let len = (String.length n) in
+                                     if (( (len > 0) ) && (
+                                          (( (String.get n 0) ) = '-') )) then
+                                      (
+                                      (String.sub n 1 ( (len - 1) ))
+                                      )
+                                     else ("-" ^ n)
 
 let rec loop =
-                                       fun n ->
-                                        function
-                                        | [] -> (None)
-                                        | ((x, _) :: []) ->
-                                           if (n = 1) then ( (Some (x)) )
-                                           else (None)
-                                        | (_ :: l) -> (loop ( (n - 1) ) l)
+                                                      fun n ->
+                                                       function
+                                                       | [] -> (None)
+                                                       | ((x, _) :: []) ->
+                                                          if (n = 1) then
+                                                           (
+                                                           (Some (x))
+                                                           )
+                                                          else (None)
+                                                       | (_ :: l) ->
+                                                          (loop ( (n - 1) )
+                                                            l)
 
-
-let stream_peek_nth = fun n -> fun strm -> (loop n ( (Stream.npeek n strm) ))
+let stream_peek_nth =
+                                                                 fun n ->
+                                                                  fun strm ->
+                                                                   (loop n (
+                                                                    (Stream.npeek
+                                                                    n strm)
+                                                                    ))
 
 
 let rec list_remove =

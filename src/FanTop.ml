@@ -11,14 +11,14 @@ let wrap parse_fun lb =
   [ [< (EOI, _) >] -> raise End_of_file
   | [< >] -> parse_fun token_stream ]
   with
-  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break))
-    as x -> raise x
-  | FanLoc.Exc_located loc x -> begin
-      Format.eprintf "@[<0>Parsing Error:%a%s@]@."
-        Toploop.print_location loc (Printexc.to_string x);
-      raise x
+  [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break)) as x ->
+    raise x
+  | (FanLoc.Exc_located loc y ) -> begin
+      Format.eprintf "@[<0>%a%s@]@."
+        Toploop.print_location loc (Printexc.to_string y);
+      raise Exit; (* commuiniation with toplevel special case here*)
   end
-  | x ->  begin
+   | x ->  begin 
       Format.eprintf "@[<0>%s@]@." (Printexc.to_string x );
       raise Exit
   end ] ;

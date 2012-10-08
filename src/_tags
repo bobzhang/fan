@@ -1,6 +1,6 @@
 # -*- Mode:Shell-script -*-
 
-<**/*.{ml,mli}>: camlp4boot
+<**/*.{ml,mli,mlx}>: camlp4boot
 # <**/*.mli>: camlp4boot
 <{*_ppo,**/*_ppo,Pprintast,tmp*,FanLexer,FanConfig,FanSig}.ml>: -camlp4boot
 <Camlp4Ast.ml>:use_map, use_fold, use_meta, use_trash

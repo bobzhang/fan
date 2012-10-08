@@ -1,4 +1,4 @@
-
+(* open Format; *)
 open FanUtil;
 module Ast= Camlp4Ast; (* it contains a module named Meta *)
 (*
@@ -309,12 +309,35 @@ let antiquot_expander ~parse_patt ~parse_expr = object
             | _ -> e ])
       | e -> super#expr e ];
   end;
+
   
-(* let capture_antiquot = object *)
-(*   inherit Ast.map as super; *)
-(*   method! patt = fun *)
-(*   [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p -> *)
-(*     () *)
-(*   | p -> super#patt p *)
-(*   ]; *)
-(* end; *)
+(* We don't do any parsing for antiquots here, so it's parser-independent *)  
+let capture_antiquot = object
+  inherit Camlp4Ast.map as super;
+  val mutable constraints =[];
+  method! patt = fun
+  [ <:patt@_loc< $anti:s >> | <:patt@_loc< $str:s >> as p when is_antiquot s -> begin
+    match view_antiquot s with
+    [Some(_name,code) -> begin 
+      (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
+      let cons = <:expr< $lid:code >> in
+      let code' = "__"^code in 
+      let cons' = <:expr< $lid:code' >> in 
+      let () = constraints <- [(cons,cons')::constraints]in 
+      <:patt< $lid:code' >> (* only allows lidentifiers here *)
+    end
+  | None -> p ];   
+  end
+  | p -> super#patt p ];
+ method get_captured_variables =
+   constraints;
+ method clear_captured_variables =
+   constraints <- [];
+end;
+
+let filter_patt_with_captured_variables patt= begin 
+  capture_antiquot#clear_captured_variables;
+  let patt=capture_antiquot#patt patt in
+  let constraints = capture_antiquot#get_captured_variables in
+  (patt,constraints)
+end;

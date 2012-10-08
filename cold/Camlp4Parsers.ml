@@ -31809,12 +31809,8 @@ module MakeRevisedParser =
                                                                     )))
                                                                   );
                                                                   (
-                                                                  (Gram.Snterm
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (semi :
-                                                                    'semi Gram.t)
-                                                                    )))
+                                                                  (Gram.Skeyword
+                                                                    (";;"))
                                                                   )]
                                                                  ), (
                                                                  (Gram.mk_action

@@ -411,7 +411,7 @@ open Driver;;
     (camlp4 ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
    let myocamldoc tags =
      Ocaml_tools.ocamldoc_l_dir tags in 
-   (* -- "extension:html") in  when you want use plugins
+   (* -- "extension:html" in  when you want use plugins
       you may want to remove extension  *)
    rule "ocamldoc: use plugin"
      ~dep:"%.odocl" ~stamp:"%.docdir/html.stamp" ~prod:"%.docdir/index.html"
@@ -427,7 +427,21 @@ open Driver;;
               A"--pv-token";
               A"--cpp-options"; A"-w" ; Px dyp])
      end ;
-  )
+   
+   rule "ocaml: mlx -> ml"  ~tags:["ocaml"]
+     ~prods:["%.ml"]
+     ~deps:["%.mlx"] begin fun env _ ->
+       let mlx = env "%.mlx" in
+       let ml = env "%.ml" in 
+       (Cmd(S[A"cat"; P mlx; Sh ">"; Px ml]))
+         (* (Oca-ml_compiler.byte_compile_ocaml_implem "-impl %.mlx" "%.cmo") *)
+     end;
+   
+   (* rule "ocaml dependencies mlx"  ~prod:"%.mlx.depends" *)
+   (*   ~dep:"%.mlx" *)
+   (*   (Ocaml_tools.ocamldep_command "-impl %.mlx" "%.mlx.depends"); *)
+
+   )
  end 
 
 

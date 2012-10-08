@@ -330,7 +330,25 @@ let check =
 
 exception Exc_located of t * exn
 
-let name = (ref "_loc")
+let _ = (Printexc.register_printer
+                                                                (
+                                                                function
+                                                                | Exc_located
+                                                                   (t, exn) ->
+                                                                   (Some
+                                                                    (sprintf
+                                                                    "Exc_located(%s,%s)"
+                                                                    (
+                                                                    (to_string
+                                                                    t) ) (
+                                                                    (Printexc.to_string
+                                                                    exn) )))
+                                                                | _ -> (None)
+                                                                ))
+
+let name =
+                                                                    (ref
+                                                                    "_loc")
 
 
 let raise =
