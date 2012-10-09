@@ -615,4 +615,255 @@ Ptop_def
 
 
 * Grammar
-  
+
+
+** when symbol is UIDENT
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[STRING]]END
+   (extend ( (a : 'a t) ) (
+           ((fun ()
+               ->
+              (None , (
+               [(None , None , (
+                 [((
+                   [(
+                    (Stoken
+                      (( function | STRING (_) -> (true) | _ -> (false) ),
+                       "STRING (_)")) )] ), (
+                   (mk_action (
+                     fun (__camlp4_0 :
+                       token) ->
+                      fun (_loc :
+                        FanLoc.t) ->
+                       (match __camlp4_0 with
+                        | STRING (_) -> (() : 'a)
+                        | _ -> assert false) )) ))] ))] ))) () ) ))
+   #+END_SRC
+
+** when symbol is UIDENT with pattern
+
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[x=STRING]] END
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | STRING (_) -> (true) | _ -> (false) ),
+                      "STRING _")) )] ), (
+                  (mk_action (
+                    fun (x :
+                      token) ->
+                     fun (_loc :
+                       FanLoc.t) ->
+                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
+            () ) ))
+
+   EXTEND a:[[x=LID]] END
+   let _ = (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | LID (_) -> (true) | _ -> (false) ),
+                      "LID _")) )] ), (
+                  (mk_action (
+                    fun (x :
+                      token) ->
+                     fun (_loc :
+                       FanLoc.t) ->
+                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
+            () ) ))
+   (* only when you want to do the pattern match, it will add a
+   string_of_token there, not-necessary actually*)
+   #+END_SRC
+** when symbol is LIDENT
+
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[x]] END
+   (extend ( (a : 'a t) ) (
+           ((fun ()
+               ->
+              (None , (
+               [(None , None , (
+                 [(( [( (Snterm (obj ( (x : 'x t) ))) )] ), (
+                   (mk_action (
+                     fun (x : 'x) -> fun (_loc : FanLoc.t) -> (x : 'a) )) ))]
+                 ))] ))) () ) ))
+
+
+    (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Snterm (obj ( (x : 'x t) ))) )] ), (
+                  (mk_action ( fun _ -> fun (_loc : FanLoc.t) -> (x : 'a) ))
+                  ))] ))] ))) () ) ))
+
+   #+END_SRC
+   
+** when symbol is LIDENT with pattern
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[y=x]] END
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Snterm (obj ( (x : 'x t) ))) )] ), (
+                  (mk_action (
+                    fun (y : 'x) -> fun (_loc : FanLoc.t) -> (() : 'a) )) ))]
+                ))] ))) () ) ))
+
+   #+END_SRC
+
+** when symbol is pattern
+
+   #+BEGIN_SRC ocaml
+
+   EXTEND a:[[`ID(_,Some x) ->x]] END
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | ID (_, Some (_)) -> (true) | _ -> (false)
+                      ), "ID (_, Some (_))")) )] ), (
+                  (mk_action (
+                    fun (__camlp4_0 :
+                      token) ->
+                     fun (_loc :
+                       FanLoc.t) ->
+                      (match __camlp4_0 with
+                       | ID (_, Some (x)) -> (x : 'a)
+                       | _ -> assert false) )) ))] ))] ))) () ) ))
+   #+END_SRC
+
+** when symbol is pattern with pattern =should be prohobited=
+
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[y=`ID(_,Some x) ->(x,y)]] END
+
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | ID (_, Some (_)) -> (true) | _ -> (false)
+                      ), "ID (_, Some (_))")) )] ), (
+                  (mk_action (
+                    fun (y : token) -> fun (_loc : FanLoc.t) -> ((x, y) : 'a)
+                    )) ))] ))] ))) () ) ))
+   #+END_SRC
+
+** when symbol is a rule list
+   #+BEGIN_SRC ocaml
+   EXTEND x:[[a=[b] -> ()]]END
+   (extend ( (x : 'x t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (srules x (
+                     [(( [( (Snterm (obj ( (b : 'b t) ))) )] ), (
+                       (mk_action (
+                         fun (x : 'b) -> fun (_loc : FanLoc.t) -> (x : 'e__1)
+                         )) ))] )) )] ), (
+                  (mk_action (
+                    fun (a : 'e__1) -> fun (_loc : FanLoc.t) -> (() : 'x) ))
+                  ))] ))] ))) () ) ))
+   #+END_SRC
+
+** special case =UIDENT STRIGN=
+
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[A "x" ]] END
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | A ("x") -> (true) | _ -> (false) ),
+                      "A (\"x\")")) )] ), (
+                  (mk_action (
+                    fun (__camlp4_0 :
+                      token) ->
+                     fun (_loc :
+                       FanLoc.t) ->
+                      (match __camlp4_0 with
+                       | A ("x") -> (() : 'a)
+                       | _ -> assert false) )) ))] ))] ))) () ) ))
+   #+END_SRC
+   Compared with pattern directly
+   
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[`A "x"]] END
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Stoken
+                     (( function | A ("x") -> (true) | _ -> (false) ),
+                      "A (\"x\")")) )] ), (
+                  (mk_action (
+                    fun (__camlp4_0 :
+                      token) ->
+                     fun (_loc :
+                       FanLoc.t) ->
+                      (match __camlp4_0 with
+                       | A ("x") -> (() : 'a)
+                       | _ -> assert false) )) ))] ))] ))) () ) ))
+
+   #+END_SRC
+** special case =STRING=
+   #+BEGIN_SRC ocaml
+    EXTEND a:[["x"]]END
+    (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Skeyword ("x")) )] ), (
+                  (mk_action (
+                    fun (x :
+                      token) ->
+                     fun (_loc : FanLoc.t) -> ((string_of_token x) : 'a) ))
+                  ))] ))] ))) () ) ))
+   #+END_SRC
+** =STRING= with pattern =should be prohibited=
+
+   #+BEGIN_SRC ocaml
+   EXTEND a:[[y="x"]] END
+
+   (extend ( (a : 'a t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Skeyword ("x")) )] ), (
+                  (mk_action (
+                    fun (y : token) -> fun (_loc : FanLoc.t) -> (() : 'a) ))
+                  ))] ))] ))) () ) ))
+
+   #+END_SRC

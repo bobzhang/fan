@@ -210,93 +210,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 let text = TXtok _loc match_fun descr in
                 { (s) with text = text; pattern = Some p' }
             | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
-             (* EXTEND a:[[x=y]] END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [(( [( (Snterm (obj ( (y : 'y t) ))) )] ), (
-                  (mk_action (
-                    fun (x : 'y) -> fun (_loc : FanLoc.t) -> (() : 'a) )) ))]
-                ))] ))) () ) ))
-
-                EXTEND a:[[x=Y]]END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | Y (_) -> (true) | _ -> (false) ), "Y _"))
-                   )] ), (
-                  (mk_action (
-                    fun (x :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
-            () ) ))
-                
-                EXTEND a:[[x=STRING]] END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | STRING (_) -> (true) | _ -> (false) ),
-                      "STRING _")) )] ), (
-                  (mk_action (
-                    fun (x :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
-            () ) ))
-
-                EXTEND a:[[x=LIDENT]] END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | LIDENT (_) -> (true) | _ -> (false) ),
-                      "LIDENT _")) )] ), (
-                  (mk_action (
-                    fun (x :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
-            () ) ))
-
-                EXTEND a:[[x=UIDENT]] END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | UIDENT (_) -> (true) | _ -> (false) ),
-                      "UIDENT _")) )] ), (
-                  (mk_action (
-                    fun (x :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (let x = (string_of_token x) in () : 'a) )) ))] ))] )))
-            () ) ))
-              *)
+                EXTEND a:[[y=x]]END
         | i = LIDENT; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             let name = mk_name _loc <:ident< $lid:i >> in
             let text = TXnterm _loc name lev in
@@ -308,6 +222,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 mk_tok _loc <:patt< $uid:u $p >> s.styp
             | _ -> { (s) with pattern = Some p } ]
         | s = symbol -> s ] ]
+
     symbol:
       [ "top" NA
         [ `UIDENT ("LIST0"| "LIST1" as x); s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
@@ -337,62 +252,23 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
         | UIDENT "NEXT" ->
             mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
-              
+
         | "["; rl = LIST0 rule SEP "|"; "]" ->
             let rl = retype_rule_list_without_patterns _loc rl in
             let t = new_type_var () in
             let used = used_of_rule_list rl in
             mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
               ~styp:(STquo _loc t) ~pattern:None
+        
             
         | "`"; p = patt -> mk_tok _loc p (STtok _loc)
         (* parsing UIDENT and LIDENT here *)      
         | x = UIDENT ->
             mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>
             (STstring_tok _loc)
-           (* EXTEND a:[[A]] END
-              (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | A (_) -> (true) | _ -> (false) ), "A (_)"))
-                   )] ), (
-                  (mk_action (
-                    fun (__camlp4_0 :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (match __camlp4_0 with
-                       | A (_) -> (() : 'a)
-                       | _ -> assert false) )) ))] ))] ))) () ) ))
-            *)
         | x = UIDENT; s = STRING ->
             mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc)
 
-             (* EXTEND a:[[A "x" ]] END
-                (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [((
-                  [(
-                   (Stoken
-                     (( function | A ("x") -> (true) | _ -> (false) ),
-                      "A (\"x\")")) )] ), (
-                  (mk_action (
-                    fun (__camlp4_0 :
-                      token) ->
-                     fun (_loc :
-                       FanLoc.t) ->
-                      (match __camlp4_0 with
-                       | A ("x") -> (() : 'a)
-                       | _ -> assert false) )) ))] ))] ))) () ) ))
-              *)
         | x = UIDENT; `ANTIQUOT "" s ->
             let e = AntiquotSyntax.parse_expr _loc s in
             let match_fun = <:expr<
@@ -404,19 +280,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
               
         | s = STRING ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
-             (* EXTEND a:[["x"]]END
-              (extend ( (a : 'a t) ) (
-          ((fun ()
-              ->
-             (None , (
-              [(None , None , (
-                [(( [( (Skeyword ("x")) )] ), (
-                  (mk_action (
-                    fun (x :
-                      token) ->
-                     fun (_loc : FanLoc.t) -> ((string_of_token x) : 'a) ))
-                  ))] ))] ))) () ) )) *)
-              
+        EXTEND a:[[`A "x"]] END     
         | i = UIDENT; "."; il = qualid;
           lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             let n = mk_name _loc <:ident< $uid:i.$il >> in
