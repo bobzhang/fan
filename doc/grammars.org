@@ -868,3 +868,30 @@ Ptop_def
                   ))] ))] ))) () ) ))
 
    #+END_SRC
+
+** grammars
+
+   #+BEGIN_SRC ocaml
+      EXTEND x:[[ (x,z) = y]] END
+      (extend ( (x : 'x t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Snterm (obj ( (y : 'y t) ))) )] ), (
+                  (mk_action (
+                    fun ((x, z) : 'y) -> fun (_loc : FanLoc.t) -> (() : 'x)
+                    )) ))] ))] ))) () ) ))
+
+      EXTEND x:[[x=y]]END
+      (extend ( (x : 'x t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [(( [( (Snterm (obj ( (y : 'y t) ))) )] ), (
+                  (mk_action (
+                    fun (x : 'y) -> fun (_loc : FanLoc.t) -> (() : 'x) )) ))]
+                ))] ))) () ) ))
+
+   #+END_SRC

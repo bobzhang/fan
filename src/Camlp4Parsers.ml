@@ -134,8 +134,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | psl = LIST0 psymbol SEP semi_sep ->
             mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ `LIDENT p; "="; s = symbol ->
-            match s.pattern with
+      [ [ `LIDENT p; "="; s = symbol -> (* comment later *)
+            match s.pattern with 
             [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') ->
                 let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
                 let p' = <:patt< ($p' as $lid:p) >> in
@@ -148,7 +148,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let name = mk_name _loc <:ident< $lid:i >> in
             let text = TXnterm _loc name lev in
             let styp = STquo _loc i in
-            {used = [i]; text = text; styp = styp; pattern = None}
+            {used = [i]; text = text; styp = styp; pattern = None} (* comment later *)
         |  p = pattern; "="; s = symbol ->
             match s.pattern with
             [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
