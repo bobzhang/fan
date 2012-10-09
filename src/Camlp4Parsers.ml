@@ -97,15 +97,15 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
           let () = grammar_module_name := g in
           old  ]]
     qualuid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >> ] ] 
+      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+        | `UIDENT x -> <:ident< $uid:x >> ] ] 
     qualid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | i = UIDENT -> <:ident< $uid:i >>
-        | i = LIDENT -> <:ident< $lid:i >> ] ]
+      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+        | `UIDENT i -> <:ident< $uid:i >>
+        | `LIDENT i -> <:ident< $lid:i >> ] ]
     t_qualid:
-      [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
-        | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
+      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+        | `UIDENT x; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
       [ [ `UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
     entry:
@@ -118,7 +118,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     level_list:
       [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
     level:
-      [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
+      [ [ lab = OPT [  `STRING _ x  -> x ]; ass = OPT assoc; rules = rule_list ->
             mk_level ~label:lab ~assoc:ass ~rules ]]
     assoc:
       [[ `UIDENT ("LA"|"RA"|"NA" as x) ->
@@ -134,7 +134,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | psl = LIST0 psymbol SEP semi_sep ->
             mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ p = LIDENT; "="; s = symbol ->
+      [ [ `LIDENT p; "="; s = symbol ->
             match s.pattern with
             [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') ->
                 let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
@@ -144,7 +144,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 { (s) with text = text; pattern = Some p' }
             | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
                 (* EXTEND a:[[y=x]]END *)
-        | i = LIDENT; lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
+        | `LIDENT i; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] ->
             let name = mk_name _loc <:ident< $lid:i >> in
             let text = TXnterm _loc name lev in
             let styp = STquo _loc i in
@@ -197,14 +197,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | "`"; p = patt -> mk_tok _loc p (STtok _loc)
 
         (* parsing UIDENT and LIDENT here *)      
-        | x = UIDENT ->
-            mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>
-            (STstring_tok _loc)
+        (* | `UIDENT x -> *)
+        (*     mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >> *)
+        (*     (STstring_tok _loc) *)
 
-        (* | x = UIDENT; s = STRING -> *)
-        (*     mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc) *)
 
-        | x = UIDENT; `ANTIQUOT "" s ->
+        | `UIDENT x; `ANTIQUOT "" s ->
             let e = AntiquotSyntax.parse_expr _loc s in
             let match_fun = <:expr<
               fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in
@@ -213,20 +211,16 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let p = <:patt< $uid:x $(tup:<:patt< _ >>) >> in
             mk_symbol ~used:[] ~text ~styp:(STtok _loc) ~pattern:(Some p)
               
-        | s = STRING ->
+        | `STRING _ s ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
 
-        (* | i = UIDENT; "."; il = qualid; *)
-        (*   lev = OPT [`UIDENT "Level"; s = STRING -> s ] -> *)
-        (*     let n = mk_name _loc <:ident< $uid:i.$il >> in *)
-        (*     mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None *)
             
-        | n = name; lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
+        | n = name; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] ->
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
             
         | "("; s_t = SELF; ")" -> s_t ] ]
     pattern:
-      [ [ i = LIDENT -> <:patt< $lid:i >>
+      [ [ `LIDENT i -> <:patt< $lid:i >>
         | "_" -> <:patt< _ >>
         | "("; p = pattern; ")" -> <:patt< $p >>
         | "("; p1 = pattern; ","; p2 = comma_patt; ")" -> <:patt< ( $p1, $p2 ) >>
@@ -238,7 +232,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     name:
       [ [ il = qualid -> mk_name _loc il ] ]
     string:
-      [ [ s = STRING -> <:expr< $str:s >>
+      [ [ `STRING _ s -> <:expr< $str:s >>
         | `ANTIQUOT "" s -> AntiquotSyntax.parse_expr _loc s ] ]
     semi_sep:
       [ [ ";" -> () ] ]
@@ -596,7 +590,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             make_SdITE_result st1 st2
         | "IFNDEF"; uident_eval_ifndef; "THEN"; st1 = smlist_then; st2 = else_macro_def ->
             make_SdITE_result st1 st2
-        | "INCLUDE"; fname = STRING ->
+        | "INCLUDE"; `STRING _ fname ->
             SdLazy (lazy (parse_include_file str_items fname)) ] ] 
     macro_def_sig:
       [ [ "DEFINE"; i = uident -> SdDef i None
@@ -605,7 +599,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             make_SdITE_result sg1 sg2
         | "IFNDEF"; uident_eval_ifndef; "THEN"; sg1 = sglist_then; sg2 = else_macro_def_sig ->
             make_SdITE_result sg1 sg2
-        | "INCLUDE"; fname = STRING ->
+        | "INCLUDE"; `STRING _ fname ->
             SdLazy (lazy (parse_include_file sig_items fname)) ] ] 
     uident_eval_ifdef:
       [ [ i = uident -> Stack.push (is_defined i) stack ]] 
@@ -640,7 +634,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ "END" -> ()
         | "ENDIF" -> () ] ]  
     opt_macro_value:
-      [ [ "("; pl = LIST1 [ x = LIDENT -> x ] SEP ","; ")"; "="; e = expr -> Some (pl, e)
+      [ [ "("; pl = LIST1 [ `LIDENT x -> x ] SEP ","; ")"; "="; e = expr -> Some (pl, e)
         | "="; e = expr -> Some ([], e)
         | -> None ] ]  
     expr: Level "top"
@@ -648,7 +642,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
             if is_defined i then e1 else e2
         | "IFNDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
             if is_defined i then e2 else e1
-        | "DEFINE"; i = LIDENT; "="; def = expr; "IN"; body = expr ->
+        | "DEFINE"; `LIDENT i; "="; def = expr; "IN"; body = expr ->
             (new Expr.subst _loc [(i, def)])#expr body ] ] 
     patt:
       [ [ "IFDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
@@ -656,7 +650,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         | "IFNDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
             if is_defined i then p2 else p1 ] ] 
     uident:
-      [ [ i = UIDENT -> i ] ]  
+      [ [ `UIDENT i -> i ] ]  
     (* dirty hack to allow polymorphic variants using the introduced keywords. *)
     expr: Before "simple"
       [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
