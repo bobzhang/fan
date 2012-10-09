@@ -14,7 +14,9 @@ let gm () = !grammar_module_name;
 let mk_entry ~name ~pos ~levels = {name;pos;levels};
 let mk_level ~label ~assoc ~rules ={label; assoc;rules};
 let mk_rule ~prod ~action = {prod;action};
-
+let mk_symbol ~used ~text ~styp ~pattern = {
+  used;text;styp;pattern
+};
 
 let string_of_patt patt = 
   let buf = Buffer.create 42 in
@@ -53,7 +55,10 @@ let  mark_symbol modif tbl symb =
 (* bool ref -> (string, used ref * 'a) Hashtbl.t -> ('b, 'c) symbol -> unit*)
   List.iter (fun e -> mark_used modif tbl e) symb.used ;
 
-(* internal *)  
+(* internal
+   mainly to report unused local entry. You need to
+   feed a name list and entry list to check
+ *)  
 let check_use nl el = (* 'a name list -> (Ast.expr, 'b) entry list -> unit*)
   let tbl = Hashtbl.create 301 in
   let modif = ref False in
