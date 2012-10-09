@@ -32,6 +32,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   let mk_debug _loc m fmt section args =
     let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
+
+
   EXTEND Gram
     GLOBAL: expr;
     expr:
@@ -41,14 +43,70 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       [ (None,   False) -> <:expr< () >>
       | (Some e, False) -> e
       | (None, _) -> mk_debug _loc m fmt section args
-      | (Some e, _) -> <:expr< let () = $(mk_debug _loc m fmt section args) in $e >> ]  ] ]
+      | (Some e, _) -> <:expr< let () = $(mk_debug _loc m fmt section args) in $e >> ]
+    ] ]
     end_or_in:
     [ [ "end" -> None
-      | "in"; e = expr -> Some e  ] ]
+      | "in"; e = expr -> Some e
+    ] ]
     start_debug:
-    [ [ `LIDENT "debug" -> None
-      | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ]
+    [ [ LIDENT "debug" -> None
+      | LIDENT "camlp4_debug" -> Some "Camlp4"
+    ] ]
   END;
+(*
+  (Gram.extend ( (expr : 'expr Gram.t) ) (
+          ((fun ()
+              ->
+             (None , (
+              [(None , None , (
+                [((
+                  [(
+                   (Gram.Snterm
+                     (Gram.obj ( (start_debug : 'start_debug Gram.t) ))) ); (
+                   (Gram.Stoken
+                     (( function | LIDENT (_) -> (true) | _ -> (false) ),
+                      "LIDENT _")) ); (
+                   (Gram.Stoken
+                     (( function | STRING (_) -> (true) | _ -> (false) ),
+                      "STRING _")) ); (
+                   (Gram.Slist0
+                     ((Gram.Snterml
+                        (( (Gram.obj ( (expr : 'expr Gram.t) )) ), ".")))) );
+                   (
+                   (Gram.Snterm
+                     (Gram.obj ( (end_or_in : 'end_or_in Gram.t) ))) )] ), (
+                  (Gram.mk_action (
+                    fun (x :
+                      'end_or_in) ->
+                     fun (args :
+                       'expr list) ->
+                      fun (fmt :
+                        Gram.token) ->
+                       fun (section :
+                         Gram.token) ->
+                        fun (m :
+                          'start_debug) ->
+                         fun (_loc :
+                           FanLoc.t) ->
+                          (let fmt = (Gram.string_of_token fmt) in
+                           let section = (Gram.string_of_token section) in
+                           (match (x, ( (debug_mode section) )) with
+                            | (None, false) ->
+                               (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
+                            | (Some (e), false) -> e
+                            | (None, _) -> (mk_debug _loc m fmt section args)
+                            | (Some (e), _) ->
+                               (Ast.ExLet
+                                 (_loc, Ast.ReNil , (
+                                  (Ast.BiEq
+                                    (_loc, (
+                                     (Ast.PaId
+                                       (_loc, ( (Ast.IdUid (_loc, "()")) )))
+                                     ), ( (mk_debug _loc m fmt section args)
+                                     ))) ), e))) : 'expr) )) ))] ))] ))) () )
+          ))
+ *)
 end;
 
 module IdGrammarParser = struct
@@ -107,7 +165,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ x = UIDENT; "."; xs = SELF -> <:ident< $uid:x.$xs >>
         | x = UIDENT; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
-      [ [ `UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
+      [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
     entry:
       [ [ n = name; ":"; pos = OPT position; ll = level_list ->
             mk_entry ~name:n ~pos ~levels:ll ] ]
@@ -144,7 +202,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 { (s) with text = text; pattern = Some p' }
             | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
                 (* EXTEND a:[[y=x]]END *)
-        | i = LIDENT; lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
+        | i = LIDENT; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             let name = mk_name _loc <:ident< $lid:i >> in
             let text = TXnterm _loc name lev in
             let styp = STquo _loc i in
@@ -158,7 +216,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
     symbol:
       [ "top" NA
-        [ `UIDENT ("LIST0"| "LIST1" as x); s = SELF; sep = OPT [`UIDENT "SEP"; t = symbol -> t ] ->
+        [ `UIDENT ("LIST0"| "LIST1" as x); s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
             let () = check_not_tok s in
             let used =  match sep with
               [ Some symb -> symb.used @ s.used
@@ -170,20 +228,20 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 | _ -> failwithf "only (LIST0|LIST1) allowed here"])  sep s in
             mk_symbol ~used ~text ~styp ~pattern:None
 
-        |`UIDENT "OPT"; s = SELF ->
+        | UIDENT "OPT"; s = SELF ->
             let () = check_not_tok s in
             let styp = STapp _loc (STlid _loc "option") s.styp in
             let text = TXopt _loc s.text in
             mk_symbol ~used:s.used ~text ~styp ~pattern:None
 
-        |`UIDENT "TRY"; s = SELF ->
+        | UIDENT "TRY"; s = SELF ->
             let text = TXtry _loc s.text in
             mk_symbol ~used:s.used ~text ~styp:(s.styp) ~pattern:None]
 
-      | [`UIDENT "SELF" ->
+      | [ UIDENT "SELF" ->
           mk_symbol ~used:[] ~text:(TXself _loc)  ~styp:(STself _loc "SELF") ~pattern:None
 
-        |`UIDENT "NEXT" ->
+        | UIDENT "NEXT" ->
             mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
 
         | "["; rl = LIST0 rule SEP "|"; "]" ->
@@ -217,11 +275,11 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
 
         | i = UIDENT; "."; il = qualid;
-          lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
+          lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             let n = mk_name _loc <:ident< $uid:i.$il >> in
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
             
-        | n = name; lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
+        | n = name; lev = OPT [ UIDENT "Level"; s = STRING -> s ] ->
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
             
         | "("; s_t = SELF; ")" -> s_t ] ]
@@ -243,6 +301,19 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     semi_sep:
       [ [ ";" -> () ] ]
   END;
+
+  (*
+  EXTEND Gram
+    symbol: Level "top"
+      [ NA
+        [ min = [ UIDENT "SLIST0" -> False | UIDENT "SLIST1" -> True ];
+          s = SELF; sep = OPT [ UIDENT "SEP"; t = symbol -> t ] ->
+            sslist _loc min sep s
+        | UIDENT "SOPT"; s = SELF ->
+            ssopt _loc s ] ]
+  END;
+  *)
+
   let sfold _loc  n foldfun f e s =
     let styp = STquo _loc (new_type_var ()) in
     let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
@@ -261,14 +332,15 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: symbol;
     symbol: Level "top"
-      [ [`UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF ->
+      [ [ UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF ->
             sfold _loc "FOLD0" "sfold0" f e s
-        |`UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF ->
+        | UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF ->
             sfold _loc "FOLD1" "sfold1" f e s
-        |`UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF;`UIDENT "SEP"; sep = symbol ->
+        | UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF;
+          UIDENT "SEP"; sep = symbol ->
             sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep
-        |`UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF;
-`UIDENT "SEP"; sep = symbol ->
+        | UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF;
+          UIDENT "SEP"; sep = symbol ->
             sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep ] ]
     simple_expr:
       [ [ i = a_LIDENT -> <:expr< $lid:i >>
@@ -292,6 +364,7 @@ module IdListComprehension = struct
 end;
 
 module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
+  (* open Sig; *)
   open FanSig;
   include Syntax;
   module Ast = Camlp4Ast;

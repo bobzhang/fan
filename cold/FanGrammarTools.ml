@@ -50,127 +50,211 @@ let mk_level =
 let mk_rule = fun ~prod -> fun ~action -> {prod = prod; action = action}
 
 
+let mk_symbol =
+ fun ~used ->
+  fun ~text ->
+   fun ~styp ->
+    fun ~pattern ->
+     {used = used; text = text; styp = styp; pattern = pattern}
+
 let string_of_patt =
- fun patt ->
-  let buf = (Buffer.create 42) in
-  let () =
-   (Format.bprintf buf "%a@?" (
-     fun fmt -> fun p -> (Pprintast.pattern fmt ( (Ast2pt.patt p) )) ) patt) in
-  let str = (Buffer.contents buf) in
-  if (str = "") then ( assert false ) else str
+                                                                  fun patt ->
+                                                                   let buf =
+                                                                    (Buffer.create
+                                                                    42) in
+                                                                   let 
+                                                                    () =
+                                                                    (Format.bprintf
+                                                                    buf
+                                                                    "%a@?" (
+                                                                    fun fmt ->
+                                                                    fun p ->
+                                                                    (Pprintast.pattern
+                                                                    fmt (
+                                                                    (Ast2pt.patt
+                                                                    p) )) )
+                                                                    patt) in
+                                                                   let str =
+                                                                    (Buffer.contents
+                                                                    buf) in
+                                                                   if 
+                                                                    (str =
+                                                                    "") then
+                                                                    (
+                                                                    assert false
+                                                                    )
+                                                                   else str
+
 
 let check_not_tok =
-                                                 fun s ->
-                                                  (match s with
-                                                   | {text =
-                                                       TXtok (_loc, _, _); _ } ->
-                                                      (FanLoc.raise _loc (
-                                                        (Stream.Error
-                                                          ("Deprecated syntax, use a sub rule. "
-                                                            ^
-                                                            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
-                                                        ))
-                                                   | _ -> ())
+ fun s ->
+  (match s with
+   | {text = TXtok (_loc, _, _); _ } ->
+      (FanLoc.raise _loc (
+        (Stream.Error
+          ("Deprecated syntax, use a sub rule. " ^
+            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]")) ))
+   | _ -> ())
 
 let mark_used =
-                                                                fun modif ->
-                                                                 fun tbl ->
-                                                                  fun n ->
-                                                                   (try
-                                                                    let rll =
-                                                                    (Hashtbl.find_all
-                                                                    tbl n) in
-                                                                    (List.iter
-                                                                    (
-                                                                    function
-                                                                    | (({
-                                                                    contents =
-                                                                    Unused} as
-                                                                    r), _) ->
-                                                                    (
-                                                                    (r :=
-                                                                    UsedNotScanned
-                                                                    )
-                                                                    );
-                                                                    (modif :=
-                                                                    true )
-                                                                    | 
-                                                                    _ -> () )
-                                                                    rll)
-                                                                    with
-                                                                    Not_found ->
-                                                                    ())
-
+                fun modif ->
+                 fun tbl ->
+                  fun n ->
+                   (try
+                     let rll = (Hashtbl.find_all tbl n) in
+                     (List.iter (
+                       function
+                       | (({contents = Unused} as r), _) ->
+                          ( (r := UsedNotScanned ) ); (modif := true )
+                       | _ -> () ) rll)
+                    with
+                    Not_found -> ())
 
 let mark_symbol =
- fun modif ->
-  fun tbl ->
-   fun symb -> (List.iter ( fun e -> (mark_used modif tbl e) ) ( symb.used ))
-
+                                       fun modif ->
+                                        fun tbl ->
+                                         fun symb ->
+                                          (List.iter (
+                                            fun e -> (mark_used modif tbl e)
+                                            ) ( symb.used ))
 
 let check_use =
- fun nl ->
-  fun el ->
-   let tbl = (Hashtbl.create 301) in
-   let modif = (ref false ) in
-   let () =
-    (List.iter (
-      fun e ->
-       let u =
-        (match (e.name).expr with
-         | Ast.ExId (_, Ast.IdLid (_, _)) -> (Unused)
-         | _ -> (UsedNotScanned)) in
-       (Hashtbl.add tbl ( (e.name).tvar ) (( (ref u) ), e)) ) el) in
-   let () =
-    (List.iter (
-      fun n ->
-       (try
-         let rll = (Hashtbl.find_all tbl ( n.tvar )) in
-         (List.iter ( fun (r, _) -> (r := UsedNotScanned ) ) rll)
-        with
-        _ -> ()) ) nl) in
-   let () = (modif := true ) in
-   let () =
-    while modif.contents do
-     (
-    (modif := false )
-    );
-     (Hashtbl.iter (
-       fun _ ->
-        fun (r, e) ->
-         if (( r.contents ) = UsedNotScanned )
-         then
-          begin
-          (
-          (r := UsedScanned )
-          );
-          (List.iter (
-            fun level ->
-             let rules = level.rules in
-             (List.iter (
-               fun rule ->
-                (List.iter ( fun s -> (mark_symbol modif tbl s) ) ( rule.prod
-                  )) ) rules) ) ( e.levels ))
-         end else () ) tbl)
-    done in
-   (Hashtbl.iter (
-     fun s ->
-      fun (r, e) ->
-       if (( r.contents ) = Unused ) then
-        (
-        (print_warning ( (e.name).loc ) (
-          ("Unused local entry \"" ^ ( (s ^ "\"") )) ))
-        )
-       else () ) tbl)
+                                                               fun nl ->
+                                                                fun el ->
+                                                                 let tbl =
+                                                                  (Hashtbl.create
+                                                                    301) in
+                                                                 let modif =
+                                                                  (ref false
+                                                                    ) in
+                                                                 let 
+                                                                  () =
+                                                                  (List.iter
+                                                                    (
+                                                                    fun e ->
+                                                                    let u =
+                                                                    (match
+                                                                    (e.name).expr with
+                                                                    | Ast.ExId
+                                                                    (_,
+                                                                    Ast.IdLid
+                                                                    (_, _)) ->
+                                                                    (Unused)
+                                                                    | 
+                                                                    _ ->
+                                                                    (
+                                                                    UsedNotScanned)) in
+                                                                    (Hashtbl.add
+                                                                    tbl (
+                                                                    (e.name).tvar
+                                                                    )
+                                                                    ((
+                                                                    (ref u)
+                                                                    ), e)) )
+                                                                    el) in
+                                                                 let 
+                                                                  () =
+                                                                  (List.iter
+                                                                    (
+                                                                    fun n ->
+                                                                    (
+                                                                    try
+                                                                    let rll =
+                                                                    (Hashtbl.find_all
+                                                                    tbl (
+                                                                    n.tvar )) in
+                                                                    (List.iter
+                                                                    (
+                                                                    fun 
+                                                                    (r, _) ->
+                                                                    (r :=
+                                                                    UsedNotScanned
+                                                                    ) ) rll)
+                                                                    with
+                                                                    _ -> ())
+                                                                    ) nl) in
+                                                                 let 
+                                                                  () =
+                                                                  (modif :=
+                                                                    true ) in
+                                                                 let 
+                                                                  () =
+                                                                  while
+                                                                   modif.contents do
+                                                                   (
+                                                                  (modif :=
+                                                                    false )
+                                                                  );
+                                                                   (Hashtbl.iter
+                                                                    (
+                                                                    fun _ ->
+                                                                    fun 
+                                                                    (r, e) ->
+                                                                    if 
+                                                                    ((
+                                                                    r.contents
+                                                                    ) =
+                                                                    UsedNotScanned
+                                                                    )
+                                                                    then
+                                                                     begin
+                                                                    (
+                                                                    (r :=
+                                                                    UsedScanned
+                                                                    )
+                                                                    );
+                                                                    (List.iter
+                                                                    (
+                                                                    fun level ->
+                                                                    let rules =
+                                                                    level.rules in
+                                                                    (List.iter
+                                                                    (
+                                                                    fun rule ->
+                                                                    (List.iter
+                                                                    (
+                                                                    fun s ->
+                                                                    (mark_symbol
+                                                                    modif tbl
+                                                                    s) ) (
+                                                                    rule.prod
+                                                                    )) )
+                                                                    rules) )
+                                                                    (
+                                                                    e.levels
+                                                                    ))
+                                                                    end 
+                                                                    else
+                                                                    () ) tbl)
+                                                                  done in
+                                                                 (Hashtbl.iter
+                                                                   (
+                                                                   fun s ->
+                                                                    fun 
+                                                                    (r, e) ->
+                                                                    if 
+                                                                    ((
+                                                                    r.contents
+                                                                    ) =
+                                                                    Unused ) then
+                                                                    (
+                                                                    (print_warning
+                                                                    (
+                                                                    (e.name).loc
+                                                                    ) (
+                                                                    ("Unused local entry \""
+                                                                    ^ (
+                                                                    (s ^
+                                                                    "\"") ))
+                                                                    ))
+                                                                    )
+                                                                    else () )
+                                                                   tbl)
+
 
 let new_type_var =
-                        let i = (ref 0) in
-                        fun ()
-                          ->
-                         (
-                         (incr i)
-                         );
-                         ("e__" ^ ( (string_of_int ( i.contents )) ))
+ let i = (ref 0) in
+ fun ()  -> ( (incr i) ); ("e__" ^ ( (string_of_int ( i.contents )) ))
 
 
 let used_of_rule_list =

@@ -87,6 +87,11 @@ let match_keyword kwd =  fun
   [ KEYWORD kwd' when kwd = kwd' -> True
   | _ -> False ];
 
+(*
+  {[
+  x=STRING -> extract_string x
+  ]}
+ *)  
 let extract_string = fun
   [ KEYWORD s | SYMBOL s | LIDENT s | UIDENT s | INT _ s | INT32 _ s |
   INT64 _ s | NATIVEINT _ s | FLOAT _ s | CHAR _ s | STRING _ s |
