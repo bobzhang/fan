@@ -2384,106 +2384,6 @@ module MakeGrammarParser =
                                                                     (Gram.string_of_token
                                                                     s) in
                                                                     s :
-                                                                    'e__6)
-                                                                    | 
-                                                                    _ ->
-                                                                    assert false)
-                                                                    )) ))] )))
-                                                                    )] ), (
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    fun (lev :
-                                                                    'e__6 option) ->
-                                                                    fun (n :
-                                                                    'name) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    ((mk_symbol
-                                                                    ~used:(
-                                                                    [( 
-                                                                    n.tvar )]
-                                                                    ) ~text:(
-                                                                    (TXnterm
-                                                                    (_loc, n,
-                                                                    lev)) )
-                                                                    ~styp:(
-                                                                    (STquo
-                                                                    (_loc, (
-                                                                    n.tvar )))
-                                                                    )
-                                                                    ~pattern:None
-                                                                    ) :
-                                                                    'symbol)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
-                                                                    (Gram.Skeyword
-                                                                    (".")) );
-                                                                    (
-                                                                    (Gram.Snterm
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (qualid :
-                                                                    'qualid Gram.t)
-                                                                    ))) ); (
-                                                                    (Gram.Sopt
-                                                                    (Gram.srules
-                                                                    symbol (
-                                                                    [((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    ("Level") ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT (\"Level\")"))
-                                                                    ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    fun (s :
-                                                                    Gram.token) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (
-                                                                    match
-                                                                    __camlp4_0 with
-                                                                    | UIDENT
-                                                                    ("Level") ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    s :
                                                                     'e__5)
                                                                     | 
                                                                     _ ->
@@ -2494,26 +2394,11 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (lev :
                                                                     'e__5 option) ->
-                                                                    fun (il :
-                                                                    'qualid) ->
-                                                                    fun _ ->
-                                                                    fun (i :
-                                                                    Gram.token) ->
+                                                                    fun (n :
+                                                                    'name) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    let n =
-                                                                    (mk_name
-                                                                    _loc (
-                                                                    (Ast.IdAcc
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, i))
-                                                                    ), il))
-                                                                    )) in
-                                                                    (mk_symbol
+                                                                    ((mk_symbol
                                                                     ~used:(
                                                                     [( 
                                                                     n.tvar )]
@@ -2707,63 +2592,6 @@ module MakeGrammarParser =
                                                                     | 
                                                                     _ ->
                                                                     assert false)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    fun (s :
-                                                                    Gram.token) ->
-                                                                    fun (x :
-                                                                    Gram.token) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (mk_tok
-                                                                    _loc (
-                                                                    (Ast.PaApp
-                                                                    (_loc, (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, x))
-                                                                    ))) ), (
-                                                                    (Ast.PaStr
-                                                                    (_loc, s))
-                                                                    ))) ) (
-                                                                    (STtok
-                                                                    (_loc))
-                                                                    )) :
-                                                                    'symbol)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -4026,7 +3854,7 @@ module MakeListComprehension =
                               fun _ ->
                                fun (p :
                                  'patt) ->
-                                fun (_loc : FanLoc.t) -> (p : 'e__7) )) ))]
+                                fun (_loc : FanLoc.t) -> (p : 'e__6) )) ))]
                           ))) ); (
                       (Gram.Snterml
                         (( (Gram.obj ( (expr : 'expr Gram.t) )) ), "top")) )]
@@ -4035,7 +3863,7 @@ module MakeListComprehension =
                        fun (e :
                          'expr) ->
                         fun (p :
-                          'e__7) ->
+                          'e__6) ->
                          fun (_loc : FanLoc.t) -> (`gen (p, e) : 'item) )) ))]
                    ))] ))) () ) ))
 
@@ -4948,7 +4776,7 @@ module MakeMacroParser =
                                               'str_item) ->
                                              fun (_loc :
                                                FanLoc.t) ->
-                                              ((SdStr (si)) : 'e__8) ))
+                                              ((SdStr (si)) : 'e__7) ))
                                          ));
                                         ((
                                          [(
@@ -4974,11 +4802,11 @@ module MakeMacroParser =
                                                   fun b ->
                                                    (Ast.StSem
                                                      (_loc, a, b)) ) Then 
-                                                 d) : 'e__8) )) ))] )))
+                                                 d) : 'e__7) )) ))] )))
                                    )] ), (
                                   (Gram.mk_action (
                                     fun (sml :
-                                      'e__8 list) ->
+                                      'e__7 list) ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (sml : 'smlist_then) )) ))] ))] )))
@@ -5012,7 +4840,7 @@ module MakeMacroParser =
                                               'str_item) ->
                                              fun (_loc :
                                                FanLoc.t) ->
-                                              ((SdStr (si)) : 'e__9) ))
+                                              ((SdStr (si)) : 'e__8) ))
                                          ));
                                         ((
                                          [(
@@ -5038,11 +4866,11 @@ module MakeMacroParser =
                                                   fun b ->
                                                    (Ast.StSem
                                                      (_loc, a, b)) ) Else 
-                                                 d) : 'e__9) )) ))] )))
+                                                 d) : 'e__8) )) ))] )))
                                    )] ), (
                                   (Gram.mk_action (
                                     fun (sml :
-                                      'e__9 list) ->
+                                      'e__8 list) ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (sml : 'smlist_else) )) ))] ))] )))
@@ -5059,6 +4887,70 @@ module MakeMacroParser =
                                   [(
                                    (Gram.Slist1
                                      (Gram.srules sglist_then (
+                                       [((
+                                         [(
+                                          (Gram.Snterm
+                                            (Gram.obj (
+                                              (sig_item :
+                                                'sig_item Gram.t) ))) );
+                                          (
+                                          (Gram.Snterm
+                                            (Gram.obj (
+                                              (semi : 'semi Gram.t) )))
+                                          )] ), (
+                                         (Gram.mk_action (
+                                           fun _ ->
+                                            fun (si :
+                                              'sig_item) ->
+                                             fun (_loc :
+                                               FanLoc.t) ->
+                                              ((SdStr (si)) : 'e__9) ))
+                                         ));
+                                        ((
+                                         [(
+                                          (Gram.Snterm
+                                            (Gram.obj (
+                                              (macro_def_sig :
+                                                'macro_def_sig Gram.t) )))
+                                          ); (
+                                          (Gram.Snterm
+                                            (Gram.obj (
+                                              (semi : 'semi Gram.t) )))
+                                          )] ), (
+                                         (Gram.mk_action (
+                                           fun _ ->
+                                            fun (d :
+                                              'macro_def_sig) ->
+                                             fun (_loc :
+                                               FanLoc.t) ->
+                                              ((execute_macro_if_active_branch
+                                                 _loc (
+                                                 (Ast.SgNil (_loc)) ) (
+                                                 fun a ->
+                                                  fun b ->
+                                                   (Ast.SgSem
+                                                     (_loc, a, b)) ) Then 
+                                                 d) : 'e__9) )) ))] )))
+                                   )] ), (
+                                  (Gram.mk_action (
+                                    fun (sgl :
+                                      'e__9 list) ->
+                                     fun (_loc :
+                                       FanLoc.t) ->
+                                      (sgl : 'sglist_then) )) ))] ))] )))
+                            () ) ))
+                        );
+                        (
+                        (Gram.extend (
+                          (sglist_else : 'sglist_else Gram.t) ) (
+                          ((fun ()
+                              ->
+                             (None , (
+                              [(None , None , (
+                                [((
+                                  [(
+                                   (Gram.Slist1
+                                     (Gram.srules sglist_else (
                                        [((
                                          [(
                                           (Gram.Snterm
@@ -5101,76 +4993,12 @@ module MakeMacroParser =
                                                  fun a ->
                                                   fun b ->
                                                    (Ast.SgSem
-                                                     (_loc, a, b)) ) Then 
+                                                     (_loc, a, b)) ) Else 
                                                  d) : 'e__10) )) ))] )))
                                    )] ), (
                                   (Gram.mk_action (
                                     fun (sgl :
                                       'e__10 list) ->
-                                     fun (_loc :
-                                       FanLoc.t) ->
-                                      (sgl : 'sglist_then) )) ))] ))] )))
-                            () ) ))
-                        );
-                        (
-                        (Gram.extend (
-                          (sglist_else : 'sglist_else Gram.t) ) (
-                          ((fun ()
-                              ->
-                             (None , (
-                              [(None , None , (
-                                [((
-                                  [(
-                                   (Gram.Slist1
-                                     (Gram.srules sglist_else (
-                                       [((
-                                         [(
-                                          (Gram.Snterm
-                                            (Gram.obj (
-                                              (sig_item :
-                                                'sig_item Gram.t) ))) );
-                                          (
-                                          (Gram.Snterm
-                                            (Gram.obj (
-                                              (semi : 'semi Gram.t) )))
-                                          )] ), (
-                                         (Gram.mk_action (
-                                           fun _ ->
-                                            fun (si :
-                                              'sig_item) ->
-                                             fun (_loc :
-                                               FanLoc.t) ->
-                                              ((SdStr (si)) : 'e__11) ))
-                                         ));
-                                        ((
-                                         [(
-                                          (Gram.Snterm
-                                            (Gram.obj (
-                                              (macro_def_sig :
-                                                'macro_def_sig Gram.t) )))
-                                          ); (
-                                          (Gram.Snterm
-                                            (Gram.obj (
-                                              (semi : 'semi Gram.t) )))
-                                          )] ), (
-                                         (Gram.mk_action (
-                                           fun _ ->
-                                            fun (d :
-                                              'macro_def_sig) ->
-                                             fun (_loc :
-                                               FanLoc.t) ->
-                                              ((execute_macro_if_active_branch
-                                                 _loc (
-                                                 (Ast.SgNil (_loc)) ) (
-                                                 fun a ->
-                                                  fun b ->
-                                                   (Ast.SgSem
-                                                     (_loc, a, b)) ) Else 
-                                                 d) : 'e__11) )) ))] )))
-                                   )] ), (
-                                  (Gram.mk_action (
-                                    fun (sgl :
-                                      'e__11 list) ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (sgl : 'sglist_else) )) ))] ))] )))
@@ -5241,7 +5069,7 @@ module MakeMacroParser =
                                                FanLoc.t) ->
                                               (let x =
                                                 (Gram.string_of_token x) in
-                                               x : 'e__12) )) ))] )) ), (
+                                               x : 'e__11) )) ))] )) ), (
                                       (Gram.Skeyword (",")) ))) ); (
                                    (Gram.Skeyword (")")) ); (
                                    (Gram.Skeyword ("=")) ); (
@@ -5254,7 +5082,7 @@ module MakeMacroParser =
                                      fun _ ->
                                       fun _ ->
                                        fun (pl :
-                                         'e__12 list) ->
+                                         'e__11 list) ->
                                         fun _ ->
                                          fun (_loc :
                                            FanLoc.t) ->
@@ -5459,7 +5287,7 @@ module MakeMacroParser =
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
-                                             'e__13) )) ));
+                                             'e__12) )) ));
                                       (( [( (Gram.Skeyword ("DEFINE")) )]
                                        ), (
                                        (Gram.mk_action (
@@ -5468,8 +5296,93 @@ module MakeMacroParser =
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
-                                             'e__13) )) ));
+                                             'e__12) )) ));
                                       (( [( (Gram.Skeyword ("ENDIF")) )]
+                                       ), (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ));
+                                      (( [( (Gram.Skeyword ("END")) )] ),
+                                       (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ));
+                                      (( [( (Gram.Skeyword ("ELSE")) )]
+                                       ), (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ));
+                                      (( [( (Gram.Skeyword ("THEN")) )]
+                                       ), (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ));
+                                      (( [( (Gram.Skeyword ("IFNDEF")) )]
+                                       ), (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ));
+                                      (( [( (Gram.Skeyword ("IFDEF")) )]
+                                       ), (
+                                       (Gram.mk_action (
+                                         fun (x :
+                                           Gram.token) ->
+                                          fun (_loc :
+                                            FanLoc.t) ->
+                                           ((Gram.string_of_token x) :
+                                             'e__12) )) ))] )) )] ), (
+                                  (Gram.mk_action (
+                                    fun (kwd :
+                                      'e__12) ->
+                                     fun _ ->
+                                      fun (_loc :
+                                        FanLoc.t) ->
+                                       ((Ast.ExVrn (_loc, kwd)) : 'expr)
+                                    )) ))] ))] ))) () ) ))
+                        );
+                        (Gram.extend ( (patt : 'patt Gram.t) ) (
+                          ((fun ()
+                              ->
+                             (( (Some (`Before "simple")) ), (
+                              [(None , None , (
+                                [((
+                                  [( (Gram.Skeyword ("`")) ); (
+                                   (Gram.Snterm
+                                     (Gram.obj (
+                                       (a_ident : 'a_ident Gram.t) ))) )]
+                                  ), (
+                                  (Gram.mk_action (
+                                    fun (s :
+                                      'a_ident) ->
+                                     fun _ ->
+                                      fun (_loc :
+                                        FanLoc.t) ->
+                                       ((Ast.PaVrn (_loc, s)) : 'patt) ))
+                                  ));
+                                 ((
+                                  [( (Gram.Skeyword ("`")) ); (
+                                   (Gram.srules patt (
+                                     [(( [( (Gram.Skeyword ("ENDIF")) )]
                                        ), (
                                        (Gram.mk_action (
                                          fun (x :
@@ -5526,91 +5439,6 @@ module MakeMacroParser =
                                   (Gram.mk_action (
                                     fun (kwd :
                                       'e__13) ->
-                                     fun _ ->
-                                      fun (_loc :
-                                        FanLoc.t) ->
-                                       ((Ast.ExVrn (_loc, kwd)) : 'expr)
-                                    )) ))] ))] ))) () ) ))
-                        );
-                        (Gram.extend ( (patt : 'patt Gram.t) ) (
-                          ((fun ()
-                              ->
-                             (( (Some (`Before "simple")) ), (
-                              [(None , None , (
-                                [((
-                                  [( (Gram.Skeyword ("`")) ); (
-                                   (Gram.Snterm
-                                     (Gram.obj (
-                                       (a_ident : 'a_ident Gram.t) ))) )]
-                                  ), (
-                                  (Gram.mk_action (
-                                    fun (s :
-                                      'a_ident) ->
-                                     fun _ ->
-                                      fun (_loc :
-                                        FanLoc.t) ->
-                                       ((Ast.PaVrn (_loc, s)) : 'patt) ))
-                                  ));
-                                 ((
-                                  [( (Gram.Skeyword ("`")) ); (
-                                   (Gram.srules patt (
-                                     [(( [( (Gram.Skeyword ("ENDIF")) )]
-                                       ), (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ));
-                                      (( [( (Gram.Skeyword ("END")) )] ),
-                                       (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ));
-                                      (( [( (Gram.Skeyword ("ELSE")) )]
-                                       ), (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ));
-                                      (( [( (Gram.Skeyword ("THEN")) )]
-                                       ), (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ));
-                                      (( [( (Gram.Skeyword ("IFNDEF")) )]
-                                       ), (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ));
-                                      (( [( (Gram.Skeyword ("IFDEF")) )]
-                                       ), (
-                                       (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
-                                          fun (_loc :
-                                            FanLoc.t) ->
-                                           ((Gram.string_of_token x) :
-                                             'e__14) )) ))] )) )] ), (
-                                  (Gram.mk_action (
-                                    fun (kwd :
-                                      'e__14) ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
@@ -11337,12 +11165,12 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (seq :
-                                                                    'e__17)
+                                                                    'e__16)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (seq :
-                                                          'e__17) ->
+                                                          'e__16) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (seq :
@@ -11368,7 +11196,7 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (() :
-                                                                    'e__16)
+                                                                    'e__15)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
@@ -11412,12 +11240,12 @@ module MakeRevisedParser =
                                                                   fun (_loc :
                                                                     FanLoc.t) ->
                                                                    (seq :
-                                                                    'e__15)
+                                                                    'e__14)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (seq :
-                                                          'e__15) ->
+                                                          'e__14) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (seq :
@@ -11450,7 +11278,7 @@ module MakeRevisedParser =
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
                                                                   x) :
-                                                                 'e__18)
+                                                                 'e__17)
                                                              )) ));
                                                           ((
                                                            [(
@@ -11465,12 +11293,12 @@ module MakeRevisedParser =
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
                                                                   x) :
-                                                                 'e__18)
+                                                                 'e__17)
                                                              )) ))] )) )]
                                                       ), (
                                                       (Gram.mk_action (
                                                         fun (x :
-                                                          'e__18) ->
+                                                          'e__17) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.ExId
@@ -11506,7 +11334,7 @@ module MakeRevisedParser =
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
                                                                   x) :
-                                                                 'e__19)
+                                                                 'e__18)
                                                              )) ));
                                                           ((
                                                            [(
@@ -11521,12 +11349,12 @@ module MakeRevisedParser =
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
                                                                   x) :
-                                                                 'e__19)
+                                                                 'e__18)
                                                              )) ))] )) )]
                                                       ), (
                                                       (Gram.mk_action (
                                                         fun (x :
-                                                          'e__19) ->
+                                                          'e__18) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.ExId
@@ -12325,7 +12153,7 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (() :
-                                                                    'e__20)
+                                                                    'e__19)
                                                                )) ))] )))
                                                        ); (
                                                        (Gram.Snterm
@@ -13071,7 +12899,7 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (() :
-                                                                    'e__21)
+                                                                    'e__20)
                                                                )) ))] )))
                                                        ); (
                                                        (Gram.Snterm
@@ -13209,7 +13037,7 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (() :
-                                                                    'e__22)
+                                                                    'e__21)
                                                                )) ))] )))
                                                        ); (
                                                        (Gram.Snterm
@@ -13322,7 +13150,7 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (() :
-                                                                    'e__23)
+                                                                    'e__22)
                                                                )) ))] )))
                                                        ); (
                                                        (Gram.Snterm
@@ -19891,12 +19719,12 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (cst :
-                                                                    'e__24)
+                                                                    'e__23)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (l :
-                                                          'e__24 list) ->
+                                                          'e__23 list) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.crSem_of_list
@@ -21303,12 +21131,12 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (csg :
-                                                                    'e__25)
+                                                                    'e__24)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (l :
-                                                          'e__25 list) ->
+                                                          'e__24 list) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.cgSem_of_list
@@ -24188,12 +24016,12 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (sg :
-                                                                    'e__26)
+                                                                    'e__25)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (l :
-                                                          'e__26 list) ->
+                                                          'e__25 list) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.sgSem_of_list
@@ -24432,12 +24260,12 @@ module MakeRevisedParser =
                                                                  fun (_loc :
                                                                    FanLoc.t) ->
                                                                   (st :
-                                                                    'e__27)
+                                                                    'e__26)
                                                                )) ))] )))
                                                        )] ), (
                                                       (Gram.mk_action (
                                                         fun (l :
-                                                          'e__27 list) ->
+                                                          'e__26 list) ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           ((Ast.stSem_of_list
@@ -30072,7 +29900,7 @@ module MakeRevisedParserParser =
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (e :
-                                                                    'e__28)
+                                                                    'e__27)
                                                                     )) ))]
                                                                     )))
                                                                     )] ),
@@ -30080,7 +29908,7 @@ module MakeRevisedParserParser =
                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (eo :
-                                                                    'e__28 option) ->
+                                                                    'e__27 option) ->
                                                                     fun (p :
                                                                     'patt) ->
                                                                     fun (_loc :
@@ -30140,7 +29968,7 @@ module MakeRevisedParserParser =
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (e :
-                                                                    'e__29)
+                                                                    'e__28)
                                                                     )) ))]
                                                                     )))
                                                                     )] ),
@@ -30148,7 +29976,7 @@ module MakeRevisedParserParser =
                                                                    (Gram.mk_action
                                                                     (
                                                                     fun (eo :
-                                                                    'e__29 option) ->
+                                                                    'e__28 option) ->
                                                                     fun (spc :
                                                                     'stream_patt_comp) ->
                                                                     fun (_loc :

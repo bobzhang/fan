@@ -201,8 +201,8 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >>
             (STstring_tok _loc)
 
-        | x = UIDENT; s = STRING ->
-            mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc)
+        (* | x = UIDENT; s = STRING -> *)
+        (*     mk_tok _loc <:patt< $uid:x $str:s >> (STtok _loc) *)
 
         | x = UIDENT; `ANTIQUOT "" s ->
             let e = AntiquotSyntax.parse_expr _loc s in
@@ -216,10 +216,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         | s = STRING ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
 
-        | i = UIDENT; "."; il = qualid;
-          lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
-            let n = mk_name _loc <:ident< $uid:i.$il >> in
-            mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
+        (* | i = UIDENT; "."; il = qualid; *)
+        (*   lev = OPT [`UIDENT "Level"; s = STRING -> s ] -> *)
+        (*     let n = mk_name _loc <:ident< $uid:i.$il >> in *)
+        (*     mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None *)
             
         | n = name; lev = OPT [`UIDENT "Level"; s = STRING -> s ] ->
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
