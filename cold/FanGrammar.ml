@@ -9,7 +9,6 @@ type styp =
  | STquo of loc * string
  | STself of loc * string
  | STtok of loc
- | STstring_tok of loc
  | STtyp of Ast.ctyp
 
 type entry = {

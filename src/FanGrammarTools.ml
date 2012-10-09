@@ -134,7 +134,7 @@ let  make_ctyp  styp tvar = (* styp -> string -> Ast.ctyp *)
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else <:ctyp< '$tvar >>
     | STtok _loc -> <:ctyp< $(id:gm()).token >> (*FIXME*)
-    | STstring_tok _loc -> <:ctyp< string >>
+    (* | STstring_tok _loc -> <:ctyp< string >> *)
     | STtyp t -> t ] in aux styp ;
 
 (*
@@ -143,7 +143,7 @@ let  make_ctyp  styp tvar = (* styp -> string -> Ast.ctyp *)
   ]}
 *)    
 let make_ctyp_patt styp tvar patt = (* styp -> string -> patt -> patt*)
-  let styp = match styp with [ STstring_tok _loc -> STtok _loc | t -> t ] in
+  (* let styp = match styp with [ STstring_tok _loc -> STtok _loc | t -> t ] in *)
   match make_ctyp styp tvar with
   [ <:ctyp< _ >> -> patt (* FIXME *)
   | t -> let _loc = Camlp4Ast.loc_of_patt patt in <:patt< ($patt : $t) >> ];

@@ -910,20 +910,25 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (i :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdUid
-                                                                    (_loc, i)) :
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | UIDENT
+                                                                    (x) ->
+                                                                    ((Ast.IdUid
+                                                                    (_loc, x)) :
                                                                     'qualuid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -937,7 +942,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
@@ -948,19 +953,24 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     'qualuid) ->
                                                                     fun _ ->
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | UIDENT
+                                                                    (x) ->
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
                                                                     ), xs)) :
                                                                     'qualuid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -988,20 +998,25 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "LIDENT _"))
+                                                                    "LIDENT (_)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (i :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdLid
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | LIDENT
+                                                                    (i) ->
+                                                                    ((Ast.IdLid
                                                                     (_loc, i)) :
                                                                     'qualid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -1015,20 +1030,25 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (i :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdUid
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | UIDENT
+                                                                    (i) ->
+                                                                    ((Ast.IdUid
                                                                     (_loc, i)) :
                                                                     'qualid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -1042,7 +1062,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
@@ -1053,19 +1073,24 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     'qualid) ->
                                                                     fun _ ->
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | UIDENT
+                                                                    (x) ->
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
                                                                     ), xs)) :
                                                                     'qualid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -1093,7 +1118,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
@@ -1112,22 +1137,22 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
+                                                                    fun (__camlp4_1 :
                                                                     Gram.token) ->
                                                                     fun _ ->
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
                                                                     match
-                                                                    __camlp4_0 with
-                                                                    | LIDENT
-                                                                    ("t") ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdUid
+                                                                    (__camlp4_1,
+                                                                    __camlp4_0) with
+                                                                    | (LIDENT
+                                                                    ("t"),
+                                                                    UIDENT
+                                                                    (x)) ->
+                                                                    ((Ast.IdUid
                                                                     (_loc, x)) :
                                                                     't_qualid)
                                                                     | 
@@ -1146,7 +1171,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
@@ -1157,19 +1182,24 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     't_qualid) ->
                                                                     fun _ ->
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | UIDENT
+                                                                    (x) ->
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
                                                                     ), xs)) :
                                                                     't_qualid)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -1462,26 +1492,31 @@ module MakeGrammarParser =
                                                                     ((
                                                                     function
                                                                     | STRING
-                                                                    (_) ->
+                                                                    (_, _) ->
                                                                     (true)
                                                                     | 
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "STRING _"))
+                                                                    "STRING (_, _)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    x :
-                                                                    'e__2) ))
-                                                                    ))] )))
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | STRING
+                                                                    (_, x) ->
+                                                                    (x :
+                                                                    'e__2)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
+                                                                    )) ))] )))
                                                                     ); (
                                                                     (Gram.Sopt
                                                                     ((Gram.Snterm
@@ -1850,7 +1885,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "LIDENT _"))
+                                                                    "LIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Sopt
                                                                     (Gram.srules
@@ -1873,17 +1908,17 @@ module MakeGrammarParser =
                                                                     ((
                                                                     function
                                                                     | STRING
-                                                                    (_) ->
+                                                                    (_, _) ->
                                                                     (true)
                                                                     | 
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "STRING _"))
+                                                                    "STRING (_, _)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (s :
+                                                                    fun (__camlp4_1 :
                                                                     Gram.token) ->
                                                                     fun (__camlp4_0 :
                                                                     Gram.token) ->
@@ -1891,13 +1926,13 @@ module MakeGrammarParser =
                                                                     FanLoc.t) ->
                                                                     (
                                                                     match
-                                                                    __camlp4_0 with
-                                                                    | UIDENT
-                                                                    ("Level") ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    s :
+                                                                    (__camlp4_1,
+                                                                    __camlp4_0) with
+                                                                    | (STRING
+                                                                    (_, s),
+                                                                    UIDENT
+                                                                    ("Level")) ->
+                                                                    (s :
                                                                     'e__3)
                                                                     | 
                                                                     _ ->
@@ -1908,14 +1943,16 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (lev :
                                                                     'e__3 option) ->
-                                                                    fun (i :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    let name =
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | LIDENT
+                                                                    (i) ->
+                                                                    (let name =
                                                                     (mk_name
                                                                     _loc (
                                                                     (Ast.IdLid
@@ -1938,6 +1975,9 @@ module MakeGrammarParser =
                                                                     pattern =
                                                                     None } :
                                                                     'psymbol)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -1951,7 +1991,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "LIDENT _"))
+                                                                    "LIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Skeyword
                                                                     ("=")) );
@@ -1968,14 +2008,16 @@ module MakeGrammarParser =
                                                                     fun (s :
                                                                     'symbol) ->
                                                                     fun _ ->
-                                                                    fun (p :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let p =
-                                                                    (Gram.string_of_token
-                                                                    p) in
-                                                                    (match
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | LIDENT
+                                                                    (p) ->
+                                                                    ((match
                                                                     s.pattern with
                                                                     | Some
                                                                     (Ast.PaApp
@@ -2046,8 +2088,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     (Some
                                                                     (p')) )}
-                                                                    | 
-                                                                    _ ->
+                                                                    | _ ->
                                                                     {s with
                                                                     pattern =
                                                                     (
@@ -2058,6 +2099,9 @@ module MakeGrammarParser =
                                                                     (_loc, p))
                                                                     ))))) )}) :
                                                                     'psymbol)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -2359,17 +2403,17 @@ module MakeGrammarParser =
                                                                     ((
                                                                     function
                                                                     | STRING
-                                                                    (_) ->
+                                                                    (_, _) ->
                                                                     (true)
                                                                     | 
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "STRING _"))
+                                                                    "STRING (_, _)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (s :
+                                                                    fun (__camlp4_1 :
                                                                     Gram.token) ->
                                                                     fun (__camlp4_0 :
                                                                     Gram.token) ->
@@ -2377,13 +2421,13 @@ module MakeGrammarParser =
                                                                     FanLoc.t) ->
                                                                     (
                                                                     match
-                                                                    __camlp4_0 with
-                                                                    | UIDENT
-                                                                    ("Level") ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    s :
+                                                                    (__camlp4_1,
+                                                                    __camlp4_0) with
+                                                                    | (STRING
+                                                                    (_, s),
+                                                                    UIDENT
+                                                                    ("Level")) ->
+                                                                    (s :
                                                                     'e__5)
                                                                     | 
                                                                     _ ->
@@ -2421,24 +2465,26 @@ module MakeGrammarParser =
                                                                     ((
                                                                     function
                                                                     | STRING
-                                                                    (_) ->
+                                                                    (_, _) ->
                                                                     (true)
                                                                     | 
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "STRING _"))
+                                                                    "STRING (_, _)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (s :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    (mk_symbol
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | STRING
+                                                                    (_, s) ->
+                                                                    ((mk_symbol
                                                                     ~used:[] 
                                                                     ~text:(
                                                                     (TXkwd
@@ -2449,6 +2495,9 @@ module MakeGrammarParser =
                                                                     ~pattern:None
                                                                     ) :
                                                                     'symbol)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -2462,7 +2511,7 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "UIDENT _"))
+                                                                    "UIDENT (_)"))
                                                                     ); (
                                                                     (Gram.Stoken
                                                                     ((
@@ -2478,21 +2527,21 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
+                                                                    fun (__camlp4_1 :
                                                                     Gram.token) ->
-                                                                    fun (x :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
                                                                     match
-                                                                    __camlp4_0 with
-                                                                    | ANTIQUOT
-                                                                    ("", s) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    let e =
+                                                                    (__camlp4_1,
+                                                                    __camlp4_0) with
+                                                                    | (ANTIQUOT
+                                                                    ("", s),
+                                                                    UIDENT
+                                                                    (x)) ->
+                                                                    (let e =
                                                                     (AntiquotSyntax.parse_expr
                                                                     _loc s) in
                                                                     let match_fun =
@@ -2592,49 +2641,6 @@ module MakeGrammarParser =
                                                                     | 
                                                                     _ ->
                                                                     assert false)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    )] ), (
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    fun (x :
-                                                                    Gram.token) ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (mk_tok
-                                                                    _loc (
-                                                                    (Ast.PaApp
-                                                                    (_loc, (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, x))
-                                                                    ))) ), (
-                                                                    (Ast.PaTup
-                                                                    (_loc, (
-                                                                    (Ast.PaAny
-                                                                    (_loc))
-                                                                    ))) ))) )
-                                                                    (
-                                                                    (STstring_tok
-                                                                    (_loc))
-                                                                    )) :
-                                                                    'symbol)
                                                                     )) ));
                                                                     ((
                                                                     [(
@@ -2895,23 +2901,28 @@ module MakeGrammarParser =
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "LIDENT _"))
+                                                                    "LIDENT (_)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (i :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.PaId
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | LIDENT
+                                                                    (i) ->
+                                                                    ((Ast.PaId
                                                                     (_loc, (
                                                                     (Ast.IdLid
                                                                     (_loc, i))
                                                                     ))) :
                                                                     'pattern)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -3051,26 +3062,31 @@ module MakeGrammarParser =
                                                                     ((
                                                                     function
                                                                     | STRING
-                                                                    (_) ->
+                                                                    (_, _) ->
                                                                     (true)
                                                                     | 
                                                                     _ ->
                                                                     (false)
                                                                     ),
-                                                                    "STRING _"))
+                                                                    "STRING (_, _)"))
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (s :
+                                                                    fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    (Ast.ExStr
+                                                                    (
+                                                                    match
+                                                                    __camlp4_0 with
+                                                                    | STRING
+                                                                    (_, s) ->
+                                                                    ((Ast.ExStr
                                                                     (_loc, s)) :
                                                                     'string)
+                                                                    | 
+                                                                    _ ->
+                                                                    assert false)
                                                                     )) ))] ))]
                                                                     ))) () )
                                                                     ))
@@ -4370,22 +4386,23 @@ module MakeMacroParser =
                                    (Gram.Stoken
                                      ((
                                       function
-                                      | STRING (_) -> (true)
-                                      | _ -> (false) ), "STRING _")) )]
-                                  ), (
+                                      | STRING (_, _) -> (true)
+                                      | _ -> (false) ), "STRING (_, _)"))
+                                   )] ), (
                                   (Gram.mk_action (
-                                    fun (fname :
+                                    fun (__camlp4_0 :
                                       Gram.token) ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
-                                       (let fname =
-                                         (Gram.string_of_token fname) in
-                                        (SdLazy
-                                          (lazy (
-                                            (parse_include_file str_items
-                                              fname) ))) : 'macro_def) ))
-                                  ));
+                                       (match __camlp4_0 with
+                                        | STRING (_, fname) ->
+                                           ((SdLazy
+                                              (lazy (
+                                                (parse_include_file
+                                                  str_items fname) ))) :
+                                             'macro_def)
+                                        | _ -> assert false) )) ));
                                  ((
                                   [( (Gram.Skeyword ("IFNDEF")) ); (
                                    (Gram.Snterm
@@ -4488,22 +4505,23 @@ module MakeMacroParser =
                                    (Gram.Stoken
                                      ((
                                       function
-                                      | STRING (_) -> (true)
-                                      | _ -> (false) ), "STRING _")) )]
-                                  ), (
+                                      | STRING (_, _) -> (true)
+                                      | _ -> (false) ), "STRING (_, _)"))
+                                   )] ), (
                                   (Gram.mk_action (
-                                    fun (fname :
+                                    fun (__camlp4_0 :
                                       Gram.token) ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
-                                       (let fname =
-                                         (Gram.string_of_token fname) in
-                                        (SdLazy
-                                          (lazy (
-                                            (parse_include_file sig_items
-                                              fname) ))) :
-                                         'macro_def_sig) )) ));
+                                       (match __camlp4_0 with
+                                        | STRING (_, fname) ->
+                                           ((SdLazy
+                                              (lazy (
+                                                (parse_include_file
+                                                  sig_items fname) ))) :
+                                             'macro_def_sig)
+                                        | _ -> assert false) )) ));
                                  ((
                                   [( (Gram.Skeyword ("IFNDEF")) ); (
                                    (Gram.Snterm
@@ -5061,17 +5079,18 @@ module MakeMacroParser =
                                               function
                                               | LIDENT (_) -> (true)
                                               | _ -> (false) ),
-                                              "LIDENT _")) )] ), (
+                                              "LIDENT (_)")) )] ), (
                                           (Gram.mk_action (
-                                            fun (x :
+                                            fun (__camlp4_0 :
                                               Gram.token) ->
                                              fun (_loc :
                                                FanLoc.t) ->
-                                              (let x =
-                                                (Gram.string_of_token x) in
-                                               x : 'e__11) )) ))] )) ), (
-                                      (Gram.Skeyword (",")) ))) ); (
-                                   (Gram.Skeyword (")")) ); (
+                                              (match __camlp4_0 with
+                                               | LIDENT (x) ->
+                                                  (x : 'e__11)
+                                               | _ -> assert false) )) ))]
+                                        )) ), ( (Gram.Skeyword (",")) )))
+                                   ); ( (Gram.Skeyword (")")) ); (
                                    (Gram.Skeyword ("=")) ); (
                                    (Gram.Snterm
                                      (Gram.obj ( (expr : 'expr Gram.t) )))
@@ -5102,10 +5121,10 @@ module MakeMacroParser =
                                      ((
                                       function
                                       | LIDENT (_) -> (true)
-                                      | _ -> (false) ), "LIDENT _")) ); (
-                                   (Gram.Skeyword ("=")) ); Gram.Sself ;
-                                   ( (Gram.Skeyword ("IN")) ); Gram.Sself
-                                   ] ), (
+                                      | _ -> (false) ), "LIDENT (_)")) );
+                                   ( (Gram.Skeyword ("=")) ); Gram.Sself
+                                   ; ( (Gram.Skeyword ("IN")) );
+                                   Gram.Sself ] ), (
                                   (Gram.mk_action (
                                     fun (body :
                                       'expr) ->
@@ -5113,16 +5132,17 @@ module MakeMacroParser =
                                       fun (def :
                                         'expr) ->
                                        fun _ ->
-                                        fun (i :
+                                        fun (__camlp4_0 :
                                           Gram.token) ->
                                          fun _ ->
                                           fun (_loc :
                                             FanLoc.t) ->
-                                           (let i =
-                                             (Gram.string_of_token i) in
-                                            ((((new Expr.subst) _loc (
-                                                [(i, def)] ))#expr) body) :
-                                             'expr) )) ));
+                                           (match __camlp4_0 with
+                                            | LIDENT (i) ->
+                                               (((((new Expr.subst) _loc
+                                                    ( [(i, def)] ))#expr)
+                                                  body) : 'expr)
+                                            | _ -> assert false) )) ));
                                  ((
                                   [( (Gram.Skeyword ("IFNDEF")) ); (
                                    (Gram.Snterm
@@ -5245,16 +5265,17 @@ module MakeMacroParser =
                                      ((
                                       function
                                       | UIDENT (_) -> (true)
-                                      | _ -> (false) ), "UIDENT _")) )]
+                                      | _ -> (false) ), "UIDENT (_)")) )]
                                   ), (
                                   (Gram.mk_action (
-                                    fun (i :
+                                    fun (__camlp4_0 :
                                       Gram.token) ->
                                      fun (_loc :
                                        FanLoc.t) ->
-                                      (let i = (Gram.string_of_token i) in
-                                       i : 'uident) )) ))] ))] ))) () )
-                          ))
+                                      (match __camlp4_0 with
+                                       | UIDENT (i) -> (i : 'uident)
+                                       | _ -> assert false) )) ))] ))] )))
+                            () ) ))
                         );
                         (
                         (Gram.extend ( (expr : 'expr Gram.t) ) (

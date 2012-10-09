@@ -900,45 +900,31 @@ module MakeGrammarParser =
                                                                     None , (
                                                                     [((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (i :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdUid
+                                                                    ((Ast.IdUid
                                                                     (_loc, i)) :
                                                                     'qualuid)
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
                                                                     Gram.Sself
@@ -949,13 +935,10 @@ module MakeGrammarParser =
                                                                     'qualuid) ->
                                                                     fun _ ->
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
@@ -978,72 +961,50 @@ module MakeGrammarParser =
                                                                     None , (
                                                                     [((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((LIDENT) :
+                                                                    'LIDENT Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (i :
-                                                                    Gram.token) ->
+                                                                    'LIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdLid
+                                                                    ((Ast.IdLid
                                                                     (_loc, i)) :
                                                                     'qualid)
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (i :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.IdUid
+                                                                    ((Ast.IdUid
                                                                     (_loc, i)) :
                                                                     'qualid)
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
                                                                     Gram.Sself
@@ -1054,13 +1015,10 @@ module MakeGrammarParser =
                                                                     'qualid) ->
                                                                     fun _ ->
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
@@ -1083,18 +1041,12 @@ module MakeGrammarParser =
                                                                     None , (
                                                                     [((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
                                                                     (
@@ -1116,7 +1068,7 @@ module MakeGrammarParser =
                                                                     Gram.token) ->
                                                                     fun _ ->
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1124,10 +1076,7 @@ module MakeGrammarParser =
                                                                     __camlp4_0 with
                                                                     | LIDENT
                                                                     ("t") ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdUid
+                                                                    ((Ast.IdUid
                                                                     (_loc, x)) :
                                                                     't_qualid)
                                                                     | 
@@ -1136,18 +1085,12 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Skeyword
                                                                     (".")) );
                                                                     Gram.Sself
@@ -1158,13 +1101,10 @@ module MakeGrammarParser =
                                                                     't_qualid) ->
                                                                     fun _ ->
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (Ast.IdAcc
+                                                                    ((Ast.IdAcc
                                                                     (_loc, (
                                                                     (Ast.IdUid
                                                                     (_loc, x))
@@ -1458,28 +1398,20 @@ module MakeGrammarParser =
                                                                     level (
                                                                     [((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((STRING) :
+                                                                    'STRING Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'STRING) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    x :
+                                                                    (x :
                                                                     'e__2) ))
                                                                     ))] )))
                                                                     ); (
@@ -1840,18 +1772,12 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((LIDENT) :
+                                                                    'LIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Sopt
                                                                     (Gram.srules
                                                                     psymbol (
@@ -1869,22 +1795,17 @@ module MakeGrammarParser =
                                                                     ),
                                                                     "UIDENT (\"Level\")"))
                                                                     ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((STRING) :
+                                                                    'STRING Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (s :
-                                                                    Gram.token) ->
+                                                                    'STRING) ->
                                                                     fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
@@ -1894,10 +1815,7 @@ module MakeGrammarParser =
                                                                     __camlp4_0 with
                                                                     | UIDENT
                                                                     ("Level") ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    s :
+                                                                    (s :
                                                                     'e__3)
                                                                     | 
                                                                     _ ->
@@ -1909,13 +1827,10 @@ module MakeGrammarParser =
                                                                     fun (lev :
                                                                     'e__3 option) ->
                                                                     fun (i :
-                                                                    Gram.token) ->
+                                                                    'LIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    let name =
+                                                                    (let name =
                                                                     (mk_name
                                                                     _loc (
                                                                     (Ast.IdLid
@@ -1941,18 +1856,12 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((LIDENT) :
+                                                                    'LIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Skeyword
                                                                     ("=")) );
                                                                     (
@@ -1969,13 +1878,10 @@ module MakeGrammarParser =
                                                                     'symbol) ->
                                                                     fun _ ->
                                                                     fun (p :
-                                                                    Gram.token) ->
+                                                                    'LIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let p =
-                                                                    (Gram.string_of_token
-                                                                    p) in
-                                                                    (match
+                                                                    ((match
                                                                     s.pattern with
                                                                     | Some
                                                                     (Ast.PaApp
@@ -2046,8 +1952,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     (Some
                                                                     (p')) )}
-                                                                    | 
-                                                                    _ ->
+                                                                    | _ ->
                                                                     {s with
                                                                     pattern =
                                                                     (
@@ -2355,22 +2260,17 @@ module MakeGrammarParser =
                                                                     ),
                                                                     "UIDENT (\"Level\")"))
                                                                     ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((STRING) :
+                                                                    'STRING Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (s :
-                                                                    Gram.token) ->
+                                                                    'STRING) ->
                                                                     fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (_loc :
@@ -2380,10 +2280,7 @@ module MakeGrammarParser =
                                                                     __camlp4_0 with
                                                                     | UIDENT
                                                                     ("Level") ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    s :
+                                                                    (s :
                                                                     'e__5)
                                                                     | 
                                                                     _ ->
@@ -2417,28 +2314,20 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((STRING) :
+                                                                    'STRING Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (s :
-                                                                    Gram.token) ->
+                                                                    'STRING) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    (mk_symbol
+                                                                    ((mk_symbol
                                                                     ~used:[] 
                                                                     ~text:(
                                                                     (TXkwd
@@ -2452,18 +2341,12 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    ); (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) ); (
                                                                     (Gram.Stoken
                                                                     ((
                                                                     function
@@ -2481,7 +2364,7 @@ module MakeGrammarParser =
                                                                     fun (__camlp4_0 :
                                                                     Gram.token) ->
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2489,10 +2372,7 @@ module MakeGrammarParser =
                                                                     __camlp4_0 with
                                                                     | ANTIQUOT
                                                                     ("", s) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    let e =
+                                                                    (let e =
                                                                     (AntiquotSyntax.parse_expr
                                                                     _loc s) in
                                                                     let match_fun =
@@ -2595,28 +2475,20 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((UIDENT) :
+                                                                    'UIDENT Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (x :
-                                                                    Gram.token) ->
+                                                                    'UIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let x =
-                                                                    (Gram.string_of_token
-                                                                    x) in
-                                                                    (mk_tok
+                                                                    ((mk_tok
                                                                     _loc (
                                                                     (Ast.PaApp
                                                                     (_loc, (
@@ -2885,28 +2757,20 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | LIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "LIDENT _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((LIDENT) :
+                                                                    'LIDENT Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (i :
-                                                                    Gram.token) ->
+                                                                    'LIDENT) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let i =
-                                                                    (Gram.string_of_token
-                                                                    i) in
-                                                                    (Ast.PaId
+                                                                    ((Ast.PaId
                                                                     (_loc, (
                                                                     (Ast.IdLid
                                                                     (_loc, i))
@@ -3047,28 +2911,20 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | STRING
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "STRING _"))
-                                                                    )] ), (
+                                                                    (Gram.Snterm
+                                                                    (Gram.obj
+                                                                    (
+                                                                    ((STRING) :
+                                                                    'STRING Gram.t)
+                                                                    ))) )] ),
+                                                                    (
                                                                     (Gram.mk_action
                                                                     (
                                                                     fun (s :
-                                                                    Gram.token) ->
+                                                                    'STRING) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    (let s =
-                                                                    (Gram.string_of_token
-                                                                    s) in
-                                                                    (Ast.ExStr
+                                                                    ((Ast.ExStr
                                                                     (_loc, s)) :
                                                                     'string)
                                                                     )) ))] ))]
@@ -4367,21 +4223,17 @@ module MakeMacroParser =
                               [(None , None , (
                                 [((
                                   [( (Gram.Skeyword ("INCLUDE")) ); (
-                                   (Gram.Stoken
-                                     ((
-                                      function
-                                      | STRING (_) -> (true)
-                                      | _ -> (false) ), "STRING _")) )]
+                                   (Gram.Snterm
+                                     (Gram.obj (
+                                       ((STRING) : 'STRING Gram.t) ))) )]
                                   ), (
                                   (Gram.mk_action (
                                     fun (fname :
-                                      Gram.token) ->
+                                      'STRING) ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
-                                       (let fname =
-                                         (Gram.string_of_token fname) in
-                                        (SdLazy
+                                       ((SdLazy
                                           (lazy (
                                             (parse_include_file str_items
                                               fname) ))) : 'macro_def) ))
@@ -4485,21 +4337,17 @@ module MakeMacroParser =
                               [(None , None , (
                                 [((
                                   [( (Gram.Skeyword ("INCLUDE")) ); (
-                                   (Gram.Stoken
-                                     ((
-                                      function
-                                      | STRING (_) -> (true)
-                                      | _ -> (false) ), "STRING _")) )]
+                                   (Gram.Snterm
+                                     (Gram.obj (
+                                       ((STRING) : 'STRING Gram.t) ))) )]
                                   ), (
                                   (Gram.mk_action (
                                     fun (fname :
-                                      Gram.token) ->
+                                      'STRING) ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
-                                       (let fname =
-                                         (Gram.string_of_token fname) in
-                                        (SdLazy
+                                       ((SdLazy
                                           (lazy (
                                             (parse_include_file sig_items
                                               fname) ))) :
@@ -5056,20 +4904,17 @@ module MakeMacroParser =
                                       (Gram.srules opt_macro_value (
                                         [((
                                           [(
-                                           (Gram.Stoken
-                                             ((
-                                              function
-                                              | LIDENT (_) -> (true)
-                                              | _ -> (false) ),
-                                              "LIDENT _")) )] ), (
+                                           (Gram.Snterm
+                                             (Gram.obj (
+                                               ((LIDENT) :
+                                                 'LIDENT Gram.t) ))) )]
+                                          ), (
                                           (Gram.mk_action (
                                             fun (x :
-                                              Gram.token) ->
+                                              'LIDENT) ->
                                              fun (_loc :
                                                FanLoc.t) ->
-                                              (let x =
-                                                (Gram.string_of_token x) in
-                                               x : 'e__11) )) ))] )) ), (
+                                              (x : 'e__11) )) ))] )) ), (
                                       (Gram.Skeyword (",")) ))) ); (
                                    (Gram.Skeyword (")")) ); (
                                    (Gram.Skeyword ("=")) ); (
@@ -5098,14 +4943,12 @@ module MakeMacroParser =
                               [(None , None , (
                                 [((
                                   [( (Gram.Skeyword ("DEFINE")) ); (
-                                   (Gram.Stoken
-                                     ((
-                                      function
-                                      | LIDENT (_) -> (true)
-                                      | _ -> (false) ), "LIDENT _")) ); (
-                                   (Gram.Skeyword ("=")) ); Gram.Sself ;
-                                   ( (Gram.Skeyword ("IN")) ); Gram.Sself
-                                   ] ), (
+                                   (Gram.Snterm
+                                     (Gram.obj (
+                                       ((LIDENT) : 'LIDENT Gram.t) ))) );
+                                   ( (Gram.Skeyword ("=")) ); Gram.Sself
+                                   ; ( (Gram.Skeyword ("IN")) );
+                                   Gram.Sself ] ), (
                                   (Gram.mk_action (
                                     fun (body :
                                       'expr) ->
@@ -5114,13 +4957,11 @@ module MakeMacroParser =
                                         'expr) ->
                                        fun _ ->
                                         fun (i :
-                                          Gram.token) ->
+                                          'LIDENT) ->
                                          fun _ ->
                                           fun (_loc :
                                             FanLoc.t) ->
-                                           (let i =
-                                             (Gram.string_of_token i) in
-                                            ((((new Expr.subst) _loc (
+                                           (((((new Expr.subst) _loc (
                                                 [(i, def)] ))#expr) body) :
                                              'expr) )) ));
                                  ((
@@ -5241,19 +5082,16 @@ module MakeMacroParser =
                               [(None , None , (
                                 [((
                                   [(
-                                   (Gram.Stoken
-                                     ((
-                                      function
-                                      | UIDENT (_) -> (true)
-                                      | _ -> (false) ), "UIDENT _")) )]
+                                   (Gram.Snterm
+                                     (Gram.obj (
+                                       ((UIDENT) : 'UIDENT Gram.t) ))) )]
                                   ), (
                                   (Gram.mk_action (
                                     fun (i :
-                                      Gram.token) ->
+                                      'UIDENT) ->
                                      fun (_loc :
                                        FanLoc.t) ->
-                                      (let i = (Gram.string_of_token i) in
-                                       i : 'uident) )) ))] ))] ))) () )
+                                      (i : 'uident) )) ))] ))] ))) () )
                           ))
                         );
                         (

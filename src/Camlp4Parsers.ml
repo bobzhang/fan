@@ -143,13 +143,13 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 let text = TXtok _loc match_fun descr in
                 { (s) with text = text; pattern = Some p' }
             | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
-                (* EXTEND a:[[y=x]]END *)
+
         | `LIDENT i; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] ->
             let name = mk_name _loc <:ident< $lid:i >> in
             let text = TXnterm _loc name lev in
             let styp = STquo _loc i in
             {used = [i]; text = text; styp = styp; pattern = None}
-        | p = pattern; "="; s = symbol ->
+        |  p = pattern; "="; s = symbol ->
             match s.pattern with
             [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
                 mk_tok _loc <:patt< $uid:u $p >> s.styp
@@ -195,11 +195,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         
             
         | "`"; p = patt -> mk_tok _loc p (STtok _loc)
-
-        (* parsing UIDENT and LIDENT here *)      
-        (* | `UIDENT x -> *)
-        (*     mk_tok _loc <:patt< $uid:x $(tup:<:patt< _ >>) >> *)
-        (*     (STstring_tok _loc) *)
 
 
         | `UIDENT x; `ANTIQUOT "" s ->

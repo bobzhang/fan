@@ -344,10 +344,6 @@ let make_ctyp =
                                             (_loc, ( (gm () ) ), (
                                              (Ast.IdLid (_loc, "token")) )))
                                           )))
-                                    | STstring_tok (_loc) ->
-                                       (Ast.TyId
-                                         (_loc, (
-                                          (Ast.IdLid (_loc, "string")) )))
                                     | STtyp (t) -> t in
                                    (aux styp)
 
@@ -355,11 +351,6 @@ let make_ctyp_patt =
                                                 fun styp ->
                                                  fun tvar ->
                                                   fun patt ->
-                                                   let styp =
-                                                    (match styp with
-                                                     | STstring_tok (_loc) ->
-                                                        (STtok (_loc))
-                                                     | t -> t) in
                                                    (match
                                                       (make_ctyp styp tvar) with
                                                     | Ast.TyAny (_) -> patt
