@@ -1,0 +1,3 @@
+
+
+| ident{i} -> <:patt< $id:i >>

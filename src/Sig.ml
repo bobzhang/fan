@@ -209,6 +209,13 @@ module type Camlp4Syntax = sig
   val infixop3 : Gram.t Ast.expr;
   val infixop4 : Gram.t Ast.expr;
 
+  val symbol:  Gram.t FanGrammar.symbol ;
+  val rule:  Gram.t FanGrammar.rule;
+  val rule_list: Gram.t (list FanGrammar.rule);
+  val psymbol: Gram.t FanGrammar.symbol;
+  val level:  Gram.t FanGrammar.level;
+  val level_list: Gram.t (list FanGrammar.level);
+  val entry: Gram.t FanGrammar.entry;  
 end;
 
 (** A signature for syntax extension (syntax -> syntax functors). *)

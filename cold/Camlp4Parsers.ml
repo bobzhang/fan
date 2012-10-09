@@ -431,9 +431,7 @@ module MakeGrammarParser =
 
                                                             open FanGrammar
 
-                                                            let symbol =
-                                                             (Gram.mk
-                                                               "symbol")
+                                                            open FanGrammarTools
 
                                                             let _ = (FanConfig.antiquotations
                                                                     := true )
@@ -441,6 +439,21 @@ module MakeGrammarParser =
                                                             let _ = let _ =
                                                                     (expr :
                                                                     'expr Gram.t)
+                                                                    and _ =
+                                                                    (level_list :
+                                                                    'level_list Gram.t)
+                                                                    and _ =
+                                                                    (level :
+                                                                    'level Gram.t)
+                                                                    and _ =
+                                                                    (psymbol :
+                                                                    'psymbol Gram.t)
+                                                                    and _ =
+                                                                    (rule_list :
+                                                                    'rule_list Gram.t)
+                                                                    and _ =
+                                                                    (rule :
+                                                                    'rule Gram.t)
                                                                     and _ =
                                                                     (symbol :
                                                                     'symbol Gram.t) in
@@ -470,30 +483,10 @@ module MakeGrammarParser =
                                                                     ((grammar_entry_create
                                                                     "pattern") :
                                                                     'pattern Gram.t)
-                                                                    and psymbol =
-                                                                    ((grammar_entry_create
-                                                                    "psymbol") :
-                                                                    'psymbol Gram.t)
-                                                                    and rule =
-                                                                    ((grammar_entry_create
-                                                                    "rule") :
-                                                                    'rule Gram.t)
-                                                                    and rule_list =
-                                                                    ((grammar_entry_create
-                                                                    "rule_list") :
-                                                                    'rule_list Gram.t)
                                                                     and assoc =
                                                                     ((grammar_entry_create
                                                                     "assoc") :
                                                                     'assoc Gram.t)
-                                                                    and level =
-                                                                    ((grammar_entry_create
-                                                                    "level") :
-                                                                    'level Gram.t)
-                                                                    and level_list =
-                                                                    ((grammar_entry_create
-                                                                    "level_list") :
-                                                                    'level_list Gram.t)
                                                                     and position =
                                                                     ((grammar_entry_create
                                                                     "position") :
@@ -1296,11 +1289,10 @@ module MakeGrammarParser =
                                                                     'name) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ({name =
-                                                                    n;
-                                                                    pos = pos;
-                                                                    levels =
-                                                                    ll} :
+                                                                    ((mk_entry
+                                                                    ~name:n
+                                                                    ~pos:pos
+                                                                    ~levels:ll) :
                                                                     'entry)
                                                                     )) ))] ))]
                                                                     ))) () )
@@ -1516,12 +1508,10 @@ module MakeGrammarParser =
                                                                     'e__2 option) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ({label =
-                                                                    lab;
-                                                                    assoc =
-                                                                    ass;
-                                                                    rules =
-                                                                    rules} :
+                                                                    ((mk_level
+                                                                    ~label:lab
+                                                                    ~assoc:ass
+                                                                    ~rules:rules) :
                                                                     'level)
                                                                     )) ))] ))]
                                                                     ))) () )
@@ -1708,10 +1698,10 @@ module MakeGrammarParser =
                                                                     'psymbol list) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ({prod =
-                                                                    psl;
-                                                                    action =
-                                                                    None } :
+                                                                    ((mk_rule
+                                                                    ~prod:psl
+                                                                    ~action:None
+                                                                    ) :
                                                                     'rule) ))
                                                                     ));
                                                                     ((
@@ -1750,12 +1740,11 @@ module MakeGrammarParser =
                                                                     'psymbol list) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ({prod =
-                                                                    psl;
-                                                                    action =
-                                                                    (
+                                                                    ((mk_rule
+                                                                    ~prod:psl
+                                                                    ~action:(
                                                                     (Some
-                                                                    (act)) )} :
+                                                                    (act)) )) :
                                                                     'rule) ))
                                                                     ))] ))]
                                                                     ))) () )

@@ -352,6 +352,20 @@ module Make =
     let infixop4 =
      (Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)")
 
+    let symbol = (Gram.mk "symbol")
+
+    let rule = (Gram.mk "rule")
+
+    let rule_list = (Gram.mk "rule_list")
+
+    let psymbol = (Gram.mk "psymbol")
+
+    let level = (Gram.mk "level")
+
+    let level_list = (Gram.mk "level_list")
+
+    let entry = (Gram.mk "entry")
+
     open FanSig
 
     let _ = (Gram.extend ( (top_phrase : 'top_phrase Gram.t) ) (

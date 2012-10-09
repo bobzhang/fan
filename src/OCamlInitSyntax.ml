@@ -80,7 +80,6 @@ module Gram = Gram =   struct
   let direction_flag = Gram.mk "direction_flag";
   let direction_flag_quot = Gram.mk "direction_flag_quot";
   let dummy = Gram.mk "dummy";
-  (* let entry_eoi = Gram.mk "entry_eoi"; *)
   let eq_expr = Gram.mk "eq_expr";
   let expr = Gram.mk "expr";
   let expr_eoi = Gram.mk "expr_eoi";
@@ -121,8 +120,6 @@ module Gram = Gram =   struct
   let opt_as_lident = Gram.mk "opt_as_lident";
   let opt_class_self_patt = Gram.mk "opt_class_self_patt";
   let opt_class_self_type = Gram.mk "opt_class_self_type";
-  (* let opt_class_signature = Gram.mk "opt_class_signature"; *)
-  (* let opt_class_structure = Gram.mk "opt_class_structure"; *)
   let opt_comma_ctyp = Gram.mk "opt_comma_ctyp";
   let opt_dot_dot = Gram.mk "opt_dot_dot";
   let row_var_flag_quot = Gram.mk "row_var_flag_quot";
@@ -136,8 +133,6 @@ module Gram = Gram =   struct
   let private_flag_quot = Gram.mk "private_flag_quot";
   let opt_rec = Gram.mk "opt_rec";
   let rec_flag_quot = Gram.mk "rec_flag_quot";
-  (* let opt_sig_items = Gram.mk "opt_sig_items"; *)
-  (* let opt_str_items = Gram.mk "opt_str_items"; *)
   let opt_virtual = Gram.mk "opt_virtual";
   let virtual_flag_quot = Gram.mk "virtual_flag_quot";
   let opt_override = Gram.mk "opt_override";
@@ -199,6 +194,15 @@ module Gram = Gram =   struct
   let infixop3 = Gram.mk "infix operator (level 3) (start with '*', '/', '%')";
   let infixop4 = Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)";
 
+  (* for the grammar module *)  
+  let symbol= Gram.mk "symbol" ;
+  let rule = Gram.mk "rule"  ;
+  let rule_list = Gram.mk "rule_list";
+  let psymbol = Gram.mk "psymbol"  ;
+  let level = Gram.mk "level"  ;
+  let level_list = Gram.mk "level_list";
+  let entry = Gram.mk "entry";
+    
   open FanSig;
   EXTEND Gram
     top_phrase:

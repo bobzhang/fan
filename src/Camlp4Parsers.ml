@@ -120,9 +120,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
   open FanSig;
   open FanGrammar;
-  let symbol = Gram.mk "symbol";
+  open FanGrammarTools;
+    
   FanConfig.antiquotations := True;
-  EXTEND Gram GLOBAL: expr symbol;
+  EXTEND Gram GLOBAL: expr symbol rule rule_list psymbol level level_list;
     expr: After "top"
       [ [ "EXTEND"; e = extend_body; "END" -> e
         | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] 
@@ -172,7 +173,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
     entry:
       [ [ n = name; ":"; pos = OPT position; ll = level_list ->
-            {name = n; pos = pos; levels = ll} ] ]
+            mk_entry ~name:n ~pos ~levels:ll ] ]
     position:
       [ [ `UIDENT ("First"|"Last" as x ) ->
          <:expr< `$uid:x >>
@@ -185,23 +186,20 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
     level:
       [ [ lab = OPT [ x = STRING -> x ]; ass = OPT assoc; rules = rule_list ->
-            {label = lab; assoc = ass; rules = rules} ] ]
+            mk_level ~label:lab ~assoc:ass ~rules ]]
     assoc:
-      [
-       [ `UIDENT ("LA"|"RA"|"NA" as x) ->
+      [[ `UIDENT ("LA"|"RA"|"NA" as x) ->
          <:expr< `$uid:x >> 
-         (* <:expr< FanSig.Grammar.$uid:x >> *)
-       | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x 
-      ] ]
+       | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ] ]
     rule_list:
       [ [ "["; "]" -> []
         | "["; rules = LIST1 rule SEP "|"; "]" ->
             retype_rule_list_without_patterns _loc rules ] ]
     rule:
       [ [ psl = LIST0 psymbol SEP semi_sep; "->"; act = expr ->
-            {prod = psl; action = Some act}
+            mk_rule ~prod:psl ~action:(Some act )
         | psl = LIST0 psymbol SEP semi_sep ->
-            {prod = psl; action = None} ] ]
+            mk_rule ~prod:psl ~action:None ] ]
     psymbol:
       [ [ p = LIDENT; "="; s = symbol ->
             match s.pattern with

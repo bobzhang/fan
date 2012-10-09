@@ -23,6 +23,7 @@ let rec to_lid = fun
 
 (*
   {[
+  mapping an ident to  a type variable 
   ]}
  *)  
 let rec tvar_of_ident = fun

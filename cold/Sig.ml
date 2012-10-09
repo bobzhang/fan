@@ -622,6 +622,27 @@ module type Camlp4Syntax =
                                                                     val infixop4 :
                                                                     Ast.expr Gram.t
 
+                                                                    val symbol :
+                                                                    FanGrammar.symbol Gram.t
+
+                                                                    val rule :
+                                                                    FanGrammar.rule Gram.t
+
+                                                                    val rule_list :
+                                                                    FanGrammar.rule list Gram.t
+
+                                                                    val psymbol :
+                                                                    FanGrammar.symbol Gram.t
+
+                                                                    val level :
+                                                                    FanGrammar.level Gram.t
+
+                                                                    val level_list :
+                                                                    FanGrammar.level list Gram.t
+
+                                                                    val entry :
+                                                                    FanGrammar.entry Gram.t
+
                                                                     end
 
 
