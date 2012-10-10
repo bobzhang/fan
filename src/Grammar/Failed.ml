@@ -17,10 +17,10 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Structure : Structure.S) = struct
-  module Tools  = Tools.Make Structure;
-  module Search = Search.Make Structure;
-  module Print  = Print.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  (* module Tools  = Tools.Make Structure; *)
+  (* module Search = Search.Make Structure; *)
+  module Print  = Print.Make (struct end); (* FIXME later*)
   open Structure;
   open Format;
 
@@ -128,4 +128,4 @@ let symb_failed entry prev_symb_result prev_symb symb =
 
 let symb_failed_txt e s1 s2 = symb_failed e 0 s1 s2;
 
-end;
+(* end; *)

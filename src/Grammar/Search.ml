@@ -16,7 +16,7 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-module Make (Structure : Structure.S) = struct
+(* module Make (Structure : Structure.S) = struct *)
   open Structure;
 let tree_in_entry prev_symb tree =
   fun
@@ -92,4 +92,4 @@ let tree_in_entry prev_symb tree =
   | Dparser _ -> tree ]
 ;
 
-end;
+(* end; *)

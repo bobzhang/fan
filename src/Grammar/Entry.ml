@@ -17,10 +17,10 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Structure : Structure.S) = struct
-  module Dump  = Print.MakeDump Structure;
-  module Print = Print.Make Structure;
-  module Tools = Tools.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  module Dump  = Print.MakeDump (struct end); (* FIXME *)
+  module Print = Print.Make(struct end); (* FIXME *)
+  (* module Tools = Tools.Make Structure; *)
   open Format;
   open Structure;
   open Tools;
@@ -63,7 +63,7 @@ module Make (Structure : Structure.S) = struct
   let lex_string entry loc str = lex entry loc (Stream.of_string str);
 
   let filter entry ts =
-    keep_prev_loc (Token.Filter.filter (get_filter entry.egram) ts);
+    keep_prev_loc (FanToken.Filter.filter (get_filter entry.egram) ts);
 
   let parse_origin_tokens entry ts = Action.get (action_parse entry ts);
 
@@ -74,7 +74,7 @@ module Make (Structure : Structure.S) = struct
   let parse_string entry loc str =
     filter_and_parse_tokens entry (lex_string entry loc str);
 
-  let of_parser g n (p : Stream.t (Token.t * token_info) -> 'a) : t 'a =
+  let of_parser g n (p : Stream.t (FanToken.t * token_info) -> 'a) : t 'a =
     let f ts = Action.mk (p ts) in
     { egram = g;
       ename = n;
@@ -82,7 +82,7 @@ module Make (Structure : Structure.S) = struct
       econtinue _ _ _ = parser [];
       edesc = Dparser f };
 
-  let setup_parser e (p : Stream.t (Token.t * token_info) -> 'a) =
+  let setup_parser e (p : Stream.t (FanToken.t * token_info) -> 'a) =
     let f ts = Action.mk (p ts) in do {
       e.estart <- fun _ -> f;
       e.econtinue <- fun _ _ _ -> parser [];
@@ -98,4 +98,4 @@ module Make (Structure : Structure.S) = struct
 
   let obj x = x;
 
-end;
+(* end; *)

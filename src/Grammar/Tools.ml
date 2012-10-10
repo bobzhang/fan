@@ -2,7 +2,7 @@ open LibUtil;
 (* PR#5090: don't do lookahead on get_prev_loc. *)
 (* let get_prev_loc_only = ref False; *)
 
-module Make (Structure : Structure.S) = struct
+(* module Make (Structure : Structure.S) = struct *)
   open Structure;
 
   let empty_entry ename _ =
@@ -103,4 +103,4 @@ module Make (Structure : Structure.S) = struct
     | (Stree _, Stree _) -> False
     | (Stoken (_, s1), Stoken (_, s2)) -> eq_Stoken_ids s1 s2
     | _ -> s1 = s2 ];
-end;
+(* end; *)

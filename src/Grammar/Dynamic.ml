@@ -1,18 +1,19 @@
 open LibUtil;
-module Make (Lexer : Sig.Lexer)
-= struct
-  module Structure = Structure.Make Lexer;
-  module Delete    = Delete.Make    Structure;
-  module Insert    = Insert.Make    Structure;
-  include Entry.Make Structure;   
-  module Fold      = Fold.Make      Structure;
+(* module Make (Lexer : Sig.Lexer) *)
+(* = struct *)
+  (* module Structure = Structure.Make Lexer; *)
+  (* module Delete    = Delete.Make    Structure; *)
+  (* module Insert    = Insert.Make    Structure; *)
+  (* include Entry.Make Structure; *)
+include Entry;
+  (* module Fold      = Fold.Make      Structure; *)
   include Structure;
   let mk () =
     let gkeywords = Hashtbl.create 301 in
     {
       gkeywords = gkeywords;
-      gfilter = Token.Filter.mk (Hashtbl.mem gkeywords);
-      glexer = Lexer.mk ();
+      gfilter = FanToken.Filter.mk (Hashtbl.mem gkeywords);
+      glexer = FanLexer.mk ();
       warning_verbose = ref True; (* FIXME *)
       error_verbose = FanConfig.verbose
     };
@@ -23,7 +24,7 @@ module Make (Lexer : Sig.Lexer)
 
   let lex_string g loc str = lex g loc (Stream.of_string str);
 
-  let filter g ts = Tools.keep_prev_loc (Token.Filter.filter g.gfilter ts);
+  let filter g ts = Tools.keep_prev_loc (FanToken.Filter.filter g.gfilter ts);
 
   let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry.egram ts);
 
@@ -51,4 +52,4 @@ module Make (Lexer : Sig.Lexer)
   (* let sfold1sep = Fold.sfold1sep; *)
 
   let extend = Insert.extend;
-end;
+(* end; *)

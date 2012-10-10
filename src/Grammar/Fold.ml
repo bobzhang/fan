@@ -19,8 +19,8 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-module Make (Structure : Structure.S) = struct
-  module Fail = Failed.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  (* module Fail = Failed.Make Structure; *)
   let sfold0 f e _entry _symbl psymb =
     let rec fold accu =
       parser
@@ -38,7 +38,7 @@ module Make (Structure : Structure.S) = struct
   let sfold0sep f e entry symbl psymb psep =
     let failed =
       fun
-      [ [symb; sep] -> Fail.symb_failed_txt entry sep symb
+      [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
       | _ -> "failed" ] in
     let rec kont accu =
       parser
@@ -73,4 +73,4 @@ module Make (Structure : Structure.S) = struct
   (*   in *)
   (*   parser [< a = psymb; 's >] -> kont (f a e) 's *)
   (* ; *)
-end;
+(* end; *)

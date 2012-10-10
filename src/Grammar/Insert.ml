@@ -1,6 +1,6 @@
-module Make (Structure : Structure.S) = struct
-  module Tools = Tools.Make Structure;
-  module Parser = Parser.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  (* module Tools = Tools.Make Structure; *)
+  (* module Parser = Parser.Make Structure; *)
   open Structure;
   open Format;
 
@@ -298,4 +298,4 @@ module Make (Structure : Structure.S) = struct
             do { entry.econtinue <- f; f lev bp a strm }
       };
 
-  end;
+  (* end; *)

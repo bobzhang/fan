@@ -17,10 +17,10 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Structure : Structure.S) = struct
-  module Tools  = Tools.Make Structure;
-  module Failed = Failed.Make Structure;
-  module Print = Print.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  (* module Tools  = Tools.Make Structure; *)
+  (* module Failed = Failed.Make Structure; *)
+  module Print = Print.Make (struct end); (* FIXME later*)
   open Structure;
 
   module StreamOrig = Stream;
@@ -250,7 +250,7 @@ module Make (Structure : Structure.S) = struct
           [ [] ->
               let ps strm =
                 match stream_peek_nth strm n with
-                [ Some (tok, _) when Token.match_keyword kwd tok ->
+                [ Some (tok, _) when FanToken.match_keyword kwd tok ->
                     (njunk strm n; Action.mk tok)
                 | _ -> raise Stream.Failure ]
               in
@@ -261,7 +261,7 @@ module Make (Structure : Structure.S) = struct
           | _ ->
               let ps strm =
                 match stream_peek_nth strm n with
-                [ Some (tok, _) when Token.match_keyword kwd tok -> tok
+                [ Some (tok, _) when FanToken.match_keyword kwd tok -> tok
                 | _ -> raise Stream.Failure ]
               in
               let p1 = loop (n + 1) tokl in
@@ -342,7 +342,7 @@ module Make (Structure : Structure.S) = struct
     | Snext -> parser [< a = entry.estart nlevn >] -> a
     | Skeyword kwd ->
         parser
-        [< (tok, _) when Token.match_keyword kwd tok >] ->
+        [< (tok, _) when FanToken.match_keyword kwd tok >] ->
            Action.mk tok
     | Stoken (f, _) ->
         parser
@@ -427,4 +427,4 @@ module Make (Structure : Structure.S) = struct
     | Dparser _ -> fun _ _ _ -> parser [] ]
   ;
 
-end;
+(* end; *)

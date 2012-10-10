@@ -2,6 +2,10 @@
     To see how fields are used here is an example:
     <:q_name@q_loc<q_contents>>
     The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
+
+      
+(** A type for stream filters. *)
+type ('a, 'loc) stream_filter = ('a * 'loc) Stream.t -> ('a * 'loc) Stream.t
 type quotation ={
     q_name : string;
     q_loc : string;
@@ -9,126 +13,122 @@ type quotation ={
     q_contents : string
   }
 
-      
-(** A type for stream filters. *)
-type ('a, 'loc) stream_filter = ('a * 'loc) Stream.t -> ('a * 'loc) Stream.t
-
 
 (** A signature for tokens. *)
-module type Token = sig
-  type t
-  val to_string : t -> string
-  val print : Format.formatter -> t -> unit
-  val match_keyword : string -> t -> bool
-  val extract_string : t -> string
-  module Filter : sig
-    type token_filter = (t, FanLoc.t) stream_filter
-    (** The type for this filter chain.
-        A basic implementation just store the [is_keyword] function given
-        by [mk] and use it in the [filter] function. *)
-  type t
-  (** The given predicate function returns true if the given string
-      is a keyword. This function can be used in filters to translate
-      identifier tokens to keyword tokens. *)
-  val mk : (string -> bool) -> t
-  (** This function allows to register a new filter to the token filter chain.
-     You can choose to not support these and raise an exception. *)
-  val define_filter : t -> (token_filter -> token_filter) -> unit
+(* module type Token = sig *)
+(*   type t *)
+(*   val to_string : t -> string *)
+(*   val print : Format.formatter -> t -> unit *)
+(*   val match_keyword : string -> t -> bool *)
+(*   val extract_string : t -> string *)
+(*   module Filter : sig *)
+(*     type token_filter = (t, FanLoc.t) stream_filter *)
+(*     (\** The type for this filter chain. *)
+(*         A basic implementation just store the [is_keyword] function given *)
+(*         by [mk] and use it in the [filter] function. *\) *)
+(*   type t *)
+(*   (\** The given predicate function returns true if the given string *)
+(*       is a keyword. This function can be used in filters to translate *)
+(*       identifier tokens to keyword tokens. *\) *)
+(*   val mk : (string -> bool) -> t *)
+(*   (\** This function allows to register a new filter to the token filter chain. *)
+(*      You can choose to not support these and raise an exception. *\) *)
+(*   val define_filter : t -> (token_filter -> token_filter) -> unit *)
               
-  (** This function filter the given stream and return a filtered stream.
-      A basic implementation just match identifiers against the [is_keyword]
-      function to produce token keywords instead. *)
-  val filter : t -> token_filter
+(*   (\** This function filter the given stream and return a filtered stream. *)
+(*       A basic implementation just match identifiers against the [is_keyword] *)
+(*       function to produce token keywords instead. *\) *)
+(*   val filter : t -> token_filter *)
               
-  (** Called by the grammar system when a keyword is used.
-      The boolean argument is True when it's the first time that keyword
-      is used. If you do not care about this information just return [()]. *)
-  val keyword_added : t -> string -> bool -> unit
+(*   (\** Called by the grammar system when a keyword is used. *)
+(*       The boolean argument is True when it's the first time that keyword *)
+(*       is used. If you do not care about this information just return [()]. *\) *)
+(*   val keyword_added : t -> string -> bool -> unit *)
               
-  (** Called by the grammar system when a keyword is no longer used.
-      If you do not care about this information just return [()]. *)
-  val keyword_removed : t -> string -> unit
-  end
+(*   (\** Called by the grammar system when a keyword is no longer used. *)
+(*       If you do not care about this information just return [()]. *\) *)
+(*   val keyword_removed : t -> string -> unit *)
+(*   end *)
 
-end
+(* end *)
       
-(** This signature describes tokens for the OCaml and the Revised
-    syntax lexing rules. For some tokens the data constructor holds two
-    representations with the evaluated one and the source one. For example
-    the INT data constructor holds an integer and a string, this string can
-    contains more information that's needed for a good pretty-printing
-    ("42", "4_2", "0000042", "0b0101010"...).
+(* (\** This signature describes tokens for the OCaml and the Revised *)
+(*     syntax lexing rules. For some tokens the data constructor holds two *)
+(*     representations with the evaluated one and the source one. For example *)
+(*     the INT data constructor holds an integer and a string, this string can *)
+(*     contains more information that's needed for a good pretty-printing *)
+(*     ("42", "4_2", "0000042", "0b0101010"...). *)
 
-    The meaning of the tokens are:
-    -      [KEYWORD s] is the keyword [s].
-    -      [LIDENT s] is the ident [s] starting with a lowercase letter.
-    -      [UIDENT s] is the ident [s] starting with an uppercase letter.
-    -      [INT i s] (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s])
-    the integer constant [i] whose string source is [s].
-    -      [FLOAT f s] is the float constant [f] whose string source is [s].
-    -      [STRING s s'] is the string constant [s] whose string source is [s'].
-    -      [CHAR c s] is the character constant [c] whose string source is [s].
-    -      [QUOTATION q] is a quotation [q], see {!Quotation.t} for more information.
-    -      [ANTIQUOT n s] is an antiquotation [n] holding the string [s].
-    -      [EOI] is the end of input.
+(*     The meaning of the tokens are: *)
+(*     -      [KEYWORD s] is the keyword [s]. *)
+(*     -      [LIDENT s] is the ident [s] starting with a lowercase letter. *)
+(*     -      [UIDENT s] is the ident [s] starting with an uppercase letter. *)
+(*     -      [INT i s] (resp. [INT32 i s], [INT64 i s] and [NATIVEINT i s]) *)
+(*     the integer constant [i] whose string source is [s]. *)
+(*     -      [FLOAT f s] is the float constant [f] whose string source is [s]. *)
+(*     -      [STRING s s'] is the string constant [s] whose string source is [s']. *)
+(*     -      [CHAR c s] is the character constant [c] whose string source is [s]. *)
+(*     -      [QUOTATION q] is a quotation [q], see {!Quotation.t} for more information. *)
+(*     -      [ANTIQUOT n s] is an antiquotation [n] holding the string [s]. *)
+(*     -      [EOI] is the end of input. *)
 
-    Warning: the second string associated with the constructor [STRING] is
-    the string found in the source without any interpretation. In particular,
-    the backslashes are not interpreted. For example, if the input is ["\n"]
-    the string is *not* a string with one element containing the character
-    "return", but a string of two elements: the backslash and the character
-    ["n"]. To interpret a string use the first string of the [STRING]
-    constructor (or if you need to compute it use the module
-    {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *)
+(*     Warning: the second string associated with the constructor [STRING] is *)
+(*     the string found in the source without any interpretation. In particular, *)
+(*     the backslashes are not interpreted. For example, if the input is ["\n"] *)
+(*     the string is *not* a string with one element containing the character *)
+(*     "return", but a string of two elements: the backslash and the character *)
+(*     ["n"]. To interpret a string use the first string of the [STRING] *)
+(*     constructor (or if you need to compute it use the module *)
+(*     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *\) *)
 
-type camlp4_token =
-  | KEYWORD of string
-  | SYMBOL of string
-  | LIDENT of string
-  | UIDENT of string
-  | ESCAPED_IDENT of string
-  | INT of int * string
-  | INT32 of int32 * string
-  | INT64 of int64 * string
-  | NATIVEINT of nativeint * string
-  | FLOAT of float * string
-  | CHAR of char * string
-  | STRING of string * string
-  | LABEL of string
-  | OPTLABEL of string
-  | QUOTATION of quotation
-  | ANTIQUOT of string * string
-  | COMMENT of string
-  | BLANKS of string
-  | NEWLINE
-  | LINE_DIRECTIVE of int * string option
-  | EOI
+(* type camlp4_token = *)
+(*   | KEYWORD of string *)
+(*   | SYMBOL of string *)
+(*   | LIDENT of string *)
+(*   | UIDENT of string *)
+(*   | ESCAPED_IDENT of string *)
+(*   | INT of int * string *)
+(*   | INT32 of int32 * string *)
+(*   | INT64 of int64 * string *)
+(*   | NATIVEINT of nativeint * string *)
+(*   | FLOAT of float * string *)
+(*   | CHAR of char * string *)
+(*   | STRING of string * string *)
+(*   | LABEL of string *)
+(*   | OPTLABEL of string *)
+(*   | QUOTATION of quotation *)
+(*   | ANTIQUOT of string * string *)
+(*   | COMMENT of string *)
+(*   | BLANKS of string *)
+(*   | NEWLINE *)
+(*   | LINE_DIRECTIVE of int * string option *)
+(*   | EOI *)
 
-type token =
-  [ `KEYWORD of string
-  | `SYMBOL of string
-  | `LIDENT of string
-  | `UIDENT of string
-  | `ESCAPED_IDENT of string
-  | `INT of int * string
-  | `INT32 of int32 * string
-  | `INT64 of int64 * string
-  | `NATIVEINT of nativeint * string
-  | `FLOAT of float * string
-  | `CHAR of char * string
-  | `STRING of string * string
-  | `LABEL of string
-  | `OPTLABEL of string
-  | `QUOTATION of quotation
-  | `ANTIQUOT of string * string
-  | `COMMENT of string
-  | `BLANKS of string
-  | `NEWLINE
-  | `LINE_DIRECTIVE of int * string option
-  | `EOI]
+(* type token = *)
+(*   [ `KEYWORD of string *)
+(*   | `SYMBOL of string *)
+(*   | `LIDENT of string *)
+(*   | `UIDENT of string *)
+(*   | `ESCAPED_IDENT of string *)
+(*   | `INT of int * string *)
+(*   | `INT32 of int32 * string *)
+(*   | `INT64 of int64 * string *)
+(*   | `NATIVEINT of nativeint * string *)
+(*   | `FLOAT of float * string *)
+(*   | `CHAR of char * string *)
+(*   | `STRING of string * string *)
+(*   | `LABEL of string *)
+(*   | `OPTLABEL of string *)
+(*   | `QUOTATION of quotation *)
+(*   | `ANTIQUOT of string * string *)
+(*   | `COMMENT of string *)
+(*   | `BLANKS of string *)
+(*   | `NEWLINE *)
+(*   | `LINE_DIRECTIVE of int * string option *)
+(*   | `EOI] *)
 
-(** A signature for specialized tokens. *)
-module type Camlp4Token = Token with type t = camlp4_token
+(* (\** A signature for specialized tokens. *\) *)
+(* module type Camlp4Token = Token with type t = camlp4_token *)
       
 
 
@@ -224,113 +224,113 @@ end
 
 
 
-type assoc =
-    [ `NA|`RA|`LA]
-type position =
-    [ `First | `Last | `Before of string | `After of string | `Level of string]
-module Grammar = struct
-    (** Internal signature for sematantic actions of grammars,
-      not for the casual user. These functions are unsafe. *)
-    module type Action = sig
-        type t
-        val mk : 'a -> t
-        val get : t -> 'a
-        val getf : t -> 'a -> 'b
-        val getf2 : t -> 'a -> 'b -> 'c
-      end
-    module type Structure =  sig
-        module Action : Action
-        module Token : Token 
-        type gram =
-          { gfilter : Token.Filter.t;
-            gkeywords : (string, int ref) Hashtbl.t;
-            glexer : FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t;
-            warning_verbose : bool ref; error_verbose : bool ref
-          }
-        type internal_entry
-        type tree
-        type token_pattern = ((Token.t -> bool) * string)
-        type token_info
-        type token_stream = (Token.t * token_info) Stream.t
-        val token_location : token_info -> FanLoc.t
-        type symbol =
-          | Smeta of string * symbol list * Action.t
-          | Snterm of internal_entry
-          | Snterml of internal_entry * string
-          | Slist0 of symbol
-          | Slist0sep of symbol * symbol
-          | Slist1 of symbol
-          | Slist1sep of symbol * symbol
-          | Sopt of symbol
-          | Stry of symbol
-          | Sself
-          | Snext
-          | Stoken of token_pattern
-          | Skeyword of string
-          | Stree of tree
-        type production_rule = ((symbol list) * Action.t)
-        type single_extend_statment =
-          ((string option) * (assoc option) * (production_rule list))
-        type extend_statment =
-          ((position option) * (single_extend_statment list))
-        type delete_statment = symbol list
-        type ('a, 'b, 'c) fold =
-          internal_entry ->
-            symbol list -> ('a Stream.t -> 'b) -> 'a Stream.t -> 'c
-        type ('a, 'b, 'c) foldsep =
-          internal_entry ->
-            symbol list ->
-              ('a Stream.t -> 'b) ->
-                ('a Stream.t -> unit) -> 'a Stream.t -> 'c
-      end
-    module type Dynamic =
-      sig
-        include Structure
-        val mk : unit -> gram
-        include DEntry  with
-        type token_stream:=token_stream
-        and  type internal_entry := internal_entry
-        and type gram := gram
-        and type action := Action.t
-        and type extend_statment := extend_statment
-        and type delete_statment := delete_statment
-        and type symbol := symbol
-        and type ('a,'b,'c)fold :=('a,'b,'c)fold
-        and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
-        and type token =Token.t
+(* type assoc = *)
+(*     [ `NA|`RA|`LA] *)
+(* type position = *)
+(*     [ `First | `Last | `Before of string | `After of string | `Level of string] *)
+(* module Grammar = struct *)
+(*     (\** Internal signature for sematantic actions of grammars, *)
+(*       not for the casual user. These functions are unsafe. *\) *)
+(*     module type Action = sig *)
+(*         type t *)
+(*         val mk : 'a -> t *)
+(*         val get : t -> 'a *)
+(*         val getf : t -> 'a -> 'b *)
+(*         val getf2 : t -> 'a -> 'b -> 'c *)
+(*       end *)
+(*     module type Structure =  sig *)
+(*         module Action : Action *)
+(*         (\* module Token : Token  *\) *)
+(*         type gram = *)
+(*           { gfilter : Token.Filter.t; *)
+(*             gkeywords : (string, int ref) Hashtbl.t; *)
+(*             glexer : FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t; *)
+(*             warning_verbose : bool ref; error_verbose : bool ref *)
+(*           } *)
+(*         type internal_entry *)
+(*         type tree *)
+(*         type token_pattern = ((Token.t -> bool) * string) *)
+(*         type token_info *)
+(*         type token_stream = (Token.t * token_info) Stream.t *)
+(*         val token_location : token_info -> FanLoc.t *)
+(*         type symbol = *)
+(*           | Smeta of string * symbol list * Action.t *)
+(*           | Snterm of internal_entry *)
+(*           | Snterml of internal_entry * string *)
+(*           | Slist0 of symbol *)
+(*           | Slist0sep of symbol * symbol *)
+(*           | Slist1 of symbol *)
+(*           | Slist1sep of symbol * symbol *)
+(*           | Sopt of symbol *)
+(*           | Stry of symbol *)
+(*           | Sself *)
+(*           | Snext *)
+(*           | Stoken of token_pattern *)
+(*           | Skeyword of string *)
+(*           | Stree of tree *)
+(*         type production_rule = ((symbol list) * Action.t) *)
+(*         type single_extend_statment = *)
+(*           ((string option) * (assoc option) * (production_rule list)) *)
+(*         type extend_statment = *)
+(*           ((position option) * (single_extend_statment list)) *)
+(*         type delete_statment = symbol list *)
+(*         type ('a, 'b, 'c) fold = *)
+(*           internal_entry -> *)
+(*             symbol list -> ('a Stream.t -> 'b) -> 'a Stream.t -> 'c *)
+(*         type ('a, 'b, 'c) foldsep = *)
+(*           internal_entry -> *)
+(*             symbol list -> *)
+(*               ('a Stream.t -> 'b) -> *)
+(*                 ('a Stream.t -> unit) -> 'a Stream.t -> 'c *)
+(*       end *)
+(*     module type Dynamic = *)
+(*       sig *)
+(*         include Structure *)
+(*         val mk : unit -> gram *)
+(*         include DEntry  with *)
+(*         type token_stream:=token_stream *)
+(*         and  type internal_entry := internal_entry *)
+(*         and type gram := gram *)
+(*         and type action := Action.t *)
+(*         and type extend_statment := extend_statment *)
+(*         and type delete_statment := delete_statment *)
+(*         and type symbol := symbol *)
+(*         and type ('a,'b,'c)fold :=('a,'b,'c)fold *)
+(*         and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep *)
+(*         and type token =Token.t *)
               
-        val get_filter : gram -> Token.Filter.t
-        val lex : gram -> FanLoc.t ->
-              char Stream.t -> (Token.t * FanLoc.t) Stream.t
-        val lex_string : gram -> FanLoc.t ->
-          string -> (Token.t * FanLoc.t) Stream.t
-        val filter :   gram -> (Token.t * FanLoc.t) Stream.t -> token_stream
+(*         val get_filter : gram -> Token.Filter.t *)
+(*         val lex : gram -> FanLoc.t -> *)
+(*               char Stream.t -> (Token.t * FanLoc.t) Stream.t *)
+(*         val lex_string : gram -> FanLoc.t -> *)
+(*           string -> (Token.t * FanLoc.t) Stream.t *)
+(*         val filter :   gram -> (Token.t * FanLoc.t) Stream.t -> token_stream *)
           
-      end
-    module type Static =
-      sig
-        include Structure
-        val trace_parser : bool ref
-        val gram : gram
-        include SEntry with
-        type token_stream := token_stream
-        and type internal_entry := internal_entry
-        and type action := Action.t
-        and type extend_statment := extend_statment
-        and type delete_statment := delete_statment
-        and type symbol := symbol
-        and type ('a,'b,'c)fold :=('a,'b,'c)fold
-        and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep
-        and type token =Token.t
-        val get_filter : unit -> Token.Filter.t
-        val lex :
-          FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t 
-        val lex_string :
-          FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t 
-        val filter :
-          (Token.t * FanLoc.t) Stream.t  -> token_stream
-      end
-  end
+(*       end *)
+(*     module type Static = *)
+(*       sig *)
+(*         include Structure *)
+(*         val trace_parser : bool ref *)
+(*         val gram : gram *)
+(*         include SEntry with *)
+(*         type token_stream := token_stream *)
+(*         and type internal_entry := internal_entry *)
+(*         and type action := Action.t *)
+(*         and type extend_statment := extend_statment *)
+(*         and type delete_statment := delete_statment *)
+(*         and type symbol := symbol *)
+(*         and type ('a,'b,'c)fold :=('a,'b,'c)fold *)
+(*         and type ('a,'b,'c)foldsep :=('a,'b,'c)foldsep *)
+(*         and type token =Token.t *)
+(*         val get_filter : unit -> Token.Filter.t *)
+(*         val lex : *)
+(*           FanLoc.t -> char Stream.t -> (Token.t * FanLoc.t) Stream.t  *)
+(*         val lex_string : *)
+(*           FanLoc.t -> string -> (Token.t * FanLoc.t) Stream.t  *)
+(*         val filter : *)
+(*           (Token.t * FanLoc.t) Stream.t  -> token_stream *)
+(*       end *)
+(*   end *)
 
 
     

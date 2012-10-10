@@ -17,7 +17,7 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Structure : Structure.S) = struct
+module Make (* (Structure : Structure.S) *)(U:sig end) = struct
   open Structure;
   open Format;
   (* open FanSig.Grammar; *)
@@ -133,7 +133,7 @@ module Make (Structure : Structure.S) = struct
 
 end;
 
-module MakeDump (Structure : Structure.S) = struct
+module MakeDump (U:sig end)(* (Structure : Structure.S) *) = struct
   open Structure;
   open Format;
   (* open FanSig.Grammar; *)

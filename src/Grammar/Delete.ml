@@ -17,9 +17,9 @@
  * - Nicolas Pouillard: refactoring
  *)
 
-module Make (Structure : Structure.S) = struct
-  module Tools  = Tools.Make Structure;
-  module Parser = Parser.Make Structure;
+(* module Make (Structure : Structure.S) = struct *)
+  (* module Tools  = Tools.Make Structure; *)
+  (* module Parser = Parser.Make Structure; *)
   open Structure;
 
 (* Deleting a rule *)
@@ -156,4 +156,4 @@ let delete_rule entry sl =
   | Dparser _ -> () ]
 ;
 
-end;
+(* end; *)

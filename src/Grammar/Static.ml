@@ -1,29 +1,30 @@
 open LibUtil;
 open Format;
-module Make (Lexer : Sig.Lexer)
-= struct
-  module Structure = Structure.Make Lexer;
-  module Delete = Delete.Make Structure;
-  module Insert = Insert.Make Structure;
+(* module Make (Lexer : Sig.Lexer) *)
+(* = struct *)
+  (* module Structure = Structure.Make Lexer; *)
+  (* module Delete = Delete.Make Structure; *)
+  (* module Insert = Insert.Make Structure; *)
   include Structure;
-  module Fold = Fold.Make Structure;
+  (* module Fold = Fold.Make Structure; *)
   let gram =
     let gkeywords = Hashtbl.create 301 in
     {
       gkeywords = gkeywords;
-      gfilter = Token.Filter.mk (Hashtbl.mem gkeywords);
-      glexer = Lexer.mk ();
+      gfilter = FanToken.Filter.mk (Hashtbl.mem gkeywords);
+      glexer = FanLexer.mk ();
       warning_verbose = ref True; (* FIXME *)
       error_verbose = FanConfig.verbose
     };
     
-  include Entry.Make Structure;
+  (* include Entry.Make Structure; *)
+  include Entry;
   let mk = mk gram;
   let of_parser name strm = of_parser gram name strm;
   let get_filter () = gram.gfilter;
   let lex loc cs = gram.glexer loc cs;
   let lex_string loc str = lex loc (Stream.of_string str);
-  let filter ts = Tools.keep_prev_loc (Token.Filter.filter gram.gfilter ts);
+  let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter gram.gfilter ts);
   let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
   let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs);
   let parse_string entry loc str = filter_and_parse_tokens entry (lex_string loc str);
@@ -70,7 +71,7 @@ module Make (Lexer : Sig.Lexer)
   (*     END in *)
   (*   entry_eoi; *)
 
-end;
+(* end; *)
 
 (*
 (A.extend ( (entry_eoi : 'entry_eoi A.Entry.t) ) (
@@ -86,7 +87,7 @@ end;
                  ), (
                   (A.Action.mk (
                    fun (__camlp4_0 :
-                          A.Token.t) ->
+                          A.FanToken.t) ->
                             fun (x :
                                    'entry) ->
                                      fun (_loc :
