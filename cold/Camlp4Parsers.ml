@@ -1826,36 +1826,11 @@ module MakeGrammarParser =
                                                                     'symbol) ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((match
-                                                                    s.pattern with
-                                                                    | Some
-                                                                    (Ast.PaApp
-                                                                    (_,
-                                                                    Ast.PaId
-                                                                    (_,
-                                                                    Ast.IdUid
-                                                                    (_, u)),
-                                                                    Ast.PaTup
-                                                                    (_,
-                                                                    Ast.PaAny
-                                                                    (_)))) ->
-                                                                    (mk_tok
-                                                                    _loc (
-                                                                    (Ast.PaApp
-                                                                    (_loc, (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, u))
-                                                                    ))) ), p))
-                                                                    ) (
-                                                                    s.styp ))
-                                                                    | _ ->
-                                                                    {s with
+                                                                    ({s with
                                                                     pattern =
                                                                     (
                                                                     (Some (p))
-                                                                    )}) :
+                                                                    )} :
                                                                     'psymbol)
                                                                     )) ))] ))]
                                                                     ))) () )
@@ -2249,147 +2224,6 @@ module MakeGrammarParser =
                                                                     )) ));
                                                                     ((
                                                                     [(
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | UIDENT
-                                                                    (_) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "UIDENT (_)"))
-                                                                    ); (
-                                                                    (Gram.Stoken
-                                                                    ((
-                                                                    function
-                                                                    | ANTIQUOT
-                                                                    ("", _) ->
-                                                                    (true)
-                                                                    | 
-                                                                    _ ->
-                                                                    (false)
-                                                                    ),
-                                                                    "ANTIQUOT (\"\", _)"))
-                                                                    )] ), (
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    fun __camlp4_1 ->
-                                                                    fun __camlp4_0 ->
-                                                                    fun (_loc :
-                                                                    FanLoc.t) ->
-                                                                    (
-                                                                    match
-                                                                    (__camlp4_1,
-                                                                    __camlp4_0) with
-                                                                    | (ANTIQUOT
-                                                                    ("", s),
-                                                                    UIDENT
-                                                                    (x)) ->
-                                                                    (let e =
-                                                                    (AntiquotSyntax.parse_expr
-                                                                    _loc s) in
-                                                                    let match_fun =
-                                                                    (Ast.ExFun
-                                                                    (_loc, (
-                                                                    (Ast.McOr
-                                                                    (_loc, (
-                                                                    (Ast.McArr
-                                                                    (_loc, (
-                                                                    (Ast.PaApp
-                                                                    (_loc, (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, x))
-                                                                    ))) ), (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "camlp4_x"))
-                                                                    ))) )))
-                                                                    ), (
-                                                                    (Ast.ExApp
-                                                                    (_loc, (
-                                                                    (Ast.ExApp
-                                                                    (_loc, (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "=")) )))
-                                                                    ), (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdLid
-                                                                    (_loc,
-                                                                    "camlp4_x"))
-                                                                    ))) )))
-                                                                    ), e)) ),
-                                                                    (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "True"))
-                                                                    ))) )))
-                                                                    ), (
-                                                                    (Ast.McArr
-                                                                    (_loc, (
-                                                                    (Ast.PaAny
-                                                                    (_loc))
-                                                                    ), (
-                                                                    (Ast.ExNil
-                                                                    (_loc))
-                                                                    ), (
-                                                                    (Ast.ExId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc,
-                                                                    "False"))
-                                                                    ))) )))
-                                                                    ))) ))) in
-                                                                    let descr =
-                                                                    ("$" ^ (
-                                                                    (x ^ (
-                                                                    (" " ^ s)
-                                                                    )) )) in
-                                                                    let text =
-                                                                    (TXtok
-                                                                    (_loc,
-                                                                    match_fun,
-                                                                    descr)) in
-                                                                    let p =
-                                                                    (Ast.PaApp
-                                                                    (_loc, (
-                                                                    (Ast.PaId
-                                                                    (_loc, (
-                                                                    (Ast.IdUid
-                                                                    (_loc, x))
-                                                                    ))) ), (
-                                                                    (Ast.PaTup
-                                                                    (_loc, (
-                                                                    (Ast.PaAny
-                                                                    (_loc))
-                                                                    ))) ))) in
-                                                                    (mk_symbol
-                                                                    ~used:[] 
-                                                                    ~text:text
-                                                                    ~styp:(
-                                                                    (STtok
-                                                                    (_loc)) )
-                                                                    ~pattern:(
-                                                                    (Some (p))
-                                                                    )) :
-                                                                    'symbol)
-                                                                    | 
-                                                                    _ ->
-                                                                    assert false)
-                                                                    )) ));
-                                                                    ((
-                                                                    [(
                                                                     (Gram.Skeyword
                                                                     ("`")) );
                                                                     (
@@ -2407,11 +2241,69 @@ module MakeGrammarParser =
                                                                     fun _ ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
-                                                                    ((mk_tok
+                                                                    (let 
+                                                                    (p, ls) =
+                                                                    (Expr.filter_patt_with_captured_variables
+                                                                    p) in
+                                                                    (match
+                                                                    ls with
+                                                                    | [] ->
+                                                                    (mk_tok
                                                                     _loc p (
                                                                     (STtok
                                                                     (_loc))
-                                                                    )) :
+                                                                    ))
+                                                                    | 
+                                                                    ((x, y)
+                                                                    :: ys) ->
+                                                                    let restrict =
+                                                                    (List.fold_left
+                                                                    (
+                                                                    fun acc ->
+                                                                    fun 
+                                                                    (x, y) ->
+                                                                    (
+                                                                    Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "&&")) )))
+                                                                    ), acc))
+                                                                    ), (
+                                                                    (Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "=")) )))
+                                                                    ), x)) ),
+                                                                    y)) ))) )
+                                                                    (
+                                                                    (Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExApp
+                                                                    (_loc, (
+                                                                    (Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdLid
+                                                                    (_loc,
+                                                                    "=")) )))
+                                                                    ), x)) ),
+                                                                    y)) ) ys) in
+                                                                    (mk_tok
+                                                                    _loc
+                                                                    ~restrict:restrict
+                                                                    p (
+                                                                    (STtok
+                                                                    (_loc))
+                                                                    ))) :
                                                                     'symbol)
                                                                     )) ));
                                                                     ((
@@ -3745,9 +3637,9 @@ module MakeMacroParser =
                                   (Gram.Stoken
                                     ((
                                      function
-                                     | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                        (true)
-                                     | _ -> (false) ), "$UIDENT x")) )] ), (
+                                     | UIDENT (__x) when (x = __x) -> (true)
+                                     | _ -> (false) ), "UIDENT (__x)")) )] ),
+                                 (
                                  (Gram.mk_action (
                                    fun __camlp4_0 ->
                                     fun (_loc :
@@ -3769,9 +3661,9 @@ module MakeMacroParser =
                                   (Gram.Stoken
                                     ((
                                      function
-                                     | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                        (true)
-                                     | _ -> (false) ), "$UIDENT x")) )] ), (
+                                     | UIDENT (__x) when (x = __x) -> (true)
+                                     | _ -> (false) ), "UIDENT (__x)")) )] ),
+                                 (
                                  (Gram.mk_action (
                                    fun __camlp4_0 ->
                                     fun (_loc :
@@ -3795,9 +3687,8 @@ module MakeMacroParser =
                                   (Gram.Stoken
                                     ((
                                      function
-                                     | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                        (true)
-                                     | _ -> (false) ), "$UIDENT x")) );
+                                     | UIDENT (__x) when (x = __x) -> (true)
+                                     | _ -> (false) ), "UIDENT (__x)")) );
                                   Gram.Sself ] ), (
                                  (Gram.mk_action (
                                    fun (param :
@@ -3834,9 +3725,8 @@ module MakeMacroParser =
                                   (Gram.Stoken
                                     ((
                                      function
-                                     | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                        (true)
-                                     | _ -> (false) ), "$UIDENT x")) );
+                                     | UIDENT (__x) when (x = __x) -> (true)
+                                     | _ -> (false) ), "UIDENT (__x)")) );
                                   Gram.Sself ] ), (
                                  (Gram.mk_action (
                                    fun (param :
@@ -3879,18 +3769,16 @@ module MakeMacroParser =
                           (Gram.Stoken
                             ((
                              function
-                             | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                (true)
-                             | _ -> (false) ), "$UIDENT x")) )] ))
+                             | UIDENT (__x) when (x = __x) -> (true)
+                             | _ -> (false) ), "UIDENT (__x)")) )] ))
                        );
                        (Gram.delete_rule patt (
                          [(
                           (Gram.Stoken
                             ((
                              function
-                             | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                (true)
-                             | _ -> (false) ), "$UIDENT x")) )] ))
+                             | UIDENT (__x) when (x = __x) -> (true)
+                             | _ -> (false) ), "UIDENT (__x)")) )] ))
                     | Some (_, _) ->
                        (
                        (Gram.delete_rule expr (
@@ -3898,20 +3786,18 @@ module MakeMacroParser =
                           (Gram.Stoken
                             ((
                              function
-                             | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                (true)
-                             | _ -> (false) ), "$UIDENT x")) ); Gram.Sself ]
-                         ))
+                             | UIDENT (__x) when (x = __x) -> (true)
+                             | _ -> (false) ), "UIDENT (__x)")) ); Gram.Sself
+                          ] ))
                        );
                        (Gram.delete_rule patt (
                          [(
                           (Gram.Stoken
                             ((
                              function
-                             | UIDENT (camlp4_x) when (camlp4_x = x) ->
-                                (true)
-                             | _ -> (false) ), "$UIDENT x")) ); Gram.Sself ]
-                         ))
+                             | UIDENT (__x) when (x = __x) -> (true)
+                             | _ -> (false) ), "UIDENT (__x)")) ); Gram.Sself
+                          ] ))
                     | None -> ())
                    );
                     (defined := ( (list_remove x ( defined.contents )) ))

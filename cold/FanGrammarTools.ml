@@ -1204,60 +1204,118 @@ let text_of_functorial_extend =
 
 let mk_tok =
                                                fun _loc ->
-                                                fun p ->
-                                                 fun t ->
-                                                  let p' =
-                                                   (Camlp4Ast.wildcarder#patt
-                                                     p) in
-                                                  let match_fun =
-                                                   if (Camlp4Ast.is_irrefut_patt
-                                                        p') then
-                                                    (
-                                                    (Ast.ExFun
-                                                      (_loc, (
-                                                       (Ast.McArr
-                                                         (_loc, p', (
-                                                          (Ast.ExNil (_loc))
-                                                          ), (
-                                                          (Ast.ExId
-                                                            (_loc, (
-                                                             (Ast.IdUid
-                                                               (_loc, "True"))
-                                                             ))) ))) )))
-                                                    )
-                                                   else
-                                                    (Ast.ExFun
-                                                      (_loc, (
-                                                       (Ast.McOr
-                                                         (_loc, (
-                                                          (Ast.McArr
-                                                            (_loc, p', (
-                                                             (Ast.ExNil
-                                                               (_loc)) ), (
-                                                             (Ast.ExId
-                                                               (_loc, (
-                                                                (Ast.IdUid
-                                                                  (_loc,
-                                                                   "True"))
-                                                                ))) ))) ), (
-                                                          (Ast.McArr
-                                                            (_loc, (
-                                                             (Ast.PaAny
-                                                               (_loc)) ), (
-                                                             (Ast.ExNil
-                                                               (_loc)) ), (
-                                                             (Ast.ExId
-                                                               (_loc, (
-                                                                (Ast.IdUid
-                                                                  (_loc,
-                                                                   "False"))
-                                                                ))) ))) )))
-                                                       ))) in
-                                                  let descr =
-                                                   (string_of_patt p') in
-                                                  let text =
-                                                   (TXtok
-                                                     (_loc, match_fun, descr)) in
-                                                  {used = [] ; text = text;
-                                                   styp = t;
-                                                   pattern = ( (Some (p)) )}
+                                                fun ?restrict ->
+                                                 fun p ->
+                                                  fun t ->
+                                                   (match restrict with
+                                                    | None ->
+                                                       let p' =
+                                                        (Camlp4Ast.wildcarder#patt
+                                                          p) in
+                                                       let match_fun =
+                                                        if (Camlp4Ast.is_irrefut_patt
+                                                             p') then
+                                                         (
+                                                         (Ast.ExFun
+                                                           (_loc, (
+                                                            (Ast.McArr
+                                                              (_loc, p', (
+                                                               (Ast.ExNil
+                                                                 (_loc)) ), (
+                                                               (Ast.ExId
+                                                                 (_loc, (
+                                                                  (Ast.IdUid
+                                                                    (_loc,
+                                                                    "True"))
+                                                                  ))) ))) )))
+                                                         )
+                                                        else
+                                                         (Ast.ExFun
+                                                           (_loc, (
+                                                            (Ast.McOr
+                                                              (_loc, (
+                                                               (Ast.McArr
+                                                                 (_loc, p', (
+                                                                  (Ast.ExNil
+                                                                    (_loc))
+                                                                  ), (
+                                                                  (Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdUid
+                                                                    (_loc,
+                                                                    "True"))
+                                                                    ))) )))
+                                                               ), (
+                                                               (Ast.McArr
+                                                                 (_loc, (
+                                                                  (Ast.PaAny
+                                                                    (_loc))
+                                                                  ), (
+                                                                  (Ast.ExNil
+                                                                    (_loc))
+                                                                  ), (
+                                                                  (Ast.ExId
+                                                                    (_loc, (
+                                                                    (Ast.IdUid
+                                                                    (_loc,
+                                                                    "False"))
+                                                                    ))) )))
+                                                               ))) ))) in
+                                                       let descr =
+                                                        (string_of_patt p') in
+                                                       let text =
+                                                        (TXtok
+                                                          (_loc, match_fun,
+                                                           descr)) in
+                                                       {used = [] ;
+                                                        text = text;
+                                                        styp = t;
+                                                        pattern = (
+                                                         (Some (p)) )}
+                                                    | Some (restrict) ->
+                                                       let p' =
+                                                        (Camlp4Ast.wildcarder#patt
+                                                          p) in
+                                                       let match_fun =
+                                                        (Ast.ExFun
+                                                          (_loc, (
+                                                           (Ast.McOr
+                                                             (_loc, (
+                                                              (Ast.McArr
+                                                                (_loc, p,
+                                                                 restrict, (
+                                                                 (Ast.ExId
+                                                                   (_loc, (
+                                                                    (
+                                                                    Ast.IdUid
+                                                                    (_loc,
+                                                                    "True"))
+                                                                    ))) )))
+                                                              ), (
+                                                              (Ast.McArr
+                                                                (_loc, (
+                                                                 (Ast.PaAny
+                                                                   (_loc)) ),
+                                                                 (
+                                                                 (Ast.ExNil
+                                                                   (_loc)) ),
+                                                                 (
+                                                                 (Ast.ExId
+                                                                   (_loc, (
+                                                                    (
+                                                                    Ast.IdUid
+                                                                    (_loc,
+                                                                    "False"))
+                                                                    ))) )))
+                                                              ))) ))) in
+                                                       let descr =
+                                                        (string_of_patt p) in
+                                                       let text =
+                                                        (TXtok
+                                                          (_loc, match_fun,
+                                                           descr)) in
+                                                       {used = [] ;
+                                                        text = text;
+                                                        styp = t;
+                                                        pattern = (
+                                                         (Some (p')) )})

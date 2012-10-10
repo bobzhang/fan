@@ -130,10 +130,10 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} -> mk_rule ~prod:psl ~action:(Some act )
         | LIST0 psymbol SEP semi_sep{psl} ->  mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ symbol{s} ; "{"; pattern{p} ; "}" ->  match s.pattern with
-            [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
-                mk_tok _loc <:patt< $uid:u $p >> s.styp
-            | _ -> { (s) with pattern = Some p } ]
+      [ [ symbol{s} ; "{"; pattern{p} ; "}" ->  (* match s.pattern with *)
+            (* [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> -> *)
+            (*     mk_tok _loc <:patt< $uid:u $p >> s.styp *)
+            (* | _ -> { (s) with pattern = Some p } ] *) {(s) with pattern = Some p}
         | symbol{s} -> s ] ]
     symbol:
       [ "top" NA
@@ -179,16 +179,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 (* mk_symbol ~used:[] ~text ~styp:(STok _loc) ~pattern: *)
                 mk_tok _loc ~restrict p (STtok _loc)
             ]  
-
-        (* | patt{p} -> mk_tok _loc p (STtok _loc) *)
-        | `UIDENT x; `ANTIQUOT "" s ->
-            let e = AntiquotSyntax.parse_expr _loc s in
-            let match_fun = <:expr<
-              fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in
-            let descr = "$" ^ x ^ " " ^ s in
-            let text = TXtok _loc match_fun descr in
-            let p = <:patt< $uid:x $(tup:<:patt< _ >>) >> in
-            mk_symbol ~used:[] ~text ~styp:(STtok _loc) ~pattern:(Some p)
         | `STRING _ s ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
         | name{n};  OPT [`UIDENT "Level"; `STRING _ s -> s ]{lev} ->
@@ -427,7 +417,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ Some ([], e) ->
         EXTEND Gram
         expr: Level "simple"
-          [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
+          [ [ `UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
           [ [ `UIDENT $x ->
             let p = Expr.substp _loc [] e
@@ -436,7 +426,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       | Some (sl, e) ->
           EXTEND Gram
             expr: Level "apply"
-            [ [ UIDENT $x; SELF{param} ->
+            [ [ `UIDENT $x; SELF{param} ->
               let el =  match param with
               [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
               | e -> [e] ]  in
@@ -446,7 +436,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               else
                 incorrect_number _loc el sl ] ] 
           patt: Level "simple"
-            [ [ UIDENT $x; SELF{param} ->
+            [ [ `UIDENT $x; SELF{param} ->
               let pl = match param with
               [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
               | p -> [p] ] in
@@ -467,15 +457,15 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         let eo = List.assoc x !defined in
         match eo with
         [ Some ([], _) ->
-            do {
-              DELETE_RULE Gram expr: UIDENT $x END;
-              DELETE_RULE Gram patt: UIDENT $x END;
-            }
+            begin
+              DELETE_RULE Gram expr: `UIDENT $x END;
+              DELETE_RULE Gram patt: `UIDENT $x END;
+            end
         | Some (_, _) ->
-            do {
-              DELETE_RULE Gram expr: UIDENT $x; SELF END;
-              DELETE_RULE Gram patt: UIDENT $x; SELF END;
-            }
+            begin
+              DELETE_RULE Gram expr: `UIDENT $x; SELF END;
+              DELETE_RULE Gram patt: `UIDENT $x; SELF END;
+            end
         | None -> () ];
         defined := list_remove x !defined;
       end
