@@ -126,16 +126,12 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ] ]
     rule_list:
       [ [ "["; "]" -> []
-        | "["; LIST1 rule SEP "|"{rules}; "]" ->
-            retype_rule_list_without_patterns _loc rules ] ]
+        | "["; LIST1 rule SEP "|"{rules}; "]" ->  retype_rule_list_without_patterns _loc rules ] ]
     rule:
-      [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} ->
-            mk_rule ~prod:psl ~action:(Some act )
-        | LIST0 psymbol SEP semi_sep{psl} ->
-            mk_rule ~prod:psl ~action:None ] ]
+      [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} -> mk_rule ~prod:psl ~action:(Some act )
+        | LIST0 psymbol SEP semi_sep{psl} ->  mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ symbol{s} ; "{"; pattern{p} ; "}" -> 
-            match s.pattern with
+      [ [ symbol{s} ; "{"; pattern{p} ; "}" ->  match s.pattern with
             [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
                 mk_tok _loc <:patt< $uid:u $p >> s.styp
             | _ -> { (s) with pattern = Some p } ]
