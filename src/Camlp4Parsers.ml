@@ -130,10 +130,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
       [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} -> mk_rule ~prod:psl ~action:(Some act )
         | LIST0 psymbol SEP semi_sep{psl} ->  mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ symbol{s} ; "{"; pattern{p} ; "}" ->  (* match s.pattern with *)
-            (* [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> -> *)
-            (*     mk_tok _loc <:patt< $uid:u $p >> s.styp *)
-            (* | _ -> { (s) with pattern = Some p } ] *) {(s) with pattern = Some p}
+      [ [ symbol{s} ; "{"; pattern{p} ; "}" ->   {(s) with pattern = Some p}
         | symbol{s} -> s ] ]
     symbol:
       [ "top" NA
@@ -176,7 +173,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             | [(x,y)::ys] ->
                 let restrict = List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
                     <:expr< $x = $y >> ys  in 
-                (* mk_symbol ~used:[] ~text ~styp:(STok _loc) ~pattern: *)
                 mk_tok _loc ~restrict p (STtok _loc)
             ]  
         | `STRING _ s ->

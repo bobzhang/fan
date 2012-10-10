@@ -321,7 +321,7 @@ let capture_antiquot = object
     [Some(_name,code) -> begin 
       (* eprintf "Warning: the antiquot modifier %s is ignored@." name; *)
       let cons = <:expr< $lid:code >> in
-      let code' = "__"^code in 
+      let code' = "__"^code in  (* prefix "camlp4__" FIXME *)
       let cons' = <:expr< $lid:code' >> in 
       let () = constraints <- [(cons,cons')::constraints]in 
       <:patt< $lid:code' >> (* only allows lidentifiers here *)
