@@ -337,29 +337,26 @@ let make_ctyp =
                                               ))) ))
                                         )
                                        else (Ast.TyQuo (_loc, tvar))
-                                    | STtok (_loc) ->
-                                       (Ast.TyId
-                                         (_loc, (
-                                          (Ast.IdAcc
-                                            (_loc, ( (gm () ) ), (
-                                             (Ast.IdLid (_loc, "token")) )))
-                                          )))
+                                    | STtok (_loc) -> (raise Not_found )
                                     | STtyp (t) -> t in
-                                   (aux styp)
+                                   (try (Some (aux styp)) with
+                                    Not_found -> (None))
 
 let make_ctyp_patt =
-                                                fun styp ->
-                                                 fun tvar ->
-                                                  fun patt ->
-                                                   (match
-                                                      (make_ctyp styp tvar) with
-                                                    | Ast.TyAny (_) -> patt
-                                                    | t ->
-                                                       let _loc =
-                                                        (Camlp4Ast.loc_of_patt
-                                                          patt) in
-                                                       (Ast.PaTyc
-                                                         (_loc, patt, t)))
+                                                           fun styp ->
+                                                            fun tvar ->
+                                                             fun patt ->
+                                                              (match
+                                                                 (make_ctyp
+                                                                   styp tvar) with
+                                                               | None -> patt
+                                                               | Some (t) ->
+                                                                  let _loc =
+                                                                   (Camlp4Ast.loc_of_patt
+                                                                    patt) in
+                                                                  (Ast.PaTyc
+                                                                    (_loc,
+                                                                    patt, t)))
 
 
 let make_ctyp_expr =
@@ -367,8 +364,8 @@ let make_ctyp_expr =
   fun tvar ->
    fun expr ->
     (match (make_ctyp styp tvar) with
-     | Ast.TyAny (_) -> expr
-     | t ->
+     | None -> expr
+     | Some (t) ->
         let _loc = (Camlp4Ast.loc_of_expr expr) in
         (Ast.ExTyc (_loc, expr, t)))
 

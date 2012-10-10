@@ -217,10 +217,8 @@ module MakeDebugParser =
                                                                     'end_or_in) ->
                                                                     fun (args :
                                                                     'expr list) ->
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (m :
                                                                     'start_debug) ->
                                                                     fun (_loc :
@@ -358,8 +356,7 @@ module MakeDebugParser =
                                                                   )] ), (
                                                                  (Gram.mk_action
                                                                    (
-                                                                   fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                   fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -390,8 +387,7 @@ module MakeDebugParser =
                                                                   )] ), (
                                                                  (Gram.mk_action
                                                                    (
-                                                                   fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                   fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -914,8 +910,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -953,8 +948,7 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     'qualuid) ->
                                                                     fun _ ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1002,8 +996,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1034,8 +1027,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1073,8 +1065,7 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     'qualid) ->
                                                                     fun _ ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1137,11 +1128,9 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
                                                                     fun _ ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1182,8 +1171,7 @@ module MakeGrammarParser =
                                                                     fun (xs :
                                                                     't_qualid) ->
                                                                     fun _ ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1253,8 +1241,7 @@ module MakeGrammarParser =
                                                                     fun (sl :
                                                                     'name list) ->
                                                                     fun _ ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1366,8 +1353,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (n :
                                                                     'string) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1405,8 +1391,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1502,8 +1487,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1579,8 +1563,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1614,8 +1597,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1915,8 +1897,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (s :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -1961,8 +1942,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (s :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2043,8 +2023,7 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (t :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2065,8 +2044,7 @@ module MakeGrammarParser =
                                                                     'e__3 option) ->
                                                                     fun (s :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2186,10 +2164,8 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2248,8 +2224,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2300,10 +2275,8 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2509,8 +2482,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2551,8 +2523,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2678,8 +2649,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2813,8 +2783,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -2845,8 +2814,7 @@ module MakeGrammarParser =
                                                                     )] ), (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -3108,16 +3076,14 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (sep :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
                                                                     fun (s :
                                                                     'symbol) ->
                                                                     fun (e :
                                                                     'simple_expr) ->
                                                                     fun (f :
                                                                     'simple_expr) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -3185,16 +3151,14 @@ module MakeGrammarParser =
                                                                     (
                                                                     fun (sep :
                                                                     'symbol) ->
-                                                                    fun (__camlp4_1 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_1 ->
                                                                     fun (s :
                                                                     'symbol) ->
                                                                     fun (e :
                                                                     'simple_expr) ->
                                                                     fun (f :
                                                                     'simple_expr) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -3252,8 +3216,7 @@ module MakeGrammarParser =
                                                                     'simple_expr) ->
                                                                     fun (f :
                                                                     'simple_expr) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -3307,8 +3270,7 @@ module MakeGrammarParser =
                                                                     'simple_expr) ->
                                                                     fun (f :
                                                                     'simple_expr) ->
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (_loc :
                                                                     FanLoc.t) ->
                                                                     (
@@ -3787,8 +3749,7 @@ module MakeMacroParser =
                                         (true)
                                      | _ -> (false) ), "$UIDENT x")) )] ), (
                                  (Gram.mk_action (
-                                   fun (__camlp4_0 :
-                                     Gram.token) ->
+                                   fun __camlp4_0 ->
                                     fun (_loc :
                                       FanLoc.t) ->
                                      (match __camlp4_0 with
@@ -3812,8 +3773,7 @@ module MakeMacroParser =
                                         (true)
                                      | _ -> (false) ), "$UIDENT x")) )] ), (
                                  (Gram.mk_action (
-                                   fun (__camlp4_0 :
-                                     Gram.token) ->
+                                   fun __camlp4_0 ->
                                     fun (_loc :
                                       FanLoc.t) ->
                                      (match __camlp4_0 with
@@ -3842,8 +3802,7 @@ module MakeMacroParser =
                                  (Gram.mk_action (
                                    fun (param :
                                      'expr) ->
-                                    fun (__camlp4_0 :
-                                      Gram.token) ->
+                                    fun __camlp4_0 ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (match __camlp4_0 with
@@ -3882,8 +3841,7 @@ module MakeMacroParser =
                                  (Gram.mk_action (
                                    fun (param :
                                      'patt) ->
-                                    fun (__camlp4_0 :
-                                      Gram.token) ->
+                                    fun __camlp4_0 ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (match __camlp4_0 with
@@ -4163,8 +4121,7 @@ module MakeMacroParser =
                                       | _ -> (false) ), "STRING (_, _)"))
                                    )] ), (
                                   (Gram.mk_action (
-                                    fun (__camlp4_0 :
-                                      Gram.token) ->
+                                    fun __camlp4_0 ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
@@ -4282,8 +4239,7 @@ module MakeMacroParser =
                                       | _ -> (false) ), "STRING (_, _)"))
                                    )] ), (
                                   (Gram.mk_action (
-                                    fun (__camlp4_0 :
-                                      Gram.token) ->
+                                    fun __camlp4_0 ->
                                      fun _ ->
                                       fun (_loc :
                                         FanLoc.t) ->
@@ -4854,8 +4810,7 @@ module MakeMacroParser =
                                               | _ -> (false) ),
                                               "LIDENT (_)")) )] ), (
                                           (Gram.mk_action (
-                                            fun (__camlp4_0 :
-                                              Gram.token) ->
+                                            fun __camlp4_0 ->
                                              fun (_loc :
                                                FanLoc.t) ->
                                               (match __camlp4_0 with
@@ -4905,8 +4860,7 @@ module MakeMacroParser =
                                       fun (def :
                                         'expr) ->
                                        fun _ ->
-                                        fun (__camlp4_0 :
-                                          Gram.token) ->
+                                        fun __camlp4_0 ->
                                          fun _ ->
                                           fun (_loc :
                                             FanLoc.t) ->
@@ -5041,8 +4995,7 @@ module MakeMacroParser =
                                       | _ -> (false) ), "UIDENT (_)")) )]
                                   ), (
                                   (Gram.mk_action (
-                                    fun (__camlp4_0 :
-                                      Gram.token) ->
+                                    fun __camlp4_0 ->
                                      fun (_loc :
                                        FanLoc.t) ->
                                       (match __camlp4_0 with
@@ -5076,8 +5029,7 @@ module MakeMacroParser =
                                      [(( [( (Gram.Skeyword ("IN")) )] ),
                                        (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5085,8 +5037,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("DEFINE")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5094,8 +5045,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("ENDIF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5103,8 +5053,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("END")) )] ),
                                        (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5112,8 +5061,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("ELSE")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5121,8 +5069,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("THEN")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5130,8 +5077,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("IFNDEF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5139,8 +5085,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("IFDEF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5179,8 +5124,7 @@ module MakeMacroParser =
                                      [(( [( (Gram.Skeyword ("ENDIF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5188,8 +5132,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("END")) )] ),
                                        (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5197,8 +5140,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("ELSE")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5206,8 +5148,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("THEN")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5215,8 +5156,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("IFNDEF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -5224,8 +5164,7 @@ module MakeMacroParser =
                                       (( [( (Gram.Skeyword ("IFDEF")) )]
                                        ), (
                                        (Gram.mk_action (
-                                         fun (x :
-                                           Gram.token) ->
+                                         fun x ->
                                           fun (_loc :
                                             FanLoc.t) ->
                                            ((Gram.string_of_token x) :
@@ -6628,8 +6567,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -6660,8 +6598,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"mexp\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -6721,8 +6658,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -6753,8 +6689,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"stri\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -7376,8 +7311,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -7424,8 +7358,7 @@ module MakeRevisedParser =
                                                           fun (mt :
                                                             'module_type) ->
                                                            fun _ ->
-                                                            fun (__camlp4_0 :
-                                                              Gram.token) ->
+                                                            fun __camlp4_0 ->
                                                              fun (_loc :
                                                                FanLoc.t) ->
                                                               (match
@@ -7458,8 +7391,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -7493,8 +7425,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"module_binding\" | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -7764,8 +7695,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -7796,8 +7726,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"mtyp\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8141,8 +8070,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8173,8 +8101,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"sigi\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8313,8 +8240,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8345,8 +8271,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"module_binding\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8484,8 +8409,7 @@ module MakeRevisedParser =
                                                         fun (t :
                                                           'ctyp) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun _ ->
                                                             fun (_loc :
                                                               FanLoc.t) ->
@@ -8599,8 +8523,7 @@ module MakeRevisedParser =
                                                         fun (t :
                                                           'ctyp) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun _ ->
                                                             fun (_loc :
                                                               FanLoc.t) ->
@@ -8638,8 +8561,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -8670,8 +8592,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"with_constr\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -9773,8 +9694,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun (e :
                                                           'expr) ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
                                                            (match
@@ -9802,8 +9722,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun (e :
                                                           'expr) ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
                                                            (match
@@ -10749,8 +10668,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"seq\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -10785,8 +10703,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"tup\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -10821,8 +10738,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"`bool\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -10859,8 +10775,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"exp\" | \"\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -10892,8 +10807,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -11066,8 +10980,7 @@ module MakeRevisedParser =
                                                            ), (
                                                            (Gram.mk_action
                                                              (
-                                                             fun (x :
-                                                               Gram.token) ->
+                                                             fun x ->
                                                               fun (_loc :
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
@@ -11081,8 +10994,7 @@ module MakeRevisedParser =
                                                            ), (
                                                            (Gram.mk_action
                                                              (
-                                                             fun (x :
-                                                               Gram.token) ->
+                                                             fun x ->
                                                               fun (_loc :
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
@@ -11122,8 +11034,7 @@ module MakeRevisedParser =
                                                            ), (
                                                            (Gram.mk_action
                                                              (
-                                                             fun (x :
-                                                               Gram.token) ->
+                                                             fun x ->
                                                               fun (_loc :
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
@@ -11137,8 +11048,7 @@ module MakeRevisedParser =
                                                            ), (
                                                            (Gram.mk_action
                                                              (
-                                                             fun (x :
-                                                               Gram.token) ->
+                                                             fun x ->
                                                               fun (_loc :
                                                                 FanLoc.t) ->
                                                                ((Gram.string_of_token
@@ -11306,8 +11216,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -11450,8 +11359,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -11734,8 +11642,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -11779,8 +11686,7 @@ module MakeRevisedParser =
                                                         fun (e :
                                                           'expr) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -11820,8 +11726,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"binding\" | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -12118,8 +12023,7 @@ module MakeRevisedParser =
                                                           fun (w :
                                                             'expr) ->
                                                            fun _ ->
-                                                            fun (__camlp4_0 :
-                                                              Gram.token) ->
+                                                            fun __camlp4_0 ->
                                                              fun (_loc :
                                                                FanLoc.t) ->
                                                               (match
@@ -12169,8 +12073,7 @@ module MakeRevisedParser =
                                                         fun (e :
                                                           'expr) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -12214,8 +12117,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -12249,8 +12151,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"match_case\" | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -12497,8 +12398,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -12541,8 +12441,7 @@ module MakeRevisedParser =
                                                         fun (e :
                                                           'expr) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -12582,8 +12481,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -12616,8 +12514,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"rec_binding\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -13130,8 +13027,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -13168,8 +13064,7 @@ module MakeRevisedParser =
                                                           "LIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -13226,8 +13121,7 @@ module MakeRevisedParser =
                                                             'patt_tcon) ->
                                                            fun _ ->
                                                             fun _ ->
-                                                             fun (__camlp4_0 :
-                                                               Gram.token) ->
+                                                             fun __camlp4_0 ->
                                                               fun _ ->
                                                                fun (_loc :
                                                                  FanLoc.t) ->
@@ -13277,8 +13171,7 @@ module MakeRevisedParser =
                                                           fun (p :
                                                             'patt_tcon) ->
                                                            fun _ ->
-                                                            fun (__camlp4_0 :
-                                                              Gram.token) ->
+                                                            fun __camlp4_0 ->
                                                              fun (_loc :
                                                                FanLoc.t) ->
                                                               (match
@@ -13305,8 +13198,7 @@ module MakeRevisedParser =
                                                           "LIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -13340,8 +13232,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -13387,8 +13278,7 @@ module MakeRevisedParser =
                                                         fun (p :
                                                           'patt) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun _ ->
                                                             fun (_loc :
                                                               FanLoc.t) ->
@@ -13422,8 +13312,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun (p :
                                                           'patt) ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
                                                            (match
@@ -13484,8 +13373,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14067,8 +13955,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"`bool\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14102,8 +13989,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"tup\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14141,8 +14027,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14200,8 +14085,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14293,8 +14177,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14640,8 +14523,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14671,8 +14553,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14702,8 +14583,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14964,8 +14844,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -14992,8 +14871,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"tup\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15031,8 +14909,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15138,8 +15015,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15346,8 +15222,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15374,8 +15249,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15409,8 +15283,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"pat\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15506,8 +15379,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15534,8 +15406,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15569,8 +15440,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15906,8 +15776,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -15937,8 +15806,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16085,8 +15953,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16116,8 +15983,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16830,8 +16696,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16858,8 +16723,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"id\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16894,8 +16758,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"tup\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -16933,8 +16796,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"typ\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17039,8 +16901,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17073,8 +16934,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17231,8 +17091,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17259,8 +17118,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17293,8 +17151,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17389,8 +17246,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17419,8 +17275,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17496,8 +17351,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17682,8 +17536,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17710,8 +17563,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17744,8 +17596,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -17860,8 +17711,7 @@ module MakeRevisedParser =
                                                         fun (i :
                                                           'ident) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -17935,8 +17785,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18027,8 +17876,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18148,8 +17996,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18252,8 +18099,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun _ ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -18390,8 +18236,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18482,8 +18327,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18630,8 +18474,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18662,8 +18505,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"cdcl\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -18954,8 +18796,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -19069,8 +18910,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -19357,8 +19197,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -19388,8 +19227,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"cexp\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -19551,8 +19389,7 @@ module MakeRevisedParser =
                                                         fun (cst :
                                                           'class_structure) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -19597,8 +19434,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"cst\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -20118,8 +19954,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -20150,8 +19985,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"cst\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -20213,8 +20047,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -20286,8 +20119,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -20674,8 +20506,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -20705,8 +20536,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"ctyp\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -20963,8 +20793,7 @@ module MakeRevisedParser =
                                                         fun (csg :
                                                           'class_signature) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -21009,8 +20838,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"csg\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21274,8 +21102,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21306,8 +21133,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"csg\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21413,8 +21239,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21445,8 +21270,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"typ\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21536,8 +21360,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21568,8 +21391,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"typ\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21730,8 +21552,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21765,8 +21586,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"bi\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21924,8 +21744,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21952,8 +21771,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -21986,8 +21804,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22145,8 +21962,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22175,8 +21991,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22253,8 +22068,7 @@ module MakeRevisedParser =
                                                           "QUOTATION (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22283,8 +22097,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22462,8 +22275,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22496,8 +22308,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22553,8 +22364,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"list\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22649,8 +22459,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"typ\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -22852,8 +22661,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -22890,8 +22698,7 @@ module MakeRevisedParser =
                                                           "LIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -22948,8 +22755,7 @@ module MakeRevisedParser =
                                                             'ipatt_tcon) ->
                                                            fun _ ->
                                                             fun _ ->
-                                                             fun (__camlp4_0 :
-                                                               Gram.token) ->
+                                                             fun __camlp4_0 ->
                                                               fun _ ->
                                                                fun (_loc :
                                                                  FanLoc.t) ->
@@ -22999,8 +22805,7 @@ module MakeRevisedParser =
                                                           fun (p :
                                                             'ipatt_tcon) ->
                                                            fun _ ->
-                                                            fun (__camlp4_0 :
-                                                              Gram.token) ->
+                                                            fun __camlp4_0 ->
                                                              fun (_loc :
                                                                FanLoc.t) ->
                                                               (match
@@ -23027,8 +22832,7 @@ module MakeRevisedParser =
                                                           "LIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -23062,8 +22866,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun _ ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
@@ -23109,8 +22912,7 @@ module MakeRevisedParser =
                                                         fun (p :
                                                           'ipatt) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun _ ->
                                                             fun (_loc :
                                                               FanLoc.t) ->
@@ -23144,8 +22946,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun (p :
                                                           'ipatt) ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
                                                            (match
@@ -23236,8 +23037,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"to\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23308,8 +23108,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"private\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23369,8 +23168,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"mutable\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23430,8 +23228,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"virtual\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23491,8 +23288,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"..\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23551,8 +23347,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"rec\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23611,8 +23406,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"!\" | \"override\") | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23692,8 +23486,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23848,8 +23641,7 @@ module MakeRevisedParser =
                                                         fun (sg :
                                                           'sig_items) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -23894,8 +23686,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"sigi\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -23936,8 +23727,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24092,8 +23882,7 @@ module MakeRevisedParser =
                                                         fun (st :
                                                           'str_items) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -24138,8 +23927,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"stri\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24180,8 +23968,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24227,8 +24014,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24387,8 +24173,7 @@ module MakeRevisedParser =
                                                           "INT (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24415,8 +24200,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"int\") | \"`int\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24454,8 +24238,7 @@ module MakeRevisedParser =
                                                           "INT32 (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24482,8 +24265,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"int32\") | \"`int32\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24521,8 +24303,7 @@ module MakeRevisedParser =
                                                           "INT64 (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24549,8 +24330,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"int64\") | \"`int64\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24589,8 +24369,7 @@ module MakeRevisedParser =
                                                           "NATIVEINT (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24618,8 +24397,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"nativeint\") | \"`nativeint\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24657,8 +24435,7 @@ module MakeRevisedParser =
                                                           "FLOAT (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24685,8 +24462,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"flo\") | \"`flo\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24724,8 +24500,7 @@ module MakeRevisedParser =
                                                           "CHAR (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24752,8 +24527,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"chr\") | \"`chr\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24791,8 +24565,7 @@ module MakeRevisedParser =
                                                           "UIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24818,8 +24591,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"uid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24856,8 +24628,7 @@ module MakeRevisedParser =
                                                           "LIDENT (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24883,8 +24654,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"lid\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24920,8 +24690,7 @@ module MakeRevisedParser =
                                                           ), "LABEL (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -24950,8 +24719,7 @@ module MakeRevisedParser =
                                                          (":")) )] ), (
                                                       (Gram.mk_action (
                                                         fun _ ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun _ ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
@@ -24988,8 +24756,7 @@ module MakeRevisedParser =
                                                           "OPTLABEL (_)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -25018,8 +24785,7 @@ module MakeRevisedParser =
                                                          (":")) )] ), (
                                                       (Gram.mk_action (
                                                         fun _ ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun _ ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
@@ -25056,8 +24822,7 @@ module MakeRevisedParser =
                                                           "STRING (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -25085,8 +24850,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (((\"\" | \"str\") | \"`str\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -25124,8 +24888,7 @@ module MakeRevisedParser =
                                                           "STRING (_, _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -25155,8 +24918,7 @@ module MakeRevisedParser =
                                                       (Gram.mk_action (
                                                         fun (xs :
                                                           'string_list) ->
-                                                         fun (__camlp4_0 :
-                                                           Gram.token) ->
+                                                         fun __camlp4_0 ->
                                                           fun (_loc :
                                                             FanLoc.t) ->
                                                            (match
@@ -25184,8 +24946,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"\" | \"str_list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -26389,8 +26150,7 @@ module MakeRevisedParser =
                                                           fun (mt :
                                                             'module_type) ->
                                                            fun _ ->
-                                                            fun (__camlp4_0 :
-                                                              Gram.token) ->
+                                                            fun __camlp4_0 ->
                                                              fun (_loc :
                                                                FanLoc.t) ->
                                                               (match
@@ -26433,8 +26193,7 @@ module MakeRevisedParser =
                                                         fun (mt :
                                                           'module_type) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -26466,8 +26225,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT (\"\", _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -26500,8 +26258,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((\"module_binding\" | \"anti\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -26626,8 +26383,7 @@ module MakeRevisedParser =
                                                         fun (i :
                                                           'ident_quot) ->
                                                          fun _ ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -26703,8 +26459,7 @@ module MakeRevisedParser =
                                                           "ANTIQUOT ((((\"\" | \"id\") | \"anti\") | \"list\"), _)"))
                                                        )] ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (_loc :
                                                            FanLoc.t) ->
                                                           (match
@@ -26787,8 +26542,7 @@ module MakeRevisedParser =
                                                           'opt_comma_ctyp) ->
                                                          fun (i :
                                                            'ident) ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -26934,8 +26688,7 @@ module MakeRevisedParser =
                                                           'opt_comma_ctyp) ->
                                                          fun (i :
                                                            'ident) ->
-                                                          fun (__camlp4_0 :
-                                                            Gram.token) ->
+                                                          fun __camlp4_0 ->
                                                            fun (_loc :
                                                              FanLoc.t) ->
                                                             (match
@@ -27412,8 +27165,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (x :
                                                            'patt) ->
                                                           fun (_loc :
@@ -27450,8 +27202,7 @@ module MakeRevisedParser =
                                                           ), "EOI")) )]
                                                       ), (
                                                       (Gram.mk_action (
-                                                        fun (__camlp4_0 :
-                                                          Gram.token) ->
+                                                        fun __camlp4_0 ->
                                                          fun (x :
                                                            'expr) ->
                                                           fun (_loc :
@@ -30350,8 +30101,7 @@ module MakeQuotationCommon =
                                                                     (
                                                                     (Gram.mk_action
                                                                     (
-                                                                    fun (__camlp4_0 :
-                                                                    Gram.token) ->
+                                                                    fun __camlp4_0 ->
                                                                     fun (x :
                                                                     'entry) ->
                                                                     fun (_loc :
