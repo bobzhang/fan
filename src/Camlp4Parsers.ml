@@ -32,8 +32,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   let mk_debug _loc m fmt section args =
     let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in
       <:expr< if $(mk_debug_mode _loc m) $str:section then $call else () >>;
-  EXTEND Gram
-    GLOBAL: expr;
+  EXTEND Gram GLOBAL: expr;
     expr:
     [ [ start_debug{m}; `LIDENT section; `STRING _ fmt;
         LIST0 expr Level "."{args}; end_or_in{x} ->
@@ -170,7 +169,18 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let used = used_of_rule_list rl in
             mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
               ~styp:(STquo _loc t) ~pattern:None
-        | "`"; patt{p} -> mk_tok _loc p (STtok _loc)
+        | "`"; patt{p} ->
+            let (p,ls) = Expr.filter_patt_with_captured_variables p in
+            match ls with
+            [ [] -> mk_tok _loc p (STtok _loc)
+            | [(x,y)::ys] ->
+                let restrict = List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
+                    <:expr< $x = $y >> ys  in 
+                (* mk_symbol ~used:[] ~text ~styp:(STok _loc) ~pattern: *)
+                mk_tok _loc ~restrict p (STtok _loc)
+            ]  
+
+        (* | patt{p} -> mk_tok _loc p (STtok _loc) *)
         | `UIDENT x; `ANTIQUOT "" s ->
             let e = AntiquotSyntax.parse_expr _loc s in
             let match_fun = <:expr<
@@ -224,8 +234,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             sfold _loc "FOLD1" "sfold1" f e s
         |`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT "SEP"; symbol{sep} ->
             sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep
-        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s};
-`UIDENT "SEP"; symbol{sep} ->
+        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s}; `UIDENT "SEP"; symbol{sep} ->
             sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep ] ]
     simple_expr:
       [ [ a_LIDENT{i} -> <:expr< $lid:i >>
@@ -420,7 +429,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
         expr: Level "simple"
           [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
-          [ [ UIDENT $x ->
+          [ [ `UIDENT $x ->
             let p = Expr.substp _loc [] e
             in (new Ast.reloc _loc)#patt p ]]
         END
