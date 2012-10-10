@@ -35,8 +35,8 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr;
     expr:
-    [ [ m = start_debug; `LIDENT section; `STRING _ fmt;
-        args = LIST0 expr Level "."; x = end_or_in ->
+    [ [ start_debug{m}; `LIDENT section; `STRING _ fmt;
+        LIST0 expr Level "."{args}; end_or_in{x} ->
       match (x, debug_mode section) with
       [ (None,   False) -> <:expr< () >>
       | (Some e, False) -> e
@@ -44,7 +44,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
       | (Some e, _) -> <:expr< let () = $(mk_debug _loc m fmt section args) in $e >> ]  ] ]
     end_or_in:
     [ [ "end" -> None
-      | "in"; e = expr -> Some e  ] ]
+      | "in"; expr{e} -> Some e  ] ]
     start_debug:
     [ [ `LIDENT "debug" -> None
       | `LIDENT "camlp4_debug" -> Some "Camlp4"  ] ]
@@ -66,59 +66,59 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   FanConfig.antiquotations := True;
   EXTEND Gram GLOBAL: expr symbol rule rule_list psymbol level level_list;
     expr: After "top"
-      [ [ "EXTEND"; e = extend_body; "END" -> e
-        | "DELETE_RULE"; e = delete_rule_body; "END" -> e ] ] 
+      [ [ "EXTEND"; extend_body{e}; "END" -> e
+        | "DELETE_RULE"; delete_rule_body{e}; "END" -> e ] ] 
     extend_header:
-      [ [ "("; i = qualid; ":"; t = t_qualid; ")" -> 
+      [ [ "("; qualid{i}; ":"; t_qualid{t}; ")" -> 
         let old=gm() in 
         let () = grammar_module_name := t in
         (Some i,old)
-        | t = qualuid -> begin
+        | qualuid{t} -> begin
             let old = gm() in
             let () = grammar_module_name := t in 
             (None,old)
         end
         | -> (None,gm()) (* FIXME *)   ] ]
     extend_body:
-      [ [ (gram,old) = extend_header; global_list = OPT global;
-          el = LIST1 [ e = entry  -> e ] -> (* semi_sep removed *)
+      [ [ extend_header{(gram,old)};  OPT global{global_list };
+          LIST1 [ entry{e}  -> e ]{el} -> (* semi_sep removed *)
             let res = text_of_functorial_extend _loc  gram global_list el in 
             let () = grammar_module_name := old in
             res      ] ] 
     delete_rule_body:
-      [ [ old = delete_rule_header; n = name; ":"; sl = LIST0 symbol SEP semi_sep -> 
+      [ [ delete_rule_header{old}; name{n}; ":"; LIST0 symbol SEP semi_sep{sl} -> 
         let (e, b) = expr_of_delete_rule _loc n sl in (*FIXME*)
         let res =  <:expr< $(id:gm()).delete_rule $e $b >>  in
         let () = grammar_module_name := old  in 
         res   ] ]
      delete_rule_header: (*for side effets, parser action *)
-        [[ g = qualuid ->
+        [[ qualuid{g} ->
           let old = gm () in
           let () = grammar_module_name := g in
           old  ]]
     qualuid:
-      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+      [ [ `UIDENT x; ".";  SELF{xs} -> <:ident< $uid:x.$xs >>
         | `UIDENT x -> <:ident< $uid:x >> ] ] 
     qualid:
-      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+      [ [ `UIDENT x; ".";  SELF{xs} -> <:ident< $uid:x.$xs >>
         | `UIDENT i -> <:ident< $uid:i >>
         | `LIDENT i -> <:ident< $lid:i >> ] ]
     t_qualid:
-      [ [ `UIDENT x; "."; xs = SELF -> <:ident< $uid:x.$xs >>
+      [ [ `UIDENT x; ".";  SELF{xs} -> <:ident< $uid:x.$xs >>
         | `UIDENT x; "."; `LIDENT "t" -> <:ident< $uid:x >> ] ] 
     global:
-      [ [ `UIDENT "GLOBAL"; ":"; sl = LIST1 name; semi_sep -> sl ] ]
+      [ [ `UIDENT "GLOBAL"; ":"; LIST1 name{sl}; semi_sep -> sl ] ]
     entry:
-      [ [ n = name; ":"; pos = OPT position; ll = level_list ->
+      [ [ name{n}; ":";  OPT position{pos}; level_list{ll} ->
             mk_entry ~name:n ~pos ~levels:ll ] ]
     position:
       [ [ `UIDENT ("First"|"Last" as x ) ->   <:expr< `$uid:x >>
-        | `UIDENT ("Before" | "After" | "Level" as x) ; n = string ->
+        | `UIDENT ("Before" | "After" | "Level" as x) ; string{n} ->
             <:expr< ` $uid:x  $n >> (*FIXME string escape?*)    ] ]
     level_list:
-      [ [ "["; ll = LIST0 level SEP "|"; "]" -> ll ] ]
+      [ [ "["; LIST0 level SEP "|"{ll}; "]" -> ll ] ]
     level:
-      [ [ lab = OPT [  `STRING _ x  -> x ]; ass = OPT assoc; rules = rule_list ->
+      [ [  OPT [  `STRING _ x  -> x ]{lab};  OPT assoc{ass}; rule_list{rules} ->
             mk_level ~label:lab ~assoc:ass ~rules ]]
     assoc:
       [[ `UIDENT ("LA"|"RA"|"NA" as x) ->
@@ -126,39 +126,40 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
        | `UIDENT x -> failwithf "%s is not a correct associativity:(LA|RA|NA)" x  ] ]
     rule_list:
       [ [ "["; "]" -> []
-        | "["; rules = LIST1 rule SEP "|"; "]" ->
+        | "["; LIST1 rule SEP "|"{rules}; "]" ->
             retype_rule_list_without_patterns _loc rules ] ]
     rule:
-      [ [ psl = LIST0 psymbol SEP semi_sep; "->"; act = expr ->
+      [ [ LIST0 psymbol SEP semi_sep{psl}; "->"; expr{act} ->
             mk_rule ~prod:psl ~action:(Some act )
-        | psl = LIST0 psymbol SEP semi_sep ->
+        | LIST0 psymbol SEP semi_sep{psl} ->
             mk_rule ~prod:psl ~action:None ] ]
     psymbol:
-      [ [ `LIDENT p; "="; s = symbol -> (* comment later *)
-            match s.pattern with 
-            [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') ->
-                let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
-                let p' = <:patt< ($p' as $lid:p) >> in
-                let descr = u ^ " _" in
-                let text = TXtok _loc match_fun descr in
-                { (s) with text = text; pattern = Some p' }
-            | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ]
+      [ [(*  `LIDENT p; "="; symbol{s} -> (\* comment later *\) *)
+        (*     match s.pattern with  *)
+        (*     [ Some (<:patt< $uid:u $(tup:<:patt< _ >>) >> as p') -> *)
+        (*         let match_fun = <:expr< fun [ $pat:p' -> True | _ -> False ] >> in *)
+        (*         let p' = <:patt< ($p' as $lid:p) >> in *)
+        (*         let descr = u ^ " _" in *)
+        (*         let text = TXtok _loc match_fun descr in *)
+        (*         { (s) with text = text; pattern = Some p' } *)
+        (*     | _ -> { (s) with pattern = Some <:patt< $lid:p >> } ] *)
 
-        | `LIDENT i; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] ->
-            let name = mk_name _loc <:ident< $lid:i >> in
-            let text = TXnterm _loc name lev in
-            let styp = STquo _loc i in
-            {used = [i]; text = text; styp = styp; pattern = None} (* comment later *)
-        |  p = pattern; "="; s = symbol ->
+        (* | `LIDENT i; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] -> *)
+        (*     let name = mk_name _loc <:ident< $lid:i >> in *)
+        (*     let text = TXnterm _loc name lev in *)
+        (*     let styp = STquo _loc i in *)
+        (*     {used = [i]; text = text; styp = styp; pattern = None} (\* comment later *\) *)
+        (* |  p = pattern; "="; s = symbol -> *)
+        symbol{s} ; "{"; pattern{p} ; "}" -> 
             match s.pattern with
             [ Some <:patt< $uid:u $(tup:<:patt< _ >>) >> ->
                 mk_tok _loc <:patt< $uid:u $p >> s.styp
             | _ -> { (s) with pattern = Some p } ]
-        | s = symbol -> s ] ]
+        | symbol{s} -> s ] ]
 
     symbol:
       [ "top" NA
-        [ `UIDENT ("LIST0"| "LIST1" as x); s = SELF; sep = OPT [`UIDENT "SEP"; t = symbol -> t ] ->
+        [ `UIDENT ("LIST0"| "LIST1" as x); SELF{s};  OPT [`UIDENT "SEP"; symbol{t} -> t ]{sep } ->
             let () = check_not_tok s in
             let used =  match sep with
               [ Some symb -> symb.used @ s.used
@@ -170,13 +171,13 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                 | _ -> failwithf "only (LIST0|LIST1) allowed here"])  sep s in
             mk_symbol ~used ~text ~styp ~pattern:None
 
-        |`UIDENT "OPT"; s = SELF ->
+        |`UIDENT "OPT"; SELF{s} ->
             let () = check_not_tok s in
             let styp = STapp _loc (STlid _loc "option") s.styp in
             let text = TXopt _loc s.text in
             mk_symbol ~used:s.used ~text ~styp ~pattern:None
 
-        |`UIDENT "TRY"; s = SELF ->
+        |`UIDENT "TRY"; SELF{s} ->
             let text = TXtry _loc s.text in
             mk_symbol ~used:s.used ~text ~styp:(s.styp) ~pattern:None]
 
@@ -186,7 +187,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
         |`UIDENT "NEXT" ->
             mk_symbol ~used:[] ~text:(TXnext _loc)   ~styp:(STself _loc "NEXT") ~pattern:None
 
-        | "["; rl = LIST0 rule SEP "|"; "]" ->
+        | "["; LIST0 rule SEP "|"{rl}; "]" ->
             let rl = retype_rule_list_without_patterns _loc rl in
             let t = new_type_var () in
             let used = used_of_rule_list rl in
@@ -194,7 +195,7 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
               ~styp:(STquo _loc t) ~pattern:None
         
             
-        | "`"; p = patt -> mk_tok _loc p (STtok _loc)
+        | "`"; patt{p} -> mk_tok _loc p (STtok _loc)
 
 
         | `UIDENT x; `ANTIQUOT "" s ->
@@ -210,22 +211,22 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
 
             
-        | n = name; lev = OPT [`UIDENT "Level"; `STRING _ s -> s ] ->
+        | name{n};  OPT [`UIDENT "Level"; `STRING _ s -> s ]{lev} ->
             mk_symbol ~used:[n.tvar] ~text:(TXnterm _loc n lev) ~styp:(STquo _loc n.tvar) ~pattern:None
             
-        | "("; s_t = SELF; ")" -> s_t ] ]
+        | "("; SELF{s_t}; ")" -> s_t ] ]
     pattern:
       [ [ `LIDENT i -> <:patt< $lid:i >>
         | "_" -> <:patt< _ >>
-        | "("; p = pattern; ")" -> <:patt< $p >>
-        | "("; p1 = pattern; ","; p2 = comma_patt; ")" -> <:patt< ( $p1, $p2 ) >>
+        | "("; pattern{p}; ")" -> <:patt< $p >>
+        | "("; pattern{p1}; ",";  comma_patt{p2}; ")" -> <:patt< ( $p1, $p2 ) >>
       ] ]
     comma_patt:
-      [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1, $p2 >>
-        | p = pattern -> p
+      [ [ SELF{p1}; ",";  SELF{p2} -> <:patt< $p1, $p2 >>
+        | pattern{p} -> p
       ] ]
     name:
-      [ [ il = qualid -> mk_name _loc il ] ]
+      [ [ qualid{il} -> mk_name _loc il ] ]
     string:
       [ [ `STRING _ s -> <:expr< $str:s >>
         | `ANTIQUOT "" s -> AntiquotSyntax.parse_expr _loc s ] ]
@@ -250,18 +251,18 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: symbol;
     symbol: Level "top"
-      [ [`UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF ->
+      [ [`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc "FOLD0" "sfold0" f e s
-        |`UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF ->
+        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s} ->
             sfold _loc "FOLD1" "sfold1" f e s
-        |`UIDENT "FOLD0"; f = simple_expr; e = simple_expr; s = SELF;`UIDENT "SEP"; sep = symbol ->
+        |`UIDENT "FOLD0"; simple_expr{f}; simple_expr{e}; SELF{s};`UIDENT "SEP"; symbol{sep} ->
             sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s sep
-        |`UIDENT "FOLD1"; f = simple_expr; e = simple_expr; s = SELF;
-`UIDENT "SEP"; sep = symbol ->
+        |`UIDENT "FOLD1"; simple_expr{f}; simple_expr{e}; SELF{s};
+`UIDENT "SEP"; symbol{sep} ->
             sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s sep ] ]
     simple_expr:
-      [ [ i = a_LIDENT -> <:expr< $lid:i >>
-        | "("; e = expr; ")" -> e ] ]
+      [ [ a_LIDENT{i} -> <:expr< $lid:i >>
+        | "("; expr{e}; ")" -> e ] ]
   END;
 
   Options.add "-split_ext" (Arg.Set split_ext)
@@ -329,26 +330,26 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr comprehension_or_sem_expr_for_list;
     expr: Level "simple"
-      [ [ "["; e = comprehension_or_sem_expr_for_list; "]" -> e ] ]  
+      [ [ "["; comprehension_or_sem_expr_for_list{e}; "]" -> e ] ]  
     comprehension_or_sem_expr_for_list:
-      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list ->
+      [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk} ->
             <:expr< [ $e :: $(mk <:expr< [] >>) ] >>
-        | e = expr Level "top"; ";" -> <:expr< [$e] >>
-        | e = expr Level "top"; "|"; l = LIST1 item SEP ";" -> Expr.compr _loc e l
-        | e = expr Level "top" -> <:expr< [$e] >> ] ]  
+        | expr Level "top"{e}; ";" -> <:expr< [$e] >>
+        | expr Level "top"{e}; "|"; LIST1 item SEP ";"{l} -> Expr.compr _loc e l
+        | expr Level "top"{e} -> <:expr< [$e] >> ] ]  
     item:
       (* NP: These rules rely on being on this particular order. Which should
              be improved. *)
-      [ [ p = TRY [p = patt; "<-" -> p] ; e = expr Level "top" -> `gen (p, e)
-        | e = expr Level "top" -> `cond e ] ] 
+      [ [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
+        | expr Level "top"{e} -> `cond e ] ] 
   END;
   if is_revised then
     EXTEND Gram
       GLOBAL: expr comprehension_or_sem_expr_for_list;
       comprehension_or_sem_expr_for_list:
-      [ [ e = expr Level "top"; ";"; mk = sem_expr_for_list; "::"; last = expr ->
+      [ [  expr Level "top"{e}; ";"; sem_expr_for_list{mk}; "::"; expr{last} ->
             <:expr< [ $e :: $(mk last) ] >>
-        | e = expr Level "top"; "::"; last = expr ->
+        | expr Level "top"{e}; "::"; expr{last} ->
             <:expr< [ $e :: $last ] >> ] ] 
     END
   else ();
@@ -459,7 +460,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       | Some (sl, e) ->
           EXTEND Gram
             expr: Level "apply"
-            [ [ UIDENT $x; param = SELF ->
+            [ [ UIDENT $x; SELF{param} ->
               let el =  match param with
               [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
               | e -> [e] ]  in
@@ -469,7 +470,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               else
                 incorrect_number _loc el sl ] ] 
           patt: Level "simple"
-            [ [ UIDENT $x; param = SELF ->
+            [ [ UIDENT $x; SELF{param} ->
               let pl = match param with
               [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
               | p -> [p] ] in
@@ -573,89 +574,89 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
   EXTEND Gram
     GLOBAL: expr patt str_item sig_item;
     str_item: First
-      [ [ x = macro_def ->
+      [ [ macro_def{x} ->
             execute_macro <:str_item<>> (fun a b -> <:str_item< $a; $b >>) x ] ]
     sig_item: First
-      [ [ x = macro_def_sig ->
+      [ [ macro_def_sig{x} ->
             execute_macro <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) x ] ]
     macro_def:
-      [ [ "DEFINE"; i = uident; def = opt_macro_value -> SdDef i def
-        | "UNDEF";  i = uident -> SdUnd i
-        | "IFDEF";  uident_eval_ifdef;  "THEN"; st1 = smlist_then; st2 = else_macro_def ->
+      [ [ "DEFINE"; uident{i}; opt_macro_value{def} -> SdDef i def
+        | "UNDEF";  uident{i} -> SdUnd i
+        | "IFDEF";  uident_eval_ifdef;  "THEN"; smlist_then{st1}; else_macro_def{st2} ->
             make_SdITE_result st1 st2
-        | "IFNDEF"; uident_eval_ifndef; "THEN"; st1 = smlist_then; st2 = else_macro_def ->
+        | "IFNDEF"; uident_eval_ifndef; "THEN"; smlist_then{st1}; else_macro_def{st2} ->
             make_SdITE_result st1 st2
         | "INCLUDE"; `STRING _ fname ->
             SdLazy (lazy (parse_include_file str_items fname)) ] ] 
     macro_def_sig:
-      [ [ "DEFINE"; i = uident -> SdDef i None
-        | "UNDEF";  i = uident -> SdUnd i
-        | "IFDEF";  uident_eval_ifdef;  "THEN"; sg1 = sglist_then; sg2 = else_macro_def_sig ->
+      [ [ "DEFINE"; uident{i} -> SdDef i None
+        | "UNDEF";  uident{i} -> SdUnd i
+        | "IFDEF";  uident_eval_ifdef;  "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
             make_SdITE_result sg1 sg2
-        | "IFNDEF"; uident_eval_ifndef; "THEN"; sg1 = sglist_then; sg2 = else_macro_def_sig ->
+        | "IFNDEF"; uident_eval_ifndef; "THEN"; sglist_then{sg1}; else_macro_def_sig{sg2} ->
             make_SdITE_result sg1 sg2
         | "INCLUDE"; `STRING _ fname ->
             SdLazy (lazy (parse_include_file sig_items fname)) ] ] 
     uident_eval_ifdef:
-      [ [ i = uident -> Stack.push (is_defined i) stack ]] 
+      [ [ uident{i} -> Stack.push (is_defined i) stack ]] 
     uident_eval_ifndef:
-      [ [ i = uident -> Stack.push (not (is_defined i)) stack ]] 
+      [ [ uident{i} -> Stack.push (not (is_defined i)) stack ]] 
     else_macro_def:
-      [ [ "ELSE"; st = smlist_else; endif -> st
+      [ [ "ELSE"; smlist_else{st}; endif -> st
         | endif -> [] ] ]  
     else_macro_def_sig:
-      [ [ "ELSE"; st = sglist_else; endif -> st
+      [ [ "ELSE"; sglist_else{st}; endif -> st
         | endif -> [] ] ]  
     else_expr:
-      [ [ "ELSE"; e = expr; endif -> e
+      [ [ "ELSE"; expr{e}; endif -> e
       | endif -> <:expr< () >> ] ] 
     smlist_then:
-      [ [ sml = LIST1 [ d = macro_def; semi ->
+      [ [ LIST1 [ macro_def{d}; semi ->
                           execute_macro_if_active_branch _loc <:str_item<>> (fun a b -> <:str_item< $a; $b >>) Then d
-                      | si = str_item; semi -> SdStr si ] -> sml ] ] 
+                      | str_item{si}; semi -> SdStr si ]{sml} -> sml ] ] 
     smlist_else:
-      [ [ sml = LIST1 [ d = macro_def; semi ->
+      [ [ LIST1 [ macro_def{d}; semi ->
                           execute_macro_if_active_branch _loc <:str_item<>> (fun a b -> <:str_item< $a; $b >>) Else d
-                      | si = str_item; semi -> SdStr si ] -> sml ] ] 
+                      | str_item{si}; semi -> SdStr si ]{sml} -> sml ] ] 
     sglist_then:
-      [ [ sgl = LIST1 [ d = macro_def_sig; semi ->
+      [ [ LIST1 [ macro_def_sig{d}; semi ->
                           execute_macro_if_active_branch _loc <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) Then d
-                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]  
+                      | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ] ]  
     sglist_else:
-      [ [ sgl = LIST1 [ d = macro_def_sig; semi ->
+      [ [ LIST1 [ macro_def_sig{d}; semi ->
                           execute_macro_if_active_branch _loc <:sig_item<>> (fun a b -> <:sig_item< $a; $b >>) Else d
-                      | si = sig_item; semi -> SdStr si ] -> sgl ] ]  
+                      | sig_item{si}; semi -> SdStr si ]{sgl} -> sgl ] ]  
     endif:
       [ [ "END" -> ()
         | "ENDIF" -> () ] ]  
     opt_macro_value:
-      [ [ "("; pl = LIST1 [ `LIDENT x -> x ] SEP ","; ")"; "="; e = expr -> Some (pl, e)
-        | "="; e = expr -> Some ([], e)
+      [ [ "("; LIST1 [ `LIDENT x -> x ] SEP ","{pl}; ")"; "="; expr{e} -> Some (pl, e)
+        | "="; expr{e} -> Some ([], e)
         | -> None ] ]  
     expr: Level "top"
-      [ [ "IFDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
+      [ [ "IFDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
             if is_defined i then e1 else e2
-        | "IFNDEF"; i = uident; "THEN"; e1 = expr; e2 = else_expr ->
+        | "IFNDEF"; uident{i}; "THEN"; expr{e1}; else_expr{e2} ->
             if is_defined i then e2 else e1
-        | "DEFINE"; `LIDENT i; "="; def = expr; "IN"; body = expr ->
+        | "DEFINE"; `LIDENT i; "="; expr{def}; "IN"; expr{body} ->
             (new Expr.subst _loc [(i, def)])#expr body ] ] 
     patt:
-      [ [ "IFDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
+      [ [ "IFDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
             if is_defined i then p1 else p2
-        | "IFNDEF"; i = uident; "THEN"; p1 = patt; "ELSE"; p2 = patt; endif ->
+        | "IFNDEF"; uident{i}; "THEN"; patt{p1}; "ELSE"; patt{p2}; endif ->
             if is_defined i then p2 else p1 ] ] 
     uident:
       [ [ `UIDENT i -> i ] ]  
     (* dirty hack to allow polymorphic variants using the introduced keywords. *)
     expr: Before "simple"
-      [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
-                     | "DEFINE" | "IN" ] -> <:expr< `$uid:kwd >>
-        | "`"; s = a_ident -> <:expr< ` $s >> ] ] 
+      [ [ "`";  [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF"
+                     | "DEFINE" | "IN" ]{kwd} -> <:expr< `$uid:kwd >>
+        | "`"; a_ident{s} -> <:expr< ` $s >> ] ] 
     (* idem *)
     patt: Before "simple"
-      [ [ "`"; kwd = [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ] ->
+      [ [ "`"; [ "IFDEF" | "IFNDEF" | "THEN" | "ELSE" | "END" | "ENDIF" ]{kwd} ->
             <:patt< `$uid:kwd >>
-        | "`"; s = a_ident -> <:patt< ` $s >> ] ]
+        | "`"; a_ident{s} -> <:patt< ` $s >> ] ]
   END;
 
   Options.add "-D" (Arg.String parse_def)
@@ -965,57 +966,57 @@ New syntax:\
       virtual_flag_quot row_var_flag_quot override_flag_quot;
     module_expr:
       [ "top"
-        [ "functor"; "("; i = a_UIDENT; ":"; t = module_type; ")"; "->";
-          me = SELF ->
+        [ "functor"; "("; a_UIDENT{i}; ":"; module_type{t}; ")"; "->";
+          SELF{me} ->
             <:module_expr< functor ( $i : $t ) -> $me >>
-        | "struct"; st = str_items; "end" ->
+        | "struct"; str_items{st}; "end" ->
             <:module_expr< struct $st end >> ]
       | "apply"
-        [ me1 = SELF; me2 = SELF -> <:module_expr< $me1 $me2 >> ]
+        [ SELF{me1}; SELF{me2} -> <:module_expr< $me1 $me2 >> ]
       | "simple"
         [ `ANTIQUOT (""|"mexp"|"anti"|"list" as n) s ->
             <:module_expr< $(anti:mk_anti ~c:"module_expr" n s) >>
         | `QUOTATION x ->
             Quotation.expand _loc x DynAst.module_expr_tag
-        | i = module_longident -> <:module_expr< $id:i >>
-        | "("; me = SELF; ":"; mt = module_type; ")" ->
+        | module_longident{i} -> <:module_expr< $id:i >>
+        | "("; SELF{me}; ":"; module_type{mt}; ")" ->
             <:module_expr< ( $me : $mt ) >>
-        | "("; me = SELF; ")" -> <:module_expr< $me >>
-        | "("; "val"; e = expr; ")" -> (* val *)
+        | "("; SELF{me}; ")" -> <:module_expr< $me >>
+        | "("; "val"; expr{e}; ")" -> (* val *)
             <:module_expr< (val $e) >>  (* first class modules *)
-        | "("; "val"; e = expr; ":"; p = package_type; ")" ->
+        | "("; "val"; expr{e}; ":"; package_type{p}; ")" ->
             <:module_expr< (val $e : $p) >> ] ]
     str_item:
       [ "top"
-        [ "exception"; t = constructor_declaration ->
+        [ "exception"; constructor_declaration{t} ->
             <:str_item< exception $t >>
-        | "exception"; t = constructor_declaration; "="; i = type_longident ->
+        | "exception"; constructor_declaration{t}; "="; type_longident{i} ->
             <:str_item< exception $t = $i >>
-        | "external"; i = a_LIDENT; ":"; t = ctyp; "="; sl = string_list ->
+        | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} ->
             <:str_item< external $i : $t = $sl >>
-        | "include"; me = module_expr -> <:str_item< include $me >>
-        | "module"; i = a_UIDENT; mb = module_binding0 ->
+        | "include"; module_expr{me} -> <:str_item< include $me >>
+        | "module"; a_UIDENT{i}; module_binding0{mb} ->
             <:str_item< module $i = $mb >>
-        | "module"; "rec"; mb = module_binding ->
+        | "module"; "rec"; module_binding{mb} ->
             <:str_item< module rec $mb >>
-        | "module"; "type"; i = a_ident; "="; mt = module_type ->
+        | "module"; "type"; a_ident{i}; "="; module_type{mt} ->
             <:str_item< module type $i = $mt >>
-        | "open"; i = module_longident -> <:str_item< open $i >>
-        | "type"; td = type_declaration ->
+        | "open"; module_longident{i} -> <:str_item< open $i >>
+        | "type"; type_declaration{td} ->
             <:str_item< type $td >>
-        | "let"; r = opt_rec; bi = binding; "in"; x = expr ->
+        | "let"; opt_rec{r}; binding{bi}; "in"; expr{x} ->
               <:str_item< let $rec:r $bi in $x >>
-        | "let"; r = opt_rec; bi = binding ->   match bi with
+        | "let"; opt_rec{r}; binding{bi} ->   match bi with
             [ <:binding< _ = $e >> -> <:str_item< $exp:e >>
             | _ -> <:str_item< let $rec:r $bi >> ]
-        | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = expr ->
+        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e} ->
               <:str_item< let module $m = $mb in $e >>
-        | "let"; "open"; i = module_longident; "in"; e = expr ->
+        | "let"; "open"; module_longident{i}; "in"; expr{e} ->
               <:str_item< let open $id:i in $e >>
 
-        | "class"; cd = class_declaration ->
+        | "class"; class_declaration{cd} ->
             <:str_item< class $cd >>
-        | "class"; "type"; ctd = class_type_declaration ->
+        | "class"; "type"; class_type_declaration{ctd} ->
             <:str_item< class type $ctd >>
         | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s ->
             <:str_item< $(anti:mk_anti ~c:"str_item" n s) >>
@@ -1025,198 +1026,198 @@ New syntax:\
               (Ast.StAnt (_loc, ( (mk_anti ~c:"str_item" n s) )))
              *)
         | `QUOTATION x -> Quotation.expand _loc x DynAst.str_item_tag
-        | e = expr -> <:str_item< $exp:e >>
+        | expr{e} -> <:str_item< $exp:e >>
         (* this entry makes <:str_item< let $rec:r $bi in $x >> parsable *)
         ] ]
     module_binding0:
       [ RA
-        [ "("; m = a_UIDENT; ":"; mt = module_type; ")"; mb = SELF ->
+        [ "("; a_UIDENT{m}; ":"; module_type{mt}; ")"; SELF{mb} ->
             <:module_expr< functor ( $m : $mt ) -> $mb >>
-        | ":"; mt = module_type; "="; me = module_expr ->
+        | ":"; module_type{mt}; "="; module_expr{me} ->
             <:module_expr< ( $me : $mt ) >>
-        | "="; me = module_expr -> <:module_expr< $me >> ] ]
+        | "="; module_expr{me} -> <:module_expr< $me >> ] ]
     module_binding:
       [ LA
-        [ b1 = SELF; "and"; b2 = SELF ->
+        [ SELF{b1}; "and"; SELF{b2} ->
             <:module_binding< $b1 and $b2 >>
         | `ANTIQUOT ("module_binding"|"anti"|"list" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
         | `ANTIQUOT ("" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
-        | `ANTIQUOT ("" as n) m; ":"; mt = module_type; "="; me = module_expr ->
+        | `ANTIQUOT ("" as n) m; ":"; module_type{mt}; "="; module_expr{me} ->
             <:module_binding< $(mk_anti n m) : $mt = $me >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | m = a_UIDENT; ":"; mt = module_type; "="; me = module_expr ->
+        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             <:module_binding< $m : $mt = $me >> ] ]
     module_type:
       [ "top"
-        [ "functor"; "("; i = a_UIDENT; ":"; t = SELF; ")"; "->"; mt = SELF ->
+        [ "functor"; "("; a_UIDENT{i}; ":"; SELF{t}; ")"; "->"; SELF{mt} ->
             <:module_type< functor ( $i : $t ) -> $mt >> ]
       | "with"
-        [ mt = SELF; "with"; wc = with_constr ->
+        [ SELF{mt}; "with"; with_constr{wc} ->
             <:module_type< $mt with $wc >> ]
       | "apply"
-        [ mt1 = SELF; mt2 = SELF; dummy -> ModuleType.app mt1 mt2 ]
+        [ SELF{mt1}; SELF{mt2}; dummy -> ModuleType.app mt1 mt2 ]
       | "."
-        [ mt1 = SELF; "."; mt2 = SELF -> ModuleType.acc mt1 mt2 ]
+        [ SELF{mt1}; "."; SELF{mt2} -> ModuleType.acc mt1 mt2 ]
       | "sig"
-        [ "sig"; sg = sig_items; "end" ->
+        [ "sig"; sig_items{sg}; "end" ->
             <:module_type< sig $sg end >> ]
       | "simple"
         [ `ANTIQUOT (""|"mtyp"|"anti"|"list" as n) s ->
             <:module_type< $(anti:mk_anti ~c:"module_type" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_type_tag
-        | i = module_longident_with_app -> <:module_type< $id:i >>
-        | "'"; i = a_ident -> <:module_type< ' $i >>
-        | "("; mt = SELF; ")" -> <:module_type< $mt >>
-        | "module"; "type"; "of"; me = module_expr ->
+        | module_longident_with_app{i} -> <:module_type< $id:i >>
+        | "'"; a_ident{i} -> <:module_type< ' $i >>
+        | "("; SELF{mt}; ")" -> <:module_type< $mt >>
+        | "module"; "type"; "of"; module_expr{me} ->
             <:module_type< module type of $me >> ] ]
     sig_item:
       [ "top"
         [ `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s ->
             <:sig_item< $(anti:mk_anti ~c:"sig_item" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.sig_item_tag
-        | "exception"; t = constructor_declaration ->
+        | "exception"; constructor_declaration{t} ->
             <:sig_item< exception $t >>
-        | "external"; i = a_LIDENT; ":"; t = ctyp; "="; sl = string_list ->
+        | "external"; a_LIDENT{i}; ":"; ctyp{t}; "="; string_list{sl} ->
             <:sig_item< external $i : $t = $sl >>
-        | "include"; mt = module_type -> <:sig_item< include $mt >>
-        | "module"; i = a_UIDENT; mt = module_declaration ->
+        | "include"; module_type{mt} -> <:sig_item< include $mt >>
+        | "module"; a_UIDENT{i}; module_declaration{mt} ->
             <:sig_item< module $i : $mt >>
-        | "module"; "rec"; mb = module_rec_declaration ->
+        | "module"; "rec"; module_rec_declaration{mb} ->
             <:sig_item< module rec $mb >>
-        | "module"; "type"; i = a_ident; "="; mt = module_type ->
+        | "module"; "type"; a_ident{i}; "="; module_type{mt} ->
             <:sig_item< module type $i = $mt >>
-        | "module"; "type"; i = a_ident ->
+        | "module"; "type"; a_ident{i} ->
             <:sig_item< module type $i >>
-        | "open"; i = module_longident -> <:sig_item< open $i >>
-        | "type"; t = type_declaration ->
+        | "open"; module_longident{i} -> <:sig_item< open $i >>
+        | "type"; type_declaration{t} ->
             <:sig_item< type $t >>
-        | "val"; i = a_LIDENT; ":"; t = ctyp ->
+        | "val"; a_LIDENT{i}; ":"; ctyp{t} ->
             <:sig_item< val $i : $t >>
-        | "class"; cd = class_description ->
+        | "class"; class_description{cd} ->
             <:sig_item< class $cd >>
-        | "class"; "type"; ctd = class_type_declaration ->
+        | "class"; "type"; class_type_declaration{ctd} ->
             <:sig_item< class type $ctd >> ] ]
     module_declaration:
       [ RA
-        [ ":"; mt = module_type -> <:module_type< $mt >>
-        | "("; i = a_UIDENT; ":"; t = module_type; ")"; mt = SELF ->
+        [ ":"; module_type{mt} -> <:module_type< $mt >>
+        | "("; a_UIDENT{i}; ":"; module_type{t}; ")"; SELF{mt} ->
             <:module_type< functor ( $i : $t ) -> $mt >> ] ]
     module_rec_declaration:
       [ LA
-        [ m1 = SELF; "and"; m2 = SELF -> <:module_binding< $m1 and $m2 >>
+        [ SELF{m1}; "and"; SELF{m2} -> <:module_binding< $m1 and $m2 >>
         | `ANTIQUOT (""|"module_binding"|"anti"|"list" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.module_binding_tag
-        | m = a_UIDENT; ":"; mt = module_type -> <:module_binding< $m : $mt >>
+        | a_UIDENT{m}; ":"; module_type{mt} -> <:module_binding< $m : $mt >>
       ] ]
     with_constr:
       [ LA
-        [ wc1 = SELF; "and"; wc2 = SELF -> <:with_constr< $wc1 and $wc2 >>
+        [ SELF{wc1}; "and"; SELF{wc2} -> <:with_constr< $wc1 and $wc2 >>
         | `ANTIQUOT (""|"with_constr"|"anti"|"list" as n) s ->
             <:with_constr< $(anti:mk_anti ~c:"with_constr" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.with_constr_tag
-        | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; "="; t = ctyp ->
+        | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; "="; ctyp{t} ->
             <:with_constr< type $(anti:mk_anti ~c:"ctyp" n s) = $t >>
-        | "type"; t1 = type_longident_and_parameters; "="; t2 = ctyp ->
+        | "type"; type_longident_and_parameters{t1}; "="; ctyp{t2} ->
             <:with_constr< type $t1 = $t2 >>
-        | "module"; i1 = module_longident; "="; i2 = module_longident_with_app ->
+        | "module"; module_longident{i1}; "="; module_longident_with_app{i2} ->
             <:with_constr< module $i1 = $i2 >>
-        | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; ":="; t = ctyp ->
+        | "type"; `ANTIQUOT (""|"typ"|"anti" as n) s; ":="; ctyp{t} ->
             <:with_constr< type $(anti:mk_anti ~c:"ctyp" n s) := $t >>
-        | "type"; t1 = type_longident_and_parameters; ":="; t2 = ctyp ->
+        | "type"; type_longident_and_parameters{t1}; ":="; ctyp{t2} ->
             <:with_constr< type $t1 := $t2 >>
-        | "module"; i1 = module_longident; ":="; i2 = module_longident_with_app ->
+        | "module"; module_longident{i1}; ":="; module_longident_with_app{i2} ->
             <:with_constr< module $i1 := $i2 >> ] ]
     expr:
       [ "top" RA
-        [ "let"; r = opt_rec; bi = binding; "in"; x = SELF ->
+        [ "let"; opt_rec{r}; binding{bi}; "in"; SELF{x} ->
             <:expr< let $rec:r $bi in $x >>
-        | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = SELF ->
+        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; SELF{e} ->
             <:expr< let module $m = $mb in $e >>
-        | "let"; "open"; i = module_longident; "in"; e = SELF ->
+        | "let"; "open"; module_longident{i}; "in"; SELF{e} ->
             <:expr< let open $id:i in $e >>
-        | "fun"; "["; a = LIST0 match_case0 SEP "|"; "]" ->
+        | "fun"; "[";  LIST0 match_case0 SEP "|"{a}; "]" ->
             <:expr< fun [ $list:a ] >>
-        | "fun"; e = fun_def -> e
-        | "match"; e = sequence; "with"; a = match_case ->
+        | "fun"; fun_def{e} -> e
+        | "match"; sequence{e}; "with"; match_case{a} ->
             <:expr< match $(Expr.mksequence' _loc e) with [ $a ] >>
-        | "try"; e = sequence; "with"; a = match_case ->
+        | "try"; sequence{e}; "with"; match_case{a} ->
             <:expr< try $(Expr.mksequence' _loc e) with [ $a ] >>
-        | "if"; e1 = SELF; "then"; e2 = SELF; "else"; e3 = SELF ->
+        | "if"; SELF{e1}; "then"; SELF{e2}; "else"; SELF{e3} ->
             <:expr< if $e1 then $e2 else $e3 >>
-        | "do"; seq = do_sequence -> Expr.mksequence _loc seq
-        | "for"; i = a_LIDENT; "="; e1 = sequence; df = direction_flag;
-          e2 = sequence; "do"; seq = do_sequence ->
+        | "do"; do_sequence{seq} -> Expr.mksequence _loc seq
+        | "for"; a_LIDENT{i}; "="; sequence{e1}; direction_flag{df};
+          sequence{e2}; "do"; do_sequence{seq} ->
             <:expr< for $i = $(Expr.mksequence' _loc e1) $to:df $(Expr.mksequence' _loc e2) do
               { $seq } >>
-        | "while"; e = sequence; "do"; seq = do_sequence ->
+        | "while"; sequence{e}; "do"; do_sequence{seq} ->
             <:expr< while $(Expr.mksequence' _loc e) do { $seq } >>
-        | "object"; csp = opt_class_self_patt; cst = class_structure; "end" ->
+        | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
             <:expr< object ($csp) $cst end >> ]
       | "where"
-        [ e = SELF; "where"; rf = opt_rec; lb = let_binding ->
+        [ SELF{e}; "where"; opt_rec{rf}; let_binding{lb} ->
             <:expr< let $rec:rf $lb in $e >> ]
       | ":=" NA
-        [ e1 = SELF; ":="; e2 = SELF; dummy ->
+        [ SELF{e1}; ":="; SELF{e2}; dummy ->
               <:expr< $e1 := $e2 >> 
-        | e1 = SELF; "<-"; e2 = SELF; dummy -> (* FIXME should be deleted in original syntax later? *)
+        | SELF{e1}; "<-"; SELF{e2}; dummy -> (* FIXME should be deleted in original syntax later? *)
             match Expr.bigarray_set _loc e1 e2 with
             [ Some e -> e
             | None -> <:expr< $e1 <- $e2 >> 
             ]  
         ]
       | "||" RA
-        [ e1 = SELF; op = infixop6; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; infixop6{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "&&" RA
-        [ e1 = SELF; op = infixop5; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; infixop5{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "<" LA
-        [ e1 = SELF; op = infixop0; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; infixop0{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "^" RA
-        [ e1 = SELF; op = infixop1; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; infixop1{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "+" LA
-        [ e1 = SELF; op = infixop2; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; infixop2{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "*" LA
-        [ e1 = SELF; "land"; e2 = SELF -> <:expr< $e1 land $e2 >>
-        | e1 = SELF; "lor"; e2 = SELF -> <:expr< $e1 lor $e2 >>
-        | e1 = SELF; "lxor"; e2 = SELF -> <:expr< $e1 lxor $e2 >>
-        | e1 = SELF; "mod"; e2 = SELF -> <:expr< $e1 mod $e2 >>
-        | e1 = SELF; op = infixop3; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; "land"; SELF{e2} -> <:expr< $e1 land $e2 >>
+        | SELF{e1}; "lor"; SELF{e2} -> <:expr< $e1 lor $e2 >>
+        | SELF{e1}; "lxor"; SELF{e2} -> <:expr< $e1 lxor $e2 >>
+        | SELF{e1}; "mod"; SELF{e2} -> <:expr< $e1 mod $e2 >>
+        | SELF{e1}; infixop3{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "**" RA
-        [ e1 = SELF; "asr"; e2 = SELF -> <:expr< $e1 asr $e2 >>
-        | e1 = SELF; "lsl"; e2 = SELF -> <:expr< $e1 lsl $e2 >>
-        | e1 = SELF; "lsr"; e2 = SELF -> <:expr< $e1 lsr $e2 >>
-        | e1 = SELF; op = infixop4; e2 = SELF -> <:expr< $op $e1 $e2 >> ]
+        [ SELF{e1}; "asr"; SELF{e2} -> <:expr< $e1 asr $e2 >>
+        | SELF{e1}; "lsl"; SELF{e2} -> <:expr< $e1 lsl $e2 >>
+        | SELF{e1}; "lsr"; SELF{e2} -> <:expr< $e1 lsr $e2 >>
+        | SELF{e1}; infixop4{op}; SELF{e2} -> <:expr< $op $e1 $e2 >> ]
       | "unary minus" NA
-        [ "-"; e = SELF -> Expr.mkumin _loc "-" e
-        | "-."; e = SELF -> Expr.mkumin _loc "-." e ]
+        [ "-"; SELF{e} -> Expr.mkumin _loc "-" e
+        | "-."; SELF{e} -> Expr.mkumin _loc "-." e ]
       | "apply" LA
-        [ e1 = SELF; e2 = SELF -> <:expr< $e1 $e2 >>
-        | "assert"; e = SELF -> Expr.mkassert _loc e
-        | "new"; i = class_longident -> <:expr< new $i >>
-        | "lazy"; e = SELF -> <:expr< lazy $e >> ]
+        [ SELF{e1}; SELF{e2} -> <:expr< $e1 $e2 >>
+        | "assert"; SELF{e} -> Expr.mkassert _loc e
+        | "new"; class_longident{i} -> <:expr< new $i >>
+        | "lazy"; SELF{e} -> <:expr< lazy $e >> ]
       | "label" NA
-        [ "~"; i = a_LIDENT; ":"; e = SELF -> <:expr< ~ $i : $e >>
-        | "~"; i = a_LIDENT -> <:expr< ~ $i >>
+        [ "~"; a_LIDENT{i}; ":"; SELF{e} -> <:expr< ~ $i : $e >>
+        | "~"; a_LIDENT{i} -> <:expr< ~ $i >>
 
         (* Here it's LABEL and not tilde_label since ~a:b is different than ~a : b *)
-        | `LABEL i; e = SELF -> <:expr< ~ $i : $e >>
+        | `LABEL i; SELF{e} -> <:expr< ~ $i : $e >>
 
         (* Same remark for ?a:b *)
-        | `OPTLABEL i; e = SELF -> <:expr< ? $i : $e >>
+        | `OPTLABEL i; SELF{e} -> <:expr< ? $i : $e >>
 
-        | "?"; i = a_LIDENT; ":"; e = SELF -> <:expr< ? $i : $e >>
-        | "?"; i = a_LIDENT -> <:expr< ? $i >> ]
+        | "?"; a_LIDENT{i}; ":"; SELF{e} -> <:expr< ? $i : $e >>
+        | "?"; a_LIDENT{i} -> <:expr< ? $i >> ]
       | "." LA
-        [ e1 = SELF; "."; "("; e2 = SELF; ")" -> <:expr< $e1 .( $e2 ) >>
-        | e1 = SELF; "."; "["; e2 = SELF; "]" -> <:expr< $e1 .[ $e2 ] >>
-        | e1 = SELF; "."; "{"; e2 = comma_expr; "}" -> Expr.bigarray_get _loc e1 e2
-        | e1 = SELF; "."; e2 = SELF -> <:expr< $e1 . $e2 >>
-        | e = SELF; "#"; lab = label -> <:expr< $e # $lab >> ]
+        [ SELF{e1}; "."; "("; SELF{e2}; ")" -> <:expr< $e1 .( $e2 ) >>
+        | SELF{e1}; "."; "["; SELF{e2}; "]" -> <:expr< $e1 .[ $e2 ] >>
+        | SELF{e1}; "."; "{"; comma_expr{e2}; "}" -> Expr.bigarray_get _loc e1 e2
+        | SELF{e1}; "."; SELF{e2} -> <:expr< $e1 . $e2 >>
+        | SELF{e}; "#"; label{lab} -> <:expr< $e # $lab >> ]
       | "~-" NA
-        [ "!"; e = SELF ->  <:expr< ! $e>>
-        | f = prefixop; e = SELF -> <:expr< $f $e >> ]
+        [ "!"; SELF{e} ->  <:expr< ! $e>>
+        | prefixop{f}; SELF{e} -> <:expr< $f $e >> ]
       | "simple"
         [ `QUOTATION x -> Quotation.expand _loc x DynAst.expr_tag
         | `ANTIQUOT ("exp"|""|"anti" as n) s ->
@@ -1227,173 +1228,173 @@ New syntax:\
             <:expr< $(tup: <:expr< $(anti:mk_anti ~c:"expr" n s) >>) >>
         | `ANTIQUOT ("seq" as n) s ->
             <:expr< do $(anti:mk_anti ~c:"expr" n s) done >>
-        | s = a_INT -> <:expr< $int:s >>
-        | s = a_INT32 -> <:expr< $int32:s >>
-        | s = a_INT64 -> <:expr< $int64:s >>
-        | s = a_NATIVEINT -> <:expr< $nativeint:s >>
-        | s = a_FLOAT -> <:expr< $flo:s >>
-        | s = a_STRING -> <:expr< $str:s >>
-        | s = a_CHAR -> <:expr< $chr:s >>
-        | i = TRY module_longident_dot_lparen; e = sequence; ")" ->
+        | a_INT{s} -> <:expr< $int:s >>
+        | a_INT32{s} -> <:expr< $int32:s >>
+        | a_INT64{s} -> <:expr< $int64:s >>
+        | a_NATIVEINT{s} -> <:expr< $nativeint:s >>
+        | a_FLOAT{s} -> <:expr< $flo:s >>
+        | a_STRING{s} -> <:expr< $str:s >>
+        | a_CHAR{s} -> <:expr< $chr:s >>
+        | TRY module_longident_dot_lparen{i}; sequence{e}; ")" ->
             <:expr< let open $i in $e >>
-        | i = TRY val_longident -> <:expr< $id:i >>
-        | "`"; s = a_ident -> <:expr< ` $s >>
+        | TRY val_longident{i} -> <:expr< $id:i >>
+        | "`"; a_ident{s} -> <:expr< ` $s >>
         | "["; "]" -> <:expr< [] >>
-        | "["; mk_list = sem_expr_for_list; "::"; last = expr; "]" ->
+        | "[";sem_expr_for_list{mk_list}; "::"; expr{last}; "]" ->
             mk_list last
-        | "["; mk_list = sem_expr_for_list; "]" ->
+        | "["; sem_expr_for_list{mk_list}; "]" ->
             mk_list <:expr< [] >>
         | "[|"; "|]" -> <:expr< [| $(<:expr<>>) |] >>
-        | "[|"; el = sem_expr; "|]" -> <:expr< [| $el |] >>
-        | "{"; el = label_expr_list; "}" -> <:expr< { $el } >>
-        | "{"; "("; e = SELF; ")"; "with"; el = label_expr_list; "}" ->
+        | "[|"; sem_expr{el}; "|]" -> <:expr< [| $el |] >>
+        | "{"; label_expr_list{el}; "}" -> <:expr< { $el } >>
+        | "{"; "("; SELF{e}; ")"; "with"; label_expr_list{el}; "}" ->
             <:expr< { ($e) with $el } >>
         | "{<"; ">}" -> <:expr< {<>} >>
-        | "{<"; fel = field_expr_list; ">}" -> <:expr< {< $fel >} >>
+        | "{<"; field_expr_list{fel}; ">}" -> <:expr< {< $fel >} >>
         | "("; ")" -> <:expr< () >>
-        | "("; e = SELF; ":"; t = ctyp; ")" -> <:expr< ($e : $t) >>
-        | "("; e = SELF; ","; el = comma_expr; ")" -> <:expr< ( $e, $el ) >>
-        | "("; e = SELF; ";"; seq = sequence; ")" -> Expr.mksequence _loc <:expr< $e; $seq >>
-        | "("; e = SELF; ";"; ")" -> Expr.mksequence _loc e
-        | "("; e = SELF; ":"; t = ctyp; ":>"; t2 = ctyp; ")" ->
+        | "("; SELF{e}; ":"; ctyp{t}; ")" -> <:expr< ($e : $t) >>
+        | "("; SELF{e}; ","; comma_expr{el}; ")" -> <:expr< ( $e, $el ) >>
+        | "("; SELF{e}; ";"; sequence{seq}; ")" -> Expr.mksequence _loc <:expr< $e; $seq >>
+        | "("; SELF{e}; ";"; ")" -> Expr.mksequence _loc e
+        | "("; SELF{e}; ":"; ctyp{t}; ":>"; ctyp{t2}; ")" ->
             <:expr< ($e : $t :> $t2 ) >>
-        | "("; e = SELF; ":>"; t = ctyp; ")" -> <:expr< ($e :> $t) >>
-        | "("; e = SELF; ")" -> e
-        | "begin"; seq = sequence; "end" -> Expr.mksequence _loc seq
+        | "("; SELF{e}; ":>"; ctyp{t}; ")" -> <:expr< ($e :> $t) >>
+        | "("; SELF{e}; ")" -> e
+        | "begin"; sequence{seq}; "end" -> Expr.mksequence _loc seq
         | "begin"; "end" -> <:expr< () >>
-        | "("; "module"; me = module_expr; ")" ->
+        | "("; "module"; module_expr{me}; ")" ->
             <:expr< (module $me) >>
-        | "("; "module"; me = module_expr; ":"; pt = package_type; ")" ->
+        | "("; "module"; module_expr{me}; ":"; package_type{pt}; ")" ->
             <:expr< (module $me : $pt) >>
         ] ]
     do_sequence:
-      [ [ seq = TRY ["{"; seq = sequence; "}" -> seq] -> seq
+      [ [ TRY ["{"; sequence{seq}; "}" -> seq]{seq} -> seq
         | TRY ["{"; "}"] -> <:expr< () >>
-        | seq = TRY [seq = sequence; "done" -> seq] -> seq
+        | TRY [sequence{seq}; "done" -> seq]{seq} -> seq
         | "done" -> <:expr< () >>
       ] ]
     infixop5:
-      [ [ x = [ "&" | "&&" ] -> <:expr< $lid:x >> ] ]
+      [ [  [ "&" | "&&" ]{x} -> <:expr< $lid:x >> ] ]
     infixop6:
-      [ [ x = [ "or" | "||" ] -> <:expr< $lid:x >> ] ]
+      [ [  [ "or" | "||" ]{x} -> <:expr< $lid:x >> ] ]
     sem_expr_for_list:
-      [ [ e = expr; ";"; el = SELF -> fun acc -> <:expr< [ $e :: $(el acc) ] >>
-        | e = expr; ";" -> fun acc -> <:expr< [ $e :: $acc ] >>
-        | e = expr -> fun acc -> <:expr< [ $e :: $acc ] >>
+      [ [ expr{e}; ";"; SELF{el} -> fun acc -> <:expr< [ $e :: $(el acc) ] >>
+        | expr{e}; ";" -> fun acc -> <:expr< [ $e :: $acc ] >>
+        | expr{e} -> fun acc -> <:expr< [ $e :: $acc ] >>
       ] ]
     comma_expr:
-      [ [ e1 = SELF; ","; e2 = SELF -> <:expr< $e1, $e2 >>
+      [ [ SELF{e1}; ","; SELF{e2} -> <:expr< $e1, $e2 >>
         | `ANTIQUOT ("list" as n) s -> <:expr< $(anti:mk_anti ~c:"expr," n s) >>
-        | e = expr Level "top" -> e ] ]
+        | expr Level "top"{e} -> e ] ]
     dummy:
       [ [ -> () ] ]
     sequence':
       [ [ -> fun e -> e
         | ";" -> fun e -> e
-        | ";"; el = sequence -> fun e -> <:expr< $e; $el >> ] ]
+        | ";"; sequence{el} -> fun e -> <:expr< $e; $el >> ] ]
     sequence:
-      [ [ "let"; rf = opt_rec; bi = binding; "in"; e = expr; k = sequence' ->
+      [ [ "let"; opt_rec{rf}; binding{bi}; "in"; expr{e}; sequence'{k} ->
             k <:expr< let $rec:rf $bi in $e >>
-        | "let"; rf = opt_rec; bi = binding; ";"; el = SELF ->
+        | "let"; opt_rec{rf}; binding{bi}; ";"; SELF{el} ->
             <:expr< let $rec:rf $bi in $(Expr.mksequence _loc el) >>
-        | "let"; "module"; m = a_UIDENT; mb = module_binding0; "in"; e = expr; k = sequence' ->
+        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; "in"; expr{e}; sequence'{k} ->
             k <:expr< let module $m = $mb in $e >>
-        | "let"; "module"; m = a_UIDENT; mb = module_binding0; ";"; el = SELF ->
+        | "let"; "module"; a_UIDENT{m}; module_binding0{mb}; ";"; SELF{el} ->
             <:expr< let module $m = $mb in $(Expr.mksequence _loc el) >>
-        | "let"; "open"; i = module_longident; "in"; e = SELF ->
+        | "let"; "open"; module_longident{i}; "in"; SELF{e} ->
             <:expr< let open $id:i in $e >>
         | `ANTIQUOT ("list" as n) s -> <:expr< $(anti:mk_anti ~c:"expr;" n s) >>
-        | e = expr; k = sequence' -> k e ] ]
+        | expr{e}; sequence'{k} -> k e ] ]
     binding:
       [ LA
         [ `ANTIQUOT ("binding"|"list" as n) s ->
             <:binding< $(anti:mk_anti ~c:"binding" n s) >>
-        | `ANTIQUOT (""|"anti" as n) s; "="; e = expr ->
+        | `ANTIQUOT (""|"anti" as n) s; "="; expr{e} ->
             <:binding< $(anti:mk_anti ~c:"patt" n s) = $e >>
         | `ANTIQUOT (""|"anti" as n) s -> <:binding< $(anti:mk_anti ~c:"binding" n s) >>
-        | b1 = SELF; "and"; b2 = SELF -> <:binding< $b1 and $b2 >>
-        | b = let_binding -> b
+        | SELF{b1}; "and"; SELF{b2} -> <:binding< $b1 and $b2 >>
+        | let_binding{b} -> b
       ] ]
     let_binding:
-      [ [ p = ipatt; e = fun_binding -> <:binding< $p = $e >> ] ]
+      [ [ ipatt{p}; fun_binding{e} -> <:binding< $p = $e >> ] ]
     fun_binding:
       [ RA
-        [ TRY ["("; "type"]; i = a_LIDENT; ")"; e = SELF ->
+        [ TRY ["("; "type"]; a_LIDENT{i}; ")"; SELF{e} ->
             <:expr< fun (type $i) -> $e >>
-        | p = TRY labeled_ipatt; e = SELF ->
+        | TRY labeled_ipatt{p}; SELF{e} ->
             <:expr< fun $p -> $e >>
-        | bi = cvalue_binding -> bi
+        | cvalue_binding{bi} -> bi
       ] ]
     match_case:
-      [ [ "["; l = LIST0 match_case0 SEP "|"; "]" -> Ast.mcOr_of_list l
-        | p = ipatt; "->"; e = expr -> <:match_case< $p -> $e >> ] ]
+      [ [ "["; LIST0 match_case0 SEP "|"{l}; "]" -> Ast.mcOr_of_list l
+        | ipatt{p}; "->"; expr{e} -> <:match_case< $p -> $e >> ] ]
     match_case0:
       [ [ `ANTIQUOT ("match_case"|"list" as n) s ->
             <:match_case< $(anti:mk_anti ~c:"match_case" n s) >>
         | `ANTIQUOT (""|"anti" as n) s ->
             <:match_case< $(anti:mk_anti ~c:"match_case" n s) >>
-        | `ANTIQUOT (""|"anti" as n) s; "->"; e = expr ->
+        | `ANTIQUOT (""|"anti" as n) s; "->"; expr{e} ->
             <:match_case< $(anti:mk_anti ~c:"patt" n s) -> $e >>
-        | `ANTIQUOT (""|"anti" as n) s; "when"; w = expr; "->"; e = expr ->
+        | `ANTIQUOT (""|"anti" as n) s; "when"; expr{w}; "->"; expr{e} ->
             <:match_case< $(anti:mk_anti ~c:"patt" n s) when $w -> $e >>
-        | p = patt_as_patt_opt; w = opt_when_expr; "->"; e = expr ->
+        | patt_as_patt_opt{p}; opt_when_expr{w}; "->"; expr{e} ->
             <:match_case< $p when $w -> $e >>
       ] ]
     opt_when_expr:
-      [ [ "when"; w = expr -> w
+      [ [ "when"; expr{w} -> w
         | -> <:expr<>>
       ] ]
     patt_as_patt_opt:
-      [ [ p1 = patt; "as"; p2 = patt -> <:patt< ($p1 as $p2) >>
-        | p = patt -> p
+      [ [ patt{p1}; "as"; patt{p2} -> <:patt< ($p1 as $p2) >>
+        | patt{p} -> p
       ] ]
     label_expr_list:
-      [ [ b1 = label_expr; ";"; b2 = SELF -> <:rec_binding< $b1 ; $b2 >>
-        | b1 = label_expr; ";"            -> b1
-        | b1 = label_expr                 -> b1
+      [ [ label_expr{b1}; ";"; SELF{b2} -> <:rec_binding< $b1 ; $b2 >>
+        | label_expr{b1}; ";"            -> b1
+        | label_expr{b1}                 -> b1
       ] ]
     label_expr:
       [ [ `ANTIQUOT ("rec_binding" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
         | `ANTIQUOT (""|"anti" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
-        | `ANTIQUOT (""|"anti" as n) s; "="; e = expr ->
+        | `ANTIQUOT (""|"anti" as n) s; "="; expr{e} ->
             <:rec_binding< $(anti:mk_anti ~c:"ident" n s) = $e >>
         | `ANTIQUOT ("list" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
-        | i = label_longident; e = fun_binding -> <:rec_binding< $i = $e >>
-        | i = label_longident ->
+        | label_longident{i}; fun_binding{e} -> <:rec_binding< $i = $e >>
+        | label_longident{i} ->
             <:rec_binding< $i = $(lid:Ident.to_lid i) >> ] ]
     fun_def:
-      [ [ TRY ["("; "type"]; i = a_LIDENT; ")";
-          e = fun_def_cont_no_when ->
+      [ [ TRY ["("; "type"]; a_LIDENT{i}; ")";
+          fun_def_cont_no_when{e} ->
             <:expr< fun (type $i) -> $e >>
-        | p = TRY labeled_ipatt; (w, e) = fun_def_cont ->
+        | TRY labeled_ipatt{p };  fun_def_cont{(w, e)} ->
             <:expr< fun [ $p when $w -> $e ] >> ] ]
     fun_def_cont:
       [ RA
-        [ TRY ["("; "type"]; i = a_LIDENT; ")";
-          e = fun_def_cont_no_when ->
+        [ TRY ["("; "type"]; a_LIDENT{i}; ")";
+          fun_def_cont_no_when{e} ->
             (<:expr<>>, <:expr< fun (type $i) -> $e >>)
-        | p = TRY labeled_ipatt; (w,e) = SELF ->
+        | TRY labeled_ipatt{p };  SELF{(w,e)} ->
             (<:expr<>>, <:expr< fun [ $p when $w -> $e ] >>)
-        | "when"; w = expr; "->"; e = expr -> (w, e)
-        | "->"; e = expr -> (<:expr<>>, e) ] ]
+        | "when"; expr{w}; "->"; expr{e} -> (w, e)
+        | "->"; expr{e} -> (<:expr<>>, e) ] ]
     fun_def_cont_no_when:
       [ RA
-        [ TRY ["("; "type"]; i = a_LIDENT; ")";
-          e = fun_def_cont_no_when -> <:expr< fun (type $i) -> $e >>
-        | p = TRY labeled_ipatt; (w,e) = fun_def_cont ->
+        [ TRY ["("; "type"]; a_LIDENT{i}; ")";
+          fun_def_cont_no_when{e} -> <:expr< fun (type $i) -> $e >>
+        | TRY labeled_ipatt{ p}; fun_def_cont{(w,e)} ->
             <:expr< fun [ $p when $w -> $e ] >>
-        | "->"; e = expr -> e ] ]
+        | "->"; expr{e} -> e ] ]
     patt:
       [ "|" LA
-        [ p1 = SELF; "|"; p2 = SELF -> <:patt< $p1 | $p2 >> ]
+        [ SELF{p1}; "|"; SELF{p2} -> <:patt< $p1 | $p2 >> ]
       | ".." NA
-        [ p1 = SELF; ".."; p2 = SELF -> <:patt< $p1 .. $p2 >> ]
+        [ SELF{p1}; ".."; SELF{p2} -> <:patt< $p1 .. $p2 >> ]
       | "apply" LA
-        [ p1 = SELF; p2 = SELF -> <:patt< $p1 $p2 >>
-        | "lazy"; p = SELF -> <:patt< lazy $p >>  ]
+        [ SELF{p1}; SELF{p2} -> <:patt< $p1 $p2 >>
+        | "lazy"; SELF{p} -> <:patt< lazy $p >>  ]
       | "simple"
         [ `ANTIQUOT (""|"pat"|"anti" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt" n s) >>
@@ -1401,76 +1402,76 @@ New syntax:\
             <:patt< ($(tup:<:patt< $(anti:mk_anti ~c:"patt" n s) >> )) >>
         | `ANTIQUOT ("`bool" as n) s ->
             <:patt< $(id:<:ident< $(anti:mk_anti n s) >>) >>
-        | i = ident -> <:patt< $id:i >>
-        | s = a_INT -> <:patt< $int:s >>
-        | s = a_INT32 -> <:patt< $int32:s >>
-        | s = a_INT64 -> <:patt< $int64:s >>
-        | s = a_NATIVEINT -> <:patt< $nativeint:s >>
-        | s = a_FLOAT -> <:patt< $flo:s >>
-        | s = a_STRING -> <:patt< $str:s >>
-        | s = a_CHAR -> <:patt< $chr:s >>
-        | "-"; s = a_INT -> <:patt< $(int:neg_string s) >>
-        | "-"; s = a_INT32 -> <:patt< $(int32:neg_string s) >>
-        | "-"; s = a_INT64 -> <:patt< $(int64:neg_string s) >>
-        | "-"; s = a_NATIVEINT -> <:patt< $(nativeint:neg_string s) >>
-        | "-"; s = a_FLOAT -> <:patt< $(flo:neg_string s) >>
+        | ident{i} -> <:patt< $id:i >>
+        | a_INT{s} -> <:patt< $int:s >>
+        | a_INT32{s} -> <:patt< $int32:s >>
+        | a_INT64{s} -> <:patt< $int64:s >>
+        | a_NATIVEINT{s} -> <:patt< $nativeint:s >>
+        | a_FLOAT{s} -> <:patt< $flo:s >>
+        | a_STRING{s} -> <:patt< $str:s >>
+        | a_CHAR{s} -> <:patt< $chr:s >>
+        | "-"; a_INT{s} -> <:patt< $(int:neg_string s) >>
+        | "-"; a_INT32{s} -> <:patt< $(int32:neg_string s) >>
+        | "-"; a_INT64{s} -> <:patt< $(int64:neg_string s) >>
+        | "-"; a_NATIVEINT{s} -> <:patt< $(nativeint:neg_string s) >>
+        | "-"; a_FLOAT{s} -> <:patt< $(flo:neg_string s) >>
         | "["; "]" -> <:patt< [] >>
-        | "["; mk_list = sem_patt_for_list; "::"; last = patt; "]" ->
+        | "["; sem_patt_for_list{mk_list}; "::"; patt{last}; "]" ->
             mk_list last
-        | "["; mk_list = sem_patt_for_list; "]" ->
+        | "["; sem_patt_for_list{mk_list}; "]" ->
             mk_list <:patt< [] >>
         | "[|"; "|]" -> <:patt< [| $(<:patt<>>) |] >>
-        | "[|"; pl = sem_patt; "|]" -> <:patt< [| $pl |] >>
-        | "{"; pl = label_patt_list; "}" -> <:patt< { $pl } >>
+        | "[|"; sem_patt{pl}; "|]" -> <:patt< [| $pl |] >>
+        | "{"; label_patt_list{pl}; "}" -> <:patt< { $pl } >>
         | "("; ")" -> <:patt< () >>
-        | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m) >>
-        | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
+        | "("; "module"; a_UIDENT{m}; ")" -> <:patt< (module $m) >>
+        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
             <:patt< ((module $m) : (module $pt)) >>
-        | "("; p = SELF; ")" -> p
-        | "("; p = SELF; ":"; t = ctyp; ")" -> <:patt< ($p : $t) >>
-        | "("; p = SELF; "as"; p2 = SELF; ")" -> <:patt< ($p as $p2) >>
-        | "("; p = SELF; ","; pl = comma_patt; ")" -> <:patt< ($p, $pl) >>
+        | "("; SELF{p}; ")" -> p
+        | "("; SELF{p}; ":"; ctyp{t}; ")" -> <:patt< ($p : $t) >>
+        | "("; SELF{p}; "as"; SELF{p2}; ")" -> <:patt< ($p as $p2) >>
+        | "("; SELF{p}; ","; comma_patt{pl}; ")" -> <:patt< ($p, $pl) >>
         | "_" -> <:patt< _ >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
-        | "`"; s = a_ident -> <:patt< ` $s >>
-        | "#"; i = type_longident -> <:patt< # $i >>
-        | `LABEL i; p = SELF -> <:patt< ~ $i : $p >>
-        | "~"; `ANTIQUOT (""|"lid" as n) i; ":"; p = SELF ->
+        | "`"; a_ident{s} -> <:patt< ` $s >>
+        | "#"; type_longident{i} -> <:patt< # $i >>
+        | `LABEL i; SELF{p} -> <:patt< ~ $i : $p >>
+        | "~"; `ANTIQUOT (""|"lid" as n) i; ":"; SELF{p} ->
             <:patt< ~ $(mk_anti n i) : $p >>
         | "~"; `ANTIQUOT (""|"lid" as n) i -> <:patt< ~ $(mk_anti n i) >>
         | "~"; `LIDENT i -> <:patt< ~ $i >>
-        (* | i = opt_label; "("; p = patt_tcon; ")" -> *)
+        (* | opt_label{i}; "("; patt_tcon{p}; ")" -> *)
             (* <:patt< ? $i$ : ($p$) >> *)
-        | `OPTLABEL i; "("; p = patt_tcon; f = eq_expr; ")" -> f i p
-        | "?"; `ANTIQUOT (""|"lid" as n) i; ":"; "("; p = patt_tcon; f = eq_expr; ")" ->
+        | `OPTLABEL i; "("; patt_tcon{p}; eq_expr{f}; ")" -> f i p
+        | "?"; `ANTIQUOT (""|"lid" as n) i; ":"; "("; patt_tcon{p}; eq_expr{f}; ")" ->
             f (mk_anti n i) p
         | "?"; `LIDENT i -> <:patt< ? $i >>
         | "?"; `ANTIQUOT (""|"lid" as n) i -> <:patt< ? $(mk_anti n i) >>
-        | "?"; "("; p = patt_tcon; ")" ->
+        | "?"; "("; patt_tcon{p}; ")" ->
             <:patt< ? ($p) >>
-        | "?"; "("; p = patt_tcon; "="; e = expr; ")" ->
+        | "?"; "("; patt_tcon{p}; "="; expr{e}; ")" ->
             <:patt< ? ($p = $e) >> ] ]
     comma_patt:
-      [ [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1, $p2 >>
+      [ [ SELF{p1}; ","; SELF{p2} -> <:patt< $p1, $p2 >>
         | `ANTIQUOT ("list" as n) s -> <:patt< $(anti:mk_anti ~c:"patt," n s) >>
-        | p = patt -> p ] ]
+        | patt{p} -> p ] ]
     sem_patt:
       [ LA
-        [ p1 = patt; ";"; p2 = SELF -> <:patt< $p1; $p2 >>
+        [ patt{p1}; ";"; SELF{p2} -> <:patt< $p1; $p2 >>
         | `ANTIQUOT ("list" as n) s -> <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
-        | p = patt; ";" -> p
-        | p = patt -> p ] ]
+        | patt{p}; ";" -> p
+        | patt{p} -> p ] ]
     sem_patt_for_list:
-      [ [ p = patt; ";"; pl = SELF -> fun acc -> <:patt< [ $p :: $(pl acc) ] >>
-        | p = patt; ";" -> fun acc -> <:patt< [ $p :: $acc ] >>
-        | p = patt -> fun acc -> <:patt< [ $p :: $acc ] >>
+      [ [ patt{p}; ";"; SELF{pl} -> fun acc -> <:patt< [ $p :: $(pl acc) ] >>
+        | patt{p}; ";" -> fun acc -> <:patt< [ $p :: $acc ] >>
+        | patt{p} -> fun acc -> <:patt< [ $p :: $acc ] >>
       ] ]
     label_patt_list:
-      [ [ p1 = label_patt; ";"; p2 = SELF -> <:patt< $p1 ; $p2 >>
-        | p1 = label_patt; ";"; "_"       -> <:patt< $p1 ; _ >>
-        | p1 = label_patt; ";"; "_"; ";"  -> <:patt< $p1 ; _ >>
-        | p1 = label_patt; ";"            -> p1
-        | p1 = label_patt                 -> p1
+      [ [ label_patt{p1}; ";"; SELF{p2} -> <:patt< $p1 ; $p2 >>
+        | label_patt{p1}; ";"; "_"       -> <:patt< $p1 ; _ >>
+        | label_patt{p1}; ";"; "_"; ";"  -> <:patt< $p1 ; _ >>
+        | label_patt{p1}; ";"            -> p1
+        | label_patt{p1}                 -> p1
       ] ]
     label_patt:
       [ [ `ANTIQUOT (""|"pat"|"anti" as n) s ->
@@ -1478,39 +1479,39 @@ New syntax:\
         | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
         | `ANTIQUOT ("list" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
-        | i = label_longident; "="; p = patt -> <:patt< $i = $p >>
-        | i = label_longident -> <:patt< $i = $(lid:Ident.to_lid i) >>
+        | label_longident{i}; "="; patt{p} -> <:patt< $i = $p >>
+        | label_longident{i} -> <:patt< $i = $(lid:Ident.to_lid i) >>
       ] ]
     ipatt:
-      [ [ "{"; pl = label_ipatt_list; "}" -> <:patt< { $pl } >>
+      [ [ "{"; label_ipatt_list{pl}; "}" -> <:patt< { $pl } >>
         | `ANTIQUOT (""|"pat"|"anti" as n) s ->
             <:patt< $(anti:mk_anti ~c:"patt" n s) >>
         | `ANTIQUOT ("tup" as n) s ->
             <:patt< ($(tup:<:patt< $(anti:mk_anti ~c:"patt" n s) >>)) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.patt_tag
         | "("; ")" -> <:patt< () >>
-        | "("; "module"; m = a_UIDENT; ")" -> <:patt< (module $m) >>
-        | "("; "module"; m = a_UIDENT; ":"; pt = package_type; ")" ->
+        | "("; "module"; a_UIDENT{m}; ")" -> <:patt< (module $m) >>
+        | "("; "module"; a_UIDENT{m}; ":"; package_type{pt}; ")" ->
             <:patt< ((module $m) : (module $pt)) >>
-        | "("; p = SELF; ")" -> p
-        | "("; p = SELF; ":"; t = ctyp; ")" -> <:patt< ($p : $t) >>
-        | "("; p = SELF; "as"; p2 = SELF; ")" -> <:patt< ($p as $p2) >>
-        | "("; p = SELF; ","; pl = comma_ipatt; ")" -> <:patt< ($p, $pl) >>
-        | s = a_LIDENT -> <:patt< $lid:s >>
+        | "("; SELF{p}; ")" -> p
+        | "("; SELF{p}; ":"; ctyp{t}; ")" -> <:patt< ($p : $t) >>
+        | "("; SELF{p}; "as"; SELF{p2}; ")" -> <:patt< ($p as $p2) >>
+        | "("; SELF{p}; ","; comma_ipatt{pl}; ")" -> <:patt< ($p, $pl) >>
+        | a_LIDENT{s} -> <:patt< $lid:s >>
         | "_" -> <:patt< _ >> ] ]
     labeled_ipatt:
-      [ [ p = ipatt -> p ] ]
+      [ [ ipatt{p} -> p ] ]
     comma_ipatt:
       [ LA
-        [ p1 = SELF; ","; p2 = SELF -> <:patt< $p1, $p2 >>
+        [ SELF{p1}; ","; SELF{p2} -> <:patt< $p1, $p2 >>
         | `ANTIQUOT ("list" as n) s -> <:patt< $(anti:mk_anti ~c:"patt," n s) >>
-        | p = ipatt -> p ] ]
+        | ipatt{p} -> p ] ]
     label_ipatt_list:
-      [ [ p1 = label_ipatt; ";"; p2 = SELF -> <:patt< $p1 ; $p2 >>
-        | p1 = label_ipatt; ";"; "_"       -> <:patt< $p1 ; _ >>
-        | p1 = label_ipatt; ";"; "_"; ";"  -> <:patt< $p1 ; _ >>
-        | p1 = label_ipatt; ";"            -> p1
-        | p1 = label_ipatt                 -> p1
+      [ [ label_ipatt{p1}; ";"; SELF{p2} -> <:patt< $p1 ; $p2 >>
+        | label_ipatt{p1}; ";"; "_"       -> <:patt< $p1 ; _ >>
+        | label_ipatt{p1}; ";"; "_"; ";"  -> <:patt< $p1 ; _ >>
+        | label_ipatt{p1}; ";"            -> p1
+        | label_ipatt{p1}                 -> p1
       ] ]
     label_ipatt:
       [ [ `ANTIQUOT (""|"pat"|"anti" as n) s ->
@@ -1519,7 +1520,7 @@ New syntax:\
             <:patt< $(anti:mk_anti ~c:"patt;" n s) >>
         | `QUOTATION x ->
             Quotation.expand _loc x DynAst.patt_tag
-        | i = label_longident; "="; p = ipatt -> <:patt< $i = $p >>
+        | label_longident{i}; "="; ipatt{p} -> <:patt< $i = $p >>
       ] ]
     type_declaration:
       [ LA
@@ -1528,76 +1529,76 @@ New syntax:\
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctypand" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | t1 = SELF; "and"; t2 = SELF -> <:ctyp< $t1 and $t2 >>
-        | (n, tpl) = type_ident_and_parameters; tk = opt_eq_ctyp;
-          cl = LIST0 constrain -> Ast.TyDcl _loc n tpl tk cl ] ]
+        | SELF{t1}; "and"; SELF{t2} -> <:ctyp< $t1 and $t2 >>
+        |  type_ident_and_parameters{(n, tpl)}; opt_eq_ctyp{tk};
+          LIST0 constrain{cl} -> Ast.TyDcl _loc n tpl tk cl ] ]
     constrain:
-      [ [ "constraint"; t1 = ctyp; "="; t2 = ctyp -> (t1, t2) ] ]
+      [ [ "constraint"; ctyp{t1}; "="; ctyp{t2} -> (t1, t2) ] ]
     opt_eq_ctyp:
-      [ [ "="; tk = type_kind -> tk
+      [ [ "="; type_kind{tk} -> tk
         | -> <:ctyp<>> ] ]
     type_kind:
-      [ [ t = ctyp -> t ] ]
+      [ [ ctyp{t} -> t ] ]
     type_ident_and_parameters:
-      [ [ i = a_LIDENT; tpl = LIST0 optional_type_parameter -> (i, tpl) ] ]
+      [ [ a_LIDENT{i}; LIST0 optional_type_parameter{tpl} -> (i, tpl) ] ]
     type_longident_and_parameters:
-      [ [ i = type_longident; tpl = type_parameters -> tpl <:ctyp< $id:i >>
+      [ [ type_longident{i}; type_parameters{tpl} -> tpl <:ctyp< $id:i >>
       ] ]
     type_parameters:
-      [ [ t1 = type_parameter; t2 = SELF ->
+      [ [ type_parameter{t1}; SELF{t2} ->
             fun acc -> t2 <:ctyp< $acc $t1 >>
-        | t = type_parameter -> fun acc -> <:ctyp< $acc $t >>
+        | type_parameter{t} -> fun acc -> <:ctyp< $acc $t >>
         | -> fun t -> t
       ] ]
     type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $(anti:mk_anti n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; i = a_ident -> <:ctyp< '$lid:i >>
-        | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
-        | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i >> ] ]
+        | "'"; a_ident{i} -> <:ctyp< '$lid:i >>
+        | "+"; "'"; a_ident{i} -> <:ctyp< +'$lid:i >>
+        | "-"; "'"; a_ident{i} -> <:ctyp< -'$lid:i >> ] ]
     optional_type_parameter:
       [ [ `ANTIQUOT (""|"typ"|"anti" as n) s -> <:ctyp< $(anti:mk_anti n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; i = a_ident -> <:ctyp< '$lid:i >>
-        | "+"; "'"; i = a_ident -> <:ctyp< +'$lid:i >>
-        | "-"; "'"; i = a_ident -> <:ctyp< -'$lid:i >>
+        | "'"; a_ident{i} -> <:ctyp< '$lid:i >>
+        | "+"; "'"; a_ident{i} -> <:ctyp< +'$lid:i >>
+        | "-"; "'"; a_ident{i} -> <:ctyp< -'$lid:i >>
         | "+"; "_" -> Ast.TyAnP _loc  
         | "-"; "_" -> Ast.TyAnM _loc  
         | "_" -> <:ctyp< _ >>  ] ]
     ctyp:
       [ "==" LA
-        [ t1 = SELF; "=="; t2 = SELF -> <:ctyp< $t1 == $t2 >> ]
+        [ SELF{t1}; "=="; SELF{t2} -> <:ctyp< $t1 == $t2 >> ]
       | "private" NA
-        [ "private"; t = ctyp Level "alias" -> <:ctyp< private $t >> ]
+        [ "private"; ctyp Level "alias"{t} -> <:ctyp< private $t >> ]
       | "alias" LA
-        [ t1 = SELF; "as"; t2 = SELF ->
+        [ SELF{t1}; "as"; SELF{t2} ->
           <:ctyp< $t1 as $t2 >> ]
       | "forall" LA
-        [ "!"; t1 = typevars; "."; t2 = ctyp ->
+        [ "!"; typevars{t1}; "."; ctyp{t2} ->
           <:ctyp< ! $t1 . $t2 >> ]
       | "arrow" RA
-        [ t1 = SELF; "->"; t2 = SELF ->
+        [ SELF{t1}; "->"; SELF{t2} ->
           <:ctyp< $t1 -> $t2 >> ]
       | "label" NA
-        [ "~"; i = a_LIDENT; ":"; t = SELF ->
+        [ "~"; a_LIDENT{i}; ":"; SELF{t} ->
           <:ctyp< ~ $i : $t >>
-        | i = a_LABEL; t =  SELF  ->
+        | a_LABEL{i}; SELF{t}  ->
           <:ctyp< ~ $i : $t >>
-        | "?"; i = a_LIDENT; ":"; t = SELF ->
+        | "?"; a_LIDENT{i}; ":"; SELF{t} ->
             <:ctyp< ? $i : $t >>
-        | i = a_OPTLABEL; t = SELF ->
+        | a_OPTLABEL{i}; SELF{t} ->
             <:ctyp< ? $i : $t >> ]
       | "apply" LA
-        [ t1 = SELF; t2 = SELF ->
+        [ SELF{t1}; SELF{t2} ->
             let t = <:ctyp< $t1 $t2 >> in
             try <:ctyp< $(id:Ast.ident_of_ctyp t) >>
             with [ Invalid_argument _ -> t ] ]
       | "." LA
-        [ t1 = SELF; "."; t2 = SELF ->
+        [ SELF{t1}; "."; SELF{t2} ->
             try <:ctyp< $(id:Ast.ident_of_ctyp t1).$(id:Ast.ident_of_ctyp t2) >>
             with [ Invalid_argument s -> raise (Stream.Error s) ] ]
       | "simple"
-        [ "'"; i = a_ident -> <:ctyp< '$i >>
+        [ "'"; a_ident{i} -> <:ctyp< '$i >>
         | "_" -> <:ctyp< _ >>
         | `ANTIQUOT (""|"typ"|"anti" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
@@ -1606,247 +1607,247 @@ New syntax:\
         | `ANTIQUOT ("id" as n) s ->
             <:ctyp< $(id:<:ident< $(anti:mk_anti ~c:"ident" n s) >>) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | i = a_LIDENT -> <:ctyp< $lid:i >>
-        | i = a_UIDENT -> <:ctyp< $uid:i >>
-        | "("; t = SELF; "*"; tl = star_ctyp; ")" ->
+        | a_LIDENT{i} -> <:ctyp< $lid:i >>
+        | a_UIDENT{i} -> <:ctyp< $uid:i >>
+        | "("; SELF{t}; "*"; star_ctyp{tl}; ")" ->
             <:ctyp< ( $t * $tl ) >>
-        | "("; t = SELF; ")" -> t
+        | "("; SELF{t}; ")" -> t
         | "["; "]" -> <:ctyp< [ ] >>
-        | "["; t = constructor_declarations; "]" -> <:ctyp< [ $t ] >>
-        | "["; "="; rfl = row_field; "]" ->
+        | "["; constructor_declarations{t}; "]" -> <:ctyp< [ $t ] >>
+        | "["; "="; row_field{rfl}; "]" ->
             <:ctyp< [ = $rfl ] >>
         | "["; ">"; "]" -> <:ctyp< [ > $(<:ctyp<>>) ] >>
-        | "["; ">"; rfl = row_field; "]" ->
+        | "["; ">"; row_field{rfl}; "]" ->
             <:ctyp< [ > $rfl ] >>
-        | "["; "<"; rfl = row_field; "]" ->
+        | "["; "<"; row_field{rfl}; "]" ->
             <:ctyp< [ < $rfl ] >>
-        | "["; "<"; rfl = row_field; ">"; ntl = name_tags; "]" ->
+        | "["; "<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
             <:ctyp< [ < $rfl > $ntl ] >>
-        | "[<"; rfl = row_field; "]" ->
+        | "[<"; row_field{rfl}; "]" ->
             <:ctyp< [ < $rfl ] >>
-        | "[<"; rfl = row_field; ">"; ntl = name_tags; "]" ->
+        | "[<"; row_field{rfl}; ">"; name_tags{ntl}; "]" ->
             <:ctyp< [ < $rfl > $ntl ] >>
-        | "{"; t = label_declaration_list; "}" -> <:ctyp< { $t } >>
-        | "#"; i = class_longident -> <:ctyp< # $i >>
-        | "<"; t = opt_meth_list; ">" -> t
-        | "("; "module"; p = package_type; ")" -> <:ctyp< (module $p) >>  ] ]
+        | "{"; label_declaration_list{t}; "}" -> <:ctyp< { $t } >>
+        | "#"; class_longident{i} -> <:ctyp< # $i >>
+        | "<"; opt_meth_list{t}; ">" -> t
+        | "("; "module"; package_type{p}; ")" -> <:ctyp< (module $p) >>  ] ]
     star_ctyp:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp*" n s) >>
-        | t1 = SELF; "*"; t2 = SELF ->
+        | SELF{t1}; "*"; SELF{t2} ->
             <:ctyp< $t1 * $t2 >>
-        | t = ctyp -> t  ] ]
+        | ctyp{t} -> t  ] ]
     constructor_declarations:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp|" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | t1 = SELF; "|"; t2 = SELF ->
+        | SELF{t1}; "|"; SELF{t2} ->
             <:ctyp< $t1 | $t2 >>
-        | s = a_UIDENT; "of"; t = constructor_arg_list ->
+        | a_UIDENT{s}; "of"; constructor_arg_list{t} ->
             <:ctyp< $uid:s of $t >>
-        | s = a_UIDENT; ":"; t = ctyp ->
+        | a_UIDENT{s}; ":"; ctyp{t} ->
             let (tl, rt) = Ctyp.to_generalized t in
             <:ctyp< $uid:s : ($(Ast.tyAnd_of_list tl) -> $rt) >>
-        | s = a_UIDENT ->
+        | a_UIDENT{s} ->
 	  <:ctyp< $uid:s >>  ] ]
     constructor_declaration:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | s = a_UIDENT; "of"; t = constructor_arg_list ->
+        | a_UIDENT{s}; "of"; constructor_arg_list{t} ->
             <:ctyp< $uid:s of $t >>
-        | s = a_UIDENT ->
+        | a_UIDENT{s} ->
             <:ctyp< $uid:s >>
       ] ]
     constructor_arg_list:
       [ [ `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctypand" n s) >>
-        | t1 = SELF; "and"; t2 = SELF -> <:ctyp< $t1 and $t2 >>
-        | t = ctyp -> t
+        | SELF{t1}; "and"; SELF{t2} -> <:ctyp< $t1 and $t2 >>
+        | ctyp{t} -> t
       ] ]
     label_declaration_list:
-      [ [ t1 = label_declaration; ";"; t2 = SELF -> <:ctyp< $t1; $t2 >>
-        | t1 = label_declaration; ";"            -> t1
-        | t1 = label_declaration                 -> t1  ] ]
+      [ [ label_declaration{t1}; ";"; SELF{t2} -> <:ctyp< $t1; $t2 >>
+        | label_declaration{t1}; ";"            -> t1
+        | label_declaration{t1}                 -> t1  ] ]
     label_declaration:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp;" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | s = a_LIDENT; ":"; t = poly_type ->
+        | a_LIDENT{s}; ":"; poly_type{t} ->
             <:ctyp< $lid:s : $t >>
-        | s = a_LIDENT; ":"; "mutable"; t = poly_type ->
+        | a_LIDENT{s}; ":"; "mutable"; poly_type{t} ->
             <:ctyp< $lid:s : mutable $t >>  ] ]
     a_ident:
-      [ [ i = a_LIDENT -> i
-        | i = a_UIDENT -> i ] ]
+      [ [ a_LIDENT{i} -> i
+        | a_UIDENT{i} -> i ] ]
     ident:
       [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s -> (* id it self does not support ANTIQUOT "lid", however [a_UIDENT] supports*)
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | i = a_UIDENT -> <:ident< $uid:i >>
-        | i = a_LIDENT -> <:ident< $lid:i >>
-        | `ANTIQUOT (""|"id"|"anti"|"list" as n) s; "."; i = SELF ->
+        | a_UIDENT{i} -> <:ident< $uid:i >>
+        | a_LIDENT{i} -> <:ident< $lid:i >>
+        | `ANTIQUOT (""|"id"|"anti"|"list" as n) s; "."; SELF{i} ->
             <:ident< $(anti:mk_anti ~c:"ident" n s).$i >>
-        | i = a_UIDENT; "."; j = SELF -> <:ident< $uid:i.$j >> ] ]
+        | a_UIDENT{i}; "."; SELF{j} -> <:ident< $uid:i.$j >> ] ]
     module_longident:
       [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | m = a_UIDENT; "."; l = SELF -> <:ident< $uid:m.$l >>
-        | i = a_UIDENT -> <:ident< $uid:i >> ] ]
+        | a_UIDENT{m}; "."; SELF{l} -> <:ident< $uid:m.$l >>
+        | a_UIDENT{i} -> <:ident< $uid:i >> ] ]
     module_longident_with_app:
       [ "apply"
-        [ i = SELF; j = SELF -> <:ident< $i $j >> ]
+        [ SELF{i}; SELF{j} -> <:ident< $i $j >> ]
       | "."
-        [ i = SELF; "."; j = SELF -> <:ident< $i.$j >> ]
+        [ SELF{i}; "."; SELF{j} -> <:ident< $i.$j >> ]
       | "simple"
         [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | i = a_UIDENT -> <:ident< $uid:i >>
-        | "("; i = SELF; ")" -> i ] ]
+        | a_UIDENT{i} -> <:ident< $uid:i >>
+        | "("; SELF{i}; ")" -> i ] ]
     module_longident_dot_lparen:
       [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s; "."; "(" ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | m = a_UIDENT; "."; l = SELF -> <:ident< $uid:m.$l >>
-        | i = a_UIDENT; "."; "(" -> <:ident< $uid:i >> ] ]
+        | a_UIDENT{m}; "."; SELF{l} -> <:ident< $uid:m.$l >>
+        | a_UIDENT{i}; "."; "(" -> <:ident< $uid:i >> ] ]
     type_longident:
       [ "apply"
-        [ i = SELF; j = SELF -> <:ident< $i $j >> ]
+        [ SELF{i}; SELF{j} -> <:ident< $i $j >> ]
       | "."
-        [ i = SELF; "."; j = SELF -> <:ident< $i.$j >> ]
+        [ SELF{i}; "."; SELF{j} -> <:ident< $i.$j >> ]
       | "simple"
         [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | i = a_LIDENT -> <:ident< $lid:i >>
-        | i = a_UIDENT -> <:ident< $uid:i >>
-        | "("; i = SELF; ")" -> i ] ]
+        | a_LIDENT{i} -> <:ident< $lid:i >>
+        | a_UIDENT{i} -> <:ident< $uid:i >>
+        | "("; SELF{i}; ")" -> i ] ]
     label_longident:
       [ [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | m = a_UIDENT; "."; l = SELF -> <:ident< $uid:m.$l >>
-        | i = a_LIDENT -> <:ident< $lid:i >> ] ]
+        | a_UIDENT{m}; "."; SELF{l} -> <:ident< $uid:m.$l >>
+        | a_LIDENT{i} -> <:ident< $lid:i >> ] ]
     class_type_longident:
-      [ [ x = type_longident -> x ] ]
+      [ [ type_longident{x} -> x ] ]
     val_longident:
-      [ [ x = ident -> x ] ]
+      [ [ ident{x} -> x ] ]
     class_longident:
-      [ [ x = label_longident -> x ] ]
+      [ [ label_longident{x} -> x ] ]
     class_declaration:
       [ LA
-        [ c1 = SELF; "and"; c2 = SELF ->
+        [ SELF{c1}; "and"; SELF{c2} ->
             <:class_expr< $c1 and $c2 >>
         | `ANTIQUOT (""|"cdcl"|"anti"|"list" as n) s ->
             <:class_expr< $(anti:mk_anti ~c:"class_expr" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_expr_tag
-        | ci = class_info_for_class_expr; ce = class_fun_binding ->
+        | class_info_for_class_expr{ci}; class_fun_binding{ce} ->
             <:class_expr< $ci = $ce >> ] ]
     class_fun_binding:
-      [ [ "="; ce = class_expr -> ce
-        | ":"; ct = class_type_plus; "="; ce = class_expr ->
+      [ [ "="; class_expr{ce} -> ce
+        | ":"; class_type_plus{ct}; "="; class_expr{ce} ->
             <:class_expr< ($ce : $ct) >>
-        | p = labeled_ipatt; cfb = SELF ->
+        | labeled_ipatt{p}; SELF{cfb} ->
             <:class_expr< fun $p -> $cfb >>  ] ]
     class_info_for_class_type:
-      [ [ mv = opt_virtual; (i, ot) = class_name_and_param ->
+      [ [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
             <:class_type< $virtual:mv $lid:i [ $ot ] >>  ] ]
     class_info_for_class_expr:
-      [ [ mv = opt_virtual; (i, ot) = class_name_and_param ->
+      [ [ opt_virtual{mv};  class_name_and_param{(i, ot)} ->
             <:class_expr< $virtual:mv $lid:i [ $ot ] >>  ] ]
     class_name_and_param:
-      [ [ i = a_LIDENT; "["; x = comma_type_parameter; "]" -> (i, x)
-        | i = a_LIDENT -> (i, <:ctyp<>>)
+      [ [ a_LIDENT{i}; "["; comma_type_parameter{x}; "]" -> (i, x)
+        | a_LIDENT{i} -> (i, <:ctyp<>>)
       ] ]
     comma_type_parameter:
-      [ [ t1 = SELF; ","; t2 = SELF -> <:ctyp< $t1, $t2 >>
+      [ [ SELF{t1}; ","; SELF{t2} -> <:ctyp< $t1, $t2 >>
         | `ANTIQUOT ("list" as n) s -> <:ctyp< $(anti:mk_anti ~c:"ctyp," n s) >>
-        | t = type_parameter -> t  ] ]
+        | type_parameter{t} -> t  ] ]
     opt_comma_ctyp:
-      [ [ "["; x = comma_ctyp; "]" -> x
+      [ [ "["; comma_ctyp{x}; "]" -> x
         | -> <:ctyp<>>  ] ]
     comma_ctyp:
-      [ [ t1 = SELF; ","; t2 = SELF -> <:ctyp< $t1, $t2 >>
+      [ [ SELF{t1}; ","; SELF{t2} -> <:ctyp< $t1, $t2 >>
         | `ANTIQUOT ("list" as n) s -> <:ctyp< $(anti:mk_anti ~c:"ctyp," n s) >>
-        | t = ctyp -> t  ] ]
+        | ctyp{t} -> t  ] ]
     class_fun_def:
-      [ [ p = labeled_ipatt; ce = SELF -> <:class_expr< fun $p -> $ce >>
-        | "->"; ce = class_expr -> ce ] ]
+      [ [ labeled_ipatt{p}; SELF{ce} -> <:class_expr< fun $p -> $ce >>
+        | "->"; class_expr{ce} -> ce ] ]
     class_expr:
       [ "top"
-        [ "fun"; p = labeled_ipatt; ce = class_fun_def ->
+        [ "fun"; labeled_ipatt{p}; class_fun_def{ce} ->
             <:class_expr< fun $p -> $ce >>
-        | "let"; rf = opt_rec; bi = binding; "in"; ce = SELF ->
+        | "let"; opt_rec{rf}; binding{bi}; "in"; SELF{ce} ->
             <:class_expr< let $rec:rf $bi in $ce >> ]
       | "apply" NA
-        [ ce = SELF; e = expr Level "label" ->
+        [ SELF{ce}; expr Level "label"{e} ->
             <:class_expr< $ce $e >> ]
       | "simple"
         [ `ANTIQUOT (""|"cexp"|"anti" as n) s ->
             <:class_expr< $(anti:mk_anti ~c:"class_expr" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_expr_tag
-        | ce = class_longident_and_param -> ce
-        | "object"; csp = opt_class_self_patt; cst = class_structure; "end" ->
+        | class_longident_and_param{ce} -> ce
+        | "object"; opt_class_self_patt{csp}; class_structure{cst}; "end" ->
             <:class_expr< object ($csp) $cst end >>
-        | "("; ce = SELF; ":"; ct = class_type; ")" ->
+        | "("; SELF{ce}; ":"; class_type{ct}; ")" ->
             <:class_expr< ($ce : $ct) >>
-        | "("; ce = SELF; ")" -> ce ] ]
+        | "("; SELF{ce}; ")" -> ce ] ]
     class_longident_and_param:
-      [ [ ci = class_longident; "["; t = comma_ctyp; "]" ->
+      [ [ class_longident{ci}; "["; comma_ctyp{t}; "]" ->
           <:class_expr< $id:ci [ $t ] >>
-        | ci = class_longident -> <:class_expr< $id:ci >>  ] ]
+        | class_longident{ci} -> <:class_expr< $id:ci >>  ] ]
     class_structure:
       [ [ `ANTIQUOT (""|"cst"|"anti"|"list" as n) s ->
             <:class_str_item< $(anti:mk_anti ~c:"class_str_item" n s) >>
-        | `ANTIQUOT (""|"cst"|"anti"|"list" as n) s; semi; cst = SELF ->
+        | `ANTIQUOT (""|"cst"|"anti"|"list" as n) s; semi; SELF{cst} ->
             <:class_str_item< $(anti:mk_anti ~c:"class_str_item" n s); $cst >>
-        | l = LIST0 [ cst = class_str_item; semi -> cst ] -> Ast.crSem_of_list l  ] ]
+        | LIST0 [ class_str_item{cst}; semi -> cst ]{l} -> Ast.crSem_of_list l  ] ]
     opt_class_self_patt:
-      [ [ "("; p = patt; ")" -> p
-        | "("; p = patt; ":"; t = ctyp; ")" -> <:patt< ($p : $t) >>
+      [ [ "("; patt{p}; ")" -> p
+        | "("; patt{p}; ":"; ctyp{t}; ")" -> <:patt< ($p : $t) >>
         | -> <:patt<>> ] ]
     class_str_item:
       [ LA
         [ `ANTIQUOT (""|"cst"|"anti"|"list" as n) s ->
             <:class_str_item< $(anti:mk_anti ~c:"class_str_item" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_str_item_tag
-        | "inherit"; o = opt_override; ce = class_expr; pb = opt_as_lident ->
+        | "inherit"; opt_override{o}; class_expr{ce}; opt_as_lident{pb} ->
             <:class_str_item< inherit $override:o $ce as $pb >>
-        | o = value_val_opt_override; mf = opt_mutable; lab = label; e = cvalue_binding
+        | value_val_opt_override{o}; opt_mutable{mf}; label{lab}; cvalue_binding{e}
           ->
             <:class_str_item< val $override:o $mutable:mf $lab = $e >>
-        | o = value_val_opt_override; mf = opt_mutable; "virtual"; l = label; ":";
-              t = poly_type ->
+        | value_val_opt_override{o}; opt_mutable{mf}; "virtual"; label{l}; ":";
+              poly_type{t} ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
               <:class_str_item< val virtual $mutable:mf $l : $t >>
-        | o = value_val_opt_override; "virtual"; mf = opt_mutable; l = label; ":";
-                t = poly_type ->
+        | value_val_opt_override{o}; "virtual"; opt_mutable{mf}; label{l}; ":";
+                poly_type{t} ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
               <:class_str_item< val virtual $mutable:mf $l : $t >>
-        | o = method_opt_override; "virtual"; pf = opt_private; l = label; ":";
-                t = poly_type ->
+        | method_opt_override{o}; "virtual"; opt_private{pf}; label{l}; ":";
+                poly_type{t} ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
               <:class_str_item< method virtual $private:pf $l : $t >>
-        | o = method_opt_override; pf = opt_private; l = label; topt = opt_polyt;
-                e = fun_binding ->
+        | method_opt_override{o}; opt_private{pf}; label{l}; opt_polyt{topt};
+                fun_binding{e} ->
             <:class_str_item< method $override:o $private:pf $l : $topt = $e >>
-        | o = method_opt_override; pf = opt_private; "virtual"; l = label; ":";
-             t = poly_type ->
+        | method_opt_override{o}; opt_private{pf}; "virtual"; label{l}; ":";
+             poly_type{t} ->
             if o <> <:override_flag<>> then
               raise (Stream.Error "override (!) is incompatible with virtual")
             else
               <:class_str_item< method virtual $private:pf $l : $t >>
-        | type_constraint; t1 = ctyp; "="; t2 = ctyp ->
+        | type_constraint; ctyp{t1}; "="; ctyp{t2} ->
             <:class_str_item< type $t1 = $t2 >>
-        | "initializer"; se = expr -> <:class_str_item< initializer $se >> ] ]
+        | "initializer"; expr{se} -> <:class_str_item< initializer $se >> ] ]
     method_opt_override:
       [ [ "method"; "!" -> <:override_flag< ! >>
         | "method"; `ANTIQUOT (("!"|"override"|"anti") as n) s -> Ast.OvAnt (mk_anti n s)
@@ -1856,180 +1857,180 @@ New syntax:\
         | "val"; `ANTIQUOT (("!"|"override"|"anti") as n) s -> Ast.OvAnt (mk_anti n s)
         | "val" -> <:override_flag<>>   ] ]
     opt_as_lident:
-      [ [ "as"; i = a_LIDENT -> i
+      [ [ "as"; a_LIDENT{i} -> i
         | -> ""  ] ]
     opt_polyt:
-      [ [ ":"; t = poly_type -> t
+      [ [ ":"; poly_type{t} -> t
         | -> <:ctyp<>> ] ]
     cvalue_binding:
-      [ [ "="; e = expr -> e
-        | ":"; "type"; t1 = unquoted_typevars; "." ; t2 = ctyp ; "="; e = expr -> 
+      [ [ "="; expr{e} -> e
+        | ":"; "type"; unquoted_typevars{t1}; "." ; ctyp{t2} ; "="; expr{e} -> 
 	(* let u = Ast.TyTypePol _loc t1 t2 in *)
          let u = <:ctyp< ! $t1 . $t2 >> in   
          <:expr< ($e : $u) >>
-        | ":"; t = poly_type; "="; e = expr -> <:expr< ($e : $t) >>
-        | ":"; t = poly_type; ":>"; t2 = ctyp; "="; e = expr ->
+        | ":"; poly_type{t}; "="; expr{e} -> <:expr< ($e : $t) >>
+        | ":"; poly_type{t}; ":>"; ctyp{t2}; "="; expr{e} ->
             match t with
             [ <:ctyp< ! $_ . $_ >> -> raise (Stream.Error "unexpected polytype here")
             | _ -> <:expr< ($e : $t :> $t2) >> ]
-        | ":>"; t = ctyp; "="; e = expr -> <:expr< ($e :> $t) >> ] ]
+        | ":>"; ctyp{t}; "="; expr{e} -> <:expr< ($e :> $t) >> ] ]
     label:
-      [ [ i = a_LIDENT -> i ] ]
+      [ [ a_LIDENT{i} -> i ] ]
     class_type:
       [ [ `ANTIQUOT (""|"ctyp"|"anti" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_type_tag
-        | ct = class_type_longident_and_param -> ct
-        | "object"; cst = opt_class_self_type; csg = class_signature; "end" ->
+        | class_type_longident_and_param{ct} -> ct
+        | "object"; opt_class_self_type{cst}; class_signature{csg}; "end" ->
             <:class_type< object ($cst) $csg end >> ] ]
     class_type_longident_and_param:
-      [ [ i = class_type_longident; "["; t = comma_ctyp; "]" ->
+      [ [ class_type_longident{i}; "["; comma_ctyp{t}; "]" ->
             <:class_type< $id:i [ $t ] >>
-        | i = class_type_longident -> <:class_type< $id:i >> ] ]
+        | class_type_longident{i} -> <:class_type< $id:i >> ] ]
     class_type_plus:
-      [ [ "["; t = ctyp; "]"; "->"; ct = SELF ->
+      [ [ "["; ctyp{t}; "]"; "->"; SELF{ct} ->
         <:class_type< [ $t ] -> $ct >>
-        | ct = class_type -> ct ] ]
+        | class_type{ct} -> ct ] ]
     opt_class_self_type:
-      [ [ "("; t = ctyp; ")" -> t
+      [ [ "("; ctyp{t}; ")" -> t
         | -> <:ctyp<>> ] ]
     class_signature:
       [ [ `ANTIQUOT (""|"csg"|"anti"|"list" as n) s ->
             <:class_sig_item< $(anti:mk_anti ~c:"class_sig_item" n s) >>
-        | `ANTIQUOT (""|"csg"|"anti"|"list" as n) s; semi; csg = SELF ->
+        | `ANTIQUOT (""|"csg"|"anti"|"list" as n) s; semi; SELF{csg} ->
             <:class_sig_item< $(anti:mk_anti ~c:"class_sig_item" n s); $csg >>
-        | l = LIST0 [ csg = class_sig_item; semi -> csg ] ->
+        | LIST0 [ class_sig_item{csg}; semi -> csg ]{l} ->
             Ast.cgSem_of_list l  ] ]
     class_sig_item:
       [ [ `ANTIQUOT (""|"csg"|"anti"|"list" as n) s ->
             <:class_sig_item< $(anti:mk_anti ~c:"class_sig_item" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_sig_item_tag
-        | "inherit"; cs = class_type ->
+        | "inherit"; class_type{cs} ->
             <:class_sig_item< inherit $cs >>
-        | "val"; mf = opt_mutable; mv = opt_virtual;
-          l = label; ":"; t = ctyp ->
+        | "val"; opt_mutable{mf}; opt_virtual{mv};
+          label{l}; ":"; ctyp{t} ->
             <:class_sig_item< val $mutable:mf $virtual:mv $l : $t >>
-        | "method"; "virtual"; pf = opt_private; l = label; ":"; t = poly_type ->
+        | "method"; "virtual"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
             <:class_sig_item< method virtual $private:pf $l : $t >>
-        | "method"; pf = opt_private; l = label; ":"; t = poly_type ->
+        | "method"; opt_private{pf}; label{l}; ":"; poly_type{t} ->
             <:class_sig_item< method $private:pf $l : $t >>
-        | "method"; pf = opt_private; "virtual"; l = label; ":"; t = poly_type ->
+        | "method"; opt_private{pf}; "virtual"; label{l}; ":"; poly_type{t} ->
             <:class_sig_item< method virtual $private:pf $l : $t >>
-        | type_constraint; t1 = ctyp; "="; t2 = ctyp ->
+        | type_constraint; ctyp{t1}; "="; ctyp{t2} ->
             <:class_sig_item< type $t1 = $t2 >> ] ]
     type_constraint:
       [ [ "type" | "constraint" -> () ] ]
     class_description:
-      [ [ cd1 = SELF; "and"; cd2 = SELF ->
+      [ [ SELF{cd1}; "and"; SELF{cd2} ->
             <:class_type< $cd1 and $cd2 >>
         | `ANTIQUOT (""|"typ"|"anti"|"list" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
         | `QUOTATION x ->
             Quotation.expand _loc x DynAst.class_type_tag
-        | ci = class_info_for_class_type; ":"; ct = class_type_plus ->
+        | class_info_for_class_type{ci}; ":"; class_type_plus{ct} ->
             <:class_type< $ci : $ct >>  ] ]
     class_type_declaration:
       [ LA
-        [ cd1 = SELF; "and"; cd2 = SELF ->
+        [ SELF{cd1}; "and"; SELF{cd2} ->
           <:class_type< $cd1 and $cd2 >>
         | `ANTIQUOT (""|"typ"|"anti"|"list" as n) s ->
             <:class_type< $(anti:mk_anti ~c:"class_type" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.class_type_tag
-        | ci = class_info_for_class_type; "="; ct = class_type ->
+        | class_info_for_class_type{ci}; "="; class_type{ct} ->
             <:class_type< $ci = $ct >> ] ]
     field_expr_list:
-      [ [ b1 = field_expr; ";"; b2 = SELF -> <:rec_binding< $b1 ; $b2 >>
-        | b1 = field_expr; ";"            -> b1
-        | b1 = field_expr                 -> b1
+      [ [ field_expr{b1}; ";"; SELF{b2} -> <:rec_binding< $b1 ; $b2 >>
+        | field_expr{b1}; ";"            -> b1
+        | field_expr{b1}                 -> b1
       ] ]
     field_expr:
       [ [ `ANTIQUOT (""|"bi"|"anti" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:rec_binding< $(anti:mk_anti ~c:"rec_binding" n s) >>
-        | l = label; "="; e = expr Level "top" ->
+        | label{l}; "=";  expr Level "top"{e} ->
             <:rec_binding< $lid:l = $e >> ] ]
     meth_list:
-      [ [ m = meth_decl; ";"; (ml, v) = SELF  -> (<:ctyp< $m; $ml >>, v)
-        | m = meth_decl; ";"; v = opt_dot_dot -> (m, v)
-        | m = meth_decl; v = opt_dot_dot      -> (m, v)
+      [ [ meth_decl{m}; ";"; SELF{(ml, v) }  -> (<:ctyp< $m; $ml >>, v)
+        | meth_decl{m}; ";"; opt_dot_dot{v} -> (m, v)
+        | meth_decl{m}; opt_dot_dot{v}      -> (m, v)
       ] ]
     meth_decl:
       [ [ `ANTIQUOT (""|"typ" as n) s        -> <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s          -> <:ctyp< $(anti:mk_anti ~c:"ctyp;" n s) >>
         | `QUOTATION x                       -> Quotation.expand _loc x DynAst.ctyp_tag
-        | lab = a_LIDENT; ":"; t = poly_type -> <:ctyp< $lid:lab : $t >> ] ]
+        | a_LIDENT{lab}; ":"; poly_type{t} -> <:ctyp< $lid:lab : $t >> ] ]
     opt_meth_list:
-      [ [ (ml, v) = meth_list -> <:ctyp< < $ml $(..:v) > >>
-        | v = opt_dot_dot     -> <:ctyp< < $(..:v) > >>
+      [ [ meth_list{(ml, v) } -> <:ctyp< < $ml $(..:v) > >>
+        | opt_dot_dot{v}     -> <:ctyp< < $(..:v) > >>
       ] ]
     poly_type:
-      [ [ t = ctyp -> t ] ]
+      [ [ ctyp{t} -> t ] ]
     package_type:
-      [ [ p = module_type -> p ] ]
+      [ [ module_type{p} -> p ] ]
     typevars:
       [ LA
-        [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
+        [ SELF{t1}; SELF{t2} -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | "'"; i = a_ident -> <:ctyp< '$lid:i >> ] ]
+        | "'"; a_ident{i} -> <:ctyp< '$lid:i >> ] ]
     unquoted_typevars:
       [ LA
-        [ t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
+        [ SELF{t1}; SELF{t2} -> <:ctyp< $t1 $t2 >>
         | `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `QUOTATION x -> Quotation.expand _loc x DynAst.ctyp_tag
-        | i = a_ident -> <:ctyp< $lid:i >>
+        | a_ident{i} -> <:ctyp< $lid:i >>
       ] ]
     row_field:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
         | `ANTIQUOT ("list" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp|" n s) >>
-        | t1 = SELF; "|"; t2 = SELF -> <:ctyp< $t1 | $t2 >>
-        | "`"; i = a_ident -> <:ctyp< `$i >>
-        | "`"; i = a_ident; "of"; "&"; t = amp_ctyp -> <:ctyp< `$i of & $t >>
-        | "`"; i = a_ident; "of"; t = amp_ctyp -> <:ctyp< `$i of $t >>
-        | t = ctyp -> t ] ]
+        | SELF{t1}; "|"; SELF{t2} -> <:ctyp< $t1 | $t2 >>
+        | "`"; a_ident{i} -> <:ctyp< `$i >>
+        | "`"; a_ident{i}; "of"; "&"; amp_ctyp{t} -> <:ctyp< `$i of & $t >>
+        | "`"; a_ident{i}; "of"; amp_ctyp{t} -> <:ctyp< `$i of $t >>
+        | ctyp{t} -> t ] ]
     amp_ctyp:
-      [ [ t1 = SELF; "&"; t2 = SELF -> <:ctyp< $t1 & $t2 >>
+      [ [ SELF{t1}; "&"; SELF{t2} -> <:ctyp< $t1 & $t2 >>
         | `ANTIQUOT ("list" as n) s -> <:ctyp< $(anti:mk_anti ~c:"ctyp&" n s) >>
-        | t = ctyp -> t
+        | ctyp{t} -> t
       ] ]
     name_tags:
       [ [ `ANTIQUOT (""|"typ" as n) s ->
             <:ctyp< $(anti:mk_anti ~c:"ctyp" n s) >>
-        | t1 = SELF; t2 = SELF -> <:ctyp< $t1 $t2 >>
-        | "`"; i = a_ident -> <:ctyp< `$i >>  ] ]
+        | SELF{t1}; SELF{t2} -> <:ctyp< $t1 $t2 >>
+        | "`"; a_ident{i} -> <:ctyp< `$i >>  ] ]
     eq_expr:
-      [ [ "="; e = expr -> fun i p -> <:patt< ? $i : ($p = $e) >>
+      [ [ "="; expr{e} -> fun i p -> <:patt< ? $i : ($p = $e) >>
         | -> fun i p -> <:patt< ? $i : ($p) >> ] ]
     patt_tcon:
-      [ [ p = patt; ":"; t = ctyp -> <:patt< ($p : $t) >>
-        | p = patt -> p ] ]
+      [ [ patt{p}; ":"; ctyp{t} -> <:patt< ($p : $t) >>
+        | patt{p} -> p ] ]
     ipatt:
-      [ [ `LABEL i; p = SELF -> <:patt< ~ $i : $p >>
-        | "~"; `ANTIQUOT (""|"lid" as n) i; ":"; p = SELF ->
+      [ [ `LABEL i; SELF{p} -> <:patt< ~ $i : $p >>
+        | "~"; `ANTIQUOT (""|"lid" as n) i; ":"; SELF{p} ->
             <:patt< ~ $(mk_anti n i) : $p >>
         | "~"; `ANTIQUOT (""|"lid" as n) i -> <:patt< ~ $(mk_anti n i) >>
         | "~"; `LIDENT i -> <:patt< ~ $i >>
-        (* | i = opt_label; "("; p = ipatt_tcon; ")" ->
+        (* | opt_label{i}; "("; ipatt_tcon{p}; ")" ->
             <:patt< ? $i$ : ($p$) >>
-        | i = opt_label; "("; p = ipatt_tcon; "="; e = expr; ")" ->
+        | opt_label{i}; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
             <:patt< ? $i$ : ($p$ = $e$) >>                             *)
-        | `OPTLABEL i; "("; p = ipatt_tcon; f = eq_expr; ")" -> f i p
-        | "?"; `ANTIQUOT (""|"lid" as n) i; ":"; "("; p = ipatt_tcon;
-          f = eq_expr; ")" -> f (mk_anti n i) p
+        | `OPTLABEL i; "("; ipatt_tcon{p}; eq_expr{f}; ")" -> f i p
+        | "?"; `ANTIQUOT (""|"lid" as n) i; ":"; "("; ipatt_tcon{p};
+          eq_expr{f}; ")" -> f (mk_anti n i) p
         | "?"; `LIDENT i -> <:patt< ? $i >>
         | "?"; `ANTIQUOT (""|"lid" as n) i -> <:patt< ? $(mk_anti n i) >>
-        | "?"; "("; p = ipatt_tcon; ")" ->
+        | "?"; "("; ipatt_tcon{p}; ")" ->
             <:patt< ? ($p) >>
-        | "?"; "("; p = ipatt_tcon; "="; e = expr; ")" ->
+        | "?"; "("; ipatt_tcon{p}; "="; expr{e}; ")" ->
             <:patt< ? ($p = $e) >> ] ]
     ipatt_tcon:
-      [ [ p = ipatt; ":"; t = ctyp -> <:patt< ($p : $t) >>
-        | p = ipatt -> p ] ]
+      [ [ ipatt{p}; ":"; ctyp{t} -> <:patt< ($p : $t) >>
+        | ipatt{p} -> p ] ]
     direction_flag:
       [ [ "to" -> <:direction_flag< to >>
         | "downto" -> <:direction_flag< downto >>
@@ -2059,43 +2060,43 @@ New syntax:\
         | `ANTIQUOT (("!"|"override"|"anti") as n) s -> Ast.OvAnt (mk_anti n s)
         | -> <:override_flag<>> ] ]
     opt_expr:
-      [ [ e = expr -> e
+      [ [ expr{e} -> e
         | -> <:expr<>> ] ]
     interf:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr; semi ->
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
             ([ <:sig_item< # $n $dp >> ], stopped_at _loc)
           (* Ast.SgDir(_loc,n,dp), stopped is of type FanLoc.t option *)
-        | si = sig_item; semi; (sil, stopped) = SELF -> ([si :: sil], stopped)
+        | sig_item{si}; semi;  SELF{(sil, stopped)} -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
     sig_items:
       [ [ `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s ->
             <:sig_item< $(anti:mk_anti n ~c:"sig_item" s) >>
-        | `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s; semi; sg = SELF ->
+        | `ANTIQUOT (""|"sigi"|"anti"|"list" as n) s; semi; SELF{sg} ->
             <:sig_item< $(anti:mk_anti n ~c:"sig_item" s); $sg >> 
-        | l = LIST0 [ sg = sig_item; semi -> sg ] -> Ast.sgSem_of_list l  ] ]
+        | LIST0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ] ]
     implem:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr; semi ->
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
             ([ <:str_item< # $n $dp >> ], stopped_at _loc)
-        | si = str_item; semi; (sil, stopped) = SELF -> ([si :: sil], stopped)
+        | str_item{si}; semi;  SELF{(sil, stopped)} -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
     str_items:
       [ [ `ANTIQUOT (""|"stri"|"anti"|"list" as n) s ->
             <:str_item< $(anti:mk_anti n ~c:"str_item" s) >>
-        | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s; semi; st = SELF ->
+        | `ANTIQUOT (""|"stri"|"anti"|"list" as n) s; semi; SELF{st} ->
             <:str_item< $(anti:mk_anti n ~c:"str_item" s); $st >>
-        | l = LIST0 [ st = str_item; semi -> st ] -> Ast.stSem_of_list l  ] ]
+        | LIST0 [ str_item{st}; semi -> st ]{l} -> Ast.stSem_of_list l  ] ]
     top_phrase:
-      [ [ ph = phrase -> Some ph
+      [ [ phrase{ph} -> Some ph
         | `EOI -> None ] ]
     use_file:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr; semi ->
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
             ([ <:str_item< # $n $dp >> ], stopped_at _loc)
-        | si = str_item; semi; (sil, stopped) = SELF -> ([si :: sil], stopped)
+        | str_item{si}; semi;  SELF{(sil, stopped)} -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
     phrase:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr; ";;" -> (* directive to be the same as normal syntax*)
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> (* directive to be the same as normal syntax*)
             <:str_item< # $n $dp >>
-        | st = str_item; semi -> st  ] ]
+        | str_item{st}; semi -> st  ] ]
     a_INT:
       [ [ `ANTIQUOT (""|"int"|"`int" as n) s -> mk_anti n s
         | `INT _ s -> s ] ]
@@ -2131,161 +2132,161 @@ New syntax:\
         | `STRING _ s -> s ] ]
     string_list:
       [ [ `ANTIQUOT (""|"str_list") s -> Ast.LAnt (mk_anti "str_list" s)
-        | `STRING _ x; xs = string_list -> Ast.LCons x xs
+        | `STRING _ x; string_list{xs} -> Ast.LCons x xs
         | `STRING _ x -> Ast.LCons x Ast.LNil ] ]
     semi:
       [ [ ";" -> () ] ] 
     expr_quot:
-      [ [ e1 = expr; ","; e2 = comma_expr -> <:expr< $e1, $e2 >>
-        | e1 = expr; ";"; e2 = sem_expr -> <:expr< $e1; $e2 >>
-        | e = expr -> e
+      [ [ expr{e1}; ","; comma_expr{e2} -> <:expr< $e1, $e2 >>
+        | expr{e1}; ";"; sem_expr{e2} -> <:expr< $e1; $e2 >>
+        | expr{e} -> e
         | -> <:expr<>> ] ]
     patt_quot:
-      [ [ x = patt; ","; y = comma_patt -> <:patt< $x, $y >>
-        | x = patt; ";"; y = sem_patt -> <:patt< $x; $y >>
-        | x = patt; "="; y = patt ->
+      [ [ patt{x}; ","; comma_patt{y} -> <:patt< $x, $y >>
+        | patt{x}; ";"; sem_patt{y} -> <:patt< $x; $y >>
+        | patt{x}; "="; patt{y} ->
             let i =
               match x with
               [ <:patt@loc< $anti:s >> -> <:ident@loc< $anti:s >>
               | p -> Ast.ident_of_patt p ]
             in
             <:patt< $i = $y >>
-        | x = patt -> x
+        | patt{x} -> x
         | -> <:patt<>>
       ] ]
     ctyp_quot:
-      [ [ x = more_ctyp; ","; y = comma_ctyp -> <:ctyp< $x, $y >>
-        | x = more_ctyp; ";"; y = label_declaration_list -> <:ctyp< $x; $y >>
-        | x = more_ctyp; "|"; y = constructor_declarations -> <:ctyp< $x | $y >>
-        | x = more_ctyp; "of"; y = constructor_arg_list -> <:ctyp< $x of $y >>
-        | x = more_ctyp; "of"; y = constructor_arg_list; "|"; z = constructor_declarations ->
+      [ [ more_ctyp{x}; ","; comma_ctyp{y} -> <:ctyp< $x, $y >>
+        | more_ctyp{x}; ";"; label_declaration_list{y} -> <:ctyp< $x; $y >>
+        | more_ctyp{x}; "|"; constructor_declarations{y} -> <:ctyp< $x | $y >>
+        | more_ctyp{x}; "of"; constructor_arg_list{y} -> <:ctyp< $x of $y >>
+        | more_ctyp{x}; "of"; constructor_arg_list{y}; "|"; constructor_declarations{z} ->
             <:ctyp< $(<:ctyp< $x of $y >> ) | $z >>
-        | x = more_ctyp; "of"; "&"; y = amp_ctyp -> <:ctyp< $x of & $y >>
-        | x = more_ctyp; "of"; "&"; y = amp_ctyp; "|"; z = row_field ->
+        | more_ctyp{x}; "of"; "&"; amp_ctyp{y} -> <:ctyp< $x of & $y >>
+        | more_ctyp{x}; "of"; "&"; amp_ctyp{y}; "|"; row_field{z} ->
             <:ctyp< $(<:ctyp< $x of & $y >> ) | $z >>
-        | x = more_ctyp; ":"; y = more_ctyp -> <:ctyp< $x : $y >>
-        | x = more_ctyp; ":"; y = more_ctyp; ";"; z = label_declaration_list ->
+        | more_ctyp{x}; ":"; more_ctyp{y} -> <:ctyp< $x : $y >>
+        | more_ctyp{x}; ":"; more_ctyp{y}; ";"; label_declaration_list{z} ->
             <:ctyp< $(<:ctyp< $x : $y >> ) ; $z >>
-        | x = more_ctyp; "*"; y = star_ctyp -> <:ctyp< $x * $y >>
-        | x = more_ctyp; "&"; y = amp_ctyp -> <:ctyp< $x & $y >>
-        | x = more_ctyp; "and"; y = constructor_arg_list -> <:ctyp< $x and $y >>
-        | x = more_ctyp -> x
+        | more_ctyp{x}; "*"; star_ctyp{y} -> <:ctyp< $x * $y >>
+        | more_ctyp{x}; "&"; amp_ctyp{y} -> <:ctyp< $x & $y >>
+        | more_ctyp{x}; "and"; constructor_arg_list{y} -> <:ctyp< $x and $y >>
+        | more_ctyp{x} -> x
         | -> <:ctyp<>>  ] ]
     more_ctyp:
-      [ [ "mutable"; x = SELF -> <:ctyp< mutable $x >>
-        | "`"; x = a_ident -> <:ctyp< `$x >>
-        | x = ctyp -> x
-        | x = type_parameter -> x
+      [ [ "mutable"; SELF{x} -> <:ctyp< mutable $x >>
+        | "`"; a_ident{x} -> <:ctyp< `$x >>
+        | ctyp{x} -> x
+        | type_parameter{x} -> x
       ] ]
     str_item_quot:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr -> <:str_item< # $n $dp >>
-        | st1 = str_item; semi; st2 = SELF ->
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp} -> <:str_item< # $n $dp >>
+        | str_item{st1}; semi; SELF{st2} ->
             match st2 with
             [ <:str_item<>> -> st1
             | _ -> <:str_item< $st1; $st2 >> ]
-        | st = str_item -> st
+        | str_item{st} -> st
         | -> <:str_item<>> ] ]
     sig_item_quot:
-      [ [ "#"; n = a_LIDENT; dp = opt_expr -> <:sig_item< # $n $dp >>
-        | sg1 = sig_item; semi; sg2 = SELF ->
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp} -> <:sig_item< # $n $dp >>
+        | sig_item{sg1}; semi; SELF{sg2} ->
             match sg2 with
             [ <:sig_item<>> -> sg1
             | _ -> <:sig_item< $sg1; $sg2 >> ]
-        | sg = sig_item -> sg
+        | sig_item{sg} -> sg
         | -> <:sig_item<>> ] ]
     module_type_quot:
-      [ [ x = module_type -> x
+      [ [ module_type{x} -> x
         | -> <:module_type<>> ] ]
     module_expr_quot:
-      [ [ x = module_expr -> x
+      [ [ module_expr{x} -> x
         | -> <:module_expr<>> ] ]
     match_case_quot:
-      [ [ x = LIST0 match_case0 SEP "|" -> <:match_case< $list:x >>
+      [ [ LIST0 match_case0 SEP "|"{x} -> <:match_case< $list:x >>
         | -> <:match_case<>> ] ]
     binding_quot:
-      [ [ x = binding -> x
+      [ [ binding{x} -> x
         | -> <:binding<>> ] ]
     rec_binding_quot:
-      [ [ x = label_expr_list -> x
+      [ [ label_expr_list{x} -> x
         | -> <:rec_binding<>> ] ]
     module_binding_quot:
-      [ [ b1 = SELF; "and"; b2 = SELF ->
+      [ [ SELF{b1}; "and"; SELF{b2} ->
             <:module_binding< $b1 and $b2 >>
         | `ANTIQUOT ("module_binding"|"anti" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
         | `ANTIQUOT ("" as n) s ->
             <:module_binding< $(anti:mk_anti ~c:"module_binding" n s) >>
-        | `ANTIQUOT ("" as n) m; ":"; mt = module_type ->
+        | `ANTIQUOT ("" as n) m; ":"; module_type{mt} ->
             <:module_binding< $(mk_anti n m) : $mt >>
-        | `ANTIQUOT ("" as n) m; ":"; mt = module_type; "="; me = module_expr ->
+        | `ANTIQUOT ("" as n) m; ":"; module_type{mt}; "="; module_expr{me} ->
             <:module_binding< $(mk_anti n m) : $mt = $me >>
-        | m = a_UIDENT; ":"; mt = module_type ->
+        | a_UIDENT{m}; ":"; module_type{mt} ->
             <:module_binding< $m : $mt >>
-        | m = a_UIDENT; ":"; mt = module_type; "="; me = module_expr ->
+        | a_UIDENT{m}; ":"; module_type{mt}; "="; module_expr{me} ->
             <:module_binding< $m : $mt = $me >>
         | -> <:module_binding<>> ] ]
     ident_quot:
       [ "apply"
-        [ i = SELF; j = SELF -> <:ident< $i $j >> ]
+        [ SELF{i}; SELF{j} -> <:ident< $i $j >> ]
       | "."
-        [ i = SELF; "."; j = SELF -> <:ident< $i.$j >> ]
+        [ SELF{i}; "."; SELF{j} -> <:ident< $i.$j >> ]
       | "simple"
         [ `ANTIQUOT (""|"id"|"anti"|"list" as n) s ->
             <:ident< $(anti:mk_anti ~c:"ident" n s) >>
-        | i = a_UIDENT -> <:ident< $uid:i >>
-        | i = a_LIDENT -> <:ident< $lid:i >>
-        | `ANTIQUOT (""|"id"|"anti"|"list" as n) s; "."; i = SELF ->
+        | a_UIDENT{i} -> <:ident< $uid:i >>
+        | a_LIDENT{i} -> <:ident< $lid:i >>
+        | `ANTIQUOT (""|"id"|"anti"|"list" as n) s; "."; SELF{i} ->
             <:ident< $(anti:mk_anti ~c:"ident" n s).$i >>
-        | "("; i = SELF; ")" -> i  ] ]
+        | "("; SELF{i}; ")" -> i  ] ]
     class_expr_quot:
-      [ [ ce1 = SELF; "and"; ce2 = SELF -> <:class_expr< $ce1 and $ce2 >>
-        | ce1 = SELF; "="; ce2 = SELF -> <:class_expr< $ce1 = $ce2 >>
-        | "virtual"; (i, ot) = class_name_and_param ->
+      [ [ SELF{ce1}; "and"; SELF{ce2} -> <:class_expr< $ce1 and $ce2 >>
+        | SELF{ce1}; "="; SELF{ce2} -> <:class_expr< $ce1 = $ce2 >>
+        | "virtual";   class_name_and_param{(i, ot)} ->
             <:class_expr< virtual $lid:i [ $ot ] >>
-        | `ANTIQUOT ("virtual" as n) s; i = ident; ot = opt_comma_ctyp ->
+        | `ANTIQUOT ("virtual" as n) s; ident{i}; opt_comma_ctyp{ot} ->
             let anti = Ast.ViAnt (mk_anti ~c:"class_expr" n s) in
             <:class_expr< $virtual:anti $id:i [ $ot ] >>
-        | x = class_expr -> x
+        | class_expr{x} -> x
         | -> <:class_expr<>> ] ]
     class_type_quot:
-      [ [ ct1 = SELF; "and"; ct2 = SELF -> <:class_type< $ct1 and $ct2 >>
-        | ct1 = SELF; "="; ct2 = SELF -> <:class_type< $ct1 = $ct2 >>
-        | ct1 = SELF; ":"; ct2 = SELF -> <:class_type< $ct1 : $ct2 >>
-        | "virtual"; (i, ot) = class_name_and_param ->
+      [ [ SELF{ct1}; "and"; SELF{ct2} -> <:class_type< $ct1 and $ct2 >>
+        | SELF{ct1}; "="; SELF{ct2} -> <:class_type< $ct1 = $ct2 >>
+        | SELF{ct1}; ":"; SELF{ct2} -> <:class_type< $ct1 : $ct2 >>
+        | "virtual";  class_name_and_param{(i, ot)} ->
             <:class_type< virtual $lid:i [ $ot ] >>
-        | `ANTIQUOT ("virtual" as n) s; i = ident; ot = opt_comma_ctyp ->
+        | `ANTIQUOT ("virtual" as n) s; ident{i}; opt_comma_ctyp{ot} ->
             let anti = Ast.ViAnt (mk_anti ~c:"class_type" n s) in
             <:class_type< $virtual:anti $id:i [ $ot ] >>
-        | x = class_type_plus -> x
+        | class_type_plus{x} -> x
         | -> <:class_type<>>   ] ]
     class_str_item_quot:
-      [ [ x1 = class_str_item; semi; x2 = SELF ->
+      [ [ class_str_item{x1}; semi; SELF{x2} ->
           match x2 with
           [ <:class_str_item<>> -> x1
           | _ -> <:class_str_item< $x1; $x2 >> ]
-        | x = class_str_item -> x
+        | class_str_item{x} -> x
         | -> <:class_str_item<>> ] ]
     class_sig_item_quot:
-      [ [ x1 = class_sig_item; semi; x2 = SELF ->
+      [ [ class_sig_item{x1}; semi; SELF{x2} ->
           match x2 with
           [ <:class_sig_item<>> -> x1
           | _ -> <:class_sig_item< $x1; $x2 >> ]
-        | x = class_sig_item -> x
+        | class_sig_item{x} -> x
         | -> <:class_sig_item<>> ] ]
     with_constr_quot:
-      [ [ x = with_constr -> x
+      [ [ with_constr{x} -> x
         | -> <:with_constr<>> ] ]
-    rec_flag_quot: [ [ x = opt_rec -> x ] ]
-    direction_flag_quot: [ [ x = direction_flag -> x ] ]
-    mutable_flag_quot: [ [ x = opt_mutable -> x ] ]
-    private_flag_quot: [ [ x = opt_private -> x ] ]
-    virtual_flag_quot: [ [ x = opt_virtual -> x ] ]
-    row_var_flag_quot: [ [ x = opt_dot_dot -> x ] ]
-    override_flag_quot: [ [ x = opt_override -> x ] ]
+    rec_flag_quot: [ [ opt_rec{x} -> x ] ]
+    direction_flag_quot: [ [ direction_flag{x} -> x ] ]
+    mutable_flag_quot: [ [ opt_mutable{x} -> x ] ]
+    private_flag_quot: [ [ opt_private{x} -> x ] ]
+    virtual_flag_quot: [ [ opt_virtual{x} -> x ] ]
+    row_var_flag_quot: [ [ opt_dot_dot{x} -> x ] ]
+    override_flag_quot: [ [ opt_override{x} -> x ] ]
     patt_eoi:
-      [ [ x = patt; `EOI -> x ] ]
+      [ [ patt{x}; `EOI -> x ] ]
     expr_eoi:
-      [ [ x = expr; `EOI -> x ] ]
+      [ [ expr{x}; `EOI -> x ] ]
   END;
 
 end;
@@ -2564,60 +2565,60 @@ module MakeRevisedParserParser (Syntax : Sig.Camlp4Syntax) = struct
     GLOBAL: expr stream_expr stream_begin stream_end stream_quot
       parser_case parser_case_list;
     expr: Level "top"
-      [ [ "parser"; po = OPT parser_ipatt; pcl = parser_case_list ->
+      [ [ "parser";  OPT parser_ipatt{po}; parser_case_list{pcl} ->
             cparser _loc po pcl
-        | "match"; e = sequence; "with"; "parser"; po = OPT parser_ipatt;
-          pcl = parser_case_list ->
+        | "match"; sequence{e}; "with"; "parser";  OPT parser_ipatt{po};
+          parser_case_list{pcl} ->
             cparser_match _loc e po pcl ] ]
     parser_ipatt:
-      [ [ i = a_LIDENT -> <:patt< $lid:i >>  | "_" -> <:patt< _ >>  ] ]        
+      [ [ a_LIDENT{i} -> <:patt< $lid:i >>  | "_" -> <:patt< _ >>  ] ]        
     parser_case_list:
-      [ [ "["; pcl = LIST0 parser_case SEP "|"; "]" -> pcl
-        | pc = parser_case -> [pc] ] ]
+      [ [ "["; LIST0 parser_case SEP "|"{pcl}; "]" -> pcl
+        | parser_case{pc} -> [pc] ] ]
     parser_case:
-      [ [ stream_begin; sp = stream_patt; stream_end; po = OPT parser_ipatt; "->"; e = expr
+      [ [ stream_begin; stream_patt{sp}; stream_end; OPT parser_ipatt{po}; "->"; expr{e}
           ->   (sp, po, e) ] ]
     stream_begin: [ [ "[<" -> () ] ] stream_end: [ [ ">]" -> () ] ]
     stream_quot:  [ [ "'" -> () ] ]
-    stream_expr:  [ [ e = expr -> e ] ]
+    stream_expr:  [ [ expr{e} -> e ] ]
     stream_patt:
-      [ [ spc = stream_patt_comp -> [(spc, None)]
-        | spc = stream_patt_comp; ";"; sp = stream_patt_comp_err_list
+      [ [ stream_patt_comp{spc} -> [(spc, None)]
+        | stream_patt_comp{spc}; ";"; stream_patt_comp_err_list{sp}
           ->    [(spc, None) :: sp]
         | -> [] ] ]
     (* stream_patt_comp: (\* FIXME here *\) *)
-    (*   [ [ stream_quot; p = patt; eo = OPT [ "when"; e = stream_expr -> e ] *)
+    (*   [ [ stream_quot; patt{p}; eo = OPT [ "when"; e = stream_expr -> e ] *)
     (*       ->  SpTrm _loc p eo *)
     (*     | p = patt; "="; e = stream_expr -> SpNtr _loc p e *)
     (*     | p = patt -> SpStr _loc p ] ] *)
     stream_patt_comp: (* FIXME here *)
-      [ [ p = patt; eo = OPT [ "when"; e = stream_expr -> e ]
+      [ [ patt{p}; OPT [ "when"; stream_expr{e} -> e ]{eo}
           ->  SpTrm _loc p eo
-        | p = patt; "="; e = stream_expr -> SpNtr _loc p e
-        | stream_quot; p = patt -> SpStr _loc p ] ]
+        | patt{p}; "="; stream_expr{e} -> SpNtr _loc p e
+        | stream_quot; patt{p} -> SpStr _loc p ] ]
         
     stream_patt_comp_err:
-      [ [ spc = stream_patt_comp; eo = OPT [ "??"; e = stream_expr -> e ]
+      [ [ stream_patt_comp{spc};  OPT [ "??"; stream_expr{e} -> e ]{eo }
           ->  (spc, eo) ] ]
     stream_patt_comp_err_list:
-      [ [ spc = stream_patt_comp_err -> [spc]
-        | spc = stream_patt_comp_err; ";" -> [spc]
-        | spc = stream_patt_comp_err; ";"; sp = stream_patt_comp_err_list ->
+      [ [ stream_patt_comp_err{spc} -> [spc]
+        | stream_patt_comp_err{spc}; ";" -> [spc]
+        | stream_patt_comp_err{spc}; ";"; stream_patt_comp_err_list{sp} ->
             [spc :: sp] ] ]
     expr: Level "simple"
       [ [ stream_begin; stream_end -> <:expr< [< >] >>
-        | stream_begin; sel = stream_expr_comp_list; stream_end
+        | stream_begin; stream_expr_comp_list{sel}; stream_end
           ->  cstream _loc sel] ]
     stream_expr_comp_list:
-      [ [ se = stream_expr_comp; ";"; sel = stream_expr_comp_list -> [se :: sel]
-        | se = stream_expr_comp; ";" -> [se]
-        | se = stream_expr_comp -> [se] ] ]
+      [ [ stream_expr_comp{se}; ";"; stream_expr_comp_list{sel} -> [se :: sel]
+        | stream_expr_comp{se}; ";" -> [se]
+        | stream_expr_comp{se} -> [se] ] ]
     (* stream_expr_comp: (\* FIXME *\) *)
-    (*   [ [ stream_quot; e = stream_expr -> SeTrm _loc e *)
-    (*     | e = stream_expr -> SeNtr _loc e ] ] *)
+    (*   [ [ stream_quot; stream_expr{e} -> SeTrm _loc e *)
+    (*     | stream_expr{e} -> SeNtr _loc e ] ] *)
     stream_expr_comp: (* FIXME *)
-      [ [  e = stream_expr -> SeTrm _loc e
-        | stream_quot;e = stream_expr -> SeNtr _loc e ] ]
+      [ [  stream_expr{e} -> SeTrm _loc e
+        | stream_quot;stream_expr{e} -> SeNtr _loc e ] ]
         
   END;
 
@@ -2672,7 +2673,7 @@ module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
         subst_first_loc exp_ast ] in begin 
           EXTEND Gram
             entry_eoi:
-            [ [ x = entry; `EOI -> x ] ]
+            [ [  entry{x}; `EOI -> x ] ]
             END;
           Quotation.add name DynAst.expr_tag expand_expr;
           Quotation.add name DynAst.patt_tag expand_patt;

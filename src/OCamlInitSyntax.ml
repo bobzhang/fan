@@ -198,9 +198,9 @@ module Gram = Gram =   struct
     let antiquot_patt = Gram.mk "antiquot_patt";
     EXTEND Gram
       antiquot_expr:
-        [ [ x = expr; `EOI -> x ] ]
+        [ [  expr{x}; `EOI -> x ] ]
       antiquot_patt:
-        [ [ x = patt; `EOI -> x ] ]
+        [ [  patt{x}; `EOI -> x ] ]
     END;
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
