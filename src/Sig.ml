@@ -36,9 +36,9 @@ module type PrinterImpl = sig
     Ast.str_item -> unit;
 end;
 
+module Gram = Grammar.Static;
+  
 module type Camlp4Syntax = sig
-  (* module Token          : FanSig.Camlp4Token ; *)
-  module Gram           : FanSig.Grammar.Static (*with module Token = Token*);
   module AntiquotSyntax : ParserExpr;
   module Quotation : Quotation.S;
   module AstFilters: AstFilters.S;
@@ -218,11 +218,9 @@ module type Camlp4Syntax = sig
   val entry: Gram.t FanGrammar.entry;
 end;
 
-(** A signature for syntax extension (syntax -> syntax functors). *)
+
 module type SyntaxExtension = functor (Syn : Camlp4Syntax)
   -> (Camlp4Syntax with
-      (* module Token = Syn.Token and *)
-      module Gram  = Syn.Gram  and
       module AntiquotSyntax = Syn.AntiquotSyntax and
       module Quotation = Syn.Quotation and
       module AstFilters = Syn.AstFilters );
@@ -238,48 +236,12 @@ module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
 (* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 
 
-(* module type Lexer = sig *)
-(*     module Token : FanSig.Token ; *)
-(*     (\* module Error : FanSig.Error; *\) *)
-(*     (\** The constructor for a lexing function. The character stream is the input *)
-(*       stream to be lexed. The result is a stream of pairs of a token and *)
-(*       a location. *)
-(*       The lexer do not use global (mutable) variables: instantiations *)
-(*       of [Lexer.mk ()] do not perturb each other. *\) *)
-(*     val mk : unit -> FanLoc.t ->  Stream.t char ->  Stream.t (Token.t *  FanLoc.t); *)
-(*     val from_lexbuf:?quotations:bool -> *)
-(*       Lexing.lexbuf ->  Stream.t (Token.t*  Location.t); *)
-(*     val from_string : *)
-(*         ?quotations:bool -> *)
-(*         Location.t -> string -> Stream.t (Token.t * Location.t); *)
-(*     val from_stream : *)
-(*         ?quotations:bool -> *)
-(*           Location.t -> *)
-(*              Stream.t char ->  Stream.t (Token.t *  Location.t); *)
-(*     val mk : *)
-(*         unit -> *)
-(*         Location.t -> *)
-(*          Stream.t char -> Stream.t (Token.t*  Location.t) ; *)
-(*     val debug_from_string : string -> unit; *)
-(*     val debug_from_file : string -> unit; *)
-        
-(*   end; *)
-  
-
-(* module type LEXER =  functor (Token: FanSig.Camlp4Token) *)
-(*   -> Lexer with  module Token = Token; *)
-
+type parser_fun 'a =
+    ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
+type printer_fun 'a =
+      ?input_file:string -> ?output_file:string -> 'a -> unit;
 module type PRECAST = sig
-  (* type token = FanSig.camlp4_token ; *)
-  (* module Token      : FanSig.Token  with *)
-  (*                     type t = FanSig.camlp4_token; *)
-  (* module Lexer      : Lexer  with *)
-  (*                     module Token = Token; *)
-  module Gram       : FanSig.Grammar.Static;  (* with *)
-                      (* module Token = Token; *)
-  module Syntax     : Camlp4Syntax with
-                      (* module Token   = Token and *)
-                      module Gram = Gram;
+  module Syntax     : Camlp4Syntax ;
   module Printers : sig
     module OCaml         : PrinterImpl;
     module DumpOCamlAst  : PrinterImpl;
@@ -287,13 +249,6 @@ module type PRECAST = sig
     module Null          : PrinterImpl;
   end;
 
-  (* module MakeSyntax (U : sig end) : Camlp4Syntax; *)
-
-  (* parser signature *)
-  type parser_fun 'a =
-      ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
-  type printer_fun 'a =
-      ?input_file:string -> ?output_file:string -> 'a -> unit;
   val loaded_modules : ref (list string);
   val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;
   val register_str_item_parser : parser_fun Ast.str_item -> unit;

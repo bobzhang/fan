@@ -1,7 +1,7 @@
 open LibUtil;
 open FanUtil;
 open Lib;
-
+module Gram = Grammar.Static;
 module IdDebugParser = struct
   let name = "Camlp4DebugParser";
   let version = Sys.ocaml_version;
@@ -9,7 +9,6 @@ end;
 
 module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
-  (* open FanSig ; (\* For FanToken, probably we should fix FanToken as well  *\) *)
   module Ast = Camlp4Ast;  
   let debug_mode =
     try
@@ -27,7 +26,7 @@ module MakeDebugParser (Syntax : Sig.Camlp4Syntax) = struct
     with [ Not_found -> fun _ -> False ];
 
   let mk_debug_mode _loc = fun [ None -> <:expr< Debug.mode >>
-                                 | Some m -> <:expr< $uid:m.Debug.mode >> ];
+    | Some m -> <:expr< $uid:m.Debug.mode >> ];
 
   let mk_debug _loc m fmt section args =
     let call = Expr.apply <:expr< Debug.printf $str:section $str:fmt >> args in

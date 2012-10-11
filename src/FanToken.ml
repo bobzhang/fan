@@ -124,8 +124,8 @@ let check_unknown_keywords tok loc = match tok with
 module Filter = struct
 
   
-  let mk is_kwd =
-    { is_kwd = is_kwd;
+  let mk ~is_kwd =
+    { is_kwd ;
       filter = ignore_layout };
     
   let filter x =

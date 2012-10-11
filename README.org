@@ -68,14 +68,20 @@ it's 100% compatible with ocaml.
    
 ** Initial Install
 
-   just type dist
+   just type =./dist=
 
 *** What it mainly did
-    - Start. it will make =cold/Fan.byte= from original syntax This is
-      mainly for the cold start(compile from the original syntax
-    code). Actually all work is done.
-    - Bootstrap. Using the generated binary to preprocess the revised
-      syntax to verify =Fan= reaches a fix point now.
+
+    - Start 
+      
+      It will make =cold/Fan.byte= from original syntax This is mainly
+      for the cold start(compile from the original syntax
+      code). Actually all work is done.
+
+    - Bootstrap
+      
+      Using the generated binary to preprocess the revised syntax to
+      verify =Fan= reaches a fix point now.
 
     If it reaches fix point, then it succeeds. You can also test =hb
     Fan.native= for fun!

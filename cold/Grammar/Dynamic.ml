@@ -11,7 +11,8 @@ let mk =
                                                    (Hashtbl.create 301) in
                                                   {gkeywords = gkeywords;
                                                    gfilter = (
-                                                    (FanToken.Filter.mk (
+                                                    (FanToken.Filter.mk
+                                                      ~is_kwd:(
                                                       (Hashtbl.mem gkeywords)
                                                       )) );
                                                    glexer = (

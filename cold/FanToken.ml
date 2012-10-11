@@ -187,7 +187,7 @@ let check_unknown_keywords =
 module Filter =
                                                struct
                                                 let mk =
-                                                 fun is_kwd ->
+                                                 fun ~is_kwd ->
                                                   {is_kwd = is_kwd;
                                                    filter = ignore_layout}
 

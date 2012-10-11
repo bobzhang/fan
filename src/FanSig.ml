@@ -1,85 +1,27 @@
-(** The generic quotation type.
-    To see how fields are used here is an example:
-    <:q_name@q_loc<q_contents>>
-    The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
+
+
+
 
       
 (** A type for stream filters. *)
 type  stream_filter 'a 'loc =
      Stream.t ('a *  'loc)-> Stream.t ('a*  'loc);
-       
+
+
+
+
+(** The generic quotation type.
+    To see how fields are used here is an example:
+    <:q_name@q_loc<q_contents>>
+    The last one, q_shift is equal to the length of "<:q_name@q_loc<". *)
 type quotation ={
     q_name : string;
     q_loc : string;
     q_shift : int;
     q_contents : string
   };
-type token  =
-  [ = `KEYWORD of string
-  | `SYMBOL of string
-  | `LIDENT of string
-  | `UIDENT of string
-  | `ESCAPED_IDENT of string
-  | `INT of (int * string )
-  | `INT32 of (int32 * string )
-  | `INT64 of (int64 * string )
-  | `NATIVEINT of (nativeint * string )
-  | `FLOAT of (float * string )
-  | `CHAR of (char * string )
-  | `STRING of (string * string )
-  | `LABEL of string
-  | `OPTLABEL of string
-  | `QUOTATION of quotation
-  | `ANTIQUOT of (string * string )
-  | `COMMENT of string
-  | `BLANKS of string
-  | `NEWLINE
-  | `LINE_DIRECTIVE of (int * option string )
-  | `EOI];
 
-type token_filter = stream_filter token FanLoc.t;
 
-type filter =
-      { is_kwd : string -> bool;
-        filter : mutable token_filter };
-
-(** A signature for tokens. *)
-(* module type Token = sig *)
-(*   type t *)
-(*   val to_string : t -> string *)
-(*   val print : Format.formatter -> t -> unit *)
-(*   val match_keyword : string -> t -> bool *)
-(*   val extract_string : t -> string *)
-(*   module Filter : sig *)
-(*     type token_filter = (t, FanLoc.t) stream_filter *)
-(*     (\** The type for this filter chain. *)
-(*         A basic implementation just store the [is_keyword] function given *)
-(*         by [mk] and use it in the [filter] function. *\) *)
-(*   type t *)
-(*   (\** The given predicate function returns true if the given string *)
-(*       is a keyword. This function can be used in filters to translate *)
-(*       identifier tokens to keyword tokens. *\) *)
-(*   val mk : (string -> bool) -> t *)
-(*   (\** This function allows to register a new filter to the token filter chain. *)
-(*      You can choose to not support these and raise an exception. *\) *)
-(*   val define_filter : t -> (token_filter -> token_filter) -> unit *)
-              
-(*   (\** This function filter the given stream and return a filtered stream. *)
-(*       A basic implementation just match identifiers against the [is_keyword] *)
-(*       function to produce token keywords instead. *\) *)
-(*   val filter : t -> token_filter *)
-              
-(*   (\** Called by the grammar system when a keyword is used. *)
-(*       The boolean argument is True when it's the first time that keyword *)
-(*       is used. If you do not care about this information just return [()]. *\) *)
-(*   val keyword_added : t -> string -> bool -> unit *)
-              
-(*   (\** Called by the grammar system when a keyword is no longer used. *)
-(*       If you do not care about this information just return [()]. *\) *)
-(*   val keyword_removed : t -> string -> unit *)
-(*   end *)
-
-(* end *)
       
 (* (\** This signature describes tokens for the OCaml and the Revised *)
 (*     syntax lexing rules. For some tokens the data constructor holds two *)
@@ -109,94 +51,42 @@ type filter =
 (*     ["n"]. To interpret a string use the first string of the [STRING] *)
 (*     constructor (or if you need to compute it use the module *)
 (*     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *\) *)
+type token  =
+  [ = `KEYWORD of string
+  | `SYMBOL of string
+  | `LIDENT of string
+  | `UIDENT of string
+  | `ESCAPED_IDENT of string
+  | `INT of (int * string )
+  | `INT32 of (int32 * string )
+  | `INT64 of (int64 * string )
+  | `NATIVEINT of (nativeint * string )
+  | `FLOAT of (float * string )
+  | `CHAR of (char * string )
+  | `STRING of (string * string )
+  | `LABEL of string
+  | `OPTLABEL of string
+  | `QUOTATION of quotation
+  | `ANTIQUOT of (string * string )
+  | `COMMENT of string
+  | `BLANKS of string
+  | `NEWLINE
+  | `LINE_DIRECTIVE of (int * option string )
+  | `EOI];
 
-(* type camlp4_token = *)
-(*   | KEYWORD of string *)
-(*   | SYMBOL of string *)
-(*   | LIDENT of string *)
-(*   | UIDENT of string *)
-(*   | ESCAPED_IDENT of string *)
-(*   | INT of int * string *)
-(*   | INT32 of int32 * string *)
-(*   | INT64 of int64 * string *)
-(*   | NATIVEINT of nativeint * string *)
-(*   | FLOAT of float * string *)
-(*   | CHAR of char * string *)
-(*   | STRING of string * string *)
-(*   | LABEL of string *)
-(*   | OPTLABEL of string *)
-(*   | QUOTATION of quotation *)
-(*   | ANTIQUOT of string * string *)
-(*   | COMMENT of string *)
-(*   | BLANKS of string *)
-(*   | NEWLINE *)
-(*   | LINE_DIRECTIVE of int * string option *)
-(*   | EOI *)
+ (** The type for this filter chain.
+     A basic implementation just store the [is_keyword] function given
+     by [mk] and use it in the [filter] function. *)
+type token_filter = stream_filter token FanLoc.t;
 
-(* type token = *)
-(*   [ `KEYWORD of string *)
-(*   | `SYMBOL of string *)
-(*   | `LIDENT of string *)
-(*   | `UIDENT of string *)
-(*   | `ESCAPED_IDENT of string *)
-(*   | `INT of int * string *)
-(*   | `INT32 of int32 * string *)
-(*   | `INT64 of int64 * string *)
-(*   | `NATIVEINT of nativeint * string *)
-(*   | `FLOAT of float * string *)
-(*   | `CHAR of char * string *)
-(*   | `STRING of string * string *)
-(*   | `LABEL of string *)
-(*   | `OPTLABEL of string *)
-(*   | `QUOTATION of quotation *)
-(*   | `ANTIQUOT of string * string *)
-(*   | `COMMENT of string *)
-(*   | `BLANKS of string *)
-(*   | `NEWLINE *)
-(*   | `LINE_DIRECTIVE of int * string option *)
-(*   | `EOI] *)
+type filter ={
+    is_kwd : string -> bool;
+    filter : mutable token_filter };
 
-(* (\** A signature for specialized tokens. *\) *)
-(* module type Camlp4Token = Token with type t = camlp4_token *)
-      
-
-
-(** A signature for dynamic loaders. *)
-(* module type DynLoader = *)
-(*   sig *)
-(*     type t *)
-    
-(*     exception Error of string * string *)
-      
-(*     (\** [mk ?ocaml_stdlib ?camlp4_stdlib] *)
-(*       The stdlib flag is true by default. *)
-(*       To disable it use: [mk ~ocaml_stdlib:False] *\) *)
-(*     val mk : ?ocaml_stdlib: bool -> ?camlp4_stdlib: bool -> unit -> t *)
-      
-(*     (\** Fold over the current load path list. *\) *)
-(*     val fold_load_path : t -> (string -> 'a -> 'a) -> 'a -> 'a *)
-      
-(*     (\** [load f] Load the file [f]. If [f] is not an absolute path name, *)
-(*       the load path list used to find the directory of [f]. *\) *)
-(*     val load : t -> string -> unit *)
-      
-(*     (\** [include_dir d] Add the directory [d] in the current load path *)
-(*       list (like the common -I option). *\) *)
-(*     val include_dir : t -> string -> unit *)
-      
-(*     (\** [find_in_path f] Returns the full path of the file [f] if *)
-(*       [f] is in the current load path, raises [Not_found] otherwise. *\) *)
-(*     val find_in_path : t -> string -> string *)
-      
-(*     (\** [is_native] [True] if we are in native code, [False] for bytecode. *\) *)
-(*     val is_native : bool *)
-      
-(*   end *)
-  
 
 module type SEntry = sig
-            (** The abstract type of grammar entries. The type parameter is the type
-          of the semantic actions that are associated with this entry. *)
+  (** The abstract type of grammar entries. The type parameter is the type
+      of the semantic actions that are associated with this entry. *)
   type t 'a;
   type token_stream;   (* := *)
   type internal_entry; (* := *)
@@ -269,7 +159,6 @@ module Grammar = struct
       end;
     module type Structure =  sig
         module Action : Action;
-        (* module Token : Token  *)
         type gram =
           { gfilter : filter;
             gkeywords :  Hashtbl.t string  (ref int);

@@ -120,6 +120,7 @@ let retype_rule_list_without_patterns _loc rl =
   with
     [ Exit -> rl ];
 
+exception NotneededTyping ;
 (*
   internal
  *)
@@ -133,9 +134,10 @@ let  make_ctyp  styp tvar = (* styp -> string -> Ast.ctyp *)
           FanLoc.raise _loc
             (Stream.Error ("'" ^ x ^  "' illegal in anonymous entry level"))
         else <:ctyp< '$tvar >>
-    | STtok _loc -> <:ctyp< $(id:gm()).token >> (*FIXME*)
-    (* | STstring_tok _loc -> <:ctyp< string >> *)
-    | STtyp t -> t ] in aux styp ;
+    | STtok _loc -> raise NotneededTyping
+    (* | STtok _loc -> <:ctyp< $(id:gm()).token >> (\*FIXME*\) *)
+    | STtyp t -> t ] in
+    try Some (aux styp) with [NotneededTyping -> None ];
 
 (*
   {[
@@ -143,15 +145,14 @@ let  make_ctyp  styp tvar = (* styp -> string -> Ast.ctyp *)
   ]}
 *)    
 let make_ctyp_patt styp tvar patt = (* styp -> string -> patt -> patt*)
-  (* let styp = match styp with [ STstring_tok _loc -> STtok _loc | t -> t ] in *)
   match make_ctyp styp tvar with
-  [ <:ctyp< _ >> -> patt (* FIXME *)
-  | t -> let _loc = Camlp4Ast.loc_of_patt patt in <:patt< ($patt : $t) >> ];
+  [ None -> patt (* FIXME *)
+  | Some t -> let _loc = Camlp4Ast.loc_of_patt patt in <:patt< ($patt : $t) >> ];
 
 let make_ctyp_expr styp tvar expr = (* styp -> string -> expr -> expr*)
   match make_ctyp styp tvar with
-  [ <:ctyp< _ >> -> expr
-  | t -> let _loc = Camlp4Ast.loc_of_expr expr in <:expr< ($expr : $t) >> ];
+  [ None -> expr
+  | Some t -> let _loc = Camlp4Ast.loc_of_expr expr in <:expr< ($expr : $t) >> ];
       
 (*
   {[
@@ -159,8 +160,6 @@ let make_ctyp_expr styp tvar expr = (* styp -> string -> expr -> expr*)
   ]}
  *)    
 let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string) =
-  (* Ast.loc -> ('j, Ast.patt) symbol list ->
-     string -> Ast.expr option -> string -> Ast.expr *)
   let locid = <:patt< $(lid: !FanLoc.name) >> in (* default is [_loc]*)
   let act = match act with
   [ Some act -> act (* get the action *)

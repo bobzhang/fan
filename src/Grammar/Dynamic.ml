@@ -1,55 +1,41 @@
 open LibUtil;
-(* module Make (Lexer : Sig.Lexer) *)
-(* = struct *)
-  (* module Structure = Structure.Make Lexer; *)
-  (* module Delete    = Delete.Make    Structure; *)
-  (* module Insert    = Insert.Make    Structure; *)
-  (* include Entry.Make Structure; *)
 include Entry;
-  (* module Fold      = Fold.Make      Structure; *)
-  include Structure;
-  let mk () =
-    let gkeywords = Hashtbl.create 301 in
-    {
+include Structure;
+let mk () =
+  let gkeywords = Hashtbl.create 301 in{
       gkeywords = gkeywords;
-      gfilter = FanToken.Filter.mk (Hashtbl.mem gkeywords);
+      gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
       glexer = FanLexer.mk ();
-      warning_verbose = ref True; (* FIXME *)
+      warning_verbose = ref True; 
       error_verbose = FanConfig.verbose
     };
 
-  let get_filter g = g.gfilter;
+let get_filter g = g.gfilter;
 
-  let lex g loc cs = g.glexer loc cs;
+let lex g loc cs = g.glexer loc cs;
 
-  let lex_string g loc str = lex g loc (Stream.of_string str);
+let lex_string g loc str = lex g loc (Stream.of_string str);
 
-  let filter g ts = Tools.keep_prev_loc (FanToken.Filter.filter g.gfilter ts);
+let filter g ts = Tools.keep_prev_loc (FanToken.Filter.filter g.gfilter ts);
 
-  let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry.egram ts);
+let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter entry.egram ts);
 
-  let parse entry loc cs = filter_and_parse_tokens entry (lex entry.egram loc cs);
+let parse entry loc cs = filter_and_parse_tokens entry (lex entry.egram loc cs);
 
-  let parse_string entry loc str =
-    filter_and_parse_tokens entry (lex_string entry.egram loc str);
+let parse_string entry loc str =
+  filter_and_parse_tokens entry (lex_string entry.egram loc str);
 
-  let debug_origin_token_stream entry tokens=
-    parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);
-  let debug_filtered_token_stream entry tokens =
-    filter_and_parse_tokens entry (Stream.map (fun t -> (t,FanLoc.ghost)) tokens);
-  let delete_rule = Delete.delete_rule;
+let debug_origin_token_stream entry tokens=
+  parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);
+let debug_filtered_token_stream entry tokens =
+  filter_and_parse_tokens entry (Stream.map (fun t -> (t,FanLoc.ghost)) tokens);
+let delete_rule = Delete.delete_rule;
 
-  let srules e rl =
-    let t =
-      List.fold_left
-      (fun tree (symbols, action) -> Insert.insert_tree e symbols action tree)
-      DeadEnd rl
-    in
-    `Stree t;
-  let sfold0 = Fold.sfold0;
-  let sfold1 = Fold.sfold1;
-  let sfold0sep = Fold.sfold0sep;
-  (* let sfold1sep = Fold.sfold1sep; *)
-
-  let extend = Insert.extend;
-(* end; *)
+let srules e rl =
+  let t = List.fold_left
+      (fun tree (symbols, action) -> Insert.insert_tree e symbols action tree)  DeadEnd rl  in
+  `Stree t;
+let sfold0 = Fold.sfold0;
+let sfold1 = Fold.sfold1;
+let sfold0sep = Fold.sfold0sep;
+let extend = Insert.extend;

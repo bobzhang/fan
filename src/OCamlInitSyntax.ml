@@ -1,12 +1,7 @@
-module Make (Gram:FanSig.Grammar.Static)
- (*    (Gram: FanSig.Grammar.Static with type Token.t = FanSig.camlp4_token) *)
-    : Sig.Camlp4Syntax  with
-(*        module Token = Gram.Token and *)
-module Gram = Gram =   struct
+
+module Gram = Grammar.Static;
+module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   module Ast     = Camlp4Ast;
-  module Gram    = Gram;
-  (* module Token   = Gram.Token; *)
-  (* Warnings *)
   type warning = FanLoc.t -> string -> unit;
   let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
   let current_warning = ref default_warning;
@@ -185,18 +180,17 @@ module Gram = Gram =   struct
   let level_list = Gram.mk "level_list";
   let entry = Gram.mk "entry";
     
-  (* open FanSig; *) (* FIXME *)
   EXTEND Gram
     top_phrase:
       [ [ `EOI -> None ] ]
   END;
 
   module AntiquotSyntax = struct
-    module Ast  = Ast; (* Sig.Camlp4AstToAst Ast;*)
+    module Ast  = Ast; 
     module Gram = Gram;
     let antiquot_expr = Gram.mk "antiquot_expr";
     let antiquot_patt = Gram.mk "antiquot_patt";
-    EXTEND Gram (* FIXME *)
+    EXTEND Gram 
       antiquot_expr:
         [ [  expr{x}; `EOI -> x ] ]
       antiquot_patt:

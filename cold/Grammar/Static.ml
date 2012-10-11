@@ -9,7 +9,8 @@ let gram =
                                                 (Hashtbl.create 301) in
                                                {gkeywords = gkeywords;
                                                 gfilter = (
-                                                 (FanToken.Filter.mk (
+                                                 (FanToken.Filter.mk
+                                                   ~is_kwd:(
                                                    (Hashtbl.mem gkeywords) ))
                                                  );
                                                 glexer = ( (FanLexer.mk () )
@@ -20,18 +21,13 @@ let gram =
                                                  FanConfig.verbose}
 
 
-type token = FanSig.token
-
 include Entry
 
 let mk = (mk gram)
 
 let of_parser =
-                                                               fun name ->
-                                                                fun strm ->
-                                                                 (of_parser
-                                                                   gram name
-                                                                   strm)
+                                    fun name ->
+                                     fun strm -> (of_parser gram name strm)
 
 
 let get_filter = fun ()  -> gram.gfilter
@@ -153,3 +149,28 @@ let sfold0sep = Fold.sfold0sep
 
 let extend =
                                                            Insert.extend
+
+
+let eoi_entry =
+ fun entry ->
+  let entry_eoi = (mk ( (( (name entry) ) ^ "_eoi") )) in
+  let () =
+   (extend ( (entry_eoi : 'entry_eoi t) ) (
+     ((fun ()
+         ->
+        (None , (
+         [(None , None , (
+           [((
+             [`Snterm ((obj ( (entry : 'entry t) )));
+              `Stoken
+               ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))] ), (
+             (mk_action (
+               fun __camlp4_0 ->
+                fun (x :
+                  'entry) ->
+                 fun (_loc :
+                   FanLoc.t) ->
+                  (match __camlp4_0 with
+                   | `EOI -> (x : 'entry_eoi)
+                   | _ -> assert false) )) ))] ))] ))) () ) )) in
+  entry_eoi

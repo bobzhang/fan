@@ -98,9 +98,6 @@ type assoc =
 type position =
     [= `First | `Last | `Before of string | `After of string | `Level of string];
 
-(* module Make (Lexer  : Sig.Lexer) = struct *)
-(*   module Token = Lexer.Token; *)
-  (* type token=Token.t; *)
   module Action  (*: FanSig.Grammar.Action *) = struct
     type  t     = Obj.t   ;
     let mk :'a -> t   = Obj.repr;
@@ -205,5 +202,5 @@ type position =
       FanToken.Filter.keyword_removed filter kwd;
       Hashtbl.remove table kwd
     } else ();
-(* end; *)
+
 

@@ -1,17 +1,8 @@
+module Gram =  Grammar.Static;
 module Make   (U: sig end) : Sig.PRECAST  = struct
-  (* type token = FanSig.camlp4_token ; (\* FIXED the TOKEN type here, FIXME *\) *)
-  (* module Token = FanToken; *)
-  (* module Lexer = Lexer Token; *)
-  module Gram =  Grammar.Static(*.Make*) (*Lexer*);
+
   module Quotation = Quotation.Make (struct end);
-  (* module MakeSyntax (U : sig end) = OCamlInitSyntax.Make Gram ; *)
-  (* module Syntax = MakeSyntax (struct end); *)
-  module Syntax = OCamlInitSyntax.Make (Gram);
-  (* module AstFilters = AstFilters.Make (struct end); *)
-  type parser_fun 'a =
-      ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
-  type printer_fun 'a =
-      ?input_file:string -> ?output_file:string -> 'a -> unit;
+  module Syntax = OCamlInitSyntax.Make (U);
   let sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");
   let str_item_parser =
@@ -28,8 +19,7 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
     let rec loop () = loop (f (Queue.take callbacks)) in
     try loop () with [ Queue.Empty -> () ];
       
-  let declare_dyn_module m f =
-    begin
+  let declare_dyn_module m f = begin
       loaded_modules := [ m :: !loaded_modules ];
         Queue.add (m, f) callbacks;
     end;
@@ -106,10 +96,6 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
     module Null = PrinterNull.P;
   end;
     
-  (* let ast_filter (module Id:Sig.Id) (module Maker:Sig.ASTFILTER_PLUGIN) = *)
-  (*   declare_dyn_module Id.name (fun _ *)
-  (*       -> let module M = Maker AstFilters in ()); *)
-
   sig_item_parser := Syntax.parse_interf;
   str_item_parser := Syntax.parse_implem;
 
@@ -118,8 +104,6 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
       !sig_item_parser ?directive_handler loc strm;
     let parse_implem ?directive_handler loc strm =
       !str_item_parser ?directive_handler loc strm;
-    (* let parse_expr ?directive_handler loc expr = *)
-      
   end;
 
   module CurrentPrinter = struct
@@ -128,6 +112,4 @@ module Make   (U: sig end) : Sig.PRECAST  = struct
     let print_implem ?input_file ?output_file ast =
       !str_item_printer ?input_file ?output_file ast;
   end;
-
-    
 end; 
