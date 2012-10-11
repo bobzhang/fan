@@ -600,10 +600,10 @@ let rec compr =
                                                                     _loc e (
                                                                     (
                                                                     `gen
-                                                                    (p, (
+                                                                    ((p, (
                                                                     (filter
                                                                     _loc p b
-                                                                    l) )) ) ::
+                                                                    l) ))) ) ::
                                                                     items  ))
                                                                     | ((`gen
                                                                     (p, l))

@@ -337,26 +337,29 @@ let make_ctyp =
                                               ))) ))
                                         )
                                        else (Ast.TyQuo (_loc, tvar))
-                                    | STtok (_loc) -> (raise Not_found )
+                                    | STtok (_loc) ->
+                                       (Ast.TyId
+                                         (_loc, (
+                                          (Ast.IdAcc
+                                            (_loc, ( (gm () ) ), (
+                                             (Ast.IdLid (_loc, "token")) )))
+                                          )))
                                     | STtyp (t) -> t in
-                                   (try (Some (aux styp)) with
-                                    Not_found -> (None))
+                                   (aux styp)
 
 let make_ctyp_patt =
-                                                           fun styp ->
-                                                            fun tvar ->
-                                                             fun patt ->
-                                                              (match
-                                                                 (make_ctyp
-                                                                   styp tvar) with
-                                                               | None -> patt
-                                                               | Some (t) ->
-                                                                  let _loc =
-                                                                   (Camlp4Ast.loc_of_patt
-                                                                    patt) in
-                                                                  (Ast.PaTyc
-                                                                    (_loc,
-                                                                    patt, t)))
+                                                fun styp ->
+                                                 fun tvar ->
+                                                  fun patt ->
+                                                   (match
+                                                      (make_ctyp styp tvar) with
+                                                    | Ast.TyAny (_) -> patt
+                                                    | t ->
+                                                       let _loc =
+                                                        (Camlp4Ast.loc_of_patt
+                                                          patt) in
+                                                       (Ast.PaTyc
+                                                         (_loc, patt, t)))
 
 
 let make_ctyp_expr =
@@ -364,8 +367,8 @@ let make_ctyp_expr =
   fun tvar ->
    fun expr ->
     (match (make_ctyp styp tvar) with
-     | None -> expr
-     | Some (t) ->
+     | Ast.TyAny (_) -> expr
+     | t ->
         let _loc = (Camlp4Ast.loc_of_expr expr) in
         (Ast.ExTyc (_loc, expr, t)))
 
@@ -712,105 +715,72 @@ let rec make_expr =
                               (match (min, ts) with
                                | (false, None) ->
                                   (Ast.ExApp
-                                    (_loc, (
-                                     (Ast.ExId
-                                       (_loc, (
-                                        (Ast.IdAcc
-                                          (_loc, ( (gm () ) ), (
-                                           (Ast.IdUid (_loc, "Slist0")) )))
-                                        ))) ), txt))
+                                    (_loc, ( (Ast.ExVrn (_loc, "Slist0")) ),
+                                     txt))
                                | (true, None) ->
                                   (Ast.ExApp
-                                    (_loc, (
-                                     (Ast.ExId
-                                       (_loc, (
-                                        (Ast.IdAcc
-                                          (_loc, ( (gm () ) ), (
-                                           (Ast.IdUid (_loc, "Slist1")) )))
-                                        ))) ), txt))
+                                    (_loc, ( (Ast.ExVrn (_loc, "Slist1")) ),
+                                     txt))
                                | (false, Some (s)) ->
                                   let x = (make_expr entry tvar ( s.text )) in
                                   (Ast.ExApp
-                                    (_loc, (
-                                     (Ast.ExApp
-                                       (_loc, (
-                                        (Ast.ExId
-                                          (_loc, (
-                                           (Ast.IdAcc
-                                             (_loc, ( (gm () ) ), (
-                                              (Ast.IdUid (_loc, "Slist0sep"))
-                                              ))) ))) ), txt)) ), x))
+                                    (_loc, ( (Ast.ExVrn (_loc, "Slist0sep"))
+                                     ), (
+                                     (Ast.ExTup
+                                       (_loc, ( (Ast.ExCom (_loc, txt, x)) )))
+                                     )))
                                | (true, Some (s)) ->
                                   let x = (make_expr entry tvar ( s.text )) in
                                   (Ast.ExApp
-                                    (_loc, (
-                                     (Ast.ExApp
-                                       (_loc, (
-                                        (Ast.ExId
-                                          (_loc, (
-                                           (Ast.IdAcc
-                                             (_loc, ( (gm () ) ), (
-                                              (Ast.IdUid (_loc, "Slist1sep"))
-                                              ))) ))) ), txt)) ), x)))
-                           | TXnext (_loc) ->
-                              (Ast.ExId
-                                (_loc, (
-                                 (Ast.IdAcc
-                                   (_loc, ( (gm () ) ), (
-                                    (Ast.IdUid (_loc, "Snext")) ))) )))
+                                    (_loc, ( (Ast.ExVrn (_loc, "Slist1sep"))
+                                     ), (
+                                     (Ast.ExTup
+                                       (_loc, ( (Ast.ExCom (_loc, txt, x)) )))
+                                     ))))
+                           | TXnext (_loc) -> (Ast.ExVrn (_loc, "Snext"))
                            | TXnterm (_loc, n, lev) ->
                               (match lev with
                                | Some (lab) ->
                                   (Ast.ExApp
-                                    (_loc, (
-                                     (Ast.ExApp
+                                    (_loc, ( (Ast.ExVrn (_loc, "Snterml")) ),
+                                     (
+                                     (Ast.ExTup
                                        (_loc, (
-                                        (Ast.ExId
+                                        (Ast.ExCom
                                           (_loc, (
-                                           (Ast.IdAcc
-                                             (_loc, ( (gm () ) ), (
-                                              (Ast.IdUid (_loc, "Snterml"))
-                                              ))) ))) ), (
-                                        (Ast.ExApp
-                                          (_loc, (
-                                           (Ast.ExId
+                                           (Ast.ExApp
                                              (_loc, (
-                                              (Ast.IdAcc
-                                                (_loc, ( (gm () ) ), (
-                                                 (Ast.IdLid (_loc, "obj")) )))
-                                              ))) ), (
-                                           (Ast.ExTyc
-                                             (_loc, ( n.expr ), (
-                                              (Ast.TyApp
+                                              (Ast.ExId
                                                 (_loc, (
-                                                 (Ast.TyId
+                                                 (Ast.IdAcc
+                                                   (_loc, ( (gm () ) ), (
+                                                    (Ast.IdLid (_loc, "obj"))
+                                                    ))) ))) ), (
+                                              (Ast.ExTyc
+                                                (_loc, ( n.expr ), (
+                                                 (Ast.TyApp
                                                    (_loc, (
-                                                    (Ast.IdAcc
-                                                      (_loc, ( (gm () ) ), (
-                                                       (Ast.IdLid (_loc, "t"))
-                                                       ))) ))) ), (
-                                                 (Ast.TyQuo
-                                                   (_loc, ( n.tvar ))) ))) )))
-                                           ))) ))) ), (
-                                     (Ast.ExStr (_loc, lab)) )))
+                                                    (Ast.TyId
+                                                      (_loc, (
+                                                       (Ast.IdAcc
+                                                         (_loc, ( (gm () ) ),
+                                                          (
+                                                          (Ast.IdLid
+                                                            (_loc, "t")) )))
+                                                       ))) ), (
+                                                    (Ast.TyQuo
+                                                      (_loc, ( n.tvar ))) )))
+                                                 ))) ))) ), (
+                                           (Ast.ExStr (_loc, lab)) ))) ))) )))
                                | None ->
                                   if (( n.tvar ) = tvar) then
                                    (
-                                   (Ast.ExId
-                                     (_loc, (
-                                      (Ast.IdAcc
-                                        (_loc, ( (gm () ) ), (
-                                         (Ast.IdUid (_loc, "Sself")) ))) )))
+                                   (Ast.ExVrn (_loc, "Sself"))
                                    )
                                   else
                                    (Ast.ExApp
-                                     (_loc, (
-                                      (Ast.ExId
-                                        (_loc, (
-                                         (Ast.IdAcc
-                                           (_loc, ( (gm () ) ), (
-                                            (Ast.IdUid (_loc, "Snterm")) )))
-                                         ))) ), (
+                                     (_loc, ( (Ast.ExVrn (_loc, "Snterm")) ),
+                                      (
                                       (Ast.ExApp
                                         (_loc, (
                                          (Ast.ExId
@@ -833,22 +803,12 @@ let rec make_expr =
                                                ))) ))) ))) ))))
                            | TXopt (_loc, t) ->
                               (Ast.ExApp
-                                (_loc, (
-                                 (Ast.ExId
-                                   (_loc, (
-                                    (Ast.IdAcc
-                                      (_loc, ( (gm () ) ), (
-                                       (Ast.IdUid (_loc, "Sopt")) ))) ))) ),
-                                 ( (make_expr entry "" t) )))
+                                (_loc, ( (Ast.ExVrn (_loc, "Sopt")) ), (
+                                 (make_expr entry "" t) )))
                            | TXtry (_loc, t) ->
                               (Ast.ExApp
-                                (_loc, (
-                                 (Ast.ExId
-                                   (_loc, (
-                                    (Ast.IdAcc
-                                      (_loc, ( (gm () ) ), (
-                                       (Ast.IdUid (_loc, "Stry")) ))) ))) ),
-                                 ( (make_expr entry "" t) )))
+                                (_loc, ( (Ast.ExVrn (_loc, "Stry")) ), (
+                                 (make_expr entry "" t) )))
                            | TXrules (_loc, rl) ->
                               (Ast.ExApp
                                 (_loc, (
@@ -861,30 +821,14 @@ let rec make_expr =
                                           (Ast.IdLid (_loc, "srules")) ))) )))
                                     ), ( entry.expr ))) ), (
                                  (make_expr_rules _loc entry rl "") )))
-                           | TXself (_loc) ->
-                              (Ast.ExId
-                                (_loc, (
-                                 (Ast.IdAcc
-                                   (_loc, ( (gm () ) ), (
-                                    (Ast.IdUid (_loc, "Sself")) ))) )))
+                           | TXself (_loc) -> (Ast.ExVrn (_loc, "Sself"))
                            | TXkwd (_loc, kwd) ->
                               (Ast.ExApp
-                                (_loc, (
-                                 (Ast.ExId
-                                   (_loc, (
-                                    (Ast.IdAcc
-                                      (_loc, ( (gm () ) ), (
-                                       (Ast.IdUid (_loc, "Skeyword")) ))) )))
-                                 ), ( (Ast.ExStr (_loc, kwd)) )))
+                                (_loc, ( (Ast.ExVrn (_loc, "Skeyword")) ), (
+                                 (Ast.ExStr (_loc, kwd)) )))
                            | TXtok (_loc, match_fun, descr) ->
                               (Ast.ExApp
-                                (_loc, (
-                                 (Ast.ExId
-                                   (_loc, (
-                                    (Ast.IdAcc
-                                      (_loc, ( (gm () ) ), (
-                                       (Ast.IdUid (_loc, "Stoken")) ))) )))
-                                 ), (
+                                (_loc, ( (Ast.ExVrn (_loc, "Stoken")) ), (
                                  (Ast.ExTup
                                    (_loc, (
                                     (Ast.ExCom

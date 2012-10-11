@@ -1,12 +1,9 @@
 module Make =
- functor (Gram : (FanSig.Grammar.Static with type  Token.t =
-                  FanSig.camlp4_token)) ->
+ functor (Gram : FanSig.Grammar.Static) ->
   (struct
     module Ast = Camlp4Ast
 
     module Gram = Gram
-
-    module Token = Gram.Token
 
     type warning = (FanLoc.t -> (string -> unit))
 
@@ -366,24 +363,22 @@ module Make =
 
     let entry = (Gram.mk "entry")
 
-    open FanSig
-
     let _ = (Gram.extend ( (top_phrase : 'top_phrase Gram.t) ) (
               ((fun ()
                   ->
                  (None , (
                   [(None , None , (
                     [((
-                      [(
-                       (Gram.Stoken
-                         (( function | EOI -> (true) | _ -> (false) ), "EOI"))
-                       )] ), (
+                      [`Stoken
+                        ((( function | `EOI -> (true) | _ -> (false) ),
+                          "`EOI"))] ), (
                       (Gram.mk_action (
-                        fun __camlp4_0 ->
+                        fun (__camlp4_0 :
+                          Gram.token) ->
                          fun (_loc :
                            FanLoc.t) ->
                           (match __camlp4_0 with
-                           | EOI -> ((None) : 'top_phrase)
+                           | `EOI -> ((None) : 'top_phrase)
                            | _ -> assert false) )) ))] ))] ))) () ) ))
 
     module AntiquotSyntax =
@@ -403,18 +398,19 @@ module Make =
            (None , (
             [(None , None , (
               [((
-                [( (Gram.Snterm (Gram.obj ( (expr : 'expr Gram.t) ))) ); (
-                 (Gram.Stoken
-                   (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
+                [`Snterm ((Gram.obj ( (expr : 'expr Gram.t) )));
+                 `Stoken
+                  ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))]
                 ), (
                 (Gram.mk_action (
-                  fun __camlp4_0 ->
+                  fun (__camlp4_0 :
+                    Gram.token) ->
                    fun (x :
                      'expr) ->
                     fun (_loc :
                       FanLoc.t) ->
                      (match __camlp4_0 with
-                      | EOI -> (x : 'antiquot_expr)
+                      | `EOI -> (x : 'antiquot_expr)
                       | _ -> assert false) )) ))] ))] ))) () ) ))
       );
       (Gram.extend ( (antiquot_patt : 'antiquot_patt Gram.t) ) (
@@ -423,18 +419,19 @@ module Make =
            (None , (
             [(None , None , (
               [((
-                [( (Gram.Snterm (Gram.obj ( (patt : 'patt Gram.t) ))) ); (
-                 (Gram.Stoken
-                   (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
+                [`Snterm ((Gram.obj ( (patt : 'patt Gram.t) )));
+                 `Stoken
+                  ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))]
                 ), (
                 (Gram.mk_action (
-                  fun __camlp4_0 ->
+                  fun (__camlp4_0 :
+                    Gram.token) ->
                    fun (x :
                      'patt) ->
                     fun (_loc :
                       FanLoc.t) ->
                      (match __camlp4_0 with
-                      | EOI -> (x : 'antiquot_patt)
+                      | `EOI -> (x : 'antiquot_patt)
                       | _ -> assert false) )) ))] ))] ))) () ) ))
 
       let parse_expr =
@@ -492,6 +489,4 @@ module Make =
 
     module AstFilters = (AstFilters.Make)(struct end)
 
-   end :
-    (Sig.Camlp4Syntax with module Token = Gram.Token and module Token =
-     Gram.Token and module Gram = Gram))
+   end : (Sig.Camlp4Syntax with module Gram = Gram))

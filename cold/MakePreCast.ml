@@ -1,13 +1,7 @@
 module Make =
- functor (Lexer : Sig.LEXER) ->
+ functor (U : sig end) ->
   (struct
-    type token = FanSig.camlp4_token
-
-    module Token = FanToken
-
-    module Lexer = (Lexer)(Token)
-
-    module Gram = (Grammar.Static.Make)(Lexer)
+    module Gram = Grammar.Static
 
     module Quotation = (Quotation.Make)(struct end)
 

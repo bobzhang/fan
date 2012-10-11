@@ -587,7 +587,7 @@ and simple_expr ppf x =
   | Pexp_variant (l, eo) ->
       pp_open_hovbox ppf indent ;
       fprintf ppf "`%s" l ;
-      option_quiet expression ppf eo ;
+      option_quiet_p expression ppf eo ; (* bug fix*)
       pp_close_box ppf () ;
   | Pexp_record (l, eo) ->
       pp_open_hovbox ppf indent ; (* maybe just 1? *)
@@ -1784,8 +1784,8 @@ and longident_x_with_constraint_list ?(first=true) ppf l =
   | h :: t  ->
       if (first = false) then fprintf ppf "@ and " ;
       longident_x_with_constraint ppf h ;
-      fprintf ppf "@ and " ;
-      longident_x_with_constraint ppf h ;
+      (* fprintf ppf "@ and " ; *) (* duplicated here *)
+      (* longident_x_with_constraint ppf h ; *)
       longident_x_with_constraint_list ~first:false ppf t;
 
 and string_x_core_type_ands ?(first=true) ppf l =
@@ -1820,8 +1820,19 @@ and longident_x_with_constraint ppf (li, wc) =
       type_declaration ppf td ;
   | Pwith_module (li2) ->
       fprintf ppf "module %a =@ %a" fmt_longident li fmt_longident li2;
-  | Pwith_typesubst td ->
-      fprintf ppf "type@ %a :=@ " fmt_longident li;
+  | Pwith_typesubst ({ptype_params=ls} as td) -> (* bug fix *)
+      (* fprintf ppf "type@ %a :=@ " fmt_longident li; *)
+      fprintf ppf "type@ %a %a :=@ "
+        (fun ppf ls ->
+          let len = List.length ls in
+          if len >= 2 then begin
+            fprintf ppf "(";
+            list2 type_var_option_print ppf ls ",";
+            fprintf ppf ")";
+           end
+        else
+            list2 type_var_option_print ppf ls ",";
+        ) ls fmt_longident li;
       type_declaration ppf td ;
   | Pwith_modsubst (li2) ->
       fprintf ppf "module %a :=@ %a" fmt_longident li fmt_longident li2;

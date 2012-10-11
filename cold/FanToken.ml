@@ -4,22 +4,12 @@ open LibUtil
 
 open FanSig
 
-type t = camlp4_token
-
 type error =
-                                                                  Illegal_token
-                                                                   of 
-                                                                   string
-                                                                | Keyword_as_label
-                                                                   of 
-                                                                   string
-                                                                | Illegal_token_pattern
-                                                                   of
-                                                                   (string *
-                                                                    string)
-                                                                | Illegal_constructor
-                                                                   of 
-                                                                   string
+                                           Illegal_token of string
+                                         | Keyword_as_label of string
+                                         | Illegal_token_pattern of
+                                            (string * string)
+                                         | Illegal_constructor of string
 
 
 exception TokenError of error
@@ -62,30 +52,36 @@ let _ =
 
 let to_string =
  function
- | KEYWORD (s) -> (sprintf "KEYWORD %S" s)
- | SYMBOL (s) -> (sprintf "SYMBOL %S" s)
- | LIDENT (s) -> (sprintf "LIDENT %S" s)
- | UIDENT (s) -> (sprintf "UIDENT %S" s)
- | INT (_, s) -> (sprintf "INT %s" s)
- | INT32 (_, s) -> (sprintf "INT32 %sd" s)
- | INT64 (_, s) -> (sprintf "INT64 %sd" s)
- | NATIVEINT (_, s) -> (sprintf "NATIVEINT %sd" s)
- | FLOAT (_, s) -> (sprintf "FLOAT %s" s)
- | CHAR (_, s) -> (sprintf "CHAR '%s'" s)
- | STRING (_, s) -> (sprintf "STRING \"%s\"" s)
- | LABEL (s) -> (sprintf "LABEL %S" s)
- | OPTLABEL (s) -> (sprintf "OPTLABEL %S" s)
- | ANTIQUOT (n, s) -> (sprintf "ANTIQUOT %S: %S" n s)
- | QUOTATION (x) ->
-    (sprintf "QUOTATION { q_name=%S; q_loc=%S; q_shift=%d; q_contents=%S }" (
-      x.q_name ) ( x.q_loc ) ( x.q_shift ) ( x.q_contents ))
- | COMMENT (s) -> (sprintf "COMMENT %S" s)
- | BLANKS (s) -> (sprintf "BLANKS %S" s)
- | NEWLINE -> (sprintf "NEWLINE")
- | EOI -> (sprintf "EOI")
- | ESCAPED_IDENT (s) -> (sprintf "ESCAPED_IDENT %S" s)
- | LINE_DIRECTIVE (i, None) -> (sprintf "LINE_DIRECTIVE %d" i)
- | LINE_DIRECTIVE (i, Some (s)) -> (sprintf "LINE_DIRECTIVE %d %S" i s)
+ | (`KEYWORD s) -> (sprintf "`KEYWORD %S" s)
+ | (`SYMBOL s) -> (sprintf "`SYMBOL %S" s)
+ | (`LIDENT s) -> (sprintf "`LIDENT %S" s)
+ | (`UIDENT s) -> (sprintf "`UIDENT %S" s)
+ | (`INT (_, s)) -> (sprintf "`INT %s" s)
+ | (`INT32 (_, s)) -> (sprintf "`INT32 %sd" s)
+ | (`INT64 (_, s)) -> (sprintf "`INT64 %sd" s)
+ | (`NATIVEINT (_, s)) -> (sprintf "`NATIVEINT %sd" s)
+ | (`FLOAT (_, s)) -> (sprintf "`FLOAT %s" s)
+ | (`CHAR (_, s)) -> (sprintf "`CHAR '%s'" s)
+ | (`STRING (_, s)) -> (sprintf "`STRING \"%s\"" s)
+ | (`LABEL s) -> (sprintf "`LABEL %S" s)
+ | (`OPTLABEL s) -> (sprintf "`OPTLABEL %S" s)
+ | (`ANTIQUOT (n, s)) -> (sprintf "`ANTIQUOT %S: %S" n s)
+ | (`QUOTATION x) ->
+    (sprintf "`QUOTATION { q_name=%S; q_loc=%S; q_shift=%d; q_contents=%S }"
+      ( x.q_name ) ( x.q_loc ) ( x.q_shift ) ( x.q_contents ))
+ | (`COMMENT s) -> (sprintf "`COMMENT %S" s)
+ | (`BLANKS s) -> (sprintf "`BLANKS %S" s)
+ | `NEWLINE -> (sprintf "`NEWLINE")
+ | `EOI -> (sprintf "`EOI")
+ | (`ESCAPED_IDENT s) -> (sprintf "`ESCAPED_IDENT %S" s)
+ | (`LINE_DIRECTIVE (i, None)) -> (sprintf "`LINE_DIRECTIVE %d" i)
+ | (`LINE_DIRECTIVE (i, Some (s))) -> (sprintf "`LINE_DIRECTIVE %d %S" i s)
+
+
+let token_to_string =
+ function
+ | (#token as x) -> (to_string x)
+ | _ -> (invalid_arg "token_to_string not implemented for this token")
 
 
 let err =
@@ -110,11 +106,11 @@ let rec ignore_layout =
                                                       (match
                                                          (Stream.peek __strm) with
                                                        | Some
-                                                          ((((COMMENT (_)
-                                                              | BLANKS (_))
-                                                             | NEWLINE)
-                                                            | LINE_DIRECTIVE
-                                                               (_, _)), _) ->
+                                                          (((((`COMMENT _)
+                                                              | (`BLANKS _))
+                                                             | `NEWLINE)
+                                                            | (`LINE_DIRECTIVE
+                                                               _)), _) ->
                                                           (
                                                           (Stream.junk
                                                             __strm)
@@ -135,21 +131,21 @@ let rec ignore_layout =
                                                        | _ -> Stream.sempty)
 
 
-let print = fun ppf -> fun x -> (pp_print_string ppf ( (to_string x) ))
+let print = fun ppf -> fun x -> (pp_print_string ppf ( (token_to_string x) ))
 
 
 let match_keyword =
  fun kwd ->
-  function | KEYWORD (kwd') when (kwd = kwd') -> (true) | _ -> (false)
+  function | (`KEYWORD kwd') when (kwd = kwd') -> (true) | _ -> (false)
 
 
 let extract_string =
  function
- | (((((((((((((((KEYWORD (s) | SYMBOL (s)) | LIDENT (s)) | UIDENT (s))
-               | INT (_, s)) | INT32 (_, s)) | INT64 (_, s))
-            | NATIVEINT (_, s)) | FLOAT (_, s)) | CHAR (_, s))
-         | STRING (_, s)) | LABEL (s)) | OPTLABEL (s)) | COMMENT (s))
-     | BLANKS (s)) | ESCAPED_IDENT (s)) ->
+ | ((((((((((((((((`KEYWORD s) | (`SYMBOL s)) | (`LIDENT s)) | (`UIDENT s))
+               | (`INT (_, s))) | (`INT32 (_, s))) | (`INT64 (_, s)))
+            | (`NATIVEINT (_, s))) | (`FLOAT (_, s))) | (`CHAR (_, s)))
+         | (`STRING (_, s))) | (`LABEL s)) | (`OPTLABEL s)) | (`COMMENT s))
+     | (`BLANKS s)) | (`ESCAPED_IDENT s)) ->
     s
  | tok ->
     (invalid_arg (
@@ -160,9 +156,9 @@ let keyword_conversion =
  fun tok ->
   fun is_kwd ->
    (match tok with
-    | ((SYMBOL (s) | LIDENT (s)) | UIDENT (s)) when (is_kwd s) ->
-       (KEYWORD (s))
-    | ESCAPED_IDENT (s) -> (LIDENT (s))
+    | (((`SYMBOL s) | (`LIDENT s)) | (`UIDENT s)) when (is_kwd s) ->
+       `KEYWORD (s)
+    | (`ESCAPED_IDENT s) -> `LIDENT (s)
     | _ -> tok)
 
 let check_keyword_as_label =
@@ -171,8 +167,8 @@ let check_keyword_as_label =
                     fun is_kwd ->
                      let s =
                       (match tok with
-                       | LABEL (s) -> s
-                       | OPTLABEL (s) -> s
+                       | (`LABEL s) -> s
+                       | (`OPTLABEL s) -> s
                        | _ -> "") in
                      if (( (s <> "") ) && ( (is_kwd s) )) then
                       (
@@ -184,21 +180,12 @@ let check_unknown_keywords =
                                fun tok ->
                                 fun loc ->
                                  (match tok with
-                                  | SYMBOL (s) ->
+                                  | (`SYMBOL s) ->
                                      (err ( (Illegal_token (s)) ) loc)
                                   | _ -> ())
 
 module Filter =
                                                struct
-                                                type token_filter =
-                                                 (t, FanLoc.t) stream_filter
-
-                                                type t = {
-                                                           is_kwd:(string ->
-                                                                   bool);
-                                                           mutable filter:
-                                                            token_filter}
-
                                                 let mk =
                                                  fun is_kwd ->
                                                   {is_kwd = is_kwd;

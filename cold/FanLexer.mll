@@ -1,4 +1,4 @@
-(* The lexer definition *)
+
 
 
 {
@@ -28,14 +28,14 @@ let mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);            
 open FanUtil
 open LibUtil  
 open Format  
-module Make (Token : FanSig.Camlp4Token)
-= struct
+(* module Make (Token : FanSig.Camlp4Token) *)
+(* (\* = *\) struct *)
   (* module FanLoc = Token.FanLoc *)
-  module Token = Token
+  (* module Token = Token *)
 
   open Lexing
   (* open Camlp4.Sig *)
-  open FanSig
+  (* open FanSig *)
   (* Error report *)
   (* module Error = struct *)
 
@@ -198,7 +198,7 @@ module Make (Token : FanSig.Camlp4Token)
   let mk_quotation quotation c ~name ~loc ~shift ~retract =
    let s = parse_nested ~lexer:quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
    let contents = String.sub s 0 (String.length s - retract) in
-   FanSig.QUOTATION {
+   `QUOTATION {
    FanSig.q_name     = name     ;
    q_loc      = loc      ;
    q_shift    = shift    ;
@@ -302,45 +302,45 @@ let right_delimitor =
 
     
 rule token c = parse
-       | newline                            { update_loc c  ; NEWLINE }
-       | blank + as x                                                   { BLANKS x }
-       | "~" (lowercase identchar * as x) ':'                            { LABEL x }
-       | "?" (lowercase identchar * as x) ':'                         { OPTLABEL x }
-       | lowercase identchar * as x                                     { LIDENT x }
-       | uppercase identchar * as x                                     { UIDENT x }
+       | newline                            { update_loc c  ; `NEWLINE }
+       | blank + as x                                                   { `BLANKS x }
+       | "~" (lowercase identchar * as x) ':'                            { `LABEL x }
+       | "?" (lowercase identchar * as x) ':'                         { `OPTLABEL x }
+       | lowercase identchar * as x                                     { `LIDENT x }
+       | uppercase identchar * as x                                     { `UIDENT x }
        | int_literal as i
-           { try  INT(cvt_int_literal i, i)
+           { try  `INT(cvt_int_literal i, i)
            with Failure _ -> err (Literal_overflow "int") (FanLoc.of_lexbuf lexbuf) }
        | float_literal as f
-           { try  FLOAT(float_of_string f, f)
+           { try  `FLOAT(float_of_string f, f)
            with Failure _ -> err (Literal_overflow "float") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "l"
-           { try INT32(cvt_int32_literal i, i)
+           { try `INT32(cvt_int32_literal i, i)
            with Failure _ -> err (Literal_overflow "int32") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "L"
-           { try  INT64(cvt_int64_literal i, i)
+           { try  `INT64(cvt_int64_literal i, i)
            with Failure _ -> err (Literal_overflow "int64") (FanLoc.of_lexbuf lexbuf) }
        | (int_literal as i) "n"
-           { try NATIVEINT(cvt_nativeint_literal i, i)
+           { try `NATIVEINT(cvt_nativeint_literal i, i)
            with Failure _ -> err (Literal_overflow "nativeint") (FanLoc.of_lexbuf lexbuf) }
        | '"'
            { with_curr_loc string c;
-             let s = buff_contents c in STRING (TokenEval.string s, s)             }
+             let s = buff_contents c in `STRING (TokenEval.string s, s)             }
        | "'" (newline as x) "'"
-           { update_loc c  ~retract:1; CHAR (TokenEval.char x, x)               }
+           { update_loc c  ~retract:1; `CHAR (TokenEval.char x, x)               }
        | "'" ( [^ '\\' '\010' '\013'] | '\\' (['\\' '"' 'n' 't' 'b' 'r' ' ' '\'']
                |['0'-'9'] ['0'-'9'] ['0'-'9'] |'x' hexa_char hexa_char)  as x) "'"
-           { CHAR (TokenEval.char x, x) }
+           { `CHAR (TokenEval.char x, x) }
        | "'\\" (_ as c)
            { err (Illegal_escape (String.make 1 c)) (FanLoc.of_lexbuf lexbuf)         }
        | "(*"
-           { store c; COMMENT(parse_nested ~lexer:comment (in_comment c))                 }
+           { store c; `COMMENT(parse_nested ~lexer:comment (in_comment c))                 }
        | "(*)"
            { warn Comment_start (FanLoc.of_lexbuf lexbuf)                             ;
-             parse comment (in_comment c); COMMENT (buff_contents c)               }
+             parse comment (in_comment c); `COMMENT (buff_contents c)               }
        | "*)"
            { warn Comment_not_end (FanLoc.of_lexbuf lexbuf)                           ;
-             move_start_p (-1) c; SYMBOL "*"                                       }
+             move_start_p (-1) c; `SYMBOL "*"                                       }
        | "<<" (extra_quot as p)? (quotchar* as beginning)
            { if quotations c  then
              (move_start_p (-String.length beginning) c; (* FIX partial application*)
@@ -355,7 +355,7 @@ rule token c = parse
                c                       }
        | "<<>>"
            { if quotations c
-           then QUOTATION { q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
+           then `QUOTATION { FanSig.q_name = ""; q_loc = ""; q_shift = 2; q_contents = "" }
            else parse (symbolchar_star "<<>>") c                                   }
        | "<@"
            { if quotations c then with_curr_loc maybe_quotation_at c
@@ -367,31 +367,31 @@ rule token c = parse
            ("\"" ([^ '\010' '\013' '"' ] * as name) "\"")?
            [^ '\010' '\013'] * newline
            { let inum = int_of_string num in
-           update_loc c ?file:name ~line:inum ~absolute:true ; LINE_DIRECTIVE(inum, name)            }
+           update_loc c ?file:name ~line:inum ~absolute:true ; `LINE_DIRECTIVE(inum, name)            }
        | '(' (not_star_symbolchar as op) ')'
-           { ESCAPED_IDENT (String.make 1 op) }
+           { `ESCAPED_IDENT (String.make 1 op) }
        | '(' (not_star_symbolchar symbolchar* not_star_symbolchar as op) ')'
-           { ESCAPED_IDENT op }
+           { `ESCAPED_IDENT op }
        | '(' (not_star_symbolchar symbolchar* as op) blank+ ')'
-           { ESCAPED_IDENT op }
+           { `ESCAPED_IDENT op }
        | '(' blank+ (symbolchar* not_star_symbolchar as op) ')'
-           { ESCAPED_IDENT op }
+           { `ESCAPED_IDENT op }
        | '(' blank+ (symbolchar+ as op) blank+ ')'
-           { ESCAPED_IDENT op }
+           { `ESCAPED_IDENT op }
        | ( "#"  | "`"  | "'"  | ","  | "."  | ".." | ":"  | "::"
            | ":=" | ":>" | ";"  | ";;" | "_"
-           | left_delimitor | right_delimitor ) as x  { SYMBOL x }
+           | left_delimitor | right_delimitor ) as x  { `SYMBOL x }
        | '$'
            {
             if antiquots c
             then with_curr_loc dollar (shift 1 c)
             else parse (symbolchar_star "$") c }
        | ['~' '?' '!' '=' '<' '>' '|' '&' '@' '^' '+' '-' '*' '/' '%' '\\'] symbolchar *
-           as x { SYMBOL x }
+           as x { `SYMBOL x }
        | eof
            { let pos = lexbuf.lex_curr_p in
            lexbuf.lex_curr_p <- { pos with pos_bol  = pos.pos_bol  + 1 ;
-                                  pos_cnum = pos.pos_cnum + 1 }; EOI      }
+                                  pos_cnum = pos.pos_cnum + 1 }; `EOI      }
        | _ as c                 { err (Illegal_character c) (FanLoc.of_lexbuf lexbuf) }
 
 and comment c = parse
@@ -453,7 +453,7 @@ and string c = parse
 
 and symbolchar_star beginning c = parse
     | symbolchar* as tok            { move_start_p (-String.length beginning) c ;
-                                  SYMBOL(beginning ^ tok) }
+                                  `SYMBOL(beginning ^ tok) }
 
 (* <@loc< *)        
 and maybe_quotation_at c = parse
@@ -464,7 +464,7 @@ and maybe_quotation_at c = parse
            ~retract:(2 + opt_char_len p)
        }
         (* { mk_quotation quotation c "" loc (1 + String.length loc)                 } *)
-    | symbolchar* as tok                                   { SYMBOL("<@" ^ tok) }
+    | symbolchar* as tok                                   { `SYMBOL("<@" ^ tok) }
 
 (* <:name< *)        
 and maybe_quotation_colon c = parse
@@ -485,7 +485,7 @@ and maybe_quotation_colon c = parse
    
         (* { mk_quotation quotation c name loc *)
         (* (2 + String.length loc + String.length name)               } *)
-    | symbolchar* as tok                                   { SYMBOL("<:" ^ tok) }
+    | symbolchar* as tok                                   { `SYMBOL("<:" ^ tok) }
 
 and quotation c = parse
     | '<' (':' ident)? ('@' locname)? '<' (extra_quot as p)? {begin
@@ -530,10 +530,10 @@ and quotation c = parse
  *)
 and dollar c = parse
     | ('`'? (identchar*|['.' '!']+) as name) ':' (lident as x)
-        {set_start_p c; ANTIQUOT(name,x)}
+        {set_start_p c; `ANTIQUOT(name,x)}
         (* { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | lident as x 
-        {set_start_p c; ANTIQUOT("",x)}
+        {set_start_p c; `ANTIQUOT("",x)}
     (* | '$' {store_parse (antiquot "") c} *)
     | '(' ('`'? (identchar*|['.' '!']+) as name) ':' {
       with_curr_loc (antiquot name 0) (shift (2 + String.length name) c)
@@ -542,7 +542,7 @@ and dollar c = parse
     | '(' {
       with_curr_loc (antiquot "" 0) (shift 1 c)
      }
-    (* | '$'                                     { set_start_p c; ANTIQUOT("", "") } *)
+    (* | '$'                                     { set_start_p c; `ANTIQUOT("", "") } *)
     (* | ('`'? (identchar*|['.' '!']+) as name) ':' *)
     (*     { with_curr_loc (antiquot name) (shift (1 + String.length name) c)        } *)
     | _ as c {
@@ -556,7 +556,7 @@ and antiquot name depth c  = parse
     | ')'                      {
       if depth = 0 then
         let () = set_start_p c in
-        ANTIQUOT(name, buff_contents c)
+        `ANTIQUOT(name, buff_contents c)
       else store_parse (antiquot name (depth-1)) c }
     | '(' {
       store_parse (antiquot name (depth+1)) c
@@ -644,12 +644,12 @@ let debug_from_string str =
   try
     Stream.iter (fun (t,loc) ->
     match t with
-    |FanSig.EOI -> begin
-        fprintf std_formatter "%a@ %a@." Token.print t FanLoc.print loc;
+    |`EOI -> begin
+        fprintf std_formatter "%a@ %a@." FanToken.print t FanLoc.print loc;
         raise (Stream.Error "end")
     end
     | _ ->  fprintf std_formatter "%a@ %a@."
-          Token.print t FanLoc.print loc) stream
+          FanToken.print t FanLoc.print loc) stream
   with
     Stream.Error "end" -> ()
   | exn -> begin
@@ -665,17 +665,17 @@ let debug_from_file file =
   try
     Stream.iter (fun (t,loc) ->
     match t with
-    |FanSig.EOI -> begin
+    |`EOI -> begin
         close_in chan;
         raise (Stream.Error "end");
     end 
     | _ ->  fprintf std_formatter "%a@ %a@."
-          Token.print t FanLoc.print loc) stream
+          FanToken.print t FanLoc.print loc) stream
   with
     Stream.Error _ -> close_in chan;
   end ;;
 
 
-end
+(* end *)
 }
 

@@ -1,81 +1,66 @@
-module P = (MakePreCast.Make)(FanLexer.Make)
+module P = (MakePreCast.Make)(struct end)
 
 open P
 
-open FanSig
-
 let wrap =
-                                                                    fun parse_fun ->
-                                                                    fun lb ->
-                                                                    let 
-                                                                    () =
-                                                                    (iter_and_take_callbacks
-                                                                    (
-                                                                    fun 
-                                                                    (_, f) ->
-                                                                    (f () )
-                                                                    )) in
-                                                                    let not_filtered_token_stream =
-                                                                    (Lexer.from_lexbuf
-                                                                    lb) in
-                                                                    let token_stream =
-                                                                    (Gram.filter
-                                                                    not_filtered_token_stream) in
-                                                                    (
-                                                                    try
-                                                                    let (__strm :
-                                                                    _ Stream.t) =
-                                                                    token_stream in
-                                                                    (
-                                                                    match
-                                                                    (Stream.peek
-                                                                    __strm) with
-                                                                    | Some
-                                                                    (EOI, _) ->
-                                                                    (
-                                                                    (Stream.junk
-                                                                    __strm)
-                                                                    );
-                                                                    (raise
-                                                                    End_of_file
-                                                                    )
-                                                                    | 
-                                                                    _ ->
-                                                                    (parse_fun
-                                                                    token_stream))
-                                                                    with
-                                                                    | (((End_of_file
-                                                                    | Sys.Break)
-                                                                    | FanLoc.Exc_located
-                                                                    (_,
-                                                                    (End_of_file
-                                                                    | 
-                                                                    Sys.Break))) as
-                                                                    x) ->
-                                                                    (raise x)
-                                                                    | FanLoc.Exc_located
-                                                                    (loc, y) ->
-                                                                    (
-                                                                    (Format.eprintf
-                                                                    "@[<0>%a%s@]@."
-                                                                    Toploop.print_location
-                                                                    loc (
-                                                                    (Printexc.to_string
-                                                                    y) ))
-                                                                    );
-                                                                    (raise
-                                                                    Exit )
-                                                                    | 
-                                                                    x ->
-                                                                    (
-                                                                    (Format.eprintf
-                                                                    "@[<0>%s@]@."
-                                                                    (
-                                                                    (Printexc.to_string
-                                                                    x) ))
-                                                                    );
-                                                                    (raise
-                                                                    Exit ))
+                                                    fun parse_fun ->
+                                                     fun lb ->
+                                                      let () =
+                                                       (iter_and_take_callbacks
+                                                         (
+                                                         fun (_, f) ->
+                                                          (f () ) )) in
+                                                      let not_filtered_token_stream =
+                                                       (FanLexer.from_lexbuf
+                                                         lb) in
+                                                      let token_stream =
+                                                       (Gram.filter
+                                                         not_filtered_token_stream) in
+                                                      (try
+                                                        let (__strm :
+                                                          _ Stream.t) =
+                                                         token_stream in
+                                                        (match
+                                                           (Stream.peek
+                                                             __strm) with
+                                                         | Some (`EOI, _) ->
+                                                            (
+                                                            (Stream.junk
+                                                              __strm)
+                                                            );
+                                                            (raise
+                                                              End_of_file )
+                                                         | _ ->
+                                                            (parse_fun
+                                                              token_stream))
+                                                       with
+                                                       | (((End_of_file
+                                                            | Sys.Break)
+                                                           | FanLoc.Exc_located
+                                                              (_,
+                                                               (End_of_file
+                                                                | Sys.Break))) as
+                                                          x) ->
+                                                          (raise x)
+                                                       | FanLoc.Exc_located
+                                                          (loc, y) ->
+                                                          (
+                                                          (Format.eprintf
+                                                            "@[<0>%a%s@]@."
+                                                            Toploop.print_location
+                                                            loc (
+                                                            (Printexc.to_string
+                                                              y) ))
+                                                          );
+                                                          (raise Exit )
+                                                       | x ->
+                                                          (
+                                                          (Format.eprintf
+                                                            "@[<0>%s@]@." (
+                                                            (Printexc.to_string
+                                                              x) ))
+                                                          );
+                                                          (raise Exit ))
 
 
 let toplevel_phrase =

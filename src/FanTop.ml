@@ -1,14 +1,14 @@
 
 
-module P = MakePreCast.Make FanLexer.Make ;
+module P = MakePreCast.Make (struct end) ;
 open P;
-open FanSig;  
+(* open FanSig;   *)
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
-  let not_filtered_token_stream = Lexer.from_lexbuf lb in
+  let not_filtered_token_stream = FanLexer.from_lexbuf lb in
   let token_stream = Gram.filter  not_filtered_token_stream in
   try  match token_stream with parser
-  [ [< (EOI, _) >] -> raise End_of_file
+  [ [< (`EOI, _) >] -> raise End_of_file
   | [< >] -> parse_fun token_stream ]
   with
   [ End_of_file | Sys.Break | (FanLoc.Exc_located _ (End_of_file | Sys.Break)) as x ->
