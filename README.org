@@ -2,9 +2,11 @@
 #+SEQ_TODO: TODO(T) WAIT(W) | DONE(D!) CANCELED(C@) 
 #+COLUMNS: %10ITEM  %10PRIORITY %15TODO %65TAGS
 
-#+OPTIONS: toc:4 ^:{} num:nil creator:nil author:nil
+#+OPTIONS: toc:nil ^:{} num:nil creator:nil author:nil
 #+OPTIONS: author:nil timestamp:nil d:nil
 #+STYLE: <link rel="stylesheet" type="text/css" href="../css/style.css">
+
+The Programming Language Fan
 
 
 Fan is a full blow programming language, it's a superset of [[http://caml.inria.fr/][ocaml]] with
