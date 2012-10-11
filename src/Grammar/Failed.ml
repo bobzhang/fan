@@ -1,21 +1,3 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
 
 (* module Make (Structure : Structure.S) = struct *)
   (* module Tools  = Tools.Make Structure; *)
@@ -25,28 +7,28 @@
   open Format;
 
 let  name_of_symbol entry =  fun
-  [ Snterm e -> "[" ^ e.ename ^ "]"
-  | Snterml e l -> "[" ^ e.ename ^ " level " ^ l ^ "]"
-  | Sself | Snext -> "[" ^ entry.ename ^ "]"
-  | Stoken (_, descr) -> descr
-  | Skeyword kwd -> "\"" ^ kwd ^ "\""
+  [ `Snterm e -> "[" ^ e.ename ^ "]"
+  | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
+  | `Sself | `Snext -> "[" ^ entry.ename ^ "]"
+  | `Stoken (_, descr) -> descr
+  | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" ]
 ;
 
 
 let rec name_of_symbol_failed entry =
   fun
-  [ Slist0 s | Slist0sep s _ |
-    Slist1 s | Slist1sep s _ |
-    Sopt s | Stry s -> name_of_symbol_failed entry s
-  | Stree t -> name_of_tree_failed entry t
+  [ `Slist0 s | `Slist0sep (s, _) |
+    `Slist1 s | `Slist1sep (s, _) |
+    `Sopt s | `Stry s -> name_of_symbol_failed entry s
+  | `Stree t -> name_of_tree_failed entry t
   | s -> name_of_symbol entry s ]
 and name_of_tree_failed entry =
   fun
   [ Node {node = s; brother = bro; son = son} ->
       let tokl =
         match s with
-        [ Stoken _ | Skeyword _ -> Tools.get_token_list entry [] s son
+        [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
         | _ -> None ]
       in
       match tokl with
@@ -54,7 +36,7 @@ and name_of_tree_failed entry =
           let txt = name_of_symbol_failed entry s in
           let txt =
             match (s, son) with
-            [ (Sopt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
+            [ (`Sopt _, Node _) -> txt ^ " or " ^ name_of_tree_failed entry son
             | _ -> txt ]
           in
           let txt =
@@ -68,8 +50,8 @@ and name_of_tree_failed entry =
             (fun s tok ->
                (if s = "" then "" else s ^ " then ") ^
                match tok with
-               [ Stoken (_, descr) -> descr
-               | Skeyword kwd -> kwd
+               [ `Stoken (_, descr) -> descr
+               | `Skeyword kwd -> kwd
                | _ -> assert False ])
             "" tokl ]
   | DeadEnd | LocAct _ _ -> "???" ]
@@ -79,13 +61,13 @@ let tree_failed entry prev_symb_result prev_symb tree =
   let txt = name_of_tree_failed entry tree in
   let txt =
     match prev_symb with
-    [ Slist0 s ->
+    [ `Slist0 s ->
         let txt1 = name_of_symbol_failed entry s in
         txt1 ^ " or " ^ txt ^ " expected"
-    | Slist1 s ->
+    | `Slist1 s ->
         let txt1 = name_of_symbol_failed entry s in
         txt1 ^ " or " ^ txt ^ " expected"
-    | Slist0sep s sep ->
+    | `Slist0sep (s, sep) ->
         match magic "tree_failed: 'a -> list 'b" prev_symb_result with
         [ [] ->
             let txt1 = name_of_symbol_failed entry s in
@@ -93,7 +75,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
         | _ ->
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected" ]
-    | Slist1sep s sep ->
+    | `Slist1sep (s, sep) ->
         match magic "tree_failed: 'a -> list 'b" prev_symb_result with
         [ [] ->
             let txt1 = name_of_symbol_failed entry s in
@@ -101,7 +83,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
         | _ ->
             let txt1 = name_of_symbol_failed entry sep in
             txt1 ^ " or " ^ txt ^ " expected" ]
-    | Stry _(*NP: not sure about this*) | Sopt _ | Stree _ -> txt ^ " expected"
+    | `Stry _(*NP: not sure about this*) | `Sopt _ | `Stree _ -> txt ^ " expected"
     | _ -> txt ^ " expected after " ^ name_of_symbol entry prev_symb ]
   in
   do {

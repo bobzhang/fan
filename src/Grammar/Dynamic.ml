@@ -45,7 +45,7 @@ include Entry;
       (fun tree (symbols, action) -> Insert.insert_tree e symbols action tree)
       DeadEnd rl
     in
-    Stree t;
+    `Stree t;
   let sfold0 = Fold.sfold0;
   let sfold1 = Fold.sfold1;
   let sfold0sep = Fold.sfold0sep;

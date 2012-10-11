@@ -6,18 +6,18 @@
 
   let is_before s1 s2 =
     match (s1, s2) with
-    [ (Skeyword _ | Stoken _, Skeyword _ | Stoken _) -> False
-    | (Skeyword _ | Stoken _, _) -> True
+    [ (`Skeyword _ | `Stoken _, `Skeyword _ | `Stoken _) -> False
+    | (`Skeyword _ | `Stoken _, _) -> True
     | _ -> False ]
   ;
   let rec derive_eps = fun
-    [ Slist0 _ | Slist0sep _ _ | Sopt _ -> True
-    | Stry s -> derive_eps s
-    | Stree t -> tree_derive_eps t
-    | Slist1 _ | Slist1sep _ _ | Stoken _ | Skeyword _ ->
+    [ `Slist0 _ | `Slist0sep (_, _) | `Sopt _ -> True
+    | `Stry s -> derive_eps s
+    | `Stree t -> tree_derive_eps t
+    | `Slist1 _ | `Slist1sep (_, _) | `Stoken _ | `Skeyword _ ->
         (* For sure we cannot derive epsilon from these *)
         False
-    | Smeta _ _ _ | Snterm _ | Snterml _ _ | Snext | Sself ->
+    | `Smeta (_, _, _) | `Snterm _ | `Snterml (_, _) | `Snext | `Sself ->
         (* Approximation *)
         False ]
   and tree_derive_eps =
@@ -65,7 +65,7 @@
   ;
   let change_to_self entry =
     fun
-    [ Snterm e when e == entry -> Sself
+    [ `Snterm e when e == entry -> `Sself
     | x -> x ]
   ;
 
@@ -133,7 +133,7 @@
 
   let rec check_gram entry =
     fun
-    [ Snterm e ->
+    [ `Snterm e ->
         if e.egram != entry.egram then do {
           eprintf "\
   Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
@@ -142,7 +142,7 @@
           failwith "Grammar.extend error"
         }
         else ()
-    | Snterml e _ ->
+    | `Snterml e _ ->
         if e.egram != entry.egram then do {
           eprintf "\
   Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
@@ -151,12 +151,12 @@
           failwith "Grammar.extend error"
         }
         else ()
-    | Smeta _ sl _ -> List.iter (check_gram entry) sl
-    | Slist0sep s t -> do { check_gram entry t; check_gram entry s }
-    | Slist1sep s t -> do { check_gram entry t; check_gram entry s }
-    | Slist0 s | Slist1 s | Sopt s | Stry s -> check_gram entry s
-    | Stree t -> tree_check_gram entry t
-    | Snext | Sself | Stoken _ | Skeyword _ -> () ]
+    | `Smeta (_, sl, _) -> List.iter (check_gram entry) sl
+    | `Slist0sep (s, t) -> do { check_gram entry t; check_gram entry s }
+    | `Slist1sep (s, t) -> do { check_gram entry t; check_gram entry s }
+    | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> check_gram entry s
+    | `Stree t -> tree_check_gram entry t
+    | `Snext | `Sself | `Stoken _ | `Skeyword _ -> () ]
   and tree_check_gram entry =
     fun
     [ Node {node = n; brother = bro; son = son} ->
@@ -169,20 +169,20 @@
   ;
   let get_initial =
     fun
-    [ [Sself :: symbols] -> (True, symbols)
+    [ [`Sself :: symbols] -> (True, symbols)
     | symbols -> (False, symbols) ]
   ;
 
 
   let insert_tokens gram symbols =
     let rec insert = fun
-      [ Smeta _ sl _ -> List.iter insert sl
-      | Slist0 s | Slist1 s | Sopt s | Stry s -> insert s
-      | Slist0sep s t -> do { insert s; insert t }
-      | Slist1sep s t -> do { insert s; insert t }
-      | Stree t -> tinsert t
-      | Skeyword kwd -> using gram kwd
-      | Snterm _ | Snterml _ _ | Snext | Sself | Stoken _ -> () ]
+      [ `Smeta _ sl _ -> List.iter insert sl
+      | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> insert s
+      | `Slist0sep (s, t) -> do { insert s; insert t }
+      | `Slist1sep (s, t) -> do { insert s; insert t }
+      | `Stree t -> tinsert t
+      | `Skeyword kwd -> using gram kwd
+      | `Snterm _ | `Snterml (_, _) | `Snext | `Sself | `Stoken _ -> () ]
     and tinsert =
       fun
       [ Node {node = s; brother = bro; son = son} ->

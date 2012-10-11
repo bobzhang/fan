@@ -31,17 +31,17 @@ module Make (* (Structure : Structure.S) *)(U:sig end) = struct
 
   let rec print_symbol ppf =
     fun
-    [ Smeta n sl _ -> print_meta ppf n sl
-    | Slist0 s -> fprintf ppf "LIST0 %a" print_symbol1 s
-    | Slist0sep s t ->
+    [ `Smeta n sl _ -> print_meta ppf n sl
+    | `Slist0 s -> fprintf ppf "LIST0 %a" print_symbol1 s
+    | `Slist0sep s t ->
         fprintf ppf "LIST0 %a SEP %a" print_symbol1 s print_symbol1 t
-    | Slist1 s -> fprintf ppf "LIST1 %a" print_symbol1 s
-    | Slist1sep s t ->
+    | `Slist1 s -> fprintf ppf "LIST1 %a" print_symbol1 s
+    | `Slist1sep s t ->
         fprintf ppf "LIST1 %a SEP %a" print_symbol1 s print_symbol1 t
-    | Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
-    | Stry s -> fprintf ppf "TRY %a" print_symbol1 s
-    | Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
-    | Snterm _ | Snext | Sself | Stree _ | Stoken _ | Skeyword _ as s ->
+    | `Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
+    | `Stry s -> fprintf ppf "TRY %a" print_symbol1 s
+    | `Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
+    | `Snterm _ | `Snext | `Sself | `Stree _ | `Stoken _ | `Skeyword _ as s ->
         print_symbol1 ppf s ]
   and print_meta ppf n sl =
     loop 0 sl where rec loop i =
@@ -58,14 +58,14 @@ module Make (* (Structure : Structure.S) *)(U:sig end) = struct
           } ]
   and print_symbol1 ppf =
     fun
-    [ Snterm e -> pp_print_string ppf e.ename
-    | Sself -> pp_print_string ppf "SELF"
-    | Snext -> pp_print_string ppf "NEXT"
-    | Stoken (_, descr) -> pp_print_string ppf descr
-    | Skeyword s -> fprintf ppf "%S" s
-    | Stree t -> print_level ppf pp_print_space (flatten_tree t)
-    | Smeta _ _ _ | Snterml _ _ | Slist0 _ | Slist0sep _ _ | Slist1 _ |
-      Slist1sep _ _ | Sopt _ | Stry _ as s ->
+    [ `Snterm e -> pp_print_string ppf e.ename
+    | `Sself -> pp_print_string ppf "SELF"
+    | `Snext -> pp_print_string ppf "NEXT"
+    | `Stoken (_, descr) -> pp_print_string ppf descr
+    | `Skeyword s -> fprintf ppf "%S" s
+    | `Stree t -> print_level ppf pp_print_space (flatten_tree t)
+    | `Smeta _ _ _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |
+      `Slist1sep _ _ | `Sopt _ | `Stry _ as s ->
         fprintf ppf "(%a)" print_symbol s ]
   and print_rule ppf symbols =
     do {
@@ -102,7 +102,7 @@ module Make (* (Structure : Structure.S) *)(U:sig end) = struct
       List.fold_left
         (fun sep lev ->
           let rules =
-            [ [Sself :: t] | t <- flatten_tree lev.lsuffix ] @
+            [ [`Sself :: t] | t <- flatten_tree lev.lsuffix ] @
               flatten_tree lev.lprefix
           in
           do {
@@ -167,17 +167,17 @@ module MakeDump (U:sig end)(* (Structure : Structure.S) *) = struct
     in print_brothers ppf (get_brothers [] tree)
   and print_symbol ppf =
     fun
-    [ Smeta n sl _ -> print_meta ppf n sl
-    | Slist0 s -> fprintf ppf "LIST0 %a" print_symbol1 s
-    | Slist0sep s t ->
+    [ `Smeta n sl _ -> print_meta ppf n sl
+    | `Slist0 s -> fprintf ppf "LIST0 %a" print_symbol1 s
+    | `Slist0sep s t ->
         fprintf ppf "LIST0 %a SEP %a" print_symbol1 s print_symbol1 t
-    | Slist1 s -> fprintf ppf "LIST1 %a" print_symbol1 s
-    | Slist1sep s t ->
+    | `Slist1 s -> fprintf ppf "LIST1 %a" print_symbol1 s
+    | `Slist1sep s t ->
         fprintf ppf "LIST1 %a SEP %a" print_symbol1 s print_symbol1 t
-    | Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
-    | Stry s -> fprintf ppf "TRY %a" print_symbol1 s
-    | Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
-    | Snterm _ | Snext | Sself | Stree _ | Stoken _ | Skeyword _ as s ->
+    | `Sopt s -> fprintf ppf "OPT %a" print_symbol1 s
+    | `Stry s -> fprintf ppf "TRY %a" print_symbol1 s
+    | `Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
+    | `Snterm _ | `Snext | `Sself | `Stree _ | `Stoken _ | `Skeyword _ as s ->
         print_symbol1 ppf s ]
   and print_meta ppf n sl =
     loop 0 sl where rec loop i =
@@ -194,14 +194,14 @@ module MakeDump (U:sig end)(* (Structure : Structure.S) *) = struct
           } ]
   and print_symbol1 ppf =
     fun
-    [ Snterm e -> pp_print_string ppf e.ename
-    | Sself -> pp_print_string ppf "SELF"
-    | Snext -> pp_print_string ppf "NEXT"
-    | Stoken (_, descr) -> pp_print_string ppf descr
-    | Skeyword s -> fprintf ppf "%S" s
-    | Stree t -> print_tree ppf t
-    | Smeta _ _ _ | Snterml _ _ | Slist0 _ | Slist0sep _ _ | Slist1 _ |
-      Slist1sep _ _ | Sopt _ | Stry _ as s ->
+    [ `Snterm e -> pp_print_string ppf e.ename
+    | `Sself -> pp_print_string ppf "SELF"
+    | `Snext -> pp_print_string ppf "NEXT"
+    | `Stoken (_, descr) -> pp_print_string ppf descr
+    | `Skeyword s -> fprintf ppf "%S" s
+    | `Stree t -> print_tree ppf t
+    | `Smeta _ _ _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |
+      `Slist1sep _ _ | `Sopt _ | `Stry _ as s ->
         fprintf ppf "(%a)" print_symbol s ]
   and print_rule ppf symbols =
     do {

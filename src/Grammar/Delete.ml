@@ -49,16 +49,21 @@ let delete_rule_in_tree entry =
         Some (None, t)
     | None -> None ]
   in
-  delete_in_tree
-;
+  delete_in_tree;
+
+  (* FIXME
+     there's a bug
+     the revised syntax could parse
+     `Snterml _ _ => `Snterml(_,_)
+   *)
 let rec decr_keyw_use gram = fun
-  [ Skeyword kwd -> removing gram kwd
-  | Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
-  | Slist0 s | Slist1 s | Sopt s | Stry s -> decr_keyw_use gram s
-  | Slist0sep s1 s2 -> do { decr_keyw_use gram s1; decr_keyw_use gram s2 }
-  | Slist1sep s1 s2 -> do { decr_keyw_use gram s1; decr_keyw_use gram s2 }
-  | Stree t -> decr_keyw_use_in_tree gram t
-  | Sself | Snext | Snterm _ | Snterml _ _ | Stoken _ -> () ]
+  [ `Skeyword kwd -> removing gram kwd
+  | `Smeta _ sl _ -> List.iter (decr_keyw_use gram) sl
+  | `Slist0 s | `Slist1 s | `Sopt s | `Stry s -> decr_keyw_use gram s
+  | `Slist0sep (s1, s2) -> do { decr_keyw_use gram s1; decr_keyw_use gram s2 }
+  | `Slist1sep (s1, s2) -> do { decr_keyw_use gram s1; decr_keyw_use gram s2 }
+  | `Stree t -> decr_keyw_use_in_tree gram t
+  | `Sself | `Snext | `Snterm _ | `Snterml (_, _) | `Stoken _ -> () ]
 and decr_keyw_use_in_tree gram =
   fun
   [ DeadEnd | LocAct _ _ -> ()
@@ -118,8 +123,8 @@ let rec delete_rule_in_prefix entry symbols =
 
 let  delete_rule_in_level_list entry symbols levs =
   match symbols with
-  [ [Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
-  | [Snterm e :: symbols] when e == entry ->
+  [ [`Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
+  | [`Snterm e :: symbols] when e == entry ->
       delete_rule_in_suffix entry symbols levs
   | _ -> delete_rule_in_prefix entry symbols levs ]
 ;

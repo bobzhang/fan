@@ -100,9 +100,9 @@
 
   let rec top_symb entry =
     fun
-    [ Sself | Snext -> Snterm entry
-    | Snterml e _ -> Snterm e
-    | Slist1sep s sep -> Slist1sep (top_symb entry s) sep
+    [ `Sself | `Snext -> `Snterm entry
+    | `Snterml (e, _) -> `Snterm e
+    | `Slist1sep (s, sep) -> `Slist1sep ((top_symb entry s), sep)
     | _ -> raise Stream.Failure ]
   ;
 
@@ -115,9 +115,9 @@
 
   let entry_of_symb entry =
     fun
-    [ Sself | Snext -> entry
-    | Snterm e -> e
-    | Snterml e _ -> e
+    [ `Sself | `Snext -> entry
+    | `Snterm e -> e
+    | `Snterml (e, _) -> e
     | _ -> raise Stream.Failure ]
   ;
 
@@ -165,9 +165,9 @@
     fun
     [ DeadEnd -> parser []
     | LocAct act _ -> parser [< >] -> act
-    | Node {node = Sself; son = LocAct act _; brother = DeadEnd} ->
+    | Node {node = `Sself; son = LocAct act _; brother = DeadEnd} ->
         parser [< a = entry.estart alevn >] -> Action.getf act a
-    | Node {node = Sself; son = LocAct act _; brother = bro} ->
+    | Node {node = `Sself; son = LocAct act _; brother = bro} ->
         let p2 = parser_of_tree entry nlevn alevn bro in
         parser
         [ [< a = entry.estart alevn >] -> Action.getf act a
@@ -175,7 +175,7 @@
     | Node {node = s; son = son; brother = DeadEnd} ->
         let tokl =
           match s with
-          [ Stoken _ | Skeyword _ -> Tools.get_token_list entry [] s son
+          [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
           | _ -> None ]
         in
         match tokl with
@@ -194,7 +194,7 @@
     | Node {node = s; son = son; brother = bro} ->
         let tokl =
           match s with
-          [ Stoken _ | Skeyword _ -> Tools.get_token_list entry [] s son
+          [ `Stoken _ | `Skeyword _ -> Tools.get_token_list entry [] s son
           | _ -> None ]
         in
         match tokl with
@@ -224,7 +224,7 @@
   and parser_of_token_list p1 tokl =
     loop 1 tokl where rec loop n =
       fun
-      [ [Stoken (tematch, _) :: tokl] ->
+      [ [`Stoken (tematch, _) :: tokl] ->
           match tokl with
           [ [] ->
               let ps strm =
@@ -245,7 +245,7 @@
               let p1 = loop (n + 1) tokl in
               parser [< tok = ps; 's >] ->
                 let act = p1 s in Action.getf act tok ]
-      | [Skeyword kwd :: tokl] ->
+      | [`Skeyword kwd :: tokl] ->
           match tokl with
           [ [] ->
               let ps strm =
@@ -270,11 +270,11 @@
       | _ -> invalid_arg "parser_of_token_list" ]
   and parser_of_symbol entry nlevn =
     fun
-    [ Smeta _ symbl act ->
+    [ `Smeta _ symbl act ->
         let act = Obj.magic act entry symbl in
         let pl = List.map (parser_of_symbol entry nlevn) symbl in
           Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
-    | Slist0 s ->
+    | `Slist0 s ->
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
@@ -282,7 +282,7 @@
           | [< >] -> al ]
         in
         parser [< a = loop [] >] -> Action.mk (List.rev a)
-    | Slist0sep symb sep ->
+    | `Slist0sep (symb, sep) ->
         let ps = parser_of_symbol entry nlevn symb in
         let pt = parser_of_symbol entry nlevn sep in
         let rec kont al =
@@ -295,7 +295,7 @@
         parser
         [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
         | [< >] -> Action.mk [] ]
-    | Slist1 s ->
+    | `Slist1 s ->
         let ps = parser_of_symbol entry nlevn s in
         let rec loop al =
           parser
@@ -303,7 +303,7 @@
           | [< >] -> al ]
         in
         parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s))
-    | Slist1sep symb sep ->
+    | `Slist1sep (symb, sep) ->
         let ps = parser_of_symbol entry nlevn symb in
         let pt = parser_of_symbol entry nlevn sep in
         let rec kont al =
@@ -320,31 +320,31 @@
           | [< >] -> al ]
         in
         parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
-    | Sopt s ->
+    | `Sopt s ->
         let ps = parser_of_symbol entry nlevn s in
         parser
         [ [< a = ps >] -> Action.mk (Some a)
         | [< >] -> Action.mk None ]
-    | Stry s ->
+    | `Stry s ->
         let ps = parser_of_symbol entry nlevn s in
         try_parser ps
-    | Stree t ->
+    | `Stree t ->
         let pt = parser_of_tree entry 1 0 t in
         fun strm ->
           let bp = loc_bp strm in
           match strm with parser
           [< (act, loc) = add_loc bp pt >] ->
             Action.getf act loc
-    | Snterm e -> parser [< a = e.estart 0 >] -> a
-    | Snterml e l ->
+    | `Snterm e -> parser [< a = e.estart 0 >] -> a
+    | `Snterml (e, l) ->
         parser [< a = e.estart (level_number e l) >] -> a
-    | Sself -> parser [< a = entry.estart 0 >] -> a
-    | Snext -> parser [< a = entry.estart nlevn >] -> a
-    | Skeyword kwd ->
+    | `Sself -> parser [< a = entry.estart 0 >] -> a
+    | `Snext -> parser [< a = entry.estart nlevn >] -> a
+    | `Skeyword kwd ->
         parser
         [< (tok, _) when FanToken.match_keyword kwd tok >] ->
            Action.mk tok
-    | Stoken (f, _) ->
+    | `Stoken (f, _) ->
         parser
         [< (tok,_) when f tok >] -> Action.mk tok ]
   and parse_top_symb entry symb strm =

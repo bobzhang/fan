@@ -30,7 +30,7 @@ let tree_in_entry prev_symb tree =
             | None -> search_levels levels ] ]
       and search_level level =
         match search_tree level.lsuffix with
-        [ Some t -> Some (Node {node = Sself; son = t; brother = DeadEnd})
+        [ Some t -> Some (Node {node = `Sself; son = t; brother = DeadEnd})
         | None -> search_tree level.lprefix ]
       and search_tree t =
         if tree <> DeadEnd && t == tree then Some t
@@ -48,43 +48,43 @@ let tree_in_entry prev_symb tree =
           | LocAct _ _ | DeadEnd -> None ]
       and search_symbol symb =
         match symb with
-        [ Snterm _ | Snterml _ _ | Slist0 _ | Slist0sep _ _ | Slist1 _ |
-          Slist1sep _ _ | Sopt _ | Stry _ | Stoken _ | Stree _ | Skeyword _
+        [ `Snterm _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |
+          `Slist1sep _ _ | `Sopt _ | `Stry _ | `Stoken _ | `Stree _ | `Skeyword _
           when symb == prev_symb ->
             Some symb
-        | Slist0 symb ->
+        | `Slist0 symb ->
             match search_symbol symb with
-            [ Some symb -> Some (Slist0 symb)
+            [ Some symb -> Some (`Slist0 symb)
             | None -> None ]
-        | Slist0sep symb sep ->
+        | `Slist0sep symb sep ->
             match search_symbol symb with
-            [ Some symb -> Some (Slist0sep symb sep)
+            [ Some symb -> Some (`Slist0sep symb sep)
             | None ->
                 match search_symbol sep with
-                [ Some sep -> Some (Slist0sep symb sep)
+                [ Some sep -> Some (`Slist0sep symb sep)
                 | None -> None ] ]
-        | Slist1 symb ->
+        | `Slist1 symb ->
             match search_symbol symb with
-            [ Some symb -> Some (Slist1 symb)
+            [ Some symb -> Some (`Slist1 symb)
             | None -> None ]
-        | Slist1sep symb sep ->
+        | `Slist1sep symb sep ->
             match search_symbol symb with
-            [ Some symb -> Some (Slist1sep symb sep)
+            [ Some symb -> Some (`Slist1sep symb sep)
             | None ->
                 match search_symbol sep with
-                [ Some sep -> Some (Slist1sep symb sep)
+                [ Some sep -> Some (`Slist1sep symb sep)
                 | None -> None ] ]
-        | Sopt symb ->
+        | `Sopt symb ->
             match search_symbol symb with
-            [ Some symb -> Some (Sopt symb)
+            [ Some symb -> Some (`Sopt symb)
             | None -> None ]
-        | Stry symb ->
+        | `Stry symb ->
             match search_symbol symb with
-            [ Some symb -> Some (Stry symb)
+            [ Some symb -> Some (`Stry symb)
             | None -> None ]
-        | Stree t ->
+        | `Stree t ->
             match search_tree t with
-            [ Some t -> Some (Stree t)
+            [ Some t -> Some (`Stree t)
             | None -> None ]
         | _ -> None ]
       in

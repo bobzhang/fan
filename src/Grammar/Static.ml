@@ -58,7 +58,7 @@ open Format;
     else  failwithf "@[file: %s not found@]@." file;
   let delete_rule = Delete.delete_rule;
   let srules e rl =
-    Stree (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl);
+    `Stree (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl);
   let sfold0 = Fold.sfold0;
   let sfold1 = Fold.sfold1;
   let sfold0sep = Fold.sfold0sep;
@@ -73,26 +73,3 @@ open Format;
 
 (* end; *)
 
-(*
-(A.extend ( (entry_eoi : 'entry_eoi A.Entry.t) ) (
-         ((fun ()
-           ->
-             (None , (
-              [(None , None , (
-                [((
-                  [( (A.Snterm (A.Entry.obj ( (entry : 'entry A.Entry.t) )))
-                    ); (
-                   (A.Stoken
-                      (( function | EOI -> (true) | _ -> (false) ), "EOI")) )]
-                 ), (
-                  (A.Action.mk (
-                   fun (__camlp4_0 :
-                          A.FanToken.t) ->
-                            fun (x :
-                                   'entry) ->
-                                     fun (_loc :
-                                            FanLoc.t) ->
-                                              (match __camlp4_0 with
-                                              | EOI -> (x : 'entry_eoi)
-                                              | _ -> assert false) )) ))] ))] ))) () ) ))
- *)  

@@ -148,20 +148,20 @@ type position =
       lsuffix : tree          ;
       lprefix : tree          }
   and symbol =
-    [ Smeta of string and list symbol and Action.t
-    | Snterm of internal_entry
-    | Snterml of internal_entry and string
-    | Slist0 of symbol
-    | Slist0sep of symbol and symbol
-    | Slist1 of symbol
-    | Slist1sep of symbol and symbol
-    | Sopt of symbol
-    | Stry of symbol
-    | Sself
-    | Snext
-    | Stoken of token_pattern
-    | Skeyword of string
-    | Stree of tree ]
+    [= `Smeta of (string * list symbol * Action.t)
+    | `Snterm of internal_entry
+    | `Snterml of (internal_entry * string)
+    | `Slist0 of symbol
+    | `Slist0sep of (symbol * symbol)
+    | `Slist1 of symbol
+    | `Slist1sep of (symbol * symbol)
+    | `Sopt of symbol
+    | `Stry of symbol
+    | `Sself
+    | `Snext
+    | `Stoken of token_pattern
+    | `Skeyword of string
+    | `Stree of tree ]
   and tree =
     [ Node of node
     | LocAct of Action.t and list Action.t
