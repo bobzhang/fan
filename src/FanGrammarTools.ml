@@ -290,8 +290,8 @@ let rec make_expr entry tvar =  fun
   | TXkwd _loc kwd -> (* <:expr< $(id:gm()).Skeyword $str:kwd >> *)
       <:expr< `Skeyword $str:kwd >>
   | TXtok _loc match_fun descr ->
-      <:expr< $(id:gm()).Stoken ($match_fun, $`str:descr) >>
-      (* <:expr< `Stoken ($match_fun, $`str:descr) >> *)
+      (* <:expr< $(id:gm()).Stoken ($match_fun, $`str:descr) >> *)
+      <:expr< `Stoken ($match_fun, $`str:descr) >>
   ]
 and make_expr_rules _loc n rl tvar =
   (* loc ->expr name ->
