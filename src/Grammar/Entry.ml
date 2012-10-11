@@ -16,7 +16,7 @@
  * - Daniel de Rauglaudre: initial version
  * - Nicolas Pouillard: refactoring
  *)
-
+open FanSig;
 (* module Make (Structure : Structure.S) = struct *)
   module Dump  = Print.MakeDump (struct end); (* FIXME *)
   module Print = Print.Make(struct end); (* FIXME *)
@@ -74,7 +74,7 @@
   let parse_string entry loc str =
     filter_and_parse_tokens entry (lex_string entry loc str);
 
-  let of_parser g n (p : Stream.t (FanToken.t * token_info) -> 'a) : t 'a =
+  let of_parser g n (p : Stream.t (token * token_info) -> 'a) : t 'a =
     let f ts = Action.mk (p ts) in
     { egram = g;
       ename = n;
@@ -82,7 +82,7 @@
       econtinue _ _ _ = parser [];
       edesc = Dparser f };
 
-  let setup_parser e (p : Stream.t (FanToken.t * token_info) -> 'a) =
+  let setup_parser e (p : Stream.t (token * token_info) -> 'a) =
     let f ts = Action.mk (p ts) in do {
       e.estart <- fun _ -> f;
       e.econtinue <- fun _ _ _ -> parser [];

@@ -1,4 +1,4 @@
-(* open FanSig; *)
+open FanSig;
 
 (* module type S = sig *)
 
@@ -111,9 +111,9 @@ type position =
   (* module Lexer = Lexer; *)
 
   type gram =
-    { gfilter         : FanToken.Filter.t;
+    { gfilter         : filter;
       gkeywords       : Hashtbl.t string (ref int);
-      glexer          : FanLoc.t -> Stream.t char -> Stream.t (FanToken.t * FanLoc.t);
+      glexer          : FanLoc.t -> Stream.t char -> Stream.t (token * FanLoc.t);
       warning_verbose : ref bool;
       error_verbose   : ref bool };
 
@@ -127,11 +127,11 @@ type position =
     cur_loc = FanLoc.ghost;
     prev_loc_only = False;
   };  
-  type token_stream = Stream.t (FanToken.t * token_info);
+  type token_stream = Stream.t (token * token_info);
 
   type efun = token_stream -> Action.t;
 
-  type token_pattern = ((FanToken.t -> bool) * string);
+  type token_pattern = ((token -> bool) * string);
 
   type internal_entry =
     { egram     : gram;

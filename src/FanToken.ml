@@ -1,30 +1,6 @@
 open Format;
 open LibUtil;
 open FanSig;
-(* type t = camlp4_token; *)
-
-type t  =
-  [ = `KEYWORD of string
-  | `SYMBOL of string
-  | `LIDENT of string
-  | `UIDENT of string
-  | `ESCAPED_IDENT of string
-  | `INT of (int * string )
-  | `INT32 of (int32 * string )
-  | `INT64 of (int64 * string )
-  | `NATIVEINT of (nativeint * string )
-  | `FLOAT of (float * string )
-  | `CHAR of (char * string )
-  | `STRING of (string * string )
-  | `LABEL of string
-  | `OPTLABEL of string
-  | `QUOTATION of quotation
-  | `ANTIQUOT of (string * string )
-  | `COMMENT of string
-  | `BLANKS of string
-  | `NEWLINE
-  | `LINE_DIRECTIVE of (int * option string )
-  | `EOI];
 
 
 type error = 
@@ -53,7 +29,7 @@ Printexc.register_printer (fun
   [TokenError e -> Some (string_of_error_msg e)
   | _ -> None]);
   
-let to_string : t -> string =fun
+let to_string  =fun
   [ `KEYWORD s    -> sprintf "`KEYWORD %S" s
   | `SYMBOL s     -> sprintf "`SYMBOL %S" s
   | `LIDENT s     -> sprintf "`LIDENT %S" s
@@ -80,7 +56,7 @@ let to_string : t -> string =fun
   | `LINE_DIRECTIVE (i, (Some s)) -> sprintf "`LINE_DIRECTIVE %d %S" i s ];
 
 let token_to_string = fun
-  [ #t as x -> to_string x
+  [ #token as x -> to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token"]; (* FIXME*)
   
 let err error loc =
@@ -143,15 +119,10 @@ let check_unknown_keywords tok loc = match tok with
   [ `SYMBOL s -> err (Illegal_token s) loc
   | _        -> () ];
   
-type token_filter = stream_filter t FanLoc.t;
-
+  
 
 module Filter = struct
 
-  
-  type t =
-      { is_kwd : string -> bool;
-        filter : mutable token_filter };
   
   let mk is_kwd =
     { is_kwd = is_kwd;
