@@ -263,34 +263,34 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast;
 
   (* usual trick *) (* FIXME utilities based on Gram *)
-  let test_patt_lessminus =
-    Gram.of_parser "test_patt_lessminus"
-      (fun strm ->
-        let rec skip_patt n =
-          match stream_peek_nth n strm with
-          [ Some (KEYWORD "<-") -> n
-          | Some (KEYWORD ("[" | "[<")) ->
-              skip_patt (ignore_upto "]" (n + 1) + 1)
-          | Some (KEYWORD "(") ->
-              skip_patt (ignore_upto ")" (n + 1) + 1)
-          | Some (KEYWORD "{") ->
-              skip_patt (ignore_upto "}" (n + 1) + 1)
-          | Some (KEYWORD ("as" | "::" | "," | "_"))
-          | Some (LIDENT _ | UIDENT _) -> skip_patt (n + 1)
-          | Some _ | None -> raise Stream.Failure ]
-        and ignore_upto end_kwd n =
-          match stream_peek_nth n strm with
-          [ Some (KEYWORD prm) when prm = end_kwd -> n
-          | Some (KEYWORD ("[" | "[<")) ->
-              ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1)
-          | Some (KEYWORD "(") ->
-              ignore_upto end_kwd (ignore_upto ")" (n + 1) + 1)
-          | Some (KEYWORD "{") ->
-              ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1)
-          | Some _ -> ignore_upto end_kwd (n + 1)
-          | None -> raise Stream.Failure ]
-        in
-        skip_patt 1);
+  (* let test_patt_lessminus = *)
+  (*   Gram.of_parser "test_patt_lessminus" *)
+  (*     (fun strm -> *)
+  (*       let rec skip_patt n = *)
+  (*         match stream_peek_nth n strm with *)
+  (*         [ Some (KEYWORD "<-") -> n *)
+  (*         | Some (KEYWORD ("[" | "[<")) -> *)
+  (*             skip_patt (ignore_upto "]" (n + 1) + 1) *)
+  (*         | Some (KEYWORD "(") -> *)
+  (*             skip_patt (ignore_upto ")" (n + 1) + 1) *)
+  (*         | Some (KEYWORD "{") -> *)
+  (*             skip_patt (ignore_upto "}" (n + 1) + 1) *)
+  (*         | Some (KEYWORD ("as" | "::" | "," | "_")) *)
+  (*         | Some (LIDENT _ | UIDENT _) -> skip_patt (n + 1) *)
+  (*         | Some _ | None -> raise Stream.Failure ] *)
+  (*       and ignore_upto end_kwd n = *)
+  (*         match stream_peek_nth n strm with *)
+  (*         [ Some (KEYWORD prm) when prm = end_kwd -> n *)
+  (*         | Some (KEYWORD ("[" | "[<")) -> *)
+  (*             ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1) *)
+  (*         | Some (KEYWORD "(") -> *)
+  (*             ignore_upto end_kwd (ignore_upto ")" (n + 1) + 1) *)
+  (*         | Some (KEYWORD "{") -> *)
+  (*             ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
+  (*         | Some _ -> ignore_upto end_kwd (n + 1) *)
+  (*         | None -> raise Stream.Failure ] *)
+  (*       in *)
+  (*       skip_patt 1); *)
 
   DELETE_RULE Gram expr: "["; sem_expr_for_list; "]" END;
 
@@ -427,16 +427,16 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
       [ Some ([], e) ->
         EXTEND Gram
         expr: Level "simple"
-          [ [ UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
+          [ [ `UIDENT $x -> (new Ast.reloc _loc)#expr e ]] 
         patt: Level "simple"
-          [ [ UIDENT $x ->
+          [ [ `UIDENT $x ->
             let p = Expr.substp _loc [] e
             in (new Ast.reloc _loc)#patt p ]]
         END
       | Some (sl, e) ->
           EXTEND Gram
             expr: Level "apply"
-            [ [ UIDENT $x; SELF{param} ->
+            [ [ `UIDENT $x; SELF{param} ->
               let el =  match param with
               [ <:expr< ($tup:e) >> -> Ast.list_of_expr e []
               | e -> [e] ]  in
@@ -446,7 +446,7 @@ module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
               else
                 incorrect_number _loc el sl ] ] 
           patt: Level "simple"
-            [ [ UIDENT $x; SELF{param} ->
+            [ [ `UIDENT $x; SELF{param} ->
               let pl = match param with
               [ <:patt< ($tup:p) >> -> Ast.list_of_patt p []
               | p -> [p] ] in
