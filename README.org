@@ -41,8 +41,19 @@ it's 100% compatible with ocaml.
   Fan is way more *faster* than *Camlp4*, generally 100 times faster!
   and Fan has a very robust bootstrapping system compared with Camlp4.
 
-  Fan has all the features that Camlp4 has, and more!
+  Fan has all the features that Camlp4 has, and much more!
   
+* Status:
+
+  Designing a non-toy language is not easy, though Fan is already very
+  powerful right now, but I have a bunch of ideas which take some time
+  to implement, so it's not usable now(mostly because some API is
+  unstable ).
+
+  
+
+* Contribution
+  Feel free to send me a pull request
 
 * Install
 ** Requirements
@@ -57,6 +68,7 @@ it's 100% compatible with ocaml.
 ** Initial Install
 
    just type dist
+
 *** What it mainly did
     - Start. it will make =cold/Fan.byte= from original syntax This is
       mainly for the cold start(compile from the original syntax
@@ -70,27 +82,28 @@ it's 100% compatible with ocaml.
 ** Develop
 
    Everytime, you made some nontrival changes(change the grammar,
-   lexer), make sure to type =hb Fan.byte= or =hb Fan.native= to
+   lexer), make sure to type =./hb Fan.byte= or =./hb Fan.native= to
    verify it can be hot-bootstrapped.
 
-   Then type =cb= to snapshot your changes to cold.(This is for
+   Then type =./snapshot= to snapshot your changes to cold.(This is for
    distribute purpose) 
+
+   If there's no bugs in =src/Pprintast.ml=, then it will work smoothly
 
 
 * Directory Structure
   
 ** src
    The main dev strcuture
-   
-
 ** cold
    The mirror of src, for distribute purpose 
 * For dev
+
   the common practice is
   #+BEGIN_SRC shell-script
-    hb Fan.byte # verify
-    cb # snapshot and verify again
+    ./hb Fan.byte # verify
+    ./snapshot # snapshot and verify again
   #+END_SRC
 
 * Docs
-  It will be coming soon
+  It will be coming soon ;-)
