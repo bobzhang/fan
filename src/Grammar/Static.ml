@@ -18,6 +18,7 @@ open Format;
     };
     
   (* include Entry.Make Structure; *)
+  type token = FanSig.token ; (* FIXME remove later *)
   include Entry;
   let mk = mk gram;
   let of_parser name strm = of_parser gram name strm;

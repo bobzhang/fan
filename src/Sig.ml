@@ -219,23 +219,23 @@ module type Camlp4Syntax = sig
 end;
 
 (** A signature for syntax extension (syntax -> syntax functors). *)
-(* module type SyntaxExtension = functor (Syn : Camlp4Syntax) *)
-(*   -> (Camlp4Syntax with *)
-(*       module Token = Syn.Token and *)
-(*       module Gram  = Syn.Gram  and *)
-(*       module AntiquotSyntax = Syn.AntiquotSyntax and *)
-(*       module Quotation = Syn.Quotation and *)
-(*       module AstFilters = Syn.AstFilters ); *)
+module type SyntaxExtension = functor (Syn : Camlp4Syntax)
+  -> (Camlp4Syntax with
+      (* module Token = Syn.Token and *)
+      module Gram  = Syn.Gram  and
+      module AntiquotSyntax = Syn.AntiquotSyntax and
+      module Quotation = Syn.Quotation and
+      module AstFilters = Syn.AstFilters );
 
-(* module type PLUGIN = functor (Unit:sig end) -> sig end; *)
-(* module type SyntaxPlugin = functor (Syn:Camlp4Syntax) -> sig end ; *)
+module type PLUGIN = functor (Unit:sig end) -> sig end;
+module type SyntaxPlugin = functor (Syn:Camlp4Syntax) -> sig end ;
 
-(* (\** generate two printers to be registered*\) *)
-(* module type PrinterPlugin = functor (Syn:Camlp4Syntax) -> PrinterImpl;    *)
+(** generate two printers to be registered*)
+module type PrinterPlugin = functor (Syn:Camlp4Syntax) -> PrinterImpl;
 
-(* (\* module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> Parser.S ; *\) *)
-(* module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl; *)
-(* (\* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *\) *)
+(* module type OCAML_PARSER = functor (Ast:Camlp4Ast) -> Parser.S ; *)
+module type ParserPlugin = functor (Syn:Camlp4Syntax) -> ParserImpl;
+(* module type ASTFILTER_PLUGIN  = functor (F:AstFilters.S) -> sig end ; *)
 
 
 (* module type Lexer = sig *)
@@ -269,69 +269,69 @@ end;
 (* module type LEXER =  functor (Token: FanSig.Camlp4Token) *)
 (*   -> Lexer with  module Token = Token; *)
 
-(* module type PRECAST = sig *)
-(*   type token = FanSig.camlp4_token ; *)
-(*   module Token      : FanSig.Token  with  *)
-(*                       type t = FanSig.camlp4_token; *)
-(*   module Lexer      : Lexer  with  *)
-(*                       module Token = Token; *)
-(*   module Gram       : FanSig.Grammar.Static  with *)
-(*                       module Token = Token; *)
-(*   module Syntax     : Camlp4Syntax with  *)
-(*                       module Token   = Token and *)
-(*                       module Gram = Gram; *)
-(*   module Printers : sig *)
-(*     module OCaml         : PrinterImpl; *)
-(*     module DumpOCamlAst  : PrinterImpl; *)
-(*     module DumpCamlp4Ast : PrinterImpl; *)
-(*     module Null          : PrinterImpl; *)
-(*   end; *)
+module type PRECAST = sig
+  (* type token = FanSig.camlp4_token ; *)
+  (* module Token      : FanSig.Token  with *)
+  (*                     type t = FanSig.camlp4_token; *)
+  (* module Lexer      : Lexer  with *)
+  (*                     module Token = Token; *)
+  module Gram       : FanSig.Grammar.Static;  (* with *)
+                      (* module Token = Token; *)
+  module Syntax     : Camlp4Syntax with
+                      (* module Token   = Token and *)
+                      module Gram = Gram;
+  module Printers : sig
+    module OCaml         : PrinterImpl;
+    module DumpOCamlAst  : PrinterImpl;
+    module DumpCamlp4Ast : PrinterImpl;
+    module Null          : PrinterImpl;
+  end;
 
-(*   (\* module MakeSyntax (U : sig end) : Camlp4Syntax; *\) *)
+  (* module MakeSyntax (U : sig end) : Camlp4Syntax; *)
 
-(*   (\* parser signature *\)   *)
-(*   type parser_fun 'a = *)
-(*       ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a; *)
-(*   type printer_fun 'a = *)
-(*       ?input_file:string -> ?output_file:string -> 'a -> unit; *)
-(*   val loaded_modules : ref (list string); *)
-(*   val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;   *)
-(*   val register_str_item_parser : parser_fun Ast.str_item -> unit; *)
-(*   val register_sig_item_parser : parser_fun Ast.sig_item -> unit; *)
-(*   val register_parser : *)
-(*       parser_fun Ast.str_item -> parser_fun Ast.sig_item -> unit; *)
-(*   val current_parser : *)
-(*       unit -> (parser_fun Ast.str_item * parser_fun Ast.sig_item); *)
+  (* parser signature *)
+  type parser_fun 'a =
+      ?directive_handler:('a -> option 'a) -> FanLoc.t -> Stream.t char -> 'a;
+  type printer_fun 'a =
+      ?input_file:string -> ?output_file:string -> 'a -> unit;
+  val loaded_modules : ref (list string);
+  val iter_and_take_callbacks : ((string * (unit -> unit)) -> unit) -> unit ;
+  val register_str_item_parser : parser_fun Ast.str_item -> unit;
+  val register_sig_item_parser : parser_fun Ast.sig_item -> unit;
+  val register_parser :
+      parser_fun Ast.str_item -> parser_fun Ast.sig_item -> unit;
+  val current_parser :
+      unit -> (parser_fun Ast.str_item * parser_fun Ast.sig_item);
 
-(*   val plugin : (module Id) -> (module PLUGIN) -> unit ; *)
-(*   val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;   *)
-(*   val syntax_extension: (module Id) -> (module SyntaxExtension) -> unit; *)
-(*   val printer_plugin: (module Id) -> (module PrinterPlugin) -> unit; *)
-(*   val replace_printer: (module Id) -> (module PrinterImpl) -> unit; *)
-(*   val replace_parser: (module Id) -> (module ParserImpl) -> unit; *)
-(*   val parser_plugin: (module Id) -> (module ParserPlugin) -> unit; *)
-(*   val enable_ocaml_printer : unit -> unit; *)
-(*   val enable_dump_ocaml_ast_printer : unit -> unit; *)
-(*   val enable_dump_camlp4_ast_printer: unit -> unit;   *)
-(*   val enable_null_printer: unit -> unit; *)
-(*   val enable_auto: (unit->bool) -> unit;   *)
+  val plugin : (module Id) -> (module PLUGIN) -> unit ;
+  val syntax_plugin:(module Id) -> (module SyntaxPlugin) -> unit;
+  val syntax_extension: (module Id) -> (module SyntaxExtension) -> unit;
+  val printer_plugin: (module Id) -> (module PrinterPlugin) -> unit;
+  val replace_printer: (module Id) -> (module PrinterImpl) -> unit;
+  val replace_parser: (module Id) -> (module ParserImpl) -> unit;
+  val parser_plugin: (module Id) -> (module ParserPlugin) -> unit;
+  val enable_ocaml_printer : unit -> unit;
+  val enable_dump_ocaml_ast_printer : unit -> unit;
+  val enable_dump_camlp4_ast_printer: unit -> unit;
+  val enable_null_printer: unit -> unit;
+  val enable_auto: (unit->bool) -> unit;
 
 
-(*   val register_str_item_printer : printer_fun Ast.str_item -> unit; *)
-(*   val register_sig_item_printer : printer_fun Ast.sig_item -> unit; *)
-(*   val register_printer : *)
-(*       printer_fun Ast.str_item -> printer_fun Ast.sig_item -> unit; *)
-(*   val current_printer : *)
-(*       unit -> (printer_fun Ast.str_item * printer_fun Ast.sig_item); *)
+  val register_str_item_printer : printer_fun Ast.str_item -> unit;
+  val register_sig_item_printer : printer_fun Ast.sig_item -> unit;
+  val register_printer :
+      printer_fun Ast.str_item -> printer_fun Ast.sig_item -> unit;
+  val current_printer :
+      unit -> (printer_fun Ast.str_item * printer_fun Ast.sig_item);
         
-(*   val declare_dyn_module : string -> (unit -> unit) -> unit  ; *)
+  val declare_dyn_module : string -> (unit -> unit) -> unit  ;
 
-(*   module CurrentParser : ParserImpl; *)
-(*   module CurrentPrinter : PrinterImpl; *)
-(* end ; *)
+  module CurrentParser : ParserImpl;
+  module CurrentPrinter : PrinterImpl;
+end ;
 
 
-(* (\* for dynamic loading *\)   *)
-(* module type PRECAST_PLUGIN = sig *)
-(*   val apply : (module PRECAST) -> unit; *)
-(* end;  *)
+(* for dynamic loading *)
+module type PRECAST_PLUGIN = sig
+  val apply : (module PRECAST) -> unit;
+end;
