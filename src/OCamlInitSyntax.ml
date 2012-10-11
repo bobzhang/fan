@@ -1,11 +1,11 @@
-module Make
-    (Gram: FanSig.Grammar.Static with type Token.t = FanSig.camlp4_token):
-    Sig.Camlp4Syntax with
-       module Token = Gram.Token and
-module Gram = Gram =   struct
+module Make (U:sig end)
+ (*    (Gram: FanSig.Grammar.Static with type Token.t = FanSig.camlp4_token): *)
+(*     Sig.Camlp4Syntax with *)
+(*        module Token = Gram.Token and *)
+(* module Gram = Gram *) =   struct
   module Ast     = Camlp4Ast;
-  module Gram    = Gram;
-  module Token   = Gram.Token;
+  module Gram    = Grammar.Static; (* FIXME*)
+  (* module Token   = Gram.Token; *)
   (* Warnings *)
   type warning = FanLoc.t -> string -> unit;
   let default_warning loc txt = Format.eprintf "<W> %a: %s@." FanLoc.print loc txt;
@@ -185,25 +185,25 @@ module Gram = Gram =   struct
   let level_list = Gram.mk "level_list";
   let entry = Gram.mk "entry";
     
-  open FanSig;
-  EXTEND Gram
-    top_phrase:
-      [ [ `EOI -> None ] ]
-  END;
+  (* open FanSig; *) (* FIXME *)
+  (* EXTEND Gram *)
+  (*   top_phrase: *)
+  (*     [ [ `EOI -> None ] ] *)
+  (* END; *)
 
   module AntiquotSyntax = struct
     module Ast  = Ast; (* Sig.Camlp4AstToAst Ast;*)
     module Gram = Gram;
     let antiquot_expr = Gram.mk "antiquot_expr";
     let antiquot_patt = Gram.mk "antiquot_patt";
-    EXTEND Gram
-      antiquot_expr:
-        [ [  expr{x}; `EOI -> x ] ]
-      antiquot_patt:
-        [ [  patt{x}; `EOI -> x ] ]
-    END;
-    let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
-    let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
+    (* EXTEND Gram *) (* FIXME *)
+    (*   antiquot_expr: *)
+    (*     [ [  expr{x}; `EOI -> x ] ] *)
+    (*   antiquot_patt: *)
+    (*     [ [  patt{x}; `EOI -> x ] ] *)
+    (* END; *)
+    (* let parse_expr loc str = Gram.parse_string antiquot_expr loc str; *)
+    (* let parse_patt loc str = Gram.parse_string antiquot_patt loc str; *)
   end;
 
   module Quotation = Quotation.Make(struct end);
