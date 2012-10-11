@@ -1,11 +1,52 @@
-README
-======
+Fan is a full blow programming language, it's a superset of [[http://caml.inria.fr/][ocaml]] with
+=================================================================================================
+  Lisp-like macro's features. It shares the same run-time with ocaml, so
+  it's 100% compatible with ocaml.
+
+## Why a new Programming Language?
+    We see that a lot of computer scientists are creating languages to
+    target their domain, but creating a language is itself a domain, Fan
+    is targeted at this domain. Yes, Fan is targeted to compiler
+    domains. Fan aims to make creating a language easier.
+    There are some projects like Microsoft's Rosyln which aims to make
+    "Compiler as service", but unlike Rosyln, we do not only expose the
+    compiler API, but also we provide built-in language support to make
+    those API easier to use instead, since for any non-trivial
+    languages, the API is quite complex that average programmers will be
+    frustrated ans move away.
+
+## Credits:
+    Fan is a successor to [Camlp4], which was mainly developed by [Daniel de
+  Rauglaudre] and [Michel Mauny], and later was largely renovated by
+    [Nicolas Pouillard].
+    Unfortunately, though Camlp4 is a very powerful tool to program
+    OCaml Ast and Extending OCaml language, Camlp4 is a really complex
+    beast, that lately it grows out of control. Fan adopts some good
+    ideas of Camlp4 and merges some new ideas.
+    Fan is way more faster than Camlp4, generally 100 times faster!
+    and Fan has a very robust bootstrapping system compared with Camlp4.
+    Fan has all the features that Camlp4 has, and more!
+
+    [Camlp4]: http://brion.inria.fr/gallium/index.php/Camlp4
+    [Daniel de Rauglaudre]: http://pauillac.inria.fr/~ddr/
+    [Michel Mauny]: http://michel.mauny.net/index.en.php
+    [Nicolas Pouillard]: http://nicolaspouillard.fr/
+
 
 ## Install
 
 ### Requirements
-     OCaml dev (I am not sure it works with ocaml 4.00, probably ok)
-     OCamlfind 
+     [ocaml 4.00 or later]
+     [ocamlfind or later] 
+     [batteries dev]
+     Currently we depend on batteries and ocamlfind, but the
+     dependency is quite loose, we will remove the dependency on them
+     when polished
+
+     [ocaml 4.00 or later]: http://caml.inria.fr/ocaml/release.en.html
+     [ocamlfind or later]: http://projects.camlcity.org/projects/findlib.html
+     [batteries dev]: https://github.com/ocaml-batteries-team/batteries-included
+
 
 ### Initial Install
      just type dist
@@ -37,3 +78,11 @@ README
 
 ### cold
      The mirror of src, for distribute purpose 
+
+## For dev
+    the common practice is
+    hb Fan.byte # verify
+    cb # snapshot and verify again
+
+## Docs
+    It will be coming soon
