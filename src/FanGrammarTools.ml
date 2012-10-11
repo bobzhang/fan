@@ -245,7 +245,7 @@ let rec make_expr entry tvar =  fun
       [ (False, None) -> (* <:expr< $(id:gm()).Slist0 $txt >> *)
         <:expr< `Slist0 $txt >> 
       | (True, None) -> (* <:expr< $(id:gm()).Slist1 $txt >> *)
-          <:expr< `Slist $txt >> 
+          <:expr< `Slist1 $txt >> 
       | (False, Some s) ->
           let x = make_expr entry tvar s.text in
           (* <:expr< $(id:gm()).Slist0sep $txt $x >> *)
