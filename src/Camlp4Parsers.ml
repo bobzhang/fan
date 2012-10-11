@@ -166,15 +166,28 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let used = used_of_rule_list rl in
             mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
               ~styp:(STquo _loc t) ~pattern:None
-        | "`"; patt{p} ->
+        (* | "`"; patt{p} -> *)
+        (*     let (p,ls) = Expr.filter_patt_with_captured_variables p in *)
+        (*     match ls with *)
+        (*     [ [] -> mk_tok _loc p (STtok _loc) *)
+        (*     | [(x,y)::ys] -> *)
+        (*         let restrict = List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> ) *)
+        (*             <:expr< $x = $y >> ys  in  *)
+        (*         mk_tok _loc ~restrict p (STtok _loc) *)
+        (*     ]   *)
+        | "`"; a_ident{i}; OPT patt{p} ->
+            let p = match p with
+              [None -> <:patt< `$i >>
+              |Some p -> <:patt< `$i $p >> ] in 
             let (p,ls) = Expr.filter_patt_with_captured_variables p in
             match ls with
             [ [] -> mk_tok _loc p (STtok _loc)
             | [(x,y)::ys] ->
-                let restrict = List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
+                let restrict =
+                  List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
                     <:expr< $x = $y >> ys  in 
                 mk_tok _loc ~restrict p (STtok _loc)
-            ]  
+            ]                
         | `STRING _ s ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
         | name{n};  OPT [`UIDENT "Level"; `STRING _ s -> s ]{lev} ->

@@ -401,16 +401,35 @@ let text_of_functorial_extend _loc  gram gl el = (* FIXME remove gmod later*)
         <:expr< do { $(List.fold_left (fun acc x -> <:expr< $acc; $x >>) e el) } >>  ]  in
   let_in_of_extend _loc gram gl el args;
 
-let mk_tok _loc p t =
-  let p' = Camlp4Ast.wildcarder#patt p in
-  let match_fun =
-    if Camlp4Ast.is_irrefut_patt p' then
-      <:expr< fun [ $pat:p' -> True ] >>
-    else
-      <:expr< fun [ $pat:p' -> True | _ -> False ] >> in
-  let descr = string_of_patt p' in
-  let text = TXtok _loc match_fun descr in
-  {used = []; text = text; styp = t; pattern = Some p };
+let mk_tok _loc ?restrict p t =
+
+ match restrict with
+    [ None ->
+      let p' = Camlp4Ast.wildcarder#patt p in
+      let match_fun = if Camlp4Ast.is_irrefut_patt p' then 
+        <:expr< fun [ $pat:p' -> True ] >>
+      else <:expr< fun [$pat:p' -> True | _ -> False ] >> in 
+      let descr = string_of_patt p' in
+      let text = TXtok _loc match_fun descr in
+      {used = []; text = text; styp = t; pattern = Some p }
+    | Some restrict ->
+        let p'= Camlp4Ast.wildcarder#patt p in
+        let match_fun = 
+          <:expr< fun [$pat:p when $restrict -> True | _ -> False ] >>  in
+        let descr = string_of_patt p in
+        let text = TXtok _loc match_fun descr in
+        {used=[]; text; styp=t; pattern = Some p'} ] ;
+  
+(* let mk_tok _loc p t = *)
+(*   let p' = Camlp4Ast.wildcarder#patt p in *)
+(*   let match_fun = *)
+(*     if Camlp4Ast.is_irrefut_patt p' then *)
+(*       <:expr< fun [ $pat:p' -> True ] >> *)
+(*     else *)
+(*       <:expr< fun [ $pat:p' -> True | _ -> False ] >> in *)
+(*   let descr = string_of_patt p' in *)
+(*   let text = TXtok _loc match_fun descr in *)
+(*   {used = []; text = text; styp = t; pattern = Some p }; *)
 
 
 
