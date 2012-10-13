@@ -37,3 +37,21 @@ let is_revised ~expr ~sem_expr_for_list =
       DELETE_RULE Gram expr: "["; sem_expr_for_list; "::"; expr; "]" END;
       True
   end with [ Not_found -> False ];
+    
+let setup_op_parser entry p =
+  Gram.setup_parser entry
+    (parser
+        [< (`KEYWORD x | `SYMBOL x, ti) when p x >] ->
+          let _loc = Gram.token_location ti in
+          <:expr< $lid:x >>);
+
+let rec infix_kwds_filter = parser
+  [ [< ((`KEYWORD "(", _) as tok); 'xs >] ->
+    match xs with parser
+      [ [< (`KEYWORD ("or"|"mod"|"land"|"lor"|"lxor"|"lsl"|"lsr"|"asr" as i), _loc);
+             (`KEYWORD ")", _); 'xs >] ->
+                [< (`LIDENT i, _loc); '(infix_kwds_filter xs) >]
+        | [< 'xs >] ->
+                [< tok; '(infix_kwds_filter xs) >] ]
+    | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >] ];
+  
