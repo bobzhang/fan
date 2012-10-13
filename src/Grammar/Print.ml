@@ -22,11 +22,17 @@ class text_grammar= object(self:'self)
     | `Snterml e l -> fprintf ppf "%s@ Level@ %S" e.ename l
     | `Snterm _ | `Snext | `Sself | `Stree _ | `Stoken _ | `Skeyword _ as s ->
         self#symbol1 ppf s ];
+  method description ppf = fun
+    [ `Normal -> ()
+    | `Antiquot -> fprintf ppf "$"];
   method symbol1 ppf = fun
     [ `Snterm e -> pp_print_string ppf e.ename
     | `Sself -> pp_print_string ppf "SELF"
     | `Snext -> pp_print_string ppf "NEXT"
-    | `Stoken (_, descr) -> pp_print_string ppf descr
+    | `Stoken (_, (description,content)) -> begin 
+        self#description ppf description;
+        pp_print_string ppf content
+    end
     | `Skeyword s -> fprintf ppf "%S" s
     | `Stree t -> self#tree ppf t
     | `Smeta _ _ _ | `Snterml _ _ | `Slist0 _ | `Slist0sep _ _ | `Slist1 _ |

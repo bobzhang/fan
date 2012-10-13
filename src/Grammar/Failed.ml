@@ -3,11 +3,15 @@
 open Structure;
 open Format;
 
+let name_of_descr = fun
+  [(`Antiquot,s) -> "$"^s
+  |(_,s) -> s ];
+  
 let  name_of_symbol entry =  fun
   [ `Snterm e -> "[" ^ e.ename ^ "]"
   | `Snterml (e, l) -> "[" ^ e.ename ^ " level " ^ l ^ "]"
   | `Sself | `Snext -> "[" ^ entry.ename ^ "]"
-  | `Stoken (_, descr) -> descr
+  | `Stoken (_, descr) -> name_of_descr descr
   | `Skeyword kwd -> "\"" ^ kwd ^ "\""
   | _ -> "???" ];
 
@@ -42,7 +46,7 @@ and name_of_tree_failed entry =  fun
             (fun s tok ->
                (if s = "" then "" else s ^ " then ") ^
                match tok with
-               [ `Stoken (_, descr) -> descr
+               [ `Stoken (_, descr) -> name_of_descr descr
                | `Skeyword kwd -> kwd
                | _ -> assert False ])
             "" tokl ]
