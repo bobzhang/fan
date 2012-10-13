@@ -8,9 +8,12 @@ type styp =
  | STquo of loc and string
  | STself of loc and string
  | STtok of loc
- (* | STstring_tok of loc *)
  | STtyp of Ast.ctyp ] ;
 
+
+
+
+type attr = string (* Normal, Antiquot, etc.*);
 type entry   = {
   name : name ;
   pos : option Ast.expr;
@@ -41,7 +44,7 @@ and text =
  | TXrules of loc and list (list text * Ast.expr)
  | TXself of loc
  | TXkwd of loc and string
- | TXtok of loc and Ast.expr and string];
+ | TXtok of loc and Ast.expr and attr and string];
 (** The first is the match function expr,
     the second is the string description.
     The description string will be used for
