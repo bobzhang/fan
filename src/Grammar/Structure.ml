@@ -73,7 +73,7 @@ and symbol =
     | `Stoken of token_pattern
     | `Skeyword of string
     | `Stree of tree ]
-and tree =
+and tree = (* internal struccture *)
     [ Node of node
     | LocAct of Action.t and list Action.t
     | DeadEnd ]

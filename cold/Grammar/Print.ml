@@ -50,6 +50,11 @@ class text_grammar =
                                      | (`Stree _)) | (`Stoken _))
                                    | (`Skeyword _)) as s) ->
                                   (self#symbol1 ppf s)
+                             method description =
+                              fun ppf ->
+                               function
+                               | `Normal -> ()
+                               | `Antiquot -> (fprintf ppf "$")
                              method symbol1 =
                               fun ppf ->
                                function
@@ -57,8 +62,11 @@ class text_grammar =
                                   (pp_print_string ppf ( e.ename ))
                                | `Sself -> (pp_print_string ppf "SELF")
                                | `Snext -> (pp_print_string ppf "NEXT")
-                               | (`Stoken (_, descr)) ->
-                                  (pp_print_string ppf descr)
+                               | (`Stoken (_, (description, content))) ->
+                                  (
+                                  (self#description ppf description)
+                                  );
+                                  (pp_print_string ppf content)
                                | (`Skeyword s) -> (fprintf ppf "%S" s)
                                | (`Stree t) -> (self#tree ppf t)
                                | (((((((((`Smeta (_, _, _))

@@ -12,8 +12,11 @@ type styp =
 
 
 
+(* Normal, Antiquot, etc. translated to
+   `Normal `Antiquot
+ *)
+type attr = string;
 
-type attr = string (* Normal, Antiquot, etc.*);
 type entry   = {
   name : name ;
   pos : option Ast.expr;

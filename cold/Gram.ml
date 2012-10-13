@@ -171,7 +171,8 @@ let eoi_entry =
            [((
              [`Snterm ((obj ( (entry : 'entry t) )));
               `Stoken
-               ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))] ), (
+               ((( function | `EOI -> (true) | _ -> (false) ),
+                 (`Normal, "`EOI")))] ), (
              (mk_action (
                fun __camlp4_0 ->
                 fun (x :

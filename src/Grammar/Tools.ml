@@ -1,12 +1,8 @@
 open LibUtil;
-(* PR#5090: don't do lookahead on get_prev_loc. *)
-(* let get_prev_loc_only = ref False; *)
-
 open Structure;
 
 let empty_entry ename _ =
     raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
-
 
 let keep_prev_loc strm =  match Stream.peek strm with
   [ None -> [< >]
@@ -44,21 +40,6 @@ let rec get_token_list entry tokl last_tok  = fun
       if tokl = [] then None
       else Some (List.rev [last_tok :: tokl], last_tok, tree) ];
 
-(* BUG here we alternate the grammar
-   {[
-           | x = UIDENT; `ANTIQUOT "" s ->
-            let e = AntiquotSyntax.parse_expr _loc s in
-            let match_fun = <:expr< fun [ $uid:x$ camlp4_x when camlp4_x = $e$ -> True | _ -> False ] >> in
-            let descr = "$" ^ x ^ " " ^ s in
-            let text = TXtok _loc match_fun descr in
-            let p = <:patt< $uid:x$ ($tup:<:patt< _ >>$) >> in
-            {used = []; text = text; styp = STtok _loc; pattern = Some p }
-
-   ]}
- *)  
-let is_antiquot s =
-  let len = String.length s in
-  len > 1 && s.[0] = '$';
 
 let eq_Stoken_ids s1 s2 = match (s1,s2) with
   [ ((`Antiquot,_),_) -> False
@@ -86,11 +67,9 @@ and eq_trees t1 t2 = match (t1, t2) with
     eq_symbols n1.node n2.node && eq_trees n1.son n2.son &&
     eq_trees n1.brother n2.brother
   | (LocAct _ _ | DeadEnd, LocAct _ _ | DeadEnd) -> True
-  | _ -> False ] in
-  eq_symbols;
+  | _ -> False ] in eq_symbols;
 
-  let rec eq_symbol s1 s2 =
-    match (s1, s2) with
+let rec eq_symbol s1 s2 =  match (s1, s2) with
     [ (`Snterm e1, `Snterm e2) -> e1 == e2
     | (`Snterml (e1, l1), `Snterml (e2, l2)) -> e1 == e2 && l1 = l2
     | (`Slist0 s1, `Slist0 s2) |
@@ -103,4 +82,4 @@ and eq_trees t1 t2 = match (t1, t2) with
     | (`Stree _, `Stree _) -> False
     | (`Stoken (_, s1), `Stoken (_, s2)) -> eq_Stoken_ids s1 s2
     | _ -> s1 = s2 ];
-(* end; *)
+

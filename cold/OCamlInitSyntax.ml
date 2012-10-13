@@ -369,7 +369,7 @@ module Make =
                     [((
                       [`Stoken
                         ((( function | `EOI -> (true) | _ -> (false) ),
-                          "`EOI"))] ), (
+                          (`Normal, "`EOI")))] ), (
                       (Gram.mk_action (
                         fun __camlp4_0 ->
                          fun (_loc :

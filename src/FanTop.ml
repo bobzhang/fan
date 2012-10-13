@@ -73,7 +73,7 @@ let _  =   begin
       iter_and_take_callbacks (fun (_, f) -> f ());
   end;
 
-let open Camlp4Parsers in  begin
+let open FanParsers in  begin
    pa_r (module P);
    pa_rp (module P);
    (* pa_qb; *)

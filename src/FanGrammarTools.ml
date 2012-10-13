@@ -33,7 +33,7 @@ let string_of_patt patt =
  *)  
 let check_not_tok s = (* ('a, 'b) symbol -> unit *)
     match s with
-    [ {text = TXtok _loc _ _ ;_} ->
+    [ {text = TXtok _loc _ _ _ ;_} ->
         FanLoc.raise _loc (Stream.Error
           ("Deprecated syntax, use a sub rule. "^
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]"))
@@ -178,7 +178,7 @@ let text_of_action _loc  (psl) (rtvar:string) (act:option Ast.expr) (tvar:string
           (tok_match_pl,
            <:expr< let $lid:s = $(id:gm()).string_of_token $lid:s
            in $act >>, i) (* FIXME should be removed later *)
-      | { pattern = Some p; text=TXtok _ _ _ ; _ } ->
+      | { pattern = Some p; text=TXtok _ _  _ _ ; _ } ->
           let id = prefix ^ string_of_int i in
           (Some (match (tok_match_pl) with
             [ None -> (<:expr< $lid:id >>, p)
@@ -288,9 +288,9 @@ let rec make_expr entry tvar =  fun
       <:expr< `Sself>>
   | TXkwd _loc kwd -> (* <:expr< $(id:gm()).Skeyword $str:kwd >> *)
       <:expr< `Skeyword $str:kwd >>
-  | TXtok _loc match_fun descr ->
+  | TXtok _loc match_fun attr descr ->
       (* <:expr< $(id:gm()).Stoken ($match_fun, $`str:descr) >> *)
-      <:expr< `Stoken ($match_fun, $`str:descr) >>
+      <:expr< `Stoken ($match_fun, (`$uid:attr, $`str:descr)) >>
   ]
 and make_expr_rules _loc n rl tvar =
   (* loc ->expr name ->
@@ -409,14 +409,14 @@ let mk_tok _loc ?restrict p t =
         <:expr< fun [ $pat:p' -> True ] >>
       else <:expr< fun [$pat:p' -> True | _ -> False ] >> in 
       let descr = string_of_patt p' in
-      let text = TXtok _loc match_fun descr in
+      let text = TXtok _loc match_fun "Normal" descr in
       {used = []; text = text; styp = t; pattern = Some p }
     | Some restrict ->
         let p'= Camlp4Ast.wildcarder#patt p in
         let match_fun = 
           <:expr< fun [$pat:p when $restrict -> True | _ -> False ] >>  in
         let descr = string_of_patt p in
-        let text = TXtok _loc match_fun descr in
+        let text = TXtok _loc match_fun "Antiquot" descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;
 let sfold _loc  n foldfun f e s =
   let styp = STquo _loc (new_type_var ()) in

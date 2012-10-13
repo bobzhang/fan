@@ -11,10 +11,12 @@ type styp =
  | STtok of loc
  | STtyp of Ast.ctyp
 
+type attr = string
+
 type entry = {
-                                     name:name;
-                                     pos:Ast.expr option;
-                                     levels:level list}
+                                                         name:name;
+                                                         pos:Ast.expr option;
+                                                         levels:level list}
 and level = {label:string option; assoc:Ast.expr option; rules:rule list}
 and rule = {prod:symbol list; action:Ast.expr option}
 and symbol = {used:string list; text:text; styp:styp; pattern:Ast.patt option}
@@ -28,9 +30,9 @@ and text =
   | TXrules of loc * (text list * Ast.expr) list
   | TXself of loc
   | TXkwd of loc * string
-  | TXtok of loc * Ast.expr * string
+  | TXtok of loc * Ast.expr * attr * string
 
 type used =
-                                         Unused
-                                       | UsedScanned
-                                       | UsedNotScanned
+                                                Unused
+                                              | UsedScanned
+                                              | UsedNotScanned

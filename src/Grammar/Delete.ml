@@ -1,12 +1,3 @@
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-
-(* module Make (Structure : Structure.S) = struct *)
-  (* module Tools  = Tools.Make Structure; *)
-  (* module Parser = Parser.Make Structure; *)
   open Structure;
 
 (* Deleting a rule *)
@@ -126,26 +117,22 @@ let  delete_rule_in_level_list entry symbols levs =
   [ [`Sself :: symbols] -> delete_rule_in_suffix entry symbols levs
   | [`Snterm e :: symbols] when e == entry ->
       delete_rule_in_suffix entry symbols levs
-  | _ -> delete_rule_in_prefix entry symbols levs ]
-;
+  | _ -> delete_rule_in_prefix entry symbols levs ];
 
 
-let delete_rule entry sl =
-  match entry.edesc with
+
+let delete_rule entry sl = match entry.edesc with
   [ Dlevels levs ->
-      let levs = delete_rule_in_level_list entry sl levs in
-      do {
+      let levs = delete_rule_in_level_list entry sl levs in begin 
         entry.edesc <- Dlevels levs;
-        entry.estart <-
-          fun lev strm ->
-            let f = Parser.start_parser_of_entry entry in
-            do { entry.estart <- f; f lev strm };
+        entry.estart <-  fun lev strm ->
+          let f = Parser.start_parser_of_entry entry in begin 
+            entry.estart <- f; f lev strm end;
         entry.econtinue <-
           fun lev bp a strm ->
             let f = Parser.continue_parser_of_entry entry in
-            do { entry.econtinue <- f; f lev bp a strm }
-      }
-  | Dparser _ -> () ]
-;
+            begin entry.econtinue <- f; f lev bp a strm end
+      end
+  | Dparser _ -> () ];
 
-(* end; *)
+

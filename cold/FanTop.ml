@@ -149,7 +149,7 @@ let _ = (
 
 
 let _ = let open
-        Camlp4Parsers in
+        FanParsers in
         (
         (pa_r (module P))
         );

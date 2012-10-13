@@ -89,7 +89,7 @@ let string_of_patt =
 let check_not_tok =
  fun s ->
   (match s with
-   | {text = TXtok (_loc, _, _); _ } ->
+   | {text = TXtok (_loc, _, _, _); _ } ->
       (FanLoc.raise _loc (
         (Stream.Error
           ("Deprecated syntax, use a sub rule. " ^
@@ -436,7 +436,7 @@ let text_of_action =
                        ( (Ast.ExId (_loc, ( (Ast.IdLid (_loc, s)) ))) ))) )))
                  ), act)) ), i)
           | {pattern = Some (p);
-             text = TXtok (_, _, _); _ } ->
+             text = TXtok (_, _, _, _); _ } ->
              let id = (prefix ^ ( (string_of_int i) )) in
              ((
               (Some
@@ -805,7 +805,8 @@ let rec make_expr =
                                                     ( (Ast.ExStr (_loc, kwd))
                                                     )))
                                               | TXtok
-                                                 (_loc, match_fun, descr) ->
+                                                 (_loc, match_fun, attr,
+                                                  descr) ->
                                                  (Ast.ExApp
                                                    (_loc, (
                                                     (Ast.ExVrn
@@ -814,10 +815,19 @@ let rec make_expr =
                                                       (_loc, (
                                                        (Ast.ExCom
                                                          (_loc, match_fun, (
-                                                          (Ast.ExStr
+                                                          (Ast.ExTup
                                                             (_loc, (
-                                                             (Ast.safe_string_escaped
-                                                               descr) ))) )))
+                                                             (Ast.ExCom
+                                                               (_loc, (
+                                                                (Ast.ExVrn
+                                                                  (_loc,
+                                                                   attr)) ),
+                                                                (
+                                                                (Ast.ExStr
+                                                                  (_loc, (
+                                                                   (Ast.safe_string_escaped
+                                                                    descr) )))
+                                                                ))) ))) )))
                                                        ))) )))
                                            and make_expr_rules =
                                             fun _loc ->
@@ -1211,7 +1221,7 @@ let mk_tok =
                                                        let text =
                                                         (TXtok
                                                           (_loc, match_fun,
-                                                           descr)) in
+                                                           "Normal", descr)) in
                                                        {used = [] ;
                                                         text = text;
                                                         styp = t;
@@ -1258,7 +1268,7 @@ let mk_tok =
                                                        let text =
                                                         (TXtok
                                                           (_loc, match_fun,
-                                                           descr)) in
+                                                           "Antiquot", descr)) in
                                                        {used = [] ;
                                                         text = text;
                                                         styp = t;

@@ -50,19 +50,33 @@ type efun =
                                                     (token_stream ->
                                                      Action.t)
 
+type description =
+                                                                 [ `Normal |
+                                                                  `Antiquot ]
+
+
+type descr = (description * string)
+
 type token_pattern =
-                                                                 ((token ->
-                                                                   bool) *
-                                                                  string)
+                                      ((token -> bool) * descr)
 
-
-type internal_entry = {
-                        egram:gram;
-                        ename:string;
-                        mutable estart:(int -> efun);
-                        mutable econtinue:(int ->
-                                           (FanLoc.t -> (Action.t -> efun)));
-                        mutable edesc:desc}
+type internal_entry = 
+                                                                 {
+                                                                   egram:gram;
+                                                                   ename:
+                                                                    string;
+                                                                   mutable estart:
+                                                                    (int ->
+                                                                    efun);
+                                                                   mutable econtinue:
+                                                                    (int ->
+                                                                    (FanLoc.t
+                                                                    ->
+                                                                    (Action.t
+                                                                    -> 
+                                                                    efun)));
+                                                                   mutable edesc:
+                                                                    desc}
 and desc = Dlevels of level list | Dparser of (token_stream -> Action.t)
 and level = {assoc:assoc; lname:string option; lsuffix:tree; lprefix:tree}
 and symbol =

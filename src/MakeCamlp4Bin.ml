@@ -1,4 +1,4 @@
-open Camlp4Parsers;
+open FanParsers;
 (* open FanParsers; *)
 open Camlp4Filters;
 open Format;
@@ -318,7 +318,7 @@ module Camlp4Bin
           "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
         ("-loaded-modules", Arg.Set print_loaded_modules, "Print the list of loaded modules.");
         ("-parser", Arg.String (rewrite_and_load "Parsers"),
-          "<name>  Load the parser Camlp4Parsers/<name>.cm(o|a|xs)");
+          "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
         ("-printer", Arg.String (rewrite_and_load "Printers"),
           "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");
         ("-filter", Arg.String (rewrite_and_load "Filters"),

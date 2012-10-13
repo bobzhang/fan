@@ -1,4 +1,4 @@
-open Camlp4Parsers
+open FanParsers
 
 open Camlp4Filters
 
@@ -7,26 +7,26 @@ open Format
 open LibUtil
 
 module Camlp4Bin =
-                                                                    functor (PreCast : Sig.PRECAST) ->
-                                                                    struct
-                                                                    let printers =
+                                                                 functor (PreCast : Sig.PRECAST) ->
+                                                                  struct
+                                                                   let printers =
                                                                     ((Hashtbl.create
                                                                     30) :
                                                                     (string,
                                                                     (module Sig.PRECAST_PLUGIN
                                                                     )) Hashtbl.t)
 
-                                                                    let rcall_callback =
+                                                                   let rcall_callback =
                                                                     (ref (
                                                                     fun ()
                                                                      ->
                                                                     () ))
 
-                                                                    let loaded_modules =
+                                                                   let loaded_modules =
                                                                     (ref
                                                                     SSet.empty)
 
-                                                                    let add_to_loaded_modules =
+                                                                   let add_to_loaded_modules =
                                                                     fun name ->
                                                                     (loaded_modules
                                                                     := (
@@ -35,8 +35,8 @@ module Camlp4Bin =
                                                                     loaded_modules.contents
                                                                     )) ))
 
-                                                                    let _ = 
-                                                                    (Printexc.register_printer
+                                                                   let _ = 
+                                                                   (Printexc.register_printer
                                                                     (
                                                                     function
                                                                     | FanLoc.Exc_located
@@ -54,12 +54,12 @@ module Camlp4Bin =
                                                                     _ ->
                                                                     (None) ))
 
-                                                                    module DynLoader =
+                                                                   module DynLoader =
                                                                     (DynLoader.Make)
                                                                     (struct
                                                                     end)
 
-                                                                    let 
+                                                                   let 
                                                                     (objext,
                                                                     libext) =
                                                                     if DynLoader.is_native then
@@ -69,7 +69,7 @@ module Camlp4Bin =
                                                                     (".cmo",
                                                                     ".cma")
 
-                                                                    let rewrite_and_load =
+                                                                   let rewrite_and_load =
                                                                     fun n ->
                                                                     fun x ->
                                                                     let dyn_loader =
@@ -332,12 +332,12 @@ module Camlp4Bin =
                                                                     ((rcall_callback.contents)
                                                                     () )
 
-                                                                    let print_warning =
+                                                                   let print_warning =
                                                                     (eprintf
                                                                     "%a:\n%s@."
                                                                     FanLoc.print)
 
-                                                                    let rec parse_file =
+                                                                   let rec parse_file =
                                                                     fun dyn_loader ->
                                                                     fun name ->
                                                                     fun pa ->
@@ -448,11 +448,11 @@ module Camlp4Bin =
                                                                     );
                                                                     phr
 
-                                                                    let output_file =
+                                                                   let output_file =
                                                                     (ref None
                                                                     )
 
-                                                                    let process =
+                                                                   let process =
                                                                     fun dyn_loader ->
                                                                     fun name ->
                                                                     fun pa ->
@@ -485,7 +485,7 @@ module Camlp4Bin =
                                                                     output_file.contents
                                                                     )) ))
 
-                                                                    let gind =
+                                                                   let gind =
                                                                     function
                                                                     | Ast.SgDir
                                                                     (loc, n,
@@ -499,7 +499,7 @@ module Camlp4Bin =
                                                                     _ ->
                                                                     (None)
 
-                                                                    let gimd =
+                                                                   let gimd =
                                                                     function
                                                                     | Ast.StDir
                                                                     (loc, n,
@@ -513,7 +513,7 @@ module Camlp4Bin =
                                                                     _ ->
                                                                     (None)
 
-                                                                    let process_intf =
+                                                                   let process_intf =
                                                                     fun dyn_loader ->
                                                                     fun name ->
                                                                     (process
@@ -530,7 +530,7 @@ module Camlp4Bin =
                                                                     PreCast.Syntax.AstFilters.fold_interf_filters
                                                                     gind)
 
-                                                                    let process_impl =
+                                                                   let process_impl =
                                                                     fun dyn_loader ->
                                                                     fun name ->
                                                                     (process
@@ -547,7 +547,7 @@ module Camlp4Bin =
                                                                     PreCast.Syntax.AstFilters.fold_implem_filters
                                                                     gimd)
 
-                                                                    let just_print_the_version =
+                                                                   let just_print_the_version =
                                                                     fun ()
                                                                      ->
                                                                     (
@@ -557,7 +557,7 @@ module Camlp4Bin =
                                                                     );
                                                                     (exit 0)
 
-                                                                    let print_version =
+                                                                   let print_version =
                                                                     fun ()
                                                                      ->
                                                                     (
@@ -567,7 +567,7 @@ module Camlp4Bin =
                                                                     );
                                                                     (exit 0)
 
-                                                                    let print_stdlib =
+                                                                   let print_stdlib =
                                                                     fun ()
                                                                      ->
                                                                     (
@@ -577,7 +577,7 @@ module Camlp4Bin =
                                                                     );
                                                                     (exit 0)
 
-                                                                    let usage =
+                                                                   let usage =
                                                                     fun ini_sl ->
                                                                     fun ext_sl ->
                                                                     (
@@ -609,13 +609,13 @@ module Camlp4Bin =
                                                                     else
                                                                     ()
 
-                                                                    let warn_noassert =
+                                                                   let warn_noassert =
                                                                     fun ()
                                                                      ->
                                                                     (eprintf
                                                                     "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@.")
 
-                                                                    type file_kind =
+                                                                   type file_kind =
                                                                       
                                                                     Intf of
                                                                     string
@@ -634,15 +634,15 @@ module Camlp4Bin =
                                                                     of 
                                                                     string
 
-                                                                    let search_stdlib =
+                                                                   let search_stdlib =
                                                                     (ref true
                                                                     )
 
-                                                                    let print_loaded_modules =
+                                                                   let print_loaded_modules =
                                                                     (ref
                                                                     false )
 
-                                                                    let 
+                                                                   let 
                                                                     (task,
                                                                     do_task) =
                                                                     let t =
@@ -684,7 +684,7 @@ module Camlp4Bin =
                                                                     (task,
                                                                     do_task)
 
-                                                                    let input_file =
+                                                                   let input_file =
                                                                     fun x ->
                                                                     let dyn_loader =
                                                                     ((DynLoader.instance.contents)
@@ -752,7 +752,7 @@ module Camlp4Bin =
                                                                     ((rcall_callback.contents)
                                                                     () )
 
-                                                                    let initial_spec_list =
+                                                                   let initial_spec_list =
                                                                     [("-I", (
                                                                     (Arg.String
                                                                     (fun x ->
@@ -881,7 +881,7 @@ module Camlp4Bin =
                                                                     (rewrite_and_load
                                                                     "Parsers"))
                                                                     ),
-                                                                    "<name>  Load the parser Camlp4Parsers/<name>.cm(o|a|xs)");
+                                                                    "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");
                                                                     ("-printer",
                                                                     (
                                                                     (Arg.String
@@ -908,11 +908,11 @@ module Camlp4Bin =
                                                                     ),
                                                                     "Deprecated, does nothing")]
 
-                                                                    let _ = 
-                                                                    (FanUtil.Options.init
+                                                                   let _ = 
+                                                                   (FanUtil.Options.init
                                                                     initial_spec_list)
 
-                                                                    let anon_fun =
+                                                                   let anon_fun =
                                                                     fun name ->
                                                                     (input_file
                                                                     (
@@ -958,7 +958,7 @@ module Camlp4Bin =
                                                                     ^ name))
                                                                     )) ))
 
-                                                                    let main =
+                                                                   let main =
                                                                     fun argv ->
                                                                     let usage =
                                                                     fun ()
@@ -1087,8 +1087,8 @@ module Camlp4Bin =
                                                                     );
                                                                     (exit 2))
 
-                                                                    let _ = 
-                                                                    (main
+                                                                   let _ = 
+                                                                   (main
                                                                     Sys.argv)
 
-                                                                    end
+                                                                  end
