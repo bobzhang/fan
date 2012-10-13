@@ -418,19 +418,19 @@ let mk_tok _loc ?restrict p t =
         let descr = string_of_patt p in
         let text = TXtok _loc match_fun descr in
         {used=[]; text; styp=t; pattern = Some p'} ] ;
-  
-(* let mk_tok _loc p t = *)
-(*   let p' = Camlp4Ast.wildcarder#patt p in *)
-(*   let match_fun = *)
-(*     if Camlp4Ast.is_irrefut_patt p' then *)
-(*       <:expr< fun [ $pat:p' -> True ] >> *)
-(*     else *)
-(*       <:expr< fun [ $pat:p' -> True | _ -> False ] >> in *)
-(*   let descr = string_of_patt p' in *)
-(*   let text = TXtok _loc match_fun descr in *)
-(*   {used = []; text = text; styp = t; pattern = Some p }; *)
+let sfold _loc  n foldfun f e s =
+  let styp = STquo _loc (new_type_var ()) in
+  let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
+  let t = STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).fold _ >>) s.styp) styp in
+  {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None } ;
 
-
+let sfoldsep  _loc n foldfun f e s sep =
+  let styp = STquo _loc (new_type_var ()) in
+  let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
+  let t =
+    STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).foldsep _ >>) s.styp) styp in
+  {used = s.used @ sep.used; text = TXmeta _loc n [s.text; sep.text] e t;
+   styp = styp; pattern = None} ;
 
 
 

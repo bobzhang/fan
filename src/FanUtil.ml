@@ -94,7 +94,11 @@ let neg_string n =
     if len > 0 && n.[0] = '-' then String.sub n 1 (len - 1)
     else "-" ^ n ;
 
-let rec loop n = fun
+(*
+  {[
+  ]}
+ *)    
+let rec loop n = fun (* int -> ('a * 'b) list -> 'a option*)
   [ [] -> None
   | [(x, _)] -> if n = 1 then Some x else None
   | [_ :: l] -> loop (n - 1) l ];

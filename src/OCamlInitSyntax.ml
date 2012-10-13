@@ -1,5 +1,5 @@
 
-module Gram = Grammar.Static;
+(* module Gram = Grammar.Static; *)
 module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   module Ast     = Camlp4Ast;
   type warning = FanLoc.t -> string -> unit;

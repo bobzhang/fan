@@ -1264,3 +1264,84 @@ let mk_tok =
                                                         styp = t;
                                                         pattern = (
                                                          (Some (p')) )})
+
+
+let sfold =
+ fun _loc ->
+  fun n ->
+   fun foldfun ->
+    fun f ->
+     fun e ->
+      fun s ->
+       let styp = (STquo (_loc, ( (new_type_var () ) ))) in
+       let e =
+        (Ast.ExApp
+          (_loc, (
+           (Ast.ExApp
+             (_loc, (
+              (Ast.ExId
+                (_loc, (
+                 (Ast.IdAcc
+                   (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, foldfun)) ))) )))
+              ), f)) ), e)) in
+       let t =
+        (STapp
+          (_loc, (
+           (STapp
+             (_loc, (
+              (STtyp
+                ((Ast.TyApp
+                   (_loc, (
+                    (Ast.TyId
+                      (_loc, (
+                       (Ast.IdAcc
+                         (_loc, ( (gm () ) ), ( (Ast.IdLid (_loc, "fold")) )))
+                       ))) ), ( (Ast.TyAny (_loc)) ))))) ), ( s.styp ))) ),
+           styp)) in
+       {used = ( s.used );
+        text = ( (TXmeta (_loc, n, ( [( s.text )] ), e, t)) ); styp = styp;
+        pattern = None }
+
+let sfoldsep =
+                           fun _loc ->
+                            fun n ->
+                             fun foldfun ->
+                              fun f ->
+                               fun e ->
+                                fun s ->
+                                 fun sep ->
+                                  let styp =
+                                   (STquo (_loc, ( (new_type_var () ) ))) in
+                                  let e =
+                                   (Ast.ExApp
+                                     (_loc, (
+                                      (Ast.ExApp
+                                        (_loc, (
+                                         (Ast.ExId
+                                           (_loc, (
+                                            (Ast.IdAcc
+                                              (_loc, ( (gm () ) ), (
+                                               (Ast.IdLid (_loc, foldfun)) )))
+                                            ))) ), f)) ), e)) in
+                                  let t =
+                                   (STapp
+                                     (_loc, (
+                                      (STapp
+                                        (_loc, (
+                                         (STtyp
+                                           ((Ast.TyApp
+                                              (_loc, (
+                                               (Ast.TyId
+                                                 (_loc, (
+                                                  (Ast.IdAcc
+                                                    (_loc, ( (gm () ) ), (
+                                                     (Ast.IdLid
+                                                       (_loc, "foldsep")) )))
+                                                  ))) ), ( (Ast.TyAny (_loc))
+                                               ))))) ), ( s.styp ))) ), styp)) in
+                                  {used = ( (( s.used ) @ ( sep.used )) );
+                                   text = (
+                                    (TXmeta
+                                      (_loc, n, ( [( s.text ); ( sep.text )]
+                                       ), e, t)) ); styp = styp;
+                                   pattern = None }

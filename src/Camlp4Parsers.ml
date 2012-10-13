@@ -1,7 +1,8 @@
 open LibUtil;
 open FanUtil;
 open Lib;
-module Gram = Grammar.Static;
+open GramLib;
+(* module Gram = Grammar.Static; *)
 module IdDebugParser = struct
   let name = "Camlp4DebugParser";
   let version = Sys.ocaml_version;
@@ -60,7 +61,6 @@ end;
 module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
-  (* open FanSig; *)
   open FanGrammar;
   open FanGrammarTools;
   FanConfig.antiquotations := True;
@@ -167,13 +167,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
             let used = used_of_rule_list rl in
             mk_symbol ~used ~text:(TXrules _loc (srules _loc t rl ""))
               ~styp:(STquo _loc t) ~pattern:None
-              
-        (* |  "`"; a_ident{i}; OPT patt{p} -> (\* FIXME could be more expressive here *\) *)
-        (*     let p = match p with *)
-        (*     [None ->  <:patt< `$i >> *)
-        (*     |Some p -> <:patt< `$i $p >> ] in  *)
-        (*     mk_tok _loc p (STtok _loc) *)
-              
         | "`"; a_ident{i}; OPT patt{p} ->
             let p = match p with
               [None -> <:patt< `$i >>
@@ -186,15 +179,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
                   List.fold_left (fun acc (x,y) -> <:expr< $acc && ( $x = $y ) >> )
                     <:expr< $x = $y >> ys  in 
                 mk_tok _loc ~restrict p (STtok _loc) ]                
-
-        (* | `UIDENT x; `ANTIQUOT ("", s) -> *)
-        (*     let e = AntiquotSyntax.parse_expr _loc s in *)
-        (*     let match_fun = <:expr< *)
-        (*       fun [ $uid:x camlp4_x when camlp4_x = $e -> True | _ -> False ] >> in *)
-        (*     let descr = "$" ^ x ^ " " ^ s in *)
-        (*     let text = TXtok _loc match_fun descr in *)
-        (*     let p = <:patt< $uid:x $(tup:<:patt< _ >>) >> in *)
-        (*     mk_symbol ~used:[] ~text ~styp:(STtok _loc) ~pattern:(Some p) *)
         | `STRING (_, s) ->
             mk_symbol ~used:[] ~text:(TXkwd _loc s) ~styp:(STtok _loc) ~pattern:None
         | name{n};  OPT [`UIDENT "Level"; `STRING (_, s) -> s ]{lev} ->
@@ -216,21 +200,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
     semi_sep:
       [ [ ";" -> () ] ]
   END;
-  let sfold _loc  n foldfun f e s =
-    let styp = STquo _loc (new_type_var ()) in
-    let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
-    let t = STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).fold _ >>) s.styp) styp in
-    {used = s.used; text = TXmeta _loc n [s.text] e t; styp = styp; pattern = None } ;
-
-  let sfoldsep  _loc n foldfun f e s sep =
-    let styp = STquo _loc (new_type_var ()) in
-    let e = <:expr< $(id:gm()).$lid:foldfun $f $e >> in
-    let t =
-      STapp _loc (STapp _loc (STtyp <:ctyp< $(id:gm()).foldsep _ >>) s.styp) styp
-    in
-    {used = s.used @ sep.used; text = TXmeta _loc n [s.text; sep.text] e t;
-    styp = styp; pattern = None} ;
-
   EXTEND Gram
     GLOBAL: symbol;
     symbol: Level "top"
@@ -256,7 +225,6 @@ module MakeGrammarParser (Syntax : Sig.Camlp4Syntax) = struct
 
   Options.add "-meta_action" (Arg.Set meta_action)
     "Undocumented"; (* FIXME *)
-
 end;
 
 module IdListComprehension = struct
@@ -269,44 +237,9 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
   include Syntax;
   module Ast = Camlp4Ast;
 
-  (* usual trick *) (* FIXME utilities based on Gram *)
-  (* let test_patt_lessminus = *)
-  (*   Gram.of_parser "test_patt_lessminus" *)
-  (*     (fun strm -> *)
-  (*       let rec skip_patt n = *)
-  (*         match stream_peek_nth n strm with *)
-  (*         [ Some (KEYWORD "<-") -> n *)
-  (*         | Some (KEYWORD ("[" | "[<")) -> *)
-  (*             skip_patt (ignore_upto "]" (n + 1) + 1) *)
-  (*         | Some (KEYWORD "(") -> *)
-  (*             skip_patt (ignore_upto ")" (n + 1) + 1) *)
-  (*         | Some (KEYWORD "{") -> *)
-  (*             skip_patt (ignore_upto "}" (n + 1) + 1) *)
-  (*         | Some (KEYWORD ("as" | "::" | "," | "_")) *)
-  (*         | Some (LIDENT _ | UIDENT _) -> skip_patt (n + 1) *)
-  (*         | Some _ | None -> raise Stream.Failure ] *)
-  (*       and ignore_upto end_kwd n = *)
-  (*         match stream_peek_nth n strm with *)
-  (*         [ Some (KEYWORD prm) when prm = end_kwd -> n *)
-  (*         | Some (KEYWORD ("[" | "[<")) -> *)
-  (*             ignore_upto end_kwd (ignore_upto "]" (n + 1) + 1) *)
-  (*         | Some (KEYWORD "(") -> *)
-  (*             ignore_upto end_kwd (ignore_upto ")" (n + 1) + 1) *)
-  (*         | Some (KEYWORD "{") -> *)
-  (*             ignore_upto end_kwd (ignore_upto "}" (n + 1) + 1) *)
-  (*         | Some _ -> ignore_upto end_kwd (n + 1) *)
-  (*         | None -> raise Stream.Failure ] *)
-  (*       in *)
-  (*       skip_patt 1); *)
-
   DELETE_RULE Gram expr: "["; sem_expr_for_list; "]" END;
 
-  (* test wheter revised or not hack*)  
-  let is_revised =
-    try do {
-      DELETE_RULE Gram expr: "["; sem_expr_for_list; "::"; expr; "]" END;
-      True
-    } with [ Not_found -> False ];
+
 
   let comprehension_or_sem_expr_for_list =
     Gram.mk "comprehension_or_sem_expr_for_list";
@@ -326,7 +259,7 @@ module MakeListComprehension (Syntax : Sig.Camlp4Syntax) = struct
       [ [  TRY [ patt{p}; "<-" -> p]{p} ;  expr Level "top"{e} -> `gen (p, e)
         | expr Level "top"{e} -> `cond e ] ] 
   END;
-  if is_revised then
+  if is_revised ~expr ~sem_expr_for_list then
     EXTEND Gram
       GLOBAL: expr comprehension_or_sem_expr_for_list;
       comprehension_or_sem_expr_for_list:
@@ -413,7 +346,6 @@ Added statements:
 
 
 module MakeMacroParser (Syntax : Sig.Camlp4Syntax) = struct
-  (* open FanSig; *)
   include Syntax;
   module Ast = Camlp4Ast;
   type item_or_def 'a =
@@ -2728,7 +2660,7 @@ let pa_q (module P:Sig.PRECAST) =
 (*   unreflective*, quotation syntax use revised syntax. *)
 
 let pa_rq (module P:Sig.PRECAST) =
-  let module Gram = Grammar.Static(* .Make P.Lexer *) in
+  (* let module Gram = Grammar.Static(\* .Make P.Lexer *\) in *)
   let module M1 = OCamlInitSyntax.Make Gram(* P.Gram *) in
   let module M2 = MakeRevisedParser M1 in
   let module M3 = MakeQuotationCommon M2 P.Syntax.AntiquotSyntax in ();

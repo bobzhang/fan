@@ -36,7 +36,7 @@ module type PrinterImpl = sig
     Ast.str_item -> unit;
 end;
 
-module Gram = Grammar.Static;
+(* module Gram = Grammar.Static; *)
   
 module type Camlp4Syntax = sig
   module AntiquotSyntax : ParserExpr;
