@@ -11,7 +11,7 @@ let gram =
     error_verbose = FanConfig.verbose };
     
 
-(* type token = FanSig.token ; (\* FIXME remove later *\) *)
+
 include Entry;
 let mk = mk gram;
 let of_parser name strm = of_parser gram name strm;
@@ -22,7 +22,7 @@ let filter ts = Tools.keep_prev_loc (FanToken.Filter.filter gram.gfilter ts);
 let filter_and_parse_tokens entry ts = parse_origin_tokens entry (filter ts);
 let parse entry loc cs = filter_and_parse_tokens entry (lex loc cs);
 let parse_string entry loc str = filter_and_parse_tokens entry (lex_string loc str);
-let debug_origin_token_stream entry tokens=
+let debug_origin_token_stream (entry:t 'a) tokens : 'a =
   parse_origin_tokens entry (Stream.map (fun t -> (t,ghost_token_info)) tokens);
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry (Stream.map (fun t -> (t,FanLoc.ghost)) tokens);

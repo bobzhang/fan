@@ -1,5 +1,5 @@
 
-module Print  = Print.Make (struct end); (* FIXME later*)
+(* module Print  = Print.Make (struct end); (\* FIXME later*\) *)
 open Structure;
 open Format;
 
@@ -83,7 +83,7 @@ let tree_failed entry prev_symb_result prev_symb tree =
             fprintf ppf "----------------------------------@,";
             fprintf ppf "Parse error in entry [%s], rule:@;<0 2>" entry.ename;
             fprintf ppf "@[";
-            Print.print_level ppf pp_force_newline (Print.flatten_tree tree);
+            Print.text#level ppf pp_force_newline (Print.flatten_tree tree);
             fprintf ppf "@]@,";
             fprintf ppf "----------------------------------@,";
             fprintf ppf "@]@."

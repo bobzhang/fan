@@ -1,5 +1,5 @@
 
-module Print = Print.Make (struct end); (* FIXME later*)
+(* module Print = Print.Make (struct end); (\* FIXME later*\) *)
 open Structure;
 
 
@@ -319,7 +319,7 @@ let rec start_parser_of_levels entry clevn = fun
                       | [< act = p1 levn >] -> act ] ] ] ];
 
 let start_parser_of_entry entry =
-  debug gram "start_parser_of_entry: @[<2>%a@]@." Print.entry entry in
+  debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
   [ Dlevels [] -> Tools.empty_entry entry.ename
   | Dlevels elev -> start_parser_of_levels entry 0 elev
@@ -347,7 +347,7 @@ let rec continue_parser_of_levels entry clevn = fun
                 entry.econtinue levn loc a strm ] ] ];
 
 let continue_parser_of_entry entry =
-  debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.entry entry in
+  debug gram "continue_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
   [ Dlevels elev ->
     let p = continue_parser_of_levels entry 0 elev in

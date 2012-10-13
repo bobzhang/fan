@@ -77,7 +77,7 @@ let check_keyword _ = True;
 
 let error_on_unknown_keywords = ref False;
 
-let rec ignore_layout (* : Stream.t (t*FanLoc.t) -> Stream.t (t * FanLoc.t)*) = parser
+let rec ignore_layout  = parser
   [ [< (`COMMENT _ | `BLANKS _ | `NEWLINE | `LINE_DIRECTIVE _ , _); 's >] ->
     ignore_layout s
   | [< x; 's >] -> [< x; '(ignore_layout s) >]
@@ -122,11 +122,9 @@ let check_unknown_keywords tok loc = match tok with
   
 
 module Filter = struct
-
-  
-  let mk ~is_kwd =
-    { is_kwd ;
-      filter = ignore_layout };
+  let mk ~is_kwd ={
+    is_kwd ;
+    filter = ignore_layout };
     
   let filter x =
     let f (tok, loc) = 

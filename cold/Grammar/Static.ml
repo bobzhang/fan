@@ -61,70 +61,66 @@ let parse_string =
 
 
 let debug_origin_token_stream =
- fun entry ->
+ fun (entry :
+   'a t) ->
   fun tokens ->
-   (parse_origin_tokens entry (
-     (Stream.map ( fun t -> (t, ghost_token_info) ) tokens) ))
+   ((parse_origin_tokens entry (
+      (Stream.map ( fun t -> (t, ghost_token_info) ) tokens) )) : 'a)
+
 
 let debug_filtered_token_stream =
-                                                                 fun entry ->
-                                                                  fun tokens ->
-                                                                   (filter_and_parse_tokens
-                                                                    entry (
-                                                                    (Stream.map
-                                                                    (
-                                                                    fun t ->
-                                                                    (t,
-                                                                    FanLoc.ghost)
-                                                                    ) tokens)
-                                                                    ))
-
+ fun entry ->
+  fun tokens ->
+   (filter_and_parse_tokens entry (
+     (Stream.map ( fun t -> (t, FanLoc.ghost) ) tokens) ))
 
 let parse_string_safe =
- fun entry ->
+                                                             fun entry ->
+                                                              fun loc ->
+                                                               fun s ->
+                                                                (try
+                                                                  (parse_string
+                                                                    entry loc
+                                                                    s)
+                                                                 with
+                                                                 FanLoc.Exc_located
+                                                                  (loc, e) ->
+                                                                  (
+                                                                  (eprintf
+                                                                    "%s" (
+                                                                    (Printexc.to_string
+                                                                    e) ))
+                                                                  );
+                                                                  (
+                                                                  (FanLoc.error_report
+                                                                    (loc, s))
+                                                                  );
+                                                                  (FanLoc.raise
+                                                                    loc e))
+
+
+let wrap_stream_parser =
+ fun p ->
   fun loc ->
    fun s ->
-    (try (parse_string entry loc s) with
+    (try (p loc s) with
      FanLoc.Exc_located (loc, e) ->
       (
-      (eprintf "%s" ( (Printexc.to_string e) ))
-      );
-      (
-      (FanLoc.error_report (loc, s))
+      (eprintf "error: %s@." ( (FanLoc.to_string loc) ))
       );
       (FanLoc.raise loc e))
 
-let wrap_stream_parser =
-                              fun p ->
-                               fun loc ->
-                                fun s ->
-                                 (try (p loc s) with
-                                  FanLoc.Exc_located (loc, e) ->
-                                   (
-                                   (eprintf "error: %s@." (
-                                     (FanLoc.to_string loc) ))
-                                   );
-                                   (FanLoc.raise loc e))
-
 let parse_file_with =
-                                                           fun ~rule ->
-                                                            fun file ->
-                                                             if (Sys.file_exists
-                                                                  file) then
-                                                              (
-                                                              let ch =
-                                                               (open_in file) in
-                                                              let st =
-                                                               (Stream.of_channel
-                                                                 ch) in
-                                                              (parse rule (
-                                                                (FanLoc.mk
-                                                                  file) ) st)
-                                                              )
-                                                             else
-                                                              (failwithf
-                                                                "@[file: %s not found@]@."
-                                                                file)
+                              fun ~rule ->
+                               fun file ->
+                                if (Sys.file_exists file) then
+                                 (
+                                 let ch = (open_in file) in
+                                 let st = (Stream.of_channel ch) in
+                                 (parse rule ( (FanLoc.mk file) ) st)
+                                 )
+                                else
+                                 (failwithf "@[file: %s not found@]@." file)
 
 
 let delete_rule = Delete.delete_rule

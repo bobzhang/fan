@@ -123,7 +123,8 @@ type position =
     prev_loc=FanLoc.ghost;
     cur_loc = FanLoc.ghost;
     prev_loc_only = False;
-  };  
+  };
+  (* with neighbor token info stored*)  
   type token_stream = Stream.t (token * token_info);
 
   type efun = token_stream -> Action.t;

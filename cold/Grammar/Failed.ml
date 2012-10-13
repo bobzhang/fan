@@ -1,71 +1,103 @@
-module Print = (Print.Make)(struct end)
-
 open Structure
 
 open Format
 
-
 let name_of_symbol =
- fun entry ->
-  function
-  | (`Snterm e) -> ("[" ^ ( (( e.ename ) ^ "]") ))
-  | (`Snterml (e, l)) ->
-     ("[" ^ ( (( e.ename ) ^ ( (" level " ^ ( (l ^ "]") )) )) ))
-  | (`Sself | `Snext) -> ("[" ^ ( (( entry.ename ) ^ "]") ))
-  | (`Stoken (_, descr)) -> descr
-  | (`Skeyword kwd) -> ("\"" ^ ( (kwd ^ "\"") ))
-  | _ -> "???"
+                              fun entry ->
+                               function
+                               | (`Snterm e) ->
+                                  ("[" ^ ( (( e.ename ) ^ "]") ))
+                               | (`Snterml (e, l)) ->
+                                  ("[" ^ (
+                                    (( e.ename ) ^ (
+                                      (" level " ^ ( (l ^ "]") )) )) ))
+                               | (`Sself | `Snext) ->
+                                  ("[" ^ ( (( entry.ename ) ^ "]") ))
+                               | (`Stoken (_, descr)) -> descr
+                               | (`Skeyword kwd) -> ("\"" ^ ( (kwd ^ "\"") ))
+                               | _ -> "???"
 
 let rec name_of_symbol_failed =
-                 fun entry ->
-                  function
-                  | ((((((`Slist0 s) | (`Slist0sep (s, _))) | (`Slist1 s))
-                       | (`Slist1sep (s, _))) | (`Sopt s)) | (`Stry s)) ->
-                     (name_of_symbol_failed entry s)
-                  | (`Stree t) -> (name_of_tree_failed entry t)
-                  | s -> (name_of_symbol entry s)
-                and name_of_tree_failed =
-                 fun entry ->
-                  function
-                  | Node ({node = s; brother = bro; son = son}) ->
-                     let tokl =
-                      (match s with
-                       | ((`Stoken _) | (`Skeyword _)) ->
-                          (Tools.get_token_list entry []  s son)
-                       | _ -> (None)) in
-                     (match tokl with
-                      | None ->
-                         let txt = (name_of_symbol_failed entry s) in
-                         let txt =
-                          (match (s, son) with
-                           | ((`Sopt _), Node (_)) ->
-                              (txt ^ (
-                                (" or " ^ ( (name_of_tree_failed entry son)
-                                  )) ))
-                           | _ -> txt) in
-                         let txt =
-                          (match bro with
-                           | (DeadEnd | LocAct (_, _)) -> txt
-                           | Node (_) ->
-                              (txt ^ (
-                                (" or " ^ ( (name_of_tree_failed entry bro)
-                                  )) ))) in
-                         txt
-                      | Some (tokl, _, _) ->
-                         (List.fold_left (
-                           fun s ->
-                            fun tok ->
-                             (( if (s = "") then "" else (s ^ " then ") ) ^ (
-                               (match tok with
-                                | (`Stoken (_, descr)) -> descr
-                                | (`Skeyword kwd) -> kwd
-                                | _ -> assert false) )) ) "" tokl))
-                  | (DeadEnd | LocAct (_, _)) -> "???"
+                                              fun entry ->
+                                               function
+                                               | ((((((`Slist0 s)
+                                                      | (`Slist0sep (s, _)))
+                                                     | (`Slist1 s))
+                                                    | (`Slist1sep (s, _)))
+                                                   | (`Sopt s)) | (`Stry s)) ->
+                                                  (name_of_symbol_failed
+                                                    entry s)
+                                               | (`Stree t) ->
+                                                  (name_of_tree_failed entry
+                                                    t)
+                                               | s ->
+                                                  (name_of_symbol entry s)
+                                             and name_of_tree_failed =
+                                              fun entry ->
+                                               function
+                                               | Node ({node = s;
+                                                  brother = bro; son = son}) ->
+                                                  let tokl =
+                                                   (match s with
+                                                    | ((`Stoken _)
+                                                       | (`Skeyword _)) ->
+                                                       (Tools.get_token_list
+                                                         entry []  s son)
+                                                    | _ -> (None)) in
+                                                  (match tokl with
+                                                   | None ->
+                                                      let txt =
+                                                       (name_of_symbol_failed
+                                                         entry s) in
+                                                      let txt =
+                                                       (match (s, son) with
+                                                        | ((`Sopt _),
+                                                           Node (_)) ->
+                                                           (txt ^ (
+                                                             (" or " ^ (
+                                                               (name_of_tree_failed
+                                                                 entry son)
+                                                               )) ))
+                                                        | _ -> txt) in
+                                                      let txt =
+                                                       (match bro with
+                                                        | (DeadEnd
+                                                           | LocAct (_, _)) ->
+                                                           txt
+                                                        | Node (_) ->
+                                                           (txt ^ (
+                                                             (" or " ^ (
+                                                               (name_of_tree_failed
+                                                                 entry bro)
+                                                               )) ))) in
+                                                      txt
+                                                   | Some (tokl, _, _) ->
+                                                      (List.fold_left (
+                                                        fun s ->
+                                                         fun tok ->
+                                                          ((
+                                                            if (s = "") then
+                                                             ""
+                                                            else
+                                                             (s ^ " then ") )
+                                                            ^ (
+                                                            (match tok with
+                                                             | (`Stoken
+                                                                (_, descr)) ->
+                                                                descr
+                                                             | (`Skeyword
+                                                                kwd) ->
+                                                                kwd
+                                                             | _ ->
+                                                                assert false)
+                                                            )) ) "" tokl))
+                                               | (DeadEnd | LocAct (_, _)) ->
+                                                  "???"
 
 let magic =
-                                                         fun _s ->
-                                                          fun x ->
-                                                           (Obj.magic x)
+                                                          fun _s ->
+                                                           fun x ->
+                                                            (Obj.magic x)
 
 
 let tree_failed =
@@ -120,7 +152,7 @@ let tree_failed =
       (fprintf ppf "@[")
       );
       (
-      (Print.print_level ppf pp_force_newline ( (Print.flatten_tree tree) ))
+      (Print.text#level ppf pp_force_newline ( (Print.flatten_tree tree) ))
       );
       (
       (fprintf ppf "@]@,")
