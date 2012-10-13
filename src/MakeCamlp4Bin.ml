@@ -40,8 +40,7 @@ module Camlp4Bin
             add_to_loaded_modules n;
             DynLoader.load dyn_loader (n ^ objext);
           end
-        end in
-        do {
+        end in begin 
           match (n, String.lowercase x) with
           [ ("Parsers"|"",
              "pa_r.cmo" | "r"|"ocamlr"|"ocamlrevised" | "camlp4ocamlrevisedparser.cmo")
@@ -65,12 +64,12 @@ module Camlp4Bin
              end 
           | ("Parsers"|"", "q" | "camlp4quotationexpander.cmo") -> begin
               pa_q (module PreCast); (* no pa_qb any more*)
-          end 
-          | ("Parsers"|"",
-             "q_mlast.cmo" | "rq" | "camlp4ocamlrevisedquotationexpander.cmo")
-            -> begin (* no pa_qb any more *)
-              pa_rq (module PreCast) ;
-            end
+          end
+          (* | ("Parsers"|"", *)
+          (*    "q_mlast.cmo" | "rq" | "camlp4ocamlrevisedquotationexpander.cmo") *)
+          (*   -> begin (\* no pa_qb any more *\) *)
+          (*     pa_rq (module PreCast) ; *)
+          (*   end *)
           | ("Parsers"|"", "rf") -> begin
               pa_r (module PreCast);
               pa_rp (module PreCast);
@@ -145,7 +144,7 @@ module Camlp4Bin
             real_load (try find_in_path y with [ Not_found -> x ])
           ];
           !rcall_callback ();
-        };
+        end;
       
       
      let print_warning = eprintf "%a:\n%s@." FanLoc.print;  

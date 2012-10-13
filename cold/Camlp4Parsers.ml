@@ -4124,38 +4124,6 @@ module MakeRevisedParser =
                                                  let _ = (Gram.clear
                                                            with_constr_quot)
 
-                                                 let setup_op_parser =
-                                                  fun entry ->
-                                                   fun p ->
-                                                    (Gram.setup_parser
-                                                      entry (
-                                                      fun (__strm :
-                                                        _ Stream.t) ->
-                                                       (match
-                                                          (Stream.peek
-                                                            __strm) with
-                                                        | Some
-                                                           (((`KEYWORD x)
-                                                             | (`SYMBOL
-                                                                x)), ti)
-                                                           when (p x) ->
-                                                           (
-                                                           (Stream.junk
-                                                             __strm)
-                                                           );
-                                                           let _loc =
-                                                            (Gram.token_location
-                                                              ti) in
-                                                           (Ast.ExId
-                                                             (_loc, (
-                                                              (Ast.IdLid
-                                                                (_loc, x))
-                                                              )))
-                                                        | _ ->
-                                                           (raise
-                                                             Stream.Failure
-                                                             )) ))
-
                                                  let _ = let list =
                                                           ['!'; '?'; '~'] in
                                                          let excl =
@@ -4354,97 +4322,6 @@ module MakeRevisedParser =
                                                                     x 2)
                                                                   )) ))
                                                               )) ))
-
-                                                 let rec infix_kwds_filter =
-                                                  fun (__strm :
-                                                    _ Stream.t) ->
-                                                   (match
-                                                      (Stream.peek
-                                                        __strm) with
-                                                    | Some
-                                                       (((`KEYWORD "("),
-                                                         _) as tok) ->
-                                                       (
-                                                       (Stream.junk
-                                                         __strm)
-                                                       );
-                                                       let xs = __strm in
-                                                       let (__strm :
-                                                         _ Stream.t) =
-                                                        xs in
-                                                       (match
-                                                          (Stream.peek
-                                                            __strm) with
-                                                        | Some
-                                                           ((`KEYWORD
-                                                             (((((((("or"
-                                                                    | "mod")
-                                                                    | "land")
-                                                                   | "lor")
-                                                                  | "lxor")
-                                                                 | "lsl")
-                                                                | "lsr")
-                                                               | "asr") as
-                                                              i)), _loc) ->
-                                                           (
-                                                           (Stream.junk
-                                                             __strm)
-                                                           );
-                                                           (match
-                                                              (Stream.peek
-                                                                __strm) with
-                                                            | Some
-                                                               ((`KEYWORD
-                                                                 ")"), _) ->
-                                                               (
-                                                               (Stream.junk
-                                                                 __strm)
-                                                               );
-                                                               let xs =
-                                                                __strm in
-                                                               (Stream.lcons
-                                                                 (
-                                                                 fun _ ->
-                                                                  (`LIDENT
-                                                                    (i),
-                                                                   _loc)
-                                                                 ) (
-                                                                 (Stream.slazy
-                                                                   (
-                                                                   fun _ ->
-                                                                    (infix_kwds_filter
-                                                                    xs)
-                                                                   )) ))
-                                                            | _ ->
-                                                               (raise (
-                                                                 (Stream.Error
-                                                                   (""))
-                                                                 )))
-                                                        | _ ->
-                                                           let xs =
-                                                            __strm in
-                                                           (Stream.icons
-                                                             tok (
-                                                             (Stream.slazy
-                                                               (
-                                                               fun _ ->
-                                                                (infix_kwds_filter
-                                                                  xs) ))
-                                                             )))
-                                                    | Some (x) ->
-                                                       (
-                                                       (Stream.junk
-                                                         __strm)
-                                                       );
-                                                       let xs = __strm in
-                                                       (Stream.icons x (
-                                                         (Stream.slazy (
-                                                           fun _ ->
-                                                            (infix_kwds_filter
-                                                              xs) )) ))
-                                                    | _ ->
-                                                       (raise
-                                                         Stream.Failure ))
 
                                                  let _ = (FanToken.Filter.define_filter
                                                            (
@@ -32709,213 +32586,113 @@ module IdQuotationCommon =
 
 module MakeQuotationCommon =
  functor (Syntax : Sig.Camlp4Syntax) ->
-  functor (TheAntiquotSyntax : Sig.ParserExpr) ->
-   struct
-    include Syntax
+  struct
+   include Syntax
 
-    module Ast = Camlp4Ast
+   open Quotation
 
-    module MetaAst = (Ast.Meta.Make)(Lib.Meta.MetaLocQuotation)
+   open Meta
 
-    module ME = MetaAst.Expr
+   let _ = (add_quotation "sig_item" sig_item_quot ME.meta_sig_item
+             MP.meta_sig_item)
 
-    module MP = MetaAst.Patt
+   let _ = (add_quotation "str_item" str_item_quot ME.meta_str_item
+             MP.meta_str_item)
 
-    let anti_obj =
-     (Expr.antiquot_expander ~parse_expr:TheAntiquotSyntax.parse_expr
-       ~parse_patt:TheAntiquotSyntax.parse_patt)
+   let _ = (add_quotation "ctyp" ctyp_quot ME.meta_ctyp MP.meta_ctyp)
 
-    let add_quotation =
-     fun name ->
-      fun entry ->
-       fun mexpr ->
-        fun mpatt ->
-         let entry_eoi = (Gram.mk ( (Gram.name entry) )) in
-         let parse_quot_string =
-          fun entry ->
-           fun loc ->
-            fun s ->
-             let q = FanConfig.antiquotations.contents in
-             let () = (FanConfig.antiquotations := true ) in
-             let res = (Gram.parse_string entry loc s) in
-             let () = (FanConfig.antiquotations := q) in res in
-         let expand_expr =
-          fun loc ->
-           fun loc_name_opt ->
-            fun s ->
-             let ast = (parse_quot_string entry_eoi loc s) in
-             let () =
-              (Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt) in
-             let meta_ast = (mexpr loc ast) in
-             let exp_ast = (anti_obj#expr meta_ast) in exp_ast in
-         let expand_str_item =
-          fun loc ->
-           fun loc_name_opt ->
-            fun s ->
-             let exp_ast = (expand_expr loc loc_name_opt s) in
-             (Ast.StExp (loc, exp_ast)) in
-         let expand_patt =
-          fun _loc ->
-           fun loc_name_opt ->
-            fun s ->
-             let ast = (parse_quot_string entry_eoi _loc s) in
-             let meta_ast = (mpatt _loc ast) in
-             let exp_ast = (anti_obj#patt meta_ast) in
-             (match loc_name_opt with
-              | None -> exp_ast
-              | Some (name) ->
-                 let rec subst_first_loc =
-                  function
-                  | Ast.PaApp
-                     (_loc,
-                      Ast.PaId
-                       (_,
-                        Ast.IdAcc
-                         (_, Ast.IdUid (_, "Ast"), Ast.IdUid (_, u))), _) ->
-                     (Ast.PaApp
-                       (_loc, (
-                        (Ast.PaId
-                          (_loc, (
-                           (Ast.IdAcc
-                             (_loc, ( (Ast.IdUid (_loc, "Ast")) ), (
-                              (Ast.IdUid (_loc, u)) ))) ))) ), (
-                        (Ast.PaId (_loc, ( (Ast.IdLid (_loc, name)) )))
-                        )))
-                  | Ast.PaApp (_loc, a, b) ->
-                     (Ast.PaApp (_loc, ( (subst_first_loc a) ), b))
-                  | p -> p in
-                 (subst_first_loc exp_ast)) in
-         (
-         (Gram.extend ( (entry_eoi : 'entry_eoi Gram.t) ) (
-           ((fun ()
-               ->
-              (None , (
-               [(None , None , (
-                 [((
-                   [`Snterm ((Gram.obj ( (entry : 'entry Gram.t) )));
-                    `Stoken
-                     ((( function | `EOI -> (true) | _ -> (false) ),
-                       "`EOI"))] ), (
-                   (Gram.mk_action (
-                     fun __camlp4_0 ->
-                      fun (x :
-                        'entry) ->
-                       fun (_loc :
-                         FanLoc.t) ->
-                        (match __camlp4_0 with
-                         | `EOI -> (x : 'entry_eoi)
-                         | _ -> assert false) )) ))] ))] ))) () ) ))
-         );
-         (
-         (Quotation.add name DynAst.expr_tag expand_expr)
-         );
-         (
-         (Quotation.add name DynAst.patt_tag expand_patt)
-         );
-         (Quotation.add name DynAst.str_item_tag expand_str_item)
+   let _ = (add_quotation "patt" patt_quot ME.meta_patt MP.meta_patt)
 
-    let _ = (add_quotation "sig_item" sig_item_quot ME.meta_sig_item
-              MP.meta_sig_item)
+   let _ = (add_quotation "expr" expr_quot ME.meta_expr MP.meta_expr)
 
-    let _ = (add_quotation "str_item" str_item_quot ME.meta_str_item
-              MP.meta_str_item)
+   let _ = (add_quotation "module_type" module_type_quot
+             ME.meta_module_type MP.meta_module_type)
 
-    let _ = (add_quotation "ctyp" ctyp_quot ME.meta_ctyp MP.meta_ctyp)
+   let _ = (add_quotation "module_expr" module_expr_quot
+             ME.meta_module_expr MP.meta_module_expr)
 
-    let _ = (add_quotation "patt" patt_quot ME.meta_patt MP.meta_patt)
+   let _ = (add_quotation "class_type" class_type_quot ME.meta_class_type
+             MP.meta_class_type)
 
-    let _ = (add_quotation "expr" expr_quot ME.meta_expr MP.meta_expr)
+   let _ = (add_quotation "class_expr" class_expr_quot ME.meta_class_expr
+             MP.meta_class_expr)
 
-    let _ = (add_quotation "module_type" module_type_quot
-              ME.meta_module_type MP.meta_module_type)
+   let _ = (add_quotation "class_sig_item" class_sig_item_quot
+             ME.meta_class_sig_item MP.meta_class_sig_item)
 
-    let _ = (add_quotation "module_expr" module_expr_quot
-              ME.meta_module_expr MP.meta_module_expr)
+   let _ = (add_quotation "class_str_item" class_str_item_quot
+             ME.meta_class_str_item MP.meta_class_str_item)
 
-    let _ = (add_quotation "class_type" class_type_quot
-              ME.meta_class_type MP.meta_class_type)
+   let _ = (add_quotation "with_constr" with_constr_quot
+             ME.meta_with_constr MP.meta_with_constr)
 
-    let _ = (add_quotation "class_expr" class_expr_quot
-              ME.meta_class_expr MP.meta_class_expr)
+   let _ = (add_quotation "binding" binding_quot ME.meta_binding
+             MP.meta_binding)
 
-    let _ = (add_quotation "class_sig_item" class_sig_item_quot
-              ME.meta_class_sig_item MP.meta_class_sig_item)
+   let _ = (add_quotation "rec_binding" rec_binding_quot
+             ME.meta_rec_binding MP.meta_rec_binding)
 
-    let _ = (add_quotation "class_str_item" class_str_item_quot
-              ME.meta_class_str_item MP.meta_class_str_item)
+   let _ = (add_quotation "match_case" match_case_quot ME.meta_match_case
+             MP.meta_match_case)
 
-    let _ = (add_quotation "with_constr" with_constr_quot
-              ME.meta_with_constr MP.meta_with_constr)
+   let _ = (add_quotation "module_binding" module_binding_quot
+             ME.meta_module_binding MP.meta_module_binding)
 
-    let _ = (add_quotation "binding" binding_quot ME.meta_binding
-              MP.meta_binding)
+   let _ = (add_quotation "ident" ident_quot ME.meta_ident MP.meta_ident)
 
-    let _ = (add_quotation "rec_binding" rec_binding_quot
-              ME.meta_rec_binding MP.meta_rec_binding)
+   let _ = (add_quotation "rec_flag" rec_flag_quot ME.meta_rec_flag
+             MP.meta_rec_flag)
 
-    let _ = (add_quotation "match_case" match_case_quot
-              ME.meta_match_case MP.meta_match_case)
+   let _ = (add_quotation "private_flag" private_flag_quot
+             ME.meta_private_flag MP.meta_private_flag)
 
-    let _ = (add_quotation "module_binding" module_binding_quot
-              ME.meta_module_binding MP.meta_module_binding)
+   let _ = (add_quotation "row_var_flag" row_var_flag_quot
+             ME.meta_row_var_flag MP.meta_row_var_flag)
 
-    let _ = (add_quotation "ident" ident_quot ME.meta_ident
-              MP.meta_ident)
+   let _ = (add_quotation "mutable_flag" mutable_flag_quot
+             ME.meta_mutable_flag MP.meta_mutable_flag)
 
-    let _ = (add_quotation "rec_flag" rec_flag_quot ME.meta_rec_flag
-              MP.meta_rec_flag)
+   let _ = (add_quotation "virtual_flag" virtual_flag_quot
+             ME.meta_virtual_flag MP.meta_virtual_flag)
 
-    let _ = (add_quotation "private_flag" private_flag_quot
-              ME.meta_private_flag MP.meta_private_flag)
+   let _ = (add_quotation "override_flag" override_flag_quot
+             ME.meta_override_flag MP.meta_override_flag)
 
-    let _ = (add_quotation "row_var_flag" row_var_flag_quot
-              ME.meta_row_var_flag MP.meta_row_var_flag)
+   let _ = (add_quotation "direction_flag" direction_flag_quot
+             ME.meta_direction_flag MP.meta_direction_flag)
 
-    let _ = (add_quotation "mutable_flag" mutable_flag_quot
-              ME.meta_mutable_flag MP.meta_mutable_flag)
-
-    let _ = (add_quotation "virtual_flag" virtual_flag_quot
-              ME.meta_virtual_flag MP.meta_virtual_flag)
-
-    let _ = (add_quotation "override_flag" override_flag_quot
-              ME.meta_override_flag MP.meta_override_flag)
-
-    let _ = (add_quotation "direction_flag" direction_flag_quot
-              ME.meta_direction_flag MP.meta_direction_flag)
-
-   end
+  end
 
 module IdQuotationExpander =
-         struct
-          let name = "Camlp4QuotationExpander"
+        struct
+         let name = "Camlp4QuotationExpander"
 
-          let version = Sys.ocaml_version
+         let version = Sys.ocaml_version
 
-         end
+        end
 
 module MakeQuotationExpander =
-               functor (Syntax : Sig.Camlp4Syntax) ->
-                struct
-                 module M =
-                  ((MakeQuotationCommon)(Syntax))(Syntax.AntiquotSyntax)
+              functor (Syntax : Sig.Camlp4Syntax) ->
+               struct
+                module M = (MakeQuotationCommon)(Syntax)
 
-                 include M
+                include M
 
-                end
+               end
 
 let pa_r = "Camlp4OCamlRevisedParser"
 
 let pa_r =
-                                                             fun ((module
-                                                              P)
-                                                               :
-                                                               (module Sig.PRECAST
-                                                              )) ->
-                                                              (P.syntax_extension
-                                                                (module
-                                                                IdRevisedParser)
-                                                                (module
-                                                                MakeRevisedParser))
+                                                            fun ((module
+                                                             P)
+                                                              :
+                                                              (module Sig.PRECAST
+                                                             )) ->
+                                                             (P.syntax_extension
+                                                               (module
+                                                               IdRevisedParser)
+                                                               (module
+                                                               MakeRevisedParser))
 
 
 let pa_rp =
@@ -32965,38 +32742,24 @@ let pa_q =
   (P.syntax_extension (module IdQuotationExpander) (module
     MakeQuotationExpander))
 
-let pa_rq =
+let pa_l =
                               fun ((module
                                P)
                                 :
                                 (module Sig.PRECAST
                                )) ->
-                               let module M1 =
-                                (OCamlInitSyntax.Make)(Gram) in
-                               let module M2 = (MakeRevisedParser)(M1) in
-                               let module M3 =
-                                ((MakeQuotationCommon)(M2))
-                                 (P.Syntax.AntiquotSyntax) in
-                               ()
-
-let pa_l =
-                                    fun ((module
-                                     P)
-                                      :
-                                      (module Sig.PRECAST
-                                     )) ->
-                                     (P.syntax_extension (module
-                                       IdListComprehension) (module
-                                       MakeListComprehension))
+                               (P.syntax_extension (module
+                                 IdListComprehension) (module
+                                 MakeListComprehension))
 
 let pa_debug =
-                                                                 fun ((module
-                                                                  P)
-                                                                   :
-                                                                   (module Sig.PRECAST
-                                                                  )) ->
-                                                                  (P.syntax_extension
-                                                                    (module
-                                                                    IdDebugParser)
-                                                                    (module
-                                                                    MakeDebugParser))
+                                                           fun ((module
+                                                            P)
+                                                             :
+                                                             (module Sig.PRECAST
+                                                            )) ->
+                                                            (P.syntax_extension
+                                                              (module
+                                                              IdDebugParser)
+                                                              (module
+                                                              MakeDebugParser))

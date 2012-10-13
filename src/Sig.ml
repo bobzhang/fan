@@ -12,12 +12,6 @@ end;
 (** A type for stream filters. *)
 type stream_filter 'a 'loc = Stream.t ('a * 'loc) -> Stream.t ('a * 'loc);
 
-module type ParserExpr = sig
-    (**generally "expr; EOI". *)
-  val parse_expr : FanLoc.t -> string -> Ast.expr;
-    (**  generally "patt; EOI". *)
-  val parse_patt : FanLoc.t -> string -> Ast.patt;
-end;
 module type ParserImpl = sig
   (** When  the parser encounter a directive it stops (since the directive may change  the
       syntax), the given [directive_handler] function  evaluates  it  and
@@ -39,7 +33,7 @@ end;
 
   
 module type Camlp4Syntax = sig
-  module AntiquotSyntax : ParserExpr;
+  module AntiquotSyntax : Quotation.AntiquotSyntax;
   module Quotation : Quotation.S;
   module AstFilters: AstFilters.S;
   include Warning;

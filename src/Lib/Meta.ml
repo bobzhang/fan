@@ -45,4 +45,7 @@ module MetaLocQuotation = struct
   let meta_loc_patt _loc _ = <:patt< _ >>;
 end;
 
+module MetaQAst = Ast.Meta.Make MetaLocQuotation;
+module ME = MetaQAst.Expr;
+module MP = MetaQAst.Patt;
 

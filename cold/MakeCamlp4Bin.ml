@@ -171,14 +171,6 @@ module Camlp4Bin =
                                                                     PreCast))
                                                                     | (("Parsers"
                                                                     | ""),
-                                                                    (("q_mlast.cmo"
-                                                                    | "rq")
-                                                                    | "camlp4ocamlrevisedquotationexpander.cmo")) ->
-                                                                    (pa_rq
-                                                                    (module
-                                                                    PreCast))
-                                                                    | (("Parsers"
-                                                                    | ""),
                                                                     "rf") ->
                                                                     (
                                                                     (pa_r

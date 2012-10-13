@@ -1,3 +1,12 @@
+open Lib;
+open LibUtil;
+module type AntiquotSyntax = sig
+    (**generally "expr; EOI". *)
+  val parse_expr : FanLoc.t -> string -> Ast.expr;
+    (**  generally "patt; EOI". *)
+  val parse_patt : FanLoc.t -> string -> Ast.patt;
+end;
+
 module type S = sig
   (* module Ast : Camlp4Ast; *)
   (* module DynAst : DynAst (\* with module Ast = Ast *\); *)
@@ -43,26 +52,37 @@ module type S = sig
   val dump_file : ref (option string);
 
   (* module Error : FanSig.Error; *)
+  val add_quotation: string -> Gram.t 'a ->
+    (FanLoc.t -> 'a -> Lib.Expr.Ast.expr) ->
+      (FanLoc.t -> 'a -> Lib.Expr.Ast.patt) -> unit;
 
+  (* BUG, revised parser can not parse name:string -> unit*)      
+  val add_quotation_of_expr: ~name:string -> ~entry: Gram.t Ast.expr -> unit;
+  val add_quotation_of_patt: ~name:string -> ~entry: Gram.t Ast.patt -> unit;
+  val add_quotation_of_class_str_item: ~name:string -> ~entry: Gram.t Ast.class_str_item -> unit;
+  val add_quotation_of_match_case: ~name:string -> ~entry: Gram.t Ast.match_case -> unit;
 end;
 
-module Make (U:sig end) : S = struct   
-  open Format;
+
+
+open Format;
+module Make (TheAntiquotSyntax: AntiquotSyntax) : S = struct   
+
   type expand_fun 'a = FanLoc.t -> option string -> string -> 'a;
-module Exp_key = DynAst.Pack(struct
-  type t 'a = unit;
-end);
+  module Exp_key = DynAst.Pack(struct
+    type t 'a = unit;
+  end);
 
-module Exp_fun = DynAst.Pack(struct
-  type t 'a = expand_fun 'a;
-end);
-
-let expanders_table =
+  module Exp_fun = DynAst.Pack(struct
+    type t 'a = expand_fun 'a;
+  end);
+    
+  let expanders_table =
     (ref [] : ref (list ((string * Exp_key.pack) * Exp_fun.pack)));
 
-let default = ref "";
-  (* create a table mapping from
-     (string_of_tag tag) to default quotation expander *)  
+  let default = ref "";
+    (* create a table mapping from
+       (string_of_tag tag) to default quotation expander *)  
   let default_tbl : Hashtbl.t string string = Hashtbl.create 50;
   let translate = ref (fun x -> x);
   (* intentionaly make its value a string to be more flexibile to
@@ -70,6 +90,7 @@ let default = ref "";
    *)  
   let default_at_pos pos str =
     Hashtbl.replace default_tbl pos str;
+    
   let expander_name pos_tag name =
     let str = DynAst.string_of_tag pos_tag in 
     match !translate name with
@@ -187,4 +208,68 @@ let default = ref "";
     let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
     expand_quotation loc expander pos_tag quotation;
 
+  let parse_quot_string entry loc loc_name_opt s  =
+    BatRef.protect FanConfig.antiquotations True begin fun _ ->
+      let res = Gram.parse_string entry loc s in 
+      let ()  = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
+      (* It's fine, since every quotation will always have a name *)
+      res
+    end;
+
+  let anti_filter = Expr.antiquot_expander
+      ~parse_expr:TheAntiquotSyntax.parse_expr
+      ~parse_patt:TheAntiquotSyntax.parse_patt;
+
+  let add_quotation name entry mexpr mpatt =
+    let entry_eoi = Gram.eoi_entry entry in 
+    let expand_expr loc loc_name_opt s =
+      parse_quot_string entry_eoi loc loc_name_opt s |> mexpr loc |> anti_filter#expr  in
+    let expand_str_item loc loc_name_opt s =
+      let exp_ast = expand_expr loc loc_name_opt s in
+      <:str_item@loc< $(exp:exp_ast) >> in
+    let expand_patt _loc loc_name_opt s =
+      BatRef.protect FanConfig.antiquotations True begin fun _ ->
+        let ast = Gram.parse_string entry_eoi _loc s in
+        let meta_ast = mpatt _loc ast in
+        let exp_ast = anti_filter#patt meta_ast in
+        match loc_name_opt with
+        [ None -> exp_ast
+        | Some name ->
+        let rec subst_first_loc =  fun
+          [ <:patt@_loc< Ast.$uid:u $_ >> -> <:patt< Ast.$uid:u $lid:name >>
+          | <:patt@_loc< $a $b >> -> <:patt< $(subst_first_loc a) $b >>
+          | p -> p ] in
+        subst_first_loc exp_ast ]
+      end in begin
+          add name DynAst.expr_tag expand_expr;
+          add name DynAst.patt_tag expand_patt;
+          add name DynAst.str_item_tag expand_str_item;
+      end;
+    
+    let add_quotation_of_str_item ~name ~entry =
+      add name DynAst.str_item_tag
+        (parse_quot_string (Gram.eoi_entry entry));
+    let add_quotation_of_str_item_with_filter ~name ~entry ~filter =
+      add name DynAst.str_item_tag
+        (filter (parse_quot_string (Gram.eoi_entry entry) ));
+
+    (* both [expr] and [str_item] positions are registered *)  
+    let add_quotation_of_expr ~name ~entry = 
+      let expand_fun = parse_quot_string (Gram.eoi_entry entry) in
+      let mk_fun loc loc_name_opt s =
+        <:str_item@loc< $(exp:expand_fun loc loc_name_opt s) >> in begin 
+          add name DynAst.expr_tag expand_fun ;
+          add name DynAst.str_item_tag mk_fun ;
+        end ;
+    let add_quotation_of_patt ~name ~entry =
+      add name DynAst.patt_tag (parse_quot_string (Gram.eoi_entry entry));
+      
+    let add_quotation_of_class_str_item ~name ~entry =
+      add name DynAst.class_str_item_tag (parse_quot_string (Gram.eoi_entry entry));
+      
+    let add_quotation_of_match_case ~name ~entry =
+      add name DynAst.match_case_tag
+        (parse_quot_string (Gram.eoi_entry entry));
+    
+  
 end;

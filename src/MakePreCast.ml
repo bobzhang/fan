@@ -1,7 +1,4 @@
-(* module Gram =  Grammar.Static; *)
 module Make   (U: sig end) : Sig.PRECAST  = struct
-
-  module Quotation = Quotation.Make (struct end);
   module Syntax = OCamlInitSyntax.Make (U);
   let sig_item_parser =
     ref (fun ?directive_handler:(_) _ _ -> failwith "No interface parser");

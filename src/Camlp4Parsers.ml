@@ -2493,54 +2493,10 @@ module IdQuotationCommon = struct (* FIXME unused here *)
 end;
 
 module MakeQuotationCommon (Syntax : Sig.Camlp4Syntax)
-            (TheAntiquotSyntax : Sig.ParserExpr)
 = struct
   include Syntax; 
-  module Ast = Camlp4Ast;
-  module MetaAst = Ast.Meta.Make Lib.Meta.MetaLocQuotation;
-  module ME = MetaAst.Expr;
-  module MP = MetaAst.Patt;
-
-  let anti_obj = Expr.antiquot_expander
-      ~parse_expr:TheAntiquotSyntax.parse_expr
-      ~parse_patt:TheAntiquotSyntax.parse_patt;
-  let add_quotation name entry mexpr mpatt =
-    let entry_eoi = Gram.mk (Gram.name entry) in
-    let parse_quot_string entry loc s =
-      let q = !FanConfig.antiquotations in
-      let () = FanConfig.antiquotations := True in
-      let res = Gram.parse_string entry loc s in
-      let () = FanConfig.antiquotations := q in
-      res in
-    let expand_expr loc loc_name_opt s =
-      let ast = parse_quot_string entry_eoi loc s in
-      let () = Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt in
-      let meta_ast = mexpr loc ast in
-      let exp_ast = anti_obj#expr meta_ast in
-      exp_ast in
-    let expand_str_item loc loc_name_opt s =
-      let exp_ast = expand_expr loc loc_name_opt s in
-      <:str_item@loc< $(exp:exp_ast) >> in
-    let expand_patt _loc loc_name_opt s =
-      let ast = parse_quot_string entry_eoi _loc s in
-      let meta_ast = mpatt _loc ast in
-      let exp_ast = anti_obj#patt meta_ast in
-      match loc_name_opt with
-      [ None -> exp_ast
-      | Some name ->
-        let rec subst_first_loc =  fun
-          [ <:patt@_loc< Ast.$uid:u $_ >> -> <:patt< Ast.$uid:u $lid:name >>
-          | <:patt@_loc< $a $b >> -> <:patt< $(subst_first_loc a) $b >>
-          | p -> p ] in
-        subst_first_loc exp_ast ] in begin 
-          EXTEND Gram
-            entry_eoi:
-            [ [  entry{x}; `EOI -> x ] ]
-            END;
-          Quotation.add name DynAst.expr_tag expand_expr;
-          Quotation.add name DynAst.patt_tag expand_patt;
-          Quotation.add name DynAst.str_item_tag expand_str_item;
-        end;
+  open Quotation;
+  open Meta;
   add_quotation "sig_item" sig_item_quot ME.meta_sig_item MP.meta_sig_item;
   add_quotation "str_item" str_item_quot ME.meta_str_item MP.meta_str_item;
   add_quotation "ctyp" ctyp_quot ME.meta_ctyp MP.meta_ctyp;
@@ -2580,7 +2536,7 @@ end;
 
 module MakeQuotationExpander (Syntax : Sig.Camlp4Syntax)
 = struct
-  module M = MakeQuotationCommon Syntax Syntax.AntiquotSyntax;
+  module M = MakeQuotationCommon Syntax (* Syntax.AntiquotSyntax *);
   include M;
 end;
 
@@ -2606,14 +2562,6 @@ let pa_m (module P:Sig.PRECAST) =
 let pa_q (module P:Sig.PRECAST) =
   P.syntax_extension (module IdQuotationExpander) (module MakeQuotationExpander);
   
-(* let pa_rq = "Camlp4OCamlRevisedQuotationExpander"; *)
-(*   unreflective*, quotation syntax use revised syntax. *)
-
-let pa_rq (module P:Sig.PRECAST) =
-  (* let module Gram = Grammar.Static(\* .Make P.Lexer *\) in *)
-  let module M1 = OCamlInitSyntax.Make Gram(* P.Gram *) in
-  let module M2 = MakeRevisedParser M1 in
-  let module M3 = MakeQuotationCommon M2 P.Syntax.AntiquotSyntax in ();
 
 let pa_l  (module P: Sig.PRECAST) =
   P.syntax_extension (module IdListComprehension) (module MakeListComprehension);

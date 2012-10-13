@@ -229,3 +229,13 @@ module MetaLocQuotation =
                                               fun _ -> (Ast.PaAny (_loc))
 
                                            end
+
+module MetaQAst =
+                                                 (Ast.Meta.Make)
+                                                  (MetaLocQuotation)
+
+
+module ME =
+ MetaQAst.Expr
+
+module MP = MetaQAst.Patt

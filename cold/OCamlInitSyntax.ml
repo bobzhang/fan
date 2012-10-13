@@ -384,50 +384,9 @@ module Make =
 
       module Gram = Gram
 
-      let antiquot_expr = (Gram.mk "antiquot_expr")
+      let antiquot_expr = (Gram.eoi_entry expr)
 
-      let antiquot_patt = (Gram.mk "antiquot_patt")
-
-      let _ = (
-      (Gram.extend ( (antiquot_expr : 'antiquot_expr Gram.t) ) (
-        ((fun ()
-            ->
-           (None , (
-            [(None , None , (
-              [((
-                [`Snterm ((Gram.obj ( (expr : 'expr Gram.t) )));
-                 `Stoken
-                  ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))]
-                ), (
-                (Gram.mk_action (
-                  fun __camlp4_0 ->
-                   fun (x :
-                     'expr) ->
-                    fun (_loc :
-                      FanLoc.t) ->
-                     (match __camlp4_0 with
-                      | `EOI -> (x : 'antiquot_expr)
-                      | _ -> assert false) )) ))] ))] ))) () ) ))
-      );
-      (Gram.extend ( (antiquot_patt : 'antiquot_patt Gram.t) ) (
-        ((fun ()
-            ->
-           (None , (
-            [(None , None , (
-              [((
-                [`Snterm ((Gram.obj ( (patt : 'patt Gram.t) )));
-                 `Stoken
-                  ((( function | `EOI -> (true) | _ -> (false) ), "`EOI"))]
-                ), (
-                (Gram.mk_action (
-                  fun __camlp4_0 ->
-                   fun (x :
-                     'patt) ->
-                    fun (_loc :
-                      FanLoc.t) ->
-                     (match __camlp4_0 with
-                      | `EOI -> (x : 'antiquot_patt)
-                      | _ -> assert false) )) ))] ))] ))) () ) ))
+      let antiquot_patt = (Gram.eoi_entry patt)
 
       let parse_expr =
        fun loc -> fun str -> (Gram.parse_string antiquot_expr loc str)
@@ -437,7 +396,7 @@ module Make =
 
      end
 
-    module Quotation = (Quotation.Make)(struct end)
+    module Quotation = (Quotation.Make)(AntiquotSyntax)
 
     let wrap =
      fun directive_handler ->

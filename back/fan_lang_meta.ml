@@ -73,10 +73,10 @@ EXTEND MGram GLOBAL: fan_quots fan_quot
          Hashtbl.clear Quotation.default_tbl;
          unit_literal
         } ] ];
-  fan_str_item:[[file=STRING; c=STRING -> str_item_of_file (file,c) ] ];
-  fan_expr: [[ file=STRING; c=STRING-> expr_of_file (file,c) ]];
-  fan_class_str_item: [[ file=STRING; c=STRING->  class_str_item_of_file (file,c) ]];
-  fan_ctyp: [[file=STRING;c=STRING ->  ctyp_of_file (file,c) ]];
+  (* fan_str_item:[[file=STRING; c=STRING -> str_item_of_file (file,c) ] ]; *)
+  (* fan_expr: [[ file=STRING; c=STRING-> expr_of_file (file,c) ]]; *)
+  (* fan_class_str_item: [[ file=STRING; c=STRING->  class_str_item_of_file (file,c) ]]; *)
+  (* fan_ctyp: [[file=STRING;c=STRING ->  ctyp_of_file (file,c) ]]; *)
 END ; 
   
 

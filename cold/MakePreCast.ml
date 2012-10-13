@@ -1,8 +1,6 @@
 module Make =
  functor (U : sig end) ->
   (struct
-    module Quotation = (Quotation.Make)(struct end)
-
     module Syntax = (OCamlInitSyntax.Make)(U)
 
     let sig_item_parser =

@@ -188,19 +188,13 @@ module Make  (U:sig end) : Sig.Camlp4Syntax =   struct
   module AntiquotSyntax = struct
     module Ast  = Ast; 
     module Gram = Gram;
-    let antiquot_expr = Gram.mk "antiquot_expr";
-    let antiquot_patt = Gram.mk "antiquot_patt";
-    EXTEND Gram 
-      antiquot_expr:
-        [ [  expr{x}; `EOI -> x ] ]
-      antiquot_patt:
-        [ [  patt{x}; `EOI -> x ] ]
-    END;
+    let antiquot_expr = Gram.eoi_entry expr ; 
+    let antiquot_patt = Gram.eoi_entry patt;
     let parse_expr loc str = Gram.parse_string antiquot_expr loc str;
     let parse_patt loc str = Gram.parse_string antiquot_patt loc str;
   end;
 
-  module Quotation = Quotation.Make(struct end);
+  module Quotation = Quotation.Make(AntiquotSyntax);
   let wrap directive_handler pa init_loc cs =
     let rec loop loc =
       let (pl, stopped_at_directive) = pa loc cs in
