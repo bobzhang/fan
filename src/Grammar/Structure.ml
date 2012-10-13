@@ -6,7 +6,7 @@ type position =
     [= `First | `Last | `Before of string | `After of string | `Level of string];
 
 
-module Action  (*: FanSig.Grammar.Action *) = struct
+module Action  = struct
   type  t     = Obj.t   ;
   let mk :'a -> t   = Obj.repr;
   let get: t -> 'a  = Obj.obj ;
@@ -36,8 +36,13 @@ let ghost_token_info = {
 type token_stream = Stream.t (token * token_info);
 
 type efun = token_stream -> Action.t;
+  
+type description =
+    [= `Normal
+    | `Antiquot];
 
-type token_pattern = ((token -> bool) * string);
+type descr = (description * string) ;  
+type token_pattern = ((token -> bool) * descr);
 
 type internal_entry =
     { egram     : gram;
@@ -84,32 +89,34 @@ type extend_statment =
   (option position * list single_extend_statment);
 type delete_statment = list symbol;
 
-  type fold 'a 'b 'c =
+type fold 'a 'b 'c =
     internal_entry -> list symbol ->
       (Stream.t 'a -> 'b) -> Stream.t 'a -> 'c;
 
-  type foldsep 'a 'b 'c =
+type foldsep 'a 'b 'c =
     internal_entry -> list symbol ->
       (Stream.t 'a -> 'b) -> (Stream.t 'a -> unit) -> Stream.t 'a -> 'c;
 
-  let get_filter g = g.gfilter;
-  let token_location r = r.cur_loc;
+let get_filter g = g.gfilter;
+let token_location r = r.cur_loc;
 
   
-  let using { gkeywords = table; gfilter = filter; _ } kwd =
-    let r = try Hashtbl.find table kwd with
-            [ Not_found ->
-                let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
-    in do { FanToken.Filter.keyword_added filter kwd (r.contents = 0);
-            incr r };
-  let mk_action=Action.mk;
-  let string_of_token=FanToken.extract_string  ;
-  let removing { gkeywords = table; gfilter = filter; _ } kwd =
-    let r = Hashtbl.find table kwd in
-    let () = decr r in
-    if !r = 0 then do {
+let using { gkeywords = table; gfilter = filter; _ } kwd =
+  let r = try Hashtbl.find table kwd with
+    [ Not_found ->
+      let r = ref 0 in do { Hashtbl.add table kwd r; r } ]
+  in begin
+    FanToken.Filter.keyword_added filter kwd (r.contents = 0);
+    incr r
+  end;
+let mk_action=Action.mk;
+let string_of_token=FanToken.extract_string  ;
+let removing { gkeywords = table; gfilter = filter; _ } kwd =
+  let r = Hashtbl.find table kwd in
+  let () = decr r in
+    if !r = 0 then begin
       FanToken.Filter.keyword_removed filter kwd;
       Hashtbl.remove table kwd
-    } else ();
+    end else ();
 
 

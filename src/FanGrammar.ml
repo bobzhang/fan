@@ -8,7 +8,6 @@ type styp =
  | STquo of loc and string
  | STself of loc and string
  | STtok of loc
- (* | STstring_tok of loc *)
  | STtyp of Ast.ctyp ] ;
 
 type entry   = {
