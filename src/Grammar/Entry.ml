@@ -20,11 +20,13 @@ let mk g n ={
   econtinue _ _ _ = parser [];
   edesc = Dlevels [] };
 
+(* [estart] *)  
 let action_parse entry ts : Action.t =
   try 
-    let p =  if !trace_parser then
-      Format.fprintf
-    else Format.ifprintf in 
+    let p =
+      if !trace_parser then
+        Format.fprintf
+      else Format.ifprintf in 
     let () = p Format.err_formatter "@[<4>%s@ " entry.ename in
     let res = entry.estart 0 ts in
     let () =  p Format.err_formatter "@]@." in 

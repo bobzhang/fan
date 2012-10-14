@@ -1,50 +1,22 @@
-(* camlp4r *)
-(****************************************************************************)
-(*                                                                          *)
-(*                                   OCaml                                  *)
-(*                                                                          *)
-(*                            INRIA Rocquencourt                            *)
-(*                                                                          *)
-(*  Copyright  2006   Institut National de Recherche  en  Informatique et   *)
-(*  en Automatique.  All rights reserved.  This file is distributed under   *)
-(*  the terms of the GNU Library General Public License, with the special   *)
-(*  exception on linking described in LICENSE at the top of the OCaml       *)
-(*  source tree.                                                            *)
-(*                                                                          *)
-(****************************************************************************)
 
 
-
-(* Authors:
- * - Daniel de Rauglaudre: initial version
- * - Nicolas Pouillard: refactoring
- *)
-(* module Make (Structure : Structure.S) = struct *)
-  (* module Fail = Failed.Make Structure; *)
-  let sfold0 f e _entry _symbl psymb =
-    let rec fold accu =
-      parser
+let sfold0 f e _entry _symbl psymb =
+  let rec fold accu =  parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
-      | [< >] -> accu ]
-    in parser [< a = fold e >] -> a;
-
-  let sfold1 f e _entry _symbl psymb =
-    let rec fold accu =
-      parser
+      | [< >] -> accu ] in parser [< a = fold e >] -> a;
+let sfold1 f e _entry _symbl psymb =
+  let rec fold accu = parser
       [ [< a = psymb; 's >] -> fold (f a accu) s
-      | [< >] -> accu ] in
-    parser [< a = psymb; a = fold (f a e) >] -> a;
+      | [< >] -> accu ] in parser
+      [< a = psymb; a = fold (f a e) >] -> a;
 
-  let sfold0sep f e entry symbl psymb psep =
-    let failed =
-      fun
-      [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
+let sfold0sep f e entry symbl psymb psep =
+  let failed = fun
+    [ [symb; sep] -> Failed.symb_failed_txt entry sep symb
       | _ -> "failed" ] in
-    let rec kont accu =
-      parser
-      [ [< () = psep; a = psymb ?? failed symbl; 's >] -> kont (f a accu) s
-      | [< >] -> accu ] in
-    parser
+  let rec kont accu = parser
+    [ [< () = psep; a = psymb ?? failed symbl; 's >] -> kont (f a accu) s
+    | [< >] -> accu ] in parser
     [ [< a = psymb; 's >] -> kont (f a e) s
     | [< >] -> e ] ;
 

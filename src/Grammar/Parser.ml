@@ -1,10 +1,7 @@
 
-(* module Print = Print.Make (struct end); (\* FIXME later*\) *)
 open Structure;
 
-
-let njunk strm n =
-  for _i = 1 to n do Stream.junk strm done; (* FIXME unsed  index i*)
+open FanUtil;
 
 let loc_bp = Tools.get_cur_loc;
 let loc_ep = Tools.get_prev_loc;
@@ -19,13 +16,8 @@ let add_loc bp parse_fun strm =
       FanLoc.join bp
     else
       FanLoc.merge bp ep in
-    (x, loc);
+  (x, loc);
 
-let stream_peek_nth strm n =
-  let rec loop i = fun
-    [ [x :: xs] -> if i = 1 then Some x else loop (i - 1) xs
-    | [] -> None ] in
-  loop n (Stream.npeek n strm);
 
   
 module StreamOrig = Stream;
@@ -52,12 +44,12 @@ let try_parser ps strm =
   let r =
     try ps strm'
     with
-      [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
-          raise Stream.Failure
-      | exc -> raise exc ]in begin 
-      njunk strm (StreamOrig.count strm');
-      r;
-      end;
+    [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
+        raise Stream.Failure
+    | exc -> raise exc ] in begin 
+        njunk (StreamOrig.count strm') strm ;
+        r;
+    end;
 
 let level_number entry lab =
   let rec lookup levn = fun
@@ -175,48 +167,41 @@ and parser_cont p1 entry nlevn alevn s son loc a =  parser
   | [< a = recover parser_of_tree entry nlevn alevn loc a s son >] -> a
   | [< >] -> raise (Stream.Error (Failed.tree_failed entry a s son)) ]
 and parser_of_token_list p1 tokl =
-  loop 1 tokl where rec loop n =
-      fun
-      [ [`Stoken (tematch, _) :: tokl] ->
-          match tokl with
-          [ [] ->
-              let ps strm =
-                match stream_peek_nth strm n with
-                [ Some (tok, _) when tematch tok -> (njunk strm n; Action.mk tok)
-                | _ -> raise Stream.Failure ]
-              in
-              fun strm ->
-                let bp = loc_bp strm in
-                match strm with parser
-                [< a = ps; act = p1 bp a >] -> Action.getf act a
+  loop 1 tokl where rec loop n =  fun
+    [ [`Stoken (tematch, _) :: tokl] ->  match tokl with
+      [ [] ->
+        let ps strm = match stream_peek_nth n strm  with
+        [ Some (tok, _) when tematch tok -> (njunk n strm ; Action.mk tok)
+        | _ -> raise Stream.Failure ] in
+        fun strm ->
+          let bp = loc_bp strm in
+          match strm with parser
+          [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
               let ps strm =
-                match stream_peek_nth strm n with
+                match stream_peek_nth n strm with
                 [ Some (tok, _) when tematch tok -> tok
-                | _ -> raise Stream.Failure ]
-              in
-              let p1 = loop (n + 1) tokl in
-              parser [< tok = ps; 's >] ->
-                let act = p1 s in Action.getf act tok ]
+                | _ -> raise Stream.Failure ] in
+            let p1 = loop (n + 1) tokl in
+            parser [< tok = ps; 's >] ->
+              let act = p1 s in Action.getf act tok ]
       | [`Skeyword kwd :: tokl] ->
           match tokl with
           [ [] ->
               let ps strm =
-                match stream_peek_nth strm n with
+                match stream_peek_nth n strm with
                 [ Some (tok, _) when FanToken.match_keyword kwd tok ->
-                    (njunk strm n; Action.mk tok)
-                | _ -> raise Stream.Failure ]
-              in
+                    (njunk n strm ; Action.mk tok)
+                | _ -> raise Stream.Failure ] in
               fun strm ->
                 let bp = loc_bp strm in
                 match strm with parser
-                [< a = ps; act = p1 bp a >] -> Action.getf act a
+               [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
               let ps strm =
-                match stream_peek_nth strm n with
+                match stream_peek_nth n strm with
                 [ Some (tok, _) when FanToken.match_keyword kwd tok -> tok
-                | _ -> raise Stream.Failure ]
-              in
+                | _ -> raise Stream.Failure ] in
               let p1 = loop (n + 1) tokl in
               parser [< tok = ps; 's >] ->
                 let act = p1 s in Action.getf act tok ]
@@ -227,41 +212,39 @@ and parser_of_symbol entry nlevn = fun
     let pl = List.map (parser_of_symbol entry nlevn) symbl in
     Obj.magic (List.fold_left (fun act p -> Obj.magic act p) act pl)
   | `Slist0 s ->
-      let ps = parser_of_symbol entry nlevn s in
-      let rec loop al = parser
-        [ [< a = ps; 's >] -> loop [a :: al] s
-        | [< >] -> al ] in
-      parser [< a = loop [] >] -> Action.mk (List.rev a)
+    let ps = parser_of_symbol entry nlevn s in
+    let rec loop al = parser
+      [ [< a = ps; 's >] -> loop [a :: al] s
+      | [< >] -> al ] in
+    parser [< a = loop [] >] -> Action.mk (List.rev a)
    | `Slist0sep (symb, sep) ->
-       let ps = parser_of_symbol entry nlevn symb in
-       let pt = parser_of_symbol entry nlevn sep in
-       let rec kont al = parser
-         [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb; 's >] ->
-           kont [a :: al] s
-         | [< >] -> al ] in
-       parser
+     let ps = parser_of_symbol entry nlevn symb in
+     let pt = parser_of_symbol entry nlevn sep in
+     let rec kont al = parser
+       [ [< v = pt; a = ps ?? Failed.symb_failed entry v sep symb; 's >] ->
+         kont [a :: al] s
+       | [< >] -> al ] in
+     parser
        [ [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
-        | [< >] -> Action.mk [] ]
+       | [< >] -> Action.mk [] ]
    | `Slist1 s ->
-       let ps = parser_of_symbol entry nlevn s in
-       let rec loop al = parser
-         [ [< a = ps; 's >] -> loop [a :: al] s
-         | [< >] -> al ] in
-       parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s))
+     let ps = parser_of_symbol entry nlevn s in
+     let rec loop al = parser
+       [ [< a = ps; 's >] -> loop [a :: al] s
+       | [< >] -> al ] in
+     parser [< a = ps; 's >] -> Action.mk (List.rev (loop [a] s))
    | `Slist1sep (symb, sep) ->
-       let ps = parser_of_symbol entry nlevn symb in
-       let pt = parser_of_symbol entry nlevn sep in
-       let rec kont al = parser
-           [ [< v = pt; a =
-                parser
-                [ [< a = ps >] -> a
-                | [< a = parse_top_symb entry symb >] -> a
-                | [< >] ->
-                    raise (Stream.Error (Failed.symb_failed entry v sep symb)) ];
-              's >] ->
-              kont [a :: al] s
-           | [< >] -> al ] in
-       parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
+     let ps = parser_of_symbol entry nlevn symb in
+     let pt = parser_of_symbol entry nlevn sep in
+     let rec kont al = parser
+       [ [< v = pt; a = parser
+         [ [< a = ps >] -> a
+         | [< a = parse_top_symb entry symb >] -> a
+         | [< >] ->
+             raise (Stream.Error (Failed.symb_failed entry v sep symb)) ];
+           's >] ->kont [a :: al] s
+         | [< >] -> al ] in
+     parser [< a = ps; 's >] -> Action.mk (List.rev (kont [a] s))
   | `Sopt s ->
       let ps = parser_of_symbol entry nlevn s in parser
         [ [< a = ps >] -> Action.mk (Some a)
@@ -283,8 +266,7 @@ and parser_of_symbol entry nlevn = fun
         | `Skeyword kwd -> parser
               [< (tok, _) when FanToken.match_keyword kwd tok >] ->
                 Action.mk tok
-        | `Stoken (f, _) -> parser
-              [< (tok,_) when f tok >] -> Action.mk tok ]
+        | `Stoken (f, _) -> parser [< (tok,_) when f tok >] -> Action.mk tok ]
 and parse_top_symb entry symb strm =
   parser_of_symbol entry 0 (top_symb entry symb) strm;
 
@@ -309,7 +291,8 @@ let rec start_parser_of_levels entry clevn = fun
                entry.econtinue levn loc a strm
               | _ ->
                   fun levn strm ->
-                    if levn > clevn then p1 levn strm
+                    if levn > clevn then
+                      p1 levn strm
                     else
                       let bp = loc_bp strm in
                       match strm with parser
@@ -317,7 +300,7 @@ let rec start_parser_of_levels entry clevn = fun
                         let a = Action.getf act loc in
                         entry.econtinue levn loc a strm
                       | [< act = p1 levn >] -> act ] ] ] ];
-
+  
 let start_parser_of_entry entry =
   debug gram "start_parser_of_entry: @[<2>%a@]@." Print.text#entry entry in
   match entry.edesc with
