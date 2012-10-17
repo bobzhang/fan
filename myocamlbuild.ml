@@ -295,7 +295,7 @@ module Driver = struct
 
   let p4_flags' = List.iter (fun (p4, flags) -> flag ["ocaml"; "pp"; p4] flags)
 
-  let camlp4  ?(printer=A "o")
+  let fan  ?(printer=A "o")
       tag i o env build = (
     let ml = env i and pp_ml = env o in
     (**  add a pp here to triger the rule pp,
@@ -406,9 +406,9 @@ open Driver;;
    rule "generate %.itarget" ~prod:"%.itarget" mk_itarget;
    rule "version.ml" ~prod:"version.ml" mk_version;
    rule "preprocess: ml -> _ppr.ml" ~dep: "%.ml" ~prod:"%_ppr.ml"
-    (camlp4 ~printer:(A"r") "%_ppr.ml" "%.ml" "%_ppr.ml");
+    (fan ~printer:(A"r") "%_ppr.ml" "%.ml" "%_ppr.ml");
    rule "preprocess: ml -> _ppo.ml" ~dep: "%.ml" ~prod: "%_ppo.ml"
-    (camlp4 ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
+    (fan ~printer:(A"o") "%_ppo.ml" "%.ml" "%_ppo.ml");
    let myocamldoc tags =
      Ocaml_tools.ocamldoc_l_dir tags in 
    (* -- "extension:html" in  when you want use plugins
@@ -793,15 +793,15 @@ let cold_camlp4boot = "" (* to be added *);;
 
 
 rule "code_boot: ml -> ml" ~dep: "src/%.ml" ~prod:(tmp//"%.ml")
-    (camlp4  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
+    (fan  (tmp//"%.ml") "src/%.ml" (tmp//"%.ml"));;
 
 rule "code_boot: mli -> mli" ~dep: "src/%.mli" ~prod:(tmp//"%.mli")
-    (camlp4  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
+    (fan  (tmp//"%.mli") "src/%.mli" (tmp//"%.mli"));;
 
 rule "code_boot: mlpack -> mlpack" ~dep: "src/%.mlpack" ~prod:(tmp//"%.mlpack")
-    (camlp4  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
+    (fan  (tmp//"%.mlpack") "src/%.mlpack" (tmp//"%.mlpack"));;
 rule "code_boot: mll -> mll" ~dep: "src/%.mll" ~prod:(tmp//"%.mll")
-    (camlp4  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
+    (fan  (tmp//"%.mll") "src/%.mll" (tmp//"%.mll"));;
 
 let () =
   after_rules_dispatch := fun () -> begin

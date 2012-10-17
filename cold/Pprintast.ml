@@ -976,33 +976,41 @@ and value_description ppf x =
     end ;
   pp_close_box ppf () ;
 
-and type_declaration ppf x =
+and type_declaration ppf x = begin
   pp_open_hovbox ppf indent ;
-  (match x.ptype_manifest with
-     | None -> ()
-     | Some(y) ->
+  (match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
+     | (None,_,Asttypes.Public) -> ()
+     | (None,_,Asttypes.Private) -> fprintf ppf "private@ "
+     | (Some y, Ptype_abstract,Asttypes.Private) -> begin
+         fprintf ppf "private@ ";
          core_type ppf y;
-         match x.ptype_kind with
-           | Ptype_variant _ | Ptype_record _ -> fprintf ppf " = "
-           | Ptype_abstract -> ());
+     end
+     | (Some y, _, Asttypes.Private) -> begin
+         core_type ppf y;
+         fprintf ppf "@ =@ private@ "
+     end
+     | (Some y,Ptype_abstract, Asttypes.Public) -> begin
+         core_type ppf y;
+     end
+     | (Some y, _,Asttypes.Public) -> begin
+         core_type ppf y;
+         fprintf ppf "@ =@ "
+     end
+  );
   (match x.ptype_kind with
-    | Ptype_variant (first::rest) ->
+    | Ptype_variant (first::rest) -> begin 
         pp_open_hovbox ppf indent ;
-
         pp_open_hvbox ppf 0 ;
         type_variant_leaf ppf first true ;
         type_variant_leaf_list ppf rest ;
-(* string_x_core_type_list ppf lst; *)
         pp_close_box ppf () ;
-
-        pp_close_box ppf () ;
+        pp_close_box ppf ()
+    end
     | Ptype_variant [] ->
         assert false ;
     | Ptype_abstract -> ()
-    | Ptype_record l ->
-
+    | Ptype_record l -> begin 
         pp_open_hovbox ppf indent ;
-
         fprintf ppf "{" ;
         pp_print_break ppf 0 indent ;
         pp_open_hvbox ppf 0;
@@ -1011,12 +1019,11 @@ and type_declaration ppf x =
         fprintf ppf "@," ;
         pp_close_box ppf () ;
         fprintf ppf "}" ;
-
-        pp_close_box ppf () ;
-  );
+        pp_close_box ppf ()
+    end );
   list2 typedef_constraint ppf x.ptype_cstrs ~breakfirst:true "" ;
-  pp_close_box ppf () ;
-
+  pp_close_box ppf () 
+end
 and exception_declaration ppf x =
   match x with
   | [] -> ()
