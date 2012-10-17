@@ -16,11 +16,12 @@ let test_patt_lessminus =
                                                                n strm) with
                                                            | Some
                                                               ((`KEYWORD
-                                                                "<-")) ->
+                                                                "<-"), _) ->
                                                               n
                                                            | Some
                                                               ((`KEYWORD
-                                                                ("[" | "[<"))) ->
+                                                                ("[" | "[<")),
+                                                               _) ->
                                                               (skip_patt (
                                                                 ((
                                                                   (ignore_upto
@@ -29,7 +30,8 @@ let test_patt_lessminus =
                                                                     )) ) + 1)
                                                                 ))
                                                            | Some
-                                                              ((`KEYWORD "(")) ->
+                                                              ((`KEYWORD "("),
+                                                               _) ->
                                                               (skip_patt (
                                                                 ((
                                                                   (ignore_upto
@@ -38,7 +40,8 @@ let test_patt_lessminus =
                                                                     )) ) + 1)
                                                                 ))
                                                            | Some
-                                                              ((`KEYWORD "{")) ->
+                                                              ((`KEYWORD "{"),
+                                                               _) ->
                                                               (skip_patt (
                                                                 ((
                                                                   (ignore_upto
@@ -51,11 +54,13 @@ let test_patt_lessminus =
                                                                  ((("as"
                                                                     | "::")
                                                                    | ",")
-                                                                  | "_")))
+                                                                  | "_")), _)
                                                               | Some
-                                                                 ((`LIDENT _)
-                                                                  | (`UIDENT
-                                                                    _))) ->
+                                                                 (((`LIDENT
+                                                                    _)
+                                                                   | 
+                                                                   (`UIDENT
+                                                                    _)), _)) ->
                                                               (skip_patt (
                                                                 (n + 1) ))
                                                            | (Some (_)
@@ -71,13 +76,15 @@ let test_patt_lessminus =
                                                                 n strm) with
                                                             | Some
                                                                ((`KEYWORD
-                                                                 prm)) when
+                                                                 prm), _)
+                                                               when
                                                                (prm =
                                                                  end_kwd) ->
                                                                n
                                                             | Some
                                                                ((`KEYWORD
-                                                                 ("[" | "[<"))) ->
+                                                                 ("[" | "[<")),
+                                                                _) ->
                                                                (ignore_upto
                                                                  end_kwd (
                                                                  ((
@@ -88,7 +95,7 @@ let test_patt_lessminus =
                                                                  ))
                                                             | Some
                                                                ((`KEYWORD
-                                                                 "(")) ->
+                                                                 "("), _) ->
                                                                (ignore_upto
                                                                  end_kwd (
                                                                  ((
@@ -99,7 +106,7 @@ let test_patt_lessminus =
                                                                  ))
                                                             | Some
                                                                ((`KEYWORD
-                                                                 "{")) ->
+                                                                 "{"), _) ->
                                                                (ignore_upto
                                                                  end_kwd (
                                                                  ((

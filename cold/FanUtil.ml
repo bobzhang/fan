@@ -159,27 +159,27 @@ let neg_string =
                                       )
                                      else ("-" ^ n)
 
-let rec loop =
-                                                      fun n ->
-                                                       function
-                                                       | [] -> (None)
-                                                       | ((x, _) :: []) ->
-                                                          if (n = 1) then
-                                                           (
-                                                           (Some (x))
-                                                           )
-                                                          else (None)
-                                                       | (_ :: l) ->
-                                                          (loop ( (n - 1) )
-                                                            l)
-
 let stream_peek_nth =
-                                                                 fun n ->
-                                                                  fun strm ->
-                                                                   (loop n (
-                                                                    (Stream.npeek
-                                                                    n strm)
-                                                                    ))
+                                                      fun n ->
+                                                       fun strm ->
+                                                        let rec loop =
+                                                         fun i ->
+                                                          function
+                                                          | (x :: xs) ->
+                                                             if (i = 1) then
+                                                              (
+                                                              (Some (x))
+                                                              )
+                                                             else
+                                                              (loop ( 
+                                                                (i - 1) ) xs)
+                                                          | [] -> (None) in
+                                                        (loop n (
+                                                          (Stream.npeek n
+                                                            strm) ))
+
+
+let njunk = fun n -> fun strm -> for _i = 1 to n do (Stream.junk strm) done
 
 
 let rec list_remove =

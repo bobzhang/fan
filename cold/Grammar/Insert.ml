@@ -623,13 +623,9 @@ let levels_of_rules =
              fun lev ->
               fun (symbols, action) ->
                let symbols = (List.map ( (change_to_self entry) ) symbols) in
-               (
-               (List.iter ( (check_gram entry) ) symbols)
-               );
+               let () = (List.iter ( (check_gram entry) ) symbols) in
                let (e1, symbols) = (get_initial symbols) in
-               (
-               (insert_tokens ( entry.egram ) symbols)
-               );
+               let () = (insert_tokens ( entry.egram ) symbols) in
                (insert_level entry e1 symbols action lev) ) lev level) in
           (( ( lev ) :: levs  ), empty_lev) ) ([] , make_lev) rules) in
      (levs1 @ ( (( (List.rev levs) ) @ levs2) ))

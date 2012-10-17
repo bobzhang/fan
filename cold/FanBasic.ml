@@ -60,32 +60,30 @@ let check_valid =
 let p_expr =
                 fun fmt ->
                  fun e ->
-                  (eprintf "@[%a@]@." Pprintast.print_expression (
-                    (Ast2pt.expr e) ))
+                  (eprintf "@[%a@]@." Pprintast.expression ( (Ast2pt.expr e)
+                    ))
 
 let p_patt =
-                                         fun fmt ->
-                                          fun e ->
-                                           (eprintf "@[%a@]@."
-                                             Pprintast.print_pattern (
-                                             (Ast2pt.pattern e) ))
+                         fun fmt ->
+                          fun e ->
+                           (eprintf "@[%a@]@." Pprintast.pattern (
+                             (Ast2pt.pattern e) ))
 
 let p_str_item =
-                                                                    fun fmt ->
-                                                                    fun e ->
-                                                                    (eprintf
-                                                                    "@[%a@]@."
-                                                                    Pprintast.print_structure
-                                                                    (
-                                                                    (Ast2pt.str_item
-                                                                    e) ))
-
-
-let p_ident =
- fun fmt ->
-  fun e -> (eprintf "@[%a@]@." Pprintast.fmt_longident ( (Ast2pt.ident e) ))
-
+                                                     fun fmt ->
+                                                      fun e ->
+                                                       (eprintf "@[%a@]@."
+                                                         Pprintast.structure
+                                                         (
+                                                         (Ast2pt.str_item e)
+                                                         ))
 
 let p_ctyp =
- fun fmt ->
-  fun e -> (eprintf "@[%a@]@." Pprintast.core_type ( (Ast2pt.ctyp e) ))
+                                                              fun fmt ->
+                                                               fun e ->
+                                                                (eprintf
+                                                                  "@[%a@]@."
+                                                                  Pprintast.core_type
+                                                                  (
+                                                                  (Ast2pt.ctyp
+                                                                    e) ))

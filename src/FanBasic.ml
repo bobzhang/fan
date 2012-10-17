@@ -49,15 +49,17 @@ let check_valid str =
    to be dumped
  *)  
 let p_expr fmt  e =
-  eprintf "@[%a@]@." Pprintast.print_expression (Ast2pt.expr e);
+  eprintf "@[%a@]@." Pprintast.expression (Ast2pt.expr e);
 (* let p_ident = eprintf "@[%a@]@." opr#ident ;     *)
 let p_patt fmt e =
-  eprintf "@[%a@]@." Pprintast.print_pattern (Ast2pt.pattern e);
+  eprintf "@[%a@]@." Pprintast.pattern (Ast2pt.pattern e);
   
 let p_str_item fmt e =
-  eprintf "@[%a@]@." Pprintast.print_structure (Ast2pt.str_item e);
-let p_ident fmt e =
-  eprintf "@[%a@]@." Pprintast.fmt_longident (Ast2pt.ident e) ;    
+  eprintf "@[%a@]@." Pprintast.structure (Ast2pt.str_item e);
+
+(* FIXME allow more interfaces later *)  
+(* let p_ident fmt e = *)
+(*   eprintf "@[%a@]@." Pprintast.fmt_longident (Ast2pt.ident e) ;     *)
 let p_ctyp fmt e =
   eprintf "@[%a@]@." Pprintast.core_type (Ast2pt.ctyp e) ;
   
