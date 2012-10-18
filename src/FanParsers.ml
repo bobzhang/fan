@@ -1445,6 +1445,9 @@ New syntax:\
     ctyp:
       [ "==" LA
         [ SELF{t1}; "=="; SELF{t2} -> <:ctyp< $t1 == $t2 >> ]
+
+      (* | "=" *)
+      (*   [ SELF{t1}; "="; SELF{t2} -> Ast.TyMan _loc t1 t2] *)  
       | "private" NA
         [ "private"; ctyp Level "alias"{t} -> <:ctyp< private $t >> ]
       | "alias" LA

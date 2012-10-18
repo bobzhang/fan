@@ -2,7 +2,6 @@ type loc = FanLoc.t
 
 type name = {expr:Ast.expr; tvar:string; loc:loc}
 
-
 type styp =
    STlid of loc * string
  | STapp of loc * styp * styp
@@ -13,10 +12,7 @@ type styp =
 
 type attr = string
 
-type entry = {
-                                                         name:name;
-                                                         pos:Ast.expr option;
-                                                         levels:level list}
+type entry = {name:name; pos:Ast.expr option; levels:level list}
 and level = {label:string option; assoc:Ast.expr option; rules:rule list}
 and rule = {prod:symbol list; action:Ast.expr option}
 and symbol = {used:string list; text:text; styp:styp; pattern:Ast.patt option}
@@ -32,7 +28,4 @@ and text =
   | TXkwd of loc * string
   | TXtok of loc * Ast.expr * attr * string
 
-type used =
-                                                Unused
-                                              | UsedScanned
-                                              | UsedNotScanned
+type used = Unused | UsedScanned | UsedNotScanned

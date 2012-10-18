@@ -4,12 +4,9 @@ exception Unhandled of Ast.ctyp
 
 exception Finished of Ast.expr
 
-
 let _loc = FanLoc.ghost
 
-let unit_literal =
-                          (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
-
+let unit_literal = (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "()")) )))
 
 let x =
  fun ?(off = 0) ->
@@ -21,22 +18,13 @@ let x =
     (( (String.of_char base) ) ^ ( (string_of_int i) ))
 
 let xid =
-                                                          fun ?(off = 0) ->
-                                                           fun (i :
-                                                             int) ->
-                                                            ((Ast.IdLid
-                                                               (_loc, (
-                                                                (x ~off:off
-                                                                  i) ))) :
-                                                              Ast.ident)
-
+ fun ?(off = 0) ->
+  fun (i : int) -> ((Ast.IdLid (_loc, ( (x ~off:off i) ))) : Ast.ident)
 
 let allx = fun ?(off = 0) -> fun i -> ("all_" ^ ( (x ~off:off i) ))
 
-
 let allxid =
  fun ?(off = 0) -> fun i -> (Ast.IdLid (_loc, ( (allx ~off:off i) )))
-
 
 let check_valid =
  fun str ->
@@ -58,32 +46,17 @@ let check_valid =
   end else ()
 
 let p_expr =
-                fun fmt ->
-                 fun e ->
-                  (eprintf "@[%a@]@." Pprintast.expression ( (Ast2pt.expr e)
-                    ))
+ fun fmt ->
+  fun e -> (eprintf "@[%a@]@." Pprintast.expression ( (Ast2pt.expr e) ))
 
 let p_patt =
-                         fun fmt ->
-                          fun e ->
-                           (eprintf "@[%a@]@." Pprintast.pattern (
-                             (Ast2pt.pattern e) ))
+ fun fmt ->
+  fun e -> (eprintf "@[%a@]@." Pprintast.pattern ( (Ast2pt.pattern e) ))
 
 let p_str_item =
-                                                     fun fmt ->
-                                                      fun e ->
-                                                       (eprintf "@[%a@]@."
-                                                         Pprintast.structure
-                                                         (
-                                                         (Ast2pt.str_item e)
-                                                         ))
+ fun fmt ->
+  fun e -> (eprintf "@[%a@]@." Pprintast.structure ( (Ast2pt.str_item e) ))
 
 let p_ctyp =
-                                                              fun fmt ->
-                                                               fun e ->
-                                                                (eprintf
-                                                                  "@[%a@]@."
-                                                                  Pprintast.core_type
-                                                                  (
-                                                                  (Ast2pt.ctyp
-                                                                    e) ))
+ fun fmt ->
+  fun e -> (eprintf "@[%a@]@." Pprintast.core_type ( (Ast2pt.ctyp e) ))

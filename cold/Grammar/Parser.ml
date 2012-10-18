@@ -4,9 +4,7 @@ open FanUtil
 
 let loc_bp = Tools.get_cur_loc
 
-let loc_ep =
-                                                               Tools.get_prev_loc
-
+let loc_ep = Tools.get_prev_loc
 
 let add_loc =
  fun bp ->
@@ -25,109 +23,69 @@ let add_loc =
 module StreamOrig = Stream
 
 module Stream =
-                                           struct
-                                            type 'a t = 'a StreamOrig.t
-
-                                            exception Failure =
-                                             StreamOrig.Failure
-
-                                            exception Error =
-                                             StreamOrig.Error
-
-                                            let peek = StreamOrig.peek
-
-                                            let junk = StreamOrig.junk
-
-                                            let dup =
-                                             fun strm ->
-                                              let rec loop =
-                                               fun n ->
-                                                function
-                                                | [] -> (None)
-                                                | (x :: []) ->
-                                                   if (n = 0) then
-                                                    (
-                                                    (Some (x))
-                                                    )
-                                                   else (None)
-                                                | (_ :: l) ->
-                                                   (loop ( (n - 1) ) l) in
-                                              let peek_nth =
-                                               fun n ->
-                                                (loop n (
-                                                  (Stream.npeek ( (n + 1) )
-                                                    strm) )) in
-                                              (Stream.from peek_nth)
-
-                                           end
+ struct
+  type 'a t = 'a StreamOrig.t
+ 
+  exception Failure = StreamOrig.Failure
+ 
+  exception Error = StreamOrig.Error
+ 
+  let peek = StreamOrig.peek
+ 
+  let junk = StreamOrig.junk
+ 
+  let dup =
+   fun strm ->
+    let rec loop =
+     fun n ->
+      function
+      | [] -> (None)
+      | (x :: []) -> if (n = 0) then ( (Some (x)) ) else (None)
+      | (_ :: l) -> (loop ( (n - 1) ) l) in
+    let peek_nth = fun n -> (loop n ( (Stream.npeek ( (n + 1) ) strm) )) in
+    (Stream.from peek_nth)
+ 
+ end
 
 let try_parser =
-                                                 fun ps ->
-                                                  fun strm ->
-                                                   let strm' =
-                                                    (Stream.dup strm) in
-                                                   let r =
-                                                    (try (ps strm') with
-                                                     | (Stream.Error (_)
-                                                        | FanLoc.Exc_located
-                                                           (_,
-                                                            Stream.Error (_))) ->
-                                                        (raise Stream.Failure
-                                                          )
-                                                     | exc -> (raise exc)) in
-                                                   (
-                                                   (njunk (
-                                                     (StreamOrig.count strm')
-                                                     ) strm)
-                                                   );
-                                                   r
+ fun ps ->
+  fun strm ->
+   let strm' = (Stream.dup strm) in
+   let r =
+    (try (ps strm') with
+     | (Stream.Error (_) | FanLoc.Exc_located (_, Stream.Error (_))) ->
+        (raise Stream.Failure )
+     | exc -> (raise exc)) in
+   (
+   (njunk ( (StreamOrig.count strm') ) strm)
+   );
+   r
 
 let level_number =
-                                                       fun entry ->
-                                                        fun lab ->
-                                                         let rec lookup =
-                                                          fun levn ->
-                                                           function
-                                                           | [] ->
-                                                              (failwith (
-                                                                ("unknown level "
-                                                                  ^ lab) ))
-                                                           | (lev :: levs) ->
-                                                              if (Tools.is_level_labelled
-                                                                   lab lev) then
-                                                               levn
-                                                              else
-                                                               (lookup (
-                                                                 (succ levn)
-                                                                 ) levs) in
-                                                         (match
-                                                            entry.edesc with
-                                                          | Dlevels (elev) ->
-                                                             (lookup 0 elev)
-                                                          | Dparser (_) ->
-                                                             (raise Not_found
-                                                               ))
+ fun entry ->
+  fun lab ->
+   let rec lookup =
+    fun levn ->
+     function
+     | [] -> (failwith ( ("unknown level " ^ lab) ))
+     | (lev :: levs) ->
+        if (Tools.is_level_labelled lab lev) then levn
+        else (lookup ( (succ levn) ) levs) in
+   (match entry.edesc with
+    | Dlevels (elev) -> (lookup 0 elev)
+    | Dparser (_) -> (raise Not_found ))
 
-let strict_parsing =
-                                                                    (ref
-                                                                    false )
-
+let strict_parsing = (ref false )
 
 let strict_parsing_warning = (ref false )
 
 let rec top_symb =
-                                            fun entry ->
-                                             function
-                                             | (`Sself | `Snext) ->
-                                                `Snterm (entry)
-                                             | (`Snterml (e, _)) ->
-                                                `Snterm (e)
-                                             | (`Slist1sep (s, sep)) ->
-                                                `Slist1sep
-                                                 ((( (top_symb entry s) ),
-                                                   sep))
-                                             | _ -> (raise Stream.Failure )
-
+ fun entry ->
+  function
+  | (`Sself | `Snext) -> `Snterm (entry)
+  | (`Snterml (e, _)) -> `Snterm (e)
+  | (`Slist1sep (s, sep)) -> `Slist1sep ((( (top_symb entry s) ), sep))
+  | _ -> (raise Stream.Failure )
 
 let top_tree =
  fun entry ->
@@ -137,52 +95,28 @@ let top_tree =
   | (LocAct (_, _) | DeadEnd) -> (raise Stream.Failure )
 
 let entry_of_symb =
-                                                           fun entry ->
-                                                            function
-                                                            | (`Sself
-                                                               | `Snext) ->
-                                                               entry
-                                                            | (`Snterm e) ->
-                                                               e
-                                                            | (`Snterml
-                                                               (e, _)) ->
-                                                               e
-                                                            | _ ->
-                                                               (raise
-                                                                 Stream.Failure
-                                                                 )
+ fun entry ->
+  function
+  | (`Sself | `Snext) -> entry
+  | (`Snterm e) -> e
+  | (`Snterml (e, _)) -> e
+  | _ -> (raise Stream.Failure )
 
 let continue =
-                                                                    fun entry ->
-                                                                    fun loc ->
-                                                                    fun a ->
-                                                                    fun s ->
-                                                                    fun son ->
-                                                                    fun p1 ->
-                                                                    fun (__strm :
-                                                                    _ Stream.t) ->
-                                                                    let a =
-                                                                    (((entry_of_symb
-                                                                    entry s).econtinue)
-                                                                    0 loc a
-                                                                    __strm) in
-                                                                    let act =
-                                                                    (try
-                                                                    (p1
-                                                                    __strm)
-                                                                    with
-                                                                    Stream.Failure ->
-                                                                    (raise (
-                                                                    (Stream.Error
-                                                                    (Failed.tree_failed
-                                                                    entry a s
-                                                                    son)) ))) in
-                                                                    (Action.mk
-                                                                    (
-                                                                    fun _ ->
-                                                                    (Action.getf
-                                                                    act a) ))
-
+ fun entry ->
+  fun loc ->
+   fun a ->
+    fun s ->
+     fun son ->
+      fun p1 ->
+       fun (__strm :
+         _ Stream.t) ->
+        let a = (((entry_of_symb entry s).econtinue) 0 loc a __strm) in
+        let act =
+         (try (p1 __strm) with
+          Stream.Failure ->
+           (raise ( (Stream.Error (Failed.tree_failed entry a s son)) ))) in
+        (Action.mk ( fun _ -> (Action.getf act a) ))
 
 let skip_if_empty =
  fun bp ->
@@ -194,30 +128,25 @@ let skip_if_empty =
    else (raise Stream.Failure )
 
 let do_recover =
-                                  fun parser_of_tree ->
-                                   fun entry ->
-                                    fun nlevn ->
-                                     fun alevn ->
-                                      fun loc ->
-                                       fun a ->
-                                        fun s ->
-                                         fun son ->
-                                          fun (__strm :
-                                            _ Stream.t) ->
-                                           (try
-                                             (parser_of_tree entry nlevn
-                                               alevn ( (top_tree entry son) )
-                                               __strm)
-                                            with
-                                            Stream.Failure ->
-                                             (try
-                                               (skip_if_empty loc __strm)
-                                              with
-                                              Stream.Failure ->
-                                               (continue entry loc a s son (
-                                                 (parser_of_tree entry nlevn
-                                                   alevn son) ) __strm)))
-
+ fun parser_of_tree ->
+  fun entry ->
+   fun nlevn ->
+    fun alevn ->
+     fun loc ->
+      fun a ->
+       fun s ->
+        fun son ->
+         fun (__strm :
+           _ Stream.t) ->
+          (try
+            (parser_of_tree entry nlevn alevn ( (top_tree entry son) )
+              __strm)
+           with
+           Stream.Failure ->
+            (try (skip_if_empty loc __strm) with
+             Stream.Failure ->
+              (continue entry loc a s son (
+                (parser_of_tree entry nlevn alevn son) ) __strm)))
 
 let recover =
  fun parser_of_tree ->
@@ -252,7 +181,6 @@ let recover =
              )
             else () in
            (do_recover parser_of_tree entry nlevn alevn loc a s son strm)
-
 
 let rec parser_of_tree =
  fun entry ->
@@ -534,7 +462,6 @@ and parse_top_symb =
   fun symb ->
    fun strm -> (parser_of_symbol entry 0 ( (top_symb entry symb) ) strm)
 
-
 let rec start_parser_of_levels =
  fun entry ->
   fun clevn ->
@@ -574,16 +501,11 @@ let rec start_parser_of_levels =
                   | _ -> (p1 levn __strm))))
 
 let start_parser_of_entry =
-                                               fun entry ->
-                                                (match entry.edesc with
-                                                 | Dlevels ([]) ->
-                                                    (Tools.empty_entry (
-                                                      entry.ename ))
-                                                 | Dlevels (elev) ->
-                                                    (start_parser_of_levels
-                                                      entry 0 elev)
-                                                 | Dparser (p) -> fun _ -> p)
-
+ fun entry ->
+  (match entry.edesc with
+   | Dlevels ([]) -> (Tools.empty_entry ( entry.ename ))
+   | Dlevels (elev) -> (start_parser_of_levels entry 0 elev)
+   | Dparser (p) -> fun _ -> p)
 
 let rec continue_parser_of_levels =
  fun entry ->
@@ -614,32 +536,17 @@ let rec continue_parser_of_levels =
                  ((entry.econtinue) levn loc a strm)))
 
 let continue_parser_of_entry =
-                                                         fun entry ->
-                                                          (match
-                                                             entry.edesc with
-                                                           | Dlevels (elev) ->
-                                                              let p =
-                                                               (continue_parser_of_levels
-                                                                 entry 0
-                                                                 elev) in
-                                                              fun levn ->
-                                                               fun bp ->
-                                                                fun a ->
-                                                                 fun (__strm :
-                                                                   _ Stream.t) ->
-                                                                  (try
-                                                                    (p levn
-                                                                    bp a
-                                                                    __strm)
-                                                                   with
-                                                                   Stream.Failure ->
-                                                                    a)
-                                                           | Dparser (_) ->
-                                                              fun _ ->
-                                                               fun _ ->
-                                                                fun _ ->
-                                                                 fun (__strm :
-                                                                   _ Stream.t) ->
-                                                                  (raise
-                                                                    Stream.Failure
-                                                                    ))
+ fun entry ->
+  (match entry.edesc with
+   | Dlevels (elev) ->
+      let p = (continue_parser_of_levels entry 0 elev) in
+      fun levn ->
+       fun bp ->
+        fun a ->
+         fun (__strm :
+           _ Stream.t) ->
+          (try (p levn bp a __strm) with
+           Stream.Failure -> a)
+   | Dparser (_) ->
+      fun _ ->
+       fun _ -> fun _ -> fun (__strm : _ Stream.t) -> (raise Stream.Failure ))

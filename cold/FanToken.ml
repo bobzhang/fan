@@ -5,50 +5,29 @@ open LibUtil
 open FanSig
 
 type error =
-                                           Illegal_token of string
-                                         | Keyword_as_label of string
-                                         | Illegal_token_pattern of
-                                            (string * string)
-                                         | Illegal_constructor of string
-
+   Illegal_token of string
+ | Keyword_as_label of string
+ | Illegal_token_pattern of (string * string)
+ | Illegal_constructor of string
 
 exception TokenError of error
 
 let print_basic_error =
-                                fun ppf ->
-                                 function
-                                 | Illegal_token (s) ->
-                                    (fprintf ppf "Illegal token (%s)" s)
-                                 | Keyword_as_label (kwd) ->
-                                    (fprintf ppf
-                                      "`%s' is a keyword, it cannot be used as label name"
-                                      kwd)
-                                 | Illegal_token_pattern (p_con, p_prm) ->
-                                    (fprintf ppf
-                                      "Illegal token pattern: %s %S" p_con
-                                      p_prm)
-                                 | Illegal_constructor (con) ->
-                                    (fprintf ppf "Illegal constructor %S"
-                                      con)
+ fun ppf ->
+  function
+  | Illegal_token (s) -> (fprintf ppf "Illegal token (%s)" s)
+  | Keyword_as_label (kwd) ->
+     (fprintf ppf "`%s' is a keyword, it cannot be used as label name" kwd)
+  | Illegal_token_pattern (p_con, p_prm) ->
+     (fprintf ppf "Illegal token pattern: %s %S" p_con p_prm)
+  | Illegal_constructor (con) -> (fprintf ppf "Illegal constructor %S" con)
 
-let string_of_error_msg =
-                                             (to_string_of_printer
-                                               print_basic_error)
+let string_of_error_msg = (to_string_of_printer print_basic_error)
 
-let _ = 
-                                                                   (Printexc.register_printer
-                                                                    (
-                                                                    function
-                                                                    | TokenError
-                                                                    (e) ->
-                                                                    (
-                                                                    Some
-                                                                    (string_of_error_msg
-                                                                    e))
-                                                                    | 
-                                                                    _ ->
-                                                                    (None) ))
-
+let _ = (Printexc.register_printer (
+          function
+          | TokenError (e) -> (Some (string_of_error_msg e))
+          | _ -> (None) ))
 
 let to_string =
  function
@@ -77,67 +56,44 @@ let to_string =
  | (`LINE_DIRECTIVE (i, None)) -> (sprintf "`LINE_DIRECTIVE %d" i)
  | (`LINE_DIRECTIVE (i, Some (s))) -> (sprintf "`LINE_DIRECTIVE %d %S" i s)
 
-
 let token_to_string =
  function
  | (#token as x) -> (to_string x)
  | _ -> (invalid_arg "token_to_string not implemented for this token")
 
-
 let err =
  fun error ->
   fun loc -> (raise ( (FanLoc.Exc_located (loc, ( (TokenError (error)) ))) ))
-
 
 let error_no_respect_rules =
  fun p_con ->
   fun p_prm ->
    (raise ( (TokenError ((Illegal_token_pattern (p_con, p_prm)))) ))
 
-
 let check_keyword = fun _ -> (true)
 
-let error_on_unknown_keywords =
-                                      (ref false )
+let error_on_unknown_keywords = (ref false )
 
 let rec ignore_layout =
-                                                     fun (__strm :
-                                                       _ Stream.t) ->
-                                                      (match
-                                                         (Stream.peek __strm) with
-                                                       | Some
-                                                          (((((`COMMENT _)
-                                                              | (`BLANKS _))
-                                                             | `NEWLINE)
-                                                            | (`LINE_DIRECTIVE
-                                                               _)), _) ->
-                                                          (
-                                                          (Stream.junk
-                                                            __strm)
-                                                          );
-                                                          (ignore_layout
-                                                            __strm)
-                                                       | Some (x) ->
-                                                          (
-                                                          (Stream.junk
-                                                            __strm)
-                                                          );
-                                                          let s = __strm in
-                                                          (Stream.icons x (
-                                                            (Stream.slazy (
-                                                              fun _ ->
-                                                               (ignore_layout
-                                                                 s) )) ))
-                                                       | _ -> Stream.sempty)
-
+ fun (__strm :
+   _ Stream.t) ->
+  (match (Stream.peek __strm) with
+   | Some
+      (((((`COMMENT _) | (`BLANKS _)) | `NEWLINE) | (`LINE_DIRECTIVE _)), _) ->
+      ( (Stream.junk __strm) ); (ignore_layout __strm)
+   | Some (x) ->
+      (
+      (Stream.junk __strm)
+      );
+      let s = __strm in
+      (Stream.icons x ( (Stream.slazy ( fun _ -> (ignore_layout s) )) ))
+   | _ -> Stream.sempty)
 
 let print = fun ppf -> fun x -> (pp_print_string ppf ( (token_to_string x) ))
-
 
 let match_keyword =
  fun kwd ->
   function | (`KEYWORD kwd') when (kwd = kwd') -> (true) | _ -> (false)
-
 
 let extract_string =
  function
@@ -151,7 +107,6 @@ let extract_string =
     (invalid_arg (
       ("Cannot extract a string from this token: " ^ ( (to_string tok) )) ))
 
-
 let keyword_conversion =
  fun tok ->
   fun is_kwd ->
@@ -162,58 +117,38 @@ let keyword_conversion =
     | _ -> tok)
 
 let check_keyword_as_label =
-                  fun tok ->
-                   fun loc ->
-                    fun is_kwd ->
-                     let s =
-                      (match tok with
-                       | (`LABEL s) -> s
-                       | (`OPTLABEL s) -> s
-                       | _ -> "") in
-                     if (( (s <> "") ) && ( (is_kwd s) )) then
-                      (
-                      (err ( (Keyword_as_label (s)) ) loc)
-                      )
-                     else ()
+ fun tok ->
+  fun loc ->
+   fun is_kwd ->
+    let s = (match tok with | (`LABEL s) -> s | (`OPTLABEL s) -> s | _ -> "") in
+    if (( (s <> "") ) && ( (is_kwd s) )) then
+     (
+     (err ( (Keyword_as_label (s)) ) loc)
+     )
+    else ()
 
 let check_unknown_keywords =
-                               fun tok ->
-                                fun loc ->
-                                 (match tok with
-                                  | (`SYMBOL s) ->
-                                     (err ( (Illegal_token (s)) ) loc)
-                                  | _ -> ())
+ fun tok ->
+  fun loc ->
+   (match tok with
+    | (`SYMBOL s) -> (err ( (Illegal_token (s)) ) loc)
+    | _ -> ())
 
 module Filter =
-                                               struct
-                                                let mk =
-                                                 fun ~is_kwd ->
-                                                  {is_kwd = is_kwd;
-                                                   filter = ignore_layout}
-
-                                                let filter =
-                                                 fun x ->
-                                                  let f =
-                                                   fun (tok, loc) ->
-                                                    let tok =
-                                                     (keyword_conversion tok
-                                                       ( x.is_kwd )) in
-                                                    (tok, loc) in
-                                                  fun strm ->
-                                                   ((x.filter) (
-                                                     (Stream.map f strm) ))
-
-                                                let define_filter =
-                                                 fun x ->
-                                                  fun f ->
-                                                   x.filter <-
-                                                    (f ( x.filter ))
-
-                                                let keyword_added =
-                                                 fun _ ->
-                                                  fun _ -> fun _ -> ()
-
-                                                let keyword_removed =
-                                                 fun _ -> fun _ -> ()
-
-                                               end
+ struct
+  let mk = fun ~is_kwd -> {is_kwd = is_kwd; filter = ignore_layout}
+ 
+  let filter =
+   fun x ->
+    let f =
+     fun (tok, loc) ->
+      let tok = (keyword_conversion tok ( x.is_kwd )) in (tok, loc) in
+    fun strm -> ((x.filter) ( (Stream.map f strm) ))
+ 
+  let define_filter = fun x -> fun f -> x.filter <- (f ( x.filter ))
+ 
+  let keyword_added = fun _ -> fun _ -> fun _ -> ()
+ 
+  let keyword_removed = fun _ -> fun _ -> ()
+ 
+ end

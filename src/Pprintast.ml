@@ -22,30 +22,13 @@ open Lexing
 open Parsetree
 
 
-(* borrowed from printast.ml *)
-let fmt_position f l =
-  if l.pos_fname = "" && l.pos_lnum = 1
-  then fprintf f "%d" l.pos_cnum
-  else if l.pos_lnum = -1
-  then fprintf f "%s[%d]" l.pos_fname l.pos_cnum
-  else fprintf f "%s[%d,%d+%d]" l.pos_fname l.pos_lnum l.pos_bol
-               (l.pos_cnum - l.pos_bol)
-;;
-
-let fmt_location f loc =
-  fprintf f "(%a..%a)" fmt_position loc.loc_start fmt_position loc.loc_end;
-  if loc.loc_ghost then fprintf f " ghost";
-;;
 
 let line i f s (*...*) =
   fprintf f "%s" (String.make (2*i) ' ');
   fprintf f s (*...*)
-;;
 
-let label i ppf x = line i ppf "label=\"%s\"\n" x;;
 
-(* end borrowing *)
-
+let label i ppf x = line i ppf "label=\"%s\"@\n" x;;
 
 let indent    = 1 ;; (* standard indentation increment *)
 let bar_on_first_case = true ;;
@@ -202,7 +185,7 @@ let list f ppf l =
   List.iteri (fun i fmt ->
     f ppf fmt;
     if i < n-1 then
-      Format.fprintf ppf "\n")
+      Format.fprintf ppf "@\n")
     l;;
 
 (* List2 - applies f to each element in list l, placing break hints
@@ -278,7 +261,7 @@ let option f ppf x = (* DELETE *)
   match x with
   | None -> () ;
   | Some x ->
-      line 0 ppf "Some\n";
+      line 0 ppf "Some@\n";
       f ppf x;
 ;;
 
@@ -362,8 +345,6 @@ let rec core_type ppf x =
           fprintf ppf " >" ;
           pp_close_box ppf () ;
         end else fprintf ppf "< >" ;
-(* line i ppf "Ptyp_object\n";
-         list i core_field_type ppf l; *)
   | Ptyp_class (li, l, low) ->           (* done... sort of *)
       pp_open_hovbox ppf indent ;
       list2 core_type ppf l ~breaklast:true "" ;
@@ -374,9 +355,6 @@ let rec core_type ppf x =
           fprintf ppf " ]";
         end ;
       pp_close_box ppf ();
-(* line i ppf "Ptyp_class %a\n" fmt_longident li;
-         list i core_type ppf l;
-         list i string ppf low *)
   | Ptyp_alias (ct, s) ->                (* done *)
       pp_open_hovbox ppf indent ;
       fprintf ppf "(" ;
@@ -1487,14 +1465,8 @@ and signature_item ppf x =
         string_x_module_type_list ppf decls ; (* closes hov box *)
         pp_close_box ppf () ;
   end;
-  fprintf ppf "\n"
+  fprintf ppf "@\n"
 
-and modtype_declaration ppf x =
-  match x with
-  | Pmodtype_abstract -> line 0 ppf "Pmodtype_abstract\n";
-  | Pmodtype_manifest (mt) ->
-      line 0 ppf "Pmodtype_manifest\n";
-      module_type ppf mt;
 
 and module_expr ppf x =
   match x.pmod_desc with
@@ -1747,7 +1719,7 @@ and structure_item ppf x =
         pp_close_box ppf () ;
         pp_close_box ppf () ;
   end;
-  fprintf ppf "\n"
+  fprintf ppf "@\n"
 
 and type_def_list_helper ppf l =
   match l with
@@ -2155,9 +2127,6 @@ and string_x_core_type_list ppf (s, l) =
   string ppf s;
   list core_type ppf l;
 
-and string_list_x_location ppf (l, loc) =
-  line 0 ppf "<params> %a\n" fmt_location loc;
-  list string ppf l;
 
 and pattern_x_expression_case_single ppf (p, e) eo lbl =
   (match eo with

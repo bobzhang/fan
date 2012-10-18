@@ -7,7 +7,7 @@ module Camlp4Bin
      (PreCast:Sig.PRECAST)
     =struct
       (* open PreCast; *)
-      let printers : Hashtbl.t string (module Sig.PRECAST_PLUGIN) =
+      let printers : (Hashtbl.t string (module Sig.PRECAST_PLUGIN)) =
         Hashtbl.create 30;
       (* let dyn_loader = ref (fun () -> failwith "empty in dynloader"); *)
       let rcall_callback = ref (fun () -> ());

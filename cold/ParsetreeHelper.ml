@@ -6,106 +6,46 @@ open LibUtil
 
 open Location
 
-let with_loc =
-                                                              fun txt ->
-                                                               fun loc ->
-                                                                (Location.mkloc
-                                                                  txt loc)
-
+let with_loc = fun txt -> fun loc -> (Location.mkloc txt loc)
 
 let lident = fun s -> (Lident (s))
 
-let lident_with_loc =
-                                     fun s ->
-                                      fun loc ->
-                                       (with_loc ( (Lident (s)) ) loc)
-
+let lident_with_loc = fun s -> fun loc -> (with_loc ( (Lident (s)) ) loc)
 
 let ldot = fun l -> fun s -> (Ldot (l, s))
 
-let lapply =
-                                             fun l ->
-                                              fun s -> (Lapply (l, s))
-
+let lapply = fun l -> fun s -> (Lapply (l, s))
 
 let mkghloc = fun loc -> (FanLoc.ghostify loc)
 
-let error =
-                                                 fun loc ->
-                                                  fun str ->
-                                                   (FanLoc.raise loc (
-                                                     (Failure (str)) ))
-
+let error = fun loc -> fun str -> (FanLoc.raise loc ( (Failure (str)) ))
 
 let mksig = fun loc -> fun d -> {psig_desc = d; psig_loc = loc}
 
-let mkmod =
-                                                                  fun loc ->
-                                                                   fun d ->
-                                                                    {pmod_desc =
-                                                                    d;
-                                                                    pmod_loc =
-                                                                    loc}
-
+let mkmod = fun loc -> fun d -> {pmod_desc = d; pmod_loc = loc}
 
 let mkexp = fun loc -> fun d -> {pexp_desc = d; pexp_loc = loc}
 
-let mkstr =
-                                                                  fun loc ->
-                                                                   fun d ->
-                                                                    {pstr_desc =
-                                                                    d;
-                                                                    pstr_loc =
-                                                                    loc}
-
+let mkstr = fun loc -> fun d -> {pstr_desc = d; pstr_loc = loc}
 
 let mkfield = fun loc -> fun d -> {pfield_desc = d; pfield_loc = loc}
 
-
 let mkcty = fun loc -> fun d -> {pcty_desc = d; pcty_loc = loc}
 
-let mkcl =
-                                                                  fun loc ->
-                                                                   fun d ->
-                                                                    {pcl_desc =
-                                                                    d;
-                                                                    pcl_loc =
-                                                                    loc}
-
+let mkcl = fun loc -> fun d -> {pcl_desc = d; pcl_loc = loc}
 
 let mkcf = fun loc -> fun d -> {pcf_desc = d; pcf_loc = loc}
 
-let mkctf =
-                                                               fun loc ->
-                                                                fun d ->
-                                                                 {pctf_desc =
-                                                                   d;
-                                                                  pctf_loc =
-                                                                   loc}
-
+let mkctf = fun loc -> fun d -> {pctf_desc = d; pctf_loc = loc}
 
 let mktyp = fun loc -> fun d -> {ptyp_desc = d; ptyp_loc = loc}
 
-let mkpat =
-                                                                  fun loc ->
-                                                                   fun d ->
-                                                                    {ppat_desc =
-                                                                    d;
-                                                                    ppat_loc =
-                                                                    loc}
-
+let mkpat = fun loc -> fun d -> {ppat_desc = d; ppat_loc = loc}
 
 let mkghpat =
  fun loc -> fun d -> {ppat_desc = d; ppat_loc = ( (mkghloc loc) )}
 
-let mkmty =
-                                                                    fun loc ->
-                                                                    fun d ->
-                                                                    {pmty_desc =
-                                                                    d;
-                                                                    pmty_loc =
-                                                                    loc}
-
+let mkmty = fun loc -> fun d -> {pmty_desc = d; pmty_loc = loc}
 
 let mkpolytype =
  fun t ->
@@ -114,23 +54,14 @@ let mkpolytype =
    | _ -> {t with ptyp_desc = ( (Ptyp_poly ([] , t)) )})
 
 let array_function_no_loc =
-                                                           fun str ->
-                                                            fun name ->
-                                                             (ldot (
-                                                               (lident str) )
-                                                               (
-                                                               if FanConfig.unsafe.contents then
-                                                                (
-                                                                ("unsafe_" ^
-                                                                  name)
-                                                                )
-                                                               else name ))
-
+ fun str ->
+  fun name ->
+   (ldot ( (lident str) ) (
+     if FanConfig.unsafe.contents then ( ("unsafe_" ^ name) ) else name ))
 
 let array_function =
  fun loc ->
   fun str -> fun name -> (with_loc ( (array_function_no_loc str name) ) loc)
-
 
 let mkli =
  fun sloc ->
@@ -144,7 +75,6 @@ let mkli =
      | (x :: y :: z) ->
         (List.fold_left ldot ( (ldot ( (lident x) ) y) ) ( (z @ ( [s] )) )) in
     (with_loc ( (aux ( (List.filter ( fun s -> (s <> "") ) list) )) ) sloc)
-
 
 let varify_constructors =
  fun var_names ->
