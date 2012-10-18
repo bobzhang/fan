@@ -22,14 +22,6 @@ open Lexing
 open Parsetree
 
 
-
-let line i f s (*...*) =
-  fprintf f "%s" (String.make (2*i) ' ');
-  fprintf f s (*...*)
-
-
-let label i ppf x = line i ppf "label=\"%s\"@\n" x;;
-
 let indent    = 1 ;; (* standard indentation increment *)
 let bar_on_first_case = true ;;
 
@@ -43,28 +35,22 @@ let bar_on_first_case = true ;;
 
 let prefix_symbols  = [ '!'; '?'; '~' ] ;;
 let infix_symbols = [ '='; '<'; '>'; '@'; '^'; '|'; '&'; '+'; '-';
-                       '*'; '/'; '$'; '%' ] ;;
+                       '*'; '/'; '$'; '%' ] 
 let operator_chars = [ '!'; '$'; '%'; '&'; '*'; '+'; '-'; '.'; '/';
-                       ':'; '<'; '='; '>'; '?'; '@'; '^'; '|'; '~' ] ;;
-let numeric_chars  = [ '0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9' ] ;;
+                       ':'; '<'; '='; '>'; '?'; '@'; '^'; '|'; '~' ] 
+let numeric_chars  = [ '0'; '1'; '2'; '3'; '4'; '5'; '6'; '7'; '8'; '9' ] 
 
 type fixity =
   | Infix
-  | Prefix ;;
+  | Prefix 
 
 let is_infix fx =
   match fx with
   | Infix  -> true
-  | Prefix -> false ;;
+  | Prefix -> false 
 
 let special_infix_strings =
-  ["asr"; "land"; "lor"; "lsl"; "lsr"; "lxor"; "mod"; "or"; ":="; "!=" ] ;;
-
-
-(*
-let is_special_infix_string s =
-   List.exists (fun x -> (x = s)) special_infix_strings ;;
-*)
+  ["asr"; "land"; "lor"; "lsl"; "lsr"; "lxor"; "mod"; "or"; ":="; "!=" ] 
 
 let is_in_list e l = List.exists (fun x -> (x = e)) l
 
@@ -257,13 +243,6 @@ let fmt_private_flag f x =
   | Private -> fprintf f "private ";
 ;;
 
-let option f ppf x = (* DELETE *)
-  match x with
-  | None -> () ;
-  | Some x ->
-      line 0 ppf "Some@\n";
-      f ppf x;
-;;
 
 let option_quiet_p f ppf x =
   match x with
@@ -822,7 +801,6 @@ and expression ppf x =
   | Pexp_sequence (e1, e2) ->
       fprintf ppf "@[<hv 0>begin" ;
       pp_print_break ppf 1 indent ;
-(* "@;<1 2>" ; *)
       expression_sequence ppf ~first:false x ;
       fprintf ppf "@;<1 0>end@]" ;
   | Pexp_constraint (e, cto1, cto2) ->
@@ -1155,11 +1133,11 @@ and class_expr ppf x =
         | (None, "") -> () ;
         | (_,_) ->
             pp_open_hovbox ppf indent;
-            fprintf ppf " (* eo: ";
-            option expression ppf eo;
-            fprintf ppf "@ label: ";
-            label 0 ppf l;
-            fprintf ppf " *)";
+            (* fprintf ppf " (\* eo: "; *)
+            (* option expression ppf eo; *)
+            (* fprintf ppf "@ label: "; *)
+            (* label 0 ppf l; *)
+            (* fprintf ppf " *\)"; *)
             pp_close_box ppf ()
       );
       fprintf ppf "@ ";
