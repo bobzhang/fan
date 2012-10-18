@@ -50,7 +50,7 @@ let formatter =
        (
        (output_char out_channel ch)
        );
-       (( at_bol.contents ) := ( (ch = '\010') ))
+       (( at_bol.contents ) := ( (ch = '\n') ))
       done ) ( fun ()  -> (flush out_channel) ))
 
 let printf =

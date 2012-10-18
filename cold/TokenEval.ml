@@ -11,14 +11,14 @@ let rec skip_indent =
  fun (__strm :
    _ Stream.t) ->
   (match (Stream.peek __strm) with
-   | Some (' ' | '\009') -> ( (Stream.junk __strm) ); (skip_indent __strm)
+   | Some (' ' | '\t') -> ( (Stream.junk __strm) ); (skip_indent __strm)
    | _ -> ())
 
 let skip_opt_linefeed =
  fun (__strm :
    _ Stream.t) ->
   (match (Stream.peek __strm) with
-   | Some ('\010') -> ( (Stream.junk __strm) ); ()
+   | Some ('\n') -> ( (Stream.junk __strm) ); ()
    | _ -> ())
 
 let chr =
@@ -30,12 +30,12 @@ let backslash =
  fun (__strm :
    _ Stream.t) ->
   (match (Stream.peek __strm) with
-   | Some (((((('\010' | '\013') | '\\') | '\'') | ' ') | '"') as x) ->
+   | Some (((((('\n' | '\r') | '\\') | '\'') | ' ') | '"') as x) ->
       ( (Stream.junk __strm) ); x
-   | Some ('n') -> ( (Stream.junk __strm) ); '\010'
-   | Some ('r') -> ( (Stream.junk __strm) ); '\013'
-   | Some ('t') -> ( (Stream.junk __strm) ); '\009'
-   | Some ('b') -> ( (Stream.junk __strm) ); '\008'
+   | Some ('n') -> ( (Stream.junk __strm) ); '\n'
+   | Some ('r') -> ( (Stream.junk __strm) ); '\r'
+   | Some ('t') -> ( (Stream.junk __strm) ); '\t'
+   | Some ('b') -> ( (Stream.junk __strm) ); '\b'
    | Some
       (('0'
         | ('1' | ('2' | ('3' | ('4' | ('5' | ('6' | ('7' | ('8' | '9'))))))))) as
@@ -104,8 +104,8 @@ let backslash_in_string =
    fun (__strm :
      _ Stream.t) ->
     (match (Stream.peek __strm) with
-     | Some ('\010') -> ( (Stream.junk __strm) ); (skip_indent __strm)
-     | Some ('\013') ->
+     | Some ('\n') -> ( (Stream.junk __strm) ); (skip_indent __strm)
+     | Some ('\r') ->
         (
         (Stream.junk __strm)
         );

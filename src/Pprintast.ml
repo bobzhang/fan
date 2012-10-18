@@ -86,6 +86,56 @@ let fixity_of_exp e =
 *)
       | _ -> Prefix ;;
 
+let pp_print_list  ?(indent=0) ?(breakfirst=false) ?(breaklast=false) ?(space=1) ~sep
+    f ppf xs =
+  let rec loop bf  = function
+    | [] -> ()
+    | [x] -> begin 
+        if bf then pp_print_break ppf space indent ;
+        fprintf ppf "%a" f x;
+        if breaklast then pp_print_break ppf space indent
+    end
+    | x::xs -> begin
+        if bf then pp_print_break ppf space indent ;
+        fprintf ppf "%a" f x ;
+        sep ppf ();
+        pp_print_break ppf space indent;
+        loop false xs 
+    end in
+  loop breakfirst xs 
+
+class indent = object(self:'self)
+  method longident ppf (x:Longident.t) = match x with
+    | Longident.Lident s -> fprintf ppf "%s" s
+    | Longident.Ldot(y,s) -> (match s.[0] with
+          | 'a'..'z' | 'A' .. 'Z' ->
+              fprintf ppf "%a.%s" self#longident y s
+          | _ ->
+              fprintf ppf "%a.(@ %s@ )@ " self#longident y s)
+    | Longident.Lapply (y,s)->
+        fprintf ppf "%a(%a)" self#longident y self#longident s
+  method longident_loc ppf ({txt;_}:Longident.t Location.loc) =
+    fprintf ppf "%a" self#longident txt
+  method constant ppf x = match x with
+  | Const_int i -> fprintf ppf "%d" i
+
+  | Const_char i -> fprintf ppf "%C"  i 
+  | Const_string i -> fprintf ppf "%S" i
+  | Const_float  i -> fprintf ppf "%s" i 
+  | Const_int32 i -> fprintf ppf "%ldl" i
+  | Const_int64 i -> fprintf ppf "%LdL" i
+  | Const_nativeint i -> fprintf ppf "%ndn" i
+  method mutable_flag ppf x  = match x with
+  | Immutable -> ()
+  | Mutable -> fprintf ppf "mutable"
+  method virtual_flag ppf x = match x with
+  | Concrete -> ()
+  | Virtual -> fprintf ppf "virtual"
+  (* method list ppf f l =  *)
+end;;
+
+
+
 let rec fmt_longident_aux f x =
   match x with
   | Longident.Lident s -> fprintf f "%s" s;
@@ -110,23 +160,12 @@ let rec fmt_longident_aux f x =
 
 let fmt_longident ppf x = fprintf ppf "%a" fmt_longident_aux x.txt;;
 
-let fmt_char f c =
-  let i = int_of_char c in
-  if (i < 32) || (i >= 128) then
-    fprintf f "'\\%03d'" (Char.code c)
-  else
-  match c with
-    '\'' | '\\' ->
-      fprintf f "'\\%c'" c
-  | _ ->
-    fprintf f "'%c'" c;;
-
 let fmt_constant f x =
   match x with
   | Const_int (i) ->
       if (i < 0) then fprintf f "(%d)" i
       else fprintf f "%d" i;
-  | Const_char (c) -> fprintf f "%a" fmt_char c ;
+  | Const_char (c) -> fprintf f "%C" (* fmt_char *) c ;
   | Const_string (s) ->
       fprintf f "%S" s;
   | Const_float (s) ->
@@ -1371,9 +1410,9 @@ and module_type ppf x =
       module_expr ppf me ;
       pp_close_box ppf ()
 
-and signature ppf x = list signature_item ppf x
+and signature ppf x = (* list *) pp_print_list ~sep:pp_print_newline signature_item ppf x
 
-and signature_item ppf x =
+and signature_item ppf x :unit=
   begin
     match x.psig_desc with
     | Psig_type (l) ->
@@ -2101,9 +2140,6 @@ and directive_argument ppf x =
   | Pdir_ident (li) -> fprintf ppf "@ %a" fmt_longident_aux li;
   | Pdir_bool (b) -> fprintf ppf "@ %s" (string_of_bool b);
 
-and string_x_core_type_list ppf (s, l) =
-  string ppf s;
-  list core_type ppf l;
 
 
 and pattern_x_expression_case_single ppf (p, e) eo lbl =
