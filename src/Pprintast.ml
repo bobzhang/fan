@@ -92,9 +92,10 @@ let pp_print_list
     ?(indent=0) ?(breakfirst=false) ?(breaklast=false) ?(space=1)
     ?(sep_action=fun ppf _ -> fprintf ppf "@ ")
     ?sep
-
+    ?(first="")
+    ?(last="")
     f ppf xs =
-  let rec loop bf  = function
+  let rec loop bf ppf  = function
     | [] -> ()
     | [x] -> begin 
         if bf then pp_print_break ppf space indent ;
@@ -111,14 +112,19 @@ let pp_print_list
             fprintf ppf "%s" sep;
             sep_action ppf ();
         end);
-        loop false xs 
-    end in
-  loop breakfirst xs 
-
+        loop false ppf xs 
+    end in begin
+      fprintf ppf "%s%a%s@ " first (loop breakfirst) xs last 
+    end
+    
+let pp_print_option f ppf a = match a with
+| None -> ()
+| Some x -> fprintf ppf "%a" f x
+      
 class _indent= object(self:'self)
   method longident ppf (x:Longident.t) = match x with
-    | Longident.Lident s -> fprintf ppf "%s" s
-    | Longident.Ldot(y,s) -> (match s.[0] with
+    | Lident s -> fprintf ppf "%s" s
+    | Ldot(y,s) -> (match s.[0] with
           | 'a'..'z' | 'A' .. 'Z' ->
               fprintf ppf "%a.%s" self#longident y s
           | _ ->
@@ -136,12 +142,21 @@ class _indent= object(self:'self)
   | Const_int32 i -> fprintf ppf "%ldl" i
   | Const_int64 i -> fprintf ppf "%LdL" i
   | Const_nativeint i -> fprintf ppf "%ndn" i
-  method mutable_flag ppf x  = match x with
-  | Immutable -> ()
-  | Mutable -> fprintf ppf "mutable"
-  method virtual_flag ppf x = match x with
-  | Concrete -> ()
-  | Virtual -> fprintf ppf "virtual"
+  method mutable_flag ppf   = function
+    | Immutable -> ()
+    | Mutable -> fprintf ppf "mutable@ "
+  method virtual_flag ppf  = function
+    | Concrete -> ()
+    | Virtual -> fprintf ppf "virtual@ "
+  method rec_flag ppf = function
+    | Nonrecursive -> ()
+    | Recursive | Default -> fprintf ppf "rec@ "
+  method direction_flag ppf = function
+    | Upto -> fprintf ppf "to@ "
+    | Downto -> fprintf ppf "downto@ "
+  method private_flag ppf = function
+    | Public -> ()
+    | Private -> fprintf ppf "private@ "
 end;;
 
 
@@ -225,27 +240,14 @@ let type_var_option_print ppf str =
     | Some str ->
       fprintf ppf "'%s" str.txt ;;
 
-let fmt_class_params ppf (l, _loc) =
-  let length = (List.length l) in
-  if (length = 0) then ()
-  else if (length = 1) then
-    fprintf ppf "%s@ " (List.hd l)
-  else begin
-    fprintf ppf "(" ;
-    (* list2 string ppf l "," ; *)
-    pp_print_list pp_print_string ppf l ~sep:","  ;
-    fprintf ppf ")@ " ;
-  end ;;
+let fmt_class_params ppf l = match l with
+| [] -> ()
+| [x] -> fprintf ppf "%s@ " x
+| _ ->  pp_print_list pp_print_string ppf l ~sep:"," ~first:"(" ~last:")"
 
-let fmt_class_params_def ppf (l, _loc) =
-  let length = (List.length l) in
-  if (length = 0) then ()
-  else begin
-    fprintf ppf "[" ;
-    (* list2 type_var_print ppf l "," ; *)
-    pp_print_list type_var_print ppf l ~sep:"," ;
-    fprintf ppf "]@ ";
-  end ;;
+let fmt_class_params_def ppf  l = match l with
+| [] -> ()
+| _ -> pp_print_list type_var_print ppf l ~sep:"," ~first:"[" ~last:"]"
 
 let fmt_rec_flag f x =
   match x with
@@ -264,20 +266,19 @@ let fmt_direction_flag ppf x =
 
 let fmt_private_flag f x =
   match x with
-  | Public -> () ; (* fprintf f "Public"; *)
-  | Private -> fprintf f "private ";
-;;
+  | Public -> () 
+  | Private -> fprintf f "private "
 
 
-let option_quiet_p f ppf x =
-  match x with
-  | None -> ();
-  | Some x ->
+
+let option_quiet_p f ppf x = match x with
+  | None -> ()
+  | Some x -> begin 
       fprintf ppf "@ (" ;
       f ppf x;
       fprintf ppf ")";
+  end
 ;;
-
 let option_quiet f ppf x =
   match x with
   | None -> ();
@@ -288,9 +289,9 @@ let option_quiet f ppf x =
 
 let rec expression_is_terminal_list exp =
   match exp with
-  | {pexp_desc = Pexp_construct ({ txt = Longident.Lident("[]");_}, None, _);_}
+  | {pexp_desc = Pexp_construct ({ txt = Lident("[]");_}, None, _);_}
      -> true ;
-  | {pexp_desc = Pexp_construct ({ txt = Longident.Lident("::");_},
+  | {pexp_desc = Pexp_construct ({ txt = Lident("::");_},
                    Some({pexp_desc = Pexp_tuple([_exp1 ; exp2]);_}), _);_}
      -> (expression_is_terminal_list exp2)
   | {pexp_desc = _;_}
@@ -793,7 +794,8 @@ and expression ppf x =
                       simple_expr ppf exp1 ;
                       expression_list_helper ppf exp2 ;
                       fprintf ppf "]" ;
-                    end else begin
+                    end
+                  else begin
                       pp_open_hovbox ppf indent ;
                       fprintf ppf "(@ ";
                       simple_expr ppf exp1 ;
@@ -1132,11 +1134,11 @@ and class_type_field ppf x =
       core_type ppf ct2;
       pp_close_box ppf () ;
 
-and class_description ppf x =
+and class_description ppf ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
   pp_open_hvbox ppf 0 ;
   pp_open_hovbox ppf indent ;
   fprintf ppf "class %a%a%s :" fmt_virtual_flag x.pci_virt
-    fmt_class_params_def x.pci_params x.pci_name.txt ;
+    fmt_class_params_def ls txt ;
   pp_close_box ppf () ;
   pp_print_break ppf 1 indent ;
   class_type ppf x.pci_expr ;
@@ -1145,12 +1147,12 @@ and class_description ppf x =
 and class_type_declaration ppf x =
   class_type_declaration_ext ppf true x ;
 
-and class_type_declaration_ext ppf first x =
+and class_type_declaration_ext ppf first ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
   pp_open_hvbox ppf 0;
   pp_open_hovbox ppf indent ;
   fprintf ppf "%s@ %a%a%s =" (if (first) then "class type" else "and")
-  fmt_virtual_flag x.pci_virt fmt_class_params_def x.pci_params
-    x.pci_name.txt ;
+  fmt_virtual_flag x.pci_virt fmt_class_params_def ls
+    txt ;
   pp_close_box ppf ();
   pp_print_break ppf 1 indent ;
   class_type ppf x.pci_expr;
@@ -1365,11 +1367,11 @@ and class_declaration_list ppf ?(first=true) l =
       class_declaration ppf ~str:s cd ;
       class_declaration_list ppf ~first:false l ;
 
-and class_declaration ppf ?(str="class") x =
+and class_declaration ppf ?(str="class") ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
   pp_open_hvbox ppf indent ;
   pp_open_hovbox ppf indent ;
   fprintf ppf "%s %a%a%s@ " str fmt_virtual_flag x.pci_virt
-    fmt_class_params_def x.pci_params x.pci_name.txt ;
+    fmt_class_params_def ls txt ;
   let ce =
     (match x.pci_expr.pcl_desc with
       | Pcl_fun (_l, _eo, _p, _e) ->
