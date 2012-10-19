@@ -1,31 +1,26 @@
 let valch = fun x -> (( (Char.code x) ) - ( (Char.code '0') ))
-
 let valch_hex =
  fun x ->
   let d = (Char.code x) in
   if (d >= 97) then ( (d - 87) )
   else if (d >= 65) then ( (d - 55) )
   else (d - 48)
-
 let rec skip_indent =
  fun (__strm :
    _ Stream.t) ->
   (match (Stream.peek __strm) with
    | Some (' ' | '\t') -> ( (Stream.junk __strm) ); (skip_indent __strm)
    | _ -> ())
-
 let skip_opt_linefeed =
  fun (__strm :
    _ Stream.t) ->
   (match (Stream.peek __strm) with
    | Some ('\n') -> ( (Stream.junk __strm) ); ()
    | _ -> ())
-
 let chr =
  fun c ->
   if (( (c < 0) ) || ( (c > 255) )) then ( (failwith "invalid char token") )
   else (Char.chr c)
-
 let backslash =
  fun (__strm :
    _ Stream.t) ->
@@ -97,7 +92,6 @@ let backslash =
            | _ -> (raise ( (Stream.Error ("")) )))
        | _ -> (raise ( (Stream.Error ("")) )))
    | _ -> (raise Stream.Failure ))
-
 let backslash_in_string =
  fun strict ->
   fun store ->
@@ -120,7 +114,6 @@ let backslash_in_string =
              | Some (c) when (not strict) ->
                 ( (Stream.junk __strm) ); ( (store '\\') ); (store c)
              | _ -> (failwith "invalid string token"))))
-
 let char =
  fun s ->
   if (( (String.length s) ) = 1) then ( (String.get s 0) )
@@ -138,7 +131,6 @@ let char =
        (try (backslash __strm) with
         Stream.Failure -> (raise ( (Stream.Error ("")) )))
     | _ -> (failwith "invalid char token"))
-
 let string =
  fun ?strict ->
   fun s ->

@@ -1,32 +1,28 @@
 open Structure
-
 open Format
-
-let name_of_descr = function | (`Antiquot, s) -> ("$" ^ s) | (_, s) -> s
-
+let name_of_descr = function | (`Antiquot , s) -> ("$" ^ s) | (_ , s) -> s
 let name_of_symbol =
  fun entry ->
   function
   | (`Snterm e) -> ("[" ^ ( (( e.ename ) ^ "]") ))
-  | (`Snterml (e, l)) ->
+  | (`Snterml (e , l)) ->
      ("[" ^ ( (( e.ename ) ^ ( (" level " ^ ( (l ^ "]") )) )) ))
   | (`Sself | `Snext) -> ("[" ^ ( (( entry.ename ) ^ "]") ))
-  | (`Stoken (_, descr)) -> (name_of_descr descr)
+  | (`Stoken (_ , descr)) -> (name_of_descr descr)
   | (`Skeyword kwd) -> ("\"" ^ ( (kwd ^ "\"") ))
   | _ -> "???"
-
 let rec name_of_symbol_failed =
  fun entry ->
   function
-  | ((((((`Slist0 s) | (`Slist0sep (s, _))) | (`Slist1 s))
-       | (`Slist1sep (s, _))) | (`Sopt s)) | (`Stry s)) ->
+  | ((((((`Slist0 s) | (`Slist0sep (s , _))) | (`Slist1 s))
+       | (`Slist1sep (s , _))) | (`Sopt s)) | (`Stry s)) ->
      (name_of_symbol_failed entry s)
   | (`Stree t) -> (name_of_tree_failed entry t)
   | s -> (name_of_symbol entry s)
 and name_of_tree_failed =
  fun entry ->
   function
-  | Node ({node = s; brother = bro; son = son}) ->
+  | Node ({node = s ; brother = bro ; son = son}) ->
      let tokl =
       (match s with
        | ((`Stoken _) | (`Skeyword _)) ->
@@ -36,29 +32,27 @@ and name_of_tree_failed =
       | None ->
          let txt = (name_of_symbol_failed entry s) in
          let txt =
-          (match (s, son) with
-           | ((`Sopt _), Node (_)) ->
+          (match (s , son) with
+           | ((`Sopt _) , Node (_)) ->
               (txt ^ ( (" or " ^ ( (name_of_tree_failed entry son) )) ))
            | _ -> txt) in
          let txt =
           (match bro with
-           | (DeadEnd | LocAct (_, _)) -> txt
+           | (DeadEnd | LocAct (_ , _)) -> txt
            | Node (_) ->
               (txt ^ ( (" or " ^ ( (name_of_tree_failed entry bro) )) ))) in
          txt
-      | Some (tokl, _, _) ->
+      | Some (tokl , _ , _) ->
          (List.fold_left (
            fun s ->
             fun tok ->
              (( if (s = "") then "" else (s ^ " then ") ) ^ (
                (match tok with
-                | (`Stoken (_, descr)) -> (name_of_descr descr)
+                | (`Stoken (_ , descr)) -> (name_of_descr descr)
                 | (`Skeyword kwd) -> kwd
                 | _ -> assert false) )) ) "" tokl))
-  | (DeadEnd | LocAct (_, _)) -> "???"
-
+  | (DeadEnd | LocAct (_ , _)) -> "???"
 let magic = fun _s -> fun x -> (Obj.magic x)
-
 let tree_failed =
  fun entry ->
   fun prev_symb_result ->
@@ -73,7 +67,7 @@ let tree_failed =
        | (`Slist1 s) ->
           let txt1 = (name_of_symbol_failed entry s) in
           (txt1 ^ ( (" or " ^ ( (txt ^ " expected") )) ))
-       | (`Slist0sep (s, sep)) ->
+       | (`Slist0sep (s , sep)) ->
           (match (magic "tree_failed: 'a -> list 'b" prev_symb_result) with
            | [] ->
               let txt1 = (name_of_symbol_failed entry s) in
@@ -81,7 +75,7 @@ let tree_failed =
            | _ ->
               let txt1 = (name_of_symbol_failed entry sep) in
               (txt1 ^ ( (" or " ^ ( (txt ^ " expected") )) )))
-       | (`Slist1sep (s, sep)) ->
+       | (`Slist1sep (s , sep)) ->
           (match (magic "tree_failed: 'a -> list 'b" prev_symb_result) with
            | [] ->
               let txt1 = (name_of_symbol_failed entry s) in
@@ -124,13 +118,11 @@ let tree_failed =
      else ()
      );
      (txt ^ ( (" (in [" ^ ( (( entry.ename ) ^ "])") )) ))
-
 let symb_failed =
  fun entry ->
   fun prev_symb_result ->
    fun prev_symb ->
     fun symb ->
-     let tree = (Node ({node = symb; brother = DeadEnd ; son = DeadEnd })) in
+     let tree = (Node ({node = symb ; brother = DeadEnd  ; son = DeadEnd })) in
      (tree_failed entry prev_symb_result prev_symb tree)
-
 let symb_failed_txt = fun e -> fun s1 -> fun s2 -> (symb_failed e 0 s1 s2)

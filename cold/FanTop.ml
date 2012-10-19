@@ -1,23 +1,21 @@
 module P = (MakePreCast.Make)(struct end)
-
 open P
-
 let wrap =
  fun parse_fun ->
   fun lb ->
-   let () = (iter_and_take_callbacks ( fun (_, f) -> (f () ) )) in
+   let () = (iter_and_take_callbacks ( fun (_ , f) -> (f () ) )) in
    let not_filtered_token_stream = (FanLexer.from_lexbuf lb) in
    let token_stream = (Gram.filter not_filtered_token_stream) in
    (try
      let (__strm : _ Stream.t) = token_stream in
      (match (Stream.peek __strm) with
-      | Some (`EOI, _) -> ( (Stream.junk __strm) ); (raise End_of_file )
+      | Some (`EOI , _) -> ( (Stream.junk __strm) ); (raise End_of_file )
       | _ -> (parse_fun token_stream))
     with
     | (((End_of_file | Sys.Break)
-        | FanLoc.Exc_located (_, (End_of_file | Sys.Break))) as x) ->
+        | FanLoc.Exc_located (_ , (End_of_file | Sys.Break))) as x) ->
        (raise x)
-    | FanLoc.Exc_located (loc, y) ->
+    | FanLoc.Exc_located (loc , y) ->
        (
        (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
          (Printexc.to_string y) ))
@@ -28,7 +26,6 @@ let wrap =
        (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ))
        );
        (raise Exit ))
-
 let toplevel_phrase =
  fun token_stream ->
   (match
@@ -40,25 +37,24 @@ let toplevel_phrase =
          fun t -> fun filter -> (filter t) ) str_item) in
       (Ast2pt.phrase str_item)
    | None -> (raise End_of_file ))
-
 let use_file =
  fun token_stream ->
-  let (pl0, eoi) =
+  let (pl0 , eoi) =
    let rec loop =
     fun ()
       ->
-     let (pl, stopped_at_directive) =
+     let (pl , stopped_at_directive) =
       (Gram.parse_origin_tokens Syntax.use_file token_stream) in
      if (stopped_at_directive <> None ) then
       (
       (match pl with
-       | (Ast.StDir (_, "load", Ast.ExStr (_, s)) :: []) ->
+       | (Ast.StDir (_ , "load" , Ast.ExStr (_ , s)) :: []) ->
           ( (Topdirs.dir_load Format.std_formatter s) ); (loop () )
-       | (Ast.StDir (_, "directory", Ast.ExStr (_, s)) :: []) ->
+       | (Ast.StDir (_ , "directory" , Ast.ExStr (_ , s)) :: []) ->
           ( (Topdirs.dir_directory s) ); (loop () )
-       | _ -> (pl, false ))
+       | _ -> (pl , false ))
       )
-     else (pl, true ) in
+     else (pl , true ) in
    (loop () ) in
   let pl =
    if eoi then [] 
@@ -66,15 +62,13 @@ let use_file =
     let rec loop =
      fun ()
        ->
-      let (pl, stopped_at_directive) =
+      let (pl , stopped_at_directive) =
        (Gram.parse_origin_tokens Syntax.use_file token_stream) in
       if (stopped_at_directive <> None ) then ( (pl @ ( (loop () ) )) )
       else pl in
     (loop () ) in
   (List.map Ast2pt.phrase ( (pl0 @ pl) ))
-
 let revise_parser = (wrap toplevel_phrase)
-
 let _ = (
 (Toploop.parse_toplevel_phrase := revise_parser)
 );
@@ -88,8 +82,7 @@ let _ = (
     (Toploop.print_warning loc Format.err_formatter ( (Warnings.Camlp4 (txt))
       )) ))
 );
-(iter_and_take_callbacks ( fun (_, f) -> (f () ) ))
-
+(iter_and_take_callbacks ( fun (_ , f) -> (f () ) ))
 let _ = let open
         FanParsers in
         (
@@ -108,8 +101,6 @@ let _ = let open
         (pa_l (module P))
         );
         (pa_m (module P))
-
 let normal =
  fun ()  -> (Toploop.parse_toplevel_phrase := Parse.toplevel_phrase)
-
 let revise = fun ()  -> (Toploop.parse_toplevel_phrase := revise_parser)

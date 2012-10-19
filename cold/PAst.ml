@@ -43,13 +43,13 @@ and patt =
    `PaInt of (loc * string) | `PaInt32 of (loc * string) |
    `PaInt64 of (loc * string) | `PaNativeInt of (loc * string) |
    `PaFlo of (loc * string) | `PaLab of (loc * string * patt) |
-   `PaOlb of (loc * string * patt) |
-   `PaOlbi of (loc * string * patt * expr) | `PaOrp of (loc * patt * patt) |
-   `PaRng of (loc * patt * patt) | `PaRec of (loc * patt) |
-   `PaEq of (loc * ident * patt) | `PaStr of (loc * string) |
-   `PaTup of (loc * patt) | `PaTyc of (loc * patt * ctyp) |
-   `PaTyp of (loc * ident) | `PaVrn of (loc * string) |
-   `PaLaz of (loc * patt) | `PaMod of (loc * string) ]
+   `PaOlb of (loc * string * patt) | `PaOlbi of (loc * string * patt * expr)
+   | `PaOrp of (loc * patt * patt) | `PaRng of (loc * patt * patt) |
+   `PaRec of (loc * patt) | `PaEq of (loc * ident * patt) |
+   `PaStr of (loc * string) | `PaTup of (loc * patt) |
+   `PaTyc of (loc * patt * ctyp) | `PaTyp of (loc * ident) |
+   `PaVrn of (loc * string) | `PaLaz of (loc * patt) |
+   `PaMod of (loc * string) ]
 and expr =
   [ `ExNil of loc | `ExId of (loc * ident) | `ExAcc of (loc * expr * expr) |
    `ExAnt of (loc * string) | `ExApp of (loc * expr * expr) |
@@ -65,21 +65,21 @@ and expr =
    `ExLet of (loc * rec_flag * binding * expr) |
    `ExLmd of (loc * string * module_expr * expr) |
    `ExMat of (loc * expr * match_case) | `ExNew of (loc * ident) |
-   `ExObj of (loc * patt * class_str_item) |
-   `ExOlb of (loc * string * expr) | `ExOvr of (loc * rec_binding) |
-   `ExRec of (loc * rec_binding * expr) | `ExSeq of (loc * expr) |
-   `ExSnd of (loc * expr * string) | `ExSte of (loc * expr * expr) |
-   `ExStr of (loc * string) | `ExTry of (loc * expr * match_case) |
-   `ExTup of (loc * expr) | `ExCom of (loc * expr * expr) |
-   `ExTyc of (loc * expr * ctyp) | `ExVrn of (loc * string) |
-   `ExWhi of (loc * expr * expr) | `ExOpI of (loc * ident * expr) |
-   `ExFUN of (loc * string * expr) | `ExPkg of (loc * module_expr) ]
+   `ExObj of (loc * patt * class_str_item) | `ExOlb of (loc * string * expr)
+   | `ExOvr of (loc * rec_binding) | `ExRec of (loc * rec_binding * expr) |
+   `ExSeq of (loc * expr) | `ExSnd of (loc * expr * string) |
+   `ExSte of (loc * expr * expr) | `ExStr of (loc * string) |
+   `ExTry of (loc * expr * match_case) | `ExTup of (loc * expr) |
+   `ExCom of (loc * expr * expr) | `ExTyc of (loc * expr * ctyp) |
+   `ExVrn of (loc * string) | `ExWhi of (loc * expr * expr) |
+   `ExOpI of (loc * ident * expr) | `ExFUN of (loc * string * expr) |
+   `ExPkg of (loc * module_expr) ]
 and module_type =
   [ `MtNil of loc | `MtId of (loc * ident) |
    `MtFun of (loc * string * module_type * module_type) |
    `MtQuo of (loc * string) | `MtSig of (loc * sig_item) |
-   `MtWit of (loc * module_type * with_constr) |
-   `MtOf of (loc * module_expr) | `MtAnt of (loc * string) ]
+   `MtWit of (loc * module_type * with_constr) | `MtOf of (loc * module_expr)
+   | `MtAnt of (loc * string) ]
 and sig_item =
   [ `SgNil of loc | `SgCls of (loc * class_type) |
    `SgClt of (loc * class_type) | `SgSem of (loc * sig_item * sig_item) |

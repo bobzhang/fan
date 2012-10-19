@@ -1,17 +1,16 @@
 open Camlp4Ast
-
 let mklist =
  fun _loc ->
   let rec loop =
    fun top ->
     function
-    | [] -> (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "[]")) )))
+    | [] -> (Ast.PaId (_loc , ( (Ast.IdUid (_loc , "[]")) )))
     | (p1 :: pl) ->
        let _loc =
         if top then _loc else (FanLoc.merge ( (loc_of_patt p1) ) _loc) in
        (Ast.PaApp
-         (_loc, (
+         (_loc , (
           (Ast.PaApp
-            (_loc, ( (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "::")) ))) ), p1))
-          ), ( (loop false  pl) ))) in
+            (_loc , ( (Ast.PaId (_loc , ( (Ast.IdUid (_loc , "::")) ))) ) ,
+             p1)) ) , ( (loop false  pl) ))) in
   (loop true )

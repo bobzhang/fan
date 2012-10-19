@@ -13,7 +13,6 @@ let sfold0 =
           | Some (a) -> (fold ( (f a accu) ) __strm)
           | _ -> accu) in
       fun (__strm : _ Stream.t) -> (fold e __strm)
-
 let sfold1 =
  fun f ->
   fun e ->
@@ -33,7 +32,6 @@ let sfold1 =
        let a = (psymb __strm) in
        (try (fold ( (f a e) ) __strm) with
         Stream.Failure -> (raise ( (Stream.Error ("")) )))
-
 let sfold0sep =
  fun f ->
   fun e ->

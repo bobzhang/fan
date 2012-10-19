@@ -1,11 +1,7 @@
 open Format
-
 open FanUtil
-
 module Debug = struct let mode = fun _ -> (false) end
-
 type section = string
-
 let out_channel =
  (try
    let f = (Sys.getenv "CAMLP4_DEBUG_FILE") in
@@ -13,7 +9,6 @@ let out_channel =
      438 f)
   with
   Not_found -> Pervasives.stderr)
-
 let mode =
  (try
    let str = (Sys.getenv "CAMLP4_DEBUG") in
@@ -33,7 +28,6 @@ let mode =
    else fun x -> (SSet.mem x sections)
   with
   Not_found -> fun _ -> (false))
-
 let formatter =
  let header = "camlp4-debug: " in
  let at_bol = (ref true ) in
@@ -51,6 +45,5 @@ let formatter =
        );
        (( at_bol.contents ) := ( (ch = '\n') ))
       done ) ( fun ()  -> (flush out_channel) ))
-
 let printf =
  fun section -> fun fmt -> (fprintf formatter ( ("%s: " ^^ fmt) ) section)

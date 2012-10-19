@@ -14,11 +14,12 @@
 
 (* Printing code expressions *)
 (* Authors:  Ed Pizzi, Fabrice Le Fessant *)
+(* Refactoring: Hongbo Zhang: University of Pennsylvania*)
 
 open Asttypes
 open Format
 open Location
-(* open Lexing *)
+open Longident
 open Parsetree
 
 
@@ -86,10 +87,12 @@ let fixity_of_exp e =
 *)
       | _ -> Prefix ;;
 
+(* It's not recommended to fill [sep_action] and [sep] simultaneously *)
 let pp_print_list
     ?(indent=0) ?(breakfirst=false) ?(breaklast=false) ?(space=1)
-    ?(sep="")
-    ?(sep_action=fun _ _ -> ())
+    ?(sep_action=fun ppf _ -> fprintf ppf "@ ")
+    ?sep
+
     f ppf xs =
   let rec loop bf  = function
     | [] -> ()
@@ -101,9 +104,13 @@ let pp_print_list
     | x::xs -> begin
         if bf then pp_print_break ppf space indent ;
         fprintf ppf "%a" f x ;
-        fprintf ppf "%s" sep;
-        sep_action ppf ();
-        pp_print_break ppf space indent;
+        (match sep with
+        | None -> sep_action ppf ();
+        | Some sep -> begin
+            sep_action ppf ();
+            fprintf ppf "%s" sep;
+            sep_action ppf ();
+        end);
         loop false xs 
     end in
   loop breakfirst xs 
