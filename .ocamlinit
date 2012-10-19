@@ -41,4 +41,4 @@ let tg_dp () =
   Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
 
 (* consult Topdirs for more utlities *)
-#use "test/test_fan.ml";;
+(* #use "test/test_fan.ml";; *)

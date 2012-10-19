@@ -1,0 +1,3 @@
+#! /bin/sh 
+# -*- Mode:Shell-script -*-
+ocamlbuild test/PprintastDriver.byte && _build/test/PprintastDriver.byte test/ast_printer_test.ml

@@ -1,2 +1,1 @@
-# <test_nest_quotation.ml> : camlp4rf, use_camlp4
-<*.{byte}>:pkg_compiler-libs.common
+true:pkg_compiler-libs.common

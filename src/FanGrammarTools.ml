@@ -22,7 +22,7 @@ let string_of_patt patt =
   let buf = Buffer.create 42 in
   let () =
     Format.bprintf buf "%a@?"
-      (fun fmt p -> Pprintast.pattern fmt (Ast2pt.patt p)) patt in
+      (fun fmt p -> AstPrint.pattern fmt (Ast2pt.patt p)) patt in
   let str = Buffer.contents buf in
   if str = "" then assert False else str;
 
