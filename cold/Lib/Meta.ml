@@ -6,12 +6,10 @@ module MetaLocVar : Ast.META_LOC =
    fun _loc ->
     fun _ ->
      (Ast.PaId (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) )))
- 
   let meta_loc_expr =
    fun _loc ->
     fun _ ->
      (Ast.ExId (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) )))
- 
  end
 
 module MetaLoc : Ast.META_LOC =
@@ -57,7 +55,6 @@ module MetaLoc : Ast.META_LOC =
                   )
                  else (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "False")) ))) )))
               ))) ))) )))
- 
   let meta_loc_expr =
    fun _loc ->
     fun location ->
@@ -99,7 +96,6 @@ module MetaLoc : Ast.META_LOC =
                   )
                  else (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "False")) ))) )))
               ))) ))) )))
- 
  end
 
 module MetaGhostLoc : Ast.META_LOC =
@@ -112,7 +108,6 @@ module MetaGhostLoc : Ast.META_LOC =
         (Ast.IdAcc
           (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
            (Ast.IdLid (_loc, "ghost")) ))) )))
- 
   let meta_loc_expr =
    fun _loc ->
     fun _ ->
@@ -121,13 +116,11 @@ module MetaGhostLoc : Ast.META_LOC =
         (Ast.IdAcc
           (_loc, ( (Ast.IdUid (_loc, "FanLoc")) ), (
            (Ast.IdLid (_loc, "ghost")) ))) )))
- 
  end
 
 module MetaLocQuotation =
  struct
   let loc_name = (ref None )
- 
   let meta_loc_expr =
    fun _loc ->
     fun loc ->
@@ -136,9 +129,7 @@ module MetaLocQuotation =
          (Ast.ExId (_loc, ( (Ast.IdLid (_loc, ( FanLoc.name.contents ))) )))
       | Some ("here") -> (MetaLoc.meta_loc_expr _loc loc)
       | Some (x) -> (Ast.ExId (_loc, ( (Ast.IdLid (_loc, x)) ))))
- 
   let meta_loc_patt = fun _loc -> fun _ -> (Ast.PaAny (_loc))
- 
  end
 
 module MetaQAst = (Ast.Meta.Make)(MetaLocQuotation)

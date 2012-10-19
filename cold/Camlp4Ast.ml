@@ -1,7 +1,6 @@
 module Ast =
  struct
   include Ast
- 
   let safe_string_escaped =
    fun s ->
     if (( (( (String.length s) ) > 2) ) && (
@@ -9,7 +8,6 @@ module Ast =
            )) )) then
      s
     else (String.escaped s)
- 
  end
 
 include Ast
@@ -521,9 +519,7 @@ let rec list_of_module_binding =
 module type META_LOC =
  sig
   val meta_loc_patt : (FanLoc.t -> (FanLoc.t -> Ast.patt))
- 
   val meta_loc_expr : (FanLoc.t -> (FanLoc.t -> Ast.expr))
- 
  end
 
 module Meta =
@@ -532,25 +528,19 @@ module Meta =
    functor (MetaLoc : META_LOC) ->
     struct
      let meta_loc = MetaLoc.meta_loc_expr
-    
      module Expr =
       struct
        let meta_string =
         fun _loc -> fun s -> (Ast.ExStr (_loc, ( (safe_string_escaped s) )))
-      
        let meta_int = fun _loc -> fun s -> (Ast.ExInt (_loc, s))
-      
        let meta_float = fun _loc -> fun s -> (Ast.ExFlo (_loc, s))
-      
        let meta_char =
         fun _loc -> fun s -> (Ast.ExChr (_loc, ( (String.escaped s) )))
-      
        let meta_bool =
         fun _loc ->
          function
          | false -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "False")) )))
          | true -> (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "True")) )))
-      
        let rec meta_list =
         fun mf_a ->
          fun _loc ->
@@ -562,7 +552,6 @@ module Meta =
                 (Ast.ExApp
                   (_loc, ( (Ast.ExId (_loc, ( (Ast.IdUid (_loc, "::")) ))) ),
                    ( (mf_a _loc x) ))) ), ( (meta_list mf_a _loc xs) )))
-      
        let rec meta_binding =
         fun _loc ->
          function
@@ -3488,29 +3477,21 @@ module Meta =
                     (_loc, ( (Ast.IdUid (_loc, "Ast")) ), (
                      (Ast.IdUid (_loc, "WcNil")) ))) ))) ), (
                (meta_loc _loc x0) )))
-      
       end
-    
      let meta_loc = MetaLoc.meta_loc_patt
-    
      module Patt =
       struct
        let meta_string =
         fun _loc -> fun s -> (Ast.PaStr (_loc, ( (safe_string_escaped s) )))
-      
        let meta_int = fun _loc -> fun s -> (Ast.PaInt (_loc, s))
-      
        let meta_float = fun _loc -> fun s -> (Ast.PaFlo (_loc, s))
-      
        let meta_char =
         fun _loc -> fun s -> (Ast.PaChr (_loc, ( (String.escaped s) )))
-      
        let meta_bool =
         fun _loc ->
          function
          | false -> (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "False")) )))
          | true -> (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "True")) )))
-      
        let rec meta_list =
         fun mf_a ->
          fun _loc ->
@@ -3522,7 +3503,6 @@ module Meta =
                 (Ast.PaApp
                   (_loc, ( (Ast.PaId (_loc, ( (Ast.IdUid (_loc, "::")) ))) ),
                    ( (mf_a _loc x) ))) ), ( (meta_list mf_a _loc xs) )))
-      
        let rec meta_binding =
         fun _loc ->
          function
@@ -6448,11 +6428,8 @@ module Meta =
                     (_loc, ( (Ast.IdUid (_loc, "Ast")) ), (
                      (Ast.IdUid (_loc, "WcNil")) ))) ))) ), (
                (meta_loc _loc x0) )))
-      
       end
-    
     end
- 
  end
 
 class map =

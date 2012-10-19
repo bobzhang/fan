@@ -11,8 +11,7 @@ type styp =
  | STtyp of Ast.ctyp
 
 type attr = string
-
-type entry = {name:name; pos:Ast.expr option; levels:level list}
+ type entry = {name:name; pos:Ast.expr option; levels:level list}
 and level = {label:string option; assoc:Ast.expr option; rules:rule list}
 and rule = {prod:symbol list; action:Ast.expr option}
 and symbol = {used:string list; text:text; styp:styp; pattern:Ast.patt option}

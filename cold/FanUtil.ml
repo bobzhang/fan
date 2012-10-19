@@ -216,23 +216,15 @@ let remove_underscores =
 module Options :
  sig
   type spec_list = (string * Arg.spec * string) list
- 
   val init : (spec_list -> unit)
- 
   val add : (string -> (Arg.spec -> (string -> unit)))
- 
   val print_usage_list : (spec_list -> unit)
- 
   val ext_spec_list : (unit -> spec_list)
- 
   val parse : ((string -> unit) -> (string array -> string list))
- 
  end =
  struct
   type spec_list = (string * Arg.spec * string) list
- 
   open Format
- 
   let rec action_arg =
    fun s ->
     fun sl ->
@@ -338,7 +330,6 @@ module Options :
         (match if (s = "") then sl else ( s ) :: sl  with
          | (s :: sl) when (List.mem s syms) -> ( (f s) ); (Some (sl))
          | _ -> (None))
- 
   let common_start =
    fun s1 ->
     fun s2 ->
@@ -353,7 +344,6 @@ module Options :
              )
        else i in
      (loop 0)
- 
   let parse_arg =
    fun fold ->
     fun s ->
@@ -371,7 +361,6 @@ module Options :
             Arg.Bad (_) -> acu)
            )
           else acu ) None )
- 
   let rec parse_aux =
    fun fold ->
     fun anon_fun ->
@@ -388,7 +377,6 @@ module Options :
         else begin
          ( ((anon_fun s) : unit) ); (parse_aux fold anon_fun sl)
         end
- 
   let align_doc =
    fun key ->
     fun s ->
@@ -426,7 +414,6 @@ module Options :
         (max 1 ( (( (16 - ( (String.length key) )) ) - ( (String.length p) ))
           )) ) ' ') in
      (p ^ ( (tab ^ s) ))
- 
   let make_symlist =
    fun l ->
     (match l with
@@ -435,7 +422,6 @@ module Options :
         ((
           (List.fold_left ( fun x -> fun y -> (x ^ ( ("|" ^ y) )) ) (
             ("{" ^ h) ) t) ) ^ "}"))
- 
   let print_usage_list =
    fun l ->
     (List.iter (
@@ -446,7 +432,6 @@ module Options :
            let synt = (key ^ ( (" " ^ s) )) in
            (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
         | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc) ))) ) l)
- 
   let remaining_args =
    fun argv ->
     let rec loop =
@@ -455,20 +440,15 @@ module Options :
        if (i == ( (Array.length argv) )) then l
        else (loop ( ( ( argv.(i) ) ) :: l  ) ( (i + 1) )) in
     (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
- 
   let init_spec_list = (ref [] )
- 
   let ext_spec_list = (ref [] )
- 
   let init = fun spec_list -> (init_spec_list := spec_list)
- 
   let add =
    fun name ->
     fun spec ->
      fun descr ->
       (ext_spec_list := ( ( (name, spec, descr) ) :: ext_spec_list.contents 
         ))
- 
   let fold =
    fun f ->
     fun init ->
@@ -478,13 +458,10 @@ module Options :
       (Sort.list ( fun (k1, _, _) -> fun (k2, _, _) -> (k1 >= k2) )
         spec_list) in
      (List.fold_right f specs init)
- 
   let parse =
    fun anon_fun ->
     fun argv ->
      let remaining_args = (remaining_args argv) in
      (parse_aux fold anon_fun remaining_args)
- 
   let ext_spec_list = fun ()  -> ext_spec_list.contents
- 
  end

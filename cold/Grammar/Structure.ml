@@ -8,15 +8,10 @@ type position =
 module Action =
  struct
   type t = Obj.t
- 
   let mk = (Obj.repr : ('a -> t))
- 
   let get = (Obj.obj : (t -> 'a))
- 
   let getf = (Obj.obj : (t -> ('a -> 'b)))
- 
   let getf2 = (Obj.obj : (t -> ('a -> ('b -> 'c))))
- 
  end
 
 type gram = {
@@ -66,8 +61,7 @@ type production_rule = (symbol list * Action.t)
 type single_extend_statment =
  (string option * assoc option * production_rule list)
 
-type extend_statment =
- (position option * single_extend_statment list)
+type extend_statment = (position option * single_extend_statment list)
 
 type delete_statment = symbol list
 
@@ -78,8 +72,7 @@ type ('a, 'b, 'c) fold =
 type ('a, 'b, 'c) foldsep =
  (internal_entry ->
   (symbol list ->
-   (('a Stream.t -> 'b) ->
-    (('a Stream.t -> unit) -> ('a Stream.t -> 'c)))))
+   (('a Stream.t -> 'b) -> (('a Stream.t -> unit) -> ('a Stream.t -> 'c)))))
 
 let get_filter = fun g -> g.gfilter
 
@@ -93,8 +86,7 @@ let using =
     (try (Hashtbl.find table kwd) with
      Not_found -> let r = (ref 0) in ( (Hashtbl.add table kwd r) ); r) in
    (
-   (FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0)
-     ))
+   (FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ))
    );
    (incr r)
 

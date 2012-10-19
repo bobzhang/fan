@@ -1,6 +1,6 @@
 # -*- Mode:Shell-script -*-
 true:pkg_batteries
-<{cold,src}/Pprintast.ml>: warn_a
+# <{cold,src}/Pprintast.ml>: warn_a
 <{cold,src}/Camlp4Printers/**.ml>: use_unix
 
 

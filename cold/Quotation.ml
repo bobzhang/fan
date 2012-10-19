@@ -5,53 +5,36 @@ open LibUtil
 module type AntiquotSyntax =
  sig
   val parse_expr : (FanLoc.t -> (string -> Ast.expr))
- 
   val parse_patt : (FanLoc.t -> (string -> Ast.patt))
- 
  end
 
 module type S =
  sig
   type 'a expand_fun = (FanLoc.t -> (string option -> (string -> 'a)))
- 
   val add : (string -> ('a DynAst.tag -> ('a expand_fun -> unit)))
- 
   val find : (string -> ('a DynAst.tag -> 'a expand_fun))
- 
   val default : string ref
- 
   val default_tbl : (string, string) Hashtbl.t
- 
   val default_at_pos : (string -> (string -> unit))
- 
   val parse_quotation_result :
    ((FanLoc.t -> (string -> 'a)) ->
     (FanLoc.t -> (FanSig.quotation -> (string -> (string -> 'a)))))
- 
   val translate : (string -> string) ref
- 
   val expand : (FanLoc.t -> (FanSig.quotation -> ('a DynAst.tag -> 'a)))
- 
   val dump_file : string option ref
- 
   val add_quotation :
    (string ->
     ('a Gram.t ->
      ((FanLoc.t -> ('a -> Lib.Expr.Ast.expr)) ->
       ((FanLoc.t -> ('a -> Lib.Expr.Ast.patt)) -> unit))))
- 
   val add_quotation_of_expr :
    (name : string -> (entry : Ast.expr Gram.t -> unit))
- 
   val add_quotation_of_patt :
    (name : string -> (entry : Ast.patt Gram.t -> unit))
- 
   val add_quotation_of_class_str_item :
    (name : string -> (entry : Ast.class_str_item Gram.t -> unit))
- 
   val add_quotation_of_match_case :
    (name : string -> (entry : Ast.match_case Gram.t -> unit))
- 
  end
 
 open Format
@@ -60,25 +43,15 @@ module Make =
  functor (TheAntiquotSyntax : AntiquotSyntax) ->
   (struct
     type 'a expand_fun = (FanLoc.t -> (string option -> (string -> 'a)))
-   
-    module Exp_key = (DynAst.Pack)(struct type 'a t = unit
-                                    end)
-   
-    module Exp_fun = (DynAst.Pack)(struct type 'a t = 'a expand_fun
-                                    end)
-   
+    module Exp_key = (DynAst.Pack)(struct type 'a t = unit end)
+    module Exp_fun = (DynAst.Pack)(struct type 'a t = 'a expand_fun end)
     let expanders_table =
      ((ref [] ) : ((string * Exp_key.pack) * Exp_fun.pack) list ref)
-   
     let default = (ref "")
-   
     let default_tbl = ((Hashtbl.create 50) : (string, string) Hashtbl.t)
-   
     let translate = (ref ( fun x -> x ))
-   
     let default_at_pos =
      fun pos -> fun str -> (Hashtbl.replace default_tbl pos str)
-   
     let expander_name =
      fun pos_tag ->
       fun name ->
@@ -88,13 +61,11 @@ module Make =
            (try (Hashtbl.find default_tbl str) with
             Not_found -> default.contents)
         | name -> name)
-   
     let find =
      fun name ->
       fun tag ->
        let key = (( (expander_name tag name) ), ( (Exp_key.pack tag () ) )) in
        (Exp_fun.unpack tag ( (List.assoc key ( expanders_table.contents )) ))
-   
     let add =
      fun name ->
       fun tag ->
@@ -102,16 +73,11 @@ module Make =
         let elt =
          ((name, ( (Exp_key.pack tag () ) )), ( (Exp_fun.pack tag f) )) in
         (expanders_table := ( ( elt ) :: expanders_table.contents  ))
-   
     let dump_file = (ref None )
-   
     type quotation_error_message =
        Finding | Expanding | ParsingResult of FanLoc.t * string
-   
     type quotation_error = (string * string * quotation_error_message * exn)
-   
     exception Quotation of quotation_error
-   
     let quotation_error_to_string =
      fun (name, position, ctx, exn) ->
       let ppf = (Buffer.create 30) in
@@ -170,12 +136,10 @@ module Make =
                  "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))) in
       let () = (bprintf ppf "@\n%s@]@." ( (Printexc.to_string exn) )) in
       (Buffer.contents ppf)
-   
     let _ = (Printexc.register_printer (
               function
               | Quotation (x) -> (Some (quotation_error_to_string x))
               | _ -> (None) ))
-   
     let expand_quotation =
      fun loc ->
       fun expander ->
@@ -195,7 +159,6 @@ module Make =
              let exc1 =
               (Quotation (( quot.q_name ), pos_tag, Expanding , exc)) in
              (raise ( (FanLoc.Exc_located (loc, exc1)) )))
-   
     let parse_quotation_result =
      fun parse ->
       fun loc ->
@@ -216,7 +179,6 @@ module Make =
               let ctx = (ParsingResult (iloc, ( quot.q_contents ))) in
               let exc1 = (Quotation (( quot.q_name ), pos_tag, ctx, exc)) in
               (raise ( (FanLoc.Exc_located (iloc, exc1)) )))
-   
     let expand =
      fun loc ->
       fun quotation ->
@@ -239,7 +201,6 @@ module Make =
         let loc =
          (FanLoc.join ( (FanLoc.move `start ( quotation.q_shift ) loc) )) in
         (expand_quotation loc expander pos_tag quotation)
-   
     let parse_quot_string =
      fun entry ->
       fun loc ->
@@ -250,11 +211,9 @@ module Make =
             let res = (Gram.parse_string entry loc s) in
             let () = (Lib.Meta.MetaLocQuotation.loc_name := loc_name_opt) in
             res ))
-   
     let anti_filter =
      (Expr.antiquot_expander ~parse_expr:TheAntiquotSyntax.parse_expr
        ~parse_patt:TheAntiquotSyntax.parse_patt)
-   
     let add_quotation =
      fun name ->
       fun entry ->
@@ -313,20 +272,17 @@ module Make =
          (add name DynAst.patt_tag expand_patt)
          );
          (add name DynAst.str_item_tag expand_str_item)
-   
     let add_quotation_of_str_item =
      fun ~name ->
       fun ~entry ->
        (add name DynAst.str_item_tag (
          (parse_quot_string ( (Gram.eoi_entry entry) )) ))
-   
     let add_quotation_of_str_item_with_filter =
      fun ~name ->
       fun ~entry ->
        fun ~filter ->
         (add name DynAst.str_item_tag (
           (filter ( (parse_quot_string ( (Gram.eoi_entry entry) )) )) ))
-   
     let add_quotation_of_expr =
      fun ~name ->
       fun ~entry ->
@@ -339,23 +295,19 @@ module Make =
        (add name DynAst.expr_tag expand_fun)
        );
        (add name DynAst.str_item_tag mk_fun)
-   
     let add_quotation_of_patt =
      fun ~name ->
       fun ~entry ->
        (add name DynAst.patt_tag (
          (parse_quot_string ( (Gram.eoi_entry entry) )) ))
-   
     let add_quotation_of_class_str_item =
      fun ~name ->
       fun ~entry ->
        (add name DynAst.class_str_item_tag (
          (parse_quot_string ( (Gram.eoi_entry entry) )) ))
-   
     let add_quotation_of_match_case =
      fun ~name ->
       fun ~entry ->
        (add name DynAst.match_case_tag (
          (parse_quot_string ( (Gram.eoi_entry entry) )) ))
-   
    end : S)

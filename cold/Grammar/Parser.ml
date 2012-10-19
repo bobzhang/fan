@@ -25,15 +25,10 @@ module StreamOrig = Stream
 module Stream =
  struct
   type 'a t = 'a StreamOrig.t
- 
   exception Failure = StreamOrig.Failure
- 
   exception Error = StreamOrig.Error
- 
   let peek = StreamOrig.peek
- 
   let junk = StreamOrig.junk
- 
   let dup =
    fun strm ->
     let rec loop =
@@ -44,7 +39,6 @@ module Stream =
       | (_ :: l) -> (loop ( (n - 1) ) l) in
     let peek_nth = fun n -> (loop n ( (Stream.npeek ( (n + 1) ) strm) )) in
     (Stream.from peek_nth)
- 
  end
 
 let try_parser =

@@ -11,15 +11,11 @@ module Camlp4Bin =
   struct
    let printers =
     ((Hashtbl.create 30) : (string, (module Sig.PRECAST_PLUGIN )) Hashtbl.t)
-  
    let rcall_callback = (ref ( fun ()  -> () ))
-  
    let loaded_modules = (ref SSet.empty)
-  
    let add_to_loaded_modules =
     fun name ->
      (loaded_modules := ( (SSet.add name ( loaded_modules.contents )) ))
-  
    let _ = (Printexc.register_printer (
              function
              | FanLoc.Exc_located (loc, exn) ->
@@ -27,12 +23,9 @@ module Camlp4Bin =
                   (sprintf "%s:@\n%s" ( (FanLoc.to_string loc) ) (
                     (Printexc.to_string exn) )))
              | _ -> (None) ))
-  
    module DynLoader = (DynLoader.Make)(struct end)
-  
    let (objext, libext) =
     if DynLoader.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
-  
    let rewrite_and_load =
     fun n ->
      fun x ->
@@ -129,9 +122,7 @@ module Camlp4Bin =
                         Not_found -> x) )))
       );
       ((rcall_callback.contents) () )
-  
    let print_warning = (eprintf "%a:\n%s@." FanLoc.print)
-  
    let rec parse_file =
     fun dyn_loader ->
      fun name ->
@@ -169,9 +160,7 @@ module Camlp4Bin =
         (clear () )
         );
         phr
-  
    let output_file = (ref None )
-  
    let process =
     fun dyn_loader ->
      fun name ->
@@ -187,17 +176,14 @@ module Camlp4Bin =
                clean) ) |> (
              (pr ?input_file:( (Some (name)) ) ?output_file:(
                output_file.contents )) ))
-  
    let gind =
     function
     | Ast.SgDir (loc, n, Ast.ExStr (_, s)) -> (Some (loc, n, s))
     | _ -> (None)
-  
    let gimd =
     function
     | Ast.StDir (loc, n, Ast.ExStr (_, s)) -> (Some (loc, n, s))
     | _ -> (None)
-  
    let process_intf =
     fun dyn_loader ->
      fun name ->
@@ -205,7 +191,6 @@ module Camlp4Bin =
         PreCast.CurrentPrinter.print_interf (
         ((new Camlp4Ast.clean_ast)#sig_item) )
         PreCast.Syntax.AstFilters.fold_interf_filters gind)
-  
    let process_impl =
     fun dyn_loader ->
      fun name ->
@@ -213,20 +198,16 @@ module Camlp4Bin =
         PreCast.CurrentPrinter.print_implem (
         ((new Camlp4Ast.clean_ast)#str_item) )
         PreCast.Syntax.AstFilters.fold_implem_filters gimd)
-  
    let just_print_the_version =
     fun ()  -> ( (printf "%s@." FanConfig.version) ); (exit 0)
-  
    let print_version =
     fun ()
       ->
      ( (eprintf "Camlp4 version %s@." FanConfig.version) ); (exit 0)
-  
    let print_stdlib =
     fun ()
       ->
      ( (printf "%s@." FanConfig.camlp4_standard_library) ); (exit 0)
-  
    let usage =
     fun ini_sl ->
      fun ext_sl ->
@@ -246,24 +227,19 @@ module Camlp4Bin =
        );
        (FanUtil.Options.print_usage_list ext_sl)
       end else ()
-  
    let warn_noassert =
     fun ()
       ->
      (eprintf
        "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@.")
-  
    type file_kind =
       Intf of string
     | Impl of string
     | Str of string
     | ModuleImpl of string
     | IncludeDir of string
-  
    let search_stdlib = (ref true )
-  
    let print_loaded_modules = (ref false )
-  
    let (task, do_task) =
     let t = (ref None ) in
     let task =
@@ -278,7 +254,6 @@ module Camlp4Bin =
      fun usage ->
       (match t.contents with | Some (f) -> (f usage) | None -> ()) in
     (task, do_task)
-  
    let input_file =
     fun x ->
      let dyn_loader = ((DynLoader.instance.contents) () ) in
@@ -305,7 +280,6 @@ module Camlp4Bin =
       | IncludeDir (dir) -> (DynLoader.include_dir dyn_loader dir))
      );
      ((rcall_callback.contents) () )
-  
    let initial_spec_list =
     [("-I", ( (Arg.String (fun x -> (input_file ( (IncludeDir (x)) )))) ),
       "<directory>  Add directory in search patch for object files.");
@@ -351,9 +325,7 @@ module Camlp4Bin =
       "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)");
      ("-ignore", ( (Arg.String (ignore)) ), "ignore the next argument");
      ("--", ( (Arg.Unit (ignore)) ), "Deprecated, does nothing")]
-  
    let _ = (FanUtil.Options.init initial_spec_list)
-  
    let anon_fun =
     fun name ->
      (input_file (
@@ -368,7 +340,6 @@ module Camlp4Bin =
              (ModuleImpl (name))
              )
        else (raise ( (Arg.Bad ("don't know what to do with " ^ name)) )) ))
-  
    let main =
     fun argv ->
      let usage =
@@ -422,7 +393,5 @@ module Camlp4Bin =
       | Arg.Help (_) -> (usage () )
       | exc ->
          ( (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc) )) ); (exit 2))
-  
    let _ = (main Sys.argv)
-  
   end

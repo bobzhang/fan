@@ -1,40 +1,26 @@
 module type S =
  sig
   type t
- 
   exception Error of string * string
- 
   val mk : (?ocaml_stdlib : bool -> (?camlp4_stdlib : bool -> (unit -> t)))
- 
   val fold_load_path : (t -> ((string -> ('a -> 'a)) -> ('a -> 'a)))
- 
   val load : (t -> (string -> unit))
- 
   val include_dir : (t -> (string -> unit))
- 
   val find_in_path : (t -> (string -> string))
- 
   val is_native : bool
- 
   val instance : (unit -> t) ref
- 
  end
 
 module Make =
  functor (U : sig end) ->
   (struct
     type t = string Queue.t
-   
     let instance = (ref ( fun ()  -> (failwith "empty in dynloader") ))
-   
     exception Error of string * string
-   
     let include_dir = fun x -> fun y -> (Queue.add y x)
-   
     let fold_load_path =
      fun x ->
       fun f -> fun acc -> (Queue.fold ( fun x -> fun y -> (f y x) ) acc x)
-   
     let mk =
      fun ?(ocaml_stdlib = (true)) ->
       fun ?(camlp4_stdlib = (true)) ->
@@ -69,7 +55,6 @@ module Make =
         (include_dir q ".")
         );
         q
-   
     let find_in_path =
      fun x ->
       fun name ->
@@ -88,7 +73,6 @@ module Make =
                else (None)
             | x -> x ) None ) in
         (match res with | None -> (raise Not_found ) | Some (x) -> x)
-   
     let load =
      let _initialized = (ref false ) in
      fun _path ->
@@ -119,7 +103,5 @@ module Make =
        (try (Dynlink.loadfile fname) with
         Dynlink.Error (e) ->
          (raise ( (Error (fname, ( (Dynlink.error_message e) ))) )))
-   
     let is_native = Dynlink.is_native
-   
    end : S)

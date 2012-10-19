@@ -23,12 +23,10 @@ class text_grammar =
     | (`Smeta (n, sl, _)) -> (self#meta ppf n sl)
     | (`Slist0 s) -> (fprintf ppf "LIST0 %a" ( self#symbol1 ) s)
     | (`Slist0sep (s, t)) ->
-       (fprintf ppf "LIST0 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 )
-         t)
+       (fprintf ppf "LIST0 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 ) t)
     | (`Slist1 s) -> (fprintf ppf "LIST1 %a" ( self#symbol1 ) s)
     | (`Slist1sep (s, t)) ->
-       (fprintf ppf "LIST1 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 )
-         t)
+       (fprintf ppf "LIST1 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 ) t)
     | (`Sopt s) -> (fprintf ppf "OPT %a" ( self#symbol1 ) s)
     | (`Stry s) -> (fprintf ppf "TRY %a" ( self#symbol1 ) s)
     | (`Snterml (e, l)) -> (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
@@ -44,10 +42,7 @@ class text_grammar =
     | `Sself -> (pp_print_string ppf "SELF")
     | `Snext -> (pp_print_string ppf "NEXT")
     | (`Stoken (_, (description, content))) ->
-       (
-       (self#description ppf description)
-       );
-       (pp_print_string ppf content)
+       ( (self#description ppf description) ); (pp_print_string ppf content)
     | (`Skeyword s) -> (fprintf ppf "%S" s)
     | (`Stree t) -> (self#tree ppf t)
     | (((((((((`Smeta (_, _, _)) | (`Snterml (_, _))) | (`Slist0 _))
@@ -108,8 +103,8 @@ class text_grammar =
           (
           (fprintf ppf "%t%a" sep ( self#rule ) rule)
           );
-          fun ppf -> (fprintf ppf "%a| " space () ) ) ( fun _ -> () )
-        rules ppf)
+          fun ppf -> (fprintf ppf "%a| " space () ) ) ( fun _ -> () ) rules
+        ppf)
       );
       (fprintf ppf " ]@]")
   method assoc =
@@ -146,7 +141,7 @@ class text_grammar =
           (
           (self#level ppf Format.pp_force_newline rules)
           );
-          fun ppf -> (fprintf ppf "@,| ") ) ( fun _ -> () ) elev ppf) :
+          fun ppf -> (fprintf ppf "@,| ") ) ( fun _ -> () ) elev ppf) : 
        unit)
   method entry =
    fun ppf ->
@@ -176,8 +171,8 @@ class dump_grammar =
        | DeadEnd -> (List.rev acc)
        | LocAct (_, _) -> (List.rev acc)
        | Node ({node = n; brother = b; son = s}) ->
-          (get_brothers (
-            ( ( (Bro (n, ( (get_brothers []  s) ))) ) ) :: acc  ) b)
+          (get_brothers ( ( ( (Bro (n, ( (get_brothers []  s) ))) ) ) :: acc 
+            ) b)
      and print_brothers =
       fun ppf ->
        fun brothers ->

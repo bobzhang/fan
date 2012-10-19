@@ -2,8 +2,7 @@ open Format
 
 open FanUtil
 
-module Debug = struct let mode = fun _ -> (false)
-                end
+module Debug = struct let mode = fun _ -> (false) end
 
 type section = string
 
