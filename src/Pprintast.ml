@@ -232,7 +232,7 @@ let fmt_virtual_flag f x =
 
 
 let type_var_print ppf str =
-  fprintf ppf "'%s" str.txt ;;
+  fprintf ppf "'%s" str ;;
 
 let type_var_option_print ppf str =
   match str with
@@ -247,15 +247,13 @@ let fmt_class_params ppf l = match l with
 
 let fmt_class_params_def ppf  l = match l with
 | [] -> ()
-| _ -> pp_print_list type_var_print ppf l ~sep:"," ~first:"[" ~last:"]"
+| _ -> pp_print_list (fun ppf {txt;_} -> type_var_print ppf txt)
+      ppf l ~sep:"," ~first:"[" ~last:"]"
 
 let fmt_rec_flag f x =
   match x with
   | Nonrecursive -> ();
-  | Recursive | Default -> fprintf f " rec";
-    (* todo - what is "default" recursion??
-        this seemed safe, as it's better to falsely make a non-recursive
-        let recursive than the opposite. *)
+  | Recursive | Default -> fprintf f " rec"; (* FIXME Default*)
 ;;
 
 let fmt_direction_flag ppf x =
@@ -298,50 +296,60 @@ let rec expression_is_terminal_list exp =
      -> false
 ;;
 
-let rec core_type ppf x =
-  match x.ptyp_desc with
-  | Ptyp_any -> fprintf ppf "_";         (* done *)
-  | Ptyp_var (s) -> fprintf ppf "'%s" s; (* done *)
-  | Ptyp_arrow (l, ct1, ct2) ->          (* done *)
+let is_predef_option = function
+  | (Ldot (Lident "*predef*","option")) -> true
+  | _ -> false
+        
+(* FIXME what kind of error check should we do ?,
+   Location for error message
+ *)
+let rec print_type_with_label ppf (label,({ptyp_desc;_}as c) ) = match label with
+| "" ->  core_type ppf c
+| s  ->
+    if s.[0]='?' then 
+      match ptyp_desc with
+      | Ptyp_constr ({txt;_}, l) -> begin 
+          assert (is_predef_option txt);
+          fprintf ppf "%s:%a" s (pp_print_list core_type) l 
+      end
+      | _ -> failwith "invalid input in print_type_with_label"
+    else
+      fprintf ppf "%s:%a" s core_type c
+
+(* type u = ~v:(int->int) -> int
+   type u = ?v:(int->int) -> int
+   type u = ?v:int option list -> int
+   type u = ?v:int option  -> int
+   type u = (int -> (int -> int) -> int)-> int ->int -> int
+   type u  = int option
+   type u = int option list (* type u = int (option  , list  ) *)
+ *)
+(* type u = ?v:int -> ?l:int -> m:int -> string *)
+and core_type ppf ({ptyp_desc;_}:Parsetree.core_type) =
+  match ptyp_desc with
+  | Ptyp_any -> fprintf ppf "_";       
+  | Ptyp_var s -> type_var_print ppf  s; 
+  | Ptyp_arrow (l, ct1, ct2) ->
+      fprintf ppf "@[<hov2>(%a@ ->@ %a)@ @]" (* FIXME remove parens later *)
+        print_type_with_label (l,ct1) core_type ct2
+  | Ptyp_tuple l ->
       pp_open_hovbox ppf indent ;
       fprintf ppf "(" ;
-      (match l with
-        | "" -> core_type ppf ct1;
-        | s when (String.get s 0 = '?')  ->
-            (match ct1.ptyp_desc with
-              | Ptyp_constr
-                  ({ txt = Longident.Ldot (Longident.Lident "*predef*", "option");_}, l) ->
-                  fprintf ppf "%s :@ " s ;
-                  type_constr_list ppf l ;
-              | _ -> core_type ppf ct1; (* todo: what do we do here? *)
-            );
-        | s ->
-            fprintf ppf "%s :@ " s ;
-            core_type ppf ct1; (* todo: what do we do here? *)
-      );
-      fprintf ppf "@ ->@ " ;
-      core_type ppf ct2 ;
-      fprintf ppf ")" ;
-      pp_close_box ppf () ;
-  | Ptyp_tuple l ->                      (* done *)
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "(" ;
-      (* list2 core_type ppf l " *" ; *)
       pp_print_list core_type ppf l ~sep:"*";
       fprintf ppf ")" ;
       pp_close_box ppf () ;
-  | Ptyp_constr (li, l) ->               (* done *)
-      pp_open_hovbox ppf indent ;
-      type_constr_list ppf ~space:true l ;
-      fprintf ppf "%a" fmt_longident li ;
-      pp_close_box ppf () ;
+  | Ptyp_constr (li, l) ->
+      (* fprintf ppf "%a@ %a@ " type_constr_list l fmt_longident li *)
+      fprintf ppf "%a@ " fmt_longident li;
+      (* pp_open_hovbox ppf indent ; *)
+      (* fprintf ppf "%a@ " fmt_longident li ; *)
+      (* type_constr_list ppf  l ; *)
+      (* pp_close_box ppf () ; *)
   | Ptyp_variant (l, closed, _low) ->
       pp_open_hovbox ppf indent ;
       (match closed with
         | true  -> fprintf ppf "[ " ;
-        | false -> fprintf ppf "[> " ;
-      );
-      (* list2 type_variant_helper ppf l " |" ; *)
+        | false -> fprintf ppf "[> " ;);
       pp_print_list type_variant_helper ppf l ~sep:"|";
       fprintf ppf " ]";
       pp_close_box ppf () ;
@@ -349,19 +357,16 @@ let rec core_type ppf x =
       if ((List.length l) > 0) then begin
         pp_open_hovbox ppf indent ;
         fprintf ppf "< " ;
-        (* list2 core_field_type ppf l " ;" ; *)
         pp_print_list core_field_type ppf l ~sep:";";
         fprintf ppf " >" ;
         pp_close_box ppf () ;
         end else fprintf ppf "< >" ;
   | Ptyp_class (li, l, low) ->           (* done... sort of *)
       pp_open_hovbox ppf indent ;
-      (* list2 core_type ppf l ~breaklast:true "" ; *)
       pp_print_list core_type ppf l ~breaklast:true ;
       fprintf ppf "#%a" fmt_longident li;
       if ((List.length low) < 0) then begin (* done, untested *)
         fprintf ppf "@ [> " ;
-        (* list2 class_var ppf low "" ; *)
         pp_print_list class_var ppf low;
         fprintf ppf " ]";
         end ;
@@ -375,7 +380,6 @@ let rec core_type ppf x =
   | Ptyp_poly (sl, ct) ->                (* done? *)
       pp_open_hovbox ppf indent ;
       if ((List.length sl) > 0) then begin
-          (* list2 (fun ppf x -> fprintf ppf "'%s" x) ppf sl ~breaklast:true ""; *)
         pp_print_list (fun ppf x -> fprintf ppf "'%s" x) ppf sl ~breaklast:true;
         fprintf ppf ".@ " ;
         end ;
@@ -406,18 +410,19 @@ and core_field_type ppf x =
   | Pfield_var ->
       fprintf ppf "..";
 
-and type_constr_list ppf ?(space=false) l =
-  match (List.length l) with
-  | 0 -> ()
-  | 1 ->
-      (* list2 core_type ppf l "" ; *)
-      pp_print_list core_type ppf l ;
-      if space then fprintf ppf " " ;
-  | _ -> fprintf ppf "(" ;
-      (* list2 core_type ppf l "," ; *)
-      pp_print_list core_type ppf l ~sep:",";
-      fprintf ppf ")" ;
-      if (space) then fprintf ppf " " ;
+and type_constr_list ppf  = function
+  | [] -> ()
+  | [x] ->
+      core_type ppf x
+      (* pp_print_list core_type ppf l ; *)
+      (* if space then fprintf ppf " " ; *)
+  | xs ->
+      fprintf ppf "(%a)@ " (pp_print_list core_type ~sep:",") xs
+      (* (\* fprintf ppf "(" ; *\) *)
+      (* (\* list2 core_type ppf l "," ; *\) *)
+      (* pp_print_list core_type ppf l ~sep:","; *)
+      (* fprintf ppf ")" ; *)
+      (* (\* if (space) then fprintf ppf " " ; *\) *)
 
 and pattern_with_label ppf x s =
   if (s = "") then simple_pattern ppf x
