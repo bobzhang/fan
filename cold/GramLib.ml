@@ -34,16 +34,13 @@ let  test_patt_lessminus =
       | Some(_) -> (ignore_upto end_kwd ( (n + 1) ) )
       | None  -> (raise Stream.Failure  ))  in (skip_patt 1 ) ) )
 let  is_revised ~expr  ~sem_expr_for_list  =
-  (try
-    (
-   (Gram.delete_rule expr ( [`Skeyword ("[") ; `Snterm
-     ((Gram.obj ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) ) )) ;
-     `Skeyword ("::") ; `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ;
-     `Skeyword ("]")]  ) )
-   );
-    true
-   with
-   | Not_found  -> false)
+  
+  (try (
+  (Gram.delete_rule expr ( [`Skeyword ("[") ; `Snterm
+    ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) )) ;
+    `Skeyword ("::") ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ;
+    `Skeyword ("]")]  ) ) ); true with
+  | Not_found  -> false)
 let  setup_op_parser (entry) (p) =
   (Gram.setup_parser entry (
     fun ((__strm : _ Stream.t )) ->

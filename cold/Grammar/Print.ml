@@ -64,10 +64,12 @@ class text_grammar =
         | s::sl ->
           
           let  j =
-          (try (String.index_from n i ' ' ) with
-           | Not_found  -> (String.length n )) in
+          
+          (try (String.index_from n i ' ' )
+          with
+          | Not_found  -> (String.length n )) in
           begin
-           (
+          (
           (fprintf ppf "%s %a" ( (String.sub n i ( (j - i) ) ) ) (
             self#symbol1 ) s )
           );
@@ -83,7 +85,7 @@ class text_grammar =
   fun (ppf) ->
     fun (symbols) ->
       begin
-       (
+      (
       (fprintf ppf "@[<hov 0>" )
       );
        (
@@ -91,7 +93,7 @@ class text_grammar =
         fun (sep) ->
           fun (symbol) ->
             begin
-             (
+            (
             (fprintf ppf "%t%a" sep ( self#symbol ) symbol )
             );
              fun (ppf) -> (fprintf ppf ";@ " )
@@ -104,7 +106,7 @@ class text_grammar =
     fun (space) ->
       fun (rules) ->
         begin
-         (
+        (
         (fprintf ppf "@[<hov 0>[ " )
         );
          (
@@ -112,7 +114,7 @@ class text_grammar =
           fun (sep) ->
             fun (rule) ->
               begin
-               (
+              (
               (fprintf ppf "%t%a" sep ( self#rule ) rule )
               );
                fun (ppf) -> (fprintf ppf "%a| " space ()  )
@@ -140,7 +142,7 @@ class text_grammar =
                  (flatten_tree ( lev.lsuffix ) ) ) ) ) @ (
                (flatten_tree ( lev.lprefix ) ) )) in
              begin
-              (
+             (
              (fprintf ppf "%t@[<hov 2>" sep )
              );
               (
@@ -160,12 +162,12 @@ class text_grammar =
              (self#level ppf Format.pp_force_newline rules )
              );
               fun (ppf) -> (fprintf ppf "@,| " )
-             end ) ( fun (_) -> () ) elev ppf ) : unit)
+             end ) ( fun (_) -> () ) elev ppf ): unit)
  method entry =
   fun (ppf) ->
     fun (e) ->
       (begin
-        (
+       (
        (fprintf ppf "@[<v 0>%s: [ " ( e.ename ) )
        );
         (
@@ -176,7 +178,7 @@ class text_grammar =
        | Dparser(_) -> (fprintf ppf "<parser>" ))
        );
         (fprintf ppf " ]@]" )
-       end : unit)
+       end: unit)
  
  end
 class dump_grammar =
@@ -199,7 +201,7 @@ class dump_grammar =
        (List.iter (
          fun (Bro(n , xs )) ->
            begin
-            (
+           (
            (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n )
            );
             (
@@ -208,8 +210,10 @@ class dump_grammar =
            with
            | []  -> ()
            | _::[]  ->
-             (try (print_children ppf ( (get_children []  xs ) ) ) with
-              | Exit  -> (fprintf ppf ":%a" print_brothers xs ))
+             
+             (try (print_children ppf ( (get_children []  xs ) ) )
+             with
+             | Exit  -> (fprintf ppf ":%a" print_brothers xs ))
            | _ -> (fprintf ppf ":%a" print_brothers xs ))
            );
             (fprintf ppf "@]" )
@@ -229,7 +233,7 @@ class dump_grammar =
         fun (sep) ->
           fun (lev) ->
             begin
-             (
+            (
             (fprintf ppf "%t@[<v2>" sep )
             );
              (

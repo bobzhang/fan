@@ -117,4 +117,21 @@ let fg = function {f;_} -> f;;
 
 let f = function
   |x::xs -> x
-  | [] -> 0
+  | [] -> 0;;
+
+let _ = begin
+  ignore (a.[0],b.(1));
+  a.[0] <- 3;
+  b.(1) <- 4; 
+end
+
+
+let _ = begin
+  (!a, !a.b, !(a.b))
+end
+
+let f x = object
+    method x = print_int x 
+end
+
+    

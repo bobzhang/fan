@@ -186,7 +186,7 @@ module Make =
    let  level = (Gram.mk "level" )
    let  level_list = (Gram.mk "level_list" )
    let  entry = (Gram.mk "entry" )
-   let _ = (Gram.extend ( (top_phrase : 'top_phrase  Gram.t ) ) (
+   let _ = (Gram.extend ( (top_phrase: 'top_phrase  Gram.t ) ) (
              ((fun (() ) ->
                  (None  , (
                   [(None  , None  , (
@@ -201,7 +201,7 @@ module Make =
                             
                             (match __camlp4_0
                             with
-                            | `EOI -> (None : 'top_phrase )
+                            | `EOI -> (None: 'top_phrase )
                             | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) )
              )
    module AntiquotSyntax =

@@ -113,7 +113,7 @@ let  tree_failed (entry) (prev_symb_result) (prev_symb) (tree) =
     (txt ^ ( (" expected after " ^ ( (name_of_symbol entry prev_symb ) )) )))
   in
   begin
-   (
+  (
   if ((entry.egram).error_verbose).contents then
    (
    
@@ -121,7 +121,7 @@ let  tree_failed (entry) (prev_symb_result) (prev_symb) (tree) =
    
    let  ppf = err_formatter in
    begin
-    (
+   (
    (fprintf ppf "@[<v 0>@," )
    );
     (

@@ -3,8 +3,9 @@ let  mk (() ) =
   
   let  q = (Queue.create ()  ) in
   
-  let  f (_) = (try Some ((Queue.take q )) with
-                | Queue.Empty  -> None) in (( (Stream.from f ) ) , q )
+  let  f (_) = 
+  (try Some ((Queue.take q )) with
+  | Queue.Empty  -> None) in (( (Stream.from f ) ) , q )
 let  filter ((_ , q )) =
   
   let rec  self ((__strm : _ Stream.t )) =
@@ -16,7 +17,9 @@ let  filter ((_ , q )) =
     (Stream.junk __strm )
     );
     
-    let  xs = __strm in begin ( (Queue.add (x , loc ) q ) ); (self xs ) end
+    let  xs = __strm in begin
+                        ( (Queue.add (x , loc ) q ) ); (self xs )
+                        end
   | Some(x) ->
     (
     (Stream.junk __strm )

@@ -40,17 +40,17 @@ let  check_not_tok (s) =
            "LIST0 STRING becomes LIST0 [ x = STRING -> x ]")) ) )
   | _ -> ())
 let  mark_used (modif) (tbl) (n) =
+  
   (try
+  
+  let  rll = (Hashtbl.find_all tbl n ) in
+  (List.iter (
     
-   let  rll = (Hashtbl.find_all tbl n ) in
-   (List.iter (
-     
-     function
-     | (({contents = Unused  } as r) , _ ) ->
-       ( (r := UsedNotScanned ) ); (modif := true )
-     | _ -> () ) rll )
-   with
-   | Not_found  -> ())
+    function
+    | (({contents = Unused  } as r) , _ ) ->
+      ( (r := UsedNotScanned ) ); (modif := true )
+    | _ -> () ) rll ) with
+  | Not_found  -> ())
 let  mark_symbol (modif) (tbl) (symb) =
   (List.iter ( fun (e) -> (mark_used modif tbl e ) ) ( symb.used ) )
 let  check_use (nl) (el) =
@@ -74,12 +74,13 @@ let  check_use (nl) (el) =
   let  ()  =
   (List.iter (
     fun (n) ->
+      
       (try
-        
-       let  rll = (Hashtbl.find_all tbl ( n.tvar ) ) in
-       (List.iter ( fun ((r , _ )) -> (r := UsedNotScanned ) ) rll )
-       with
-       | _ -> ()) ) nl ) in
+      
+      let  rll = (Hashtbl.find_all tbl ( n.tvar ) ) in
+      (List.iter ( fun ((r , _ )) -> (r := UsedNotScanned ) ) rll )
+      with
+      | _ -> ()) ) nl ) in
   
   let  ()  = (modif := true ) in
   
@@ -120,7 +121,9 @@ let  new_type_var =
   
   let  i = (ref 0 ) in
   fun (() ) ->
-    begin ( (incr i ) ); ("e__" ^ ( (string_of_int ( i.contents ) ) )) end
+    begin
+    ( (incr i ) ); ("e__" ^ ( (string_of_int ( i.contents ) ) ))
+    end
 let  used_of_rule_list (rl) =
   (List.fold_left (
     fun (nl) ->
@@ -128,41 +131,40 @@ let  used_of_rule_list (rl) =
         (List.fold_left ( fun (nl) -> fun (s) -> (( s.used ) @ nl) ) nl (
           r.prod ) ) ) []  rl )
 let  retype_rule_list_without_patterns (_loc) (rl) =
+  
   (try
-    (List.map (
-      
-      function
-      |
-        {prod = ({pattern = None  ; styp = STtok(_) ;_} as s)::[]  ;
-          action = None  } ->
-        {prod = (
-          [{s with
-            pattern = (
-             Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }] 
-          ) ;
-         action = (
-          Some
-            (Ast.ExApp
-               ((_loc , (
-                 Ast.ExId
-                   ((_loc , (
-                     Ast.IdAcc
-                       ((_loc , ( (gm ()  ) ) , (
-                         Ast.IdLid ((_loc , "string_of_token" )) ) )) ) )) )
-                 , ( Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) )) ) )))
-          ) }
-      | {prod = ({pattern = None  ;_} as s)::[]  ; action = None  } ->
-        {prod = (
-          [{s with
-            pattern = (
-             Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }] 
-          ) ;
-         action = ( Some (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) )))
-          ) }
-      | ({prod = []  ; action = Some(_) } as r) -> r
-      | _ -> (raise Exit  ) ) rl )
-   with
-   | Exit  -> rl)
+  (List.map (
+    
+    function
+    |
+      {prod = ({pattern = None  ; styp = STtok(_) ;_} as s)::[]  ;
+        action = None  } ->
+      {prod = (
+        [{s with
+          pattern = (
+           Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }]  )
+       ;
+       action = (
+        Some
+          (Ast.ExApp
+             ((_loc , (
+               Ast.ExId
+                 ((_loc , (
+                   Ast.IdAcc
+                     ((_loc , ( (gm ()  ) ) , (
+                       Ast.IdLid ((_loc , "string_of_token" )) ) )) ) )) ) ,
+               ( Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) )) ) ))) ) }
+    | {prod = ({pattern = None  ;_} as s)::[]  ; action = None  } ->
+      {prod = (
+        [{s with
+          pattern = (
+           Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }]  )
+       ;
+       action = ( Some (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) )
+       }
+    | ({prod = []  ; action = Some(_) } as r) -> r
+    | _ -> (raise Exit  ) ) rl ) with
+  | Exit  -> rl)
 exception NotneededTyping
 let  make_ctyp (styp) (tvar) =
   
@@ -182,8 +184,9 @@ let  make_ctyp (styp) (tvar) =
      )
     else Ast.TyQuo ((_loc , tvar ))
   | STtok(_loc) -> (raise NotneededTyping  )
-  | STtyp(t) -> t in (try Some ((aux styp )) with
-                      | NotneededTyping  -> None)
+  | STtyp(t) -> t in 
+  (try Some ((aux styp )) with
+  | NotneededTyping  -> None)
 let  make_ctyp_patt (styp) (tvar) (patt) =
   
   (match (make_ctyp styp tvar )

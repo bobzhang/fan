@@ -27,7 +27,7 @@ let  valid_float_lexeme (s) =
   if (i >= l) then ( (s ^ ".") )
   else
    
-   (match (String.get s i )
+   (match s.[i]
    with
    |
      (('0' |('1' |('2' |('3' |('4' |('5' |('6' |('7' |('8' |'9')))))))))
@@ -62,27 +62,23 @@ let  append_eLem (el) (e) = (el @ ( [e]  ))
 let  is_antiquot (s) =
   
   let  len = (String.length s ) in
-  (( (len > 2) ) && (
-    (( (( (String.get s 0 ) ) = '\\') ) && ( (( (String.get s 1 ) ) = '$') ))
-    ))
+  (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
 let  view_antiquot (s) =
   
   let  len = (String.length s ) in
-  if (( (len > 2) ) && (
-       (( (( (String.get s 0 ) ) = '\\') ) && ( (( (String.get s 1 ) ) = '$')
-         )) )) then
+  if (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then
    (
+   
    (try
-     
-    let  pos = (String.index s ':' ) in
-    
-    let  name = (String.sub s 2 ( (pos - 2) ) ) in
-    
-    let  code =
-    (String.sub s ( (pos + 1) ) ( (( (( (String.length s ) ) - pos) ) - 1) )
-      ) in Some ((name , code ))
-    with
-    | Not_found  -> None)
+   
+   let  pos = (String.index s ':' ) in
+   
+   let  name = (String.sub s 2 ( (pos - 2) ) ) in
+   
+   let  code =
+   (String.sub s ( (pos + 1) ) ( (( (( (String.length s ) ) - pos) ) - 1) ) )
+   in Some ((name , code )) with
+   | Not_found  -> None)
    )
   else None
 let  handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
@@ -99,7 +95,7 @@ let  handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
 let  neg_string (n) =
   
   let  len = (String.length n ) in
-  if (( (len > 0) ) && ( (( (String.get n 0 ) ) = '-') )) then
+  if (( (len > 0) ) && ( (( n.[0] ) = '-') )) then
    (
    (String.sub n 1 ( (len - 1) ) )
    )
@@ -125,10 +121,7 @@ let  symbolchar =
   
   let rec  loop (s) (i) =
   if (i == ( (String.length s ) )) then true 
-  else if (List.mem ( (String.get s i ) ) list ) then
-        (
-        (loop s ( (i + 1) ) )
-        )
+  else if (List.mem ( s.[i] ) list ) then ( (loop s ( (i + 1) ) ) )
   else false in loop
 let  stopped_at (_loc) = Some ((FanLoc.move_line 1 _loc ))
 let  with_open_out_file (x) (f) =
@@ -138,14 +131,18 @@ let  with_open_out_file (x) (f) =
   | Some(file) ->
     
     let  oc = (open_out_bin file ) in
-    begin ( (f oc ) ); ( (flush oc ) ); (close_out oc ) end
+    begin
+    ( (f oc ) ); ( (flush oc ) ); (close_out oc )
+    end
   | None  ->
     ( (set_binary_mode_out stdout true  ) ); ( (f stdout ) ); (flush stdout ))
 let  dump_ast (magic) (ast) (oc) =
-  begin ( (output_string oc magic ) ); (output_value oc ast ) end
+  begin
+  ( (output_string oc magic ) ); (output_value oc ast )
+  end
 let  dump_pt (magic) (fname) (pt) (oc) =
   begin
-   (
+  (
   (output_string oc magic )
   );
    (
@@ -154,11 +151,15 @@ let  dump_pt (magic) (fname) (pt) (oc) =
    (output_value oc pt )
   end
 let  char_of_char_token (loc) (s) =
-  (try (TokenEval.char s ) with
-   | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
+  
+  (try (TokenEval.char s )
+  with
+  | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
 let  string_of_string_token (loc) (s) =
-  (try (TokenEval.string s ) with
-   | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
+  
+  (try (TokenEval.string s )
+  with
+  | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
 let  remove_underscores (s) =
   
   let  l = (String.length s ) in
@@ -195,13 +196,17 @@ module Options :
       (match sl
       with
       | s::sl ->
-        (try ( (f ( (bool_of_string s ) ) ) ); Some (sl) with
-         | Invalid_argument("bool_of_string") -> None)
+        
+        (try ( (f ( (bool_of_string s ) ) ) ); Some (sl)
+        with
+        | Invalid_argument("bool_of_string") -> None)
       | []  -> None)
       )
      else
-      (try ( (f ( (bool_of_string s ) ) ) ); Some (sl) with
-       | Invalid_argument("bool_of_string") -> None)
+      
+      (try ( (f ( (bool_of_string s ) ) ) ); Some (sl)
+      with
+      | Invalid_argument("bool_of_string") -> None)
    | Arg.Set(r) ->
      if (s = "") then  begin ( (r := true ) ); Some (sl) end else None
    | Arg.Clear(r) ->
@@ -236,13 +241,17 @@ module Options :
       (match sl
       with
       | s::sl ->
-        (try ( (f ( (int_of_string s ) ) ) ); Some (sl) with
-         | Failure("int_of_string") -> None)
+        
+        (try ( (f ( (int_of_string s ) ) ) ); Some (sl)
+        with
+        | Failure("int_of_string") -> None)
       | []  -> None)
       )
      else
-      (try ( (f ( (int_of_string s ) ) ) ); Some (sl) with
-       | Failure("int_of_string") -> None)
+      
+      (try ( (f ( (int_of_string s ) ) ) ); Some (sl)
+      with
+      | Failure("int_of_string") -> None)
    | Arg.Set_int(r) ->
      if (s = "") then
       (
@@ -250,13 +259,17 @@ module Options :
       (match sl
       with
       | s::sl ->
-        (try ( (r := ( (int_of_string s ) )) ); Some (sl) with
-         | Failure("int_of_string") -> None)
+        
+        (try ( (r := ( (int_of_string s ) )) ); Some (sl)
+        with
+        | Failure("int_of_string") -> None)
       | []  -> None)
       )
      else
-      (try ( (r := ( (int_of_string s ) )) ); Some (sl) with
-       | Failure("int_of_string") -> None)
+      
+      (try ( (r := ( (int_of_string s ) )) ); Some (sl)
+      with
+      | Failure("int_of_string") -> None)
    | Arg.Float(f) ->
      if (s = "") then
       (
@@ -307,10 +320,7 @@ module Options :
    if (( (i == ( (String.length s1 ) )) ) || ( (i == ( (String.length s2 ) ))
         )) then
     i
-   else if (( (String.get s1 i ) ) == ( (String.get s2 i ) )) then
-         (
-         (loop ( (i + 1) ) )
-         )
+   else if (( s1.[i] ) == ( s2.[i] )) then ( (loop ( (i + 1) ) ) )
    else i in (loop 0 )
  let  parse_arg (fold) (s) (sl) =
    (fold (
@@ -320,11 +330,11 @@ module Options :
          let  i = (common_start s name ) in
          if (i == ( (String.length name ) )) then
           (
+          
           (try
-            (action_arg ( (String.sub s i ( (( (String.length s ) ) - i) ) )
-              ) sl action )
-           with
-           | Arg.Bad(_) -> acu)
+          (action_arg ( (String.sub s i ( (( (String.length s ) ) - i) ) ) )
+            sl action ) with
+          | Arg.Bad(_) -> acu)
           )
          else acu ) None  )
  let rec  parse_aux (fold) (anon_fun) =
@@ -332,8 +342,7 @@ module Options :
    function
    | []  -> []
    | s::sl ->
-     if (( (( (String.length s ) ) > 1) ) && ( (( (String.get s 0 ) ) = '-')
-          )) then
+     if (( (( (String.length s ) ) > 1) ) && ( (( s.[0] ) = '-') )) then
       (
       
       (match (parse_arg fold s sl )
@@ -342,7 +351,7 @@ module Options :
       | None  -> s :: (parse_aux fold anon_fun sl ) )
       )
      else begin
-      ( ((anon_fun s ) : unit) ); (parse_aux fold anon_fun sl )
+      ( ((anon_fun s ): unit) ); (parse_aux fold anon_fun sl )
      end
  let  align_doc (key) (s) =
    
@@ -350,25 +359,25 @@ module Options :
    
    let rec  loop (i) =
    if (i = ( (String.length s ) )) then ""
-   else if (( (String.get s i ) ) = ' ') then ( (loop ( (i + 1) ) ) )
+   else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) ) ) )
    else (String.sub s i ( (( (String.length s ) ) - i) ) ) in (loop 0 ) in
    
    let  (p , s ) =
    if (( (String.length s ) ) > 0) then
     (
-    if (( (String.get s 0 ) ) = '<') then
+    if (( s.[0] ) = '<') then
      (
      
      let rec  loop (i) =
      if (i = ( (String.length s ) )) then ("" , s )
-     else if (( (String.get s i ) ) <> '>') then ( (loop ( (i + 1) ) ) )
+     else if (( s.[i] ) <> '>') then ( (loop ( (i + 1) ) ) )
      else
       
       let  p = (String.sub s 0 ( (i + 1) ) ) in
       
       let rec  loop (i) =
       if (i >= ( (String.length s ) )) then (p , "" )
-      else if (( (String.get s i ) ) = ' ') then ( (loop ( (i + 1) ) ) )
+      else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) ) ) )
       else (p , ( (String.sub s i ( (( (String.length s ) ) - i) ) ) ) ) in
       (loop ( (i + 1) ) ) in (loop 0 )
      )

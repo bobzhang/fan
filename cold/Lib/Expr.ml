@@ -485,11 +485,15 @@ let  substp (_loc) (env) =
     Ast.PaApp ((_loc , ( (loop e1 ) ) , ( (loop e2 ) ) ))
   | Ast.ExNil(_) -> Ast.PaNil (_loc)
   | Ast.ExId(_ , Ast.IdLid(_ , x ) ) ->
-    (try (List.assoc x env ) with
-     | Not_found  -> Ast.PaId ((_loc , ( Ast.IdLid ((_loc , x )) ) )))
+    
+    (try (List.assoc x env )
+    with
+    | Not_found  -> Ast.PaId ((_loc , ( Ast.IdLid ((_loc , x )) ) )))
   | Ast.ExId(_ , Ast.IdUid(_ , x ) ) ->
-    (try (List.assoc x env ) with
-     | Not_found  -> Ast.PaId ((_loc , ( Ast.IdUid ((_loc , x )) ) )))
+    
+    (try (List.assoc x env )
+    with
+    | Not_found  -> Ast.PaId ((_loc , ( Ast.IdUid ((_loc , x )) ) )))
   | Ast.ExInt(_ , x ) -> Ast.PaInt ((_loc , x ))
   | Ast.ExStr(_ , s ) -> Ast.PaStr ((_loc , s ))
   | Ast.ExTup(_ , x ) -> Ast.PaTup ((_loc , ( (loop x ) ) ))
@@ -513,65 +517,66 @@ class subst _loc env =
   function
   |
     ((Ast.ExId(_ , Ast.IdLid(_ , x ) ) |Ast.ExId(_ , Ast.IdUid(_ , x ) )) as
-      e) -> (try (List.assoc x env ) with
-             | Not_found  -> (super#expr e ))
+      e) -> 
+            (try (List.assoc x env ) with
+            | Not_found  -> (super#expr e ))
   |
     ((Ast.ExApp(_loc , Ast.ExId(_ , Ast.IdUid(_ , "LOCATION_OF" ) ) ,
                 Ast.ExId(_ , Ast.IdLid(_ , x ) ) )
        |Ast.ExApp(_loc , Ast.ExId(_ , Ast.IdUid(_ , "LOCATION_OF" ) ) ,
                   Ast.ExId(_ , Ast.IdUid(_ , x ) ) )) as e) ->
+    
     (try
-      
-     let  loc = (Ast.loc_of_expr ( (List.assoc x env ) ) ) in
-     
-     let  (a , b , c , d , e , f , g , h ) = (FanLoc.to_tuple loc ) in
-     Ast.ExApp
-       ((_loc , (
-         Ast.ExId
-           ((_loc , (
-             Ast.IdAcc
-               ((_loc , ( Ast.IdUid ((_loc , "FanLoc" )) ) , (
-                 Ast.IdLid ((_loc , "of_tuple" )) ) )) ) )) ) , (
-         Ast.ExTup
-           ((_loc , (
-             Ast.ExCom
-               ((_loc , (
-                 Ast.ExStr ((_loc , ( (Ast.safe_string_escaped a ) ) )) ) , (
-                 Ast.ExCom
-                   ((_loc , (
-                     Ast.ExCom
-                       ((_loc , (
-                         Ast.ExCom
-                           ((_loc , (
-                             Ast.ExCom
-                               ((_loc , (
-                                 Ast.ExCom
-                                   ((_loc , (
-                                     Ast.ExCom
-                                       ((_loc , (
-                                         Ast.ExInt
-                                           ((_loc , ( (string_of_int b ) ) ))
-                                         ) , (
-                                         Ast.ExInt
-                                           ((_loc , ( (string_of_int c ) ) ))
-                                         ) )) ) , (
-                                     Ast.ExInt
-                                       ((_loc , ( (string_of_int d ) ) )) ) ))
-                                 ) , (
-                                 Ast.ExInt ((_loc , ( (string_of_int e ) ) ))
-                                 ) )) ) , (
-                             Ast.ExInt ((_loc , ( (string_of_int f ) ) )) ) ))
-                         ) , ( Ast.ExInt ((_loc , ( (string_of_int g ) ) )) )
-                         )) ) , (
-                     if h then
-                      (
-                      Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "True" )) ) ))
-                      )
-                     else
-                      Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "False" )) ) ))
-                     ) )) ) )) ) )) ) ))
-     with
-     | Not_found  -> (super#expr e ))
+    
+    let  loc = (Ast.loc_of_expr ( (List.assoc x env ) ) ) in
+    
+    let  (a , b , c , d , e , f , g , h ) = (FanLoc.to_tuple loc ) in
+    Ast.ExApp
+      ((_loc , (
+        Ast.ExId
+          ((_loc , (
+            Ast.IdAcc
+              ((_loc , ( Ast.IdUid ((_loc , "FanLoc" )) ) , (
+                Ast.IdLid ((_loc , "of_tuple" )) ) )) ) )) ) , (
+        Ast.ExTup
+          ((_loc , (
+            Ast.ExCom
+              ((_loc , (
+                Ast.ExStr ((_loc , ( (Ast.safe_string_escaped a ) ) )) ) , (
+                Ast.ExCom
+                  ((_loc , (
+                    Ast.ExCom
+                      ((_loc , (
+                        Ast.ExCom
+                          ((_loc , (
+                            Ast.ExCom
+                              ((_loc , (
+                                Ast.ExCom
+                                  ((_loc , (
+                                    Ast.ExCom
+                                      ((_loc , (
+                                        Ast.ExInt
+                                          ((_loc , ( (string_of_int b ) ) ))
+                                        ) , (
+                                        Ast.ExInt
+                                          ((_loc , ( (string_of_int c ) ) ))
+                                        ) )) ) , (
+                                    Ast.ExInt
+                                      ((_loc , ( (string_of_int d ) ) )) ) ))
+                                ) , (
+                                Ast.ExInt ((_loc , ( (string_of_int e ) ) ))
+                                ) )) ) , (
+                            Ast.ExInt ((_loc , ( (string_of_int f ) ) )) ) ))
+                        ) , ( Ast.ExInt ((_loc , ( (string_of_int g ) ) )) )
+                        )) ) , (
+                    if h then
+                     (
+                     Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "True" )) ) ))
+                     )
+                    else
+                     Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "False" )) ) )) )
+                    )) ) )) ) )) ) )) with
+    | Not_found  -> (super#expr e ))
   | e -> (super#expr e )
  method! patt =
   
@@ -579,8 +584,10 @@ class subst _loc env =
   |
     ((Ast.PaId(_ , Ast.IdLid(_ , x ) ) |Ast.PaId(_ , Ast.IdUid(_ , x ) )) as
       p) ->
-    (try (substp _loc []  ( (List.assoc x env ) ) ) with
-     | Not_found  -> (super#patt p ))
+    
+    (try (substp _loc []  ( (List.assoc x env ) ) )
+    with
+    | Not_found  -> (super#patt p ))
   | p -> (super#patt p )
  
  end
@@ -1379,7 +1386,7 @@ let  capture_antiquot =
   end
 let  filter_patt_with_captured_variables (patt) =
   begin
-   (
+  (
   capture_antiquot#clear_captured_variables
   );
    

@@ -35,24 +35,26 @@ module Hashset =
  let  of_list (size) (vs) =
    
    let  set = (create size ) in
-   begin ( (List.iter ( (add set ) ) vs ) ); set end
+   begin
+   ( (List.iter ( (add set ) ) vs ) ); set
+   end
  let  to_list (set) = (fold ( fun (x) -> fun (y) -> x :: y  ) set []  )
  
  end
 let  mk_set = fun (type s)
   ->fun ~cmp ->
       let module M = struct type t = s  let  compare = cmp  end in
-      ((module (Set.Make)(M)) : (module Set.S with type elt = s))
+        ((module (Set.Make)(M)): (module Set.S with type elt = s))
 let  mk_map = fun (type s)
   ->fun ~cmp ->
       let module M = struct type t = s  let  compare = cmp  end in
-      ((module (Map.Make)(M)) : (module Map.S with type key = s))
+        ((module (Map.Make)(M)): (module Map.S with type key = s))
 let  mk_hashtbl = fun (type s)
   ->fun ~eq ->
       fun ~hash ->
         let module M =
-         struct type t = s  let  equal = eq let  hash = hash  end in
-        ((module (Hashtbl.Make)(M)) : (module Hashtbl.S with type key = s))
+          struct type t = s  let  equal = eq let  hash = hash  end in
+          ((module (Hashtbl.Make)(M)): (module Hashtbl.S with type key = s))
 let  (|>) (x) (f) = (f x )
 let  (<|) (f) (x) = (f x )
 let  (|-) (f) (g) (x) = (g ( (f x ) ) )
@@ -63,7 +65,9 @@ let  (&&&) (f) (g) (x) = (( (f x ) ) , ( (g x ) ) )
 let  curry (f) (x) (y) = (f (x , y ) )
 let  uncurry (f) ((x , y )) = (f x y )
 let  const (x) (_) = x
-let  tap (f) (x) = begin ( (f x ) ); x end
+let  tap (f) (x) = begin
+                   ( (f x ) ); x
+                   end
 let  is_even (x) = (( (x mod 2) ) == 0)
 let  to_string_of_printer (printer) (v) =
   
@@ -75,15 +79,17 @@ let  zfold_left ?(start=0)  ~until  ~acc  (f) =
   
   let  v = (ref acc ) in
   begin
-   for x = start to  until do (v := ( (f ( v.contents ) x ) )) done;
+  for x = start to  until do (v := ( (f ( v.contents ) x ) )) done;
    v.contents
   end
 type 'a   cont = ('a  -> exn)  
 let  callcc = fun (type u)
   ->fun ((f : (u cont  -> u) )) ->
       let module M = struct exception Return of u   end in
-      (try (f ( fun (x) -> (raise ( M.Return (x) ) ) ) ) with
-       | M.Return(u) -> u)
+        
+        (try (f ( fun (x) -> (raise ( M.Return (x) ) ) ) )
+        with
+        | M.Return(u) -> u)
 module List = struct include List include BatList  end
 module Char = struct include BatChar  end
 module String = struct include String include BatString  end
@@ -92,8 +98,12 @@ module Option = struct include BatOption  end
 module Buffer =
  struct
   include BatBuffer
- let  (+>) (buf) (chr) = begin ( (Buffer.add_char buf chr ) ); buf end
- let  (+>>) (buf) (str) = begin ( (Buffer.add_string buf str ) ); buf end
+ let  (+>) (buf) (chr) = begin
+                         ( (Buffer.add_char buf chr ) ); buf
+                         end
+ let  (+>>) (buf) (str) = begin
+                          ( (Buffer.add_string buf str ) ); buf
+                          end
  
  end
 module Hashtbl =

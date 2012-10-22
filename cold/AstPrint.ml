@@ -153,33 +153,19 @@ let direction_flag ppf = function
 let private_flag ppf = function
   | Public -> ()
   | Private -> fprintf ppf "private@ "
-        
-
-let string ppf s =
-  fprintf ppf "%s" s ;;
-
-let text ppf s =
-  fprintf ppf "%s" s.txt ;;
 
 let constant_string ppf s = fprintf ppf "%S" s 
-
 let pp_print_tyvar ppf str = fprintf ppf "'%s@ " str ;;
-
-
 
 let pp_print_type_var_option ppf str = 
   match str with
     None -> () 
   | Some {txt;_} -> pp_print_tyvar ppf txt ;;
 
-
 let class_params_def ppf   = function
   | [] -> ()
   | l -> pp_print_list (fun ppf {txt;_} -> pp_print_tyvar ppf txt)
         ppf l ~sep:"," ~first:"[" ~last:"]"
-
-
-
 
 let is_predef_option = function
   | (Ldot (Lident "*predef*","option")) -> true
@@ -462,7 +448,40 @@ and pp_print_pexp_function ppf e = match e.pexp_desc with
       else
         fprintf ppf "%a@ %a" pp_print_label_exp (label,eo,p) pp_print_pexp_function e'
   | _ -> fprintf ppf "=@ %a" expression e
-
+and sugar_expr ppf e =
+  match e.pexp_desc with 
+  | Pexp_apply
+      ({pexp_desc=
+        Pexp_ident
+          {txt= Ldot (Lident (("Array"|"String") as s),"get");_};_},[(_,e1);(_,e2)]) -> begin
+            if s = "Array" then 
+              fprintf ppf "@[<hov>%a.(%a)@]"  expression e1 expression e2
+            else
+              fprintf ppf "@[<hov>%a.[%a]@]"  expression e1 expression e2;
+      true
+  end
+  |Pexp_apply
+      ({pexp_desc=
+        Pexp_ident
+          {txt= Ldot (Lident (("Array"|"String") as s),
+                      "set");_};_},[(_,e1);(_,e2);(_,e3)]) -> begin
+                        if s = "Array" then
+                          fprintf ppf "@[<hov>%a.(%a)<-%a@]"
+                            expression e1
+                            expression e2
+                            expression e3
+                        else
+                          fprintf ppf "@[<hov>%a.[%a]<-%a@]"
+                            expression e1
+                            expression e2
+                            expression e3;
+                        true
+                      end
+  | Pexp_apply ({pexp_desc=Pexp_ident {txt=Lident "!";_};_}, [(_,e)]) -> begin
+      fprintf ppf "@[<hov>(!(%a))@]" expression e;
+      true
+  end
+  | _ -> false
 and expression ppf x =
   match x.pexp_desc with
   | Pexp_let (rf, l, e) ->
@@ -482,96 +501,42 @@ and expression ppf x =
                 pp_print_label_exp (p,eo,p') expression e')
       | _ -> 
           fprintf ppf "@\n@[<hov>function@\n%a@]" (* a new line *)
-          pattern_x_expression_case_list  l ;
-      )
+          pattern_x_expression_case_list  l ;)
 
-  | Pexp_apply (e, l) -> 
-      let fixity = (is_infix (fixity_of_exp e)) in
-      let sd =
-        (match e.pexp_desc with
-          | Pexp_ident ({ txt = Longident.Ldot (Longident.Lident(modname), valname) ;_})
-            -> (modname, valname)
-          | Pexp_ident ({ txt = Longident.Lident(valname) ;_})
-            -> ("",valname)
-          | _ -> ("","")) in
-      (match sd,l with
-        | ("Array", "get"), [(_,exp1) ; (_,exp2)] ->
-            pp_open_hovbox ppf indent;
-            (match exp1.pexp_desc with
-              | Pexp_ident (_) ->
-                  expression ppf exp1 ;
-              | _ ->
-                  expression_in_parens ppf exp1 ;
-            );
-            fprintf ppf ".";
-            expression_in_parens ppf exp2;
-            pp_close_box ppf ();
-        | ("Array", "set"), [(_,array) ; (_,index) ; (_, valu)] ->
-            pp_open_hovbox ppf indent;
-            (match array.pexp_desc with
-              | Pexp_ident (_) ->
-                  expression ppf array ;
-              | _ ->
-                  expression_in_parens ppf array ;
-            );
-            fprintf ppf ".";
-            expression_in_parens ppf index;
-            fprintf ppf "@ <-@ ";
-            expression ppf valu;
-            pp_close_box ppf ();
-        | ("","!"),[(_,exp1)] ->
-            fprintf ppf "!" ;
-            simple_expr ppf exp1 ;
-        | (_,_) ->
-            pp_open_hovbox ppf (indent + 1) ;
-            fprintf ppf "(" ;
-            if (fixity = false) then
-              begin
-                (match e.pexp_desc with
-                  | Pexp_ident(_) -> expression ppf e ;
-                  | Pexp_send (_,_) -> expression ppf e ;
-                  | _ -> pp_open_hovbox ppf indent;
-                      expression_in_parens ppf e ;
-                      pp_close_box ppf () );
-                fprintf ppf "@ " ;
-                pp_print_list label_x_expression_param ppf l ;
-              end
-            else begin
-                match l with
-                  [ arg1; arg2 ] ->
-                    label_x_expression_param ppf arg1 ;
-                    pp_print_space ppf () ;
-                    (match e.pexp_desc with
-                      | Pexp_ident(li) ->
-(* override parenthesization of infix identifier *)
-                          fprintf ppf "%a" longident_loc li ;
-                      | _ -> simple_expr ppf e) ;
-                    pp_print_space ppf () ;
-                    label_x_expression_param ppf arg2
-                | _ ->
-                    simple_expr ppf e ;
-                    pp_print_list label_x_expression_param ppf l ~breakfirst:true;
-              end ;
-            fprintf ppf ")" ;
-            pp_close_box ppf () ;)
+  | Pexp_apply (e, l) ->
+      if not (sugar_expr ppf x) then
+        let fixity = (is_infix (fixity_of_exp e)) in
+        if not fixity  then
+          fprintf ppf "@[<hov2>%a@]" begin fun ppf (e,l) -> 
+            fprintf ppf "(%a@ %a)" (fun ppf e ->
+              (match e.pexp_desc with
+              | Pexp_ident(_) -> expression ppf e ;
+              | Pexp_send (_,_) -> expression ppf e ;
+              | _ -> fprintf ppf "@[<hov2>%a@]"  expression_in_parens e )) e
+              (pp_print_list label_x_expression_param)  l 
+          end (e,l)
+      else 
+          (match l with
+          | [ arg1; arg2 ] ->
+              fprintf ppf "@[<hov2>(%a@ %a@ %a)@]"
+                label_x_expression_param  arg1 
+              (fun ppf e -> match e.pexp_desc with
+              | Pexp_ident(li) ->
+                  fprintf ppf "%a" longident_loc li ;
+              | _ -> simple_expr ppf e) e 
+              label_x_expression_param arg2
+          | _ ->
+              fprintf ppf "@[<hov2>(%a %a)@]" simple_expr e 
+                (fun ppf l -> pp_print_list label_x_expression_param ~breakfirst:true ppf l)  l)
+
   | Pexp_match (e, l) ->
       fprintf ppf "@\n@[<hov>(match@ %a@ with@\n@[<hov>%a@])@]" (*a new line*)
         expression e
         pattern_x_expression_case_list  l 
   | Pexp_try (e, l) ->
-      fprintf ppf "(";
-      pp_open_vbox ppf 0; (* <-- always break here, says style manual *)
-      pp_open_hvbox ppf 0;
-      fprintf ppf "try";
-      pp_print_break ppf 1 indent ;
-      expression_sequence ppf ~first:false e;
-      pp_print_break ppf 1 0;
-      fprintf ppf "with";
-      pp_close_box ppf ();
-      pp_print_cut ppf ();
-      pattern_x_expression_case_list ppf l ;
-      pp_close_box ppf ();
-      fprintf ppf ")";
+      fprintf ppf "@\n@[<hov>(try@ %a@ with@\n@[<hov>%a@])@]"
+        (fun ppf e -> expression_sequence ~first:false ppf e) e
+        pattern_x_expression_case_list l 
   | Pexp_construct (li, eo, _)  ->
       (match li.txt with
         | Lident ("::") ->
@@ -590,67 +555,47 @@ and expression ppf x =
                 fprintf ppf "@[<hov2>%a@ (%a)@]"
                   longident_loc li expression x));
   | Pexp_field (e, li) ->
-      pp_open_hovbox ppf indent ;
-      (match e.pexp_desc with
+      fprintf ppf "@[<hov2>%a.%a@]"
+      (fun ppf e -> match e.pexp_desc with
         | Pexp_ident (_) ->
-            simple_expr ppf e ;
+            simple_expr ppf e 
         | _ ->
-            expression_in_parens ppf e ;
-      );
-      fprintf ppf ".%a" longident_loc li ;
-      pp_close_box ppf () ;
+            expression_in_parens ppf e ) e longident_loc li 
   | Pexp_setfield (e1, li, e2) ->
-      pp_open_hovbox ppf indent ;
-      (match e1.pexp_desc with
+      fprintf ppf "@[<hov2>%a.%a<-@ %a@]"
+      (fun ppf e1 -> match e1.pexp_desc with
         | Pexp_ident (_) ->
-            simple_expr ppf e1 ;
+            simple_expr ppf e1 
         | _ ->
-            expression_in_parens ppf e1 ;
-      );
-      fprintf ppf ".%a" longident_loc li;
-      fprintf ppf "@ <-@ ";
-      expression ppf e2;
-      pp_close_box ppf () ;
+            expression_in_parens ppf e1) e1
+        longident_loc li 
+      expression e2;
+
   | Pexp_ifthenelse (e1, e2, eo) ->
       fprintf ppf "@[<hv 0>" ;
       expression_if_common ppf e1 e2 eo;
       fprintf ppf "@]";
 
   | Pexp_sequence (_e1,_e2) ->
-      fprintf ppf "@[<hv 0>begin" ;
-      pp_print_break ppf 1 indent ;
-      expression_sequence ppf ~first:false x ;
-      fprintf ppf "@;<1 0>end@]" ;
+      fprintf ppf "@[<hv 0>begin@\n%a@\nend@]" 
+      (fun ppf e -> expression_sequence  ppf ~first:false e) x ;
+
   | Pexp_constraint (e, cto1, cto2) ->
       (match (cto1, cto2) with
         | (None, None) -> expression ppf e ;
         | (Some (x1), Some (x2)) ->
-            pp_open_hovbox ppf 2 ;
-            fprintf ppf "(" ;
-            expression ppf e ;
-            fprintf ppf " :@ " ;
-            core_type ppf x1 ;
-            fprintf ppf " :>@ " ;
-            core_type ppf x2 ;
-            fprintf ppf ")" ;
-            pp_close_box ppf () ;
+            fprintf ppf "@[<hov2>(%a:@ %a:>@ %a)@]"
+              expression e
+              core_type x1
+              core_type x2 
         | (Some (x), None) ->
-            pp_open_hovbox ppf 2 ;
-            fprintf ppf "(" ;
-            expression ppf e ;
-            fprintf ppf " :@ " ;
-            core_type ppf x ;
-            fprintf ppf ")" ;
-            pp_close_box ppf ()
+            fprintf ppf "@[<hov2>(%a:@ %a)@]"
+              expression e
+              core_type x 
         | (None, Some (x)) ->
-            pp_open_hovbox ppf 2 ;
-            fprintf ppf "(" ;
-            expression ppf e ;
-            fprintf ppf " :>@ " ;
-            core_type ppf x ;
-            fprintf ppf ")" ;
-            pp_close_box ppf ()
-      )
+            fprintf ppf "@[<hov2>(%a:>@ %a)@]"
+              expression e
+              core_type x  )
   | Pexp_when (_e1, _e2) ->
       assert false ;
 (* This is a wierd setup. The ocaml phrase
@@ -666,62 +611,31 @@ and expression ppf x =
          Thus these Pexp_when expressions are printed elsewhere, and if
           this code is executed, an error has occurred. *)
   | Pexp_send (e, s) ->
-      pp_open_hovbox ppf indent;
-      (match e.pexp_desc with
-        | Pexp_ident(_) ->
-            expression ppf e;
-            fprintf ppf "#%s" s;
-        | _ ->
-            fprintf ppf "(%a@,#%s)"
-              expression_in_parens e
-              s
-            (* expression_in_parens ppf e; *)
-            (* fprintf ppf "@,#%s" s; *)
-            (* fprintf ppf ")" *)
-      );
-      pp_close_box ppf (); (* bug fixed? *)
+      fprintf ppf "@[<hov2>%a#%s@]"
+      (fun ppf e -> match e.pexp_desc with
+        | Pexp_ident(_) -> expression ppf e;
+        | _ -> 
+              expression_in_parens ppf e) e s 
+
   | Pexp_new (li) ->
-      pp_open_hovbox ppf indent;
-      fprintf ppf "new@ %a" longident_loc li;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>new@ %a@]" longident_loc li;
+
   | Pexp_setinstvar (s, e) ->
-      pp_open_hovbox ppf indent;
-      fprintf ppf "%s <-@ " s.txt;
-      expression ppf e;
-      pp_close_box ppf ();
-  | Pexp_override (l) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "{< " ;
-      if ((List.length l) > 0) then begin
-        pp_print_list string_x_expression ppf l ~sep:";";
-        fprintf ppf " " ;
-      end ;
-      fprintf ppf ">}" ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>%s@ <-@ %a@]" s.txt expression e
+  | Pexp_override l ->
+      fprintf ppf "@[<hov2>{<%a>}@]"
+        (pp_print_list string_x_expression  ~sep:";"  )  l;
   | Pexp_letmodule (s, me, e) ->
-      pp_open_hvbox ppf 0 ;
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "let module %s =@ " s.txt ;
-      module_expr ppf me ;
-      fprintf ppf " in" ;
-      pp_close_box ppf () ;
-      pp_print_space ppf () ;
-      expression_sequence ppf ~first:false ~indent:0 e ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>let@ module@ %s@ =@ %a@ in@ %a@]" s.txt
+        module_expr me
+        (fun ppf e -> expression_sequence  ~first:false ~indent:0 ppf e ) e 
   | Pexp_assert (e) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "assert@ " ;
-      expression ppf e ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>assert@ %a@]" expression e 
   | Pexp_assertfalse ->
-      fprintf ppf "assert false" ;
+      fprintf ppf "assert@ false" ;
   | Pexp_lazy (e) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "lazy@ " ;
-      simple_expr ppf e ;
-      pp_close_box ppf () ;
-  | Pexp_poly (e, cto) ->
-(* should this even print by itself? *)
+      fprintf ppf "@[<hov2>lazy@ %a@]" simple_expr e 
+  | Pexp_poly (e, cto) -> (* should this even print by itself?  FIXME this overlaps with Pcf_meth*)
       (match cto with
         | None -> expression ppf e ;
         | Some (ct) ->
@@ -732,14 +646,10 @@ and expression ppf x =
             fprintf ppf " *)" ;
             pp_close_box ppf () );
   | Pexp_object cs ->
-      pp_open_hovbox ppf indent ;
-      class_structure ppf cs ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>%a@]" class_structure cs 
   | Pexp_open (lid, e) ->
-      pp_open_hvbox ppf 0 ;
-      fprintf ppf "let open@ %a in@ " longident_loc lid;
-      expression_sequence ppf ~first:false ~indent:0 e ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>let@ open@ %a@ in%a@]" longident_loc lid
+        (fun ppf e -> expression_sequence ~first:false ~indent:0 ppf e) e 
   | _ -> simple_expr ppf x
 
 

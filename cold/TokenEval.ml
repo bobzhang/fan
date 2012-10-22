@@ -100,11 +100,14 @@ let  backslash_in_string (strict) (store) ((__strm : _ Stream.t )) =
     (Stream.junk __strm )
     );
     
-    let  s = __strm in begin ( (skip_opt_linefeed s ) ); (skip_indent s ) end
+    let  s = __strm in begin
+                       ( (skip_opt_linefeed s ) ); (skip_indent s )
+                       end
   | _ ->
     
-    (match (try Some ((backslash __strm )) with
-            | Stream.Failure  -> None)
+    (match 
+    (try Some ((backslash __strm )) with
+    | Stream.Failure  -> None)
     with
     | Some(x) -> (store x )
     | _ ->
@@ -115,7 +118,7 @@ let  backslash_in_string (strict) (store) ((__strm : _ Stream.t )) =
         ( (Stream.junk __strm ) ); ( (store '\\' ) ); (store c )
       | _ -> (failwith "invalid string token" ))))
 let  char (s) =
-  if (( (String.length s ) ) = 1) then ( (String.get s 0 ) )
+  if (( (String.length s ) ) = 1) then ( s.[0] )
   else if (( (String.length s ) ) = 0) then
         (
         (failwith "invalid char token" )
@@ -130,8 +133,10 @@ let  char (s) =
      (
      (Stream.junk __strm )
      );
-     (try (backslash __strm ) with
-      | Stream.Failure  -> (raise ( Stream.Error ("") ) ))
+     
+     (try (backslash __strm )
+     with
+     | Stream.Failure  -> (raise ( Stream.Error ("") ) ))
    | _ -> (failwith "invalid char token" ))
 let  string ?strict  (s) =
   
@@ -149,12 +154,16 @@ let  string ?strict  (s) =
     );
     
     let  _ =
-    (try (backslash_in_string ( (strict <> None ) ) store __strm ) with
-     | Stream.Failure  -> (raise ( Stream.Error ("") ) )) in (parse __strm )
+    
+    (try (backslash_in_string ( (strict <> None ) ) store __strm )
+    with
+    | Stream.Failure  -> (raise ( Stream.Error ("") ) )) in (parse __strm )
   | Some(c) ->
     (
     (Stream.junk __strm )
     );
     
-    let  s = __strm in begin ( (store c ) ); (parse s ) end
+    let  s = __strm in begin
+                       ( (store c ) ); (parse s )
+                       end
   | _ -> (Buffer.contents buf )) in (parse ( (Stream.of_string s ) ) )

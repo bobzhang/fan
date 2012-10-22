@@ -6,10 +6,10 @@ type position =
 module Action =
  struct
   type t = Obj.t 
- let  mk = (Obj.repr : ('a  -> t) )
- let  get = (Obj.obj : (t -> 'a ) )
- let  getf = (Obj.obj : (t -> ('a  -> 'b ) ) )
- let  getf2 = (Obj.obj : (t -> ('a  -> ('b  -> 'c ) ) ) )
+ let  mk = (Obj.repr: ('a  -> t) )
+ let  get = (Obj.obj: (t -> 'a ) )
+ let  getf = (Obj.obj: (t -> ('a  -> 'b ) ) )
+ let  getf2 = (Obj.obj: (t -> ('a  -> ('b  -> 'c ) ) ) )
  
  end
 type gram = {
@@ -80,12 +80,16 @@ let  token_location (r) = r.cur_loc
 let  using ({gkeywords = table ; gfilter = filter ;_}) (kwd) =
   
   let  r =
-  (try (Hashtbl.find table kwd ) with
-   | Not_found  ->
-     
-     let  r = (ref 0 ) in begin ( (Hashtbl.add table kwd r ) ); r end) in
+  
+  (try (Hashtbl.find table kwd )
+  with
+  | Not_found  ->
+    
+    let  r = (ref 0 ) in begin
+                         ( (Hashtbl.add table kwd r ) ); r
+                         end) in
   begin
-   (
+  (
   (FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ) )
   );
    (incr r )

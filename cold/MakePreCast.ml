@@ -25,11 +25,12 @@ module Make =
    let  iter_and_take_callbacks (f) =
      
      let rec  loop (() ) = (loop ( (f ( (Queue.take callbacks ) ) ) ) ) in
+     
      (try (loop ()  ) with
-      | Queue.Empty  -> ())
+     | Queue.Empty  -> ())
    let  declare_dyn_module (m) (f) =
      begin
-      (
+     (
      (loaded_modules := ( m :: loaded_modules.contents  ))
      );
       (Queue.add (m , f ) callbacks )
@@ -37,13 +38,17 @@ module Make =
    let  register_str_item_parser (f) = (str_item_parser := f)
    let  register_sig_item_parser (f) = (sig_item_parser := f)
    let  register_parser (f) (g) =
-     begin ( (str_item_parser := f) ); (sig_item_parser := g) end
+     begin
+     ( (str_item_parser := f) ); (sig_item_parser := g)
+     end
    let  current_parser (() ) =
      (( str_item_parser.contents ) , ( sig_item_parser.contents ) )
    let  register_str_item_printer (f) = (str_item_printer := f)
    let  register_sig_item_printer (f) = (sig_item_printer := f)
    let  register_printer (f) (g) =
-     begin ( (str_item_printer := f) ); (sig_item_printer := g) end
+     begin
+     ( (str_item_printer := f) ); (sig_item_printer := g)
+     end
    let  current_printer (() ) =
      (( str_item_printer.contents ) , ( sig_item_printer.contents ) )
    let  plugin (((module Id)  : (module Sig.Id )))
@@ -63,7 +68,7 @@ module Make =
      (declare_dyn_module Id.name (
        fun (_) ->
          let module M = (Maker)(Syntax) in
-         (register_printer M.print_implem M.print_interf ) ) )
+           (register_printer M.print_implem M.print_interf ) ) )
    let  replace_printer (((module Id)  : (module Sig.Id )))
      (((module P)  : (module Sig.PrinterImpl ))) =
      (declare_dyn_module Id.name (
@@ -78,7 +83,7 @@ module Make =
      (declare_dyn_module Id.name (
        fun (_) ->
          let module M = (Maker)(Syntax) in
-         (register_parser M.parse_implem M.parse_interf ) ) )
+           (register_parser M.parse_implem M.parse_interf ) ) )
    let  enable_ocaml_printer (() ) =
      (replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P) )
    let  enable_dump_ocaml_ast_printer (() ) =

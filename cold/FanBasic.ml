@@ -7,10 +7,10 @@ let  x ?(off=0)  ((i : int)) =
   if (off > 25) then ( (invalid_arg "unsupported offset in x " ) )
   else
    
-   let  base = let open Char in (( (( (code 'a' ) ) + off) ) |> chr) in
+   let  base = let open Char in(( (( (code 'a' ) ) + off) ) |> chr) in
    (( (String.of_char base ) ) ^ ( (string_of_int i ) ))
 let  xid ?(off=0)  ((i : int)) =
-  (Ast.IdLid ((_loc , ( (x ~off:off i ) ) )) : Ast.ident)
+  (Ast.IdLid ((_loc , ( (x ~off:off i ) ) )): Ast.ident)
 let  allx ?(off=0)  (i) = ("all_" ^ ( (x ~off:off i ) ))
 let  allxid ?(off=0)  (i) = Ast.IdLid ((_loc , ( (allx ~off:off i ) ) ))
 let  check_valid (str) =
@@ -18,7 +18,7 @@ let  check_valid (str) =
   let  len = (String.length str ) in
   if (not (
        (( (len > 1) ) && (
-         (( (not ( (Char.is_digit ( (String.get str 1 ) ) ) ) ) ) && (
+         (( (not ( (Char.is_digit ( str.[1] ) ) ) ) ) && (
            (not ( (String.starts_with str "all_" ) ) ) )) )) ) )
   then
    begin

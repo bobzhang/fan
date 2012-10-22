@@ -24,7 +24,7 @@ module Make =
      
      let  q = (Queue.create ()  ) in
      begin
-      (
+     (
      if ocaml_stdlib then
       (
       (include_dir q FanConfig.ocaml_standard_library )
@@ -80,34 +80,33 @@ module Make =
      fun (_path) ->
        fun (file) ->
          begin
-          (
+         (
          if (not ( _initialized.contents ) ) then
           (
-          (try
-            (
-           (Dynlink.init ()  )
-           );
-            (
-           (Dynlink.allow_unsafe_modules true  )
-           );
-            (_initialized := true )
-           with
-           | Dynlink.Error(e) ->
-             (raise (
-               Error
-                 (("Camlp4's dynamic loader initialization" , (
-                   (Dynlink.error_message e ) ) )) ) ))
+          
+          (try ( (Dynlink.init ()  ) ); (
+          (Dynlink.allow_unsafe_modules true  ) ); (_initialized := true )
+          with
+          | Dynlink.Error(e) ->
+            (raise (
+              Error
+                (("Camlp4's dynamic loader initialization" , (
+                  (Dynlink.error_message e ) ) )) ) ))
           )
          else ()
          );
           
          let  fname =
-         (try (find_in_path _path file ) with
-          | Not_found  ->
-            (raise ( Error ((file , "file not found in path" )) ) )) in
-         (try (Dynlink.loadfile fname ) with
-          | Dynlink.Error(e) ->
-            (raise ( Error ((fname , ( (Dynlink.error_message e ) ) )) ) ))
+         
+         (try (find_in_path _path file )
+         with
+         | Not_found  ->
+           (raise ( Error ((file , "file not found in path" )) ) )) in
+         
+         (try (Dynlink.loadfile fname )
+         with
+         | Dynlink.Error(e) ->
+           (raise ( Error ((fname , ( (Dynlink.error_message e ) ) )) ) ))
          end
    let  is_native = Dynlink.is_native
    

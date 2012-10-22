@@ -10,26 +10,28 @@ module MakeDebugParser =
    include Syntax
   module Ast = Camlp4Ast
   let  debug_mode =
+    
     (try
-      
-     let  str = (Sys.getenv "STATIC_CAMLP4_DEBUG" ) in
-     
-     let rec  loop (acc) (i) =
-     (try
-       
-      let  pos = (String.index_from str i ':' ) in
-      (loop ( (SSet.add ( (String.sub str i ( (pos - i) ) ) ) acc ) ) (
-        (pos + 1) ) )
-      with
-      | Not_found  ->
-        (SSet.add ( (String.sub str i ( (( (String.length str ) ) - i) ) ) )
-          acc )) in
-     
-     let  sections = (loop SSet.empty 0 ) in
-     if (SSet.mem "*" sections ) then ( fun (_) -> true )
-     else fun (x) -> (SSet.mem x sections )
-     with
-     | Not_found  -> fun (_) -> false)
+    
+    let  str = (Sys.getenv "STATIC_CAMLP4_DEBUG" ) in
+    
+    let rec  loop (acc) (i) =
+    
+    (try
+    
+    let  pos = (String.index_from str i ':' ) in
+    (loop ( (SSet.add ( (String.sub str i ( (pos - i) ) ) ) acc ) ) (
+      (pos + 1) ) )
+    with
+    | Not_found  ->
+      (SSet.add ( (String.sub str i ( (( (String.length str ) ) - i) ) ) )
+        acc )) in
+    
+    let  sections = (loop SSet.empty 0 ) in
+    if (SSet.mem "*" sections ) then ( fun (_) -> true )
+    else fun (x) -> (SSet.mem x sections )
+    with
+    | Not_found  -> fun (_) -> false)
   let  mk_debug_mode (_loc) =
     
     function
@@ -69,22 +71,21 @@ module MakeDebugParser =
             Ast.ExStr ((_loc , section )) ) )) ) , call , (
         Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) ) ))
   let _ = 
-  let  _ = (expr : 'expr  Gram.t ) in
+  let  _ = (expr: 'expr  Gram.t ) in
   
   let  grammar_entry_create = Gram.mk in
   
-  let  end_or_in =
-  ((grammar_entry_create "end_or_in" ) : 'end_or_in  Gram.t ) and start_debug
-  = ((grammar_entry_create "start_debug" ) : 'start_debug  Gram.t )  in
+  let  end_or_in = ((grammar_entry_create "end_or_in" ): 'end_or_in  Gram.t )
+  and start_debug =
+  ((grammar_entry_create "start_debug" ): 'start_debug  Gram.t )  in
   begin
-   (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (start_debug : 'start_debug  Gram.t ) ) )) ;
-             `Stoken
+             ((Gram.obj ( (start_debug: 'start_debug  Gram.t ) ) )) ; `Stoken
              ((( 
                function
                | (`LIDENT _) -> true
@@ -94,9 +95,8 @@ module MakeDebugParser =
                | (`STRING (_ , _ )) -> true
                | _ -> false ) , (`Normal , "(`STRING (_ , _ ))" ) )) ;
              `Slist0 (`Snterml
-             ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "." ))) ;
-             `Snterm ((Gram.obj ( (end_or_in : 'end_or_in  Gram.t ) ) ))]  )
-             , (
+             ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "." ))) ; `Snterm
+             ((Gram.obj ( (end_or_in: 'end_or_in  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'end_or_in )) ->
                  fun ((args : 'expr  list )) ->
@@ -127,28 +127,28 @@ module MakeDebugParser =
                                              Ast.IdUid ((_loc , "()" )) ) ))
                                          ) , (
                                          (mk_debug _loc m fmt section args )
-                                         ) )) ) , e ))) : 'expr )
+                                         ) )) ) , e ))): 'expr )
                            | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) )
     )
   );
    (
-  (Gram.extend ( (end_or_in : 'end_or_in  Gram.t ) ) (
+  (Gram.extend ( (end_or_in: 'end_or_in  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("in") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
-                   fun ((_loc : FanLoc.t)) -> (Some (e) : 'end_or_in ) ) ) )
-             ) ;
+                   fun ((_loc : FanLoc.t)) -> (Some (e): 'end_or_in ) ) ) ) )
+           ;
            (( [`Skeyword ("end")]  ) , (
             (Gram.mk_action (
-              fun (_) -> fun ((_loc : FanLoc.t)) -> (None : 'end_or_in ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+              fun (_) -> fun ((_loc : FanLoc.t)) -> (None: 'end_or_in ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
-   (Gram.extend ( (start_debug : 'start_debug  Gram.t ) ) (
+   (Gram.extend ( (start_debug: 'start_debug  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
@@ -165,7 +165,7 @@ module MakeDebugParser =
                     (match __camlp4_0
                     with
                     | (`LIDENT "camlp4_debug") ->
-                      (Some ("Camlp4") : 'start_debug )
+                      (Some ("Camlp4"): 'start_debug )
                     | _ -> assert false) ) ) ) ) ;
             (( [`Stoken
              ((( 
@@ -178,7 +178,7 @@ module MakeDebugParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LIDENT "debug") -> (None : 'start_debug )
+                   | (`LIDENT "debug") -> (None: 'start_debug )
                    | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   end
   
@@ -198,78 +198,77 @@ module MakeGrammarParser =
   open FanGrammarTools
   let _ = (FanConfig.antiquotations := true )
   let _ = 
-  let  _ = (expr : 'expr  Gram.t ) and _ =
-  (level_list : 'level_list  Gram.t ) and _ = (level : 'level  Gram.t ) and _
-  = (psymbol : 'psymbol  Gram.t ) and _ = (rule_list : 'rule_list  Gram.t )
-  and _ = (rule : 'rule  Gram.t ) and _ = (symbol : 'symbol  Gram.t )  in
+  let  _ = (expr: 'expr  Gram.t ) and _ = (level_list: 'level_list  Gram.t )
+  and _ = (level: 'level  Gram.t ) and _ = (psymbol: 'psymbol  Gram.t ) and _
+  = (rule_list: 'rule_list  Gram.t ) and _ = (rule: 'rule  Gram.t ) and _ =
+  (symbol: 'symbol  Gram.t )  in
   
   let  grammar_entry_create = Gram.mk in
   
   let  extend_header =
-  ((grammar_entry_create "extend_header" ) : 'extend_header  Gram.t ) and
-  semi_sep = ((grammar_entry_create "semi_sep" ) : 'semi_sep  Gram.t ) and
-  string = ((grammar_entry_create "string" ) : 'string  Gram.t ) and name =
-  ((grammar_entry_create "name" ) : 'name  Gram.t ) and comma_patt =
-  ((grammar_entry_create "comma_patt" ) : 'comma_patt  Gram.t ) and pattern =
-  ((grammar_entry_create "pattern" ) : 'pattern  Gram.t ) and assoc =
-  ((grammar_entry_create "assoc" ) : 'assoc  Gram.t ) and position =
-  ((grammar_entry_create "position" ) : 'position  Gram.t ) and entry =
-  ((grammar_entry_create "entry" ) : 'entry  Gram.t ) and global =
-  ((grammar_entry_create "global" ) : 'global  Gram.t ) and t_qualid =
-  ((grammar_entry_create "t_qualid" ) : 't_qualid  Gram.t ) and qualid =
-  ((grammar_entry_create "qualid" ) : 'qualid  Gram.t ) and qualuid =
-  ((grammar_entry_create "qualuid" ) : 'qualuid  Gram.t ) and
+  ((grammar_entry_create "extend_header" ): 'extend_header  Gram.t ) and
+  semi_sep = ((grammar_entry_create "semi_sep" ): 'semi_sep  Gram.t ) and
+  string = ((grammar_entry_create "string" ): 'string  Gram.t ) and name =
+  ((grammar_entry_create "name" ): 'name  Gram.t ) and comma_patt =
+  ((grammar_entry_create "comma_patt" ): 'comma_patt  Gram.t ) and pattern =
+  ((grammar_entry_create "pattern" ): 'pattern  Gram.t ) and assoc =
+  ((grammar_entry_create "assoc" ): 'assoc  Gram.t ) and position =
+  ((grammar_entry_create "position" ): 'position  Gram.t ) and entry =
+  ((grammar_entry_create "entry" ): 'entry  Gram.t ) and global =
+  ((grammar_entry_create "global" ): 'global  Gram.t ) and t_qualid =
+  ((grammar_entry_create "t_qualid" ): 't_qualid  Gram.t ) and qualid =
+  ((grammar_entry_create "qualid" ): 'qualid  Gram.t ) and qualuid =
+  ((grammar_entry_create "qualuid" ): 'qualuid  Gram.t ) and
   delete_rule_header =
-  ((grammar_entry_create "delete_rule_header" ) : 'delete_rule_header  Gram.t
+  ((grammar_entry_create "delete_rule_header" ): 'delete_rule_header  Gram.t
     ) and delete_rule_body =
-  ((grammar_entry_create "delete_rule_body" ) : 'delete_rule_body  Gram.t )
+  ((grammar_entry_create "delete_rule_body" ): 'delete_rule_body  Gram.t )
   and extend_body =
-  ((grammar_entry_create "extend_body" ) : 'extend_body  Gram.t )  in
+  ((grammar_entry_create "extend_body" ): 'extend_body  Gram.t )  in
   begin
-   (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`After ("top")) ) , (
          [(None  , None  , (
            [(( [`Skeyword ("DELETE_RULE") ; `Snterm
-             ((Gram.obj ( (delete_rule_body : 'delete_rule_body  Gram.t ) ) ))
+             ((Gram.obj ( (delete_rule_body: 'delete_rule_body  Gram.t ) ) ))
              ; `Skeyword ("END")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((e : 'delete_rule_body )) ->
-                   fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'expr ) ) ) ) )
+                   fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'expr ) ) ) ) )
            ;
            (( [`Skeyword ("EXTEND") ; `Snterm
-            ((Gram.obj ( (extend_body : 'extend_body  Gram.t ) ) )) ;
+            ((Gram.obj ( (extend_body: 'extend_body  Gram.t ) ) )) ;
             `Skeyword ("END")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((e : 'extend_body )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'expr ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'expr ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (extend_header : 'extend_header  Gram.t ) ) (
+  (Gram.extend ( (extend_header: 'extend_header  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 ((None  , ( (gm ()  ) ) ) : 'extend_header ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (qualuid : 'qualuid  Gram.t ) ) ))]  ) ,
-            (
+                 ((None  , ( (gm ()  ) ) ): 'extend_header ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (qualuid: 'qualuid  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'qualuid )) ->
                 fun ((_loc : FanLoc.t)) ->
                   (
                     let  old = (gm ()  ) in
                     
-                    let  ()  = (grammar_module_name := t) in (None  , old ) :
+                    let  ()  = (grammar_module_name := t) in (None  , old ):
                     'extend_header ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (qualid : 'qualid  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (t_qualid : 't_qualid  Gram.t ) ) )) ;
+            ((Gram.obj ( (qualid: 'qualid  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (t_qualid: 't_qualid  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -282,25 +281,25 @@ module MakeGrammarParser =
                             let  old = (gm ()  ) in
                             
                             let  ()  = (grammar_module_name := t) in
-                            (( Some (i) ) , old ) : 'extend_header ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                            (( Some (i) ) , old ): 'extend_header ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (extend_body : 'extend_body  Gram.t ) ) (
+  (Gram.extend ( (extend_body: 'extend_body  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (extend_header : 'extend_header  Gram.t ) ) )) ;
-             `Sopt (`Snterm ((Gram.obj ( (global : 'global  Gram.t ) ) ))) ;
+             ((Gram.obj ( (extend_header: 'extend_header  Gram.t ) ) )) ;
+             `Sopt (`Snterm ((Gram.obj ( (global: 'global  Gram.t ) ) ))) ;
              `Slist1
              ((Gram.srules extend_body (
-                [(( [`Snterm ((Gram.obj ( (entry : 'entry  Gram.t ) ) ))]  )
-                  , (
+                [(( [`Snterm ((Gram.obj ( (entry: 'entry  Gram.t ) ) ))]  ) ,
+                  (
                   (Gram.mk_action (
                     fun ((e : 'entry )) ->
-                      fun ((_loc : FanLoc.t)) -> (e : 'e__1 ) ) ) ) )]  ) ))]
-              ) , (
+                      fun ((_loc : FanLoc.t)) -> (e: 'e__1 ) ) ) ) )]  ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((el : 'e__1  list )) ->
                  fun ((global_list : 'global  option )) ->
@@ -311,21 +310,20 @@ module MakeGrammarParser =
                          (text_of_functorial_extend _loc gram global_list el
                            ) in
                          
-                         let  ()  = (grammar_module_name := old) in res :
+                         let  ()  = (grammar_module_name := old) in res:
                          'extend_body ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (delete_rule_body : 'delete_rule_body  Gram.t ) ) (
+  (Gram.extend ( (delete_rule_body: 'delete_rule_body  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (delete_rule_header : 'delete_rule_header  Gram.t )
-                ) )) ; `Snterm ((Gram.obj ( (name : 'name  Gram.t ) ) )) ;
+             ((Gram.obj ( (delete_rule_header: 'delete_rule_header  Gram.t )
+                ) )) ; `Snterm ((Gram.obj ( (name: 'name  Gram.t ) ) )) ;
              `Skeyword (":") ; `Slist0sep
-             ((`Snterm ((Gram.obj ( (symbol : 'symbol  Gram.t ) ) )) ,
-               `Snterm ((Gram.obj ( (semi_sep : 'semi_sep  Gram.t ) ) )) ))] 
-             ) , (
+             ((`Snterm ((Gram.obj ( (symbol: 'symbol  Gram.t ) ) )) , `Snterm
+               ((Gram.obj ( (semi_sep: 'semi_sep  Gram.t ) ) )) ))]  ) , (
              (Gram.mk_action (
                fun ((sl : 'symbol  list )) ->
                  fun (_) ->
@@ -349,15 +347,15 @@ module MakeGrammarParser =
                                              ((_loc , "delete_rule" )) ) )) )
                                        )) ) , e )) ) , b )) in
                            
-                           let  ()  = (grammar_module_name := old) in res :
+                           let  ()  = (grammar_module_name := old) in res:
                            'delete_rule_body ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (delete_rule_header : 'delete_rule_header  Gram.t ) ) (
+  (Gram.extend ( (delete_rule_header: 'delete_rule_header  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (qualuid : 'qualuid  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (qualuid: 'qualuid  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun ((g : 'qualuid )) ->
@@ -365,11 +363,11 @@ module MakeGrammarParser =
                    (
                      let  old = (gm ()  ) in
                      
-                     let  ()  = (grammar_module_name := g) in old :
+                     let  ()  = (grammar_module_name := g) in old:
                      'delete_rule_header ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (qualuid : 'qualuid  Gram.t ) ) (
+  (Gram.extend ( (qualuid: 'qualuid  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -384,7 +382,7 @@ module MakeGrammarParser =
                    
                    (match __camlp4_0
                    with
-                   | (`UIDENT x) -> (Ast.IdUid ((_loc , x )) : 'qualuid )
+                   | (`UIDENT x) -> (Ast.IdUid ((_loc , x )): 'qualuid )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -402,12 +400,12 @@ module MakeGrammarParser =
                       with
                       | (`UIDENT x) ->
                         (Ast.IdAcc
-                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )) :
+                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )):
                           'qualuid )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (qualid : 'qualid  Gram.t ) ) (
+  (Gram.extend ( (qualid: 'qualid  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -422,7 +420,7 @@ module MakeGrammarParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LIDENT i) -> (Ast.IdLid ((_loc , i )) : 'qualid )
+                   | (`LIDENT i) -> (Ast.IdLid ((_loc , i )): 'qualid )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -435,7 +433,7 @@ module MakeGrammarParser =
                   
                   (match __camlp4_0
                   with
-                  | (`UIDENT i) -> (Ast.IdUid ((_loc , i )) : 'qualid )
+                  | (`UIDENT i) -> (Ast.IdUid ((_loc , i )): 'qualid )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -453,12 +451,12 @@ module MakeGrammarParser =
                       with
                       | (`UIDENT x) ->
                         (Ast.IdAcc
-                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )) :
+                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )):
                           'qualid )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (t_qualid : 't_qualid  Gram.t ) ) (
+  (Gram.extend ( (t_qualid: 't_qualid  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -481,7 +479,7 @@ module MakeGrammarParser =
                        (match (__camlp4_1 , __camlp4_0 )
                        with
                        | ((`LIDENT "t") , (`UIDENT x) ) ->
-                         (Ast.IdUid ((_loc , x )) : 't_qualid )
+                         (Ast.IdUid ((_loc , x )): 't_qualid )
                        | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -499,12 +497,12 @@ module MakeGrammarParser =
                       with
                       | (`UIDENT x) ->
                         (Ast.IdAcc
-                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )) :
+                           ((_loc , ( Ast.IdUid ((_loc , x )) ) , xs )):
                           't_qualid )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (global : 'global  Gram.t ) ) (
+  (Gram.extend ( (global: 'global  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -514,8 +512,8 @@ module MakeGrammarParser =
                | (`UIDENT "GLOBAL") -> true
                | _ -> false ) , (`Normal , "(`UIDENT \"GLOBAL\")" ) )) ;
              `Skeyword (":") ; `Slist1 (`Snterm
-             ((Gram.obj ( (name : 'name  Gram.t ) ) ))) ; `Snterm
-             ((Gram.obj ( (semi_sep : 'semi_sep  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (name: 'name  Gram.t ) ) ))) ; `Snterm
+             ((Gram.obj ( (semi_sep: 'semi_sep  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((sl : 'name  list )) ->
@@ -525,29 +523,29 @@ module MakeGrammarParser =
                          
                          (match __camlp4_0
                          with
-                         | (`UIDENT "GLOBAL") -> (sl : 'global )
+                         | (`UIDENT "GLOBAL") -> (sl: 'global )
                          | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (entry : 'entry  Gram.t ) ) (
+  (Gram.extend ( (entry: 'entry  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (name : 'name  Gram.t ) ) )) ; `Skeyword
+           [(( [`Snterm ((Gram.obj ( (name: 'name  Gram.t ) ) )) ; `Skeyword
              (":") ; `Sopt (`Snterm
-             ((Gram.obj ( (position : 'position  Gram.t ) ) ))) ; `Snterm
-             ((Gram.obj ( (level_list : 'level_list  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (position: 'position  Gram.t ) ) ))) ; `Snterm
+             ((Gram.obj ( (level_list: 'level_list  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((ll : 'level_list )) ->
                  fun ((pos : 'position  option )) ->
                    fun (_) ->
                      fun ((n : 'name )) ->
                        fun ((_loc : FanLoc.t)) ->
-                         ((mk_entry ~name:n ~pos:pos ~levels:ll ) : 'entry )
-               ) ) ) )]  ) )]  ) )) ()  ) ) )
+                         ((mk_entry ~name:n ~pos:pos ~levels:ll ): 'entry ) )
+               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (position : 'position  Gram.t ) ) (
+  (Gram.extend ( (position: 'position  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -558,7 +556,7 @@ module MakeGrammarParser =
                | (`UIDENT (("Before" |"After") |"Level")) -> true
                | _ -> false ) ,
                (`Normal , "(`UIDENT ((\"Before\" |\"After\") |\"Level\"))" )
-               )) ; `Snterm ((Gram.obj ( (string : 'string  Gram.t ) ) ))]  )
+               )) ; `Snterm ((Gram.obj ( (string: 'string  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((n : 'string )) ->
@@ -568,7 +566,7 @@ module MakeGrammarParser =
                      (match __camlp4_0
                      with
                      | (`UIDENT ((("Before" |"After") |"Level") as x)) ->
-                       (Ast.ExApp ((_loc , ( Ast.ExVrn ((_loc , x )) ) , n )) :
+                       (Ast.ExApp ((_loc , ( Ast.ExVrn ((_loc , x )) ) , n )):
                          'position )
                      | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -584,25 +582,25 @@ module MakeGrammarParser =
                   (match __camlp4_0
                   with
                   | (`UIDENT (("First" |"Last") as x)) ->
-                    (Ast.ExVrn ((_loc , x )) : 'position )
+                    (Ast.ExVrn ((_loc , x )): 'position )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (level_list : 'level_list  Gram.t ) ) (
+  (Gram.extend ( (level_list: 'level_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("[") ; `Slist0sep
-             ((`Snterm ((Gram.obj ( (level : 'level  Gram.t ) ) )) ,
-               `Skeyword ("|") )) ; `Skeyword ("]")]  ) , (
+             ((`Snterm ((Gram.obj ( (level: 'level  Gram.t ) ) )) , `Skeyword
+               ("|") )) ; `Skeyword ("]")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((ll : 'level  list )) ->
-                   fun (_) -> fun ((_loc : FanLoc.t)) -> (ll : 'level_list )
-               ) ) ) )]  ) )]  ) )) ()  ) ) )
+                   fun (_) -> fun ((_loc : FanLoc.t)) -> (ll: 'level_list ) )
+               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (level : 'level  Gram.t ) ) (
+  (Gram.extend ( (level: 'level  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -620,20 +618,20 @@ module MakeGrammarParser =
                         
                         (match __camlp4_0
                         with
-                        | (`STRING (_ , x )) -> (x : 'e__2 )
+                        | (`STRING (_ , x )) -> (x: 'e__2 )
                         | _ -> assert false) ) ) ) )]  ) )) ; `Sopt (`Snterm
-             ((Gram.obj ( (assoc : 'assoc  Gram.t ) ) ))) ; `Snterm
-             ((Gram.obj ( (rule_list : 'rule_list  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (assoc: 'assoc  Gram.t ) ) ))) ; `Snterm
+             ((Gram.obj ( (rule_list: 'rule_list  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((rules : 'rule_list )) ->
                  fun ((ass : 'assoc  option )) ->
                    fun ((lab : 'e__2  option )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((mk_level ~label:lab ~assoc:ass ~rules:rules ) :
+                       ((mk_level ~label:lab ~assoc:ass ~rules:rules ):
                          'level ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (assoc : 'assoc  Gram.t ) ) (
+  (Gram.extend ( (assoc: 'assoc  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -650,7 +648,7 @@ module MakeGrammarParser =
                    with
                    | (`UIDENT x) ->
                      ((failwithf
-                        "%s is not a correct associativity:(LA|RA|NA)" x ) :
+                        "%s is not a correct associativity:(LA|RA|NA)" x ):
                        'assoc )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -666,80 +664,80 @@ module MakeGrammarParser =
                   (match __camlp4_0
                   with
                   | (`UIDENT ((("LA" |"RA") |"NA") as x)) ->
-                    (Ast.ExVrn ((_loc , x )) : 'assoc )
+                    (Ast.ExVrn ((_loc , x )): 'assoc )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (rule_list : 'rule_list  Gram.t ) ) (
+  (Gram.extend ( (rule_list: 'rule_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("[") ; `Slist1sep
-             ((`Snterm ((Gram.obj ( (rule : 'rule  Gram.t ) ) )) , `Skeyword
+             ((`Snterm ((Gram.obj ( (rule: 'rule  Gram.t ) ) )) , `Skeyword
                ("|") )) ; `Skeyword ("]")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((rules : 'rule  list )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((retype_rule_list_without_patterns _loc rules ) :
+                       ((retype_rule_list_without_patterns _loc rules ):
                          'rule_list ) ) ) ) ) ;
            (( [`Skeyword ("[") ; `Skeyword ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> ([] : 'rule_list ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> ([]: 'rule_list ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (rule : 'rule  Gram.t ) ) (
+  (Gram.extend ( (rule: 'rule  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist0sep
-             ((`Snterm ((Gram.obj ( (psymbol : 'psymbol  Gram.t ) ) )) ,
-               `Snterm ((Gram.obj ( (semi_sep : 'semi_sep  Gram.t ) ) )) ))] 
+             ((`Snterm ((Gram.obj ( (psymbol: 'psymbol  Gram.t ) ) )) ,
+               `Snterm ((Gram.obj ( (semi_sep: 'semi_sep  Gram.t ) ) )) ))] 
              ) , (
              (Gram.mk_action (
                fun ((psl : 'psymbol  list )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((mk_rule ~prod:psl ~action:None  ) : 'rule ) ) ) ) ) ;
+                   ((mk_rule ~prod:psl ~action:None  ): 'rule ) ) ) ) ) ;
            (( [`Slist0sep
-            ((`Snterm ((Gram.obj ( (psymbol : 'psymbol  Gram.t ) ) )) ,
-              `Snterm ((Gram.obj ( (semi_sep : 'semi_sep  Gram.t ) ) )) )) ;
+            ((`Snterm ((Gram.obj ( (psymbol: 'psymbol  Gram.t ) ) )) ,
+              `Snterm ((Gram.obj ( (semi_sep: 'semi_sep  Gram.t ) ) )) )) ;
             `Skeyword ("->") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((act : 'expr )) ->
                 fun (_) ->
                   fun ((psl : 'psymbol  list )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((mk_rule ~prod:psl ~action:( Some (act) ) ) : 'rule )
-              ) ) ) )]  ) )]  ) )) ()  ) ) )
+                      ((mk_rule ~prod:psl ~action:( Some (act) ) ): 'rule ) )
+              ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (psymbol : 'psymbol  Gram.t ) ) (
+  (Gram.extend ( (psymbol: 'psymbol  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (symbol : 'symbol  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (symbol: 'symbol  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((s : 'symbol )) ->
-                 fun ((_loc : FanLoc.t)) -> (s : 'psymbol ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (symbol : 'symbol  Gram.t ) ) )) ;
+                 fun ((_loc : FanLoc.t)) -> (s: 'psymbol ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (symbol: 'symbol  Gram.t ) ) )) ;
             `Skeyword ("{") ; `Snterm
-            ((Gram.obj ( (pattern : 'pattern  Gram.t ) ) )) ; `Skeyword
-            ("}")]  ) , (
+            ((Gram.obj ( (pattern: 'pattern  Gram.t ) ) )) ; `Skeyword ("}")]
+             ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p : 'pattern )) ->
                   fun (_) ->
                     fun ((s : 'symbol )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        ({s with pattern = ( Some (p) ) } : 'psymbol ) ) ) )
-            )]  ) )]  ) )) ()  ) ) )
+                        ({s with pattern = ( Some (p) ) }: 'psymbol ) ) ) ) )]
+            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (symbol : 'symbol  Gram.t ) ) (
+  (Gram.extend ( (symbol: 'symbol  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , ( Some (`NA) ) , (
@@ -760,7 +758,7 @@ module MakeGrammarParser =
                        (
                          let  text = TXtry ((_loc , ( s.text ) )) in
                          (mk_symbol ~used:( s.used ) ~text:text ~styp:(
-                           s.styp ) ~pattern:None  ) : 'symbol )
+                           s.styp ) ~pattern:None  ): 'symbol )
                      | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -786,7 +784,7 @@ module MakeGrammarParser =
                         
                         let  text = TXopt ((_loc , ( s.text ) )) in
                         (mk_symbol ~used:( s.used ) ~text:text ~styp:styp
-                          ~pattern:None  ) : 'symbol )
+                          ~pattern:None  ): 'symbol )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -801,8 +799,7 @@ module MakeGrammarParser =
                    function
                    | (`UIDENT "SEP") -> true
                    | _ -> false ) , (`Normal , "(`UIDENT \"SEP\")" ) )) ;
-                 `Snterm ((Gram.obj ( (symbol : 'symbol  Gram.t ) ) ))]  ) ,
-                 (
+                 `Snterm ((Gram.obj ( (symbol: 'symbol  Gram.t ) ) ))]  ) , (
                  (Gram.mk_action (
                    fun ((t : 'symbol )) ->
                      fun (__camlp4_0) ->
@@ -810,7 +807,7 @@ module MakeGrammarParser =
                          
                          (match __camlp4_0
                          with
-                         | (`UIDENT "SEP") -> (t : 'e__3 )
+                         | (`UIDENT "SEP") -> (t: 'e__3 )
                          | _ -> assert false) ) ) ) )]  ) ))]  ) , (
             (Gram.mk_action (
               fun ((sep : 'e__3  option )) ->
@@ -847,16 +844,16 @@ module MakeGrammarParser =
                               (failwithf "only (LIST0|LIST1) allowed here" ))
                             ) sep s ) in
                           (mk_symbol ~used:used ~text:text ~styp:styp
-                            ~pattern:None  ) : 'symbol )
+                            ~pattern:None  ): 'symbol )
                       | _ -> assert false) ) ) ) )]  ) ) ;
          (None  , None  , (
           [(( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((s_t : 'symbol )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (s_t : 'symbol ) ) )
-            ) ) ;
-          (( [`Snterm ((Gram.obj ( (name : 'name  Gram.t ) ) )) ; `Sopt
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (s_t: 'symbol ) ) ) )
+            ) ;
+          (( [`Snterm ((Gram.obj ( (name: 'name  Gram.t ) ) )) ; `Sopt
            ((Gram.srules symbol (
               [(( [`Stoken
                 ((( 
@@ -877,7 +874,7 @@ module MakeGrammarParser =
                         (match (__camlp4_1 , __camlp4_0 )
                         with
                         | ((`STRING (_ , s )) , (`UIDENT "Level") ) ->
-                          (s : 'e__4 )
+                          (s: 'e__4 )
                         | _ -> assert false) ) ) ) )]  ) ))]  ) , (
            (Gram.mk_action (
              fun ((lev : 'e__4  option )) ->
@@ -885,7 +882,7 @@ module MakeGrammarParser =
                  fun ((_loc : FanLoc.t)) ->
                    ((mk_symbol ~used:( [n.tvar]  ) ~text:(
                       TXnterm ((_loc , n , lev )) ) ~styp:(
-                      STquo ((_loc , ( n.tvar ) )) ) ~pattern:None  ) :
+                      STquo ((_loc , ( n.tvar ) )) ) ~pattern:None  ):
                      'symbol ) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -900,11 +897,11 @@ module MakeGrammarParser =
                  with
                  | (`STRING (_ , s )) ->
                    ((mk_symbol ~used:[]  ~text:( TXkwd ((_loc , s )) )
-                      ~styp:( STtok (_loc) ) ~pattern:None  ) : 'symbol )
+                      ~styp:( STtok (_loc) ) ~pattern:None  ): 'symbol )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("`") ; `Snterm
-           ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) )) ; `Sopt (`Snterm
-           ((Gram.obj ( (patt : 'patt  Gram.t ) ) )))]  ) , (
+           ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) )) ; `Sopt (`Snterm
+           ((Gram.obj ( (patt: 'patt  Gram.t ) ) )))]  ) , (
            (Gram.mk_action (
              fun ((p : 'patt  option )) ->
                fun ((i : 'a_ident )) ->
@@ -955,10 +952,10 @@ module MakeGrammarParser =
                                    Ast.ExId
                                      ((_loc , ( Ast.IdLid ((_loc , "=" )) ) ))
                                    ) , x )) ) , y )) ) ys ) in
-                         (mk_tok _loc ~restrict:restrict p ( STtok (_loc) ) )) :
+                         (mk_tok _loc ~restrict:restrict p ( STtok (_loc) ) )):
                        'symbol ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Slist0sep
-           ((`Snterm ((Gram.obj ( (rule : 'rule  Gram.t ) ) )) , `Skeyword
+           ((`Snterm ((Gram.obj ( (rule: 'rule  Gram.t ) ) )) , `Skeyword
              ("|") )) ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -974,7 +971,7 @@ module MakeGrammarParser =
                        let  used = (used_of_rule_list rl ) in
                        (mk_symbol ~used:used ~text:(
                          TXrules ((_loc , ( (srules _loc t rl "" ) ) )) )
-                         ~styp:( STquo ((_loc , t )) ) ~pattern:None  ) :
+                         ~styp:( STquo ((_loc , t )) ) ~pattern:None  ):
                        'symbol ) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -989,8 +986,7 @@ module MakeGrammarParser =
                  with
                  | (`UIDENT "NEXT") ->
                    ((mk_symbol ~used:[]  ~text:( TXnext (_loc) ) ~styp:(
-                      STself ((_loc , "NEXT" )) ) ~pattern:None  ) : 'symbol
-                     )
+                      STself ((_loc , "NEXT" )) ) ~pattern:None  ): 'symbol )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -1005,18 +1001,17 @@ module MakeGrammarParser =
                  with
                  | (`UIDENT "SELF") ->
                    ((mk_symbol ~used:[]  ~text:( TXself (_loc) ) ~styp:(
-                      STself ((_loc , "SELF" )) ) ~pattern:None  ) : 'symbol
-                     )
+                      STself ((_loc , "SELF" )) ) ~pattern:None  ): 'symbol )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (pattern : 'pattern  Gram.t ) ) (
+  (Gram.extend ( (pattern: 'pattern  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("(") ; `Sself ; `Skeyword (",") ; `Snterm
-             ((Gram.obj ( (comma_patt : 'comma_patt  Gram.t ) ) )) ;
-             `Skeyword (")")]  ) , (
+             ((Gram.obj ( (comma_patt: 'comma_patt  Gram.t ) ) )) ; `Skeyword
+             (")")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((p2 : 'comma_patt )) ->
@@ -1025,18 +1020,18 @@ module MakeGrammarParser =
                        fun (_) ->
                          fun ((_loc : FanLoc.t)) ->
                            (Ast.PaTup
-                              ((_loc , ( Ast.PaCom ((_loc , p1 , p2 )) ) )) :
+                              ((_loc , ( Ast.PaCom ((_loc , p1 , p2 )) ) )):
                              'pattern ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p : 'pattern )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (p : 'pattern ) ) ) )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (p: 'pattern ) ) ) )
             ) ;
            (( [`Skeyword ("_")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc) : 'pattern ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc): 'pattern ) ) )
             ) ) ;
            (( [`Stoken
             ((( 
@@ -1050,42 +1045,42 @@ module MakeGrammarParser =
                   (match __camlp4_0
                   with
                   | (`LIDENT i) ->
-                    (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , i )) ) )) :
+                    (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , i )) ) )):
                       'pattern )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_patt : 'comma_patt  Gram.t ) ) (
+  (Gram.extend ( (comma_patt: 'comma_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (pattern : 'pattern  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (pattern: 'pattern  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun ((p : 'pattern )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'comma_patt ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (p: 'comma_patt ) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((p2 : 'comma_patt )) ->
                 fun (_) ->
                   fun ((p1 : 'comma_patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaCom ((_loc , p1 , p2 )) : 'comma_patt ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                      (Ast.PaCom ((_loc , p1 , p2 )): 'comma_patt ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (name : 'name  Gram.t ) ) (
+  (Gram.extend ( (name: 'name  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (qualid : 'qualid  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (qualid: 'qualid  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((il : 'qualid )) ->
-                 fun ((_loc : FanLoc.t)) -> ((mk_name _loc il ) : 'name ) ) )
+                 fun ((_loc : FanLoc.t)) -> ((mk_name _loc il ): 'name ) ) )
              ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (string : 'string  Gram.t ) ) (
+  (Gram.extend ( (string: 'string  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -1102,7 +1097,7 @@ module MakeGrammarParser =
                    (match __camlp4_0
                    with
                    | (`ANTIQUOT ("" , s )) ->
-                     ((AntiquotSyntax.parse_expr _loc s ) : 'string )
+                     ((AntiquotSyntax.parse_expr _loc s ): 'string )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -1115,29 +1110,28 @@ module MakeGrammarParser =
                   
                   (match __camlp4_0
                   with
-                  | (`STRING (_ , s )) ->
-                    (Ast.ExStr ((_loc , s )) : 'string )
+                  | (`STRING (_ , s )) -> (Ast.ExStr ((_loc , s )): 'string )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
-   (Gram.extend ( (semi_sep : 'semi_sep  Gram.t ) ) (
+   (Gram.extend ( (semi_sep: 'semi_sep  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
             [(( [`Skeyword (";")]  ) , (
               (Gram.mk_action (
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'semi_sep ) ) ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'semi_sep ) ) ) )
               )]  ) )]  ) )) ()  ) ) )
   end
   let _ = 
-  let  _ = (symbol : 'symbol  Gram.t ) in
+  let  _ = (symbol: 'symbol  Gram.t ) in
   
   let  grammar_entry_create = Gram.mk in
   
   let  simple_expr =
-  ((grammar_entry_create "simple_expr" ) : 'simple_expr  Gram.t ) in
+  ((grammar_entry_create "simple_expr" ): 'simple_expr  Gram.t ) in
   begin
-   (
-  (Gram.extend ( (symbol : 'symbol  Gram.t ) ) (
+  (
+  (Gram.extend ( (symbol: 'symbol  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Level ("top")) ) , (
          [(None  , None  , (
@@ -1146,10 +1140,9 @@ module MakeGrammarParser =
                function
                | (`UIDENT "FOLD1") -> true
                | _ -> false ) , (`Normal , "(`UIDENT \"FOLD1\")" ) )) ;
-             `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) ))
-             ; `Snterm
-             ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ; `Sself
-             ; `Stoken
+             `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
+             `Sself ; `Stoken
              ((( 
                function
                | (`UIDENT "SEP") -> true
@@ -1168,15 +1161,15 @@ module MakeGrammarParser =
                              with
                              | ((`UIDENT "SEP") , (`UIDENT "FOLD1") ) ->
                                ((sfoldsep _loc "FOLD1 SEP" "sfold1sep" f e s
-                                  sep ) : 'symbol )
+                                  sep ): 'symbol )
                              | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`UIDENT "FOLD0") -> true
               | _ -> false ) , (`Normal , "(`UIDENT \"FOLD0\")" ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
             `Sself ; `Stoken
             ((( 
               function
@@ -1196,15 +1189,15 @@ module MakeGrammarParser =
                             with
                             | ((`UIDENT "SEP") , (`UIDENT "FOLD0") ) ->
                               ((sfoldsep _loc "FOLD0 SEP" "sfold0sep" f e s
-                                 sep ) : 'symbol )
+                                 sep ): 'symbol )
                             | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`UIDENT "FOLD1") -> true
               | _ -> false ) , (`Normal , "(`UIDENT \"FOLD1\")" ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((s : 'symbol )) ->
@@ -1216,15 +1209,15 @@ module MakeGrammarParser =
                         (match __camlp4_0
                         with
                         | (`UIDENT "FOLD1") ->
-                          ((sfold _loc "FOLD1" "sfold1" f e s ) : 'symbol )
+                          ((sfold _loc "FOLD1" "sfold1" f e s ): 'symbol )
                         | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`UIDENT "FOLD0") -> true
               | _ -> false ) , (`Normal , "(`UIDENT \"FOLD0\")" ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (simple_expr : 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (simple_expr: 'simple_expr  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((s : 'symbol )) ->
@@ -1236,27 +1229,27 @@ module MakeGrammarParser =
                         (match __camlp4_0
                         with
                         | (`UIDENT "FOLD0") ->
-                          ((sfold _loc "FOLD0" "sfold0" f e s ) : 'symbol )
+                          ((sfold _loc "FOLD0" "sfold0" f e s ): 'symbol )
                         | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
-   (Gram.extend ( (simple_expr : 'simple_expr  Gram.t ) ) (
+   (Gram.extend ( (simple_expr: 'simple_expr  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
             [(( [`Skeyword ("(") ; `Snterm
-              ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword (")")]  )
+              ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword (")")]  )
               , (
               (Gram.mk_action (
                 fun (_) ->
                   fun ((e : 'expr )) ->
-                    fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'simple_expr )
+                    fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'simple_expr )
                 ) ) ) ) ;
-            (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
+            (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_LIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , i )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , i )) ) )):
                      'simple_expr ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   end
   let _ = (Options.add "-split_ext" ( Arg.Set (split_ext) )
@@ -1279,44 +1272,44 @@ module MakeListComprehension =
    include Syntax
   module Ast = Camlp4Ast
   let _ = (Gram.delete_rule expr ( [`Skeyword ("[") ; `Snterm
-            ((Gram.obj ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) )
-               )) ; `Skeyword ("]")]  ) )
+            ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) ))
+            ; `Skeyword ("]")]  ) )
   let  comprehension_or_sem_expr_for_list =
     (Gram.mk "comprehension_or_sem_expr_for_list" )
   let _ = 
-  let  _ = (expr : 'expr  Gram.t ) and _ =
-  (comprehension_or_sem_expr_for_list : 'comprehension_or_sem_expr_for_list 
+  let  _ = (expr: 'expr  Gram.t ) and _ =
+  (comprehension_or_sem_expr_for_list: 'comprehension_or_sem_expr_for_list 
     Gram.t )  in
   
   let  grammar_entry_create = Gram.mk in
   
-  let  item = ((grammar_entry_create "item" ) : 'item  Gram.t ) in
+  let  item = ((grammar_entry_create "item" ): 'item  Gram.t ) in
   begin
-   (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Level ("simple")) ) , (
          [(None  , None  , (
            [(( [`Skeyword ("[") ; `Snterm
              ((Gram.obj (
-                (comprehension_or_sem_expr_for_list :
+                (comprehension_or_sem_expr_for_list:
                   'comprehension_or_sem_expr_for_list  Gram.t ) ) )) ;
              `Skeyword ("]")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((e : 'comprehension_or_sem_expr_for_list )) ->
-                   fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'expr ) ) ) ) )]
+                   fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'expr ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (comprehension_or_sem_expr_for_list : 'comprehension_or_sem_expr_for_list
-       Gram.t ) ) (
+    (comprehension_or_sem_expr_for_list: 'comprehension_or_sem_expr_for_list 
+      Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterml
-             ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
+             ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun ((_loc : FanLoc.t)) ->
@@ -1328,21 +1321,21 @@ module MakeListComprehension =
                               ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) ) ,
                             e )) ) , (
                         Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) )
-                        )) : 'comprehension_or_sem_expr_for_list ) ) ) ) ) ;
+                        )): 'comprehension_or_sem_expr_for_list ) ) ) ) ) ;
            (( [`Snterml
-            ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" )) ;
+            ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" )) ;
             `Skeyword ("|") ; `Slist1sep
-            ((`Snterm ((Gram.obj ( (item : 'item  Gram.t ) ) )) , `Skeyword
+            ((`Snterm ((Gram.obj ( (item: 'item  Gram.t ) ) )) , `Skeyword
               (";") ))]  ) , (
             (Gram.mk_action (
               fun ((l : 'item  list )) ->
                 fun (_) ->
                   fun ((e : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Expr.compr _loc e l ) :
+                      ((Expr.compr _loc e l ):
                         'comprehension_or_sem_expr_for_list ) ) ) ) ) ;
            (( [`Snterml
-            ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" )) ;
+            ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" )) ;
             `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -1356,13 +1349,13 @@ module MakeListComprehension =
                                ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) ) ,
                              e )) ) , (
                          Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) ))
-                         ) )) : 'comprehension_or_sem_expr_for_list ) ) ) ) )
+                         ) )): 'comprehension_or_sem_expr_for_list ) ) ) ) )
            ;
            (( [`Snterml
-            ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" )) ;
+            ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" )) ;
             `Skeyword (";") ; `Snterm
-            ((Gram.obj ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) )
-               ))]  ) , (
+            ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((mk : 'sem_expr_for_list )) ->
                 fun (_) ->
@@ -1378,51 +1371,50 @@ module MakeListComprehension =
                            (mk (
                              Ast.ExId
                                ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) ) )
-                           ) )) : 'comprehension_or_sem_expr_for_list ) ) ) )
+                           ) )): 'comprehension_or_sem_expr_for_list ) ) ) )
             )]  ) )]  ) )) ()  ) ) )
   );
-   (Gram.extend ( (item : 'item  Gram.t ) ) (
+   (Gram.extend ( (item: 'item  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
             [(( [`Snterml
-              ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))]  ) ,
-              (
+              ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
               (Gram.mk_action (
                 fun ((e : 'expr )) ->
-                  fun ((_loc : FanLoc.t)) -> (`cond (e) : 'item ) ) ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> (`cond (e): 'item ) ) ) ) ) ;
             (( [`Stry
              ((Gram.srules item (
-                [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ;
+                [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ;
                   `Skeyword ("<-")]  ) , (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((p : 'patt )) ->
-                        fun ((_loc : FanLoc.t)) -> (p : 'e__5 ) ) ) ) )]  ) ))
+                        fun ((_loc : FanLoc.t)) -> (p: 'e__5 ) ) ) ) )]  ) ))
              ; `Snterml
-             ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
+             ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun ((p : 'e__5 )) ->
-                   fun ((_loc : FanLoc.t)) -> (`gen ((p , e )) : 'item ) ) )
-             ) )]  ) )]  ) )) ()  ) ) )
+                   fun ((_loc : FanLoc.t)) -> (`gen ((p , e )): 'item ) ) ) )
+             )]  ) )]  ) )) ()  ) ) )
   end
   let _ = if (is_revised ~expr:expr ~sem_expr_for_list:sem_expr_for_list ) then
            (
            
-           let  _ = (expr : 'expr  Gram.t ) and _ =
-           (comprehension_or_sem_expr_for_list :
+           let  _ = (expr: 'expr  Gram.t ) and _ =
+           (comprehension_or_sem_expr_for_list:
              'comprehension_or_sem_expr_for_list  Gram.t )  in
            (Gram.extend (
-             (comprehension_or_sem_expr_for_list :
+             (comprehension_or_sem_expr_for_list:
                'comprehension_or_sem_expr_for_list  Gram.t ) ) (
              ((fun (() ) ->
                  (None  , (
                   [(None  , None  , (
                     [(( [`Snterml
-                      ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))
+                      ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))
                       ; `Skeyword ("::") ; `Snterm
-                      ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+                      ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
                       (Gram.mk_action (
                         fun ((last : 'expr )) ->
                           fun (_) ->
@@ -1435,16 +1427,16 @@ module MakeListComprehension =
                                          Ast.ExId
                                            ((_loc , (
                                              Ast.IdUid ((_loc , "::" )) ) ))
-                                         ) , e )) ) , last )) :
+                                         ) , e )) ) , last )):
                                   'comprehension_or_sem_expr_for_list ) ) ) )
                       ) ;
                     (( [`Snterml
-                     ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))
+                     ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))
                      ; `Skeyword (";") ; `Snterm
                      ((Gram.obj (
-                        (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) ) ))
+                        (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) ))
                      ; `Skeyword ("::") ; `Snterm
-                     ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+                     ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
                      (Gram.mk_action (
                        fun ((last : 'expr )) ->
                          fun (_) ->
@@ -1460,7 +1452,7 @@ module MakeListComprehension =
                                               ((_loc , (
                                                 Ast.IdUid ((_loc , "::" )) )
                                                 )) ) , e )) ) , ( (mk last )
-                                        ) )) :
+                                        ) )):
                                      'comprehension_or_sem_expr_for_list ) )
                        ) ) )]  ) )]  ) )) ()  ) ) )
            )
@@ -1491,13 +1483,13 @@ module MakeMacroParser =
            (List.length l2 ) ) ( (List.length l1 ) ) )) ) )
   let  define (eo) (x) =
     begin
-     (
+    (
     
     (match eo
     with
     | Some([]  , e ) ->
       (
-      (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+      (Gram.extend ( (expr: 'expr  Gram.t ) ) (
         ((fun (() ) ->
             (( Some (`Level ("simple")) ) , (
              [(None  , None  , (
@@ -1514,10 +1506,10 @@ module MakeMacroParser =
                        (match __camlp4_0
                        with
                        | (`UIDENT _) ->
-                         (((((new Ast.reloc) _loc )#expr) e ) : 'expr )
+                         ((((new Ast.reloc) _loc )#expr e ): 'expr )
                        | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
       );
-      (Gram.extend ( (patt : 'patt  Gram.t ) ) (
+      (Gram.extend ( (patt: 'patt  Gram.t ) ) (
         ((fun (() ) ->
             (( Some (`Level ("simple")) ) , (
              [(None  , None  , (
@@ -1536,11 +1528,11 @@ module MakeMacroParser =
                        | (`UIDENT _) ->
                          (
                            let  p = (Expr.substp _loc []  e ) in
-                           ((((new Ast.reloc) _loc )#patt) p ) : 'patt )
+                           (((new Ast.reloc) _loc )#patt p ): 'patt )
                        | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
     | Some(sl , e ) ->
       (
-      (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+      (Gram.extend ( (expr: 'expr  Gram.t ) ) (
         ((fun (() ) ->
             (( Some (`Level ("apply")) ) , (
              [(None  , None  , (
@@ -1571,12 +1563,12 @@ module MakeMacroParser =
                               (
                               
                               let  env = (List.combine sl el ) in
-                              ((((new Expr.subst) _loc env )#expr) e )
+                              (((new Expr.subst) _loc env )#expr e )
                               )
-                             else (incorrect_number _loc el sl ) : 'expr )
+                             else (incorrect_number _loc el sl ): 'expr )
                          | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
       );
-      (Gram.extend ( (patt : 'patt  Gram.t ) ) (
+      (Gram.extend ( (patt: 'patt  Gram.t ) ) (
         ((fun (() ) ->
             (( Some (`Level ("simple")) ) , (
              [(None  , None  , (
@@ -1609,53 +1601,51 @@ module MakeMacroParser =
                               let  env = (List.combine sl pl ) in
                               
                               let  p = (Expr.substp _loc env e ) in
-                              ((((new Ast.reloc) _loc )#patt) p )
+                              (((new Ast.reloc) _loc )#patt p )
                               )
-                             else (incorrect_number _loc pl sl ) : 'patt )
+                             else (incorrect_number _loc pl sl ): 'patt )
                          | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
     | None  -> ())
     );
      (defined := ( (x , eo ) :: defined.contents  ))
     end
   let  undef (x) =
-    (try
+    
+    (try (
+    
+    let  eo = (List.assoc x ( defined.contents ) ) in
+    
+    (match eo
+    with
+    | Some([]  , _ ) ->
       (
-     
-     let  eo = (List.assoc x ( defined.contents ) ) in
-     
-     (match eo
-     with
-     | Some([]  , _ ) ->
-       (
-       (Gram.delete_rule expr ( [`Stoken
-         ((( 
-           function
-           | (`UIDENT __x) when (x = __x) -> true
-           | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) ))]  ) )
-       );
-       (Gram.delete_rule patt ( [`Stoken
-         ((( 
-           function
-           | (`UIDENT __x) when (x = __x) -> true
-           | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) ))]  ) )
-     | Some(_ , _ ) ->
-       (
-       (Gram.delete_rule expr ( [`Stoken
-         ((( 
-           function
-           | (`UIDENT __x) when (x = __x) -> true
-           | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) )) ; `Sself]  ) )
-       );
-       (Gram.delete_rule patt ( [`Stoken
-         ((( 
-           function
-           | (`UIDENT __x) when (x = __x) -> true
-           | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) )) ; `Sself]  ) )
-     | None  -> ())
-     );
-      (defined := ( (list_remove x ( defined.contents ) ) ))
-     with
-     | Not_found  -> ())
+      (Gram.delete_rule expr ( [`Stoken
+        ((( 
+          function
+          | (`UIDENT __x) when (x = __x) -> true
+          | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) ))]  ) )
+      );
+      (Gram.delete_rule patt ( [`Stoken
+        ((( 
+          function
+          | (`UIDENT __x) when (x = __x) -> true
+          | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) ))]  ) )
+    | Some(_ , _ ) ->
+      (
+      (Gram.delete_rule expr ( [`Stoken
+        ((( 
+          function
+          | (`UIDENT __x) when (x = __x) -> true
+          | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) )) ; `Sself]  ) )
+      );
+      (Gram.delete_rule patt ( [`Stoken
+        ((( 
+          function
+          | (`UIDENT __x) when (x = __x) -> true
+          | _ -> false ) , (`Antiquot , "(`UIDENT __x)" ) )) ; `Sself]  ) )
+    | None  -> ()) ); (defined := ( (list_remove x ( defined.contents ) ) ))
+    with
+    | Not_found  -> ())
   let  parse_def (s) =
     
     (match (Gram.parse_string expr ( (FanLoc.mk "<command line>" ) ) s )
@@ -1673,8 +1663,7 @@ module MakeMacroParser =
      (
      
      let  str =
-     if (( (String.get str ( (( (String.length str ) ) - 1) ) ) ) = '/') then
-      str
+     if (( str.[(( (String.length str ) ) - 1)] ) = '/') then str
      else (str ^ "/") in
      (include_dirs := ( (( include_dirs.contents ) @ ( [str]  )) ))
      )
@@ -1685,12 +1674,13 @@ module MakeMacroParser =
     fun (file) ->
       
       let  file =
+      
       (try
-        ((
-          (List.find ( (dir_ok file ) ) (
-            (( include_dirs.contents ) @ ( ["./"]  )) ) ) ) ^ file)
-       with
-       | Not_found  -> file) in
+      ((
+        (List.find ( (dir_ok file ) ) (
+          (( include_dirs.contents ) @ ( ["./"]  )) ) ) ) ^ file)
+      with
+      | Not_found  -> file) in
       
       let  ch = (open_in file ) in
       
@@ -1731,69 +1721,69 @@ module MakeMacroParser =
      )
     else nil in SdStr (item)
   let _ = 
-  let  _ = (expr : 'expr  Gram.t ) and _ =
-  (sig_item : 'sig_item  Gram.t ) and _ = (str_item : 'str_item  Gram.t )
-  and _ = (patt : 'patt  Gram.t )  in
+  let  _ = (expr: 'expr  Gram.t ) and _ = (sig_item: 'sig_item  Gram.t )
+  and _ = (str_item: 'str_item  Gram.t ) and _ = (patt: 'patt  Gram.t ) 
+  in
   
   let  grammar_entry_create = Gram.mk in
   
   let  macro_def =
-  ((grammar_entry_create "macro_def" ) : 'macro_def  Gram.t ) and uident
-  = ((grammar_entry_create "uident" ) : 'uident  Gram.t ) and
+  ((grammar_entry_create "macro_def" ): 'macro_def  Gram.t ) and uident =
+  ((grammar_entry_create "uident" ): 'uident  Gram.t ) and
   opt_macro_value =
-  ((grammar_entry_create "opt_macro_value" ) : 'opt_macro_value  Gram.t )
-  and endif = ((grammar_entry_create "endif" ) : 'endif  Gram.t ) and
+  ((grammar_entry_create "opt_macro_value" ): 'opt_macro_value  Gram.t )
+  and endif = ((grammar_entry_create "endif" ): 'endif  Gram.t ) and
   sglist_else =
-  ((grammar_entry_create "sglist_else" ) : 'sglist_else  Gram.t ) and
+  ((grammar_entry_create "sglist_else" ): 'sglist_else  Gram.t ) and
   sglist_then =
-  ((grammar_entry_create "sglist_then" ) : 'sglist_then  Gram.t ) and
+  ((grammar_entry_create "sglist_then" ): 'sglist_then  Gram.t ) and
   smlist_else =
-  ((grammar_entry_create "smlist_else" ) : 'smlist_else  Gram.t ) and
+  ((grammar_entry_create "smlist_else" ): 'smlist_else  Gram.t ) and
   smlist_then =
-  ((grammar_entry_create "smlist_then" ) : 'smlist_then  Gram.t ) and
-  else_expr = ((grammar_entry_create "else_expr" ) : 'else_expr  Gram.t )
+  ((grammar_entry_create "smlist_then" ): 'smlist_then  Gram.t ) and
+  else_expr = ((grammar_entry_create "else_expr" ): 'else_expr  Gram.t )
   and else_macro_def_sig =
-  ((grammar_entry_create "else_macro_def_sig" ) : 'else_macro_def_sig 
+  ((grammar_entry_create "else_macro_def_sig" ): 'else_macro_def_sig 
     Gram.t ) and else_macro_def =
-  ((grammar_entry_create "else_macro_def" ) : 'else_macro_def  Gram.t )
+  ((grammar_entry_create "else_macro_def" ): 'else_macro_def  Gram.t )
   and uident_eval_ifndef =
-  ((grammar_entry_create "uident_eval_ifndef" ) : 'uident_eval_ifndef 
+  ((grammar_entry_create "uident_eval_ifndef" ): 'uident_eval_ifndef 
     Gram.t ) and uident_eval_ifdef =
-  ((grammar_entry_create "uident_eval_ifdef" ) : 'uident_eval_ifdef 
+  ((grammar_entry_create "uident_eval_ifdef" ): 'uident_eval_ifdef 
     Gram.t ) and macro_def_sig =
-  ((grammar_entry_create "macro_def_sig" ) : 'macro_def_sig  Gram.t )  in
+  ((grammar_entry_create "macro_def_sig" ): 'macro_def_sig  Gram.t )  in
   begin
-   (
-  (Gram.extend ( (str_item : 'str_item  Gram.t ) ) (
+  (
+  (Gram.extend ( (str_item: 'str_item  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`First) ) , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (macro_def : 'macro_def  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (macro_def: 'macro_def  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'macro_def )) ->
                  fun ((_loc : FanLoc.t)) ->
                    ((execute_macro ( Ast.StNil (_loc) ) (
                       fun (a) -> fun (b) -> Ast.StSem ((_loc , a , b )) )
-                      x ) : 'str_item ) ) ) ) )]  ) )]  ) )) ()  ) ) )
+                      x ): 'str_item ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sig_item : 'sig_item  Gram.t ) ) (
+  (Gram.extend ( (sig_item: 'sig_item  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`First) ) , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (macro_def_sig : 'macro_def_sig  Gram.t ) ) ))] 
+             ((Gram.obj ( (macro_def_sig: 'macro_def_sig  Gram.t ) ) ))] 
              ) , (
              (Gram.mk_action (
                fun ((x : 'macro_def_sig )) ->
                  fun ((_loc : FanLoc.t)) ->
                    ((execute_macro ( Ast.SgNil (_loc) ) (
                       fun (a) -> fun (b) -> Ast.SgSem ((_loc , a , b )) )
-                      x ) : 'sig_item ) ) ) ) )]  ) )]  ) )) ()  ) ) )
+                      x ): 'sig_item ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (macro_def : 'macro_def  Gram.t ) ) (
+  (Gram.extend ( (macro_def: 'macro_def  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -1812,16 +1802,16 @@ module MakeMacroParser =
                      with
                      | (`STRING (_ , fname )) ->
                        (SdLazy
-                          (lazy ( (parse_include_file str_items fname ) )) :
+                          (lazy ( (parse_include_file str_items fname ) )):
                          'macro_def )
                      | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("IFNDEF") ; `Snterm
             ((Gram.obj (
-               (uident_eval_ifndef : 'uident_eval_ifndef  Gram.t ) ) )) ;
+               (uident_eval_ifndef: 'uident_eval_ifndef  Gram.t ) ) )) ;
             `Skeyword ("THEN") ; `Snterm
-            ((Gram.obj ( (smlist_then : 'smlist_then  Gram.t ) ) )) ;
+            ((Gram.obj ( (smlist_then: 'smlist_then  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (else_macro_def : 'else_macro_def  Gram.t ) ) ))] 
+            ((Gram.obj ( (else_macro_def: 'else_macro_def  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((st2 : 'else_macro_def )) ->
@@ -1830,15 +1820,14 @@ module MakeMacroParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          ((make_SdITE_result st1 st2 ) : 'macro_def ) )
-              ) ) ) ;
+                          ((make_SdITE_result st1 st2 ): 'macro_def ) ) )
+            ) ) ;
            (( [`Skeyword ("IFDEF") ; `Snterm
-            ((Gram.obj (
-               (uident_eval_ifdef : 'uident_eval_ifdef  Gram.t ) ) )) ;
-            `Skeyword ("THEN") ; `Snterm
-            ((Gram.obj ( (smlist_then : 'smlist_then  Gram.t ) ) )) ;
+            ((Gram.obj ( (uident_eval_ifdef: 'uident_eval_ifdef  Gram.t )
+               ) )) ; `Skeyword ("THEN") ; `Snterm
+            ((Gram.obj ( (smlist_then: 'smlist_then  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (else_macro_def : 'else_macro_def  Gram.t ) ) ))] 
+            ((Gram.obj ( (else_macro_def: 'else_macro_def  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((st2 : 'else_macro_def )) ->
@@ -1847,29 +1836,29 @@ module MakeMacroParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          ((make_SdITE_result st1 st2 ) : 'macro_def ) )
-              ) ) ) ;
+                          ((make_SdITE_result st1 st2 ): 'macro_def ) ) )
+            ) ) ;
            (( [`Skeyword ("UNDEF") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'uident )) ->
                 fun (_) ->
-                  fun ((_loc : FanLoc.t)) -> (SdUnd (i) : 'macro_def ) )
-              ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> (SdUnd (i): 'macro_def ) ) )
+            ) ) ;
            (( [`Skeyword ("DEFINE") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_macro_value : 'opt_macro_value  Gram.t ) )
-               ))]  ) , (
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_macro_value: 'opt_macro_value  Gram.t ) ) ))] 
+            ) , (
             (Gram.mk_action (
               fun ((def : 'opt_macro_value )) ->
                 fun ((i : 'uident )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (SdDef ((i , def )) : 'macro_def ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                      (SdDef ((i , def )): 'macro_def ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
    (
-  (Gram.extend ( (macro_def_sig : 'macro_def_sig  Gram.t ) ) (
+  (Gram.extend ( (macro_def_sig: 'macro_def_sig  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -1888,17 +1877,17 @@ module MakeMacroParser =
                      with
                      | (`STRING (_ , fname )) ->
                        (SdLazy
-                          (lazy ( (parse_include_file sig_items fname ) )) :
+                          (lazy ( (parse_include_file sig_items fname ) )):
                          'macro_def_sig )
                      | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("IFNDEF") ; `Snterm
             ((Gram.obj (
-               (uident_eval_ifndef : 'uident_eval_ifndef  Gram.t ) ) )) ;
+               (uident_eval_ifndef: 'uident_eval_ifndef  Gram.t ) ) )) ;
             `Skeyword ("THEN") ; `Snterm
-            ((Gram.obj ( (sglist_then : 'sglist_then  Gram.t ) ) )) ;
+            ((Gram.obj ( (sglist_then: 'sglist_then  Gram.t ) ) )) ;
             `Snterm
             ((Gram.obj (
-               (else_macro_def_sig : 'else_macro_def_sig  Gram.t ) ) ))] 
+               (else_macro_def_sig: 'else_macro_def_sig  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((sg2 : 'else_macro_def_sig )) ->
@@ -1907,16 +1896,15 @@ module MakeMacroParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          ((make_SdITE_result sg1 sg2 ) : 'macro_def_sig
-                            ) ) ) ) ) ;
+                          ((make_SdITE_result sg1 sg2 ): 'macro_def_sig )
+              ) ) ) ) ;
            (( [`Skeyword ("IFDEF") ; `Snterm
-            ((Gram.obj (
-               (uident_eval_ifdef : 'uident_eval_ifdef  Gram.t ) ) )) ;
-            `Skeyword ("THEN") ; `Snterm
-            ((Gram.obj ( (sglist_then : 'sglist_then  Gram.t ) ) )) ;
+            ((Gram.obj ( (uident_eval_ifdef: 'uident_eval_ifdef  Gram.t )
+               ) )) ; `Skeyword ("THEN") ; `Snterm
+            ((Gram.obj ( (sglist_then: 'sglist_then  Gram.t ) ) )) ;
             `Snterm
             ((Gram.obj (
-               (else_macro_def_sig : 'else_macro_def_sig  Gram.t ) ) ))] 
+               (else_macro_def_sig: 'else_macro_def_sig  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((sg2 : 'else_macro_def_sig )) ->
@@ -1925,134 +1913,132 @@ module MakeMacroParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          ((make_SdITE_result sg1 sg2 ) : 'macro_def_sig
-                            ) ) ) ) ) ;
+                          ((make_SdITE_result sg1 sg2 ): 'macro_def_sig )
+              ) ) ) ) ;
            (( [`Skeyword ("UNDEF") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'uident )) ->
                 fun (_) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (SdUnd (i) : 'macro_def_sig ) ) ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> (SdUnd (i): 'macro_def_sig )
+              ) ) ) ) ;
            (( [`Skeyword ("DEFINE") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'uident )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (SdDef ((i , None  )) : 'macro_def_sig ) ) ) ) )]  )
-           )]  ) )) ()  ) ) )
+                    (SdDef ((i , None  )): 'macro_def_sig ) ) ) ) )]  ) )] 
+         ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (uident_eval_ifdef : 'uident_eval_ifdef  Gram.t ) ) (
+  (Gram.extend ( (uident_eval_ifdef: 'uident_eval_ifdef  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (uident : 'uident  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (uident: 'uident  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'uident )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Stack.push ( (is_defined i ) ) stack ) :
+                   ((Stack.push ( (is_defined i ) ) stack ):
                      'uident_eval_ifdef ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (uident_eval_ifndef : 'uident_eval_ifndef  Gram.t ) ) (
+  (Gram.extend ( (uident_eval_ifndef: 'uident_eval_ifndef  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (uident : 'uident  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (uident: 'uident  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'uident )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Stack.push ( (not ( (is_defined i ) ) ) ) stack ) :
+                   ((Stack.push ( (not ( (is_defined i ) ) ) ) stack ):
                      'uident_eval_ifndef ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (else_macro_def : 'else_macro_def  Gram.t ) ) (
+  (Gram.extend ( (else_macro_def: 'else_macro_def  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) -> ([] : 'else_macro_def ) ) ) )
+                 fun ((_loc : FanLoc.t)) -> ([]: 'else_macro_def ) ) ) )
              ) ;
            (( [`Skeyword ("ELSE") ; `Snterm
-            ((Gram.obj ( (smlist_else : 'smlist_else  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (smlist_else: 'smlist_else  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((st : 'smlist_else )) ->
                   fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (st : 'else_macro_def ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                    fun ((_loc : FanLoc.t)) -> (st: 'else_macro_def ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (else_macro_def_sig : 'else_macro_def_sig  Gram.t ) ) (
+  (Gram.extend ( (else_macro_def_sig: 'else_macro_def_sig  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) -> ([] : 'else_macro_def_sig ) )
+                 fun ((_loc : FanLoc.t)) -> ([]: 'else_macro_def_sig ) )
                ) ) ) ;
            (( [`Skeyword ("ELSE") ; `Snterm
-            ((Gram.obj ( (sglist_else : 'sglist_else  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (sglist_else: 'sglist_else  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((st : 'sglist_else )) ->
                   fun (_) ->
-                    fun ((_loc : FanLoc.t)) ->
-                      (st : 'else_macro_def_sig ) ) ) ) )]  ) )]  ) )) ()
-       ) ) )
+                    fun ((_loc : FanLoc.t)) -> (st: 'else_macro_def_sig )
+              ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (else_expr : 'else_expr  Gram.t ) ) (
+  (Gram.extend ( (else_expr: 'else_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                      'else_expr ) ) ) ) ) ;
            (( [`Skeyword ("ELSE") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((e : 'expr )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'else_expr )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'else_expr )
               ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (smlist_then : 'smlist_then  Gram.t ) ) (
+  (Gram.extend ( (smlist_then: 'smlist_then  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist1
              ((Gram.srules smlist_then (
                 [(( [`Snterm
-                  ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-                  `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
+                  ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+                  `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) ,
                   (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((si : 'str_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (SdStr (si) : 'e__6 )
-                    ) ) ) ) ;
+                        fun ((_loc : FanLoc.t)) -> (SdStr (si): 'e__6 ) )
+                    ) ) ) ;
                 (( [`Snterm
-                 ((Gram.obj ( (macro_def : 'macro_def  Gram.t ) ) )) ;
-                 `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
-                 (
+                 ((Gram.obj ( (macro_def: 'macro_def  Gram.t ) ) )) ;
+                 `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((d : 'macro_def )) ->
@@ -2061,32 +2047,31 @@ module MakeMacroParser =
                             Ast.StNil (_loc) ) (
                             fun (a) ->
                               fun (b) -> Ast.StSem ((_loc , a , b )) )
-                            Then  d ) : 'e__6 ) ) ) ) )]  ) ))]  ) , (
+                            Then  d ): 'e__6 ) ) ) ) )]  ) ))]  ) , (
              (Gram.mk_action (
                fun ((sml : 'e__6  list )) ->
-                 fun ((_loc : FanLoc.t)) -> (sml : 'smlist_then ) ) ) ) )] 
+                 fun ((_loc : FanLoc.t)) -> (sml: 'smlist_then ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (smlist_else : 'smlist_else  Gram.t ) ) (
+  (Gram.extend ( (smlist_else: 'smlist_else  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist1
              ((Gram.srules smlist_else (
                 [(( [`Snterm
-                  ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-                  `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
+                  ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+                  `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) ,
                   (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((si : 'str_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (SdStr (si) : 'e__7 )
-                    ) ) ) ) ;
+                        fun ((_loc : FanLoc.t)) -> (SdStr (si): 'e__7 ) )
+                    ) ) ) ;
                 (( [`Snterm
-                 ((Gram.obj ( (macro_def : 'macro_def  Gram.t ) ) )) ;
-                 `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
-                 (
+                 ((Gram.obj ( (macro_def: 'macro_def  Gram.t ) ) )) ;
+                 `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((d : 'macro_def )) ->
@@ -2095,32 +2080,32 @@ module MakeMacroParser =
                             Ast.StNil (_loc) ) (
                             fun (a) ->
                               fun (b) -> Ast.StSem ((_loc , a , b )) )
-                            Else  d ) : 'e__7 ) ) ) ) )]  ) ))]  ) , (
+                            Else  d ): 'e__7 ) ) ) ) )]  ) ))]  ) , (
              (Gram.mk_action (
                fun ((sml : 'e__7  list )) ->
-                 fun ((_loc : FanLoc.t)) -> (sml : 'smlist_else ) ) ) ) )] 
+                 fun ((_loc : FanLoc.t)) -> (sml: 'smlist_else ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sglist_then : 'sglist_then  Gram.t ) ) (
+  (Gram.extend ( (sglist_then: 'sglist_then  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist1
              ((Gram.srules sglist_then (
                 [(( [`Snterm
-                  ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) )) ;
-                  `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
+                  ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) )) ;
+                  `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) ,
                   (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((si : 'sig_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (SdStr (si) : 'e__8 )
-                    ) ) ) ) ;
+                        fun ((_loc : FanLoc.t)) -> (SdStr (si): 'e__8 ) )
+                    ) ) ) ;
                 (( [`Snterm
-                 ((Gram.obj ( (macro_def_sig : 'macro_def_sig  Gram.t ) )
+                 ((Gram.obj ( (macro_def_sig: 'macro_def_sig  Gram.t ) )
                     )) ; `Snterm
-                 ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+                 ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((d : 'macro_def_sig )) ->
@@ -2129,32 +2114,32 @@ module MakeMacroParser =
                             Ast.SgNil (_loc) ) (
                             fun (a) ->
                               fun (b) -> Ast.SgSem ((_loc , a , b )) )
-                            Then  d ) : 'e__8 ) ) ) ) )]  ) ))]  ) , (
+                            Then  d ): 'e__8 ) ) ) ) )]  ) ))]  ) , (
              (Gram.mk_action (
                fun ((sgl : 'e__8  list )) ->
-                 fun ((_loc : FanLoc.t)) -> (sgl : 'sglist_then ) ) ) ) )] 
+                 fun ((_loc : FanLoc.t)) -> (sgl: 'sglist_then ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sglist_else : 'sglist_else  Gram.t ) ) (
+  (Gram.extend ( (sglist_else: 'sglist_else  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist1
              ((Gram.srules sglist_else (
                 [(( [`Snterm
-                  ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) )) ;
-                  `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) ,
+                  ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) )) ;
+                  `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) ,
                   (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((si : 'sig_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (SdStr (si) : 'e__9 )
-                    ) ) ) ) ;
+                        fun ((_loc : FanLoc.t)) -> (SdStr (si): 'e__9 ) )
+                    ) ) ) ;
                 (( [`Snterm
-                 ((Gram.obj ( (macro_def_sig : 'macro_def_sig  Gram.t ) )
+                 ((Gram.obj ( (macro_def_sig: 'macro_def_sig  Gram.t ) )
                     )) ; `Snterm
-                 ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+                 ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((d : 'macro_def_sig )) ->
@@ -2163,42 +2148,42 @@ module MakeMacroParser =
                             Ast.SgNil (_loc) ) (
                             fun (a) ->
                               fun (b) -> Ast.SgSem ((_loc , a , b )) )
-                            Else  d ) : 'e__9 ) ) ) ) )]  ) ))]  ) , (
+                            Else  d ): 'e__9 ) ) ) ) )]  ) ))]  ) , (
              (Gram.mk_action (
                fun ((sgl : 'e__9  list )) ->
-                 fun ((_loc : FanLoc.t)) -> (sgl : 'sglist_else ) ) ) ) )] 
+                 fun ((_loc : FanLoc.t)) -> (sgl: 'sglist_else ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (endif : 'endif  Gram.t ) ) (
+  (Gram.extend ( (endif: 'endif  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("ENDIF")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'endif ) ) ) )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'endif ) ) ) )
              ) ;
            (( [`Skeyword ("END")]  ) , (
             (Gram.mk_action (
-              fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'endif ) ) ) )
-            )]  ) )]  ) )) ()  ) ) )
+              fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'endif ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_macro_value : 'opt_macro_value  Gram.t ) ) (
+  (Gram.extend ( (opt_macro_value: 'opt_macro_value  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (None : 'opt_macro_value ) ) )
-             ) ) ;
+               fun ((_loc : FanLoc.t)) -> (None: 'opt_macro_value ) ) ) )
+             ) ;
            (( [`Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Some (([]  , e )) : 'opt_macro_value ) ) ) ) ) ;
+                    (Some (([]  , e )): 'opt_macro_value ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Slist1sep
             (((
               (Gram.srules opt_macro_value (
@@ -2214,10 +2199,10 @@ module MakeMacroParser =
                         
                         (match __camlp4_0
                         with
-                        | (`LIDENT x) -> (x : 'e__10 )
+                        | (`LIDENT x) -> (x: 'e__10 )
                         | _ -> assert false) ) ) ) )]  ) ) ) , `Skeyword
               (",") )) ; `Skeyword (")") ; `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -2225,11 +2210,11 @@ module MakeMacroParser =
                     fun ((pl : 'e__10  list )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Some ((pl , e )) : 'opt_macro_value ) ) ) ) )] 
+                          (Some ((pl , e )): 'opt_macro_value ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Level ("top")) ) , (
          [(None  , None  , (
@@ -2251,13 +2236,13 @@ module MakeMacroParser =
                              (match __camlp4_0
                              with
                              | (`LIDENT i) ->
-                               (((((new Expr.subst) _loc ( [(i , def )] 
-                                    ) )#expr) body ) : 'expr )
+                               ((((new Expr.subst) _loc ( [(i , def )]  )
+                                   )#expr body ): 'expr )
                              | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("IFNDEF") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) )) ; `Skeyword
             ("THEN") ; `Sself ; `Snterm
-            ((Gram.obj ( (else_expr : 'else_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (else_expr: 'else_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'else_expr )) ->
                 fun ((e1 : 'expr )) ->
@@ -2265,12 +2250,12 @@ module MakeMacroParser =
                     fun ((i : 'uident )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (if (is_defined i ) then e2 else e1 : 'expr ) )
+                          (if (is_defined i ) then e2 else e1: 'expr ) )
               ) ) ) ;
            (( [`Skeyword ("IFDEF") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) )) ; `Skeyword
             ("THEN") ; `Sself ; `Snterm
-            ((Gram.obj ( (else_expr : 'else_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (else_expr: 'else_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'else_expr )) ->
                 fun ((e1 : 'expr )) ->
@@ -2278,18 +2263,18 @@ module MakeMacroParser =
                     fun ((i : 'uident )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (if (is_defined i ) then e1 else e2 : 'expr ) )
+                          (if (is_defined i ) then e1 else e2: 'expr ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt : 'patt  Gram.t ) ) (
+  (Gram.extend ( (patt: 'patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("IFNDEF") ; `Snterm
-             ((Gram.obj ( (uident : 'uident  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (uident: 'uident  Gram.t ) ) )) ; `Skeyword
              ("THEN") ; `Sself ; `Skeyword ("ELSE") ; `Sself ; `Snterm
-             ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((p2 : 'patt )) ->
@@ -2299,12 +2284,12 @@ module MakeMacroParser =
                          fun ((i : 'uident )) ->
                            fun (_) ->
                              fun ((_loc : FanLoc.t)) ->
-                               (if (is_defined i ) then p2 else p1 :
-                                 'patt ) ) ) ) ) ;
+                               (if (is_defined i ) then p2 else p1: 'patt
+                                 ) ) ) ) ) ;
            (( [`Skeyword ("IFDEF") ; `Snterm
-            ((Gram.obj ( (uident : 'uident  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (uident: 'uident  Gram.t ) ) )) ; `Skeyword
             ("THEN") ; `Sself ; `Skeyword ("ELSE") ; `Sself ; `Snterm
-            ((Gram.obj ( (endif : 'endif  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (endif: 'endif  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p2 : 'patt )) ->
@@ -2314,11 +2299,11 @@ module MakeMacroParser =
                         fun ((i : 'uident )) ->
                           fun (_) ->
                             fun ((_loc : FanLoc.t)) ->
-                              (if (is_defined i ) then p1 else p2 : 'patt
+                              (if (is_defined i ) then p1 else p2: 'patt
                                 ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (uident : 'uident  Gram.t ) ) (
+  (Gram.extend ( (uident: 'uident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -2333,120 +2318,120 @@ module MakeMacroParser =
                    
                    (match __camlp4_0
                    with
-                   | (`UIDENT i) -> (i : 'uident )
+                   | (`UIDENT i) -> (i: 'uident )
                    | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Before ("simple")) ) , (
          [(None  , None  , (
            [(( [`Skeyword ("`") ; `Snterm
-             ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((s : 'a_ident )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExVrn ((_loc , s )) : 'expr ) ) ) ) ) ;
+                     (Ast.ExVrn ((_loc , s )): 'expr ) ) ) ) ) ;
            (( [`Skeyword ("`") ;
             (Gram.srules expr (
               [(( [`Skeyword ("IN")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                      ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("DEFINE")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("ENDIF")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("END")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("ELSE")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("THEN")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("IFNDEF")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) ) ;
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) ) ;
               (( [`Skeyword ("IFDEF")]  ) , (
                (Gram.mk_action (
                  fun (x) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Gram.string_of_token x ) : 'e__11 ) ) ) ) )]  ) )] 
+                     ((Gram.string_of_token x ): 'e__11 ) ) ) ) )]  ) )] 
             ) , (
             (Gram.mk_action (
               fun ((kwd : 'e__11 )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.ExVrn ((_loc , kwd )) : 'expr ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                    (Ast.ExVrn ((_loc , kwd )): 'expr ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
-   (Gram.extend ( (patt : 'patt  Gram.t ) ) (
+   (Gram.extend ( (patt: 'patt  Gram.t ) ) (
      ((fun (() ) ->
          (( Some (`Before ("simple")) ) , (
           [(None  , None  , (
             [(( [`Skeyword ("`") ; `Snterm
-              ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+              ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
               (Gram.mk_action (
                 fun ((s : 'a_ident )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaVrn ((_loc , s )) : 'patt ) ) ) ) ) ;
+                      (Ast.PaVrn ((_loc , s )): 'patt ) ) ) ) ) ;
             (( [`Skeyword ("`") ;
              (Gram.srules patt (
                [(( [`Skeyword ("ENDIF")]  ) , (
                  (Gram.mk_action (
                    fun (x) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((Gram.string_of_token x ) : 'e__12 ) ) ) ) ) ;
+                       ((Gram.string_of_token x ): 'e__12 ) ) ) ) ) ;
                (( [`Skeyword ("END")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__12 ) ) ) ) ) ;
+                      ((Gram.string_of_token x ): 'e__12 ) ) ) ) ) ;
                (( [`Skeyword ("ELSE")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__12 ) ) ) ) ) ;
+                      ((Gram.string_of_token x ): 'e__12 ) ) ) ) ) ;
                (( [`Skeyword ("THEN")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__12 ) ) ) ) ) ;
+                      ((Gram.string_of_token x ): 'e__12 ) ) ) ) ) ;
                (( [`Skeyword ("IFNDEF")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__12 ) ) ) ) ) ;
+                      ((Gram.string_of_token x ): 'e__12 ) ) ) ) ) ;
                (( [`Skeyword ("IFDEF")]  ) , (
                 (Gram.mk_action (
                   fun (x) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Gram.string_of_token x ) : 'e__12 ) ) ) ) )]  ) )] 
+                      ((Gram.string_of_token x ): 'e__12 ) ) ) ) )]  ) )] 
              ) , (
              (Gram.mk_action (
                fun ((kwd : 'e__12 )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.PaVrn ((_loc , kwd )) : 'patt ) ) ) ) )]  ) )] 
+                     (Ast.PaVrn ((_loc , kwd )): 'patt ) ) ) ) )]  ) )] 
           ) )) ()  ) ) )
   end
   let _ = (Options.add "-D" ( Arg.String (parse_def) )
@@ -2462,7 +2447,7 @@ module MakeNothing =
   struct
    module Ast = Camlp4Ast
   let _ = (Syn.AstFilters.register_str_item_filter (
-            ((Ast.map_expr Expr.map_expr )#str_item) ) )
+            (Ast.map_expr Expr.map_expr )#str_item ) )
   
   end
 module IdRevisedParser =
@@ -2479,7 +2464,7 @@ module MakeRevisedParser =
   let _ = (FanConfig.constructors_arity := false )
   let  help_sequences (() ) =
     begin
-     (
+    (
     (Printf.eprintf
       "New syntax:\n    (e1; e2; ... ; en) OR begin e1; e2; ... ; en end\n    while e do e1; e2; ... ; en done\n    for v = v1 to/downto v2 do e1; e2; ... ; en done\nOld syntax (still supported):\n    do {e1; e2; ... ; en}\n    while e do {e1; e2; ... ; en}\n    for v = v1 to/downto v2 do {e1; e2; ... ; en}\nVery old (no more supported) syntax:\n    do e1; e2; ... ; en-1; return en\n    while e do e1; e2; ... ; en; done\n    for v = v1 to/downto v2 do e1; e2; ... ; en; done\n"
       )
@@ -2646,8 +2631,7 @@ module MakeRevisedParser =
     fun (x) ->
       (( (not ( (List.mem x excl ) ) ) ) && (
         (( (( (String.length x ) ) >= 2) ) && (
-          (( (List.mem ( (String.get x 0 ) ) list ) ) && ( (symbolchar x 1 )
-            )) )) )) ) )
+          (( (List.mem ( x.[0] ) list ) ) && ( (symbolchar x 1 ) )) )) )) ) )
   let _ = 
   let  list_ok = ["<" ; ">" ; "<=" ; ">=" ; "=" ; "<>" ; "==" ; "!=" ; "$"] 
   in
@@ -2660,40 +2644,36 @@ module MakeRevisedParser =
       (( (List.mem x list_ok ) ) || (
         (( (not ( (List.mem x excl ) ) ) ) && (
           (( (( (String.length x ) ) >= 2) ) && (
-            (( (List.mem ( (String.get x 0 ) ) list_first_char_ok ) ) && (
+            (( (List.mem ( x.[0] ) list_first_char_ok ) ) && (
               (symbolchar x 1 ) )) )) )) )) ) )
   let _ = 
   let  list = ['@' ; '^']  in
   (setup_op_parser infixop1 (
     fun (x) ->
       (( (( (String.length x ) ) >= 1) ) && (
-        (( (List.mem ( (String.get x 0 ) ) list ) ) && ( (symbolchar x 1 ) ))
-        )) ) )
+        (( (List.mem ( x.[0] ) list ) ) && ( (symbolchar x 1 ) )) )) ) )
   let _ = 
   let  list = ['+' ; '-']  in
   (setup_op_parser infixop2 (
     fun (x) ->
       (( (x <> "->") ) && (
         (( (( (String.length x ) ) >= 1) ) && (
-          (( (List.mem ( (String.get x 0 ) ) list ) ) && ( (symbolchar x 1 )
-            )) )) )) ) )
+          (( (List.mem ( x.[0] ) list ) ) && ( (symbolchar x 1 ) )) )) )) ) )
   let _ = 
   let  list = ['*' ; '/' ; '%' ; '\\']  in
   (setup_op_parser infixop3 (
     fun (x) ->
       (( (( (String.length x ) ) >= 1) ) && (
-        (( (List.mem ( (String.get x 0 ) ) list ) ) && (
+        (( (List.mem ( x.[0] ) list ) ) && (
           ((
-            (( (( (String.get x 0 ) ) <> '*') ) || (
-              (( (( (String.length x ) ) < 2) ) || (
-                (( (String.get x 1 ) ) <> '*') )) )) ) && ( (symbolchar x 1 )
-            )) )) )) ) )
+            (( (( x.[0] ) <> '*') ) || (
+              (( (( (String.length x ) ) < 2) ) || ( (( x.[1] ) <> '*') )) ))
+            ) && ( (symbolchar x 1 ) )) )) )) ) )
   let _ = (setup_op_parser infixop4 (
             fun (x) ->
               (( (( (String.length x ) ) >= 2) ) && (
-                (( (( (String.get x 0 ) ) == '*') ) && (
-                  (( (( (String.get x 1 ) ) == '*') ) && ( (symbolchar x 2 )
-                    )) )) )) ) )
+                (( (( x.[0] ) == '*') ) && (
+                  (( (( x.[1] ) == '*') ) && ( (symbolchar x 2 ) )) )) )) ) )
   let _ = (FanToken.Filter.define_filter ( (Gram.get_filter ()  ) ) (
             fun (f) -> fun (strm) -> (infix_kwds_filter ( (f strm ) ) ) ) )
   let _ = (Gram.setup_parser sem_expr (
@@ -2723,8 +2703,10 @@ module MakeRevisedParser =
               );
               
               let  a =
-              (try (symb __strm ) with
-               | Stream.Failure  -> (raise ( Stream.Error ("") ) )) in
+              
+              (try (symb __strm )
+              with
+              | Stream.Failure  -> (raise ( Stream.Error ("") ) )) in
               
               let  s = __strm in
               
@@ -2736,186 +2718,181 @@ module MakeRevisedParser =
               
               let  a = (symb __strm ) in (kont a __strm ) ) )
   let _ = 
-  let  _ = (a_CHAR : 'a_CHAR  Gram.t ) and _ =
-  (override_flag_quot : 'override_flag_quot  Gram.t ) and _ =
-  (row_var_flag_quot : 'row_var_flag_quot  Gram.t ) and _ =
-  (virtual_flag_quot : 'virtual_flag_quot  Gram.t ) and _ =
-  (private_flag_quot : 'private_flag_quot  Gram.t ) and _ =
-  (mutable_flag_quot : 'mutable_flag_quot  Gram.t ) and _ =
-  (direction_flag_quot : 'direction_flag_quot  Gram.t ) and _ =
-  (rec_flag_quot : 'rec_flag_quot  Gram.t ) and _ =
-  (package_type : 'package_type  Gram.t ) and _ =
-  (do_sequence : 'do_sequence  Gram.t ) and _ =
-  (infixop4 : 'infixop4  Gram.t ) and _ = (infixop3 : 'infixop3  Gram.t ) and
-  _ = (infixop2 : 'infixop2  Gram.t ) and _ = (infixop1 : 'infixop1  Gram.t )
-  and _ = (infixop0 : 'infixop0  Gram.t ) and _ =
-  (with_constr_quot : 'with_constr_quot  Gram.t ) and _ =
-  (with_constr : 'with_constr  Gram.t ) and _ =
-  (val_longident : 'val_longident  Gram.t ) and _ =
-  (use_file : 'use_file  Gram.t ) and _ = (typevars : 'typevars  Gram.t ) and
-  _ = (type_parameters : 'type_parameters  Gram.t ) and _ =
-  (type_parameter : 'type_parameter  Gram.t ) and _ =
-  (type_longident_and_parameters : 'type_longident_and_parameters  Gram.t )
-  and _ = (type_longident : 'type_longident  Gram.t ) and _ =
-  (type_kind : 'type_kind  Gram.t ) and _ =
-  (type_ident_and_parameters : 'type_ident_and_parameters  Gram.t ) and _ =
-  (type_declaration : 'type_declaration  Gram.t ) and _ =
-  (type_constraint : 'type_constraint  Gram.t ) and _ =
-  (top_phrase : 'top_phrase  Gram.t ) and _ =
-  (str_items : 'str_items  Gram.t ) and _ =
-  (str_item_quot : 'str_item_quot  Gram.t ) and _ =
-  (str_item : 'str_item  Gram.t ) and _ = (star_ctyp : 'star_ctyp  Gram.t )
-  and _ = (sig_items : 'sig_items  Gram.t ) and _ =
-  (sig_item_quot : 'sig_item_quot  Gram.t ) and _ =
-  (sig_item : 'sig_item  Gram.t ) and _ = (sequence : 'sequence  Gram.t ) and
-  _ = (semi : 'semi  Gram.t ) and _ =
-  (sem_patt_for_list : 'sem_patt_for_list  Gram.t ) and _ =
-  (sem_patt : 'sem_patt  Gram.t ) and _ =
-  (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) and _ =
-  (sem_expr : 'sem_expr  Gram.t ) and _ = (row_field : 'row_field  Gram.t )
-  and _ = (poly_type : 'poly_type  Gram.t ) and _ =
-  (phrase : 'phrase  Gram.t ) and _ = (patt_tcon : 'patt_tcon  Gram.t ) and _
-  = (patt_quot : 'patt_quot  Gram.t ) and _ = (patt_eoi : 'patt_eoi  Gram.t )
-  and _ = (patt_as_patt_opt : 'patt_as_patt_opt  Gram.t ) and _ =
-  (patt : 'patt  Gram.t ) and _ = (opt_when_expr : 'opt_when_expr  Gram.t )
-  and _ = (opt_virtual : 'opt_virtual  Gram.t ) and _ =
-  (opt_rec : 'opt_rec  Gram.t ) and _ = (opt_private : 'opt_private  Gram.t )
-  and _ = (opt_polyt : 'opt_polyt  Gram.t ) and _ =
-  (opt_mutable : 'opt_mutable  Gram.t ) and _ =
-  (opt_meth_list : 'opt_meth_list  Gram.t ) and _ =
-  (opt_expr : 'opt_expr  Gram.t ) and _ =
-  (opt_eq_ctyp : 'opt_eq_ctyp  Gram.t ) and _ =
-  (opt_dot_dot : 'opt_dot_dot  Gram.t ) and _ =
-  (opt_comma_ctyp : 'opt_comma_ctyp  Gram.t ) and _ =
-  (opt_class_self_type : 'opt_class_self_type  Gram.t ) and _ =
-  (opt_class_self_patt : 'opt_class_self_patt  Gram.t ) and _ =
-  (opt_as_lident : 'opt_as_lident  Gram.t ) and _ =
-  (name_tags : 'name_tags  Gram.t ) and _ = (more_ctyp : 'more_ctyp  Gram.t )
-  and _ = (module_type_quot : 'module_type_quot  Gram.t ) and _ =
-  (module_type : 'module_type  Gram.t ) and _ =
-  (module_rec_declaration : 'module_rec_declaration  Gram.t ) and _ =
-  (module_longident_with_app : 'module_longident_with_app  Gram.t ) and _ =
-  (module_longident : 'module_longident  Gram.t ) and _ =
-  (module_expr_quot : 'module_expr_quot  Gram.t ) and _ =
-  (module_expr : 'module_expr  Gram.t ) and _ =
-  (module_declaration : 'module_declaration  Gram.t ) and _ =
-  (module_binding_quot : 'module_binding_quot  Gram.t ) and _ =
-  (module_binding0 : 'module_binding0  Gram.t ) and _ =
-  (module_binding : 'module_binding  Gram.t ) and _ =
-  (meth_decl : 'meth_decl  Gram.t ) and _ = (meth_list : 'meth_list  Gram.t )
-  and _ = (let_binding : 'let_binding  Gram.t ) and _ =
-  (labeled_ipatt : 'labeled_ipatt  Gram.t ) and _ =
-  (label_patt_list : 'label_patt_list  Gram.t ) and _ =
-  (label_patt : 'label_patt  Gram.t ) and _ =
-  (label_longident : 'label_longident  Gram.t ) and _ =
-  (label_ipatt_list : 'label_ipatt_list  Gram.t ) and _ =
-  (label_ipatt : 'label_ipatt  Gram.t ) and _ =
-  (label_expr_list : 'label_expr_list  Gram.t ) and _ =
-  (label_expr : 'label_expr  Gram.t ) and _ =
-  (label_declaration_list : 'label_declaration_list  Gram.t ) and _ =
-  (label_declaration : 'label_declaration  Gram.t ) and _ =
-  (label : 'label  Gram.t ) and _ = (ipatt_tcon : 'ipatt_tcon  Gram.t ) and _
-  = (ipatt : 'ipatt  Gram.t ) and _ = (interf : 'interf  Gram.t ) and _ =
-  (implem : 'implem  Gram.t ) and _ = (ident_quot : 'ident_quot  Gram.t ) and
-  _ = (ident : 'ident  Gram.t ) and _ = (fun_def : 'fun_def  Gram.t ) and _ =
-  (fun_binding : 'fun_binding  Gram.t ) and _ =
-  (field_expr_list : 'field_expr_list  Gram.t ) and _ =
-  (field_expr : 'field_expr  Gram.t ) and _ =
-  (expr_quot : 'expr_quot  Gram.t ) and _ = (expr_eoi : 'expr_eoi  Gram.t )
-  and _ = (expr : 'expr  Gram.t ) and _ = (eq_expr : 'eq_expr  Gram.t ) and _
-  = (dummy : 'dummy  Gram.t ) and _ =
-  (direction_flag : 'direction_flag  Gram.t ) and _ =
-  (cvalue_binding : 'cvalue_binding  Gram.t ) and _ =
-  (ctyp_quot : 'ctyp_quot  Gram.t ) and _ = (ctyp : 'ctyp  Gram.t ) and _ =
-  (constructor_declarations : 'constructor_declarations  Gram.t ) and _ =
-  (constructor_declaration : 'constructor_declaration  Gram.t ) and _ =
-  (constructor_arg_list : 'constructor_arg_list  Gram.t ) and _ =
-  (constrain : 'constrain  Gram.t ) and _ =
-  (comma_type_parameter : 'comma_type_parameter  Gram.t ) and _ =
-  (comma_patt : 'comma_patt  Gram.t ) and _ =
-  (comma_ipatt : 'comma_ipatt  Gram.t ) and _ =
-  (comma_expr : 'comma_expr  Gram.t ) and _ =
-  (comma_ctyp : 'comma_ctyp  Gram.t ) and _ =
-  (class_type_quot : 'class_type_quot  Gram.t ) and _ =
-  (class_type_plus : 'class_type_plus  Gram.t ) and _ =
-  (class_type_longident_and_param : 'class_type_longident_and_param  Gram.t )
-  and _ = (class_type_longident : 'class_type_longident  Gram.t ) and _ =
-  (class_type_declaration : 'class_type_declaration  Gram.t ) and _ =
-  (class_type : 'class_type  Gram.t ) and _ =
-  (class_structure : 'class_structure  Gram.t ) and _ =
-  (class_str_item_quot : 'class_str_item_quot  Gram.t ) and _ =
-  (class_str_item : 'class_str_item  Gram.t ) and _ =
-  (class_signature : 'class_signature  Gram.t ) and _ =
-  (class_sig_item_quot : 'class_sig_item_quot  Gram.t ) and _ =
-  (class_sig_item : 'class_sig_item  Gram.t ) and _ =
-  (class_name_and_param : 'class_name_and_param  Gram.t ) and _ =
-  (class_longident_and_param : 'class_longident_and_param  Gram.t ) and _ =
-  (class_longident : 'class_longident  Gram.t ) and _ =
-  (class_info_for_class_type : 'class_info_for_class_type  Gram.t ) and _ =
-  (class_info_for_class_expr : 'class_info_for_class_expr  Gram.t ) and _ =
-  (class_fun_def : 'class_fun_def  Gram.t ) and _ =
-  (class_fun_binding : 'class_fun_binding  Gram.t ) and _ =
-  (class_expr_quot : 'class_expr_quot  Gram.t ) and _ =
-  (class_expr : 'class_expr  Gram.t ) and _ =
-  (class_description : 'class_description  Gram.t ) and _ =
-  (class_declaration : 'class_declaration  Gram.t ) and _ =
-  (binding_quot : 'binding_quot  Gram.t ) and _ =
-  (binding : 'binding  Gram.t ) and _ =
-  (match_case_quot : 'match_case_quot  Gram.t ) and _ =
-  (match_case0 : 'match_case0  Gram.t ) and _ =
-  (match_case : 'match_case  Gram.t ) and _ = (and_ctyp : 'and_ctyp  Gram.t )
-  and _ = (amp_ctyp : 'amp_ctyp  Gram.t ) and _ =
-  (a_ident : 'a_ident  Gram.t ) and _ = (a_UIDENT : 'a_UIDENT  Gram.t ) and _
-  = (a_STRING : 'a_STRING  Gram.t ) and _ =
-  (a_OPTLABEL : 'a_OPTLABEL  Gram.t ) and _ =
-  (a_NATIVEINT : 'a_NATIVEINT  Gram.t ) and _ =
-  (rec_binding_quot : 'rec_binding_quot  Gram.t ) and _ =
-  (a_LIDENT : 'a_LIDENT  Gram.t ) and _ = (a_LABEL : 'a_LABEL  Gram.t ) and _
-  = (a_INT64 : 'a_INT64  Gram.t ) and _ = (a_INT32 : 'a_INT32  Gram.t ) and _
-  = (a_INT : 'a_INT  Gram.t ) and _ = (a_FLOAT : 'a_FLOAT  Gram.t )  in
+  let  _ = (a_CHAR: 'a_CHAR  Gram.t ) and _ =
+  (override_flag_quot: 'override_flag_quot  Gram.t ) and _ =
+  (row_var_flag_quot: 'row_var_flag_quot  Gram.t ) and _ =
+  (virtual_flag_quot: 'virtual_flag_quot  Gram.t ) and _ =
+  (private_flag_quot: 'private_flag_quot  Gram.t ) and _ =
+  (mutable_flag_quot: 'mutable_flag_quot  Gram.t ) and _ =
+  (direction_flag_quot: 'direction_flag_quot  Gram.t ) and _ =
+  (rec_flag_quot: 'rec_flag_quot  Gram.t ) and _ =
+  (package_type: 'package_type  Gram.t ) and _ =
+  (do_sequence: 'do_sequence  Gram.t ) and _ = (infixop4: 'infixop4  Gram.t )
+  and _ = (infixop3: 'infixop3  Gram.t ) and _ =
+  (infixop2: 'infixop2  Gram.t ) and _ = (infixop1: 'infixop1  Gram.t ) and _
+  = (infixop0: 'infixop0  Gram.t ) and _ =
+  (with_constr_quot: 'with_constr_quot  Gram.t ) and _ =
+  (with_constr: 'with_constr  Gram.t ) and _ =
+  (val_longident: 'val_longident  Gram.t ) and _ =
+  (use_file: 'use_file  Gram.t ) and _ = (typevars: 'typevars  Gram.t ) and _
+  = (type_parameters: 'type_parameters  Gram.t ) and _ =
+  (type_parameter: 'type_parameter  Gram.t ) and _ =
+  (type_longident_and_parameters: 'type_longident_and_parameters  Gram.t )
+  and _ = (type_longident: 'type_longident  Gram.t ) and _ =
+  (type_kind: 'type_kind  Gram.t ) and _ =
+  (type_ident_and_parameters: 'type_ident_and_parameters  Gram.t ) and _ =
+  (type_declaration: 'type_declaration  Gram.t ) and _ =
+  (type_constraint: 'type_constraint  Gram.t ) and _ =
+  (top_phrase: 'top_phrase  Gram.t ) and _ = (str_items: 'str_items  Gram.t )
+  and _ = (str_item_quot: 'str_item_quot  Gram.t ) and _ =
+  (str_item: 'str_item  Gram.t ) and _ = (star_ctyp: 'star_ctyp  Gram.t ) and
+  _ = (sig_items: 'sig_items  Gram.t ) and _ =
+  (sig_item_quot: 'sig_item_quot  Gram.t ) and _ =
+  (sig_item: 'sig_item  Gram.t ) and _ = (sequence: 'sequence  Gram.t ) and _
+  = (semi: 'semi  Gram.t ) and _ =
+  (sem_patt_for_list: 'sem_patt_for_list  Gram.t ) and _ =
+  (sem_patt: 'sem_patt  Gram.t ) and _ =
+  (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) and _ =
+  (sem_expr: 'sem_expr  Gram.t ) and _ = (row_field: 'row_field  Gram.t ) and
+  _ = (poly_type: 'poly_type  Gram.t ) and _ = (phrase: 'phrase  Gram.t ) and
+  _ = (patt_tcon: 'patt_tcon  Gram.t ) and _ =
+  (patt_quot: 'patt_quot  Gram.t ) and _ = (patt_eoi: 'patt_eoi  Gram.t ) and
+  _ = (patt_as_patt_opt: 'patt_as_patt_opt  Gram.t ) and _ =
+  (patt: 'patt  Gram.t ) and _ = (opt_when_expr: 'opt_when_expr  Gram.t ) and
+  _ = (opt_virtual: 'opt_virtual  Gram.t ) and _ =
+  (opt_rec: 'opt_rec  Gram.t ) and _ = (opt_private: 'opt_private  Gram.t )
+  and _ = (opt_polyt: 'opt_polyt  Gram.t ) and _ =
+  (opt_mutable: 'opt_mutable  Gram.t ) and _ =
+  (opt_meth_list: 'opt_meth_list  Gram.t ) and _ =
+  (opt_expr: 'opt_expr  Gram.t ) and _ = (opt_eq_ctyp: 'opt_eq_ctyp  Gram.t )
+  and _ = (opt_dot_dot: 'opt_dot_dot  Gram.t ) and _ =
+  (opt_comma_ctyp: 'opt_comma_ctyp  Gram.t ) and _ =
+  (opt_class_self_type: 'opt_class_self_type  Gram.t ) and _ =
+  (opt_class_self_patt: 'opt_class_self_patt  Gram.t ) and _ =
+  (opt_as_lident: 'opt_as_lident  Gram.t ) and _ =
+  (name_tags: 'name_tags  Gram.t ) and _ = (more_ctyp: 'more_ctyp  Gram.t )
+  and _ = (module_type_quot: 'module_type_quot  Gram.t ) and _ =
+  (module_type: 'module_type  Gram.t ) and _ =
+  (module_rec_declaration: 'module_rec_declaration  Gram.t ) and _ =
+  (module_longident_with_app: 'module_longident_with_app  Gram.t ) and _ =
+  (module_longident: 'module_longident  Gram.t ) and _ =
+  (module_expr_quot: 'module_expr_quot  Gram.t ) and _ =
+  (module_expr: 'module_expr  Gram.t ) and _ =
+  (module_declaration: 'module_declaration  Gram.t ) and _ =
+  (module_binding_quot: 'module_binding_quot  Gram.t ) and _ =
+  (module_binding0: 'module_binding0  Gram.t ) and _ =
+  (module_binding: 'module_binding  Gram.t ) and _ =
+  (meth_decl: 'meth_decl  Gram.t ) and _ = (meth_list: 'meth_list  Gram.t )
+  and _ = (let_binding: 'let_binding  Gram.t ) and _ =
+  (labeled_ipatt: 'labeled_ipatt  Gram.t ) and _ =
+  (label_patt_list: 'label_patt_list  Gram.t ) and _ =
+  (label_patt: 'label_patt  Gram.t ) and _ =
+  (label_longident: 'label_longident  Gram.t ) and _ =
+  (label_ipatt_list: 'label_ipatt_list  Gram.t ) and _ =
+  (label_ipatt: 'label_ipatt  Gram.t ) and _ =
+  (label_expr_list: 'label_expr_list  Gram.t ) and _ =
+  (label_expr: 'label_expr  Gram.t ) and _ =
+  (label_declaration_list: 'label_declaration_list  Gram.t ) and _ =
+  (label_declaration: 'label_declaration  Gram.t ) and _ =
+  (label: 'label  Gram.t ) and _ = (ipatt_tcon: 'ipatt_tcon  Gram.t ) and _ =
+  (ipatt: 'ipatt  Gram.t ) and _ = (interf: 'interf  Gram.t ) and _ =
+  (implem: 'implem  Gram.t ) and _ = (ident_quot: 'ident_quot  Gram.t ) and _
+  = (ident: 'ident  Gram.t ) and _ = (fun_def: 'fun_def  Gram.t ) and _ =
+  (fun_binding: 'fun_binding  Gram.t ) and _ =
+  (field_expr_list: 'field_expr_list  Gram.t ) and _ =
+  (field_expr: 'field_expr  Gram.t ) and _ = (expr_quot: 'expr_quot  Gram.t )
+  and _ = (expr_eoi: 'expr_eoi  Gram.t ) and _ = (expr: 'expr  Gram.t ) and _
+  = (eq_expr: 'eq_expr  Gram.t ) and _ = (dummy: 'dummy  Gram.t ) and _ =
+  (direction_flag: 'direction_flag  Gram.t ) and _ =
+  (cvalue_binding: 'cvalue_binding  Gram.t ) and _ =
+  (ctyp_quot: 'ctyp_quot  Gram.t ) and _ = (ctyp: 'ctyp  Gram.t ) and _ =
+  (constructor_declarations: 'constructor_declarations  Gram.t ) and _ =
+  (constructor_declaration: 'constructor_declaration  Gram.t ) and _ =
+  (constructor_arg_list: 'constructor_arg_list  Gram.t ) and _ =
+  (constrain: 'constrain  Gram.t ) and _ =
+  (comma_type_parameter: 'comma_type_parameter  Gram.t ) and _ =
+  (comma_patt: 'comma_patt  Gram.t ) and _ =
+  (comma_ipatt: 'comma_ipatt  Gram.t ) and _ =
+  (comma_expr: 'comma_expr  Gram.t ) and _ =
+  (comma_ctyp: 'comma_ctyp  Gram.t ) and _ =
+  (class_type_quot: 'class_type_quot  Gram.t ) and _ =
+  (class_type_plus: 'class_type_plus  Gram.t ) and _ =
+  (class_type_longident_and_param: 'class_type_longident_and_param  Gram.t )
+  and _ = (class_type_longident: 'class_type_longident  Gram.t ) and _ =
+  (class_type_declaration: 'class_type_declaration  Gram.t ) and _ =
+  (class_type: 'class_type  Gram.t ) and _ =
+  (class_structure: 'class_structure  Gram.t ) and _ =
+  (class_str_item_quot: 'class_str_item_quot  Gram.t ) and _ =
+  (class_str_item: 'class_str_item  Gram.t ) and _ =
+  (class_signature: 'class_signature  Gram.t ) and _ =
+  (class_sig_item_quot: 'class_sig_item_quot  Gram.t ) and _ =
+  (class_sig_item: 'class_sig_item  Gram.t ) and _ =
+  (class_name_and_param: 'class_name_and_param  Gram.t ) and _ =
+  (class_longident_and_param: 'class_longident_and_param  Gram.t ) and _ =
+  (class_longident: 'class_longident  Gram.t ) and _ =
+  (class_info_for_class_type: 'class_info_for_class_type  Gram.t ) and _ =
+  (class_info_for_class_expr: 'class_info_for_class_expr  Gram.t ) and _ =
+  (class_fun_def: 'class_fun_def  Gram.t ) and _ =
+  (class_fun_binding: 'class_fun_binding  Gram.t ) and _ =
+  (class_expr_quot: 'class_expr_quot  Gram.t ) and _ =
+  (class_expr: 'class_expr  Gram.t ) and _ =
+  (class_description: 'class_description  Gram.t ) and _ =
+  (class_declaration: 'class_declaration  Gram.t ) and _ =
+  (binding_quot: 'binding_quot  Gram.t ) and _ = (binding: 'binding  Gram.t )
+  and _ = (match_case_quot: 'match_case_quot  Gram.t ) and _ =
+  (match_case0: 'match_case0  Gram.t ) and _ =
+  (match_case: 'match_case  Gram.t ) and _ = (and_ctyp: 'and_ctyp  Gram.t )
+  and _ = (amp_ctyp: 'amp_ctyp  Gram.t ) and _ = (a_ident: 'a_ident  Gram.t )
+  and _ = (a_UIDENT: 'a_UIDENT  Gram.t ) and _ =
+  (a_STRING: 'a_STRING  Gram.t ) and _ = (a_OPTLABEL: 'a_OPTLABEL  Gram.t )
+  and _ = (a_NATIVEINT: 'a_NATIVEINT  Gram.t ) and _ =
+  (rec_binding_quot: 'rec_binding_quot  Gram.t ) and _ =
+  (a_LIDENT: 'a_LIDENT  Gram.t ) and _ = (a_LABEL: 'a_LABEL  Gram.t ) and _ =
+  (a_INT64: 'a_INT64  Gram.t ) and _ = (a_INT32: 'a_INT32  Gram.t ) and _ =
+  (a_INT: 'a_INT  Gram.t ) and _ = (a_FLOAT: 'a_FLOAT  Gram.t )  in
   
   let  grammar_entry_create = Gram.mk in
   
-  let  infixop5 = ((grammar_entry_create "infixop5" ) : 'infixop5  Gram.t )
+  let  infixop5 = ((grammar_entry_create "infixop5" ): 'infixop5  Gram.t )
   and string_list =
-  ((grammar_entry_create "string_list" ) : 'string_list  Gram.t ) and
+  ((grammar_entry_create "string_list" ): 'string_list  Gram.t ) and
   opt_override =
-  ((grammar_entry_create "opt_override" ) : 'opt_override  Gram.t ) and
+  ((grammar_entry_create "opt_override" ): 'opt_override  Gram.t ) and
   unquoted_typevars =
-  ((grammar_entry_create "unquoted_typevars" ) : 'unquoted_typevars  Gram.t )
+  ((grammar_entry_create "unquoted_typevars" ): 'unquoted_typevars  Gram.t )
   and value_val_opt_override =
-  ((grammar_entry_create "value_val_opt_override" ) : 'value_val_opt_override
-     Gram.t ) and method_opt_override =
-  ((grammar_entry_create "method_opt_override" ) : 'method_opt_override 
+  ((grammar_entry_create "value_val_opt_override" ): 'value_val_opt_override 
+    Gram.t ) and method_opt_override =
+  ((grammar_entry_create "method_opt_override" ): 'method_opt_override 
     Gram.t ) and module_longident_dot_lparen =
-  ((grammar_entry_create "module_longident_dot_lparen" ) :
+  ((grammar_entry_create "module_longident_dot_lparen" ):
     'module_longident_dot_lparen  Gram.t ) and optional_type_parameter =
-  ((grammar_entry_create "optional_type_parameter" ) :
+  ((grammar_entry_create "optional_type_parameter" ):
     'optional_type_parameter  Gram.t ) and fun_def_cont_no_when =
-  ((grammar_entry_create "fun_def_cont_no_when" ) : 'fun_def_cont_no_when 
+  ((grammar_entry_create "fun_def_cont_no_when" ): 'fun_def_cont_no_when 
     Gram.t ) and fun_def_cont =
-  ((grammar_entry_create "fun_def_cont" ) : 'fun_def_cont  Gram.t ) and
-  sequence' = ((grammar_entry_create "sequence'" ) : 'sequence'  Gram.t ) and
-  infixop6 = ((grammar_entry_create "infixop6" ) : 'infixop6  Gram.t )  in
+  ((grammar_entry_create "fun_def_cont" ): 'fun_def_cont  Gram.t ) and
+  sequence' = ((grammar_entry_create "sequence'" ): 'sequence'  Gram.t ) and
+  infixop6 = ((grammar_entry_create "infixop6" ): 'infixop6  Gram.t )  in
   begin
-   (
-  (Gram.extend ( (module_expr : 'module_expr  Gram.t ) ) (
+  (
+  (Gram.extend ( (module_expr: 'module_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , None  , (
            [(( [`Skeyword ("struct") ; `Snterm
-             ((Gram.obj ( (str_items : 'str_items  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (str_items: 'str_items  Gram.t ) ) )) ; `Skeyword
              ("end")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((st : 'str_items )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.MeStr ((_loc , st )) : 'module_expr ) ) ) ) ) ;
+                       (Ast.MeStr ((_loc , st )): 'module_expr ) ) ) ) ) ;
            (( [`Skeyword ("functor") ; `Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
             (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword (")") ; `Skeyword ("->") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
@@ -2927,7 +2904,7 @@ module MakeRevisedParser =
                           fun (_) ->
                             fun (_) ->
                               fun ((_loc : FanLoc.t)) ->
-                                (Ast.MeFun ((_loc , i , t , me )) :
+                                (Ast.MeFun ((_loc , i , t , me )):
                                   'module_expr ) ) ) ) )]  ) ) ;
          (( Some ("apply") ) , None  , (
           [(( [`Sself ; `Sself]  ) , (
@@ -2935,12 +2912,12 @@ module MakeRevisedParser =
               fun ((me2 : 'module_expr )) ->
                 fun ((me1 : 'module_expr )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.MeApp ((_loc , me1 , me2 )) : 'module_expr ) ) ) ) )]
+                    (Ast.MeApp ((_loc , me1 , me2 )): 'module_expr ) ) ) ) )]
            ) ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Skeyword ("val") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (package_type : 'package_type  Gram.t ) ) ))
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (package_type: 'package_type  Gram.t ) ) ))
             ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -2954,26 +2931,25 @@ module MakeRevisedParser =
                                ((_loc , (
                                  Ast.ExTyc
                                    ((_loc , e , ( Ast.TyPkg ((_loc , p )) ) ))
-                                 ) )) : 'module_expr ) ) ) ) ) ;
+                                 ) )): 'module_expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Skeyword ("val") ; `Snterm
-           ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
-           (
+           ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.MePkg ((_loc , e )) : 'module_expr ) ) ) ) ) ;
+                       (Ast.MePkg ((_loc , e )): 'module_expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((me : 'module_expr )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (me : 'module_expr ) )
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (me: 'module_expr ) )
              ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-           ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
-           `Skeyword (")")]  ) , (
+           ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ; `Skeyword
+           (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((mt : 'module_type )) ->
@@ -2981,15 +2957,15 @@ module MakeRevisedParser =
                    fun ((me : 'module_expr )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.MeTyc ((_loc , me , mt )) : 'module_expr ) ) )
-           ) ) ;
+                         (Ast.MeTyc ((_loc , me , mt )): 'module_expr ) ) ) )
+           ) ;
           (( [`Snterm
-           ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))]
-            ) , (
+           ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))] 
+           ) , (
            (Gram.mk_action (
              fun ((i : 'module_longident )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.MeId ((_loc , i )) : 'module_expr ) ) ) ) ) ;
+                 (Ast.MeId ((_loc , i )): 'module_expr ) ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -3002,7 +2978,7 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.module_expr_tag ) :
+                   ((Quotation.expand _loc x DynAst.module_expr_tag ):
                      'module_expr )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
@@ -3022,20 +2998,20 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT ((((("" |"mexp") |"anti") |"list") as n) , s ))
                    ->
-                   (Ast.MeAnt ((_loc , ( (mk_anti ~c:"module_expr" n s ) ) )) :
+                   (Ast.MeAnt ((_loc , ( (mk_anti ~c:"module_expr" n s ) ) )):
                      'module_expr )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (str_item : 'str_item  Gram.t ) ) (
+  (Gram.extend ( (str_item: 'str_item  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , None  , (
-           [(( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.StExp ((_loc , e )) : 'str_item ) ) ) ) ) ;
+                   (Ast.StExp ((_loc , e )): 'str_item ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -3048,7 +3024,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.str_item_tag ) :
+                    ((Quotation.expand _loc x DynAst.str_item_tag ):
                       'str_item )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3069,31 +3045,31 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       ((((("" |"stri") |"anti") |"list") as n) , s )) ->
-                    (Ast.StAnt ((_loc , ( (mk_anti ~c:"str_item" n s ) ) )) :
+                    (Ast.StAnt ((_loc , ( (mk_anti ~c:"str_item" n s ) ) )):
                       'str_item )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("class") ; `Skeyword ("type") ; `Snterm
             ((Gram.obj (
-               (class_type_declaration : 'class_type_declaration  Gram.t ) )
-               ))]  ) , (
+               (class_type_declaration: 'class_type_declaration  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((ctd : 'class_type_declaration )) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.StClt ((_loc , ctd )) : 'str_item ) ) ) ) ) ;
+                      (Ast.StClt ((_loc , ctd )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("class") ; `Snterm
-            ((Gram.obj ( (class_declaration : 'class_declaration  Gram.t ) )
-               ))]  ) , (
+            ((Gram.obj ( (class_declaration: 'class_declaration  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((cd : 'class_declaration )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.StCls ((_loc , cd )) : 'str_item ) ) ) ) ) ;
+                    (Ast.StCls ((_loc , cd )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("open") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))
             ; `Skeyword ("in") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -3102,13 +3078,13 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.StExp
-                             ((_loc , ( Ast.ExOpI ((_loc , i , e )) ) )) :
+                             ((_loc , ( Ast.ExOpI ((_loc , i , e )) ) )):
                             'str_item ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_binding0 : 'module_binding0  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_binding0: 'module_binding0  Gram.t ) ) )) ;
             `Skeyword ("in") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -3119,10 +3095,10 @@ module MakeRevisedParser =
                           fun ((_loc : FanLoc.t)) ->
                             (Ast.StExp
                                ((_loc , ( Ast.ExLmd ((_loc , m , mb , e )) )
-                                 )) : 'str_item ) ) ) ) ) ;
+                                 )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (binding : 'binding  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (binding: 'binding  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((bi : 'binding )) ->
                 fun ((r : 'opt_rec )) ->
@@ -3133,13 +3109,12 @@ module MakeRevisedParser =
                         with
                         | Ast.BiEq(_ , Ast.PaAny(_) , e ) ->
                           Ast.StExp ((_loc , e ))
-                        | _ -> Ast.StVal ((_loc , r , bi ))) : 'str_item ) )
-              ) ) ) ;
+                        | _ -> Ast.StVal ((_loc , r , bi ))): 'str_item ) ) )
+            ) ) ;
            (( [`Skeyword ("let") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (binding : 'binding  Gram.t ) ) )) ; `Skeyword
-            ("in") ; `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) ,
-            (
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (binding: 'binding  Gram.t ) ) )) ; `Skeyword ("in")
+            ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'expr )) ->
                 fun (_) ->
@@ -3148,28 +3123,28 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.StExp
-                             ((_loc , ( Ast.ExLet ((_loc , r , bi , x )) ) )) :
+                             ((_loc , ( Ast.ExLet ((_loc , r , bi , x )) ) )):
                             'str_item ) ) ) ) ) ;
            (( [`Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (type_declaration : 'type_declaration  Gram.t ) ) ))]
+            ((Gram.obj ( (type_declaration: 'type_declaration  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((td : 'type_declaration )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.StTyp ((_loc , td )) : 'str_item ) ) ) ) ) ;
+                    (Ast.StTyp ((_loc , td )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("open") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))]
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((i : 'module_longident )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.StOpn ((_loc , i )) : 'str_item ) ) ) ) ) ;
+                    (Ast.StOpn ((_loc , i )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) )) ; `Skeyword ("=")
-            ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) )) ; `Skeyword ("=")
+            ; `Snterm ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
@@ -3177,39 +3152,39 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.StMty ((_loc , i , mt )) : 'str_item ) ) ) ) )
+                          (Ast.StMty ((_loc , i , mt )): 'str_item ) ) ) ) )
            ;
            (( [`Skeyword ("module") ; `Skeyword ("rec") ; `Snterm
-            ((Gram.obj ( (module_binding : 'module_binding  Gram.t ) ) ))]  )
+            ((Gram.obj ( (module_binding: 'module_binding  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((mb : 'module_binding )) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.StRecMod ((_loc , mb )) : 'str_item ) ) ) ) ) ;
+                      (Ast.StRecMod ((_loc , mb )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_binding0 : 'module_binding0  Gram.t ) ) ))] 
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_binding0: 'module_binding0  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((mb : 'module_binding0 )) ->
                 fun ((i : 'a_UIDENT )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.StMod ((_loc , i , mb )) : 'str_item ) ) ) ) ) ;
+                      (Ast.StMod ((_loc , i , mb )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("include") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.StInc ((_loc , me )) : 'str_item ) ) ) ) ) ;
+                    (Ast.StInc ((_loc , me )): 'str_item ) ) ) ) ) ;
            (( [`Skeyword ("external") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-            (":") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            (":") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (string_list : 'string_list  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (string_list: 'string_list  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((sl : 'string_list )) ->
                 fun (_) ->
@@ -3218,13 +3193,13 @@ module MakeRevisedParser =
                       fun ((i : 'a_LIDENT )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.StExt ((_loc , i , t , sl )) : 'str_item ) )
+                            (Ast.StExt ((_loc , i , t , sl )): 'str_item ) )
               ) ) ) ;
            (( [`Skeyword ("exception") ; `Snterm
             ((Gram.obj (
-               (constructor_declaration : 'constructor_declaration  Gram.t )
-               ) )) ; `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (type_longident : 'type_longident  Gram.t ) ) ))]  )
+               (constructor_declaration: 'constructor_declaration  Gram.t ) )
+               )) ; `Skeyword ("=") ; `Snterm
+            ((Gram.obj ( (type_longident: 'type_longident  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((i : 'type_longident )) ->
@@ -3232,47 +3207,47 @@ module MakeRevisedParser =
                   fun ((t : 'constructor_declaration )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.StExc ((_loc , t , ( Ast.OSome (i) ) )) :
+                        (Ast.StExc ((_loc , t , ( Ast.OSome (i) ) )):
                           'str_item ) ) ) ) ) ;
            (( [`Skeyword ("exception") ; `Snterm
             ((Gram.obj (
-               (constructor_declaration : 'constructor_declaration  Gram.t )
-               ) ))]  ) , (
+               (constructor_declaration: 'constructor_declaration  Gram.t ) )
+               ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'constructor_declaration )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.StExc ((_loc , t , Ast.ONone  )) : 'str_item ) ) ) )
+                    (Ast.StExc ((_loc , t , Ast.ONone  )): 'str_item ) ) ) )
             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_binding0 : 'module_binding0  Gram.t ) ) (
+  (Gram.extend ( (module_binding0: 'module_binding0  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`RA) ) , (
            [(( [`Skeyword ("=") ; `Snterm
-             ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((me : 'module_expr )) ->
                  fun (_) ->
-                   fun ((_loc : FanLoc.t)) -> (me : 'module_binding0 ) ) ) )
-             ) ;
+                   fun ((_loc : FanLoc.t)) -> (me: 'module_binding0 ) ) ) ) )
+           ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
                 fun (_) ->
                   fun ((mt : 'module_type )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.MeTyc ((_loc , me , mt )) : 'module_binding0 ) )
+                        (Ast.MeTyc ((_loc , me , mt )): 'module_binding0 ) )
               ) ) ) ;
            (( [`Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
             (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword (")") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((mb : 'module_binding0 )) ->
@@ -3282,20 +3257,20 @@ module MakeRevisedParser =
                       fun ((m : 'a_UIDENT )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.MeFun ((_loc , m , mt , mb )) :
+                            (Ast.MeFun ((_loc , m , mt , mb )):
                               'module_binding0 ) ) ) ) )]  ) )]  ) )) ()  ) )
     )
   );
    (
-  (Gram.extend ( (module_binding : 'module_binding  Gram.t ) ) (
+  (Gram.extend ( (module_binding: 'module_binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
              `Skeyword (":") ; `Snterm
-             ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+             ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
              `Skeyword ("=") ; `Snterm
-             ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((me : 'module_expr )) ->
                  fun (_) ->
@@ -3303,7 +3278,7 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun ((m : 'a_UIDENT )) ->
                          fun ((_loc : FanLoc.t)) ->
-                           (Ast.MbColEq ((_loc , m , mt , me )) :
+                           (Ast.MbColEq ((_loc , m , mt , me )):
                              'module_binding ) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -3317,7 +3292,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.module_binding_tag ) :
+                    ((Quotation.expand _loc x DynAst.module_binding_tag ):
                       'module_binding )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3326,9 +3301,9 @@ module MakeRevisedParser =
               | (`ANTIQUOT ("" , _ )) -> true
               | _ -> false ) , (`Normal , "(`ANTIQUOT (\"\" , _ ))" ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
                 fun (_) ->
@@ -3341,7 +3316,7 @@ module MakeRevisedParser =
                           with
                           | (`ANTIQUOT (("" as n) , m )) ->
                             (Ast.MbColEq
-                               ((_loc , ( (mk_anti n m ) ) , mt , me )) :
+                               ((_loc , ( (mk_anti n m ) ) , mt , me )):
                               'module_binding )
                           | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3358,7 +3333,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (("" as n) , s )) ->
                     (Ast.MbAnt
-                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )):
                       'module_binding )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3381,7 +3356,7 @@ module MakeRevisedParser =
                     (`ANTIQUOT
                       (((("module_binding" |"anti") |"list") as n) , s )) ->
                     (Ast.MbAnt
-                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )):
                       'module_binding )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -3390,16 +3365,16 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((b1 : 'module_binding )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MbAnd ((_loc , b1 , b2 )) : 'module_binding ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+                      (Ast.MbAnd ((_loc , b1 , b2 )): 'module_binding ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_type : 'module_type  Gram.t ) ) (
+  (Gram.extend ( (module_type: 'module_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , None  , (
            [(( [`Skeyword ("functor") ; `Skeyword ("(") ; `Snterm
-             ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
              (":") ; `Sself ; `Skeyword (")") ; `Skeyword ("->") ; `Sself]  )
              , (
              (Gram.mk_action (
@@ -3412,27 +3387,27 @@ module MakeRevisedParser =
                            fun (_) ->
                              fun (_) ->
                                fun ((_loc : FanLoc.t)) ->
-                                 (Ast.MtFun ((_loc , i , t , mt )) :
+                                 (Ast.MtFun ((_loc , i , t , mt )):
                                    'module_type ) ) ) ) )]  ) ) ;
          (( Some ("with") ) , None  , (
           [(( [`Sself ; `Skeyword ("with") ; `Snterm
-            ((Gram.obj ( (with_constr : 'with_constr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (with_constr: 'with_constr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((wc : 'with_constr )) ->
                 fun (_) ->
                   fun ((mt : 'module_type )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MtWit ((_loc , mt , wc )) : 'module_type ) ) ) ) )]
+                      (Ast.MtWit ((_loc , mt , wc )): 'module_type ) ) ) ) )]
            ) ) ;
          (( Some ("apply") ) , None  , (
           [(( [`Sself ; `Sself ; `Snterm
-            ((Gram.obj ( (dummy : 'dummy  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (dummy: 'dummy  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((mt2 : 'module_type )) ->
                   fun ((mt1 : 'module_type )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((ModuleType.app mt1 mt2 ) : 'module_type ) ) ) ) )]  )
+                      ((ModuleType.app mt1 mt2 ): 'module_type ) ) ) ) )]  )
           ) ;
          (( Some (".") ) , None  , (
           [(( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
@@ -3441,22 +3416,22 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((mt1 : 'module_type )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((ModuleType.acc mt1 mt2 ) : 'module_type ) ) ) ) )]  )
+                      ((ModuleType.acc mt1 mt2 ): 'module_type ) ) ) ) )]  )
           ) ;
          (( Some ("sig") ) , None  , (
           [(( [`Skeyword ("sig") ; `Snterm
-            ((Gram.obj ( (sig_items : 'sig_items  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (sig_items: 'sig_items  Gram.t ) ) )) ; `Skeyword
             ("end")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((sg : 'sig_items )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MtSig ((_loc , sg )) : 'module_type ) ) ) ) )]  )
-          ) ;
+                      (Ast.MtSig ((_loc , sg )): 'module_type ) ) ) ) )]  ) )
+         ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("module") ; `Skeyword ("type") ; `Skeyword ("of") ;
-            `Snterm ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))] 
+            `Snterm ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
@@ -3464,28 +3439,28 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.MtOf ((_loc , me )) : 'module_type ) ) ) ) ) ;
+                        (Ast.MtOf ((_loc , me )): 'module_type ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((mt : 'module_type )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (mt : 'module_type ) )
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (mt: 'module_type ) )
              ) ) ) ;
           (( [`Skeyword ("'") ; `Snterm
-           ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((i : 'a_ident )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.MtQuo ((_loc , i )) : 'module_type ) ) ) ) ) ;
+                   (Ast.MtQuo ((_loc , i )): 'module_type ) ) ) ) ) ;
           (( [`Snterm
            ((Gram.obj (
-              (module_longident_with_app : 'module_longident_with_app  Gram.t
+              (module_longident_with_app: 'module_longident_with_app  Gram.t
                 ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((i : 'module_longident_with_app )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.MtId ((_loc , i )) : 'module_type ) ) ) ) ) ;
+                 (Ast.MtId ((_loc , i )): 'module_type ) ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -3498,7 +3473,7 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.module_type_tag ) :
+                   ((Quotation.expand _loc x DynAst.module_type_tag ):
                      'module_type )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
@@ -3518,72 +3493,72 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT ((((("" |"mtyp") |"anti") |"list") as n) , s ))
                    ->
-                   (Ast.MtAnt ((_loc , ( (mk_anti ~c:"module_type" n s ) ) )) :
+                   (Ast.MtAnt ((_loc , ( (mk_anti ~c:"module_type" n s ) ) )):
                      'module_type )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sig_item : 'sig_item  Gram.t ) ) (
+  (Gram.extend ( (sig_item: 'sig_item  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , None  , (
            [(( [`Skeyword ("class") ; `Skeyword ("type") ; `Snterm
              ((Gram.obj (
-                (class_type_declaration : 'class_type_declaration  Gram.t ) )
+                (class_type_declaration: 'class_type_declaration  Gram.t ) )
                 ))]  ) , (
              (Gram.mk_action (
                fun ((ctd : 'class_type_declaration )) ->
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.SgClt ((_loc , ctd )) : 'sig_item ) ) ) ) ) ;
+                       (Ast.SgClt ((_loc , ctd )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("class") ; `Snterm
-            ((Gram.obj ( (class_description : 'class_description  Gram.t ) )
-               ))]  ) , (
+            ((Gram.obj ( (class_description: 'class_description  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((cd : 'class_description )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.SgCls ((_loc , cd )) : 'sig_item ) ) ) ) ) ;
+                    (Ast.SgCls ((_loc , cd )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("val") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-            (":") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            (":") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
                   fun ((i : 'a_LIDENT )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.SgVal ((_loc , i , t )) : 'sig_item ) ) ) ) ) ;
+                        (Ast.SgVal ((_loc , i , t )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (type_declaration : 'type_declaration  Gram.t ) ) ))]
+            ((Gram.obj ( (type_declaration: 'type_declaration  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((t : 'type_declaration )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.SgTyp ((_loc , t )) : 'sig_item ) ) ) ) ) ;
+                    (Ast.SgTyp ((_loc , t )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("open") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))]
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((i : 'module_longident )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.SgOpn ((_loc , i )) : 'sig_item ) ) ) ) ) ;
+                    (Ast.SgOpn ((_loc , i )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'a_ident )) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.SgMty ((_loc , i , ( Ast.MtNil (_loc) ) )) :
+                      (Ast.SgMty ((_loc , i , ( Ast.MtNil (_loc) ) )):
                         'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) )) ; `Skeyword ("=")
-            ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) )) ; `Skeyword ("=")
+            ; `Snterm ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
@@ -3591,40 +3566,40 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.SgMty ((_loc , i , mt )) : 'sig_item ) ) ) ) )
+                          (Ast.SgMty ((_loc , i , mt )): 'sig_item ) ) ) ) )
            ;
            (( [`Skeyword ("module") ; `Skeyword ("rec") ; `Snterm
             ((Gram.obj (
-               (module_rec_declaration : 'module_rec_declaration  Gram.t ) )
-               ))]  ) , (
+               (module_rec_declaration: 'module_rec_declaration  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((mb : 'module_rec_declaration )) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.SgRecMod ((_loc , mb )) : 'sig_item ) ) ) ) ) ;
+                      (Ast.SgRecMod ((_loc , mb )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_declaration : 'module_declaration  Gram.t )
-               ) ))]  ) , (
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_declaration: 'module_declaration  Gram.t ) )
+               ))]  ) , (
             (Gram.mk_action (
               fun ((mt : 'module_declaration )) ->
                 fun ((i : 'a_UIDENT )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.SgMod ((_loc , i , mt )) : 'sig_item ) ) ) ) ) ;
+                      (Ast.SgMod ((_loc , i , mt )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("include") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.SgInc ((_loc , mt )) : 'sig_item ) ) ) ) ) ;
+                    (Ast.SgInc ((_loc , mt )): 'sig_item ) ) ) ) ) ;
            (( [`Skeyword ("external") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-            (":") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            (":") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (string_list : 'string_list  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (string_list: 'string_list  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((sl : 'string_list )) ->
                 fun (_) ->
@@ -3633,17 +3608,17 @@ module MakeRevisedParser =
                       fun ((i : 'a_LIDENT )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.SgExt ((_loc , i , t , sl )) : 'sig_item ) )
+                            (Ast.SgExt ((_loc , i , t , sl )): 'sig_item ) )
               ) ) ) ;
            (( [`Skeyword ("exception") ; `Snterm
             ((Gram.obj (
-               (constructor_declaration : 'constructor_declaration  Gram.t )
-               ) ))]  ) , (
+               (constructor_declaration: 'constructor_declaration  Gram.t ) )
+               ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'constructor_declaration )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.SgExc ((_loc , t )) : 'sig_item ) ) ) ) ) ;
+                    (Ast.SgExc ((_loc , t )): 'sig_item ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -3656,7 +3631,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.sig_item_tag ) :
+                    ((Quotation.expand _loc x DynAst.sig_item_tag ):
                       'sig_item )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3677,19 +3652,19 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       ((((("" |"sigi") |"anti") |"list") as n) , s )) ->
-                    (Ast.SgAnt ((_loc , ( (mk_anti ~c:"sig_item" n s ) ) )) :
+                    (Ast.SgAnt ((_loc , ( (mk_anti ~c:"sig_item" n s ) ) )):
                       'sig_item )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_declaration : 'module_declaration  Gram.t ) ) (
+  (Gram.extend ( (module_declaration: 'module_declaration  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`RA) ) , (
            [(( [`Skeyword ("(") ; `Snterm
-             ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
              (":") ; `Snterm
-             ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+             ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
              `Skeyword (")") ; `Sself]  ) , (
              (Gram.mk_action (
                fun ((mt : 'module_declaration )) ->
@@ -3699,32 +3674,32 @@ module MakeRevisedParser =
                        fun ((i : 'a_UIDENT )) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             (Ast.MtFun ((_loc , i , t , mt )) :
+                             (Ast.MtFun ((_loc , i , t , mt )):
                                'module_declaration ) ) ) ) ) ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
-                  fun ((_loc : FanLoc.t)) -> (mt : 'module_declaration ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+                  fun ((_loc : FanLoc.t)) -> (mt: 'module_declaration ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_rec_declaration : 'module_rec_declaration  Gram.t )
-    ) (
+  (Gram.extend ( (module_rec_declaration: 'module_rec_declaration  Gram.t ) )
+    (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
              `Skeyword (":") ; `Snterm
-             ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((mt : 'module_type )) ->
                  fun (_) ->
                    fun ((m : 'a_UIDENT )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.MbCol ((_loc , m , mt )) :
-                         'module_rec_declaration ) ) ) ) ) ;
+                       (Ast.MbCol ((_loc , m , mt )): 'module_rec_declaration
+                         ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -3737,7 +3712,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.module_binding_tag ) :
+                    ((Quotation.expand _loc x DynAst.module_binding_tag ):
                       'module_rec_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3761,7 +3736,7 @@ module MakeRevisedParser =
                       ((((("" |"module_binding") |"anti") |"list") as n) , s
                        )) ->
                     (Ast.MbAnt
-                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )):
                       'module_rec_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -3770,20 +3745,19 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((m1 : 'module_rec_declaration )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MbAnd ((_loc , m1 , m2 )) :
-                        'module_rec_declaration ) ) ) ) )]  ) )]  ) )) ()  )
-    ) )
+                      (Ast.MbAnd ((_loc , m1 , m2 )): 'module_rec_declaration
+                        ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (with_constr : 'with_constr  Gram.t ) ) (
+  (Gram.extend ( (with_constr: 'with_constr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Skeyword ("module") ; `Snterm
-             ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))
+             ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))
              ; `Skeyword (":=") ; `Snterm
              ((Gram.obj (
-                (module_longident_with_app : 'module_longident_with_app 
+                (module_longident_with_app: 'module_longident_with_app 
                   Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((i2 : 'module_longident_with_app )) ->
@@ -3791,21 +3765,20 @@ module MakeRevisedParser =
                    fun ((i1 : 'module_longident )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.WcMoS ((_loc , i1 , i2 )) : 'with_constr ) ) )
-             ) ) ;
+                         (Ast.WcMoS ((_loc , i1 , i2 )): 'with_constr ) ) ) )
+             ) ;
            (( [`Skeyword ("type") ; `Snterm
             ((Gram.obj (
-               (type_longident_and_parameters :
-                 'type_longident_and_parameters  Gram.t ) ) )) ; `Skeyword
-            (":=") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) ,
-            (
+               (type_longident_and_parameters: 'type_longident_and_parameters
+                  Gram.t ) ) )) ; `Skeyword (":=") ; `Snterm
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'ctyp )) ->
                 fun (_) ->
                   fun ((t1 : 'type_longident_and_parameters )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.WcTyS ((_loc , t1 , t2 )) : 'with_constr ) ) ) )
+                        (Ast.WcTyS ((_loc , t1 , t2 )): 'with_constr ) ) ) )
             ) ;
            (( [`Skeyword ("type") ; `Stoken
             (((
@@ -3815,7 +3788,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))
             ; `Skeyword (":=") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
@@ -3830,34 +3803,34 @@ module MakeRevisedParser =
                              ((_loc , (
                                Ast.TyAnt
                                  ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) ) ,
-                               t )) : 'with_constr )
+                               t )): 'with_constr )
                         | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))
             ; `Skeyword ("=") ; `Snterm
             ((Gram.obj (
-               (module_longident_with_app : 'module_longident_with_app 
-                 Gram.t ) ) ))]  ) , (
+               (module_longident_with_app: 'module_longident_with_app  Gram.t
+                 ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i2 : 'module_longident_with_app )) ->
                 fun (_) ->
                   fun ((i1 : 'module_longident )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.WcMod ((_loc , i1 , i2 )) : 'with_constr ) ) ) )
+                        (Ast.WcMod ((_loc , i1 , i2 )): 'with_constr ) ) ) )
             ) ;
            (( [`Skeyword ("type") ; `Snterm
             ((Gram.obj (
-               (type_longident_and_parameters :
-                 'type_longident_and_parameters  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+               (type_longident_and_parameters: 'type_longident_and_parameters
+                  Gram.t ) ) )) ; `Skeyword ("=") ; `Snterm
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'ctyp )) ->
                 fun (_) ->
                   fun ((t1 : 'type_longident_and_parameters )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.WcTyp ((_loc , t1 , t2 )) : 'with_constr ) ) ) )
+                        (Ast.WcTyp ((_loc , t1 , t2 )): 'with_constr ) ) ) )
             ) ;
            (( [`Skeyword ("type") ; `Stoken
             (((
@@ -3867,7 +3840,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))
             ; `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
@@ -3882,7 +3855,7 @@ module MakeRevisedParser =
                              ((_loc , (
                                Ast.TyAnt
                                  ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) ) ,
-                               t )) : 'with_constr )
+                               t )): 'with_constr )
                         | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -3896,7 +3869,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.with_constr_tag ) :
+                    ((Quotation.expand _loc x DynAst.with_constr_tag ):
                       'with_constr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -3920,7 +3893,7 @@ module MakeRevisedParser =
                       ((((("" |"with_constr") |"anti") |"list") as n) , s ))
                     ->
                     (Ast.WcAnt
-                       ((_loc , ( (mk_anti ~c:"with_constr" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"with_constr" n s ) ) )):
                       'with_constr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -3929,31 +3902,31 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((wc1 : 'with_constr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.WcAnd ((_loc , wc1 , wc2 )) : 'with_constr ) ) ) )
+                      (Ast.WcAnd ((_loc , wc1 , wc2 )): 'with_constr ) ) ) )
             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , ( Some (`RA) ) , (
            [(( [`Skeyword ("object") ; `Snterm
              ((Gram.obj (
-                (opt_class_self_patt : 'opt_class_self_patt  Gram.t ) ) )) ;
+                (opt_class_self_patt: 'opt_class_self_patt  Gram.t ) ) )) ;
              `Snterm
-             ((Gram.obj ( (class_structure : 'class_structure  Gram.t ) ) ))
-             ; `Skeyword ("end")]  ) , (
+             ((Gram.obj ( (class_structure: 'class_structure  Gram.t ) ) )) ;
+             `Skeyword ("end")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((cst : 'class_structure )) ->
                    fun ((csp : 'opt_class_self_patt )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExObj ((_loc , csp , cst )) : 'expr ) ) ) ) ) ;
+                         (Ast.ExObj ((_loc , csp , cst )): 'expr ) ) ) ) ) ;
            (( [`Skeyword ("while") ; `Snterm
-            ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
             ("do") ; `Snterm
-            ((Gram.obj ( (do_sequence : 'do_sequence  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (do_sequence: 'do_sequence  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((seq : 'do_sequence )) ->
                 fun (_) ->
@@ -3961,16 +3934,16 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         (Ast.ExWhi
-                           ((_loc , ( (Expr.mksequence' _loc e ) ) , seq )) :
+                           ((_loc , ( (Expr.mksequence' _loc e ) ) , seq )):
                           'expr ) ) ) ) ) ;
            (( [`Skeyword ("for") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) ))
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            ("=") ; `Snterm ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) ))
             ; `Snterm
-            ((Gram.obj ( (direction_flag : 'direction_flag  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ;
+            ((Gram.obj ( (direction_flag: 'direction_flag  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ;
             `Skeyword ("do") ; `Snterm
-            ((Gram.obj ( (do_sequence : 'do_sequence  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (do_sequence: 'do_sequence  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((seq : 'do_sequence )) ->
                 fun (_) ->
@@ -3984,14 +3957,14 @@ module MakeRevisedParser =
                                 (Ast.ExFor
                                    ((_loc , i , ( (Expr.mksequence' _loc e1 )
                                      ) , ( (Expr.mksequence' _loc e2 ) ) , df
-                                     , seq )) : 'expr ) ) ) ) ) ;
+                                     , seq )): 'expr ) ) ) ) ) ;
            (( [`Skeyword ("do") ; `Snterm
-            ((Gram.obj ( (do_sequence : 'do_sequence  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (do_sequence: 'do_sequence  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((seq : 'do_sequence )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    ((Expr.mksequence _loc seq ) : 'expr ) ) ) ) ) ;
+                    ((Expr.mksequence _loc seq ): 'expr ) ) ) ) ) ;
            (( [`Skeyword ("if") ; `Sself ; `Skeyword ("then") ; `Sself ;
             `Skeyword ("else") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -4002,12 +3975,12 @@ module MakeRevisedParser =
                       fun ((e1 : 'expr )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.ExIfe ((_loc , e1 , e2 , e3 )) : 'expr ) ) )
+                            (Ast.ExIfe ((_loc , e1 , e2 , e3 )): 'expr ) ) )
             ) ) ;
            (( [`Skeyword ("try") ; `Snterm
-            ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
             ("with") ; `Snterm
-            ((Gram.obj ( (match_case : 'match_case  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (match_case: 'match_case  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((a : 'match_case )) ->
                 fun (_) ->
@@ -4015,12 +3988,12 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         (Ast.ExTry
-                           ((_loc , ( (Expr.mksequence' _loc e ) ) , a )) :
+                           ((_loc , ( (Expr.mksequence' _loc e ) ) , a )):
                           'expr ) ) ) ) ) ;
            (( [`Skeyword ("match") ; `Snterm
-            ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
             ("with") ; `Snterm
-            ((Gram.obj ( (match_case : 'match_case  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (match_case: 'match_case  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((a : 'match_case )) ->
                 fun (_) ->
@@ -4028,15 +4001,15 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         (Ast.ExMat
-                           ((_loc , ( (Expr.mksequence' _loc e ) ) , a )) :
+                           ((_loc , ( (Expr.mksequence' _loc e ) ) , a )):
                           'expr ) ) ) ) ) ;
            (( [`Skeyword ("fun") ; `Snterm
-            ((Gram.obj ( (fun_def : 'fun_def  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (fun_def: 'fun_def  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'fun_def )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'expr ) ) ) ) ) ;
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'expr ) ) ) ) ) ;
            (( [`Skeyword ("fun") ; `Skeyword ("[") ; `Slist0sep
-            ((`Snterm ((Gram.obj ( (match_case0 : 'match_case0  Gram.t ) ) ))
+            ((`Snterm ((Gram.obj ( (match_case0: 'match_case0  Gram.t ) ) ))
               , `Skeyword ("|") )) ; `Skeyword ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -4044,10 +4017,10 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExFun ((_loc , ( (Ast.mcOr_of_list a ) ) )) :
+                        (Ast.ExFun ((_loc , ( (Ast.mcOr_of_list a ) ) )):
                           'expr ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("open") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))
             ; `Skeyword ("in") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
@@ -4056,10 +4029,10 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.ExOpI ((_loc , i , e )) : 'expr ) ) ) ) ) ;
+                          (Ast.ExOpI ((_loc , i , e )): 'expr ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_binding0 : 'module_binding0  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_binding0: 'module_binding0  Gram.t ) ) )) ;
             `Skeyword ("in") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
@@ -4069,12 +4042,12 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.ExLmd ((_loc , m , mb , e )) : 'expr ) ) ) )
+                            (Ast.ExLmd ((_loc , m , mb , e )): 'expr ) ) ) )
             ) ;
            (( [`Skeyword ("let") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (binding : 'binding  Gram.t ) ) )) ; `Skeyword
-            ("in") ; `Sself]  ) , (
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (binding: 'binding  Gram.t ) ) )) ; `Skeyword ("in")
+            ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((x : 'expr )) ->
                 fun (_) ->
@@ -4082,23 +4055,23 @@ module MakeRevisedParser =
                     fun ((r : 'opt_rec )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.ExLet ((_loc , r , bi , x )) : 'expr ) ) ) ) )]
+                          (Ast.ExLet ((_loc , r , bi , x )): 'expr ) ) ) ) )]
             ) ) ;
          (( Some ("where") ) , None  , (
           [(( [`Sself ; `Skeyword ("where") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (let_binding : 'let_binding  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (let_binding: 'let_binding  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((lb : 'let_binding )) ->
                 fun ((rf : 'opt_rec )) ->
                   fun (_) ->
                     fun ((e : 'expr )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExLet ((_loc , rf , lb , e )) : 'expr ) ) ) ) )]
-           ) ) ;
+                        (Ast.ExLet ((_loc , rf , lb , e )): 'expr ) ) ) ) )] 
+          ) ) ;
          (( Some (":=") ) , ( Some (`NA) ) , (
           [(( [`Sself ; `Skeyword ("<-") ; `Sself ; `Snterm
-            ((Gram.obj ( (dummy : 'dummy  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (dummy: 'dummy  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((e2 : 'expr )) ->
@@ -4109,10 +4082,10 @@ module MakeRevisedParser =
                           (match (Expr.bigarray_set _loc e1 e2 )
                           with
                           | Some(e) -> e
-                          | None  -> Ast.ExAss ((_loc , e1 , e2 ))) : 'expr )
+                          | None  -> Ast.ExAss ((_loc , e1 , e2 ))): 'expr )
               ) ) ) ) ;
           (( [`Sself ; `Skeyword (":=") ; `Sself ; `Snterm
-           ((Gram.obj ( (dummy : 'dummy  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (dummy: 'dummy  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((e2 : 'expr )) ->
@@ -4125,79 +4098,73 @@ module MakeRevisedParser =
                               ((_loc , e1 , (
                                 Ast.ExId
                                   ((_loc , ( Ast.IdLid ((_loc , "contents" ))
-                                    ) )) ) )) ) , e2 )) : 'expr ) ) ) ) )]  )
+                                    ) )) ) )) ) , e2 )): 'expr ) ) ) ) )]  )
           ) ;
          (( Some ("||") ) , ( Some (`RA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop6 : 'infixop6  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop6: 'infixop6  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop6 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) )]  ) ) ;
          (( Some ("&&") ) , ( Some (`RA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop5 : 'infixop5  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop5: 'infixop5  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop5 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) )]  ) ) ;
          (( Some ("<") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop0 : 'infixop0  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop0: 'infixop0  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop0 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) )]  ) ) ;
          (( Some ("^") ) , ( Some (`RA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop1 : 'infixop1  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop1: 'infixop1  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop1 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) )]  ) ) ;
          (( Some ("+") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop2 : 'infixop2  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop2: 'infixop2  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop2 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) )]  ) ) ;
          (( Some ("*") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop3 : 'infixop3  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop3: 'infixop3  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop3 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("mod") ; `Sself]  ) , (
            (Gram.mk_action (
@@ -4211,7 +4178,7 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "mod" )) ) )) )
-                              , e1 )) ) , e2 )) : 'expr ) ) ) ) ) ;
+                              , e1 )) ) , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("lxor") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
@@ -4224,7 +4191,7 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "lxor" )) ) ))
-                              ) , e1 )) ) , e2 )) : 'expr ) ) ) ) ) ;
+                              ) , e1 )) ) , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("lor") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
@@ -4237,7 +4204,7 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "lor" )) ) )) )
-                              , e1 )) ) , e2 )) : 'expr ) ) ) ) ) ;
+                              , e1 )) ) , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("land") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
@@ -4250,18 +4217,17 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "land" )) ) ))
-                              ) , e1 )) ) , e2 )) : 'expr ) ) ) ) )]  ) ) ;
+                              ) , e1 )) ) , e2 )): 'expr ) ) ) ) )]  ) ) ;
          (( Some ("**") ) , ( Some (`RA) ) , (
           [(( [`Sself ; `Snterm
-            ((Gram.obj ( (infixop4 : 'infixop4  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (infixop4: 'infixop4  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'expr )) ->
                 fun ((op : 'infixop4 )) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
                       (Ast.ExApp
-                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )) :
+                         ((_loc , ( Ast.ExApp ((_loc , op , e1 )) ) , e2 )):
                         'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("lsr") ; `Sself]  ) , (
            (Gram.mk_action (
@@ -4275,7 +4241,7 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "lsr" )) ) )) )
-                              , e1 )) ) , e2 )) : 'expr ) ) ) ) ) ;
+                              , e1 )) ) , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("lsl") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
@@ -4288,7 +4254,7 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "lsl" )) ) )) )
-                              , e1 )) ) , e2 )) : 'expr ) ) ) ) ) ;
+                              , e1 )) ) , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword ("asr") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
@@ -4301,66 +4267,66 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdLid ((_loc , "asr" )) ) )) )
-                              , e1 )) ) , e2 )) : 'expr ) ) ) ) )]  ) ) ;
+                              , e1 )) ) , e2 )): 'expr ) ) ) ) )]  ) ) ;
          (( Some ("unary minus") ) , ( Some (`NA) ) , (
           [(( [`Skeyword ("-.") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    ((Expr.mkumin _loc "-." e ) : 'expr ) ) ) ) ) ;
+                    ((Expr.mkumin _loc "-." e ): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("-") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e : 'expr )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Expr.mkumin _loc "-" e ) : 'expr ) ) ) ) )]  ) ) ;
+                   ((Expr.mkumin _loc "-" e ): 'expr ) ) ) ) )]  ) ) ;
          (( Some ("apply") ) , ( Some (`LA) ) , (
           [(( [`Skeyword ("lazy") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.ExLaz ((_loc , e )) : 'expr ) ) ) ) ) ;
+                    (Ast.ExLaz ((_loc , e )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("new") ; `Snterm
-           ((Gram.obj ( (class_longident : 'class_longident  Gram.t ) ) ))] 
-           ) , (
+           ((Gram.obj ( (class_longident: 'class_longident  Gram.t ) ) ))]  )
+           , (
            (Gram.mk_action (
              fun ((i : 'class_longident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExNew ((_loc , i )) : 'expr ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (Ast.ExNew ((_loc , i )): 'expr )
+             ) ) ) ) ;
           (( [`Skeyword ("assert") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e : 'expr )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   ((Expr.mkassert _loc e ) : 'expr ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> ((Expr.mkassert _loc e ): 'expr )
+             ) ) ) ) ;
           (( [`Sself ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
                fun ((e1 : 'expr )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExApp ((_loc , e1 , e2 )) : 'expr ) ) ) ) )]  ) ) ;
+                   (Ast.ExApp ((_loc , e1 , e2 )): 'expr ) ) ) ) )]  ) ) ;
          (( Some ("label") ) , ( Some (`NA) ) , (
           [(( [`Skeyword ("?") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'a_LIDENT )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.ExOlb ((_loc , i , ( Ast.ExNil (_loc) ) )) : 'expr )
+                    (Ast.ExOlb ((_loc , i , ( Ast.ExNil (_loc) ) )): 'expr )
               ) ) ) ) ;
           (( [`Skeyword ("?") ; `Snterm
-           ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-           (":") ; `Sself]  ) , (
+           ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword (":")
+           ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e : 'expr )) ->
                fun (_) ->
                  fun ((i : 'a_LIDENT )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.ExOlb ((_loc , i , e )) : 'expr ) ) ) ) ) ;
+                       (Ast.ExOlb ((_loc , i , e )): 'expr ) ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -4374,7 +4340,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`OPTLABEL i) -> (Ast.ExOlb ((_loc , i , e )) : 'expr )
+                   | (`OPTLABEL i) -> (Ast.ExOlb ((_loc , i , e )): 'expr )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -4388,44 +4354,44 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LABEL i) -> (Ast.ExLab ((_loc , i , e )) : 'expr )
+                   | (`LABEL i) -> (Ast.ExLab ((_loc , i , e )): 'expr )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("~") ; `Snterm
-           ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((i : 'a_LIDENT )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExLab ((_loc , i , ( Ast.ExNil (_loc) ) )) : 'expr )
-             ) ) ) ) ;
+                   (Ast.ExLab ((_loc , i , ( Ast.ExNil (_loc) ) )): 'expr ) )
+             ) ) ) ;
           (( [`Skeyword ("~") ; `Snterm
-           ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-           (":") ; `Sself]  ) , (
+           ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword (":")
+           ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e : 'expr )) ->
                fun (_) ->
                  fun ((i : 'a_LIDENT )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.ExLab ((_loc , i , e )) : 'expr ) ) ) ) )]  ) ) ;
+                       (Ast.ExLab ((_loc , i , e )): 'expr ) ) ) ) )]  ) ) ;
          (( Some (".") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (label: 'label  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((lab : 'label )) ->
                 fun (_) ->
                   fun ((e : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.ExSnd ((_loc , e , lab )) : 'expr ) ) ) ) ) ;
+                      (Ast.ExSnd ((_loc , e , lab )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e2 : 'expr )) ->
                fun (_) ->
                  fun ((e1 : 'expr )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExAcc ((_loc , e1 , e2 )) : 'expr ) ) ) ) ) ;
+                     (Ast.ExAcc ((_loc , e1 , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword (".") ; `Skeyword ("{") ; `Snterm
-           ((Gram.obj ( (comma_expr : 'comma_expr  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (comma_expr: 'comma_expr  Gram.t ) ) )) ; `Skeyword
            ("}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4434,7 +4400,7 @@ module MakeRevisedParser =
                    fun (_) ->
                      fun ((e1 : 'expr )) ->
                        fun ((_loc : FanLoc.t)) ->
-                         ((Expr.bigarray_get _loc e1 e2 ) : 'expr ) ) ) ) ) ;
+                         ((Expr.bigarray_get _loc e1 e2 ): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword (".") ; `Skeyword ("[") ; `Sself ; `Skeyword
            ("]")]  ) , (
            (Gram.mk_action (
@@ -4444,7 +4410,7 @@ module MakeRevisedParser =
                    fun (_) ->
                      fun ((e1 : 'expr )) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExSte ((_loc , e1 , e2 )) : 'expr ) ) ) ) ) ;
+                         (Ast.ExSte ((_loc , e1 , e2 )): 'expr ) ) ) ) ) ;
           (( [`Sself ; `Skeyword (".") ; `Skeyword ("(") ; `Sself ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
@@ -4454,16 +4420,16 @@ module MakeRevisedParser =
                    fun (_) ->
                      fun ((e1 : 'expr )) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExAre ((_loc , e1 , e2 )) : 'expr ) ) ) ) )]  )
+                         (Ast.ExAre ((_loc , e1 , e2 )): 'expr ) ) ) ) )]  )
           ) ;
          (( Some ("~-") ) , ( Some (`NA) ) , (
-          [(( [`Snterm ((Gram.obj ( (prefixop : 'prefixop  Gram.t ) ) )) ;
+          [(( [`Snterm ((Gram.obj ( (prefixop: 'prefixop  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun ((f : 'prefixop )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.ExApp ((_loc , f , e )) : 'expr ) ) ) ) ) ;
+                    (Ast.ExApp ((_loc , f , e )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("!") ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((e : 'expr )) ->
@@ -4473,12 +4439,12 @@ module MakeRevisedParser =
                       ((_loc , e , (
                         Ast.ExId
                           ((_loc , ( Ast.IdLid ((_loc , "contents" )) ) )) )
-                        )) : 'expr ) ) ) ) )]  ) ) ;
+                        )): 'expr ) ) ) ) )]  ) ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (package_type : 'package_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (package_type: 'package_type  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -4489,42 +4455,41 @@ module MakeRevisedParser =
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
                             (Ast.ExPkg
-                               ((_loc , ( Ast.MeTyc ((_loc , me , pt )) ) )) :
+                               ((_loc , ( Ast.MeTyc ((_loc , me , pt )) ) )):
                               'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-           ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) )) ;
-           `Skeyword (")")]  ) , (
+           ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) )) ; `Skeyword
+           (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((me : 'module_expr )) ->
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.ExPkg ((_loc , me )) : 'expr ) ) ) ) ) ;
+                       (Ast.ExPkg ((_loc , me )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("begin") ; `Skeyword ("end")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                      'expr ) ) ) ) ) ;
           (( [`Skeyword ("begin") ; `Snterm
-           ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
            ("end")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((seq : 'sequence )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((Expr.mksequence _loc seq ) : 'expr ) ) ) ) ) ;
+                     ((Expr.mksequence _loc seq ): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((e : 'expr )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'expr ) ) ) ) ) ;
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":>") ; `Snterm
-           ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
-           (
+           ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'ctyp )) ->
@@ -4532,11 +4497,11 @@ module MakeRevisedParser =
                    fun ((e : 'expr )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExCoe ((_loc , e , ( Ast.TyNil (_loc) ) , t )) :
+                         (Ast.ExCoe ((_loc , e , ( Ast.TyNil (_loc) ) , t )):
                            'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-           ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (":>") ;
-           `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (":>") ;
+           `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4547,8 +4512,8 @@ module MakeRevisedParser =
                        fun ((e : 'expr )) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             (Ast.ExCoe ((_loc , e , t , t2 )) : 'expr ) ) )
-           ) ) ;
+                             (Ast.ExCoe ((_loc , e , t , t2 )): 'expr ) ) ) )
+           ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (";") ; `Skeyword (")")] 
            ) , (
            (Gram.mk_action (
@@ -4557,9 +4522,9 @@ module MakeRevisedParser =
                  fun ((e : 'expr )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((Expr.mksequence _loc e ) : 'expr ) ) ) ) ) ;
+                       ((Expr.mksequence _loc e ): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (";") ; `Snterm
-           ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4569,10 +4534,10 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
                          ((Expr.mksequence _loc (
-                            Ast.ExSem ((_loc , e , seq )) ) ) : 'expr ) ) ) )
+                            Ast.ExSem ((_loc , e , seq )) ) ): 'expr ) ) ) )
            ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (",") ; `Snterm
-           ((Gram.obj ( (comma_expr : 'comma_expr  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (comma_expr: 'comma_expr  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4582,11 +4547,10 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
                          (Ast.ExTup
-                            ((_loc , ( Ast.ExCom ((_loc , e , el )) ) )) :
+                            ((_loc , ( Ast.ExCom ((_loc , e , el )) ) )):
                            'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-           ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
-           (
+           ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'ctyp )) ->
@@ -4594,33 +4558,33 @@ module MakeRevisedParser =
                    fun ((e : 'expr )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExTyc ((_loc , e , t )) : 'expr ) ) ) ) ) ;
+                         (Ast.ExTyc ((_loc , e , t )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                      'expr ) ) ) ) ) ;
           (( [`Skeyword ("{<") ; `Snterm
-           ((Gram.obj ( (field_expr_list : 'field_expr_list  Gram.t ) ) )) ;
+           ((Gram.obj ( (field_expr_list: 'field_expr_list  Gram.t ) ) )) ;
            `Skeyword (">}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((fel : 'field_expr_list )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExOvr ((_loc , fel )) : 'expr ) ) ) ) ) ;
+                     (Ast.ExOvr ((_loc , fel )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("{<") ; `Skeyword (">}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExOvr ((_loc , ( Ast.RbNil (_loc) ) )) : 'expr ) ) )
-           ) ) ;
+                   (Ast.ExOvr ((_loc , ( Ast.RbNil (_loc) ) )): 'expr ) ) ) )
+           ) ;
           (( [`Skeyword ("{") ; `Skeyword ("(") ; `Sself ; `Skeyword (")") ;
            `Skeyword ("with") ; `Snterm
-           ((Gram.obj ( (label_expr_list : 'label_expr_list  Gram.t ) ) )) ;
+           ((Gram.obj ( (label_expr_list: 'label_expr_list  Gram.t ) ) )) ;
            `Skeyword ("}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4631,36 +4595,35 @@ module MakeRevisedParser =
                        fun (_) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             (Ast.ExRec ((_loc , el , e )) : 'expr ) ) ) ) )
-          ;
+                             (Ast.ExRec ((_loc , el , e )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("{") ; `Snterm
-           ((Gram.obj ( (label_expr_list : 'label_expr_list  Gram.t ) ) )) ;
+           ((Gram.obj ( (label_expr_list: 'label_expr_list  Gram.t ) ) )) ;
            `Skeyword ("}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((el : 'label_expr_list )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExRec ((_loc , el , ( Ast.ExNil (_loc) ) )) : 'expr
+                     (Ast.ExRec ((_loc , el , ( Ast.ExNil (_loc) ) )): 'expr
                        ) ) ) ) ) ;
           (( [`Skeyword ("[|") ; `Snterm
-           ((Gram.obj ( (sem_expr : 'sem_expr  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (sem_expr: 'sem_expr  Gram.t ) ) )) ; `Skeyword
            ("|]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((el : 'sem_expr )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExArr ((_loc , el )) : 'expr ) ) ) ) ) ;
+                     (Ast.ExArr ((_loc , el )): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("[|") ; `Skeyword ("|]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExArr ((_loc , ( Ast.ExNil (_loc) ) )) : 'expr ) ) )
-           ) ) ;
+                   (Ast.ExArr ((_loc , ( Ast.ExNil (_loc) ) )): 'expr ) ) ) )
+           ) ;
           (( [`Skeyword ("[") ; `Snterm
-           ((Gram.obj ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) ) ))
+           ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) ))
            ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4669,9 +4632,9 @@ module MakeRevisedParser =
                    fun ((_loc : FanLoc.t)) ->
                      ((mk_list (
                         Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) )
-                        ) : 'expr ) ) ) ) ) ;
+                        ): 'expr ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Snterm
-           ((Gram.obj ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) ) ))
+           ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) ))
            ; `Skeyword ("::") ; `Sself ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -4679,78 +4642,78 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun ((mk_list : 'sem_expr_for_list )) ->
                      fun (_) ->
-                       fun ((_loc : FanLoc.t)) -> ((mk_list last ) : 'expr )
-             ) ) ) ) ;
+                       fun ((_loc : FanLoc.t)) -> ((mk_list last ): 'expr ) )
+             ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )):
                      'expr ) ) ) ) ) ;
           (( [`Skeyword ("`") ; `Snterm
-           ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_ident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExVrn ((_loc , s )) : 'expr ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (Ast.ExVrn ((_loc , s )): 'expr )
+             ) ) ) ) ;
           (( [`Stry (`Snterm
-           ((Gram.obj ( (val_longident : 'val_longident  Gram.t ) ) )))]  ) ,
+           ((Gram.obj ( (val_longident: 'val_longident  Gram.t ) ) )))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'val_longident )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.ExId ((_loc , i )) : 'expr ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.ExId ((_loc , i )): 'expr ) )
              ) ) ) ;
           (( [`Stry (`Snterm
            ((Gram.obj (
-              (module_longident_dot_lparen : 'module_longident_dot_lparen 
+              (module_longident_dot_lparen: 'module_longident_dot_lparen 
                 Gram.t ) ) ))) ; `Snterm
-           ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((e : 'sequence )) ->
                  fun ((i : 'module_longident_dot_lparen )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.ExOpI ((_loc , i , e )) : 'expr ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_CHAR : 'a_CHAR  Gram.t ) ) ))]  ) , (
+                     (Ast.ExOpI ((_loc , i , e )): 'expr ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_CHAR: 'a_CHAR  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_CHAR )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.ExChr ((_loc , s )) : 'expr )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_STRING : 'a_STRING  Gram.t ) ) ))]  ) ,
+               fun ((_loc : FanLoc.t)) -> (Ast.ExChr ((_loc , s )): 'expr ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_STRING: 'a_STRING  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((s : 'a_STRING )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.ExStr ((_loc , s )) : 'expr )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_FLOAT : 'a_FLOAT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.ExStr ((_loc , s )): 'expr ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_FLOAT: 'a_FLOAT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_FLOAT )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.ExFlo ((_loc , s )) : 'expr )
-             ) ) ) ) ;
-          (( [`Snterm
-           ((Gram.obj ( (a_NATIVEINT : 'a_NATIVEINT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.ExFlo ((_loc , s )): 'expr ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_NATIVEINT: 'a_NATIVEINT  Gram.t ) ) ))]
+            ) , (
            (Gram.mk_action (
              fun ((s : 'a_NATIVEINT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.ExNativeInt ((_loc , s )) : 'expr ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT64 : 'a_INT64  Gram.t ) ) ))]  ) , (
+                 (Ast.ExNativeInt ((_loc , s )): 'expr ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT64: 'a_INT64  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT64 )) ->
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.ExInt64 ((_loc , s )) : 'expr ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT32 : 'a_INT32  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.ExInt64 ((_loc , s )): 'expr )
+             ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT32: 'a_INT32  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT32 )) ->
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.ExInt32 ((_loc , s )) : 'expr ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT : 'a_INT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.ExInt32 ((_loc , s )): 'expr )
+             ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT: 'a_INT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.ExInt ((_loc , s )) : 'expr )
-             ) ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> (Ast.ExInt ((_loc , s )): 'expr ) )
+             ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -4767,7 +4730,7 @@ module MakeRevisedParser =
                    (Ast.ExSeq
                       ((_loc , (
                         Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr" n s ) ) )) )
-                        )) : 'expr )
+                        )): 'expr )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -4785,7 +4748,7 @@ module MakeRevisedParser =
                    (Ast.ExTup
                       ((_loc , (
                         Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr" n s ) ) )) )
-                        )) : 'expr )
+                        )): 'expr )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -4801,7 +4764,7 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT (("`bool" as n) , s )) ->
                    (Ast.ExId
-                      ((_loc , ( Ast.IdAnt ((_loc , ( (mk_anti n s ) ) )) ) )) :
+                      ((_loc , ( Ast.IdAnt ((_loc , ( (mk_anti n s ) ) )) ) )):
                      'expr )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
@@ -4819,8 +4782,8 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`ANTIQUOT (((("exp" |"") |"anti") as n) , s )) ->
-                   (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr" n s ) ) )) :
-                     'expr )
+                   (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr" n s ) ) )): 'expr
+                     )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -4834,11 +4797,11 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.expr_tag ) : 'expr )
+                   ((Quotation.expand _loc x DynAst.expr_tag ): 'expr )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (do_sequence : 'do_sequence  Gram.t ) ) (
+  (Gram.extend ( (do_sequence: 'do_sequence  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -4846,49 +4809,49 @@ module MakeRevisedParser =
              (Gram.mk_action (
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                      'do_sequence ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules do_sequence (
-               [(( [`Snterm ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) ))
+               [(( [`Snterm ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) ))
                  ; `Skeyword ("done")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((seq : 'sequence )) ->
-                       fun ((_loc : FanLoc.t)) -> (seq : 'e__15 ) ) ) ) )]  )
+                       fun ((_loc : FanLoc.t)) -> (seq: 'e__15 ) ) ) ) )]  )
                ))]  ) , (
             (Gram.mk_action (
               fun ((seq : 'e__15 )) ->
-                fun ((_loc : FanLoc.t)) -> (seq : 'do_sequence ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (seq: 'do_sequence ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules do_sequence (
                [(( [`Skeyword ("{") ; `Skeyword ("}")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'e__14 ) ) )
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'e__14 ) ) )
                  ) )]  ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((_loc : FanLoc.t)) ->
-                  (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                  (Ast.ExId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                     'do_sequence ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules do_sequence (
                [(( [`Skeyword ("{") ; `Snterm
-                 ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ;
-                 `Skeyword ("}")]  ) , (
+                 ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
+                 ("}")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
                      fun ((seq : 'sequence )) ->
-                       fun (_) -> fun ((_loc : FanLoc.t)) -> (seq : 'e__13 )
-                   ) ) ) )]  ) ))]  ) , (
+                       fun (_) -> fun ((_loc : FanLoc.t)) -> (seq: 'e__13 ) )
+                   ) ) )]  ) ))]  ) , (
             (Gram.mk_action (
               fun ((seq : 'e__13 )) ->
-                fun ((_loc : FanLoc.t)) -> (seq : 'do_sequence ) ) ) ) )]  )
-           )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (seq: 'do_sequence ) ) ) ) )]  ) )]
+          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (infixop5 : 'infixop5  Gram.t ) ) (
+  (Gram.extend ( (infixop5: 'infixop5  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -4898,21 +4861,21 @@ module MakeRevisedParser =
                   (Gram.mk_action (
                     fun (x) ->
                       fun ((_loc : FanLoc.t)) ->
-                        ((Gram.string_of_token x ) : 'e__16 ) ) ) ) ) ;
+                        ((Gram.string_of_token x ): 'e__16 ) ) ) ) ) ;
                 (( [`Skeyword ("&")]  ) , (
                  (Gram.mk_action (
                    fun (x) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((Gram.string_of_token x ) : 'e__16 ) ) ) ) )]  ) )] 
-             ) , (
+                       ((Gram.string_of_token x ): 'e__16 ) ) ) ) )]  ) )]  )
+             , (
              (Gram.mk_action (
                fun ((x : 'e__16 )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , x )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , x )) ) )):
                      'infixop5 ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (infixop6 : 'infixop6  Gram.t ) ) (
+  (Gram.extend ( (infixop6: 'infixop6  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -4922,25 +4885,25 @@ module MakeRevisedParser =
                   (Gram.mk_action (
                     fun (x) ->
                       fun ((_loc : FanLoc.t)) ->
-                        ((Gram.string_of_token x ) : 'e__17 ) ) ) ) ) ;
+                        ((Gram.string_of_token x ): 'e__17 ) ) ) ) ) ;
                 (( [`Skeyword ("or")]  ) , (
                  (Gram.mk_action (
                    fun (x) ->
                      fun ((_loc : FanLoc.t)) ->
-                       ((Gram.string_of_token x ) : 'e__17 ) ) ) ) )]  ) )] 
-             ) , (
+                       ((Gram.string_of_token x ): 'e__17 ) ) ) ) )]  ) )]  )
+             , (
              (Gram.mk_action (
                fun ((x : 'e__17 )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , x )) ) )) :
+                   (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , x )) ) )):
                      'infixop6 ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sem_expr_for_list : 'sem_expr_for_list  Gram.t ) ) (
+  (Gram.extend ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun ((_loc : FanLoc.t)) ->
@@ -4951,9 +4914,9 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.ExId
                                 ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) )
-                              , e )) ) , acc )) : 'sem_expr_for_list ) ) ) )
-             ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword
+                              , e )) ) , acc )): 'sem_expr_for_list ) ) ) ) )
+           ;
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword
             (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -4966,9 +4929,9 @@ module MakeRevisedParser =
                              ((_loc , (
                                Ast.ExId
                                  ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) )
-                               , e )) ) , acc )) : 'sem_expr_for_list ) ) ) )
+                               , e )) ) , acc )): 'sem_expr_for_list ) ) ) )
             ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword
             (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((el : 'sem_expr_for_list )) ->
@@ -4982,19 +4945,19 @@ module MakeRevisedParser =
                                ((_loc , (
                                  Ast.ExId
                                    ((_loc , ( Ast.IdUid ((_loc , "::" )) ) ))
-                                 ) , e )) ) , ( (el acc ) ) )) :
+                                 ) , e )) ) , ( (el acc ) ) )):
                         'sem_expr_for_list ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_expr : 'comma_expr  Gram.t ) ) (
+  (Gram.extend ( (comma_expr: 'comma_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterml
-             ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
+             ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
-                 fun ((_loc : FanLoc.t)) -> (e : 'comma_expr ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (e: 'comma_expr ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -5008,7 +4971,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr," n s ) ) )) :
+                    (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr," n s ) ) )):
                       'comma_expr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
@@ -5017,52 +4980,52 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((e1 : 'comma_expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.ExCom ((_loc , e1 , e2 )) : 'comma_expr ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                      (Ast.ExCom ((_loc , e1 , e2 )): 'comma_expr ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (dummy : 'dummy  Gram.t ) ) (
+  (Gram.extend ( (dummy: 'dummy  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
-             (Gram.mk_action ( fun ((_loc : FanLoc.t)) -> (() : 'dummy ) ) )
-             ) )]  ) )]  ) )) ()  ) ) )
+             (Gram.mk_action ( fun ((_loc : FanLoc.t)) -> ((): 'dummy ) ) ) )
+             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sequence' : 'sequence'  Gram.t ) ) (
+  (Gram.extend ( (sequence': 'sequence'  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword (";") ; `Snterm
-             ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((el : 'sequence )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (fun (e) -> Ast.ExSem ((_loc , e , el )) : 'sequence' )
-               ) ) ) ) ;
+                     (fun (e) -> Ast.ExSem ((_loc , e , el )): 'sequence' ) )
+               ) ) ) ;
            (( [`Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (fun (e) -> e : 'sequence' ) ) ) )
+                fun ((_loc : FanLoc.t)) -> (fun (e) -> e: 'sequence' ) ) ) )
             ) ;
            ([]  , (
             (Gram.mk_action (
-              fun ((_loc : FanLoc.t)) -> (fun (e) -> e : 'sequence' ) ) ) ) )]
+              fun ((_loc : FanLoc.t)) -> (fun (e) -> e: 'sequence' ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sequence : 'sequence  Gram.t ) ) (
+  (Gram.extend ( (sequence: 'sequence  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Snterm
-             ((Gram.obj ( (sequence' : 'sequence'  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Snterm
+             ((Gram.obj ( (sequence': 'sequence'  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((k : 'sequence' )) ->
                  fun ((e : 'expr )) ->
-                   fun ((_loc : FanLoc.t)) -> ((k e ) : 'sequence ) ) ) ) ) ;
+                   fun ((_loc : FanLoc.t)) -> ((k e ): 'sequence ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -5076,11 +5039,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr;" n s ) ) )) :
+                    (Ast.ExAnt ((_loc , ( (mk_anti ~c:"expr;" n s ) ) )):
                       'sequence )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("open") ; `Snterm
-            ((Gram.obj ( (module_longident : 'module_longident  Gram.t ) ) ))
+            ((Gram.obj ( (module_longident: 'module_longident  Gram.t ) ) ))
             ; `Skeyword ("in") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'sequence )) ->
@@ -5089,11 +5052,10 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.ExOpI ((_loc , i , e )) : 'sequence ) ) ) ) )
-           ;
+                          (Ast.ExOpI ((_loc , i , e )): 'sequence ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_binding0 : 'module_binding0  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_binding0: 'module_binding0  Gram.t ) ) )) ;
             `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((el : 'sequence )) ->
@@ -5105,13 +5067,13 @@ module MakeRevisedParser =
                           fun ((_loc : FanLoc.t)) ->
                             (Ast.ExLmd
                                ((_loc , m , mb , ( (Expr.mksequence _loc el )
-                                 ) )) : 'sequence ) ) ) ) ) ;
+                                 ) )): 'sequence ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (module_binding0 : 'module_binding0  Gram.t ) ) )) ;
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (module_binding0: 'module_binding0  Gram.t ) ) )) ;
             `Skeyword ("in") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (sequence' : 'sequence'  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (sequence': 'sequence'  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((k : 'sequence' )) ->
                 fun ((e : 'expr )) ->
@@ -5121,11 +5083,11 @@ module MakeRevisedParser =
                         fun (_) ->
                           fun (_) ->
                             fun ((_loc : FanLoc.t)) ->
-                              ((k ( Ast.ExLmd ((_loc , m , mb , e )) ) ) :
+                              ((k ( Ast.ExLmd ((_loc , m , mb , e )) ) ):
                                 'sequence ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (binding : 'binding  Gram.t ) ) )) ; `Skeyword (";")
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (binding: 'binding  Gram.t ) ) )) ; `Skeyword (";")
             ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((el : 'sequence )) ->
@@ -5136,13 +5098,12 @@ module MakeRevisedParser =
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.ExLet
                              ((_loc , rf , bi , ( (Expr.mksequence _loc el )
-                               ) )) : 'sequence ) ) ) ) ) ;
+                               ) )): 'sequence ) ) ) ) ) ;
            (( [`Skeyword ("let") ; `Snterm
-            ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (binding : 'binding  Gram.t ) ) )) ; `Skeyword
-            ("in") ; `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (sequence' : 'sequence'  Gram.t ) ) ))]  ) ,
-            (
+            ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (binding: 'binding  Gram.t ) ) )) ; `Skeyword ("in")
+            ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (sequence': 'sequence'  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((k : 'sequence' )) ->
                 fun ((e : 'expr )) ->
@@ -5151,26 +5112,26 @@ module MakeRevisedParser =
                       fun ((rf : 'opt_rec )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            ((k ( Ast.ExLet ((_loc , rf , bi , e )) ) ) :
+                            ((k ( Ast.ExLet ((_loc , rf , bi , e )) ) ):
                               'sequence ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (binding : 'binding  Gram.t ) ) (
+  (Gram.extend ( (binding: 'binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Snterm
-             ((Gram.obj ( (let_binding : 'let_binding  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (let_binding: 'let_binding  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((b : 'let_binding )) ->
-                 fun ((_loc : FanLoc.t)) -> (b : 'binding ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (b: 'binding ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((b2 : 'binding )) ->
                 fun (_) ->
                   fun ((b1 : 'binding )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.BiAnd ((_loc , b1 , b2 )) : 'binding ) ) ) ) ) ;
+                      (Ast.BiAnd ((_loc , b1 , b2 )): 'binding ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -5184,7 +5145,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"anti") as n) , s )) ->
-                    (Ast.BiAnt ((_loc , ( (mk_anti ~c:"binding" n s ) ) )) :
+                    (Ast.BiAnt ((_loc , ( (mk_anti ~c:"binding" n s ) ) )):
                       'binding )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -5194,7 +5155,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT ((\"\" |\"anti\") , _ ))" ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -5208,7 +5169,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.PaAnt
                                ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) ) , e
-                             )) : 'binding )
+                             )): 'binding )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -5225,37 +5186,37 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("binding" |"list") as n) , s )) ->
-                    (Ast.BiAnt ((_loc , ( (mk_anti ~c:"binding" n s ) ) )) :
+                    (Ast.BiAnt ((_loc , ( (mk_anti ~c:"binding" n s ) ) )):
                       'binding )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (let_binding : 'let_binding  Gram.t ) ) (
+  (Gram.extend ( (let_binding: 'let_binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) )) ; `Snterm
-             ((Gram.obj ( (fun_binding : 'fun_binding  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) )) ; `Snterm
+             ((Gram.obj ( (fun_binding: 'fun_binding  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'fun_binding )) ->
                  fun ((p : 'ipatt )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.BiEq ((_loc , p , e )) : 'let_binding ) ) ) ) )]  )
+                     (Ast.BiEq ((_loc , p , e )): 'let_binding ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (fun_binding : 'fun_binding  Gram.t ) ) (
+  (Gram.extend ( (fun_binding: 'fun_binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`RA) ) , (
            [(( [`Snterm
-             ((Gram.obj ( (cvalue_binding : 'cvalue_binding  Gram.t ) ) ))] 
-             ) , (
+             ((Gram.obj ( (cvalue_binding: 'cvalue_binding  Gram.t ) ) ))]  )
+             , (
              (Gram.mk_action (
                fun ((bi : 'cvalue_binding )) ->
-                 fun ((_loc : FanLoc.t)) -> (bi : 'fun_binding ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (bi: 'fun_binding ) ) ) ) ) ;
            (( [`Stry (`Snterm
-            ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) ))) ;
+            ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) ))) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'fun_binding )) ->
@@ -5264,15 +5225,15 @@ module MakeRevisedParser =
                     (Ast.ExFun
                        ((_loc , (
                          Ast.McArr ((_loc , p , ( Ast.ExNil (_loc) ) , e )) )
-                         )) : 'fun_binding ) ) ) ) ) ;
+                         )): 'fun_binding ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules fun_binding (
                [(( [`Skeyword ("(") ; `Skeyword ("type")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'e__18 ) ) )
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'e__18 ) ) )
                  ) )]  ) )) ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
             (")") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'fun_binding )) ->
@@ -5280,54 +5241,54 @@ module MakeRevisedParser =
                   fun ((i : 'a_LIDENT )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExFUN ((_loc , i , e )) : 'fun_binding ) ) ) ) )]
+                        (Ast.ExFUN ((_loc , i , e )): 'fun_binding ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (match_case : 'match_case  Gram.t ) ) (
+  (Gram.extend ( (match_case: 'match_case  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) )) ;
              `Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun ((p : 'ipatt )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.McArr ((_loc , p , ( Ast.ExNil (_loc) ) , e )) :
+                       (Ast.McArr ((_loc , p , ( Ast.ExNil (_loc) ) , e )):
                          'match_case ) ) ) ) ) ;
            (( [`Skeyword ("[") ; `Slist0sep
-            ((`Snterm ((Gram.obj ( (match_case0 : 'match_case0  Gram.t ) ) ))
+            ((`Snterm ((Gram.obj ( (match_case0: 'match_case0  Gram.t ) ) ))
               , `Skeyword ("|") )) ; `Skeyword ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((l : 'match_case0  list )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((Ast.mcOr_of_list l ) : 'match_case ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                      ((Ast.mcOr_of_list l ): 'match_case ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
    (
-  (Gram.extend ( (match_case0 : 'match_case0  Gram.t ) ) (
+  (Gram.extend ( (match_case0: 'match_case0  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (patt_as_patt_opt : 'patt_as_patt_opt  Gram.t ) ) ))
+             ((Gram.obj ( (patt_as_patt_opt: 'patt_as_patt_opt  Gram.t ) ) ))
              ; `Snterm
-             ((Gram.obj ( (opt_when_expr : 'opt_when_expr  Gram.t ) ) )) ;
+             ((Gram.obj ( (opt_when_expr: 'opt_when_expr  Gram.t ) ) )) ;
              `Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun ((w : 'opt_when_expr )) ->
                      fun ((p : 'patt_as_patt_opt )) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.McArr ((_loc , p , w , e )) : 'match_case0 ) )
-               ) ) ) ;
+                         (Ast.McArr ((_loc , p , w , e )): 'match_case0 ) ) )
+             ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -5335,8 +5296,8 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT ((\"\" |\"anti\") , _ ))" ) )) ;
             `Skeyword ("when") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword ("->") ;
-            `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword ("->") ;
+            `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -5352,7 +5313,7 @@ module MakeRevisedParser =
                                ((_loc , (
                                  Ast.PaAnt
                                    ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) )
-                                 , w , e )) : 'match_case0 )
+                                 , w , e )): 'match_case0 )
                           | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -5361,7 +5322,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT ((\"\" |\"anti\") , _ ))" ) )) ;
             `Skeyword ("->") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -5375,7 +5336,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.PaAnt
                                ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) ) , (
-                             Ast.ExNil (_loc) ) , e )) : 'match_case0 )
+                             Ast.ExNil (_loc) ) , e )): 'match_case0 )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -5390,7 +5351,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"anti") as n) , s )) ->
-                    (Ast.McAnt ((_loc , ( (mk_anti ~c:"match_case" n s ) ) )) :
+                    (Ast.McAnt ((_loc , ( (mk_anti ~c:"match_case" n s ) ) )):
                       'match_case0 )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -5408,83 +5369,80 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("match_case" |"list") as n) , s )) ->
-                    (Ast.McAnt ((_loc , ( (mk_anti ~c:"match_case" n s ) ) )) :
+                    (Ast.McAnt ((_loc , ( (mk_anti ~c:"match_case" n s ) ) )):
                       'match_case0 )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_when_expr : 'opt_when_expr  Gram.t ) ) (
+  (Gram.extend ( (opt_when_expr: 'opt_when_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.ExNil (_loc) : 'opt_when_expr ) ) ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> (Ast.ExNil (_loc): 'opt_when_expr )
+               ) ) ) ) ;
            (( [`Skeyword ("when") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((w : 'expr )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (w : 'opt_when_expr ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (w: 'opt_when_expr ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt_as_patt_opt : 'patt_as_patt_opt  Gram.t ) ) (
+  (Gram.extend ( (patt_as_patt_opt: 'patt_as_patt_opt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'patt_as_patt_opt ) ) ) ) )
-           ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
-            ("as") ; `Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) ,
-            (
+                 fun ((_loc : FanLoc.t)) -> (p: 'patt_as_patt_opt ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
+            ("as") ; `Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((p2 : 'patt )) ->
                 fun (_) ->
                   fun ((p1 : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaAli ((_loc , p1 , p2 )) : 'patt_as_patt_opt ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                      (Ast.PaAli ((_loc , p1 , p2 )): 'patt_as_patt_opt ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_expr_list : 'label_expr_list  Gram.t ) ) (
+  (Gram.extend ( (label_expr_list: 'label_expr_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm
-             ((Gram.obj ( (label_expr : 'label_expr  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (label_expr: 'label_expr  Gram.t ) ) ))]
+              ) , (
              (Gram.mk_action (
                fun ((b1 : 'label_expr )) ->
-                 fun ((_loc : FanLoc.t)) -> (b1 : 'label_expr_list ) ) ) ) )
-           ;
-           (( [`Snterm ((Gram.obj ( (label_expr : 'label_expr  Gram.t ) ) ))
-            ; `Skeyword (";")]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (b1: 'label_expr_list ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (label_expr: 'label_expr  Gram.t ) ) )) ;
+            `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((b1 : 'label_expr )) ->
-                  fun ((_loc : FanLoc.t)) -> (b1 : 'label_expr_list ) ) ) ) )
+                  fun ((_loc : FanLoc.t)) -> (b1: 'label_expr_list ) ) ) ) )
            ;
-           (( [`Snterm ((Gram.obj ( (label_expr : 'label_expr  Gram.t ) ) ))
-            ; `Skeyword (";") ; `Sself]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_expr: 'label_expr  Gram.t ) ) )) ;
+            `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((b2 : 'label_expr_list )) ->
                 fun (_) ->
                   fun ((b1 : 'label_expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.RbSem ((_loc , b1 , b2 )) : 'label_expr_list ) ) )
+                      (Ast.RbSem ((_loc , b1 , b2 )): 'label_expr_list ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_expr : 'label_expr  Gram.t ) ) (
+  (Gram.extend ( (label_expr: 'label_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) ))]
-              ) , (
+             ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((i : 'label_longident )) ->
                  fun ((_loc : FanLoc.t)) ->
@@ -5493,16 +5451,16 @@ module MakeRevisedParser =
                         Ast.ExId
                           ((_loc , (
                             Ast.IdLid ((_loc , ( (Ident.to_lid i ) ) )) ) ))
-                        ) )) : 'label_expr ) ) ) ) ) ;
+                        ) )): 'label_expr ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (fun_binding : 'fun_binding  Gram.t ) ) ))] 
+            ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (fun_binding: 'fun_binding  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((e : 'fun_binding )) ->
                 fun ((i : 'label_longident )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.RbEq ((_loc , i , e )) : 'label_expr ) ) ) ) ) ;
+                    (Ast.RbEq ((_loc , i , e )): 'label_expr ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -5517,7 +5475,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
                     (Ast.RbAnt
-                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )):
                       'label_expr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -5527,7 +5485,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT ((\"\" |\"anti\") , _ ))" ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -5541,7 +5499,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.IdAnt
                                ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) ) ,
-                             e )) : 'label_expr )
+                             e )): 'label_expr )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -5557,7 +5515,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((("" |"anti") as n) , s )) ->
                     (Ast.RbAnt
-                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )):
                       'label_expr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -5575,38 +5533,37 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (("rec_binding" as n) , s )) ->
                     (Ast.RbAnt
-                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )):
                       'label_expr )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (fun_def : 'fun_def  Gram.t ) ) (
+  (Gram.extend ( (fun_def: 'fun_def  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Stry (`Snterm
-             ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) ))) ;
+             ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) ))) ;
              `Snterm
-             ((Gram.obj ( (fun_def_cont : 'fun_def_cont  Gram.t ) ) ))]  ) ,
-             (
+             ((Gram.obj ( (fun_def_cont: 'fun_def_cont  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun (((w , e ) : 'fun_def_cont )) ->
                  fun ((p : 'labeled_ipatt )) ->
                    fun ((_loc : FanLoc.t)) ->
                      (Ast.ExFun
-                        ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )) :
+                        ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )):
                        'fun_def ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules fun_def (
                [(( [`Skeyword ("(") ; `Skeyword ("type")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'e__19 ) ) )
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'e__19 ) ) )
                  ) )]  ) )) ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
             (")") ; `Snterm
             ((Gram.obj (
-               (fun_def_cont_no_when : 'fun_def_cont_no_when  Gram.t ) ) ))] 
+               (fun_def_cont_no_when: 'fun_def_cont_no_when  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((e : 'fun_def_cont_no_when )) ->
@@ -5614,33 +5571,33 @@ module MakeRevisedParser =
                   fun ((i : 'a_LIDENT )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExFUN ((_loc , i , e )) : 'fun_def ) ) ) ) )]  )
+                        (Ast.ExFUN ((_loc , i , e )): 'fun_def ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (fun_def_cont : 'fun_def_cont  Gram.t ) ) (
+  (Gram.extend ( (fun_def_cont: 'fun_def_cont  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`RA) ) , (
            [(( [`Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((( Ast.ExNil (_loc) ) , e ) : 'fun_def_cont ) ) ) ) ) ;
+                     ((( Ast.ExNil (_loc) ) , e ): 'fun_def_cont ) ) ) ) ) ;
            (( [`Skeyword ("when") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword ("->") ;
-            `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword ("->") ;
+            `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((w : 'expr )) ->
                     fun (_) ->
-                      fun ((_loc : FanLoc.t)) -> ((w , e ) : 'fun_def_cont )
-              ) ) ) ) ;
+                      fun ((_loc : FanLoc.t)) -> ((w , e ): 'fun_def_cont ) )
+              ) ) ) ;
            (( [`Stry (`Snterm
-            ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) ))) ;
+            ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) ))) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun (((w , e ) : 'fun_def_cont )) ->
@@ -5648,19 +5605,19 @@ module MakeRevisedParser =
                   fun ((_loc : FanLoc.t)) ->
                     ((( Ast.ExNil (_loc) ) , (
                       Ast.ExFun
-                        ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )) ) ) :
+                        ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )) ) ):
                       'fun_def_cont ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules fun_def_cont (
                [(( [`Skeyword ("(") ; `Skeyword ("type")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'e__20 ) ) )
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'e__20 ) ) )
                  ) )]  ) )) ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
             (")") ; `Snterm
             ((Gram.obj (
-               (fun_def_cont_no_when : 'fun_def_cont_no_when  Gram.t ) ) ))] 
+               (fun_def_cont_no_when: 'fun_def_cont_no_when  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((e : 'fun_def_cont_no_when )) ->
@@ -5669,40 +5626,40 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         ((( Ast.ExNil (_loc) ) , (
-                          Ast.ExFUN ((_loc , i , e )) ) ) : 'fun_def_cont ) )
+                          Ast.ExFUN ((_loc , i , e )) ) ): 'fun_def_cont ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (fun_def_cont_no_when : 'fun_def_cont_no_when  Gram.t ) ) (
+  (Gram.extend ( (fun_def_cont_no_when: 'fun_def_cont_no_when  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`RA) ) , (
            [(( [`Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
-                   fun ((_loc : FanLoc.t)) -> (e : 'fun_def_cont_no_when ) )
-               ) ) ) ;
+                   fun ((_loc : FanLoc.t)) -> (e: 'fun_def_cont_no_when ) ) )
+             ) ) ;
            (( [`Stry (`Snterm
-            ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) ))) ;
-            `Snterm
-            ((Gram.obj ( (fun_def_cont : 'fun_def_cont  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) ))) ;
+            `Snterm ((Gram.obj ( (fun_def_cont: 'fun_def_cont  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun (((w , e ) : 'fun_def_cont )) ->
                 fun ((p : 'labeled_ipatt )) ->
                   fun ((_loc : FanLoc.t)) ->
                     (Ast.ExFun
-                       ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )) :
+                       ((_loc , ( Ast.McArr ((_loc , p , w , e )) ) )):
                       'fun_def_cont_no_when ) ) ) ) ) ;
            (( [`Stry
             ((Gram.srules fun_def_cont_no_when (
                [(( [`Skeyword ("(") ; `Skeyword ("type")]  ) , (
                  (Gram.mk_action (
                    fun (_) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'e__21 ) ) )
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'e__21 ) ) )
                  ) )]  ) )) ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
             (")") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((e : 'fun_def_cont_no_when )) ->
@@ -5710,11 +5667,11 @@ module MakeRevisedParser =
                   fun ((i : 'a_LIDENT )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExFUN ((_loc , i , e )) : 'fun_def_cont_no_when
-                          ) ) ) ) )]  ) )]  ) )) ()  ) ) )
+                        (Ast.ExFUN ((_loc , i , e )): 'fun_def_cont_no_when )
+              ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt : 'patt  Gram.t ) ) (
+  (Gram.extend ( (patt: 'patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("|") ) , ( Some (`LA) ) , (
@@ -5724,7 +5681,7 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun ((p1 : 'patt )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.PaOrp ((_loc , p1 , p2 )) : 'patt ) ) ) ) )]  ) )
+                       (Ast.PaOrp ((_loc , p1 , p2 )): 'patt ) ) ) ) )]  ) )
          ;
          (( Some ("..") ) , ( Some (`NA) ) , (
           [(( [`Sself ; `Skeyword ("..") ; `Sself]  ) , (
@@ -5733,25 +5690,24 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((p1 : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaRng ((_loc , p1 , p2 )) : 'patt ) ) ) ) )]  ) )
-         ;
+                      (Ast.PaRng ((_loc , p1 , p2 )): 'patt ) ) ) ) )]  ) ) ;
          (( Some ("apply") ) , ( Some (`LA) ) , (
           [(( [`Skeyword ("lazy") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((p : 'patt )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.PaLaz ((_loc , p )) : 'patt ) ) ) ) ) ;
+                    (Ast.PaLaz ((_loc , p )): 'patt ) ) ) ) ) ;
           (( [`Sself ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((p2 : 'patt )) ->
                fun ((p1 : 'patt )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaApp ((_loc , p1 , p2 )) : 'patt ) ) ) ) )]  ) ) ;
+                   (Ast.PaApp ((_loc , p1 , p2 )): 'patt ) ) ) ) )]  ) ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("?") ; `Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (patt_tcon : 'patt_tcon  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ;
+            ((Gram.obj ( (patt_tcon: 'patt_tcon  Gram.t ) ) )) ; `Skeyword
+            ("=") ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -5761,10 +5717,10 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.PaOlbi ((_loc , "" , p , e )) : 'patt ) ) )
-            ) ) ;
+                            (Ast.PaOlbi ((_loc , "" , p , e )): 'patt ) ) ) )
+            ) ;
           (( [`Skeyword ("?") ; `Skeyword ("(") ; `Snterm
-           ((Gram.obj ( (patt_tcon : 'patt_tcon  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (patt_tcon: 'patt_tcon  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -5772,7 +5728,7 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.PaOlb ((_loc , "" , p )) : 'patt ) ) ) ) ) ;
+                       (Ast.PaOlb ((_loc , "" , p )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("?") ; `Stoken
            ((( 
              function
@@ -5788,7 +5744,7 @@ module MakeRevisedParser =
                    with
                    | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
                      (Ast.PaOlb
-                        ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )) :
+                        ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )):
                        'patt )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("?") ; `Stoken
@@ -5804,8 +5760,7 @@ module MakeRevisedParser =
                    (match __camlp4_0
                    with
                    | (`LIDENT i) ->
-                     (Ast.PaOlb ((_loc , i , ( Ast.PaNil (_loc) ) )) : 'patt
-                       )
+                     (Ast.PaOlb ((_loc , i , ( Ast.PaNil (_loc) ) )): 'patt )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("?") ; `Stoken
            ((( 
@@ -5814,9 +5769,9 @@ module MakeRevisedParser =
              | _ -> false ) ,
              (`Normal , "(`ANTIQUOT ((\"\" |\"lid\") , _ ))" ) )) ; `Skeyword
            (":") ; `Skeyword ("(") ; `Snterm
-           ((Gram.obj ( (patt_tcon : 'patt_tcon  Gram.t ) ) )) ; `Snterm
-           ((Gram.obj ( (eq_expr : 'eq_expr  Gram.t ) ) )) ; `Skeyword (")")]
-            ) , (
+           ((Gram.obj ( (patt_tcon: 'patt_tcon  Gram.t ) ) )) ; `Snterm
+           ((Gram.obj ( (eq_expr: 'eq_expr  Gram.t ) ) )) ; `Skeyword (")")] 
+           ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((f : 'eq_expr )) ->
@@ -5830,17 +5785,16 @@ module MakeRevisedParser =
                              (match __camlp4_0
                              with
                              | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
-                               ((f ( (mk_anti n i ) ) p ) : 'patt )
+                               ((f ( (mk_anti n i ) ) p ): 'patt )
                              | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
              | (`OPTLABEL _) -> true
              | _ -> false ) , (`Normal , "(`OPTLABEL _)" ) )) ; `Skeyword
-           ("(") ; `Snterm
-           ((Gram.obj ( (patt_tcon : 'patt_tcon  Gram.t ) ) )) ; `Snterm
-           ((Gram.obj ( (eq_expr : 'eq_expr  Gram.t ) ) )) ; `Skeyword (")")]
-            ) , (
+           ("(") ; `Snterm ((Gram.obj ( (patt_tcon: 'patt_tcon  Gram.t ) ) ))
+           ; `Snterm ((Gram.obj ( (eq_expr: 'eq_expr  Gram.t ) ) )) ;
+           `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((f : 'eq_expr )) ->
@@ -5851,7 +5805,7 @@ module MakeRevisedParser =
                          
                          (match __camlp4_0
                          with
-                         | (`OPTLABEL i) -> ((f i p ) : 'patt )
+                         | (`OPTLABEL i) -> ((f i p ): 'patt )
                          | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("~") ; `Stoken
            ((( 
@@ -5866,8 +5820,7 @@ module MakeRevisedParser =
                    (match __camlp4_0
                    with
                    | (`LIDENT i) ->
-                     (Ast.PaLab ((_loc , i , ( Ast.PaNil (_loc) ) )) : 'patt
-                       )
+                     (Ast.PaLab ((_loc , i , ( Ast.PaNil (_loc) ) )): 'patt )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("~") ; `Stoken
            ((( 
@@ -5884,7 +5837,7 @@ module MakeRevisedParser =
                    with
                    | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
                      (Ast.PaLab
-                        ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )) :
+                        ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )):
                        'patt )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("~") ; `Stoken
@@ -5904,8 +5857,8 @@ module MakeRevisedParser =
                        (match __camlp4_0
                        with
                        | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
-                         (Ast.PaLab ((_loc , ( (mk_anti n i ) ) , p )) :
-                           'patt )
+                         (Ast.PaLab ((_loc , ( (mk_anti n i ) ) , p )): 'patt
+                           )
                        | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -5919,23 +5872,23 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LABEL i) -> (Ast.PaLab ((_loc , i , p )) : 'patt )
+                   | (`LABEL i) -> (Ast.PaLab ((_loc , i , p )): 'patt )
                    | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("#") ; `Snterm
-           ((Gram.obj ( (type_longident : 'type_longident  Gram.t ) ) ))]  )
-           , (
+           ((Gram.obj ( (type_longident: 'type_longident  Gram.t ) ) ))]  ) ,
+           (
            (Gram.mk_action (
              fun ((i : 'type_longident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaTyp ((_loc , i )) : 'patt ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (Ast.PaTyp ((_loc , i )): 'patt )
+             ) ) ) ) ;
           (( [`Skeyword ("`") ; `Snterm
-           ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_ident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaVrn ((_loc , s )) : 'patt ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (Ast.PaVrn ((_loc , s )): 'patt )
+             ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -5948,15 +5901,14 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.patt_tag ) : 'patt )
+                   ((Quotation.expand _loc x DynAst.patt_tag ): 'patt )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("_")]  ) , (
            (Gram.mk_action (
-             fun (_) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc) : 'patt ) ) ) ) )
-          ;
+             fun (_) -> fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc): 'patt )
+             ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (",") ; `Snterm
-           ((Gram.obj ( (comma_patt : 'comma_patt  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (comma_patt: 'comma_patt  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -5966,7 +5918,7 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
                          (Ast.PaTup
-                            ((_loc , ( Ast.PaCom ((_loc , p , pl )) ) )) :
+                            ((_loc , ( Ast.PaCom ((_loc , p , pl )) ) )):
                            'patt ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword ("as") ; `Sself ;
            `Skeyword (")")]  ) , (
@@ -5977,10 +5929,9 @@ module MakeRevisedParser =
                    fun ((p : 'patt )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.PaAli ((_loc , p , p2 )) : 'patt ) ) ) ) ) ;
+                         (Ast.PaAli ((_loc , p , p2 )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-           ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
-           (
+           ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'ctyp )) ->
@@ -5988,17 +5939,16 @@ module MakeRevisedParser =
                    fun ((p : 'patt )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.PaTyc ((_loc , p , t )) : 'patt ) ) ) ) ) ;
+                         (Ast.PaTyc ((_loc , p , t )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((p : 'patt )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (p : 'patt ) ) ) ) ) ;
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (p: 'patt ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-           ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
-           (":") ; `Snterm
-           ((Gram.obj ( (package_type : 'package_type  Gram.t ) ) )) ;
-           `Skeyword (")")]  ) , (
+           ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword (":")
+           ; `Snterm ((Gram.obj ( (package_type: 'package_type  Gram.t ) ) ))
+           ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((pt : 'package_type )) ->
@@ -6009,10 +5959,10 @@ module MakeRevisedParser =
                          fun ((_loc : FanLoc.t)) ->
                            (Ast.PaTyc
                               ((_loc , ( Ast.PaMod ((_loc , m )) ) , (
-                                Ast.TyPkg ((_loc , pt )) ) )) : 'patt ) ) ) )
+                                Ast.TyPkg ((_loc , pt )) ) )): 'patt ) ) ) )
            ) ;
           (( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-           ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -6020,41 +5970,41 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.PaMod ((_loc , m )) : 'patt ) ) ) ) ) ;
+                       (Ast.PaMod ((_loc , m )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                   (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                      'patt ) ) ) ) ) ;
           (( [`Skeyword ("{") ; `Snterm
-           ((Gram.obj ( (label_patt_list : 'label_patt_list  Gram.t ) ) )) ;
+           ((Gram.obj ( (label_patt_list: 'label_patt_list  Gram.t ) ) )) ;
            `Skeyword ("}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((pl : 'label_patt_list )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.PaRec ((_loc , pl )) : 'patt ) ) ) ) ) ;
+                     (Ast.PaRec ((_loc , pl )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("[|") ; `Snterm
-           ((Gram.obj ( (sem_patt : 'sem_patt  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (sem_patt: 'sem_patt  Gram.t ) ) )) ; `Skeyword
            ("|]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((pl : 'sem_patt )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.PaArr ((_loc , pl )) : 'patt ) ) ) ) ) ;
+                     (Ast.PaArr ((_loc , pl )): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("[|") ; `Skeyword ("|]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaArr ((_loc , ( Ast.PaNil (_loc) ) )) : 'patt ) ) )
-           ) ) ;
+                   (Ast.PaArr ((_loc , ( Ast.PaNil (_loc) ) )): 'patt ) ) ) )
+           ) ;
           (( [`Skeyword ("[") ; `Snterm
-           ((Gram.obj ( (sem_patt_for_list : 'sem_patt_for_list  Gram.t ) ) ))
+           ((Gram.obj ( (sem_patt_for_list: 'sem_patt_for_list  Gram.t ) ) ))
            ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -6063,9 +6013,9 @@ module MakeRevisedParser =
                    fun ((_loc : FanLoc.t)) ->
                      ((mk_list (
                         Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) )
-                        ) : 'patt ) ) ) ) ) ;
+                        ): 'patt ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Snterm
-           ((Gram.obj ( (sem_patt_for_list : 'sem_patt_for_list  Gram.t ) ) ))
+           ((Gram.obj ( (sem_patt_for_list: 'sem_patt_for_list  Gram.t ) ) ))
            ; `Skeyword ("::") ; `Sself ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -6073,96 +6023,96 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun ((mk_list : 'sem_patt_for_list )) ->
                      fun (_) ->
-                       fun ((_loc : FanLoc.t)) -> ((mk_list last ) : 'patt )
-             ) ) ) ) ;
+                       fun ((_loc : FanLoc.t)) -> ((mk_list last ): 'patt ) )
+             ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )) :
+                   (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "[]" )) ) )):
                      'patt ) ) ) ) ) ;
           (( [`Skeyword ("-") ; `Snterm
-           ((Gram.obj ( (a_FLOAT : 'a_FLOAT  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_FLOAT: 'a_FLOAT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_FLOAT )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaFlo ((_loc , ( (neg_string s ) ) )) : 'patt ) ) ) )
+                   (Ast.PaFlo ((_loc , ( (neg_string s ) ) )): 'patt ) ) ) )
            ) ;
           (( [`Skeyword ("-") ; `Snterm
-           ((Gram.obj ( (a_NATIVEINT : 'a_NATIVEINT  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_NATIVEINT: 'a_NATIVEINT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_NATIVEINT )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaNativeInt ((_loc , ( (neg_string s ) ) )) : 'patt )
+                   (Ast.PaNativeInt ((_loc , ( (neg_string s ) ) )): 'patt )
              ) ) ) ) ;
           (( [`Skeyword ("-") ; `Snterm
-           ((Gram.obj ( (a_INT64 : 'a_INT64  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_INT64: 'a_INT64  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT64 )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaInt64 ((_loc , ( (neg_string s ) ) )) : 'patt ) ) )
+                   (Ast.PaInt64 ((_loc , ( (neg_string s ) ) )): 'patt ) ) )
            ) ) ;
           (( [`Skeyword ("-") ; `Snterm
-           ((Gram.obj ( (a_INT32 : 'a_INT32  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_INT32: 'a_INT32  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT32 )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaInt32 ((_loc , ( (neg_string s ) ) )) : 'patt ) ) )
+                   (Ast.PaInt32 ((_loc , ( (neg_string s ) ) )): 'patt ) ) )
            ) ) ;
           (( [`Skeyword ("-") ; `Snterm
-           ((Gram.obj ( (a_INT : 'a_INT  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_INT: 'a_INT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT )) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaInt ((_loc , ( (neg_string s ) ) )) : 'patt ) ) ) )
+                   (Ast.PaInt ((_loc , ( (neg_string s ) ) )): 'patt ) ) ) )
            ) ;
-          (( [`Snterm ((Gram.obj ( (a_CHAR : 'a_CHAR  Gram.t ) ) ))]  ) , (
+          (( [`Snterm ((Gram.obj ( (a_CHAR: 'a_CHAR  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_CHAR )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaChr ((_loc , s )) : 'patt )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_STRING : 'a_STRING  Gram.t ) ) ))]  ) ,
+               fun ((_loc : FanLoc.t)) -> (Ast.PaChr ((_loc , s )): 'patt ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_STRING: 'a_STRING  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((s : 'a_STRING )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaStr ((_loc , s )) : 'patt )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_FLOAT : 'a_FLOAT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaStr ((_loc , s )): 'patt ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_FLOAT: 'a_FLOAT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_FLOAT )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaFlo ((_loc , s )) : 'patt )
-             ) ) ) ) ;
-          (( [`Snterm
-           ((Gram.obj ( (a_NATIVEINT : 'a_NATIVEINT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaFlo ((_loc , s )): 'patt ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_NATIVEINT: 'a_NATIVEINT  Gram.t ) ) ))]
+            ) , (
            (Gram.mk_action (
              fun ((s : 'a_NATIVEINT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.PaNativeInt ((_loc , s )) : 'patt ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT64 : 'a_INT64  Gram.t ) ) ))]  ) , (
+                 (Ast.PaNativeInt ((_loc , s )): 'patt ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT64: 'a_INT64  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT64 )) ->
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.PaInt64 ((_loc , s )) : 'patt ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT32 : 'a_INT32  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaInt64 ((_loc , s )): 'patt )
+             ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT32: 'a_INT32  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT32 )) ->
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.PaInt32 ((_loc , s )) : 'patt ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_INT : 'a_INT  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaInt32 ((_loc , s )): 'patt )
+             ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_INT: 'a_INT  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((s : 'a_INT )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaInt ((_loc , s )) : 'patt )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (ident : 'ident  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaInt ((_loc , s )): 'patt ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (ident: 'ident  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((i : 'ident )) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.PaId ((_loc , i )) : 'patt ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.PaId ((_loc , i )): 'patt ) )
              ) ) ) ;
           (( [`Stoken
            ((( 
@@ -6178,7 +6128,7 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT (("`bool" as n) , s )) ->
                    (Ast.PaId
-                      ((_loc , ( Ast.IdAnt ((_loc , ( (mk_anti n s ) ) )) ) )) :
+                      ((_loc , ( Ast.IdAnt ((_loc , ( (mk_anti n s ) ) )) ) )):
                      'patt )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
@@ -6197,7 +6147,7 @@ module MakeRevisedParser =
                    (Ast.PaTup
                       ((_loc , (
                         Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) )
-                        )) : 'patt )
+                        )): 'patt )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            (((
@@ -6214,19 +6164,19 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`ANTIQUOT (((("" |"pat") |"anti") as n) , s )) ->
-                   (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) :
-                     'patt )
+                   (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )): 'patt
+                     )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_patt : 'comma_patt  Gram.t ) ) (
+  (Gram.extend ( (comma_patt: 'comma_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'comma_patt ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (p: 'comma_patt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -6240,7 +6190,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt," n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt," n s ) ) )):
                       'comma_patt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
@@ -6249,24 +6199,24 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((p1 : 'comma_patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaCom ((_loc , p1 , p2 )) : 'comma_patt ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                      (Ast.PaCom ((_loc , p1 , p2 )): 'comma_patt ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sem_patt : 'sem_patt  Gram.t ) ) (
+  (Gram.extend ( (sem_patt: 'sem_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'sem_patt ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+                 fun ((_loc : FanLoc.t)) -> (p: 'sem_patt ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p : 'patt )) ->
-                  fun ((_loc : FanLoc.t)) -> (p : 'sem_patt ) ) ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> (p: 'sem_patt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -6280,25 +6230,25 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )):
                       'sem_patt )
                   | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((p2 : 'sem_patt )) ->
                 fun (_) ->
                   fun ((p1 : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , p1 , p2 )) : 'sem_patt ) ) ) ) )] 
-           ) )]  ) )) ()  ) ) )
+                      (Ast.PaSem ((_loc , p1 , p2 )): 'sem_patt ) ) ) ) )]  )
+           )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sem_patt_for_list : 'sem_patt_for_list  Gram.t ) ) (
+  (Gram.extend ( (sem_patt_for_list: 'sem_patt_for_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
                  fun ((_loc : FanLoc.t)) ->
@@ -6309,9 +6259,9 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.PaId
                                 ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) )
-                              , p )) ) , acc )) : 'sem_patt_for_list ) ) ) )
-             ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+                              , p )) ) , acc )): 'sem_patt_for_list ) ) ) ) )
+           ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -6324,9 +6274,9 @@ module MakeRevisedParser =
                              ((_loc , (
                                Ast.PaId
                                  ((_loc , ( Ast.IdUid ((_loc , "::" )) ) )) )
-                               , p )) ) , acc )) : 'sem_patt_for_list ) ) ) )
+                               , p )) ) , acc )): 'sem_patt_for_list ) ) ) )
             ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((pl : 'sem_patt_for_list )) ->
@@ -6340,64 +6290,63 @@ module MakeRevisedParser =
                                ((_loc , (
                                  Ast.PaId
                                    ((_loc , ( Ast.IdUid ((_loc , "::" )) ) ))
-                                 ) , p )) ) , ( (pl acc ) ) )) :
+                                 ) , p )) ) , ( (pl acc ) ) )):
                         'sem_patt_for_list ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_patt_list : 'label_patt_list  Gram.t ) ) (
+  (Gram.extend ( (label_patt_list: 'label_patt_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm
-             ((Gram.obj ( (label_patt : 'label_patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (label_patt: 'label_patt  Gram.t ) ) ))]
+              ) , (
              (Gram.mk_action (
                fun ((p1 : 'label_patt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p1 : 'label_patt_list ) ) ) ) )
-           ;
-           (( [`Snterm ((Gram.obj ( (label_patt : 'label_patt  Gram.t ) ) ))
-            ; `Skeyword (";")]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (p1: 'label_patt_list ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (label_patt: 'label_patt  Gram.t ) ) )) ;
+            `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p1 : 'label_patt )) ->
-                  fun ((_loc : FanLoc.t)) -> (p1 : 'label_patt_list ) ) ) ) )
+                  fun ((_loc : FanLoc.t)) -> (p1: 'label_patt_list ) ) ) ) )
            ;
-           (( [`Snterm ((Gram.obj ( (label_patt : 'label_patt  Gram.t ) ) ))
-            ; `Skeyword (";") ; `Skeyword ("_") ; `Skeyword (";")]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_patt: 'label_patt  Gram.t ) ) )) ;
+            `Skeyword (";") ; `Skeyword ("_") ; `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((p1 : 'label_patt )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )) :
+                        (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )):
                           'label_patt_list ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (label_patt : 'label_patt  Gram.t ) ) ))
-            ; `Skeyword (";") ; `Skeyword ("_")]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_patt: 'label_patt  Gram.t ) ) )) ;
+            `Skeyword (";") ; `Skeyword ("_")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun ((p1 : 'label_patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )) :
+                      (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )):
                         'label_patt_list ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (label_patt : 'label_patt  Gram.t ) ) ))
-            ; `Skeyword (";") ; `Sself]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_patt: 'label_patt  Gram.t ) ) )) ;
+            `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((p2 : 'label_patt_list )) ->
                 fun (_) ->
                   fun ((p1 : 'label_patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , p1 , p2 )) : 'label_patt_list ) ) )
+                      (Ast.PaSem ((_loc , p1 , p2 )): 'label_patt_list ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_patt : 'label_patt  Gram.t ) ) (
+  (Gram.extend ( (label_patt: 'label_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) ))]
-              ) , (
+             ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((i : 'label_longident )) ->
                  fun ((_loc : FanLoc.t)) ->
@@ -6406,17 +6355,17 @@ module MakeRevisedParser =
                         Ast.PaId
                           ((_loc , (
                             Ast.IdLid ((_loc , ( (Ident.to_lid i ) ) )) ) ))
-                        ) )) : 'label_patt ) ) ) ) ) ;
+                        ) )): 'label_patt ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) )) ;
+            ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((p : 'patt )) ->
                 fun (_) ->
                   fun ((i : 'label_longident )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaEq ((_loc , i , p )) : 'label_patt ) ) ) ) ) ;
+                      (Ast.PaEq ((_loc , i , p )): 'label_patt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -6430,7 +6379,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )):
                       'label_patt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -6445,7 +6394,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.patt_tag ) : 'label_patt
+                    ((Quotation.expand _loc x DynAst.patt_tag ): 'label_patt
                       )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -6463,29 +6412,29 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"pat") |"anti") as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )):
                       'label_patt )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ipatt : 'ipatt  Gram.t ) ) (
+  (Gram.extend ( (ipatt: 'ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("_")]  ) , (
              (Gram.mk_action (
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc) : 'ipatt ) ) )
-             ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
-            , (
+                 fun ((_loc : FanLoc.t)) -> (Ast.PaAny (_loc): 'ipatt ) ) ) )
+             ) ;
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((s : 'a_LIDENT )) ->
                 fun ((_loc : FanLoc.t)) ->
-                  (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , s )) ) )) : 'ipatt
-                    ) ) ) ) ) ;
+                  (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , s )) ) )): 'ipatt )
+              ) ) ) ) ;
            (( [`Skeyword ("(") ; `Sself ; `Skeyword (",") ; `Snterm
-            ((Gram.obj ( (comma_ipatt : 'comma_ipatt  Gram.t ) ) )) ;
+            ((Gram.obj ( (comma_ipatt: 'comma_ipatt  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -6495,7 +6444,7 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.PaTup
-                             ((_loc , ( Ast.PaCom ((_loc , p , pl )) ) )) :
+                             ((_loc , ( Ast.PaCom ((_loc , p , pl )) ) )):
                             'ipatt ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Sself ; `Skeyword ("as") ; `Sself ;
             `Skeyword (")")]  ) , (
@@ -6506,9 +6455,9 @@ module MakeRevisedParser =
                     fun ((p : 'ipatt )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.PaAli ((_loc , p , p2 )) : 'ipatt ) ) ) ) ) ;
+                          (Ast.PaAli ((_loc , p , p2 )): 'ipatt ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
             (
             (Gram.mk_action (
               fun (_) ->
@@ -6517,17 +6466,17 @@ module MakeRevisedParser =
                     fun ((p : 'ipatt )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.PaTyc ((_loc , p , t )) : 'ipatt ) ) ) ) ) ;
+                          (Ast.PaTyc ((_loc , p , t )): 'ipatt ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p : 'ipatt )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (p : 'ipatt ) ) ) ) )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (p: 'ipatt ) ) ) ) )
            ;
            (( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
             (":") ; `Snterm
-            ((Gram.obj ( (package_type : 'package_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (package_type: 'package_type  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -6539,10 +6488,10 @@ module MakeRevisedParser =
                           fun ((_loc : FanLoc.t)) ->
                             (Ast.PaTyc
                                ((_loc , ( Ast.PaMod ((_loc , m )) ) , (
-                                 Ast.TyPkg ((_loc , pt )) ) )) : 'ipatt ) ) )
+                                 Ast.TyPkg ((_loc , pt )) ) )): 'ipatt ) ) )
             ) ) ;
            (( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ; `Skeyword
             (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -6550,13 +6499,13 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.PaMod ((_loc , m )) : 'ipatt ) ) ) ) ) ;
+                        (Ast.PaMod ((_loc , m )): 'ipatt ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )) :
+                    (Ast.PaId ((_loc , ( Ast.IdUid ((_loc , "()" )) ) )):
                       'ipatt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -6570,7 +6519,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.patt_tag ) : 'ipatt )
+                    ((Quotation.expand _loc x DynAst.patt_tag ): 'ipatt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -6588,7 +6537,7 @@ module MakeRevisedParser =
                     (Ast.PaTup
                        ((_loc , (
                          Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) )
-                         )) : 'ipatt )
+                         )): 'ipatt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -6605,40 +6554,40 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"pat") |"anti") as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )):
                       'ipatt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("{") ; `Snterm
-            ((Gram.obj ( (label_ipatt_list : 'label_ipatt_list  Gram.t ) ) ))
+            ((Gram.obj ( (label_ipatt_list: 'label_ipatt_list  Gram.t ) ) ))
             ; `Skeyword ("}")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((pl : 'label_ipatt_list )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaRec ((_loc , pl )) : 'ipatt ) ) ) ) )]  ) )]  )
-         )) ()  ) ) )
+                      (Ast.PaRec ((_loc , pl )): 'ipatt ) ) ) ) )]  ) )]  ) ))
+      ()  ) ) )
   );
    (
-  (Gram.extend ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) (
+  (Gram.extend ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'ipatt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'labeled_ipatt ) ) ) ) )]  )
+                 fun ((_loc : FanLoc.t)) -> (p: 'labeled_ipatt ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_ipatt : 'comma_ipatt  Gram.t ) ) (
+  (Gram.extend ( (comma_ipatt: 'comma_ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
-           [(( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'ipatt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'comma_ipatt ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (p: 'comma_ipatt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -6652,7 +6601,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt," n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt," n s ) ) )):
                       'comma_ipatt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
@@ -6661,75 +6610,71 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((p1 : 'comma_ipatt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaCom ((_loc , p1 , p2 )) : 'comma_ipatt ) ) ) ) )]
+                      (Ast.PaCom ((_loc , p1 , p2 )): 'comma_ipatt ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_ipatt_list : 'label_ipatt_list  Gram.t ) ) (
+  (Gram.extend ( (label_ipatt_list: 'label_ipatt_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_ipatt : 'label_ipatt  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (label_ipatt: 'label_ipatt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p1 : 'label_ipatt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p1 : 'label_ipatt_list ) ) ) ) )
+                 fun ((_loc : FanLoc.t)) -> (p1: 'label_ipatt_list ) ) ) ) )
            ;
-           (( [`Snterm
-            ((Gram.obj ( (label_ipatt : 'label_ipatt  Gram.t ) ) )) ;
-            `Skeyword (";")]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_ipatt: 'label_ipatt  Gram.t ) ) ))
+            ; `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p1 : 'label_ipatt )) ->
-                  fun ((_loc : FanLoc.t)) -> (p1 : 'label_ipatt_list ) ) ) )
-            ) ;
-           (( [`Snterm
-            ((Gram.obj ( (label_ipatt : 'label_ipatt  Gram.t ) ) )) ;
-            `Skeyword (";") ; `Skeyword ("_") ; `Skeyword (";")]  ) , (
+                  fun ((_loc : FanLoc.t)) -> (p1: 'label_ipatt_list ) ) ) ) )
+           ;
+           (( [`Snterm ((Gram.obj ( (label_ipatt: 'label_ipatt  Gram.t ) ) ))
+            ; `Skeyword (";") ; `Skeyword ("_") ; `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((p1 : 'label_ipatt )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )) :
+                        (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )):
                           'label_ipatt_list ) ) ) ) ) ;
-           (( [`Snterm
-            ((Gram.obj ( (label_ipatt : 'label_ipatt  Gram.t ) ) )) ;
-            `Skeyword (";") ; `Skeyword ("_")]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_ipatt: 'label_ipatt  Gram.t ) ) ))
+            ; `Skeyword (";") ; `Skeyword ("_")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun ((p1 : 'label_ipatt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )) :
+                      (Ast.PaSem ((_loc , p1 , ( Ast.PaAny (_loc) ) )):
                         'label_ipatt_list ) ) ) ) ) ;
-           (( [`Snterm
-            ((Gram.obj ( (label_ipatt : 'label_ipatt  Gram.t ) ) )) ;
-            `Skeyword (";") ; `Sself]  ) , (
+           (( [`Snterm ((Gram.obj ( (label_ipatt: 'label_ipatt  Gram.t ) ) ))
+            ; `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((p2 : 'label_ipatt_list )) ->
                 fun (_) ->
                   fun ((p1 : 'label_ipatt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , p1 , p2 )) : 'label_ipatt_list ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                      (Ast.PaSem ((_loc , p1 , p2 )): 'label_ipatt_list ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_ipatt : 'label_ipatt  Gram.t ) ) (
+  (Gram.extend ( (label_ipatt: 'label_ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) ))
-             ; `Skeyword ("=") ; `Snterm
-             ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) )) ;
+             `Skeyword ("=") ; `Snterm
+             ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'ipatt )) ->
                  fun (_) ->
                    fun ((i : 'label_longident )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.PaEq ((_loc , i , p )) : 'label_ipatt ) ) ) ) ) ;
+                       (Ast.PaEq ((_loc , i , p )): 'label_ipatt ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -6742,8 +6687,8 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.patt_tag ) :
-                      'label_ipatt )
+                    ((Quotation.expand _loc x DynAst.patt_tag ): 'label_ipatt
+                      )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -6758,7 +6703,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt;" n s ) ) )):
                       'label_ipatt )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -6776,28 +6721,28 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"pat") |"anti") as n) , s )) ->
-                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )) :
+                    (Ast.PaAnt ((_loc , ( (mk_anti ~c:"patt" n s ) ) )):
                       'label_ipatt )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (type_declaration : 'type_declaration  Gram.t ) ) (
+  (Gram.extend ( (type_declaration: 'type_declaration  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Snterm
              ((Gram.obj (
-                (type_ident_and_parameters : 'type_ident_and_parameters 
+                (type_ident_and_parameters: 'type_ident_and_parameters 
                   Gram.t ) ) )) ; `Snterm
-             ((Gram.obj ( (opt_eq_ctyp : 'opt_eq_ctyp  Gram.t ) ) )) ;
-             `Slist0 (`Snterm
-             ((Gram.obj ( (constrain : 'constrain  Gram.t ) ) )))]  ) , (
+             ((Gram.obj ( (opt_eq_ctyp: 'opt_eq_ctyp  Gram.t ) ) )) ; `Slist0
+             (`Snterm ((Gram.obj ( (constrain: 'constrain  Gram.t ) ) )))]  )
+             , (
              (Gram.mk_action (
                fun ((cl : 'constrain  list )) ->
                  fun ((tk : 'opt_eq_ctyp )) ->
                    fun (((n , tpl ) : 'type_ident_and_parameters )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyDcl ((_loc , n , tpl , tk , cl )) :
+                       (Ast.TyDcl ((_loc , n , tpl , tk , cl )):
                          'type_declaration ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -6805,276 +6750,7 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'type_declaration )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAnd ((_loc , t1 , t2 )) : 'type_declaration ) )
-              ) ) ) ;
-           (( [`Stoken
-            ((( 
-              function
-              | (`QUOTATION _) -> true
-              | _ -> false ) , (`Normal , "(`QUOTATION _)" ) ))]  ) , (
-            (Gram.mk_action (
-              fun (__camlp4_0) ->
-                fun ((_loc : FanLoc.t)) ->
-                  
-                  (match __camlp4_0
-                  with
-                  | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
-                      'type_declaration )
-                  | _ -> assert false) ) ) ) ) ;
-           (( [`Stoken
-            ((( 
-              function
-              | (`ANTIQUOT ("list" , _ )) -> true
-              | _ -> false ) , (`Normal , "(`ANTIQUOT (\"list\" , _ ))" ) ))]
-             ) , (
-            (Gram.mk_action (
-              fun (__camlp4_0) ->
-                fun ((_loc : FanLoc.t)) ->
-                  
-                  (match __camlp4_0
-                  with
-                  | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctypand" n s ) ) )) :
-                      'type_declaration )
-                  | _ -> assert false) ) ) ) ) ;
-           (( [`Stoken
-            (((
-              
-              function
-              | (`ANTIQUOT ((("" |"typ") |"anti") , _ )) -> true
-              | _ -> false ) ,
-              (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))]
-             ) , (
-            (Gram.mk_action (
-              fun (__camlp4_0) ->
-                fun ((_loc : FanLoc.t)) ->
-                  
-                  (match __camlp4_0
-                  with
-                  | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
-                      'type_declaration )
-                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend ( (constrain : 'constrain  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Skeyword ("constraint") ; `Snterm
-             ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
-             `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
-             (Gram.mk_action (
-               fun ((t2 : 'ctyp )) ->
-                 fun (_) ->
-                   fun ((t1 : 'ctyp )) ->
-                     fun (_) ->
-                       fun ((_loc : FanLoc.t)) -> ((t1 , t2 ) : 'constrain )
-               ) ) ) )]  ) )]  ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend ( (opt_eq_ctyp : 'opt_eq_ctyp  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [([]  , (
-             (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc) : 'opt_eq_ctyp )
-               ) ) ) ) ;
-           (( [`Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (type_kind : 'type_kind  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((tk : 'type_kind )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (tk : 'opt_eq_ctyp ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend ( (type_kind : 'type_kind  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
-             (Gram.mk_action (
-               fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'type_kind ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend (
-    (type_ident_and_parameters : 'type_ident_and_parameters  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ;
-             `Slist0 (`Snterm
-             ((Gram.obj (
-                (optional_type_parameter : 'optional_type_parameter  Gram.t )
-                ) )))]  ) , (
-             (Gram.mk_action (
-               fun ((tpl : 'optional_type_parameter  list )) ->
-                 fun ((i : 'a_LIDENT )) ->
-                   fun ((_loc : FanLoc.t)) ->
-                     ((i , tpl ) : 'type_ident_and_parameters ) ) ) ) )]  ) )]
-          ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend (
-    (type_longident_and_parameters : 'type_longident_and_parameters  Gram.t )
-    ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Snterm
-             ((Gram.obj ( (type_longident : 'type_longident  Gram.t ) ) )) ;
-             `Snterm
-             ((Gram.obj ( (type_parameters : 'type_parameters  Gram.t ) ) ))]
-              ) , (
-             (Gram.mk_action (
-               fun ((tpl : 'type_parameters )) ->
-                 fun ((i : 'type_longident )) ->
-                   fun ((_loc : FanLoc.t)) ->
-                     ((tpl ( Ast.TyId ((_loc , i )) ) ) :
-                       'type_longident_and_parameters ) ) ) ) )]  ) )]  ) ))
-      ()  ) ) )
-  );
-   (
-  (Gram.extend ( (type_parameters : 'type_parameters  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [([]  , (
-             (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (fun (t) -> t : 'type_parameters )
-               ) ) ) ) ;
-           (( [`Snterm
-            ((Gram.obj ( (type_parameter : 'type_parameter  Gram.t ) ) ))]  )
-            , (
-            (Gram.mk_action (
-              fun ((t : 'type_parameter )) ->
-                fun ((_loc : FanLoc.t)) ->
-                  (fun (acc) -> Ast.TyApp ((_loc , acc , t )) :
-                    'type_parameters ) ) ) ) ) ;
-           (( [`Snterm
-            ((Gram.obj ( (type_parameter : 'type_parameter  Gram.t ) ) )) ;
-            `Sself]  ) , (
-            (Gram.mk_action (
-              fun ((t2 : 'type_parameters )) ->
-                fun ((t1 : 'type_parameter )) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (fun (acc) -> (t2 ( Ast.TyApp ((_loc , acc , t1 )) ) ) :
-                      'type_parameters ) ) ) ) )]  ) )]  ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend ( (type_parameter : 'type_parameter  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Skeyword ("-") ; `Skeyword ("'") ; `Snterm
-             ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-             (Gram.mk_action (
-               fun ((i : 'a_ident )) ->
-                 fun (_) ->
-                   fun (_) ->
-                     fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyQuM ((_loc , i )) : 'type_parameter ) ) ) ) ) ;
-           (( [`Skeyword ("+") ; `Skeyword ("'") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((i : 'a_ident )) ->
-                fun (_) ->
-                  fun (_) ->
-                    fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyQuP ((_loc , i )) : 'type_parameter ) ) ) ) ) ;
-           (( [`Skeyword ("'") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((i : 'a_ident )) ->
-                fun (_) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyQuo ((_loc , i )) : 'type_parameter ) ) ) ) ) ;
-           (( [`Stoken
-            ((( 
-              function
-              | (`QUOTATION _) -> true
-              | _ -> false ) , (`Normal , "(`QUOTATION _)" ) ))]  ) , (
-            (Gram.mk_action (
-              fun (__camlp4_0) ->
-                fun ((_loc : FanLoc.t)) ->
-                  
-                  (match __camlp4_0
-                  with
-                  | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
-                      'type_parameter )
-                  | _ -> assert false) ) ) ) ) ;
-           (( [`Stoken
-            (((
-              
-              function
-              | (`ANTIQUOT ((("" |"typ") |"anti") , _ )) -> true
-              | _ -> false ) ,
-              (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))]
-             ) , (
-            (Gram.mk_action (
-              fun (__camlp4_0) ->
-                fun ((_loc : FanLoc.t)) ->
-                  
-                  (match __camlp4_0
-                  with
-                  | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti n s ) ) )) :
-                      'type_parameter )
-                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
-  );
-   (
-  (Gram.extend (
-    (optional_type_parameter : 'optional_type_parameter  Gram.t ) ) (
-    ((fun (() ) ->
-        (None  , (
-         [(None  , None  , (
-           [(( [`Skeyword ("_")]  ) , (
-             (Gram.mk_action (
-               fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyAny (_loc) : 'optional_type_parameter ) ) ) ) ) ;
-           (( [`Skeyword ("-") ; `Skeyword ("_")]  ) , (
-            (Gram.mk_action (
-              fun (_) ->
-                fun (_) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyAnM (_loc) : 'optional_type_parameter ) ) ) ) ) ;
-           (( [`Skeyword ("+") ; `Skeyword ("_")]  ) , (
-            (Gram.mk_action (
-              fun (_) ->
-                fun (_) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyAnP (_loc) : 'optional_type_parameter ) ) ) ) ) ;
-           (( [`Skeyword ("-") ; `Skeyword ("'") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((i : 'a_ident )) ->
-                fun (_) ->
-                  fun (_) ->
-                    fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyQuM ((_loc , i )) : 'optional_type_parameter ) )
-              ) ) ) ;
-           (( [`Skeyword ("+") ; `Skeyword ("'") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((i : 'a_ident )) ->
-                fun (_) ->
-                  fun (_) ->
-                    fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyQuP ((_loc , i )) : 'optional_type_parameter ) )
-              ) ) ) ;
-           (( [`Skeyword ("'") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
-            (Gram.mk_action (
-              fun ((i : 'a_ident )) ->
-                fun (_) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyQuo ((_loc , i )) : 'optional_type_parameter ) ) )
+                      (Ast.TyAnd ((_loc , t1 , t2 )): 'type_declaration ) ) )
             ) ) ;
            (( [`Stoken
             ((( 
@@ -7088,7 +6764,276 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
+                      'type_declaration )
+                  | _ -> assert false) ) ) ) ) ;
+           (( [`Stoken
+            ((( 
+              function
+              | (`ANTIQUOT ("list" , _ )) -> true
+              | _ -> false ) , (`Normal , "(`ANTIQUOT (\"list\" , _ ))" ) ))]
+             ) , (
+            (Gram.mk_action (
+              fun (__camlp4_0) ->
+                fun ((_loc : FanLoc.t)) ->
+                  
+                  (match __camlp4_0
+                  with
+                  | (`ANTIQUOT (("list" as n) , s )) ->
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctypand" n s ) ) )):
+                      'type_declaration )
+                  | _ -> assert false) ) ) ) ) ;
+           (( [`Stoken
+            (((
+              
+              function
+              | (`ANTIQUOT ((("" |"typ") |"anti") , _ )) -> true
+              | _ -> false ) ,
+              (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))]
+             ) , (
+            (Gram.mk_action (
+              fun (__camlp4_0) ->
+                fun ((_loc : FanLoc.t)) ->
+                  
+                  (match __camlp4_0
+                  with
+                  | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
+                      'type_declaration )
+                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend ( (constrain: 'constrain  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Skeyword ("constraint") ; `Snterm
+             ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
+             `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
+             (Gram.mk_action (
+               fun ((t2 : 'ctyp )) ->
+                 fun (_) ->
+                   fun ((t1 : 'ctyp )) ->
+                     fun (_) ->
+                       fun ((_loc : FanLoc.t)) -> ((t1 , t2 ): 'constrain ) )
+               ) ) )]  ) )]  ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend ( (opt_eq_ctyp: 'opt_eq_ctyp  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [([]  , (
+             (Gram.mk_action (
+               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc): 'opt_eq_ctyp ) )
+               ) ) ) ;
+           (( [`Skeyword ("=") ; `Snterm
+            ((Gram.obj ( (type_kind: 'type_kind  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((tk : 'type_kind )) ->
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (tk: 'opt_eq_ctyp ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend ( (type_kind: 'type_kind  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
+             (Gram.mk_action (
+               fun ((t : 'ctyp )) ->
+                 fun ((_loc : FanLoc.t)) -> (t: 'type_kind ) ) ) ) )]  ) )] 
+         ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend (
+    (type_ident_and_parameters: 'type_ident_and_parameters  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ;
+             `Slist0 (`Snterm
+             ((Gram.obj (
+                (optional_type_parameter: 'optional_type_parameter  Gram.t )
+                ) )))]  ) , (
+             (Gram.mk_action (
+               fun ((tpl : 'optional_type_parameter  list )) ->
+                 fun ((i : 'a_LIDENT )) ->
+                   fun ((_loc : FanLoc.t)) ->
+                     ((i , tpl ): 'type_ident_and_parameters ) ) ) ) )]  ) )]
+          ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend (
+    (type_longident_and_parameters: 'type_longident_and_parameters  Gram.t )
+    ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Snterm
+             ((Gram.obj ( (type_longident: 'type_longident  Gram.t ) ) )) ;
+             `Snterm
+             ((Gram.obj ( (type_parameters: 'type_parameters  Gram.t ) ) ))] 
+             ) , (
+             (Gram.mk_action (
+               fun ((tpl : 'type_parameters )) ->
+                 fun ((i : 'type_longident )) ->
+                   fun ((_loc : FanLoc.t)) ->
+                     ((tpl ( Ast.TyId ((_loc , i )) ) ):
+                       'type_longident_and_parameters ) ) ) ) )]  ) )]  ) ))
+      ()  ) ) )
+  );
+   (
+  (Gram.extend ( (type_parameters: 'type_parameters  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [([]  , (
+             (Gram.mk_action (
+               fun ((_loc : FanLoc.t)) -> (fun (t) -> t: 'type_parameters ) )
+               ) ) ) ;
+           (( [`Snterm
+            ((Gram.obj ( (type_parameter: 'type_parameter  Gram.t ) ) ))]  )
+            , (
+            (Gram.mk_action (
+              fun ((t : 'type_parameter )) ->
+                fun ((_loc : FanLoc.t)) ->
+                  (fun (acc) -> Ast.TyApp ((_loc , acc , t )):
+                    'type_parameters ) ) ) ) ) ;
+           (( [`Snterm
+            ((Gram.obj ( (type_parameter: 'type_parameter  Gram.t ) ) )) ;
+            `Sself]  ) , (
+            (Gram.mk_action (
+              fun ((t2 : 'type_parameters )) ->
+                fun ((t1 : 'type_parameter )) ->
+                  fun ((_loc : FanLoc.t)) ->
+                    (fun (acc) -> (t2 ( Ast.TyApp ((_loc , acc , t1 )) ) ):
+                      'type_parameters ) ) ) ) )]  ) )]  ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend ( (type_parameter: 'type_parameter  Gram.t ) ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Skeyword ("-") ; `Skeyword ("'") ; `Snterm
+             ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+             (Gram.mk_action (
+               fun ((i : 'a_ident )) ->
+                 fun (_) ->
+                   fun (_) ->
+                     fun ((_loc : FanLoc.t)) ->
+                       (Ast.TyQuM ((_loc , i )): 'type_parameter ) ) ) ) ) ;
+           (( [`Skeyword ("+") ; `Skeyword ("'") ; `Snterm
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((i : 'a_ident )) ->
+                fun (_) ->
+                  fun (_) ->
+                    fun ((_loc : FanLoc.t)) ->
+                      (Ast.TyQuP ((_loc , i )): 'type_parameter ) ) ) ) ) ;
+           (( [`Skeyword ("'") ; `Snterm
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((i : 'a_ident )) ->
+                fun (_) ->
+                  fun ((_loc : FanLoc.t)) ->
+                    (Ast.TyQuo ((_loc , i )): 'type_parameter ) ) ) ) ) ;
+           (( [`Stoken
+            ((( 
+              function
+              | (`QUOTATION _) -> true
+              | _ -> false ) , (`Normal , "(`QUOTATION _)" ) ))]  ) , (
+            (Gram.mk_action (
+              fun (__camlp4_0) ->
+                fun ((_loc : FanLoc.t)) ->
+                  
+                  (match __camlp4_0
+                  with
+                  | (`QUOTATION x) ->
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
+                      'type_parameter )
+                  | _ -> assert false) ) ) ) ) ;
+           (( [`Stoken
+            (((
+              
+              function
+              | (`ANTIQUOT ((("" |"typ") |"anti") , _ )) -> true
+              | _ -> false ) ,
+              (`Normal , "(`ANTIQUOT (((\"\" |\"typ\") |\"anti\") , _ ))" ) ))]
+             ) , (
+            (Gram.mk_action (
+              fun (__camlp4_0) ->
+                fun ((_loc : FanLoc.t)) ->
+                  
+                  (match __camlp4_0
+                  with
+                  | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
+                    (Ast.TyAnt ((_loc , ( (mk_anti n s ) ) )):
+                      'type_parameter )
+                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
+  );
+   (
+  (Gram.extend ( (optional_type_parameter: 'optional_type_parameter  Gram.t )
+    ) (
+    ((fun (() ) ->
+        (None  , (
+         [(None  , None  , (
+           [(( [`Skeyword ("_")]  ) , (
+             (Gram.mk_action (
+               fun (_) ->
+                 fun ((_loc : FanLoc.t)) ->
+                   (Ast.TyAny (_loc): 'optional_type_parameter ) ) ) ) ) ;
+           (( [`Skeyword ("-") ; `Skeyword ("_")]  ) , (
+            (Gram.mk_action (
+              fun (_) ->
+                fun (_) ->
+                  fun ((_loc : FanLoc.t)) ->
+                    (Ast.TyAnM (_loc): 'optional_type_parameter ) ) ) ) ) ;
+           (( [`Skeyword ("+") ; `Skeyword ("_")]  ) , (
+            (Gram.mk_action (
+              fun (_) ->
+                fun (_) ->
+                  fun ((_loc : FanLoc.t)) ->
+                    (Ast.TyAnP (_loc): 'optional_type_parameter ) ) ) ) ) ;
+           (( [`Skeyword ("-") ; `Skeyword ("'") ; `Snterm
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((i : 'a_ident )) ->
+                fun (_) ->
+                  fun (_) ->
+                    fun ((_loc : FanLoc.t)) ->
+                      (Ast.TyQuM ((_loc , i )): 'optional_type_parameter ) )
+              ) ) ) ;
+           (( [`Skeyword ("+") ; `Skeyword ("'") ; `Snterm
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((i : 'a_ident )) ->
+                fun (_) ->
+                  fun (_) ->
+                    fun ((_loc : FanLoc.t)) ->
+                      (Ast.TyQuP ((_loc , i )): 'optional_type_parameter ) )
+              ) ) ) ;
+           (( [`Skeyword ("'") ; `Snterm
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
+            (Gram.mk_action (
+              fun ((i : 'a_ident )) ->
+                fun (_) ->
+                  fun ((_loc : FanLoc.t)) ->
+                    (Ast.TyQuo ((_loc , i )): 'optional_type_parameter ) ) )
+            ) ) ;
+           (( [`Stoken
+            ((( 
+              function
+              | (`QUOTATION _) -> true
+              | _ -> false ) , (`Normal , "(`QUOTATION _)" ) ))]  ) , (
+            (Gram.mk_action (
+              fun (__camlp4_0) ->
+                fun ((_loc : FanLoc.t)) ->
+                  
+                  (match __camlp4_0
+                  with
+                  | (`QUOTATION x) ->
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
                       'optional_type_parameter )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7106,12 +7051,12 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti n s ) ) )):
                       'optional_type_parameter )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ctyp : 'ctyp  Gram.t ) ) (
+  (Gram.extend ( (ctyp: 'ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("==") ) , ( Some (`LA) ) , (
@@ -7121,17 +7066,16 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun ((t1 : 'ctyp )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyMan ((_loc , t1 , t2 )) : 'ctyp ) ) ) ) )]  ) )
+                       (Ast.TyMan ((_loc , t1 , t2 )): 'ctyp ) ) ) ) )]  ) )
          ;
          (( Some ("private") ) , ( Some (`NA) ) , (
           [(( [`Skeyword ("private") ; `Snterml
-            ((( (Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ) ) , "alias" ))]  ) ,
-            (
+            ((( (Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ) ) , "alias" ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyPrv ((_loc , t )) : 'ctyp ) ) ) ) )]  ) ) ;
+                    (Ast.TyPrv ((_loc , t )): 'ctyp ) ) ) ) )]  ) ) ;
          (( Some ("alias") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Skeyword ("as") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -7139,11 +7083,10 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAli ((_loc , t1 , t2 )) : 'ctyp ) ) ) ) )]  ) )
-         ;
+                      (Ast.TyAli ((_loc , t1 , t2 )): 'ctyp ) ) ) ) )]  ) ) ;
          (( Some ("forall") ) , ( Some (`LA) ) , (
           [(( [`Skeyword ("!") ; `Snterm
-            ((Gram.obj ( (typevars : 'typevars  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (typevars: 'typevars  Gram.t ) ) )) ; `Skeyword
             (".") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'ctyp )) ->
@@ -7151,8 +7094,8 @@ module MakeRevisedParser =
                   fun ((t1 : 'typevars )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.TyPol ((_loc , t1 , t2 )) : 'ctyp ) ) ) ) )]  )
-          ) ;
+                        (Ast.TyPol ((_loc , t1 , t2 )): 'ctyp ) ) ) ) )]  ) )
+         ;
          (( Some ("arrow") ) , ( Some (`RA) ) , (
           [(( [`Sself ; `Skeyword ("->") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -7160,43 +7103,42 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyArr ((_loc , t1 , t2 )) : 'ctyp ) ) ) ) )]  ) )
-         ;
+                      (Ast.TyArr ((_loc , t1 , t2 )): 'ctyp ) ) ) ) )]  ) ) ;
          (( Some ("label") ) , ( Some (`NA) ) , (
-          [(( [`Snterm ((Gram.obj ( (a_OPTLABEL : 'a_OPTLABEL  Gram.t ) ) ))
-            ; `Sself]  ) , (
+          [(( [`Snterm ((Gram.obj ( (a_OPTLABEL: 'a_OPTLABEL  Gram.t ) ) )) ;
+            `Sself]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun ((i : 'a_OPTLABEL )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyOlb ((_loc , i , t )) : 'ctyp ) ) ) ) ) ;
+                    (Ast.TyOlb ((_loc , i , t )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("?") ; `Snterm
-           ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-           (":") ; `Sself]  ) , (
+           ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword (":")
+           ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((t : 'ctyp )) ->
                fun (_) ->
                  fun ((i : 'a_LIDENT )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyOlb ((_loc , i , t )) : 'ctyp ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_LABEL : 'a_LABEL  Gram.t ) ) )) ;
+                       (Ast.TyOlb ((_loc , i , t )): 'ctyp ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_LABEL: 'a_LABEL  Gram.t ) ) )) ;
            `Sself]  ) , (
            (Gram.mk_action (
              fun ((t : 'ctyp )) ->
                fun ((i : 'a_LABEL )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyLab ((_loc , i , t )) : 'ctyp ) ) ) ) ) ;
+                   (Ast.TyLab ((_loc , i , t )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("~") ; `Snterm
-           ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Skeyword
-           (":") ; `Sself]  ) , (
+           ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Skeyword (":")
+           ; `Sself]  ) , (
            (Gram.mk_action (
              fun ((t : 'ctyp )) ->
                fun (_) ->
                  fun ((i : 'a_LIDENT )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyLab ((_loc , i , t )) : 'ctyp ) ) ) ) )]  ) ) ;
+                       (Ast.TyLab ((_loc , i , t )): 'ctyp ) ) ) ) )]  ) ) ;
          (( Some ("apply") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Sself]  ) , (
             (Gram.mk_action (
@@ -7205,10 +7147,10 @@ module MakeRevisedParser =
                   fun ((_loc : FanLoc.t)) ->
                     (
                       let  t = Ast.TyApp ((_loc , t1 , t2 )) in
-                      (try
-                        Ast.TyId ((_loc , ( (Ast.ident_of_ctyp t ) ) ))
-                       with
-                       | Invalid_argument(_) -> t) : 'ctyp ) ) ) ) )]  ) ) ;
+                      
+                      (try Ast.TyId ((_loc , ( (Ast.ident_of_ctyp t ) ) ))
+                      with
+                      | Invalid_argument(_) -> t): 'ctyp ) ) ) ) )]  ) ) ;
          (( Some (".") ) , ( Some (`LA) ) , (
           [(( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -7216,19 +7158,20 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((try
-                         Ast.TyId
-                           ((_loc , (
-                             Ast.IdAcc
-                               ((_loc , ( (Ast.ident_of_ctyp t1 ) ) , (
-                                 (Ast.ident_of_ctyp t2 ) ) )) ) ))
+                      (
+                        (try
+                        Ast.TyId
+                          ((_loc , (
+                            Ast.IdAcc
+                              ((_loc , ( (Ast.ident_of_ctyp t1 ) ) , (
+                                (Ast.ident_of_ctyp t2 ) ) )) ) ))
                         with
                         | Invalid_argument(s) ->
-                          (raise ( Stream.Error (s) ) )) : 'ctyp ) ) ) ) )] 
-          ) ) ;
+                          (raise ( Stream.Error (s) ) )): 'ctyp ) ) ) ) )]  )
+          ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Skeyword ("module") ; `Snterm
-            ((Gram.obj ( (package_type : 'package_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (package_type: 'package_type  Gram.t ) ) )) ;
             `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -7236,37 +7179,36 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.TyPkg ((_loc , p )) : 'ctyp ) ) ) ) ) ;
+                        (Ast.TyPkg ((_loc , p )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("<") ; `Snterm
-           ((Gram.obj ( (opt_meth_list : 'opt_meth_list  Gram.t ) ) )) ;
+           ((Gram.obj ( (opt_meth_list: 'opt_meth_list  Gram.t ) ) )) ;
            `Skeyword (">")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'opt_meth_list )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (t : 'ctyp ) ) ) ) ) ;
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (t: 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("#") ; `Snterm
-           ((Gram.obj ( (class_longident : 'class_longident  Gram.t ) ) ))] 
-           ) , (
+           ((Gram.obj ( (class_longident: 'class_longident  Gram.t ) ) ))]  )
+           , (
            (Gram.mk_action (
              fun ((i : 'class_longident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyCls ((_loc , i )) : 'ctyp ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (Ast.TyCls ((_loc , i )): 'ctyp )
+             ) ) ) ) ;
           (( [`Skeyword ("{") ; `Snterm
            ((Gram.obj (
-              (label_declaration_list : 'label_declaration_list  Gram.t ) ) ))
+              (label_declaration_list: 'label_declaration_list  Gram.t ) ) ))
            ; `Skeyword ("}")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'label_declaration_list )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TyRec ((_loc , t )) : 'ctyp ) ) ) ) ) ;
+                     (Ast.TyRec ((_loc , t )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[<") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
-           (">") ; `Snterm
-           ((Gram.obj ( (name_tags : 'name_tags  Gram.t ) ) )) ; `Skeyword
-           ("]")]  ) , (
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
+           (">") ; `Snterm ((Gram.obj ( (name_tags: 'name_tags  Gram.t ) ) ))
+           ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((ntl : 'name_tags )) ->
@@ -7274,22 +7216,21 @@ module MakeRevisedParser =
                    fun ((rfl : 'row_field )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.TyVrnInfSup ((_loc , rfl , ntl )) : 'ctyp ) ) )
+                         (Ast.TyVrnInfSup ((_loc , rfl , ntl )): 'ctyp ) ) )
            ) ) ;
           (( [`Skeyword ("[<") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
            ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((rfl : 'row_field )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TyVrnInf ((_loc , rfl )) : 'ctyp ) ) ) ) ) ;
+                     (Ast.TyVrnInf ((_loc , rfl )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("<") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
-           (">") ; `Snterm
-           ((Gram.obj ( (name_tags : 'name_tags  Gram.t ) ) )) ; `Skeyword
-           ("]")]  ) , (
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
+           (">") ; `Snterm ((Gram.obj ( (name_tags: 'name_tags  Gram.t ) ) ))
+           ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((ntl : 'name_tags )) ->
@@ -7298,10 +7239,10 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun (_) ->
                          fun ((_loc : FanLoc.t)) ->
-                           (Ast.TyVrnInfSup ((_loc , rfl , ntl )) : 'ctyp ) )
+                           (Ast.TyVrnInfSup ((_loc , rfl , ntl )): 'ctyp ) )
              ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("<") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
            ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -7309,9 +7250,9 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyVrnInf ((_loc , rfl )) : 'ctyp ) ) ) ) ) ;
+                       (Ast.TyVrnInf ((_loc , rfl )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword (">") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
            ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -7319,17 +7260,17 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyVrnSup ((_loc , rfl )) : 'ctyp ) ) ) ) ) ;
+                       (Ast.TyVrnSup ((_loc , rfl )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword (">") ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TyVrnSup ((_loc , ( Ast.TyNil (_loc) ) )) : 'ctyp )
+                     (Ast.TyVrnSup ((_loc , ( Ast.TyNil (_loc) ) )): 'ctyp )
              ) ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("=") ; `Snterm
-           ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) )) ; `Skeyword
            ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -7337,31 +7278,31 @@ module MakeRevisedParser =
                  fun (_) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.TyVrnEq ((_loc , rfl )) : 'ctyp ) ) ) ) ) ;
+                       (Ast.TyVrnEq ((_loc , rfl )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Snterm
            ((Gram.obj (
-              (constructor_declarations : 'constructor_declarations  Gram.t )
+              (constructor_declarations: 'constructor_declarations  Gram.t )
               ) )) ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'constructor_declarations )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TySum ((_loc , t )) : 'ctyp ) ) ) ) ) ;
+                     (Ast.TySum ((_loc , t )): 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("[") ; `Skeyword ("]")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TySum ((_loc , ( Ast.TyNil (_loc) ) )) : 'ctyp ) ) )
-           ) ) ;
+                   (Ast.TySum ((_loc , ( Ast.TyNil (_loc) ) )): 'ctyp ) ) ) )
+           ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
                fun ((t : 'ctyp )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (t : 'ctyp ) ) ) ) ) ;
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (t: 'ctyp ) ) ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword ("*") ; `Snterm
-           ((Gram.obj ( (star_ctyp : 'star_ctyp  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (star_ctyp: 'star_ctyp  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -7371,22 +7312,22 @@ module MakeRevisedParser =
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
                          (Ast.TyTup
-                            ((_loc , ( Ast.TySta ((_loc , t , tl )) ) )) :
+                            ((_loc , ( Ast.TySta ((_loc , t , tl )) ) )):
                            'ctyp ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  ) ,
+          (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_UIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , i )) ) )) : 'ctyp )
-             ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) ,
+                 (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , i )) ) )): 'ctyp ) )
+             ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_LIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.TyId ((_loc , ( Ast.IdLid ((_loc , i )) ) )) : 'ctyp )
-             ) ) ) ) ;
+                 (Ast.TyId ((_loc , ( Ast.IdLid ((_loc , i )) ) )): 'ctyp ) )
+             ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -7399,7 +7340,7 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.ctyp_tag ) : 'ctyp )
+                   ((Quotation.expand _loc x DynAst.ctyp_tag ): 'ctyp )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -7417,7 +7358,7 @@ module MakeRevisedParser =
                    (Ast.TyId
                       ((_loc , (
                         Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) )
-                        )) : 'ctyp )
+                        )): 'ctyp )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            ((( 
@@ -7435,7 +7376,7 @@ module MakeRevisedParser =
                    (Ast.TyTup
                       ((_loc , (
                         Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) )
-                        )) : 'ctyp )
+                        )): 'ctyp )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
            (((
@@ -7452,39 +7393,37 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`ANTIQUOT (((("" |"typ") |"anti") as n) , s )) ->
-                   (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
-                     'ctyp )
+                   (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )): 'ctyp
+                     )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Skeyword ("_")]  ) , (
            (Gram.mk_action (
-             fun (_) ->
-               fun ((_loc : FanLoc.t)) -> (Ast.TyAny (_loc) : 'ctyp ) ) ) ) )
-          ;
+             fun (_) -> fun ((_loc : FanLoc.t)) -> (Ast.TyAny (_loc): 'ctyp )
+             ) ) ) ) ;
           (( [`Skeyword ("'") ; `Snterm
-           ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+           ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((i : 'a_ident )) ->
                fun (_) ->
-                 fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyQuo ((_loc , i )) : 'ctyp ) ) ) ) )]  ) )]  ) )) ()
-       ) ) )
+                 fun ((_loc : FanLoc.t)) -> (Ast.TyQuo ((_loc , i )): 'ctyp )
+             ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (star_ctyp : 'star_ctyp  Gram.t ) ) (
+  (Gram.extend ( (star_ctyp: 'star_ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'star_ctyp ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'star_ctyp ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("*") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'star_ctyp )) ->
                 fun (_) ->
                   fun ((t1 : 'star_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TySta ((_loc , t1 , t2 )) : 'star_ctyp ) ) ) ) ) ;
+                      (Ast.TySta ((_loc , t1 , t2 )): 'star_ctyp ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -7498,7 +7437,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp*" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp*" n s ) ) )):
                       'star_ctyp )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7514,26 +7453,26 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'star_ctyp )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (constructor_declarations : 'constructor_declarations  Gram.t ) ) (
+    (constructor_declarations: 'constructor_declarations  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((s : 'a_UIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )) :
+                   (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )):
                      'constructor_declarations ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
@@ -7547,11 +7486,11 @@ module MakeRevisedParser =
                             ) , (
                             Ast.TyArr
                               ((_loc , ( (Ast.tyAnd_of_list tl ) ) , rt )) )
-                            )) : 'constructor_declarations ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+                            )): 'constructor_declarations ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Snterm
             ((Gram.obj (
-               (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) ))] 
+               (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((t : 'constructor_arg_list )) ->
@@ -7561,14 +7500,14 @@ module MakeRevisedParser =
                       (Ast.TyOf
                          ((_loc , (
                            Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )) )
-                           , t )) : 'constructor_declarations ) ) ) ) ) ;
+                           , t )): 'constructor_declarations ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("|") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'constructor_declarations )) ->
                 fun (_) ->
                   fun ((t1 : 'constructor_declarations )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyOr ((_loc , t1 , t2 )) :
+                      (Ast.TyOr ((_loc , t1 , t2 )):
                         'constructor_declarations ) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -7582,7 +7521,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
                       'constructor_declarations )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7598,7 +7537,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp|" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp|" n s ) ) )):
                       'constructor_declarations )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7614,27 +7553,27 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'constructor_declarations )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend (
-    (constructor_declaration : 'constructor_declaration  Gram.t ) ) (
+  (Gram.extend ( (constructor_declaration: 'constructor_declaration  Gram.t )
+    ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((s : 'a_UIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )) :
+                   (Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )):
                      'constructor_declaration ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Snterm
             ((Gram.obj (
-               (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) ))] 
+               (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((t : 'constructor_arg_list )) ->
@@ -7644,7 +7583,7 @@ module MakeRevisedParser =
                       (Ast.TyOf
                          ((_loc , (
                            Ast.TyId ((_loc , ( Ast.IdUid ((_loc , s )) ) )) )
-                           , t )) : 'constructor_declaration ) ) ) ) ) ;
+                           , t )): 'constructor_declaration ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -7657,7 +7596,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
                       'constructor_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7673,28 +7612,28 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'constructor_declaration )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) (
+  (Gram.extend ( (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'constructor_arg_list ) ) )
-             ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'constructor_arg_list ) ) ) )
+             ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'constructor_arg_list )) ->
                 fun (_) ->
                   fun ((t1 : 'constructor_arg_list )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAnd ((_loc , t1 , t2 )) : 'constructor_arg_list
-                        ) ) ) ) ) ;
+                      (Ast.TyAnd ((_loc , t1 , t2 )): 'constructor_arg_list )
+              ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -7708,51 +7647,50 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctypand" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctypand" n s ) ) )):
                       'constructor_arg_list )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_declaration_list : 'label_declaration_list  Gram.t )
-    ) (
+  (Gram.extend ( (label_declaration_list: 'label_declaration_list  Gram.t ) )
+    (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_declaration : 'label_declaration  Gram.t ) )
+             ((Gram.obj ( (label_declaration: 'label_declaration  Gram.t ) )
                 ))]  ) , (
              (Gram.mk_action (
                fun ((t1 : 'label_declaration )) ->
-                 fun ((_loc : FanLoc.t)) -> (t1 : 'label_declaration_list ) )
+                 fun ((_loc : FanLoc.t)) -> (t1: 'label_declaration_list ) )
                ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (label_declaration : 'label_declaration  Gram.t ) )
-               )) ; `Skeyword (";")]  ) , (
+            ((Gram.obj ( (label_declaration: 'label_declaration  Gram.t ) ) ))
+            ; `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((t1 : 'label_declaration )) ->
-                  fun ((_loc : FanLoc.t)) -> (t1 : 'label_declaration_list )
-              ) ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> (t1: 'label_declaration_list ) )
+              ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (label_declaration : 'label_declaration  Gram.t ) )
-               )) ; `Skeyword (";") ; `Sself]  ) , (
+            ((Gram.obj ( (label_declaration: 'label_declaration  Gram.t ) ) ))
+            ; `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'label_declaration_list )) ->
                 fun (_) ->
                   fun ((t1 : 'label_declaration )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TySem ((_loc , t1 , t2 )) :
-                        'label_declaration_list ) ) ) ) )]  ) )]  ) )) ()  )
-    ) )
+                      (Ast.TySem ((_loc , t1 , t2 )): 'label_declaration_list
+                        ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_declaration : 'label_declaration  Gram.t ) ) (
+  (Gram.extend ( (label_declaration: 'label_declaration  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ;
              `Skeyword (":") ; `Skeyword ("mutable") ; `Snterm
-             ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'poly_type )) ->
                  fun (_) ->
@@ -7763,11 +7701,11 @@ module MakeRevisedParser =
                             ((_loc , (
                               Ast.TyId
                                 ((_loc , ( Ast.IdLid ((_loc , s )) ) )) ) , (
-                              Ast.TyMut ((_loc , t )) ) )) :
+                              Ast.TyMut ((_loc , t )) ) )):
                            'label_declaration ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
                 fun (_) ->
@@ -7776,7 +7714,7 @@ module MakeRevisedParser =
                       (Ast.TyCol
                          ((_loc , (
                            Ast.TyId ((_loc , ( Ast.IdLid ((_loc , s )) ) )) )
-                           , t )) : 'label_declaration ) ) ) ) ) ;
+                           , t )): 'label_declaration ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -7789,7 +7727,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
                       'label_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7805,7 +7743,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp;" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp;" n s ) ) )):
                       'label_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -7821,40 +7759,40 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'label_declaration )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_ident : 'a_ident  Gram.t ) ) (
+  (Gram.extend ( (a_ident: 'a_ident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_UIDENT )) ->
-                 fun ((_loc : FanLoc.t)) -> (i : 'a_ident ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
-            , (
+                 fun ((_loc : FanLoc.t)) -> (i: 'a_ident ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((i : 'a_LIDENT )) ->
-                fun ((_loc : FanLoc.t)) -> (i : 'a_ident ) ) ) ) )]  ) )]  )
-         )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (i: 'a_ident ) ) ) ) )]  ) )]  ) ))
+      ()  ) ) )
   );
    (
-  (Gram.extend ( (ident : 'ident  Gram.t ) ) (
+  (Gram.extend ( (ident: 'ident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
              `Skeyword (".") ; `Sself]  ) , (
              (Gram.mk_action (
                fun ((j : 'ident )) ->
                  fun (_) ->
                    fun ((i : 'a_UIDENT )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , i )) ) , j )) :
+                       (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , i )) ) , j )):
                          'ident ) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -7880,20 +7818,20 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.IdAnt
                                ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) ) ,
-                             i )) : 'ident )
+                             i )): 'ident )
                       | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
-            , (
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((i : 'a_LIDENT )) ->
-                fun ((_loc : FanLoc.t)) ->
-                  (Ast.IdLid ((_loc , i )) : 'ident ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  )
-            , (
+                fun ((_loc : FanLoc.t)) -> (Ast.IdLid ((_loc , i )): 'ident )
+              ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((i : 'a_UIDENT )) ->
-                fun ((_loc : FanLoc.t)) ->
-                  (Ast.IdUid ((_loc , i )) : 'ident ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (Ast.IdUid ((_loc , i )): 'ident )
+              ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -7911,29 +7849,29 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                     ->
-                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                       'ident )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_longident : 'module_longident  Gram.t ) ) (
+  (Gram.extend ( (module_longident: 'module_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_UIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.IdUid ((_loc , i )) : 'module_longident ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+                   (Ast.IdUid ((_loc , i )): 'module_longident ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (".") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((l : 'module_longident )) ->
                 fun (_) ->
                   fun ((m : 'a_UIDENT )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )) :
+                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )):
                         'module_longident ) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -7952,13 +7890,13 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                     ->
-                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                       'module_longident )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (module_longident_with_app : 'module_longident_with_app  Gram.t ) ) (
+    (module_longident_with_app: 'module_longident_with_app  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("apply") ) , None  , (
@@ -7967,8 +7905,8 @@ module MakeRevisedParser =
                fun ((j : 'module_longident_with_app )) ->
                  fun ((i : 'module_longident_with_app )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.IdApp ((_loc , i , j )) :
-                       'module_longident_with_app ) ) ) ) )]  ) ) ;
+                     (Ast.IdApp ((_loc , i , j )): 'module_longident_with_app
+                       ) ) ) ) )]  ) ) ;
          (( Some (".") ) , None  , (
           [(( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -7976,7 +7914,7 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((i : 'module_longident_with_app )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , i , j )) :
+                      (Ast.IdAcc ((_loc , i , j )):
                         'module_longident_with_app ) ) ) ) )]  ) ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
@@ -7985,14 +7923,14 @@ module MakeRevisedParser =
                 fun ((i : 'module_longident_with_app )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (i : 'module_longident_with_app ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  ) ,
+                      (i: 'module_longident_with_app ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_UIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.IdUid ((_loc , i )) : 'module_longident_with_app ) ) )
-           ) ) ;
+                 (Ast.IdUid ((_loc , i )): 'module_longident_with_app ) ) ) )
+           ) ;
           (( [`Stoken
            (((
              
@@ -8010,33 +7948,33 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                    ->
-                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                      'module_longident_with_app )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (module_longident_dot_lparen : 'module_longident_dot_lparen  Gram.t ) ) (
+    (module_longident_dot_lparen: 'module_longident_dot_lparen  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
              `Skeyword (".") ; `Skeyword ("(")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun (_) ->
                    fun ((i : 'a_UIDENT )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.IdUid ((_loc , i )) :
-                         'module_longident_dot_lparen ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+                       (Ast.IdUid ((_loc , i )): 'module_longident_dot_lparen
+                         ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (".") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((l : 'module_longident_dot_lparen )) ->
                 fun (_) ->
                   fun ((m : 'a_UIDENT )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )) :
+                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )):
                         'module_longident_dot_lparen ) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -8058,12 +7996,12 @@ module MakeRevisedParser =
                       |
                         (`ANTIQUOT
                           ((((("" |"id") |"anti") |"list") as n) , s )) ->
-                        (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                        (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                           'module_longident_dot_lparen )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (type_longident : 'type_longident  Gram.t ) ) (
+  (Gram.extend ( (type_longident: 'type_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("apply") ) , None  , (
@@ -8072,7 +8010,7 @@ module MakeRevisedParser =
                fun ((j : 'type_longident )) ->
                  fun ((i : 'type_longident )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.IdApp ((_loc , i , j )) : 'type_longident ) ) ) ) )]
+                     (Ast.IdApp ((_loc , i , j )): 'type_longident ) ) ) ) )]
             ) ) ;
          (( Some (".") ) , None  , (
           [(( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
@@ -8081,28 +8019,27 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((i : 'type_longident )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , i , j )) : 'type_longident ) ) ) )
-            )]  ) ) ;
+                      (Ast.IdAcc ((_loc , i , j )): 'type_longident ) ) ) ) )]
+           ) ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((i : 'type_longident )) ->
-                  fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (i : 'type_longident ) ) ) ) )
-          ;
-          (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  ) ,
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (i: 'type_longident )
+              ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_UIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.IdUid ((_loc , i )) : 'type_longident ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) ,
+                 (Ast.IdUid ((_loc , i )): 'type_longident ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_LIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.IdLid ((_loc , i )) : 'type_longident ) ) ) ) ) ;
+                 (Ast.IdLid ((_loc , i )): 'type_longident ) ) ) ) ) ;
           (( [`Stoken
            (((
              
@@ -8120,29 +8057,29 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                    ->
-                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                      'type_longident )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label_longident : 'label_longident  Gram.t ) ) (
+  (Gram.extend ( (label_longident: 'label_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_LIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.IdLid ((_loc , i )) : 'label_longident ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+                   (Ast.IdLid ((_loc , i )): 'label_longident ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (".") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((l : 'label_longident )) ->
                 fun (_) ->
                   fun ((m : 'a_UIDENT )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )) :
+                      (Ast.IdAcc ((_loc , ( Ast.IdUid ((_loc , m )) ) , l )):
                         'label_longident ) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -8161,63 +8098,63 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                     ->
-                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                    (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                       'label_longident )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_type_longident : 'class_type_longident  Gram.t ) ) (
+  (Gram.extend ( (class_type_longident: 'class_type_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (type_longident : 'type_longident  Gram.t ) ) ))] 
-             ) , (
+             ((Gram.obj ( (type_longident: 'type_longident  Gram.t ) ) ))]  )
+             , (
              (Gram.mk_action (
                fun ((x : 'type_longident )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'class_type_longident ) ) )
-             ) )]  ) )]  ) )) ()  ) ) )
+                 fun ((_loc : FanLoc.t)) -> (x: 'class_type_longident ) ) ) )
+             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (val_longident : 'val_longident  Gram.t ) ) (
+  (Gram.extend ( (val_longident: 'val_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ident : 'ident  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ident: 'ident  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'ident )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'val_longident ) ) ) ) )]  )
+                 fun ((_loc : FanLoc.t)) -> (x: 'val_longident ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_longident : 'class_longident  Gram.t ) ) (
+  (Gram.extend ( (class_longident: 'class_longident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (label_longident : 'label_longident  Gram.t ) ) ))]
-              ) , (
+             ((Gram.obj ( (label_longident: 'label_longident  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((x : 'label_longident )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'class_longident ) ) ) ) )] 
+                 fun ((_loc : FanLoc.t)) -> (x: 'class_longident ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_declaration : 'class_declaration  Gram.t ) ) (
+  (Gram.extend ( (class_declaration: 'class_declaration  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Snterm
              ((Gram.obj (
-                (class_info_for_class_expr : 'class_info_for_class_expr 
+                (class_info_for_class_expr: 'class_info_for_class_expr 
                   Gram.t ) ) )) ; `Snterm
-             ((Gram.obj ( (class_fun_binding : 'class_fun_binding  Gram.t ) )
+             ((Gram.obj ( (class_fun_binding: 'class_fun_binding  Gram.t ) )
                 ))]  ) , (
              (Gram.mk_action (
                fun ((ce : 'class_fun_binding )) ->
                  fun ((ci : 'class_info_for_class_expr )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.CeEq ((_loc , ci , ce )) : 'class_declaration ) ) )
+                     (Ast.CeEq ((_loc , ci , ce )): 'class_declaration ) ) )
              ) ) ;
            (( [`Stoken
             ((( 
@@ -8231,7 +8168,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_expr_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_expr_tag ):
                       'class_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -8252,7 +8189,7 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       ((((("" |"cdcl") |"anti") |"list") as n) , s )) ->
-                    (Ast.CeAnt ((_loc , ( (mk_anti ~c:"class_expr" n s ) ) )) :
+                    (Ast.CeAnt ((_loc , ( (mk_anti ~c:"class_expr" n s ) ) )):
                       'class_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -8261,101 +8198,99 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((c1 : 'class_declaration )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CeAnd ((_loc , c1 , c2 )) : 'class_declaration ) )
+                      (Ast.CeAnd ((_loc , c1 , c2 )): 'class_declaration ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_fun_binding : 'class_fun_binding  Gram.t ) ) (
+  (Gram.extend ( (class_fun_binding: 'class_fun_binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) )) ;
+             ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) )) ;
              `Sself]  ) , (
              (Gram.mk_action (
                fun ((cfb : 'class_fun_binding )) ->
                  fun ((p : 'labeled_ipatt )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.CeFun ((_loc , p , cfb )) : 'class_fun_binding ) )
-               ) ) ) ;
+                     (Ast.CeFun ((_loc , p , cfb )): 'class_fun_binding ) ) )
+             ) ) ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (class_type_plus : 'class_type_plus  Gram.t ) ) )) ;
+            ((Gram.obj ( (class_type_plus: 'class_type_plus  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (class_expr : 'class_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (class_expr: 'class_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((ce : 'class_expr )) ->
                 fun (_) ->
                   fun ((ct : 'class_type_plus )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CeTyc ((_loc , ce , ct )) : 'class_fun_binding )
+                        (Ast.CeTyc ((_loc , ce , ct )): 'class_fun_binding )
               ) ) ) ) ;
            (( [`Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (class_expr : 'class_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (class_expr: 'class_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((ce : 'class_expr )) ->
                 fun (_) ->
-                  fun ((_loc : FanLoc.t)) -> (ce : 'class_fun_binding ) ) ) )
+                  fun ((_loc : FanLoc.t)) -> (ce: 'class_fun_binding ) ) ) )
             )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (class_info_for_class_type : 'class_info_for_class_type  Gram.t ) ) (
+    (class_info_for_class_type: 'class_info_for_class_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_virtual : 'opt_virtual  Gram.t ) ) )) ;
-             `Snterm
+             ((Gram.obj ( (opt_virtual: 'opt_virtual  Gram.t ) ) )) ; `Snterm
              ((Gram.obj (
-                (class_name_and_param : 'class_name_and_param  Gram.t ) ) ))]
-              ) , (
+                (class_name_and_param: 'class_name_and_param  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun (((i , ot ) : 'class_name_and_param )) ->
                  fun ((mv : 'opt_virtual )) ->
                    fun ((_loc : FanLoc.t)) ->
                      (Ast.CtCon
-                        ((_loc , mv , ( Ast.IdLid ((_loc , i )) ) , ot )) :
+                        ((_loc , mv , ( Ast.IdLid ((_loc , i )) ) , ot )):
                        'class_info_for_class_type ) ) ) ) )]  ) )]  ) )) () 
       ) ) )
   );
    (
   (Gram.extend (
-    (class_info_for_class_expr : 'class_info_for_class_expr  Gram.t ) ) (
+    (class_info_for_class_expr: 'class_info_for_class_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_virtual : 'opt_virtual  Gram.t ) ) )) ;
-             `Snterm
+             ((Gram.obj ( (opt_virtual: 'opt_virtual  Gram.t ) ) )) ; `Snterm
              ((Gram.obj (
-                (class_name_and_param : 'class_name_and_param  Gram.t ) ) ))]
-              ) , (
+                (class_name_and_param: 'class_name_and_param  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun (((i , ot ) : 'class_name_and_param )) ->
                  fun ((mv : 'opt_virtual )) ->
                    fun ((_loc : FanLoc.t)) ->
                      (Ast.CeCon
-                        ((_loc , mv , ( Ast.IdLid ((_loc , i )) ) , ot )) :
+                        ((_loc , mv , ( Ast.IdLid ((_loc , i )) ) , ot )):
                        'class_info_for_class_expr ) ) ) ) )]  ) )]  ) )) () 
       ) ) )
   );
    (
-  (Gram.extend ( (class_name_and_param : 'class_name_and_param  Gram.t ) ) (
+  (Gram.extend ( (class_name_and_param: 'class_name_and_param  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_LIDENT )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((i , ( Ast.TyNil (_loc) ) ) : 'class_name_and_param ) ) )
+                   ((i , ( Ast.TyNil (_loc) ) ): 'class_name_and_param ) ) )
              ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ;
             `Skeyword ("[") ; `Snterm
             ((Gram.obj (
-               (comma_type_parameter : 'comma_type_parameter  Gram.t ) ) )) ;
+               (comma_type_parameter: 'comma_type_parameter  Gram.t ) ) )) ;
             `Skeyword ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -8363,21 +8298,21 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun ((i : 'a_LIDENT )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        ((i , x ) : 'class_name_and_param ) ) ) ) )]  ) )]  )
+                        ((i , x ): 'class_name_and_param ) ) ) ) )]  ) )]  )
          )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_type_parameter : 'comma_type_parameter  Gram.t ) ) (
+  (Gram.extend ( (comma_type_parameter: 'comma_type_parameter  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (type_parameter : 'type_parameter  Gram.t ) ) ))] 
-             ) , (
+             ((Gram.obj ( (type_parameter: 'type_parameter  Gram.t ) ) ))]  )
+             , (
              (Gram.mk_action (
                fun ((t : 'type_parameter )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'comma_type_parameter ) ) )
-             ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'comma_type_parameter ) ) ) )
+             ) ;
            (( [`Stoken
             ((( 
               function
@@ -8391,7 +8326,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp," n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp," n s ) ) )):
                       'comma_type_parameter )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
@@ -8400,37 +8335,36 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'comma_type_parameter )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyCom ((_loc , t1 , t2 )) : 'comma_type_parameter
-                        ) ) ) ) )]  ) )]  ) )) ()  ) ) )
+                      (Ast.TyCom ((_loc , t1 , t2 )): 'comma_type_parameter )
+              ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_comma_ctyp : 'opt_comma_ctyp  Gram.t ) ) (
+  (Gram.extend ( (opt_comma_ctyp: 'opt_comma_ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.TyNil (_loc) : 'opt_comma_ctyp ) ) ) ) ) ;
+                 (Ast.TyNil (_loc): 'opt_comma_ctyp ) ) ) ) ) ;
            (( [`Skeyword ("[") ; `Snterm
-            ((Gram.obj ( (comma_ctyp : 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (comma_ctyp: 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
             ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((x : 'comma_ctyp )) ->
-                  fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (x : 'opt_comma_ctyp ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (x: 'opt_comma_ctyp )
+              ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (comma_ctyp : 'comma_ctyp  Gram.t ) ) (
+  (Gram.extend ( (comma_ctyp: 'comma_ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'comma_ctyp ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'comma_ctyp ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -8444,7 +8378,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp," n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp," n s ) ) )):
                       'comma_ctyp )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword (",") ; `Sself]  ) , (
@@ -8453,38 +8387,38 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'comma_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyCom ((_loc , t1 , t2 )) : 'comma_ctyp ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                      (Ast.TyCom ((_loc , t1 , t2 )): 'comma_ctyp ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_fun_def : 'class_fun_def  Gram.t ) ) (
+  (Gram.extend ( (class_fun_def: 'class_fun_def  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (class_expr : 'class_expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (class_expr: 'class_expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((ce : 'class_expr )) ->
-                 fun (_) -> fun ((_loc : FanLoc.t)) -> (ce : 'class_fun_def )
+                 fun (_) -> fun ((_loc : FanLoc.t)) -> (ce: 'class_fun_def )
                ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) )) ;
+            ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((ce : 'class_fun_def )) ->
                 fun ((p : 'labeled_ipatt )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.CeFun ((_loc , p , ce )) : 'class_fun_def ) ) ) ) )]
-            ) )]  ) )) ()  ) ) )
+                    (Ast.CeFun ((_loc , p , ce )): 'class_fun_def ) ) ) ) )] 
+           ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_expr : 'class_expr  Gram.t ) ) (
+  (Gram.extend ( (class_expr: 'class_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("top") ) , None  , (
            [(( [`Skeyword ("let") ; `Snterm
-             ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) )) ; `Snterm
-             ((Gram.obj ( (binding : 'binding  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) )) ; `Snterm
+             ((Gram.obj ( (binding: 'binding  Gram.t ) ) )) ; `Skeyword
              ("in") ; `Sself]  ) , (
              (Gram.mk_action (
                fun ((ce : 'class_expr )) ->
@@ -8493,39 +8427,38 @@ module MakeRevisedParser =
                      fun ((rf : 'opt_rec )) ->
                        fun (_) ->
                          fun ((_loc : FanLoc.t)) ->
-                           (Ast.CeLet ((_loc , rf , bi , ce )) : 'class_expr
-                             ) ) ) ) ) ;
+                           (Ast.CeLet ((_loc , rf , bi , ce )): 'class_expr )
+               ) ) ) ) ;
            (( [`Skeyword ("fun") ; `Snterm
-            ((Gram.obj ( (labeled_ipatt : 'labeled_ipatt  Gram.t ) ) )) ;
+            ((Gram.obj ( (labeled_ipatt: 'labeled_ipatt  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (class_fun_def : 'class_fun_def  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (class_fun_def: 'class_fun_def  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((ce : 'class_fun_def )) ->
                 fun ((p : 'labeled_ipatt )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CeFun ((_loc , p , ce )) : 'class_expr ) ) ) ) )] 
+                      (Ast.CeFun ((_loc , p , ce )): 'class_expr ) ) ) ) )] 
            ) ) ;
          (( Some ("apply") ) , ( Some (`NA) ) , (
           [(( [`Sself ; `Snterml
-            ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "label" ))]  ) ,
-            (
+            ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "label" ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun ((ce : 'class_expr )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.CeApp ((_loc , ce , e )) : 'class_expr ) ) ) ) )]  )
+                    (Ast.CeApp ((_loc , ce , e )): 'class_expr ) ) ) ) )]  )
           ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((ce : 'class_expr )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (ce : 'class_expr ) )
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (ce: 'class_expr ) )
               ) ) ) ;
           (( [`Skeyword ("(") ; `Sself ; `Skeyword (":") ; `Snterm
-           ((Gram.obj ( (class_type : 'class_type  Gram.t ) ) )) ; `Skeyword
+           ((Gram.obj ( (class_type: 'class_type  Gram.t ) ) )) ; `Skeyword
            (")")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -8534,12 +8467,12 @@ module MakeRevisedParser =
                    fun ((ce : 'class_expr )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.CeTyc ((_loc , ce , ct )) : 'class_expr ) ) ) )
+                         (Ast.CeTyc ((_loc , ce , ct )): 'class_expr ) ) ) )
            ) ;
           (( [`Skeyword ("object") ; `Snterm
-           ((Gram.obj ( (opt_class_self_patt : 'opt_class_self_patt  Gram.t )
+           ((Gram.obj ( (opt_class_self_patt: 'opt_class_self_patt  Gram.t )
               ) )) ; `Snterm
-           ((Gram.obj ( (class_structure : 'class_structure  Gram.t ) ) )) ;
+           ((Gram.obj ( (class_structure: 'class_structure  Gram.t ) ) )) ;
            `Skeyword ("end")]  ) , (
            (Gram.mk_action (
              fun (_) ->
@@ -8547,15 +8480,15 @@ module MakeRevisedParser =
                  fun ((csp : 'opt_class_self_patt )) ->
                    fun (_) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.CeStr ((_loc , csp , cst )) : 'class_expr ) ) ) )
+                       (Ast.CeStr ((_loc , csp , cst )): 'class_expr ) ) ) )
            ) ;
           (( [`Snterm
            ((Gram.obj (
-              (class_longident_and_param : 'class_longident_and_param  Gram.t
+              (class_longident_and_param: 'class_longident_and_param  Gram.t
                 ) ) ))]  ) , (
            (Gram.mk_action (
              fun ((ce : 'class_longident_and_param )) ->
-               fun ((_loc : FanLoc.t)) -> (ce : 'class_expr ) ) ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> (ce: 'class_expr ) ) ) ) ) ;
           (( [`Stoken
            ((( 
              function
@@ -8568,7 +8501,7 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`QUOTATION x) ->
-                   ((Quotation.expand _loc x DynAst.class_expr_tag ) :
+                   ((Quotation.expand _loc x DynAst.class_expr_tag ):
                      'class_expr )
                  | _ -> assert false) ) ) ) ) ;
           (( [`Stoken
@@ -8586,29 +8519,29 @@ module MakeRevisedParser =
                  (match __camlp4_0
                  with
                  | (`ANTIQUOT (((("" |"cexp") |"anti") as n) , s )) ->
-                   (Ast.CeAnt ((_loc , ( (mk_anti ~c:"class_expr" n s ) ) )) :
+                   (Ast.CeAnt ((_loc , ( (mk_anti ~c:"class_expr" n s ) ) )):
                      'class_expr )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (class_longident_and_param : 'class_longident_and_param  Gram.t ) ) (
+    (class_longident_and_param: 'class_longident_and_param  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (class_longident : 'class_longident  Gram.t ) ) ))]
-              ) , (
+             ((Gram.obj ( (class_longident: 'class_longident  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((ci : 'class_longident )) ->
                  fun ((_loc : FanLoc.t)) ->
                    (Ast.CeCon
-                      ((_loc , Ast.ViNil  , ci , ( Ast.TyNil (_loc) ) )) :
+                      ((_loc , Ast.ViNil  , ci , ( Ast.TyNil (_loc) ) )):
                      'class_longident_and_param ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (class_longident : 'class_longident  Gram.t ) ) )) ;
+            ((Gram.obj ( (class_longident: 'class_longident  Gram.t ) ) )) ;
             `Skeyword ("[") ; `Snterm
-            ((Gram.obj ( (comma_ctyp : 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (comma_ctyp: 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
             ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -8616,30 +8549,29 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun ((ci : 'class_longident )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CeCon ((_loc , Ast.ViNil  , ci , t )) :
+                        (Ast.CeCon ((_loc , Ast.ViNil  , ci , t )):
                           'class_longident_and_param ) ) ) ) )]  ) )]  ) ))
       ()  ) ) )
   );
    (
-  (Gram.extend ( (class_structure : 'class_structure  Gram.t ) ) (
+  (Gram.extend ( (class_structure: 'class_structure  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist0
              ((Gram.srules class_structure (
                 [(( [`Snterm
-                  ((Gram.obj ( (class_str_item : 'class_str_item  Gram.t ) )
-                     )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))] 
-                  ) , (
+                  ((Gram.obj ( (class_str_item: 'class_str_item  Gram.t ) ) ))
+                  ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((cst : 'class_str_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (cst : 'e__22 ) ) ) ) )] 
-                ) ))]  ) , (
+                        fun ((_loc : FanLoc.t)) -> (cst: 'e__22 ) ) ) ) )]  )
+                ))]  ) , (
              (Gram.mk_action (
                fun ((l : 'e__22  list )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Ast.crSem_of_list l ) : 'class_structure ) ) ) ) ) ;
+                   ((Ast.crSem_of_list l ): 'class_structure ) ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -8648,8 +8580,8 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal ,
                "(`ANTIQUOT ((((\"\" |\"cst\") |\"anti\") |\"list\") , _ ))" )
-              )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ;
-            `Sself]  ) , (
+              )) ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]
+             ) , (
             (Gram.mk_action (
               fun ((cst : 'class_structure )) ->
                 fun (_) ->
@@ -8665,7 +8597,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.CrAnt
                                ((_loc , ( (mk_anti ~c:"class_str_item" n s )
-                                 ) )) ) , cst )) : 'class_structure )
+                                 ) )) ) , cst )): 'class_structure )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -8685,22 +8617,22 @@ module MakeRevisedParser =
                   | (`ANTIQUOT ((((("" |"cst") |"anti") |"list") as n) , s ))
                     ->
                     (Ast.CrAnt
-                       ((_loc , ( (mk_anti ~c:"class_str_item" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"class_str_item" n s ) ) )):
                       'class_structure )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_class_self_patt : 'opt_class_self_patt  Gram.t ) ) (
+  (Gram.extend ( (opt_class_self_patt: 'opt_class_self_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.PaNil (_loc) : 'opt_class_self_patt ) ) ) ) ) ;
+                 (Ast.PaNil (_loc): 'opt_class_self_patt ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword
             (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -8709,49 +8641,49 @@ module MakeRevisedParser =
                     fun ((p : 'patt )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.PaTyc ((_loc , p , t )) : 'opt_class_self_patt
+                          (Ast.PaTyc ((_loc , p , t )): 'opt_class_self_patt
                             ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
+            ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
             (
             (Gram.mk_action (
               fun (_) ->
                 fun ((p : 'patt )) ->
                   fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (p : 'opt_class_self_patt ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                    fun ((_loc : FanLoc.t)) -> (p: 'opt_class_self_patt ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_str_item : 'class_str_item  Gram.t ) ) (
+  (Gram.extend ( (class_str_item: 'class_str_item  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Skeyword ("initializer") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((se : 'expr )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.CrIni ((_loc , se )) : 'class_str_item ) ) ) ) ) ;
+                     (Ast.CrIni ((_loc , se )): 'class_str_item ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (type_constraint : 'type_constraint  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (type_constraint: 'type_constraint  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword
+            ("=") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'ctyp )) ->
                 fun (_) ->
                   fun ((t1 : 'ctyp )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CrCtr ((_loc , t1 , t2 )) : 'class_str_item ) )
-              ) ) ) ;
+                        (Ast.CrCtr ((_loc , t1 , t2 )): 'class_str_item ) ) )
+            ) ) ;
            (( [`Snterm
-            ((Gram.obj (
-               (method_opt_override : 'method_opt_override  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ;
+            ((Gram.obj ( (method_opt_override: 'method_opt_override  Gram.t )
+               ) )) ; `Snterm
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ;
             `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -8768,15 +8700,15 @@ module MakeRevisedParser =
                                   ("override (!) is incompatible with virtual")
                                 ) )
                               )
-                             else Ast.CrVir ((_loc , l , pf , t )) :
+                             else Ast.CrVir ((_loc , l , pf , t )):
                               'class_str_item ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj (
-               (method_opt_override : 'method_opt_override  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_polyt : 'opt_polyt  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (fun_binding : 'fun_binding  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (method_opt_override: 'method_opt_override  Gram.t )
+               ) )) ; `Snterm
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_polyt: 'opt_polyt  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (fun_binding: 'fun_binding  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'fun_binding )) ->
                 fun ((topt : 'opt_polyt )) ->
@@ -8784,15 +8716,14 @@ module MakeRevisedParser =
                     fun ((pf : 'opt_private )) ->
                       fun ((o : 'method_opt_override )) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.CrMth ((_loc , l , o , pf , e , topt )) :
+                          (Ast.CrMth ((_loc , l , o , pf , e , topt )):
                             'class_str_item ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj (
-               (method_opt_override : 'method_opt_override  Gram.t ) ) )) ;
-            `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (method_opt_override: 'method_opt_override  Gram.t )
+               ) )) ; `Skeyword ("virtual") ; `Snterm
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -8809,15 +8740,15 @@ module MakeRevisedParser =
                                   ("override (!) is incompatible with virtual")
                                 ) )
                               )
-                             else Ast.CrVir ((_loc , l , pf , t )) :
+                             else Ast.CrVir ((_loc , l , pf , t )):
                               'class_str_item ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (value_val_opt_override : 'value_val_opt_override  Gram.t ) )
-               )) ; `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (opt_mutable : 'opt_mutable  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+               (value_val_opt_override: 'value_val_opt_override  Gram.t ) ) ))
+            ; `Skeyword ("virtual") ; `Snterm
+            ((Gram.obj ( (opt_mutable: 'opt_mutable  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -8834,16 +8765,15 @@ module MakeRevisedParser =
                                   ("override (!) is incompatible with virtual")
                                 ) )
                               )
-                             else Ast.CrVvr ((_loc , l , mf , t )) :
+                             else Ast.CrVvr ((_loc , l , mf , t )):
                               'class_str_item ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (value_val_opt_override : 'value_val_opt_override  Gram.t ) )
-               )) ; `Snterm
-            ((Gram.obj ( (opt_mutable : 'opt_mutable  Gram.t ) ) )) ;
-            `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+               (value_val_opt_override: 'value_val_opt_override  Gram.t ) ) ))
+            ; `Snterm ((Gram.obj ( (opt_mutable: 'opt_mutable  Gram.t ) ) ))
+            ; `Skeyword ("virtual") ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -8860,15 +8790,14 @@ module MakeRevisedParser =
                                   ("override (!) is incompatible with virtual")
                                 ) )
                               )
-                             else Ast.CrVvr ((_loc , l , mf , t )) :
+                             else Ast.CrVvr ((_loc , l , mf , t )):
                               'class_str_item ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (value_val_opt_override : 'value_val_opt_override  Gram.t ) )
-               )) ; `Snterm
-            ((Gram.obj ( (opt_mutable : 'opt_mutable  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (cvalue_binding : 'cvalue_binding  Gram.t ) ) ))]  )
+               (value_val_opt_override: 'value_val_opt_override  Gram.t ) ) ))
+            ; `Snterm ((Gram.obj ( (opt_mutable: 'opt_mutable  Gram.t ) ) ))
+            ; `Snterm ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (cvalue_binding: 'cvalue_binding  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((e : 'cvalue_binding )) ->
@@ -8876,13 +8805,13 @@ module MakeRevisedParser =
                   fun ((mf : 'opt_mutable )) ->
                     fun ((o : 'value_val_opt_override )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CrVal ((_loc , lab , o , mf , e )) :
+                        (Ast.CrVal ((_loc , lab , o , mf , e )):
                           'class_str_item ) ) ) ) ) ;
            (( [`Skeyword ("inherit") ; `Snterm
-            ((Gram.obj ( (opt_override : 'opt_override  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (class_expr : 'class_expr  Gram.t ) ) )) ;
+            ((Gram.obj ( (opt_override: 'opt_override  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (class_expr: 'class_expr  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (opt_as_lident : 'opt_as_lident  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (opt_as_lident: 'opt_as_lident  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((pb : 'opt_as_lident )) ->
@@ -8890,8 +8819,8 @@ module MakeRevisedParser =
                   fun ((o : 'opt_override )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CrInh ((_loc , o , ce , pb )) : 'class_str_item
-                          ) ) ) ) ) ;
+                        (Ast.CrInh ((_loc , o , ce , pb )): 'class_str_item )
+              ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -8904,7 +8833,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_str_item_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_str_item_tag ):
                       'class_str_item )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -8925,12 +8854,12 @@ module MakeRevisedParser =
                   | (`ANTIQUOT ((((("" |"cst") |"anti") |"list") as n) , s ))
                     ->
                     (Ast.CrAnt
-                       ((_loc , ( (mk_anti ~c:"class_str_item" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"class_str_item" n s ) ) )):
                       'class_str_item )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (method_opt_override : 'method_opt_override  Gram.t ) ) (
+  (Gram.extend ( (method_opt_override: 'method_opt_override  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -8938,7 +8867,7 @@ module MakeRevisedParser =
              (Gram.mk_action (
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.OvNil : 'method_opt_override ) ) ) ) ) ;
+                   (Ast.OvNil: 'method_opt_override ) ) ) ) ) ;
            (( [`Skeyword ("method") ; `Stoken
             (((
               
@@ -8956,19 +8885,19 @@ module MakeRevisedParser =
                     (match __camlp4_0
                     with
                     | (`ANTIQUOT (((("!" |"override") |"anti") as n) , s ))
-                      -> (Ast.OvAnt ((mk_anti n s )) : 'method_opt_override )
+                      -> (Ast.OvAnt ((mk_anti n s )): 'method_opt_override )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("method") ; `Skeyword ("!")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.OvOverride : 'method_opt_override ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                    (Ast.OvOverride: 'method_opt_override ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
    (
-  (Gram.extend ( (value_val_opt_override : 'value_val_opt_override  Gram.t )
-    ) (
+  (Gram.extend ( (value_val_opt_override: 'value_val_opt_override  Gram.t ) )
+    (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -8976,7 +8905,7 @@ module MakeRevisedParser =
              (Gram.mk_action (
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.OvNil : 'value_val_opt_override ) ) ) ) ) ;
+                   (Ast.OvNil: 'value_val_opt_override ) ) ) ) ) ;
            (( [`Skeyword ("val") ; `Stoken
             (((
               
@@ -8995,68 +8924,68 @@ module MakeRevisedParser =
                     with
                     | (`ANTIQUOT (((("!" |"override") |"anti") as n) , s ))
                       ->
-                      (Ast.OvAnt ((mk_anti n s )) : 'value_val_opt_override )
+                      (Ast.OvAnt ((mk_anti n s )): 'value_val_opt_override )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("val") ; `Skeyword ("!")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.OvOverride : 'value_val_opt_override ) ) ) ) )]  ) )]
+                    (Ast.OvOverride: 'value_val_opt_override ) ) ) ) )]  ) )]
           ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_as_lident : 'opt_as_lident  Gram.t ) ) (
+  (Gram.extend ( (opt_as_lident: 'opt_as_lident  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> ("" : 'opt_as_lident ) ) ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> ("": 'opt_as_lident ) ) ) ) ) ;
            (( [`Skeyword ("as") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'a_LIDENT )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (i : 'opt_as_lident ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (i: 'opt_as_lident ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_polyt : 'opt_polyt  Gram.t ) ) (
+  (Gram.extend ( (opt_polyt: 'opt_polyt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc) : 'opt_polyt ) )
-               ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc): 'opt_polyt ) ) )
+             ) ) ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (t : 'opt_polyt ) ) ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (t: 'opt_polyt ) ) ) )
             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (cvalue_binding : 'cvalue_binding  Gram.t ) ) (
+  (Gram.extend ( (cvalue_binding: 'cvalue_binding  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword (":>") ; `Snterm
-             ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
-             `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
+             `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun ((t : 'ctyp )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.ExCoe ((_loc , e , ( Ast.TyNil (_loc) ) , t )) :
+                         (Ast.ExCoe ((_loc , e , ( Ast.TyNil (_loc) ) , t )):
                            'cvalue_binding ) ) ) ) ) ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) )) ; `Skeyword
-            (":>") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ;
+            ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) )) ; `Skeyword
+            (":>") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -9072,24 +9001,24 @@ module MakeRevisedParser =
                                 (raise (
                                   Stream.Error ("unexpected polytype here") )
                                   )
-                              | _ -> Ast.ExCoe ((_loc , e , t , t2 ))) :
+                              | _ -> Ast.ExCoe ((_loc , e , t , t2 ))):
                               'cvalue_binding ) ) ) ) ) ;
            (( [`Skeyword (":") ; `Snterm
-            ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) )) ; `Skeyword
+            ("=") ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((t : 'poly_type )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.ExTyc ((_loc , e , t )) : 'cvalue_binding ) ) )
-            ) ) ;
+                        (Ast.ExTyc ((_loc , e , t )): 'cvalue_binding ) ) ) )
+            ) ;
            (( [`Skeyword (":") ; `Skeyword ("type") ; `Snterm
-            ((Gram.obj ( (unquoted_typevars : 'unquoted_typevars  Gram.t ) )
-               )) ; `Skeyword (".") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
-            `Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (unquoted_typevars: 'unquoted_typevars  Gram.t ) ) ))
+            ; `Skeyword (".") ; `Snterm
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword ("=") ;
+            `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
@@ -9101,53 +9030,53 @@ module MakeRevisedParser =
                             fun ((_loc : FanLoc.t)) ->
                               (
                                 let  u = Ast.TyPol ((_loc , t1 , t2 )) in
-                                Ast.ExTyc ((_loc , e , u )) : 'cvalue_binding
+                                Ast.ExTyc ((_loc , e , u )): 'cvalue_binding
                                 ) ) ) ) ) ;
            (( [`Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
-                fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'cvalue_binding )
-              ) ) ) )]  ) )]  ) )) ()  ) ) )
+                fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'cvalue_binding ) )
+              ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (label : 'label  Gram.t ) ) (
+  (Gram.extend ( (label: 'label  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  )
              , (
              (Gram.mk_action (
                fun ((i : 'a_LIDENT )) ->
-                 fun ((_loc : FanLoc.t)) -> (i : 'label ) ) ) ) )]  ) )]  ) ))
+                 fun ((_loc : FanLoc.t)) -> (i: 'label ) ) ) ) )]  ) )]  ) ))
       ()  ) ) )
   );
    (
-  (Gram.extend ( (class_type : 'class_type  Gram.t ) ) (
+  (Gram.extend ( (class_type: 'class_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("object") ; `Snterm
              ((Gram.obj (
-                (opt_class_self_type : 'opt_class_self_type  Gram.t ) ) )) ;
+                (opt_class_self_type: 'opt_class_self_type  Gram.t ) ) )) ;
              `Snterm
-             ((Gram.obj ( (class_signature : 'class_signature  Gram.t ) ) ))
-             ; `Skeyword ("end")]  ) , (
+             ((Gram.obj ( (class_signature: 'class_signature  Gram.t ) ) )) ;
+             `Skeyword ("end")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((csg : 'class_signature )) ->
                    fun ((cst : 'opt_class_self_type )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.CtSig ((_loc , cst , csg )) : 'class_type ) ) )
+                         (Ast.CtSig ((_loc , cst , csg )): 'class_type ) ) )
              ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (class_type_longident_and_param :
+               (class_type_longident_and_param:
                  'class_type_longident_and_param  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((ct : 'class_type_longident_and_param )) ->
-                fun ((_loc : FanLoc.t)) -> (ct : 'class_type ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (ct: 'class_type ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9160,7 +9089,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_type_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_type_tag ):
                       'class_type )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9178,32 +9107,32 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"ctyp") |"anti") as n) , s )) ->
-                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )) :
+                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )):
                       'class_type )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (class_type_longident_and_param : 'class_type_longident_and_param  Gram.t
+    (class_type_longident_and_param: 'class_type_longident_and_param  Gram.t
       ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
              ((Gram.obj (
-                (class_type_longident : 'class_type_longident  Gram.t ) ) ))]
-              ) , (
+                (class_type_longident: 'class_type_longident  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((i : 'class_type_longident )) ->
                  fun ((_loc : FanLoc.t)) ->
                    (Ast.CtCon
-                      ((_loc , Ast.ViNil  , i , ( Ast.TyNil (_loc) ) )) :
+                      ((_loc , Ast.ViNil  , i , ( Ast.TyNil (_loc) ) )):
                      'class_type_longident_and_param ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (class_type_longident : 'class_type_longident  Gram.t ) ) )) ;
+               (class_type_longident: 'class_type_longident  Gram.t ) ) )) ;
             `Skeyword ("[") ; `Snterm
-            ((Gram.obj ( (comma_ctyp : 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (comma_ctyp: 'comma_ctyp  Gram.t ) ) )) ; `Skeyword
             ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -9211,23 +9140,22 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun ((i : 'class_type_longident )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.CtCon ((_loc , Ast.ViNil  , i , t )) :
+                        (Ast.CtCon ((_loc , Ast.ViNil  , i , t )):
                           'class_type_longident_and_param ) ) ) ) )]  ) )]  )
          )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_type_plus : 'class_type_plus  Gram.t ) ) (
+  (Gram.extend ( (class_type_plus: 'class_type_plus  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm
-             ((Gram.obj ( (class_type : 'class_type  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (class_type: 'class_type  Gram.t ) ) ))]
+              ) , (
              (Gram.mk_action (
                fun ((ct : 'class_type )) ->
-                 fun ((_loc : FanLoc.t)) -> (ct : 'class_type_plus ) ) ) ) )
-           ;
+                 fun ((_loc : FanLoc.t)) -> (ct: 'class_type_plus ) ) ) ) ) ;
            (( [`Skeyword ("[") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword ("]") ;
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword ("]") ;
             `Skeyword ("->") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((ct : 'class_type_plus )) ->
@@ -9236,48 +9164,47 @@ module MakeRevisedParser =
                     fun ((t : 'ctyp )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.CtFun ((_loc , t , ct )) : 'class_type_plus )
-              ) ) ) )]  ) )]  ) )) ()  ) ) )
+                          (Ast.CtFun ((_loc , t , ct )): 'class_type_plus ) )
+              ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_class_self_type : 'opt_class_self_type  Gram.t ) ) (
+  (Gram.extend ( (opt_class_self_type: 'opt_class_self_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.TyNil (_loc) : 'opt_class_self_type ) ) ) ) ) ;
+                 (Ast.TyNil (_loc): 'opt_class_self_type ) ) ) ) ) ;
            (( [`Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
+            ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword (")")]  ) ,
             (
             (Gram.mk_action (
               fun (_) ->
                 fun ((t : 'ctyp )) ->
                   fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (t : 'opt_class_self_type ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                    fun ((_loc : FanLoc.t)) -> (t: 'opt_class_self_type ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_signature : 'class_signature  Gram.t ) ) (
+  (Gram.extend ( (class_signature: 'class_signature  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist0
              ((Gram.srules class_signature (
                 [(( [`Snterm
-                  ((Gram.obj ( (class_sig_item : 'class_sig_item  Gram.t ) )
-                     )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))] 
-                  ) , (
+                  ((Gram.obj ( (class_sig_item: 'class_sig_item  Gram.t ) ) ))
+                  ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((csg : 'class_sig_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (csg : 'e__23 ) ) ) ) )] 
-                ) ))]  ) , (
+                        fun ((_loc : FanLoc.t)) -> (csg: 'e__23 ) ) ) ) )]  )
+                ))]  ) , (
              (Gram.mk_action (
                fun ((l : 'e__23  list )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Ast.cgSem_of_list l ) : 'class_signature ) ) ) ) ) ;
+                   ((Ast.cgSem_of_list l ): 'class_signature ) ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -9286,8 +9213,8 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal ,
                "(`ANTIQUOT ((((\"\" |\"csg\") |\"anti\") |\"list\") , _ ))" )
-              )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ;
-            `Sself]  ) , (
+              )) ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]
+             ) , (
             (Gram.mk_action (
               fun ((csg : 'class_signature )) ->
                 fun (_) ->
@@ -9303,7 +9230,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.CgAnt
                                ((_loc , ( (mk_anti ~c:"class_sig_item" n s )
-                                 ) )) ) , csg )) : 'class_signature )
+                                 ) )) ) , csg )): 'class_signature )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -9323,33 +9250,32 @@ module MakeRevisedParser =
                   | (`ANTIQUOT ((((("" |"csg") |"anti") |"list") as n) , s ))
                     ->
                     (Ast.CgAnt
-                       ((_loc , ( (mk_anti ~c:"class_sig_item" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"class_sig_item" n s ) ) )):
                       'class_signature )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_sig_item : 'class_sig_item  Gram.t ) ) (
+  (Gram.extend ( (class_sig_item: 'class_sig_item  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (type_constraint : 'type_constraint  Gram.t ) ) ))
-             ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) )) ; `Skeyword
-             ("=") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) ,
-             (
+             ((Gram.obj ( (type_constraint: 'type_constraint  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) )) ; `Skeyword
+             ("=") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t2 : 'ctyp )) ->
                  fun (_) ->
                    fun ((t1 : 'ctyp )) ->
                      fun (_) ->
                        fun ((_loc : FanLoc.t)) ->
-                         (Ast.CgCtr ((_loc , t1 , t2 )) : 'class_sig_item ) )
+                         (Ast.CgCtr ((_loc , t1 , t2 )): 'class_sig_item ) )
                ) ) ) ;
            (( [`Skeyword ("method") ; `Snterm
-            ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ;
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ;
             `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -9359,12 +9285,12 @@ module MakeRevisedParser =
                       fun ((pf : 'opt_private )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.CgVir ((_loc , l , pf , t )) :
+                            (Ast.CgVir ((_loc , l , pf , t )):
                               'class_sig_item ) ) ) ) ) ;
            (( [`Skeyword ("method") ; `Snterm
-            ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -9373,12 +9299,12 @@ module MakeRevisedParser =
                     fun ((pf : 'opt_private )) ->
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.CgMth ((_loc , l , pf , t )) : 'class_sig_item
+                          (Ast.CgMth ((_loc , l , pf , t )): 'class_sig_item
                             ) ) ) ) ) ;
            (( [`Skeyword ("method") ; `Skeyword ("virtual") ; `Snterm
-            ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) ,
+            ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) ,
             (
             (Gram.mk_action (
               fun ((t : 'poly_type )) ->
@@ -9388,13 +9314,13 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.CgVir ((_loc , l , pf , t )) :
+                            (Ast.CgVir ((_loc , l , pf , t )):
                               'class_sig_item ) ) ) ) ) ;
            (( [`Skeyword ("val") ; `Snterm
-            ((Gram.obj ( (opt_mutable : 'opt_mutable  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_virtual : 'opt_virtual  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (label : 'label  Gram.t ) ) )) ; `Skeyword (":") ;
-            `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (opt_mutable: 'opt_mutable  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_virtual: 'opt_virtual  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (label: 'label  Gram.t ) ) )) ; `Skeyword (":") ;
+            `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
@@ -9403,15 +9329,15 @@ module MakeRevisedParser =
                       fun ((mf : 'opt_mutable )) ->
                         fun (_) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (Ast.CgVal ((_loc , l , mf , mv , t )) :
+                            (Ast.CgVal ((_loc , l , mf , mv , t )):
                               'class_sig_item ) ) ) ) ) ;
            (( [`Skeyword ("inherit") ; `Snterm
-            ((Gram.obj ( (class_type : 'class_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (class_type: 'class_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((cs : 'class_type )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.CgInh ((_loc , cs )) : 'class_sig_item ) ) ) ) ) ;
+                    (Ast.CgInh ((_loc , cs )): 'class_sig_item ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9424,7 +9350,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_sig_item_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_sig_item_tag ):
                       'class_sig_item )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9445,42 +9371,42 @@ module MakeRevisedParser =
                   | (`ANTIQUOT ((((("" |"csg") |"anti") |"list") as n) , s ))
                     ->
                     (Ast.CgAnt
-                       ((_loc , ( (mk_anti ~c:"class_sig_item" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"class_sig_item" n s ) ) )):
                       'class_sig_item )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (type_constraint : 'type_constraint  Gram.t ) ) (
+  (Gram.extend ( (type_constraint: 'type_constraint  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("constraint")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'type_constraint )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'type_constraint )
                ) ) ) ) ;
            (( [`Skeyword ("type")]  ) , (
             (Gram.mk_action (
-              fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'type_constraint )
-              ) ) ) )]  ) )]  ) )) ()  ) ) )
+              fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'type_constraint ) )
+              ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_description : 'class_description  Gram.t ) ) (
+  (Gram.extend ( (class_description: 'class_description  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
              ((Gram.obj (
-                (class_info_for_class_type : 'class_info_for_class_type 
+                (class_info_for_class_type: 'class_info_for_class_type 
                   Gram.t ) ) )) ; `Skeyword (":") ; `Snterm
-             ((Gram.obj ( (class_type_plus : 'class_type_plus  Gram.t ) ) ))]
-              ) , (
+             ((Gram.obj ( (class_type_plus: 'class_type_plus  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((ct : 'class_type_plus )) ->
                  fun (_) ->
                    fun ((ci : 'class_info_for_class_type )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.CtCol ((_loc , ci , ct )) : 'class_description )
-               ) ) ) ) ;
+                       (Ast.CtCol ((_loc , ci , ct )): 'class_description ) )
+               ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9493,7 +9419,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_type_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_type_tag ):
                       'class_description )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9513,7 +9439,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((((("" |"typ") |"anti") |"list") as n) , s ))
                     ->
-                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )) :
+                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )):
                       'class_description )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -9522,27 +9448,27 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((cd1 : 'class_description )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CtAnd ((_loc , cd1 , cd2 )) : 'class_description )
+                      (Ast.CtAnd ((_loc , cd1 , cd2 )): 'class_description )
               ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_type_declaration : 'class_type_declaration  Gram.t )
-    ) (
+  (Gram.extend ( (class_type_declaration: 'class_type_declaration  Gram.t ) )
+    (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Snterm
              ((Gram.obj (
-                (class_info_for_class_type : 'class_info_for_class_type 
+                (class_info_for_class_type: 'class_info_for_class_type 
                   Gram.t ) ) )) ; `Skeyword ("=") ; `Snterm
-             ((Gram.obj ( (class_type : 'class_type  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (class_type: 'class_type  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((ct : 'class_type )) ->
                  fun (_) ->
                    fun ((ci : 'class_info_for_class_type )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.CtEq ((_loc , ci , ct )) :
-                         'class_type_declaration ) ) ) ) ) ;
+                       (Ast.CtEq ((_loc , ci , ct )): 'class_type_declaration
+                         ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9555,7 +9481,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.class_type_tag ) :
+                    ((Quotation.expand _loc x DynAst.class_type_tag ):
                       'class_type_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9575,7 +9501,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((((("" |"typ") |"anti") |"list") as n) , s ))
                     ->
-                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )) :
+                    (Ast.CtAnt ((_loc , ( (mk_anti ~c:"class_type" n s ) ) )):
                       'class_type_declaration )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -9584,52 +9510,51 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((cd1 : 'class_type_declaration )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CtAnd ((_loc , cd1 , cd2 )) :
+                      (Ast.CtAnd ((_loc , cd1 , cd2 )):
                         'class_type_declaration ) ) ) ) )]  ) )]  ) )) ()  )
     ) )
   );
    (
-  (Gram.extend ( (field_expr_list : 'field_expr_list  Gram.t ) ) (
+  (Gram.extend ( (field_expr_list: 'field_expr_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm
-             ((Gram.obj ( (field_expr : 'field_expr  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (field_expr: 'field_expr  Gram.t ) ) ))]
+              ) , (
              (Gram.mk_action (
                fun ((b1 : 'field_expr )) ->
-                 fun ((_loc : FanLoc.t)) -> (b1 : 'field_expr_list ) ) ) ) )
-           ;
-           (( [`Snterm ((Gram.obj ( (field_expr : 'field_expr  Gram.t ) ) ))
-            ; `Skeyword (";")]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (b1: 'field_expr_list ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (field_expr: 'field_expr  Gram.t ) ) )) ;
+            `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((b1 : 'field_expr )) ->
-                  fun ((_loc : FanLoc.t)) -> (b1 : 'field_expr_list ) ) ) ) )
+                  fun ((_loc : FanLoc.t)) -> (b1: 'field_expr_list ) ) ) ) )
            ;
-           (( [`Snterm ((Gram.obj ( (field_expr : 'field_expr  Gram.t ) ) ))
-            ; `Skeyword (";") ; `Sself]  ) , (
+           (( [`Snterm ((Gram.obj ( (field_expr: 'field_expr  Gram.t ) ) )) ;
+            `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((b2 : 'field_expr_list )) ->
                 fun (_) ->
                   fun ((b1 : 'field_expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.RbSem ((_loc , b1 , b2 )) : 'field_expr_list ) ) )
+                      (Ast.RbSem ((_loc , b1 , b2 )): 'field_expr_list ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (field_expr : 'field_expr  Gram.t ) ) (
+  (Gram.extend ( (field_expr: 'field_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (label : 'label  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (label: 'label  Gram.t ) ) )) ;
              `Skeyword ("=") ; `Snterml
-             ((( (Gram.obj ( (expr : 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
+             ((( (Gram.obj ( (expr: 'expr  Gram.t ) ) ) ) , "top" ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
                    fun ((l : 'label )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (Ast.RbEq ((_loc , ( Ast.IdLid ((_loc , l )) ) , e )) :
+                       (Ast.RbEq ((_loc , ( Ast.IdLid ((_loc , l )) ) , e )):
                          'field_expr ) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -9645,7 +9570,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
                     (Ast.RbAnt
-                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )):
                       'field_expr )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9664,50 +9589,50 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (((("" |"bi") |"anti") as n) , s )) ->
                     (Ast.RbAnt
-                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"rec_binding" n s ) ) )):
                       'field_expr )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (meth_list : 'meth_list  Gram.t ) ) (
+  (Gram.extend ( (meth_list: 'meth_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (meth_decl : 'meth_decl  Gram.t ) ) )) ;
-             `Snterm ((Gram.obj ( (opt_dot_dot : 'opt_dot_dot  Gram.t ) ) ))]
-              ) , (
+           [(( [`Snterm ((Gram.obj ( (meth_decl: 'meth_decl  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (opt_dot_dot: 'opt_dot_dot  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun ((v : 'opt_dot_dot )) ->
                  fun ((m : 'meth_decl )) ->
-                   fun ((_loc : FanLoc.t)) -> ((m , v ) : 'meth_list ) ) ) )
-             ) ;
-           (( [`Snterm ((Gram.obj ( (meth_decl : 'meth_decl  Gram.t ) ) )) ;
+                   fun ((_loc : FanLoc.t)) -> ((m , v ): 'meth_list ) ) ) ) )
+           ;
+           (( [`Snterm ((Gram.obj ( (meth_decl: 'meth_decl  Gram.t ) ) )) ;
             `Skeyword (";") ; `Snterm
-            ((Gram.obj ( (opt_dot_dot : 'opt_dot_dot  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (opt_dot_dot: 'opt_dot_dot  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((v : 'opt_dot_dot )) ->
                 fun (_) ->
                   fun ((m : 'meth_decl )) ->
-                    fun ((_loc : FanLoc.t)) -> ((m , v ) : 'meth_list ) ) ) )
+                    fun ((_loc : FanLoc.t)) -> ((m , v ): 'meth_list ) ) ) )
             ) ;
-           (( [`Snterm ((Gram.obj ( (meth_decl : 'meth_decl  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (meth_decl: 'meth_decl  Gram.t ) ) )) ;
             `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun (((ml , v ) : 'meth_list )) ->
                 fun (_) ->
                   fun ((m : 'meth_decl )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((( Ast.TySem ((_loc , m , ml )) ) , v ) : 'meth_list )
+                      ((( Ast.TySem ((_loc , m , ml )) ) , v ): 'meth_list )
               ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (meth_decl : 'meth_decl  Gram.t ) ) (
+  (Gram.extend ( (meth_decl: 'meth_decl  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ;
+           [(( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ;
              `Skeyword (":") ; `Snterm
-             ((Gram.obj ( (poly_type : 'poly_type  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (poly_type: 'poly_type  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'poly_type )) ->
                  fun (_) ->
@@ -9717,7 +9642,7 @@ module MakeRevisedParser =
                           ((_loc , (
                             Ast.TyId
                               ((_loc , ( Ast.IdLid ((_loc , lab )) ) )) ) , t
-                            )) : 'meth_decl ) ) ) ) ) ;
+                            )): 'meth_decl ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9730,8 +9655,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) : 'meth_decl
-                      )
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ): 'meth_decl )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -9746,7 +9670,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp;" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp;" n s ) ) )):
                       'meth_decl )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9762,65 +9686,65 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'meth_decl )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_meth_list : 'opt_meth_list  Gram.t ) ) (
+  (Gram.extend ( (opt_meth_list: 'opt_meth_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_dot_dot : 'opt_dot_dot  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (opt_dot_dot: 'opt_dot_dot  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((v : 'opt_dot_dot )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyObj ((_loc , ( Ast.TyNil (_loc) ) , v )) :
+                   (Ast.TyObj ((_loc , ( Ast.TyNil (_loc) ) , v )):
                      'opt_meth_list ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (meth_list : 'meth_list  Gram.t ) ) ))] 
-            ) , (
+           (( [`Snterm ((Gram.obj ( (meth_list: 'meth_list  Gram.t ) ) ))]  )
+            , (
             (Gram.mk_action (
               fun (((ml , v ) : 'meth_list )) ->
                 fun ((_loc : FanLoc.t)) ->
-                  (Ast.TyObj ((_loc , ml , v )) : 'opt_meth_list ) ) ) ) )] 
-           ) )]  ) )) ()  ) ) )
+                  (Ast.TyObj ((_loc , ml , v )): 'opt_meth_list ) ) ) ) )]  )
+           )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (poly_type : 'poly_type  Gram.t ) ) (
+  (Gram.extend ( (poly_type: 'poly_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'poly_type ) ) ) ) )]  ) )] 
+                 fun ((_loc : FanLoc.t)) -> (t: 'poly_type ) ) ) ) )]  ) )] 
          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (package_type : 'package_type  Gram.t ) ) (
+  (Gram.extend ( (package_type: 'package_type  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'module_type )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'package_type ) ) ) ) )]  )
-           )]  ) )) ()  ) ) )
+                 fun ((_loc : FanLoc.t)) -> (p: 'package_type ) ) ) ) )]  ) )]
+          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (typevars : 'typevars  Gram.t ) ) (
+  (Gram.extend ( (typevars: 'typevars  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
            [(( [`Skeyword ("'") ; `Snterm
-             ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((i : 'a_ident )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TyQuo ((_loc , i )) : 'typevars ) ) ) ) ) ;
+                     (Ast.TyQuo ((_loc , i )): 'typevars ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9833,7 +9757,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) : 'typevars )
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ): 'typevars )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -9848,7 +9772,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'typevars )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Sself]  ) , (
@@ -9856,20 +9780,20 @@ module MakeRevisedParser =
               fun ((t2 : 'typevars )) ->
                 fun ((t1 : 'typevars )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyApp ((_loc , t1 , t2 )) : 'typevars ) ) ) ) )]  )
-           )]  ) )) ()  ) ) )
+                    (Ast.TyApp ((_loc , t1 , t2 )): 'typevars ) ) ) ) )]  ) )]
+          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (unquoted_typevars : 'unquoted_typevars  Gram.t ) ) (
+  (Gram.extend ( (unquoted_typevars: 'unquoted_typevars  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , ( Some (`LA) ) , (
-           [(( [`Snterm ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun ((i : 'a_ident )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.TyId ((_loc , ( Ast.IdLid ((_loc , i )) ) )) :
+                   (Ast.TyId ((_loc , ( Ast.IdLid ((_loc , i )) ) )):
                      'unquoted_typevars ) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -9883,7 +9807,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`QUOTATION x) ->
-                    ((Quotation.expand _loc x DynAst.ctyp_tag ) :
+                    ((Quotation.expand _loc x DynAst.ctyp_tag ):
                       'unquoted_typevars )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9899,7 +9823,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'unquoted_typevars )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Sself]  ) , (
@@ -9907,34 +9831,34 @@ module MakeRevisedParser =
               fun ((t2 : 'unquoted_typevars )) ->
                 fun ((t1 : 'unquoted_typevars )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyApp ((_loc , t1 , t2 )) : 'unquoted_typevars ) ) )
+                    (Ast.TyApp ((_loc , t1 , t2 )): 'unquoted_typevars ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (row_field : 'row_field  Gram.t ) ) (
+  (Gram.extend ( (row_field: 'row_field  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'row_field ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'row_field ) ) ) ) ) ;
            (( [`Skeyword ("`") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) )) ; `Skeyword
-            ("of") ; `Snterm
-            ((Gram.obj ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) )) ; `Skeyword ("of")
+            ; `Snterm ((Gram.obj ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((t : 'amp_ctyp )) ->
                 fun (_) ->
                   fun ((i : 'a_ident )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.TyOf ((_loc , ( Ast.TyVrn ((_loc , i )) ) , t )) :
+                        (Ast.TyOf ((_loc , ( Ast.TyVrn ((_loc , i )) ) , t )):
                           'row_field ) ) ) ) ) ;
            (( [`Skeyword ("`") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) )) ; `Skeyword
-            ("of") ; `Skeyword ("&") ; `Snterm
-            ((Gram.obj ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) )) ; `Skeyword ("of")
+            ; `Skeyword ("&") ; `Snterm
+            ((Gram.obj ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'amp_ctyp )) ->
                 fun (_) ->
@@ -9943,22 +9867,22 @@ module MakeRevisedParser =
                       fun (_) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.TyOfAmp
-                             ((_loc , ( Ast.TyVrn ((_loc , i )) ) , t )) :
+                             ((_loc , ( Ast.TyVrn ((_loc , i )) ) , t )):
                             'row_field ) ) ) ) ) ;
            (( [`Skeyword ("`") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((i : 'a_ident )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyVrn ((_loc , i )) : 'row_field ) ) ) ) ) ;
+                    (Ast.TyVrn ((_loc , i )): 'row_field ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("|") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'row_field )) ->
                 fun (_) ->
                   fun ((t1 : 'row_field )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyOr ((_loc , t1 , t2 )) : 'row_field ) ) ) ) ) ;
+                      (Ast.TyOr ((_loc , t1 , t2 )): 'row_field ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -9972,7 +9896,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp|" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp|" n s ) ) )):
                       'row_field )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -9988,19 +9912,19 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'row_field )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) (
+  (Gram.extend ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((t : 'ctyp )) ->
-                 fun ((_loc : FanLoc.t)) -> (t : 'amp_ctyp ) ) ) ) ) ;
+                 fun ((_loc : FanLoc.t)) -> (t: 'amp_ctyp ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -10014,7 +9938,7 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("list" as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp&" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp&" n s ) ) )):
                       'amp_ctyp )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("&") ; `Sself]  ) , (
@@ -10023,27 +9947,27 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((t1 : 'amp_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAmp ((_loc , t1 , t2 )) : 'amp_ctyp ) ) ) ) )] 
-           ) )]  ) )) ()  ) ) )
+                      (Ast.TyAmp ((_loc , t1 , t2 )): 'amp_ctyp ) ) ) ) )]  )
+           )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (name_tags : 'name_tags  Gram.t ) ) (
+  (Gram.extend ( (name_tags: 'name_tags  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("`") ; `Snterm
-             ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((i : 'a_ident )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.TyVrn ((_loc , i )) : 'name_tags ) ) ) ) ) ;
+                     (Ast.TyVrn ((_loc , i )): 'name_tags ) ) ) ) ) ;
            (( [`Sself ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((t2 : 'name_tags )) ->
                 fun ((t1 : 'name_tags )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyApp ((_loc , t1 , t2 )) : 'name_tags ) ) ) ) ) ;
+                    (Ast.TyApp ((_loc , t1 , t2 )): 'name_tags ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
@@ -10057,58 +9981,57 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"typ") as n) , s )) ->
-                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )) :
+                    (Ast.TyAnt ((_loc , ( (mk_anti ~c:"ctyp" n s ) ) )):
                       'name_tags )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (eq_expr : 'eq_expr  Gram.t ) ) (
+  (Gram.extend ( (eq_expr: 'eq_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (fun (i) -> fun (p) -> Ast.PaOlb ((_loc , i , p )) :
-                   'eq_expr ) ) ) ) ) ;
+                 (fun (i) -> fun (p) -> Ast.PaOlb ((_loc , i , p )): 'eq_expr
+                   ) ) ) ) ) ;
            (( [`Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (fun (i) -> fun (p) -> Ast.PaOlbi ((_loc , i , p , e )) :
+                    (fun (i) -> fun (p) -> Ast.PaOlbi ((_loc , i , p , e )):
                       'eq_expr ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt_tcon : 'patt_tcon  Gram.t ) ) (
+  (Gram.extend ( (patt_tcon: 'patt_tcon  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'patt_tcon ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
-            (":") ; `Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (p: 'patt_tcon ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
+            (":") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
                   fun ((p : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaTyc ((_loc , p , t )) : 'patt_tcon ) ) ) ) )]  )
+                      (Ast.PaTyc ((_loc , p , t )): 'patt_tcon ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ipatt : 'ipatt  Gram.t ) ) (
+  (Gram.extend ( (ipatt: 'ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("?") ; `Skeyword ("(") ; `Snterm
-             ((Gram.obj ( (ipatt_tcon : 'ipatt_tcon  Gram.t ) ) )) ;
-             `Skeyword ("=") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword (")")]  )
-             , (
+             ((Gram.obj ( (ipatt_tcon: 'ipatt_tcon  Gram.t ) ) )) ; `Skeyword
+             ("=") ; `Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ;
+             `Skeyword (")")]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((e : 'expr )) ->
@@ -10117,10 +10040,10 @@ module MakeRevisedParser =
                        fun (_) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             (Ast.PaOlbi ((_loc , "" , p , e )) : 'ipatt ) )
-               ) ) ) ;
+                             (Ast.PaOlbi ((_loc , "" , p , e )): 'ipatt ) ) )
+             ) ) ;
            (( [`Skeyword ("?") ; `Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (ipatt_tcon : 'ipatt_tcon  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (ipatt_tcon: 'ipatt_tcon  Gram.t ) ) )) ; `Skeyword
             (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -10128,7 +10051,7 @@ module MakeRevisedParser =
                   fun (_) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.PaOlb ((_loc , "" , p )) : 'ipatt ) ) ) ) ) ;
+                        (Ast.PaOlb ((_loc , "" , p )): 'ipatt ) ) ) ) ) ;
            (( [`Skeyword ("?") ; `Stoken
             ((( 
               function
@@ -10144,7 +10067,7 @@ module MakeRevisedParser =
                     with
                     | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
                       (Ast.PaOlb
-                         ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )) :
+                         ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )):
                         'ipatt )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("?") ; `Stoken
@@ -10160,8 +10083,8 @@ module MakeRevisedParser =
                     (match __camlp4_0
                     with
                     | (`LIDENT i) ->
-                      (Ast.PaOlb ((_loc , i , ( Ast.PaNil (_loc) ) )) :
-                        'ipatt )
+                      (Ast.PaOlb ((_loc , i , ( Ast.PaNil (_loc) ) )): 'ipatt
+                        )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("?") ; `Stoken
             ((( 
@@ -10170,9 +10093,9 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal , "(`ANTIQUOT ((\"\" |\"lid\") , _ ))" ) )) ;
             `Skeyword (":") ; `Skeyword ("(") ; `Snterm
-            ((Gram.obj ( (ipatt_tcon : 'ipatt_tcon  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (eq_expr : 'eq_expr  Gram.t ) ) )) ; `Skeyword
-            (")")]  ) , (
+            ((Gram.obj ( (ipatt_tcon: 'ipatt_tcon  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (eq_expr: 'eq_expr  Gram.t ) ) )) ; `Skeyword (")")]
+             ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((f : 'eq_expr )) ->
@@ -10186,7 +10109,7 @@ module MakeRevisedParser =
                               (match __camlp4_0
                               with
                               | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
-                                ((f ( (mk_anti n i ) ) p ) : 'ipatt )
+                                ((f ( (mk_anti n i ) ) p ): 'ipatt )
                               | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -10194,9 +10117,9 @@ module MakeRevisedParser =
               | (`OPTLABEL _) -> true
               | _ -> false ) , (`Normal , "(`OPTLABEL _)" ) )) ; `Skeyword
             ("(") ; `Snterm
-            ((Gram.obj ( (ipatt_tcon : 'ipatt_tcon  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (eq_expr : 'eq_expr  Gram.t ) ) )) ; `Skeyword
-            (")")]  ) , (
+            ((Gram.obj ( (ipatt_tcon: 'ipatt_tcon  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (eq_expr: 'eq_expr  Gram.t ) ) )) ; `Skeyword (")")]
+             ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((f : 'eq_expr )) ->
@@ -10207,7 +10130,7 @@ module MakeRevisedParser =
                           
                           (match __camlp4_0
                           with
-                          | (`OPTLABEL i) -> ((f i p ) : 'ipatt )
+                          | (`OPTLABEL i) -> ((f i p ): 'ipatt )
                           | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("~") ; `Stoken
             ((( 
@@ -10222,8 +10145,8 @@ module MakeRevisedParser =
                     (match __camlp4_0
                     with
                     | (`LIDENT i) ->
-                      (Ast.PaLab ((_loc , i , ( Ast.PaNil (_loc) ) )) :
-                        'ipatt )
+                      (Ast.PaLab ((_loc , i , ( Ast.PaNil (_loc) ) )): 'ipatt
+                        )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("~") ; `Stoken
             ((( 
@@ -10240,7 +10163,7 @@ module MakeRevisedParser =
                     with
                     | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
                       (Ast.PaLab
-                         ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )) :
+                         ((_loc , ( (mk_anti n i ) ) , ( Ast.PaNil (_loc) ) )):
                         'ipatt )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("~") ; `Stoken
@@ -10260,7 +10183,7 @@ module MakeRevisedParser =
                         (match __camlp4_0
                         with
                         | (`ANTIQUOT ((("" |"lid") as n) , i )) ->
-                          (Ast.PaLab ((_loc , ( (mk_anti n i ) ) , p )) :
+                          (Ast.PaLab ((_loc , ( (mk_anti n i ) ) , p )):
                             'ipatt )
                         | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -10275,31 +10198,30 @@ module MakeRevisedParser =
                     
                     (match __camlp4_0
                     with
-                    | (`LABEL i) -> (Ast.PaLab ((_loc , i , p )) : 'ipatt )
+                    | (`LABEL i) -> (Ast.PaLab ((_loc , i , p )): 'ipatt )
                     | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ipatt_tcon : 'ipatt_tcon  Gram.t ) ) (
+  (Gram.extend ( (ipatt_tcon: 'ipatt_tcon  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'ipatt )) ->
-                 fun ((_loc : FanLoc.t)) -> (p : 'ipatt_tcon ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (ipatt : 'ipatt  Gram.t ) ) )) ;
-            `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (p: 'ipatt_tcon ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (ipatt: 'ipatt  Gram.t ) ) )) ; `Skeyword
+            (":") ; `Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((t : 'ctyp )) ->
                 fun (_) ->
                   fun ((p : 'ipatt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaTyc ((_loc , p , t )) : 'ipatt_tcon ) ) ) ) )] 
-           ) )]  ) )) ()  ) ) )
+                      (Ast.PaTyc ((_loc , p , t )): 'ipatt_tcon ) ) ) ) )]  )
+           )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (direction_flag : 'direction_flag  Gram.t ) ) (
+  (Gram.extend ( (direction_flag: 'direction_flag  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10318,27 +10240,27 @@ module MakeRevisedParser =
                    (match __camlp4_0
                    with
                    | (`ANTIQUOT ((("to" |"anti") as n) , s )) ->
-                     (Ast.DiAnt ((mk_anti n s )) : 'direction_flag )
+                     (Ast.DiAnt ((mk_anti n s )): 'direction_flag )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("downto")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.DiDownto : 'direction_flag )
-              ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (Ast.DiDownto: 'direction_flag ) )
+              ) ) ) ;
            (( [`Skeyword ("to")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.DiTo : 'direction_flag ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.DiTo: 'direction_flag ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_private : 'opt_private  Gram.t ) ) (
+  (Gram.extend ( (opt_private: 'opt_private  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.PrNil : 'opt_private ) ) ) ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.PrNil: 'opt_private ) ) ) ) )
            ;
            (( [`Stoken
             (((
@@ -10355,22 +10277,22 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("private" |"anti") as n) , s )) ->
-                    (Ast.PrAnt ((mk_anti n s )) : 'opt_private )
+                    (Ast.PrAnt ((mk_anti n s )): 'opt_private )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("private")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.PrPrivate : 'opt_private ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.PrPrivate: 'opt_private ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_mutable : 'opt_mutable  Gram.t ) ) (
+  (Gram.extend ( (opt_mutable: 'opt_mutable  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.MuNil : 'opt_mutable ) ) ) ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.MuNil: 'opt_mutable ) ) ) ) )
            ;
            (( [`Stoken
             (((
@@ -10387,22 +10309,22 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("mutable" |"anti") as n) , s )) ->
-                    (Ast.MuAnt ((mk_anti n s )) : 'opt_mutable )
+                    (Ast.MuAnt ((mk_anti n s )): 'opt_mutable )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("mutable")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.MuMutable : 'opt_mutable ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.MuMutable: 'opt_mutable ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_virtual : 'opt_virtual  Gram.t ) ) (
+  (Gram.extend ( (opt_virtual: 'opt_virtual  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.ViNil : 'opt_virtual ) ) ) ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.ViNil: 'opt_virtual ) ) ) ) )
            ;
            (( [`Stoken
             (((
@@ -10419,22 +10341,22 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("virtual" |"anti") as n) , s )) ->
-                    (Ast.ViAnt ((mk_anti n s )) : 'opt_virtual )
+                    (Ast.ViAnt ((mk_anti n s )): 'opt_virtual )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("virtual")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.ViVirtual : 'opt_virtual ) )
-              ) ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.ViVirtual: 'opt_virtual ) ) )
+            ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_dot_dot : 'opt_dot_dot  Gram.t ) ) (
+  (Gram.extend ( (opt_dot_dot: 'opt_dot_dot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.RvNil : 'opt_dot_dot ) ) ) ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.RvNil: 'opt_dot_dot ) ) ) ) )
            ;
            (( [`Stoken
             (((
@@ -10450,22 +10372,22 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((".." |"anti") as n) , s )) ->
-                    (Ast.RvAnt ((mk_anti n s )) : 'opt_dot_dot )
+                    (Ast.RvAnt ((mk_anti n s )): 'opt_dot_dot )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("..")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.RvRowVar : 'opt_dot_dot ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.RvRowVar: 'opt_dot_dot ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_rec : 'opt_rec  Gram.t ) ) (
+  (Gram.extend ( (opt_rec: 'opt_rec  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.ReNil : 'opt_rec ) ) ) ) ) ;
+               fun ((_loc : FanLoc.t)) -> (Ast.ReNil: 'opt_rec ) ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -10481,23 +10403,23 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("rec" |"anti") as n) , s )) ->
-                    (Ast.ReAnt ((mk_anti n s )) : 'opt_rec )
+                    (Ast.ReAnt ((mk_anti n s )): 'opt_rec )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("rec")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.ReRecursive : 'opt_rec ) ) )
-            ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.ReRecursive: 'opt_rec ) ) ) )
+            )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_override : 'opt_override  Gram.t ) ) (
+  (Gram.extend ( (opt_override: 'opt_override  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.OvNil : 'opt_override ) ) ) )
-             ) ;
+               fun ((_loc : FanLoc.t)) -> (Ast.OvNil: 'opt_override ) ) ) ) )
+           ;
            (( [`Stoken
             (((
               
@@ -10514,31 +10436,31 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("!" |"override") |"anti") as n) , s )) ->
-                    (Ast.OvAnt ((mk_anti n s )) : 'opt_override )
+                    (Ast.OvAnt ((mk_anti n s )): 'opt_override )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("!")]  ) , (
             (Gram.mk_action (
               fun (_) ->
-                fun ((_loc : FanLoc.t)) -> (Ast.OvOverride : 'opt_override )
-              ) ) ) )]  ) )]  ) )) ()  ) ) )
+                fun ((_loc : FanLoc.t)) -> (Ast.OvOverride: 'opt_override ) )
+              ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (opt_expr : 'opt_expr  Gram.t ) ) (
+  (Gram.extend ( (opt_expr: 'opt_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.ExNil (_loc) : 'opt_expr ) ) )
+               fun ((_loc : FanLoc.t)) -> (Ast.ExNil (_loc): 'opt_expr ) ) )
              ) ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
-                fun ((_loc : FanLoc.t)) -> (e : 'opt_expr ) ) ) ) )]  ) )]  )
+                fun ((_loc : FanLoc.t)) -> (e: 'opt_expr ) ) ) ) )]  ) )]  )
          )) ()  ) ) )
   );
    (
-  (Gram.extend ( (interf : 'interf  Gram.t ) ) (
+  (Gram.extend ( (interf: 'interf  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10553,21 +10475,20 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | `EOI -> (([]  , None  ) : 'interf )
+                   | `EOI -> (([]  , None  ): 'interf )
                    | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+           (( [`Snterm ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun (((sil , stopped ) : 'interf )) ->
                 fun (_) ->
                   fun ((si : 'sig_item )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((( si :: sil  ) , stopped ) : 'interf ) ) ) ) ) ;
+                      ((( si :: sil  ) , stopped ): 'interf ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((dp : 'opt_expr )) ->
@@ -10575,28 +10496,27 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         ((( [Ast.SgDir ((_loc , n , dp ))]  ) , (
-                          (stopped_at _loc ) ) ) : 'interf ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                          (stopped_at _loc ) ) ): 'interf ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sig_items : 'sig_items  Gram.t ) ) (
+  (Gram.extend ( (sig_items: 'sig_items  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist0
              ((Gram.srules sig_items (
-                [(( [`Snterm
-                  ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) )) ; `Snterm
-                  ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+                [(( [`Snterm ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) ))
+                  ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((sg : 'sig_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (sg : 'e__24 ) ) ) ) )]  )
+                        fun ((_loc : FanLoc.t)) -> (sg: 'e__24 ) ) ) ) )]  )
                 ))]  ) , (
              (Gram.mk_action (
                fun ((l : 'e__24  list )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Ast.sgSem_of_list l ) : 'sig_items ) ) ) ) ) ;
+                   ((Ast.sgSem_of_list l ): 'sig_items ) ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -10605,7 +10525,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal ,
                "(`ANTIQUOT ((((\"\" |\"sigi\") |\"anti\") |\"list\") , _ ))"
-               ) )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ;
+               ) )) ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((sg : 'sig_items )) ->
@@ -10622,7 +10542,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.SgAnt
                                ((_loc , ( (mk_anti n ~c:"sig_item" s ) ) )) )
-                             , sg )) : 'sig_items )
+                             , sg )): 'sig_items )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10642,12 +10562,12 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       ((((("" |"sigi") |"anti") |"list") as n) , s )) ->
-                    (Ast.SgAnt ((_loc , ( (mk_anti n ~c:"sig_item" s ) ) )) :
+                    (Ast.SgAnt ((_loc , ( (mk_anti n ~c:"sig_item" s ) ) )):
                       'sig_items )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (implem : 'implem  Gram.t ) ) (
+  (Gram.extend ( (implem: 'implem  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10662,21 +10582,20 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | `EOI -> (([]  , None  ) : 'implem )
+                   | `EOI -> (([]  , None  ): 'implem )
                    | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+           (( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun (((sil , stopped ) : 'implem )) ->
                 fun (_) ->
                   fun ((si : 'str_item )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((( si :: sil  ) , stopped ) : 'implem ) ) ) ) ) ;
+                      ((( si :: sil  ) , stopped ): 'implem ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((dp : 'opt_expr )) ->
@@ -10684,28 +10603,27 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         ((( [Ast.StDir ((_loc , n , dp ))]  ) , (
-                          (stopped_at _loc ) ) ) : 'implem ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                          (stopped_at _loc ) ) ): 'implem ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
    (
-  (Gram.extend ( (str_items : 'str_items  Gram.t ) ) (
+  (Gram.extend ( (str_items: 'str_items  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Slist0
              ((Gram.srules str_items (
-                [(( [`Snterm
-                  ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ; `Snterm
-                  ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+                [(( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) ))
+                  ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
                   (Gram.mk_action (
                     fun (_) ->
                       fun ((st : 'str_item )) ->
-                        fun ((_loc : FanLoc.t)) -> (st : 'e__25 ) ) ) ) )]  )
+                        fun ((_loc : FanLoc.t)) -> (st: 'e__25 ) ) ) ) )]  )
                 ))]  ) , (
              (Gram.mk_action (
                fun ((l : 'e__25  list )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   ((Ast.stSem_of_list l ) : 'str_items ) ) ) ) ) ;
+                   ((Ast.stSem_of_list l ): 'str_items ) ) ) ) ) ;
            (( [`Stoken
             (((
               
@@ -10714,7 +10632,7 @@ module MakeRevisedParser =
               | _ -> false ) ,
               (`Normal ,
                "(`ANTIQUOT ((((\"\" |\"stri\") |\"anti\") |\"list\") , _ ))"
-               ) )) ; `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ;
+               ) )) ; `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ;
             `Sself]  ) , (
             (Gram.mk_action (
               fun ((st : 'str_items )) ->
@@ -10731,7 +10649,7 @@ module MakeRevisedParser =
                            ((_loc , (
                              Ast.StAnt
                                ((_loc , ( (mk_anti n ~c:"str_item" s ) ) )) )
-                             , st )) : 'str_items )
+                             , st )): 'str_items )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10751,12 +10669,12 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       ((((("" |"stri") |"anti") |"list") as n) , s )) ->
-                    (Ast.StAnt ((_loc , ( (mk_anti n ~c:"str_item" s ) ) )) :
+                    (Ast.StAnt ((_loc , ( (mk_anti n ~c:"str_item" s ) ) )):
                       'str_items )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (top_phrase : 'top_phrase  Gram.t ) ) (
+  (Gram.extend ( (top_phrase: 'top_phrase  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10771,16 +10689,16 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | `EOI -> (None : 'top_phrase )
+                   | `EOI -> (None: 'top_phrase )
                    | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (phrase : 'phrase  Gram.t ) ) ))]  ) , (
+           (( [`Snterm ((Gram.obj ( (phrase: 'phrase  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((ph : 'phrase )) ->
-                fun ((_loc : FanLoc.t)) -> (Some (ph) : 'top_phrase ) ) ) ) )]
+                fun ((_loc : FanLoc.t)) -> (Some (ph): 'top_phrase ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (use_file : 'use_file  Gram.t ) ) (
+  (Gram.extend ( (use_file: 'use_file  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10795,21 +10713,20 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | `EOI -> (([]  , None  ) : 'use_file )
+                   | `EOI -> (([]  , None  ): 'use_file )
                    | _ -> assert false) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+           (( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun (((sil , stopped ) : 'use_file )) ->
                 fun (_) ->
                   fun ((si : 'str_item )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((( si :: sil  ) , stopped ) : 'use_file ) ) ) ) ) ;
+                      ((( si :: sil  ) , stopped ): 'use_file ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((dp : 'opt_expr )) ->
@@ -10817,23 +10734,23 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
                         ((( [Ast.StDir ((_loc , n , dp ))]  ) , (
-                          (stopped_at _loc ) ) ) : 'use_file ) ) ) ) )]  ) )]
-          ) )) ()  ) ) )
+                          (stopped_at _loc ) ) ): 'use_file ) ) ) ) )]  ) )] 
+         ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (phrase : 'phrase  Gram.t ) ) (
+  (Gram.extend ( (phrase: 'phrase  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-             `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((st : 'str_item )) ->
-                   fun ((_loc : FanLoc.t)) -> (st : 'phrase ) ) ) ) ) ;
+                   fun ((_loc : FanLoc.t)) -> (st: 'phrase ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) )) ; `Skeyword
             (";;")]  ) , (
             (Gram.mk_action (
               fun (_) ->
@@ -10841,11 +10758,11 @@ module MakeRevisedParser =
                   fun ((n : 'a_LIDENT )) ->
                     fun (_) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.StDir ((_loc , n , dp )) : 'phrase ) ) ) ) )]  )
+                        (Ast.StDir ((_loc , n , dp )): 'phrase ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_INT : 'a_INT  Gram.t ) ) (
+  (Gram.extend ( (a_INT: 'a_INT  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10860,7 +10777,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`INT (_ , s )) -> (s : 'a_INT )
+                   | (`INT (_ , s )) -> (s: 'a_INT )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10877,11 +10794,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"int") |"`int") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_INT )
+                    ((mk_anti n s ): 'a_INT )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_INT32 : 'a_INT32  Gram.t ) ) (
+  (Gram.extend ( (a_INT32: 'a_INT32  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10896,7 +10813,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`INT32 (_ , s )) -> (s : 'a_INT32 )
+                   | (`INT32 (_ , s )) -> (s: 'a_INT32 )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10913,11 +10830,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"int32") |"`int32") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_INT32 )
+                    ((mk_anti n s ): 'a_INT32 )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_INT64 : 'a_INT64  Gram.t ) ) (
+  (Gram.extend ( (a_INT64: 'a_INT64  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10932,7 +10849,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`INT64 (_ , s )) -> (s : 'a_INT64 )
+                   | (`INT64 (_ , s )) -> (s: 'a_INT64 )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10949,11 +10866,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"int64") |"`int64") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_INT64 )
+                    ((mk_anti n s ): 'a_INT64 )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_NATIVEINT : 'a_NATIVEINT  Gram.t ) ) (
+  (Gram.extend ( (a_NATIVEINT: 'a_NATIVEINT  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -10969,7 +10886,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`NATIVEINT (_ , s )) -> (s : 'a_NATIVEINT )
+                   | (`NATIVEINT (_ , s )) -> (s: 'a_NATIVEINT )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -10989,11 +10906,11 @@ module MakeRevisedParser =
                   |
                     (`ANTIQUOT
                       (((("" |"nativeint") |"`nativeint") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_NATIVEINT )
+                    ((mk_anti n s ): 'a_NATIVEINT )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_FLOAT : 'a_FLOAT  Gram.t ) ) (
+  (Gram.extend ( (a_FLOAT: 'a_FLOAT  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11008,7 +10925,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`FLOAT (_ , s )) -> (s : 'a_FLOAT )
+                   | (`FLOAT (_ , s )) -> (s: 'a_FLOAT )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -11025,11 +10942,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"flo") |"`flo") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_FLOAT )
+                    ((mk_anti n s ): 'a_FLOAT )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_CHAR : 'a_CHAR  Gram.t ) ) (
+  (Gram.extend ( (a_CHAR: 'a_CHAR  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11044,7 +10961,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`CHAR (_ , s )) -> (s : 'a_CHAR )
+                   | (`CHAR (_ , s )) -> (s: 'a_CHAR )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -11061,11 +10978,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"chr") |"`chr") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_CHAR )
+                    ((mk_anti n s ): 'a_CHAR )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) (
+  (Gram.extend ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11080,7 +10997,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`UIDENT s) -> (s : 'a_UIDENT )
+                   | (`UIDENT s) -> (s: 'a_UIDENT )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -11095,11 +11012,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"uid") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_UIDENT )
+                    ((mk_anti n s ): 'a_UIDENT )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) (
+  (Gram.extend ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11114,7 +11031,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LIDENT s) -> (s : 'a_LIDENT )
+                   | (`LIDENT s) -> (s: 'a_LIDENT )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -11129,11 +11046,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT ((("" |"lid") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_LIDENT )
+                    ((mk_anti n s ): 'a_LIDENT )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_LABEL : 'a_LABEL  Gram.t ) ) (
+  (Gram.extend ( (a_LABEL: 'a_LABEL  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11148,7 +11065,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`LABEL s) -> (s : 'a_LABEL )
+                   | (`LABEL s) -> (s: 'a_LABEL )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("~") ; `Stoken
             ((( 
@@ -11165,11 +11082,11 @@ module MakeRevisedParser =
                       (match __camlp4_0
                       with
                       | (`ANTIQUOT (("" as n) , s )) ->
-                        ((mk_anti n s ) : 'a_LABEL )
+                        ((mk_anti n s ): 'a_LABEL )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_OPTLABEL : 'a_OPTLABEL  Gram.t ) ) (
+  (Gram.extend ( (a_OPTLABEL: 'a_OPTLABEL  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11184,7 +11101,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`OPTLABEL s) -> (s : 'a_OPTLABEL )
+                   | (`OPTLABEL s) -> (s: 'a_OPTLABEL )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("?") ; `Stoken
             ((( 
@@ -11201,11 +11118,11 @@ module MakeRevisedParser =
                       (match __camlp4_0
                       with
                       | (`ANTIQUOT (("" as n) , s )) ->
-                        ((mk_anti n s ) : 'a_OPTLABEL )
+                        ((mk_anti n s ): 'a_OPTLABEL )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (a_STRING : 'a_STRING  Gram.t ) ) (
+  (Gram.extend ( (a_STRING: 'a_STRING  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11220,7 +11137,7 @@ module MakeRevisedParser =
                    
                    (match __camlp4_0
                    with
-                   | (`STRING (_ , s )) -> (s : 'a_STRING )
+                   | (`STRING (_ , s )) -> (s: 'a_STRING )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -11237,11 +11154,11 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (((("" |"str") |"`str") as n) , s )) ->
-                    ((mk_anti n s ) : 'a_STRING )
+                    ((mk_anti n s ): 'a_STRING )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (string_list : 'string_list  Gram.t ) ) (
+  (Gram.extend ( (string_list: 'string_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -11257,7 +11174,7 @@ module MakeRevisedParser =
                    (match __camlp4_0
                    with
                    | (`STRING (_ , x )) ->
-                     (Ast.LCons ((x , Ast.LNil  )) : 'string_list )
+                     (Ast.LCons ((x , Ast.LNil  )): 'string_list )
                    | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             ((( 
@@ -11273,7 +11190,7 @@ module MakeRevisedParser =
                     (match __camlp4_0
                     with
                     | (`STRING (_ , x )) ->
-                      (Ast.LCons ((x , xs )) : 'string_list )
+                      (Ast.LCons ((x , xs )): 'string_list )
                     | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
             (((
@@ -11290,67 +11207,67 @@ module MakeRevisedParser =
                   (match __camlp4_0
                   with
                   | (`ANTIQUOT (("" |"str_list") , s )) ->
-                    (Ast.LAnt ((mk_anti "str_list" s )) : 'string_list )
+                    (Ast.LAnt ((mk_anti "str_list" s )): 'string_list )
                   | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (semi : 'semi  Gram.t ) ) (
+  (Gram.extend ( (semi: 'semi  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword (";")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'semi ) ) ) ) )] 
-           ) )]  ) )) ()  ) ) )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'semi ) ) ) ) )]  )
+           )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (expr_quot : 'expr_quot  Gram.t ) ) (
+  (Gram.extend ( (expr_quot: 'expr_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.ExNil (_loc) : 'expr_quot ) )
-               ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.ExNil (_loc): 'expr_quot ) ) )
+             ) ) ;
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'expr )) ->
-                fun ((_loc : FanLoc.t)) -> (e : 'expr_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword
-            (";") ; `Snterm
-            ((Gram.obj ( (sem_expr : 'sem_expr  Gram.t ) ) ))]  ) , (
+                fun ((_loc : FanLoc.t)) -> (e: 'expr_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword
+            (";") ; `Snterm ((Gram.obj ( (sem_expr: 'sem_expr  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((e2 : 'sem_expr )) ->
                 fun (_) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.ExSem ((_loc , e1 , e2 )) : 'expr_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Skeyword
+                      (Ast.ExSem ((_loc , e1 , e2 )): 'expr_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Skeyword
             (",") ; `Snterm
-            ((Gram.obj ( (comma_expr : 'comma_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (comma_expr: 'comma_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e2 : 'comma_expr )) ->
                 fun (_) ->
                   fun ((e1 : 'expr )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.ExCom ((_loc , e1 , e2 )) : 'expr_quot ) ) ) ) )] 
+                      (Ast.ExCom ((_loc , e1 , e2 )): 'expr_quot ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt_quot : 'patt_quot  Gram.t ) ) (
+  (Gram.extend ( (patt_quot: 'patt_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.PaNil (_loc) : 'patt_quot ) )
-               ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.PaNil (_loc): 'patt_quot ) ) )
+             ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'patt )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'patt_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
-            ("=") ; `Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+                fun ((_loc : FanLoc.t)) -> (x: 'patt_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
+            ("=") ; `Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'patt )) ->
                 fun (_) ->
@@ -11363,77 +11280,77 @@ module MakeRevisedParser =
                         with
                         | Ast.PaAnt(loc , s ) -> Ast.IdAnt ((loc , s ))
                         | p -> (Ast.ident_of_patt p )) in
-                        Ast.PaEq ((_loc , i , y )) : 'patt_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
-            (";") ; `Snterm
-            ((Gram.obj ( (sem_patt : 'sem_patt  Gram.t ) ) ))]  ) , (
+                        Ast.PaEq ((_loc , i , y )): 'patt_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
+            (";") ; `Snterm ((Gram.obj ( (sem_patt: 'sem_patt  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((y : 'sem_patt )) ->
                 fun (_) ->
                   fun ((x : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaSem ((_loc , x , y )) : 'patt_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+                      (Ast.PaSem ((_loc , x , y )): 'patt_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             (",") ; `Snterm
-            ((Gram.obj ( (comma_patt : 'comma_patt  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (comma_patt: 'comma_patt  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'comma_patt )) ->
                 fun (_) ->
                   fun ((x : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.PaCom ((_loc , x , y )) : 'patt_quot ) ) ) ) )]  )
+                      (Ast.PaCom ((_loc , x , y )): 'patt_quot ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ctyp_quot : 'ctyp_quot  Gram.t ) ) (
+  (Gram.extend ( (ctyp_quot: 'ctyp_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc) : 'ctyp_quot ) )
-               ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) ))] 
-            ) , (
+               fun ((_loc : FanLoc.t)) -> (Ast.TyNil (_loc): 'ctyp_quot ) ) )
+             ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) ))]  )
+            , (
             (Gram.mk_action (
               fun ((x : 'more_ctyp )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("and") ; `Snterm
             ((Gram.obj (
-               (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) ))] 
+               (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((y : 'constructor_arg_list )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAnd ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TyAnd ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("&") ; `Snterm
-            ((Gram.obj ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'amp_ctyp )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyAmp ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TyAmp ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("*") ; `Snterm
-            ((Gram.obj ( (star_ctyp : 'star_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (star_ctyp: 'star_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'star_ctyp )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TySta ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TySta ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ; `Skeyword
             (";") ; `Snterm
             ((Gram.obj (
-               (label_declaration_list : 'label_declaration_list  Gram.t ) )
-               ))]  ) , (
+               (label_declaration_list: 'label_declaration_list  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((z : 'label_declaration_list )) ->
                 fun (_) ->
@@ -11442,22 +11359,22 @@ module MakeRevisedParser =
                       fun ((x : 'more_ctyp )) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.TySem
-                             ((_loc , ( Ast.TyCol ((_loc , x , y )) ) , z )) :
+                             ((_loc , ( Ast.TyCol ((_loc , x , y )) ) , z )):
                             'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'more_ctyp )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyCol ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TyCol ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Skeyword ("&") ; `Snterm
-            ((Gram.obj ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) )) ; `Skeyword
+            ((Gram.obj ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) )) ; `Skeyword
             ("|") ; `Snterm
-            ((Gram.obj ( (row_field : 'row_field  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (row_field: 'row_field  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((z : 'row_field )) ->
                 fun (_) ->
@@ -11468,26 +11385,26 @@ module MakeRevisedParser =
                           fun ((_loc : FanLoc.t)) ->
                             (Ast.TyOr
                                ((_loc , ( Ast.TyOfAmp ((_loc , x , y )) ) , z
-                                 )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                                 )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Skeyword ("&") ; `Snterm
-            ((Gram.obj ( (amp_ctyp : 'amp_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (amp_ctyp: 'amp_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'amp_ctyp )) ->
                 fun (_) ->
                   fun (_) ->
                     fun ((x : 'more_ctyp )) ->
                       fun ((_loc : FanLoc.t)) ->
-                        (Ast.TyOfAmp ((_loc , x , y )) : 'ctyp_quot ) ) ) ) )
+                        (Ast.TyOfAmp ((_loc , x , y )): 'ctyp_quot ) ) ) ) )
            ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Snterm
             ((Gram.obj (
-               (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) )) ;
+               (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) )) ;
             `Skeyword ("|") ; `Snterm
             ((Gram.obj (
-               (constructor_declarations : 'constructor_declarations  Gram.t
-                 ) ) ))]  ) , (
+               (constructor_declarations: 'constructor_declarations  Gram.t )
+               ) ))]  ) , (
             (Gram.mk_action (
               fun ((z : 'constructor_declarations )) ->
                 fun (_) ->
@@ -11496,99 +11413,98 @@ module MakeRevisedParser =
                       fun ((x : 'more_ctyp )) ->
                         fun ((_loc : FanLoc.t)) ->
                           (Ast.TyOr
-                             ((_loc , ( Ast.TyOf ((_loc , x , y )) ) , z )) :
+                             ((_loc , ( Ast.TyOf ((_loc , x , y )) ) , z )):
                             'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("of") ; `Snterm
             ((Gram.obj (
-               (constructor_arg_list : 'constructor_arg_list  Gram.t ) ) ))] 
+               (constructor_arg_list: 'constructor_arg_list  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((y : 'constructor_arg_list )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyOf ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TyOf ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword ("|") ; `Snterm
             ((Gram.obj (
-               (constructor_declarations : 'constructor_declarations  Gram.t
-                 ) ) ))]  ) , (
+               (constructor_declarations: 'constructor_declarations  Gram.t )
+               ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'constructor_declarations )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyOr ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TyOr ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword (";") ; `Snterm
             ((Gram.obj (
-               (label_declaration_list : 'label_declaration_list  Gram.t ) )
-               ))]  ) , (
+               (label_declaration_list: 'label_declaration_list  Gram.t ) ) ))]
+             ) , (
             (Gram.mk_action (
               fun ((y : 'label_declaration_list )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TySem ((_loc , x , y )) : 'ctyp_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (more_ctyp : 'more_ctyp  Gram.t ) ) )) ;
+                      (Ast.TySem ((_loc , x , y )): 'ctyp_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (more_ctyp: 'more_ctyp  Gram.t ) ) )) ;
             `Skeyword (",") ; `Snterm
-            ((Gram.obj ( (comma_ctyp : 'comma_ctyp  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (comma_ctyp: 'comma_ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((y : 'comma_ctyp )) ->
                 fun (_) ->
                   fun ((x : 'more_ctyp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.TyCom ((_loc , x , y )) : 'ctyp_quot ) ) ) ) )]  )
+                      (Ast.TyCom ((_loc , x , y )): 'ctyp_quot ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (more_ctyp : 'more_ctyp  Gram.t ) ) (
+  (Gram.extend ( (more_ctyp: 'more_ctyp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (type_parameter : 'type_parameter  Gram.t ) ) ))] 
-             ) , (
+             ((Gram.obj ( (type_parameter: 'type_parameter  Gram.t ) ) ))]  )
+             , (
              (Gram.mk_action (
                fun ((x : 'type_parameter )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'more_ctyp ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (ctyp : 'ctyp  Gram.t ) ) ))]  ) , (
+                 fun ((_loc : FanLoc.t)) -> (x: 'more_ctyp ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (ctyp: 'ctyp  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'ctyp )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'more_ctyp ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'more_ctyp ) ) ) ) ) ;
            (( [`Skeyword ("`") ; `Snterm
-            ((Gram.obj ( (a_ident : 'a_ident  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_ident: 'a_ident  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'a_ident )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyVrn ((_loc , x )) : 'more_ctyp ) ) ) ) ) ;
+                    (Ast.TyVrn ((_loc , x )): 'more_ctyp ) ) ) ) ) ;
            (( [`Skeyword ("mutable") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((x : 'more_ctyp )) ->
                 fun (_) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (Ast.TyMut ((_loc , x )) : 'more_ctyp ) ) ) ) )]  ) )]  )
+                    (Ast.TyMut ((_loc , x )): 'more_ctyp ) ) ) ) )]  ) )]  )
          )) ()  ) ) )
   );
    (
-  (Gram.extend ( (str_item_quot : 'str_item_quot  Gram.t ) ) (
+  (Gram.extend ( (str_item_quot: 'str_item_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.StNil (_loc) : 'str_item_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) ))]  )
-            , (
+               fun ((_loc : FanLoc.t)) -> (Ast.StNil (_loc): 'str_item_quot )
+               ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((st : 'str_item )) ->
-                fun ((_loc : FanLoc.t)) -> (st : 'str_item_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (str_item : 'str_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+                fun ((_loc : FanLoc.t)) -> (st: 'str_item_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (str_item: 'str_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((st2 : 'str_item_quot )) ->
                 fun (_) ->
@@ -11598,36 +11514,35 @@ module MakeRevisedParser =
                         (match st2
                         with
                         | Ast.StNil(_) -> st1
-                        | _ -> Ast.StSem ((_loc , st1 , st2 ))) :
+                        | _ -> Ast.StSem ((_loc , st1 , st2 ))):
                         'str_item_quot ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((dp : 'opt_expr )) ->
                 fun ((n : 'a_LIDENT )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.StDir ((_loc , n , dp )) : 'str_item_quot ) ) ) )
-            )]  ) )]  ) )) ()  ) ) )
+                      (Ast.StDir ((_loc , n , dp )): 'str_item_quot ) ) ) ) )]
+            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (sig_item_quot : 'sig_item_quot  Gram.t ) ) (
+  (Gram.extend ( (sig_item_quot: 'sig_item_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) ->
-                 (Ast.SgNil (_loc) : 'sig_item_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) ))]  )
-            , (
+               fun ((_loc : FanLoc.t)) -> (Ast.SgNil (_loc): 'sig_item_quot )
+               ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((sg : 'sig_item )) ->
-                fun ((_loc : FanLoc.t)) -> (sg : 'sig_item_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (sig_item : 'sig_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+                fun ((_loc : FanLoc.t)) -> (sg: 'sig_item_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (sig_item: 'sig_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((sg2 : 'sig_item_quot )) ->
                 fun (_) ->
@@ -11637,116 +11552,115 @@ module MakeRevisedParser =
                         (match sg2
                         with
                         | Ast.SgNil(_) -> sg1
-                        | _ -> Ast.SgSem ((_loc , sg1 , sg2 ))) :
+                        | _ -> Ast.SgSem ((_loc , sg1 , sg2 ))):
                         'sig_item_quot ) ) ) ) ) ;
            (( [`Skeyword ("#") ; `Snterm
-            ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) )) ; `Snterm
-            ((Gram.obj ( (opt_expr : 'opt_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) )) ; `Snterm
+            ((Gram.obj ( (opt_expr: 'opt_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((dp : 'opt_expr )) ->
                 fun ((n : 'a_LIDENT )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.SgDir ((_loc , n , dp )) : 'sig_item_quot ) ) ) )
-            )]  ) )]  ) )) ()  ) ) )
+                      (Ast.SgDir ((_loc , n , dp )): 'sig_item_quot ) ) ) ) )]
+            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_type_quot : 'module_type_quot  Gram.t ) ) (
+  (Gram.extend ( (module_type_quot: 'module_type_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.MtNil (_loc) : 'module_type_quot ) ) ) ) ) ;
+                 (Ast.MtNil (_loc): 'module_type_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'module_type )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'module_type_quot ) ) ) ) )] 
+                fun ((_loc : FanLoc.t)) -> (x: 'module_type_quot ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_expr_quot : 'module_expr_quot  Gram.t ) ) (
+  (Gram.extend ( (module_expr_quot: 'module_expr_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.MeNil (_loc) : 'module_expr_quot ) ) ) ) ) ;
+                 (Ast.MeNil (_loc): 'module_expr_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'module_expr )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'module_expr_quot ) ) ) ) )] 
+                fun ((_loc : FanLoc.t)) -> (x: 'module_expr_quot ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (match_case_quot : 'match_case_quot  Gram.t ) ) (
+  (Gram.extend ( (match_case_quot: 'match_case_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.McNil (_loc) : 'match_case_quot ) ) ) ) ) ;
+                 (Ast.McNil (_loc): 'match_case_quot ) ) ) ) ) ;
            (( [`Slist0sep
-            ((`Snterm ((Gram.obj ( (match_case0 : 'match_case0  Gram.t ) ) ))
+            ((`Snterm ((Gram.obj ( (match_case0: 'match_case0  Gram.t ) ) ))
               , `Skeyword ("|") ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'match_case0  list )) ->
                 fun ((_loc : FanLoc.t)) ->
-                  ((Ast.mcOr_of_list x ) : 'match_case_quot ) ) ) ) )]  ) )] 
+                  ((Ast.mcOr_of_list x ): 'match_case_quot ) ) ) ) )]  ) )] 
          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (binding_quot : 'binding_quot  Gram.t ) ) (
+  (Gram.extend ( (binding_quot: 'binding_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> (Ast.BiNil (_loc) : 'binding_quot )
+               fun ((_loc : FanLoc.t)) -> (Ast.BiNil (_loc): 'binding_quot )
                ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (binding : 'binding  Gram.t ) ) ))]  ) ,
-            (
+           (( [`Snterm ((Gram.obj ( (binding: 'binding  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'binding )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'binding_quot ) ) ) ) )]  ) )]
+                fun ((_loc : FanLoc.t)) -> (x: 'binding_quot ) ) ) ) )]  ) )]
           ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (rec_binding_quot : 'rec_binding_quot  Gram.t ) ) (
+  (Gram.extend ( (rec_binding_quot: 'rec_binding_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.RbNil (_loc) : 'rec_binding_quot ) ) ) ) ) ;
+                 (Ast.RbNil (_loc): 'rec_binding_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (label_expr_list : 'label_expr_list  Gram.t ) ) ))] 
+            ((Gram.obj ( (label_expr_list: 'label_expr_list  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((x : 'label_expr_list )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'rec_binding_quot ) ) ) ) )] 
+                fun ((_loc : FanLoc.t)) -> (x: 'rec_binding_quot ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (module_binding_quot : 'module_binding_quot  Gram.t ) ) (
+  (Gram.extend ( (module_binding_quot: 'module_binding_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.MbNil (_loc) : 'module_binding_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+                 (Ast.MbNil (_loc): 'module_binding_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
                 fun (_) ->
@@ -11754,27 +11668,27 @@ module MakeRevisedParser =
                     fun (_) ->
                       fun ((m : 'a_UIDENT )) ->
                         fun ((_loc : FanLoc.t)) ->
-                          (Ast.MbColEq ((_loc , m , mt , me )) :
+                          (Ast.MbColEq ((_loc , m , mt , me )):
                             'module_binding_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) )) ;
+           (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
                   fun ((m : 'a_UIDENT )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MbCol ((_loc , m , mt )) : 'module_binding_quot )
-              ) ) ) ) ;
+                      (Ast.MbCol ((_loc , m , mt )): 'module_binding_quot ) )
+              ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`ANTIQUOT ("" , _ )) -> true
               | _ -> false ) , (`Normal , "(`ANTIQUOT (\"\" , _ ))" ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) )) ;
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) )) ;
             `Skeyword ("=") ; `Snterm
-            ((Gram.obj ( (module_expr : 'module_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_expr: 'module_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((me : 'module_expr )) ->
                 fun (_) ->
@@ -11787,7 +11701,7 @@ module MakeRevisedParser =
                           with
                           | (`ANTIQUOT (("" as n) , m )) ->
                             (Ast.MbColEq
-                               ((_loc , ( (mk_anti n m ) ) , mt , me )) :
+                               ((_loc , ( (mk_anti n m ) ) , mt , me )):
                               'module_binding_quot )
                           | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -11796,7 +11710,7 @@ module MakeRevisedParser =
               | (`ANTIQUOT ("" , _ )) -> true
               | _ -> false ) , (`Normal , "(`ANTIQUOT (\"\" , _ ))" ) )) ;
             `Skeyword (":") ; `Snterm
-            ((Gram.obj ( (module_type : 'module_type  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (module_type: 'module_type  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((mt : 'module_type )) ->
                 fun (_) ->
@@ -11806,7 +11720,7 @@ module MakeRevisedParser =
                       (match __camlp4_0
                       with
                       | (`ANTIQUOT (("" as n) , m )) ->
-                        (Ast.MbCol ((_loc , ( (mk_anti n m ) ) , mt )) :
+                        (Ast.MbCol ((_loc , ( (mk_anti n m ) ) , mt )):
                           'module_binding_quot )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -11823,7 +11737,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT (("" as n) , s )) ->
                     (Ast.MbAnt
-                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )):
                       'module_binding_quot )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Stoken
@@ -11842,7 +11756,7 @@ module MakeRevisedParser =
                   with
                   | (`ANTIQUOT ((("module_binding" |"anti") as n) , s )) ->
                     (Ast.MbAnt
-                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )) :
+                       ((_loc , ( (mk_anti ~c:"module_binding" n s ) ) )):
                       'module_binding_quot )
                   | _ -> assert false) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
@@ -11851,11 +11765,11 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((b1 : 'module_binding_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.MbAnd ((_loc , b1 , b2 )) : 'module_binding_quot )
+                      (Ast.MbAnd ((_loc , b1 , b2 )): 'module_binding_quot )
               ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (ident_quot : 'ident_quot  Gram.t ) ) (
+  (Gram.extend ( (ident_quot: 'ident_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(( Some ("apply") ) , None  , (
@@ -11864,7 +11778,7 @@ module MakeRevisedParser =
                fun ((j : 'ident_quot )) ->
                  fun ((i : 'ident_quot )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (Ast.IdApp ((_loc , i , j )) : 'ident_quot ) ) ) ) )]  )
+                     (Ast.IdApp ((_loc , i , j )): 'ident_quot ) ) ) ) )]  )
            ) ;
          (( Some (".") ) , None  , (
           [(( [`Sself ; `Skeyword (".") ; `Sself]  ) , (
@@ -11873,15 +11787,15 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((i : 'ident_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.IdAcc ((_loc , i , j )) : 'ident_quot ) ) ) ) )] 
-          ) ) ;
+                      (Ast.IdAcc ((_loc , i , j )): 'ident_quot ) ) ) ) )]  )
+          ) ;
          (( Some ("simple") ) , None  , (
           [(( [`Skeyword ("(") ; `Sself ; `Skeyword (")")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((i : 'ident_quot )) ->
-                  fun (_) -> fun ((_loc : FanLoc.t)) -> (i : 'ident_quot ) )
-              ) ) ) ;
+                  fun (_) -> fun ((_loc : FanLoc.t)) -> (i: 'ident_quot ) ) )
+            ) ) ;
           (( [`Stoken
            (((
              
@@ -11906,20 +11820,20 @@ module MakeRevisedParser =
                           ((_loc , (
                             Ast.IdAnt
                               ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) ) , i
-                            )) : 'ident_quot )
+                            )): 'ident_quot )
                      | _ -> assert false) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  ) ,
+          (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_LIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.IdLid ((_loc , i )) : 'ident_quot ) ) ) ) ) ;
-          (( [`Snterm ((Gram.obj ( (a_UIDENT : 'a_UIDENT  Gram.t ) ) ))]  ) ,
+                 (Ast.IdLid ((_loc , i )): 'ident_quot ) ) ) ) ) ;
+          (( [`Snterm ((Gram.obj ( (a_UIDENT: 'a_UIDENT  Gram.t ) ) ))]  ) ,
            (
            (Gram.mk_action (
              fun ((i : 'a_UIDENT )) ->
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.IdUid ((_loc , i )) : 'ident_quot ) ) ) ) ) ;
+                 (Ast.IdUid ((_loc , i )): 'ident_quot ) ) ) ) ) ;
           (( [`Stoken
            (((
              
@@ -11937,32 +11851,32 @@ module MakeRevisedParser =
                  with
                  | (`ANTIQUOT ((((("" |"id") |"anti") |"list") as n) , s ))
                    ->
-                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )) :
+                   (Ast.IdAnt ((_loc , ( (mk_anti ~c:"ident" n s ) ) )):
                      'ident_quot )
                  | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_expr_quot : 'class_expr_quot  Gram.t ) ) (
+  (Gram.extend ( (class_expr_quot: 'class_expr_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.CeNil (_loc) : 'class_expr_quot ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (class_expr : 'class_expr  Gram.t ) ) ))]
-             ) , (
+                 (Ast.CeNil (_loc): 'class_expr_quot ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (class_expr: 'class_expr  Gram.t ) ) ))] 
+            ) , (
             (Gram.mk_action (
               fun ((x : 'class_expr )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'class_expr_quot ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'class_expr_quot ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`ANTIQUOT ("virtual" , _ )) -> true
               | _ -> false ) , (`Normal , "(`ANTIQUOT (\"virtual\" , _ ))" )
-              )) ; `Snterm ((Gram.obj ( (ident : 'ident  Gram.t ) ) )) ;
+              )) ; `Snterm ((Gram.obj ( (ident: 'ident  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (opt_comma_ctyp : 'opt_comma_ctyp  Gram.t ) ) ))]  )
+            ((Gram.obj ( (opt_comma_ctyp: 'opt_comma_ctyp  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((ot : 'opt_comma_ctyp )) ->
@@ -11976,12 +11890,12 @@ module MakeRevisedParser =
                         (
                           let  anti =
                           Ast.ViAnt ((mk_anti ~c:"class_expr" n s )) in
-                          Ast.CeCon ((_loc , anti , i , ot )) :
+                          Ast.CeCon ((_loc , anti , i , ot )):
                           'class_expr_quot )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("virtual") ; `Snterm
             ((Gram.obj (
-               (class_name_and_param : 'class_name_and_param  Gram.t ) ) ))] 
+               (class_name_and_param: 'class_name_and_param  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun (((i , ot ) : 'class_name_and_param )) ->
@@ -11989,47 +11903,47 @@ module MakeRevisedParser =
                   fun ((_loc : FanLoc.t)) ->
                     (Ast.CeCon
                        ((_loc , Ast.ViVirtual  , ( Ast.IdLid ((_loc , i )) )
-                         , ot )) : 'class_expr_quot ) ) ) ) ) ;
+                         , ot )): 'class_expr_quot ) ) ) ) ) ;
            (( [`Sself ; `Skeyword ("=") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((ce2 : 'class_expr_quot )) ->
                 fun (_) ->
                   fun ((ce1 : 'class_expr_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CeEq ((_loc , ce1 , ce2 )) : 'class_expr_quot ) )
-              ) ) ) ;
+                      (Ast.CeEq ((_loc , ce1 , ce2 )): 'class_expr_quot ) ) )
+            ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((ce2 : 'class_expr_quot )) ->
                 fun (_) ->
                   fun ((ce1 : 'class_expr_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CeAnd ((_loc , ce1 , ce2 )) : 'class_expr_quot ) )
+                      (Ast.CeAnd ((_loc , ce1 , ce2 )): 'class_expr_quot ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_type_quot : 'class_type_quot  Gram.t ) ) (
+  (Gram.extend ( (class_type_quot: 'class_type_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.CtNil (_loc) : 'class_type_quot ) ) ) ) ) ;
+                 (Ast.CtNil (_loc): 'class_type_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (class_type_plus : 'class_type_plus  Gram.t ) ) ))] 
+            ((Gram.obj ( (class_type_plus: 'class_type_plus  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((x : 'class_type_plus )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'class_type_quot ) ) ) ) ) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'class_type_quot ) ) ) ) ) ;
            (( [`Stoken
             ((( 
               function
               | (`ANTIQUOT ("virtual" , _ )) -> true
               | _ -> false ) , (`Normal , "(`ANTIQUOT (\"virtual\" , _ ))" )
-              )) ; `Snterm ((Gram.obj ( (ident : 'ident  Gram.t ) ) )) ;
+              )) ; `Snterm ((Gram.obj ( (ident: 'ident  Gram.t ) ) )) ;
             `Snterm
-            ((Gram.obj ( (opt_comma_ctyp : 'opt_comma_ctyp  Gram.t ) ) ))]  )
+            ((Gram.obj ( (opt_comma_ctyp: 'opt_comma_ctyp  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((ot : 'opt_comma_ctyp )) ->
@@ -12043,12 +11957,12 @@ module MakeRevisedParser =
                         (
                           let  anti =
                           Ast.ViAnt ((mk_anti ~c:"class_type" n s )) in
-                          Ast.CtCon ((_loc , anti , i , ot )) :
+                          Ast.CtCon ((_loc , anti , i , ot )):
                           'class_type_quot )
                       | _ -> assert false) ) ) ) ) ;
            (( [`Skeyword ("virtual") ; `Snterm
             ((Gram.obj (
-               (class_name_and_param : 'class_name_and_param  Gram.t ) ) ))] 
+               (class_name_and_param: 'class_name_and_param  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun (((i , ot ) : 'class_name_and_param )) ->
@@ -12056,14 +11970,14 @@ module MakeRevisedParser =
                   fun ((_loc : FanLoc.t)) ->
                     (Ast.CtCon
                        ((_loc , Ast.ViVirtual  , ( Ast.IdLid ((_loc , i )) )
-                         , ot )) : 'class_type_quot ) ) ) ) ) ;
+                         , ot )): 'class_type_quot ) ) ) ) ) ;
            (( [`Sself ; `Skeyword (":") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((ct2 : 'class_type_quot )) ->
                 fun (_) ->
                   fun ((ct1 : 'class_type_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CtCol ((_loc , ct1 , ct2 )) : 'class_type_quot ) )
+                      (Ast.CtCol ((_loc , ct1 , ct2 )): 'class_type_quot ) )
               ) ) ) ;
            (( [`Sself ; `Skeyword ("=") ; `Sself]  ) , (
             (Gram.mk_action (
@@ -12071,37 +11985,36 @@ module MakeRevisedParser =
                 fun (_) ->
                   fun ((ct1 : 'class_type_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CtEq ((_loc , ct1 , ct2 )) : 'class_type_quot ) )
-              ) ) ) ;
+                      (Ast.CtEq ((_loc , ct1 , ct2 )): 'class_type_quot ) ) )
+            ) ) ;
            (( [`Sself ; `Skeyword ("and") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((ct2 : 'class_type_quot )) ->
                 fun (_) ->
                   fun ((ct1 : 'class_type_quot )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (Ast.CtAnd ((_loc , ct1 , ct2 )) : 'class_type_quot ) )
+                      (Ast.CtAnd ((_loc , ct1 , ct2 )): 'class_type_quot ) )
               ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_str_item_quot : 'class_str_item_quot  Gram.t ) ) (
+  (Gram.extend ( (class_str_item_quot: 'class_str_item_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.CrNil (_loc) : 'class_str_item_quot ) ) ) ) ) ;
+                 (Ast.CrNil (_loc): 'class_str_item_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (class_str_item : 'class_str_item  Gram.t ) ) ))]  )
+            ((Gram.obj ( (class_str_item: 'class_str_item  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((x : 'class_str_item )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'class_str_item_quot ) ) ) )
-            ) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'class_str_item_quot ) ) ) ) )
+           ;
            (( [`Snterm
-            ((Gram.obj ( (class_str_item : 'class_str_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (class_str_item: 'class_str_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((x2 : 'class_str_item_quot )) ->
                 fun (_) ->
@@ -12111,29 +12024,28 @@ module MakeRevisedParser =
                         (match x2
                         with
                         | Ast.CrNil(_) -> x1
-                        | _ -> Ast.CrSem ((_loc , x1 , x2 ))) :
+                        | _ -> Ast.CrSem ((_loc , x1 , x2 ))):
                         'class_str_item_quot ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (class_sig_item_quot : 'class_sig_item_quot  Gram.t ) ) (
+  (Gram.extend ( (class_sig_item_quot: 'class_sig_item_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.CgNil (_loc) : 'class_sig_item_quot ) ) ) ) ) ;
+                 (Ast.CgNil (_loc): 'class_sig_item_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (class_sig_item : 'class_sig_item  Gram.t ) ) ))]  )
+            ((Gram.obj ( (class_sig_item: 'class_sig_item  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun ((x : 'class_sig_item )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'class_sig_item_quot ) ) ) )
-            ) ;
+                fun ((_loc : FanLoc.t)) -> (x: 'class_sig_item_quot ) ) ) ) )
+           ;
            (( [`Snterm
-            ((Gram.obj ( (class_sig_item : 'class_sig_item  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (semi : 'semi  Gram.t ) ) )) ; `Sself]  ) ,
-            (
+            ((Gram.obj ( (class_sig_item: 'class_sig_item  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (semi: 'semi  Gram.t ) ) )) ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((x2 : 'class_sig_item_quot )) ->
                 fun (_) ->
@@ -12143,117 +12055,116 @@ module MakeRevisedParser =
                         (match x2
                         with
                         | Ast.CgNil(_) -> x1
-                        | _ -> Ast.CgSem ((_loc , x1 , x2 ))) :
+                        | _ -> Ast.CgSem ((_loc , x1 , x2 ))):
                         'class_sig_item_quot ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (with_constr_quot : 'with_constr_quot  Gram.t ) ) (
+  (Gram.extend ( (with_constr_quot: 'with_constr_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
              (Gram.mk_action (
                fun ((_loc : FanLoc.t)) ->
-                 (Ast.WcNil (_loc) : 'with_constr_quot ) ) ) ) ) ;
+                 (Ast.WcNil (_loc): 'with_constr_quot ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (with_constr : 'with_constr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (with_constr: 'with_constr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((x : 'with_constr )) ->
-                fun ((_loc : FanLoc.t)) -> (x : 'with_constr_quot ) ) ) ) )] 
+                fun ((_loc : FanLoc.t)) -> (x: 'with_constr_quot ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (rec_flag_quot : 'rec_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (rec_flag_quot: 'rec_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (opt_rec : 'opt_rec  Gram.t ) ) ))]  ) ,
+           [(( [`Snterm ((Gram.obj ( (opt_rec: 'opt_rec  Gram.t ) ) ))]  ) ,
              (
              (Gram.mk_action (
                fun ((x : 'opt_rec )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'rec_flag_quot ) ) ) ) )]  )
+                 fun ((_loc : FanLoc.t)) -> (x: 'rec_flag_quot ) ) ) ) )]  )
            )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (direction_flag_quot : 'direction_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (direction_flag_quot: 'direction_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (direction_flag : 'direction_flag  Gram.t ) ) ))] 
-             ) , (
+             ((Gram.obj ( (direction_flag: 'direction_flag  Gram.t ) ) ))]  )
+             , (
              (Gram.mk_action (
                fun ((x : 'direction_flag )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'direction_flag_quot ) ) ) )
+                 fun ((_loc : FanLoc.t)) -> (x: 'direction_flag_quot ) ) ) )
              )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (mutable_flag_quot : 'mutable_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (mutable_flag_quot: 'mutable_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_mutable : 'opt_mutable  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (opt_mutable: 'opt_mutable  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'opt_mutable )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'mutable_flag_quot ) ) ) ) )]
+                 fun ((_loc : FanLoc.t)) -> (x: 'mutable_flag_quot ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (private_flag_quot : 'private_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (private_flag_quot: 'private_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_private : 'opt_private  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (opt_private: 'opt_private  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'opt_private )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'private_flag_quot ) ) ) ) )]
+                 fun ((_loc : FanLoc.t)) -> (x: 'private_flag_quot ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (virtual_flag_quot : 'virtual_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (virtual_flag_quot: 'virtual_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_virtual : 'opt_virtual  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (opt_virtual: 'opt_virtual  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'opt_virtual )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'virtual_flag_quot ) ) ) ) )]
+                 fun ((_loc : FanLoc.t)) -> (x: 'virtual_flag_quot ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (row_var_flag_quot : 'row_var_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (row_var_flag_quot: 'row_var_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_dot_dot : 'opt_dot_dot  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (opt_dot_dot: 'opt_dot_dot  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'opt_dot_dot )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'row_var_flag_quot ) ) ) ) )]
+                 fun ((_loc : FanLoc.t)) -> (x: 'row_var_flag_quot ) ) ) ) )]
             ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (override_flag_quot : 'override_flag_quot  Gram.t ) ) (
+  (Gram.extend ( (override_flag_quot: 'override_flag_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (opt_override : 'opt_override  Gram.t ) ) ))]  ) ,
-             (
+             ((Gram.obj ( (opt_override: 'opt_override  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((x : 'opt_override )) ->
-                 fun ((_loc : FanLoc.t)) -> (x : 'override_flag_quot ) ) ) )
-             )]  ) )]  ) )) ()  ) ) )
+                 fun ((_loc : FanLoc.t)) -> (x: 'override_flag_quot ) ) ) ) )]
+            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (patt_eoi : 'patt_eoi  Gram.t ) ) (
+  (Gram.extend ( (patt_eoi: 'patt_eoi  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Stoken
+           [(( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Stoken
              ((( 
                function
                | `EOI -> true
@@ -12265,14 +12176,14 @@ module MakeRevisedParser =
                      
                      (match __camlp4_0
                      with
-                     | `EOI -> (x : 'patt_eoi )
+                     | `EOI -> (x: 'patt_eoi )
                      | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
-   (Gram.extend ( (expr_eoi : 'expr_eoi  Gram.t ) ) (
+   (Gram.extend ( (expr_eoi: 'expr_eoi  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
-            [(( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) )) ; `Stoken
+            [(( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) )) ; `Stoken
               ((( 
                 function
                 | `EOI -> true
@@ -12284,7 +12195,7 @@ module MakeRevisedParser =
                       
                       (match __camlp4_0
                       with
-                      | `EOI -> (x : 'expr_eoi )
+                      | `EOI -> (x: 'expr_eoi )
                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
   end
   
@@ -12620,20 +12531,21 @@ module MakeRevisedParserParser =
                  ((_loc , ( Ast.PaAny (_loc) ) , ( Ast.ExNil (_loc) ) , ckont
                    )) ) )) ) ))
     | SpStr(_loc , p ) ->
+      
       (try
-        
-       (match p
-       with
-       | Ast.PaId(_ , Ast.IdLid(_ , v ) ) -> (subst v skont )
-       | _ -> (raise Not_found  ))
-       with
-       | Not_found  ->
-         Ast.ExLet
-           ((_loc , Ast.ReNil  , (
-             Ast.BiEq
-               ((_loc , p , (
-                 Ast.ExId ((_loc , ( Ast.IdLid ((_loc , strm_n )) ) )) ) )) )
-             , skont )))
+      
+      (match p
+      with
+      | Ast.PaId(_ , Ast.IdLid(_ , v ) ) -> (subst v skont )
+      | _ -> (raise Not_found  ))
+      with
+      | Not_found  ->
+        Ast.ExLet
+          ((_loc , Ast.ReNil  , (
+            Ast.BiEq
+              ((_loc , p , (
+                Ast.ExId ((_loc , ( Ast.IdLid ((_loc , strm_n )) ) )) ) )) )
+            , skont )))
   let rec  stream_pattern (_loc) (epo) (e) (ekont) =
     
     function
@@ -12989,42 +12901,42 @@ module MakeRevisedParserParser =
                        Ast.IdLid ((_loc , "lapp" )) ) )) ) )) ) , (
                (slazy _loc e ) ) )) ) , ( (cstream gloc secl ) ) ))
   let _ = 
-  let  _ = (expr : 'expr  Gram.t ) and _ =
-  (parser_case_list : 'parser_case_list  Gram.t ) and _ =
-  (parser_case : 'parser_case  Gram.t ) and _ =
-  (stream_quot : 'stream_quot  Gram.t ) and _ =
-  (stream_end : 'stream_end  Gram.t ) and _ =
-  (stream_begin : 'stream_begin  Gram.t ) and _ =
-  (stream_expr : 'stream_expr  Gram.t )  in
+  let  _ = (expr: 'expr  Gram.t ) and _ =
+  (parser_case_list: 'parser_case_list  Gram.t ) and _ =
+  (parser_case: 'parser_case  Gram.t ) and _ =
+  (stream_quot: 'stream_quot  Gram.t ) and _ =
+  (stream_end: 'stream_end  Gram.t ) and _ =
+  (stream_begin: 'stream_begin  Gram.t ) and _ =
+  (stream_expr: 'stream_expr  Gram.t )  in
   
   let  grammar_entry_create = Gram.mk in
   
   let  parser_ipatt =
-  ((grammar_entry_create "parser_ipatt" ) : 'parser_ipatt  Gram.t ) and
+  ((grammar_entry_create "parser_ipatt" ): 'parser_ipatt  Gram.t ) and
   stream_expr_comp =
-  ((grammar_entry_create "stream_expr_comp" ) : 'stream_expr_comp  Gram.t )
+  ((grammar_entry_create "stream_expr_comp" ): 'stream_expr_comp  Gram.t )
   and stream_expr_comp_list =
-  ((grammar_entry_create "stream_expr_comp_list" ) : 'stream_expr_comp_list 
+  ((grammar_entry_create "stream_expr_comp_list" ): 'stream_expr_comp_list 
     Gram.t ) and stream_patt_comp_err_list =
-  ((grammar_entry_create "stream_patt_comp_err_list" ) :
+  ((grammar_entry_create "stream_patt_comp_err_list" ):
     'stream_patt_comp_err_list  Gram.t ) and stream_patt_comp_err =
-  ((grammar_entry_create "stream_patt_comp_err" ) : 'stream_patt_comp_err 
+  ((grammar_entry_create "stream_patt_comp_err" ): 'stream_patt_comp_err 
     Gram.t ) and stream_patt_comp =
-  ((grammar_entry_create "stream_patt_comp" ) : 'stream_patt_comp  Gram.t )
+  ((grammar_entry_create "stream_patt_comp" ): 'stream_patt_comp  Gram.t )
   and stream_patt =
-  ((grammar_entry_create "stream_patt" ) : 'stream_patt  Gram.t )  in
+  ((grammar_entry_create "stream_patt" ): 'stream_patt  Gram.t )  in
   begin
-   (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Level ("top")) ) , (
          [(None  , None  , (
            [(( [`Skeyword ("match") ; `Snterm
-             ((Gram.obj ( (sequence : 'sequence  Gram.t ) ) )) ; `Skeyword
+             ((Gram.obj ( (sequence: 'sequence  Gram.t ) ) )) ; `Skeyword
              ("with") ; `Skeyword ("parser") ; `Sopt (`Snterm
-             ((Gram.obj ( (parser_ipatt : 'parser_ipatt  Gram.t ) ) ))) ;
+             ((Gram.obj ( (parser_ipatt: 'parser_ipatt  Gram.t ) ) ))) ;
              `Snterm
-             ((Gram.obj ( (parser_case_list : 'parser_case_list  Gram.t ) ) ))]
+             ((Gram.obj ( (parser_case_list: 'parser_case_list  Gram.t ) ) ))]
               ) , (
              (Gram.mk_action (
                fun ((pcl : 'parser_case_list )) ->
@@ -13034,23 +12946,23 @@ module MakeRevisedParserParser =
                        fun ((e : 'sequence )) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             ((cparser_match _loc e po pcl ) : 'expr ) ) ) )
-             ) ;
+                             ((cparser_match _loc e po pcl ): 'expr ) ) ) ) )
+           ;
            (( [`Skeyword ("parser") ; `Sopt (`Snterm
-            ((Gram.obj ( (parser_ipatt : 'parser_ipatt  Gram.t ) ) ))) ;
+            ((Gram.obj ( (parser_ipatt: 'parser_ipatt  Gram.t ) ) ))) ;
             `Snterm
-            ((Gram.obj ( (parser_case_list : 'parser_case_list  Gram.t ) ) ))]
+            ((Gram.obj ( (parser_case_list: 'parser_case_list  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((pcl : 'parser_case_list )) ->
                 fun ((po : 'parser_ipatt  option )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((cparser _loc po pcl ) : 'expr ) ) ) ) )]  ) )]  ) ))
+                      ((cparser _loc po pcl ): 'expr ) ) ) ) )]  ) )]  ) ))
       ()  ) ) )
   );
    (
-  (Gram.extend ( (parser_ipatt : 'parser_ipatt  Gram.t ) ) (
+  (Gram.extend ( (parser_ipatt: 'parser_ipatt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
@@ -13058,49 +12970,49 @@ module MakeRevisedParserParser =
              (Gram.mk_action (
                fun (_) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (Ast.PaAny (_loc) : 'parser_ipatt ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (a_LIDENT : 'a_LIDENT  Gram.t ) ) ))]  )
-            , (
+                   (Ast.PaAny (_loc): 'parser_ipatt ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (a_LIDENT: 'a_LIDENT  Gram.t ) ) ))]  ) ,
+            (
             (Gram.mk_action (
               fun ((i : 'a_LIDENT )) ->
                 fun ((_loc : FanLoc.t)) ->
-                  (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , i )) ) )) :
+                  (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , i )) ) )):
                     'parser_ipatt ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (parser_case_list : 'parser_case_list  Gram.t ) ) (
+  (Gram.extend ( (parser_case_list: 'parser_case_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (parser_case : 'parser_case  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (parser_case: 'parser_case  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((pc : 'parser_case )) ->
-                 fun ((_loc : FanLoc.t)) -> ([pc]  : 'parser_case_list ) ) )
-             ) ) ;
+                 fun ((_loc : FanLoc.t)) -> ([pc] : 'parser_case_list ) ) ) )
+             ) ;
            (( [`Skeyword ("[") ; `Slist0sep
-            ((`Snterm ((Gram.obj ( (parser_case : 'parser_case  Gram.t ) ) ))
+            ((`Snterm ((Gram.obj ( (parser_case: 'parser_case  Gram.t ) ) ))
               , `Skeyword ("|") )) ; `Skeyword ("]")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((pcl : 'parser_case  list )) ->
                   fun (_) ->
-                    fun ((_loc : FanLoc.t)) -> (pcl : 'parser_case_list ) ) )
+                    fun ((_loc : FanLoc.t)) -> (pcl: 'parser_case_list ) ) )
             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (parser_case : 'parser_case  Gram.t ) ) (
+  (Gram.extend ( (parser_case: 'parser_case  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (stream_begin : 'stream_begin  Gram.t ) ) )) ;
-             `Snterm ((Gram.obj ( (stream_patt : 'stream_patt  Gram.t ) ) ))
-             ; `Snterm ((Gram.obj ( (stream_end : 'stream_end  Gram.t ) ) ))
-             ; `Sopt (`Snterm
-             ((Gram.obj ( (parser_ipatt : 'parser_ipatt  Gram.t ) ) ))) ;
+             ((Gram.obj ( (stream_begin: 'stream_begin  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (stream_patt: 'stream_patt  Gram.t ) ) )) ;
+             `Snterm ((Gram.obj ( (stream_end: 'stream_end  Gram.t ) ) )) ;
+             `Sopt (`Snterm
+             ((Gram.obj ( (parser_ipatt: 'parser_ipatt  Gram.t ) ) ))) ;
              `Skeyword ("->") ; `Snterm
-             ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
                  fun (_) ->
@@ -13109,197 +13021,195 @@ module MakeRevisedParserParser =
                        fun ((sp : 'stream_patt )) ->
                          fun (_) ->
                            fun ((_loc : FanLoc.t)) ->
-                             ((sp , po , e ) : 'parser_case ) ) ) ) )]  ) )] 
+                             ((sp , po , e ): 'parser_case ) ) ) ) )]  ) )] 
          ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_begin : 'stream_begin  Gram.t ) ) (
+  (Gram.extend ( (stream_begin: 'stream_begin  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("[<")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'stream_begin ) )
-               ) ) )]  ) )]  ) )) ()  ) ) )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'stream_begin ) ) )
+             ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_end : 'stream_end  Gram.t ) ) (
+  (Gram.extend ( (stream_end: 'stream_end  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword (">]")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'stream_end ) ) )
-             ) )]  ) )]  ) )) ()  ) ) )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'stream_end ) ) ) )
+             )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_quot : 'stream_quot  Gram.t ) ) (
+  (Gram.extend ( (stream_quot: 'stream_quot  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Skeyword ("'")]  ) , (
              (Gram.mk_action (
-               fun (_) -> fun ((_loc : FanLoc.t)) -> (() : 'stream_quot ) ) )
+               fun (_) -> fun ((_loc : FanLoc.t)) -> ((): 'stream_quot ) ) )
              ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_expr : 'stream_expr  Gram.t ) ) (
+  (Gram.extend ( (stream_expr: 'stream_expr  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
-           [(( [`Snterm ((Gram.obj ( (expr : 'expr  Gram.t ) ) ))]  ) , (
+           [(( [`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'expr )) ->
-                 fun ((_loc : FanLoc.t)) -> (e : 'stream_expr ) ) ) ) )]  ) )]
+                 fun ((_loc : FanLoc.t)) -> (e: 'stream_expr ) ) ) ) )]  ) )]
           ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_patt : 'stream_patt  Gram.t ) ) (
+  (Gram.extend ( (stream_patt: 'stream_patt  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [([]  , (
-             (Gram.mk_action (
-               fun ((_loc : FanLoc.t)) -> ([] : 'stream_patt ) ) ) ) ) ;
+             (Gram.mk_action ( fun ((_loc : FanLoc.t)) -> ([]: 'stream_patt )
+               ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (stream_patt_comp : 'stream_patt_comp  Gram.t ) ) ))
+            ((Gram.obj ( (stream_patt_comp: 'stream_patt_comp  Gram.t ) ) ))
             ; `Skeyword (";") ; `Snterm
             ((Gram.obj (
-               (stream_patt_comp_err_list : 'stream_patt_comp_err_list 
-                 Gram.t ) ) ))]  ) , (
+               (stream_patt_comp_err_list: 'stream_patt_comp_err_list  Gram.t
+                 ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((sp : 'stream_patt_comp_err_list )) ->
                 fun (_) ->
                   fun ((spc : 'stream_patt_comp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      ((spc , None  ) :: sp  : 'stream_patt ) ) ) ) ) ;
+                      ((spc , None  ) :: sp : 'stream_patt ) ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (stream_patt_comp : 'stream_patt_comp  Gram.t ) ) ))]
+            ((Gram.obj ( (stream_patt_comp: 'stream_patt_comp  Gram.t ) ) ))]
              ) , (
             (Gram.mk_action (
               fun ((spc : 'stream_patt_comp )) ->
-                fun ((_loc : FanLoc.t)) ->
-                  ([(spc , None  )]  : 'stream_patt ) ) ) ) )]  ) )]  ) )) ()
-       ) ) )
+                fun ((_loc : FanLoc.t)) -> ([(spc , None  )] : 'stream_patt )
+              ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_patt_comp : 'stream_patt_comp  Gram.t ) ) (
+  (Gram.extend ( (stream_patt_comp: 'stream_patt_comp  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (stream_quot : 'stream_quot  Gram.t ) ) )) ;
-             `Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (stream_quot: 'stream_quot  Gram.t ) ) )) ; `Snterm
+             ((Gram.obj ( (patt: 'patt  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((p : 'patt )) ->
                  fun (_) ->
                    fun ((_loc : FanLoc.t)) ->
-                     (SpStr ((_loc , p )) : 'stream_patt_comp ) ) ) ) ) ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Skeyword
+                     (SpStr ((_loc , p )): 'stream_patt_comp ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Skeyword
             ("=") ; `Snterm
-            ((Gram.obj ( (stream_expr : 'stream_expr  Gram.t ) ) ))]  ) , (
+            ((Gram.obj ( (stream_expr: 'stream_expr  Gram.t ) ) ))]  ) , (
             (Gram.mk_action (
               fun ((e : 'stream_expr )) ->
                 fun (_) ->
                   fun ((p : 'patt )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (SpNtr ((_loc , p , e )) : 'stream_patt_comp ) ) ) ) )
-           ;
-           (( [`Snterm ((Gram.obj ( (patt : 'patt  Gram.t ) ) )) ; `Sopt
+                      (SpNtr ((_loc , p , e )): 'stream_patt_comp ) ) ) ) ) ;
+           (( [`Snterm ((Gram.obj ( (patt: 'patt  Gram.t ) ) )) ; `Sopt
             ((Gram.srules stream_patt_comp (
                [(( [`Skeyword ("when") ; `Snterm
-                 ((Gram.obj ( (stream_expr : 'stream_expr  Gram.t ) ) ))]  )
-                 , (
+                 ((Gram.obj ( (stream_expr: 'stream_expr  Gram.t ) ) ))]  ) ,
+                 (
                  (Gram.mk_action (
                    fun ((e : 'stream_expr )) ->
-                     fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'e__26 ) ) )
-                 ) )]  ) ))]  ) , (
+                     fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'e__26 ) ) ) )
+                 )]  ) ))]  ) , (
             (Gram.mk_action (
               fun ((eo : 'e__26  option )) ->
                 fun ((p : 'patt )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    (SpTrm ((_loc , p , eo )) : 'stream_patt_comp ) ) ) ) )] 
+                    (SpTrm ((_loc , p , eo )): 'stream_patt_comp ) ) ) ) )] 
            ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_patt_comp_err : 'stream_patt_comp_err  Gram.t ) ) (
+  (Gram.extend ( (stream_patt_comp_err: 'stream_patt_comp_err  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (stream_patt_comp : 'stream_patt_comp  Gram.t ) ) ))
+             ((Gram.obj ( (stream_patt_comp: 'stream_patt_comp  Gram.t ) ) ))
              ; `Sopt
              ((Gram.srules stream_patt_comp_err (
                 [(( [`Skeyword ("??") ; `Snterm
-                  ((Gram.obj ( (stream_expr : 'stream_expr  Gram.t ) ) ))]  )
+                  ((Gram.obj ( (stream_expr: 'stream_expr  Gram.t ) ) ))]  )
                   , (
                   (Gram.mk_action (
                     fun ((e : 'stream_expr )) ->
-                      fun (_) -> fun ((_loc : FanLoc.t)) -> (e : 'e__27 ) ) )
+                      fun (_) -> fun ((_loc : FanLoc.t)) -> (e: 'e__27 ) ) )
                   ) )]  ) ))]  ) , (
              (Gram.mk_action (
                fun ((eo : 'e__27  option )) ->
                  fun ((spc : 'stream_patt_comp )) ->
                    fun ((_loc : FanLoc.t)) ->
-                     ((spc , eo ) : 'stream_patt_comp_err ) ) ) ) )]  ) )]  )
+                     ((spc , eo ): 'stream_patt_comp_err ) ) ) ) )]  ) )]  )
          )) ()  ) ) )
   );
    (
   (Gram.extend (
-    (stream_patt_comp_err_list : 'stream_patt_comp_err_list  Gram.t ) ) (
+    (stream_patt_comp_err_list: 'stream_patt_comp_err_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
              ((Gram.obj (
-                (stream_patt_comp_err : 'stream_patt_comp_err  Gram.t ) ) ))
-             ; `Skeyword (";") ; `Sself]  ) , (
+                (stream_patt_comp_err: 'stream_patt_comp_err  Gram.t ) ) )) ;
+             `Skeyword (";") ; `Sself]  ) , (
              (Gram.mk_action (
                fun ((sp : 'stream_patt_comp_err_list )) ->
                  fun (_) ->
                    fun ((spc : 'stream_patt_comp_err )) ->
                      fun ((_loc : FanLoc.t)) ->
-                       (spc :: sp  : 'stream_patt_comp_err_list ) ) ) ) ) ;
+                       (spc :: sp : 'stream_patt_comp_err_list ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (stream_patt_comp_err : 'stream_patt_comp_err  Gram.t ) ) )) ;
+               (stream_patt_comp_err: 'stream_patt_comp_err  Gram.t ) ) )) ;
             `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((spc : 'stream_patt_comp_err )) ->
                   fun ((_loc : FanLoc.t)) ->
-                    ([spc]  : 'stream_patt_comp_err_list ) ) ) ) ) ;
+                    ([spc] : 'stream_patt_comp_err_list ) ) ) ) ) ;
            (( [`Snterm
             ((Gram.obj (
-               (stream_patt_comp_err : 'stream_patt_comp_err  Gram.t ) ) ))] 
+               (stream_patt_comp_err: 'stream_patt_comp_err  Gram.t ) ) ))] 
             ) , (
             (Gram.mk_action (
               fun ((spc : 'stream_patt_comp_err )) ->
                 fun ((_loc : FanLoc.t)) ->
-                  ([spc]  : 'stream_patt_comp_err_list ) ) ) ) )]  ) )]  ) ))
+                  ([spc] : 'stream_patt_comp_err_list ) ) ) ) )]  ) )]  ) ))
       ()  ) ) )
   );
    (
-  (Gram.extend ( (expr : 'expr  Gram.t ) ) (
+  (Gram.extend ( (expr: 'expr  Gram.t ) ) (
     ((fun (() ) ->
         (( Some (`Level ("simple")) ) , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (stream_begin : 'stream_begin  Gram.t ) ) )) ;
+             ((Gram.obj ( (stream_begin: 'stream_begin  Gram.t ) ) )) ;
              `Snterm
              ((Gram.obj (
-                (stream_expr_comp_list : 'stream_expr_comp_list  Gram.t ) ) ))
-             ; `Snterm ((Gram.obj ( (stream_end : 'stream_end  Gram.t ) ) ))]
-              ) , (
+                (stream_expr_comp_list: 'stream_expr_comp_list  Gram.t ) ) ))
+             ; `Snterm ((Gram.obj ( (stream_end: 'stream_end  Gram.t ) ) ))] 
+             ) , (
              (Gram.mk_action (
                fun (_) ->
                  fun ((sel : 'stream_expr_comp_list )) ->
                    fun (_) ->
-                     fun ((_loc : FanLoc.t)) ->
-                       ((cstream _loc sel ) : 'expr ) ) ) ) ) ;
+                     fun ((_loc : FanLoc.t)) -> ((cstream _loc sel ): 'expr )
+               ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (stream_begin : 'stream_begin  Gram.t ) ) )) ;
-            `Snterm ((Gram.obj ( (stream_end : 'stream_end  Gram.t ) ) ))]  )
+            ((Gram.obj ( (stream_begin: 'stream_begin  Gram.t ) ) )) ;
+            `Snterm ((Gram.obj ( (stream_end: 'stream_end  Gram.t ) ) ))]  )
             , (
             (Gram.mk_action (
               fun (_) ->
@@ -13309,60 +13219,59 @@ module MakeRevisedParserParser =
                        ((_loc , (
                          Ast.IdAcc
                            ((_loc , ( Ast.IdUid ((_loc , "Stream" )) ) , (
-                             Ast.IdLid ((_loc , "sempty" )) ) )) ) )) : 'expr
+                             Ast.IdLid ((_loc , "sempty" )) ) )) ) )): 'expr
                       ) ) ) ) )]  ) )]  ) )) ()  ) ) )
   );
    (
-  (Gram.extend ( (stream_expr_comp_list : 'stream_expr_comp_list  Gram.t ) )
-    (
+  (Gram.extend ( (stream_expr_comp_list: 'stream_expr_comp_list  Gram.t ) ) (
     ((fun (() ) ->
         (None  , (
          [(None  , None  , (
            [(( [`Snterm
-             ((Gram.obj ( (stream_expr_comp : 'stream_expr_comp  Gram.t ) ) ))]
+             ((Gram.obj ( (stream_expr_comp: 'stream_expr_comp  Gram.t ) ) ))]
               ) , (
              (Gram.mk_action (
                fun ((se : 'stream_expr_comp )) ->
-                 fun ((_loc : FanLoc.t)) -> ([se]  : 'stream_expr_comp_list )
+                 fun ((_loc : FanLoc.t)) -> ([se] : 'stream_expr_comp_list )
                ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (stream_expr_comp : 'stream_expr_comp  Gram.t ) ) ))
+            ((Gram.obj ( (stream_expr_comp: 'stream_expr_comp  Gram.t ) ) ))
             ; `Skeyword (";")]  ) , (
             (Gram.mk_action (
               fun (_) ->
                 fun ((se : 'stream_expr_comp )) ->
-                  fun ((_loc : FanLoc.t)) ->
-                    ([se]  : 'stream_expr_comp_list ) ) ) ) ) ;
+                  fun ((_loc : FanLoc.t)) -> ([se] : 'stream_expr_comp_list )
+              ) ) ) ) ;
            (( [`Snterm
-            ((Gram.obj ( (stream_expr_comp : 'stream_expr_comp  Gram.t ) ) ))
+            ((Gram.obj ( (stream_expr_comp: 'stream_expr_comp  Gram.t ) ) ))
             ; `Skeyword (";") ; `Sself]  ) , (
             (Gram.mk_action (
               fun ((sel : 'stream_expr_comp_list )) ->
                 fun (_) ->
                   fun ((se : 'stream_expr_comp )) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (se :: sel  : 'stream_expr_comp_list ) ) ) ) )]  ) )] 
-         ) )) ()  ) ) )
+                      (se :: sel : 'stream_expr_comp_list ) ) ) ) )]  ) )]  )
+         )) ()  ) ) )
   );
-   (Gram.extend ( (stream_expr_comp : 'stream_expr_comp  Gram.t ) ) (
+   (Gram.extend ( (stream_expr_comp: 'stream_expr_comp  Gram.t ) ) (
      ((fun (() ) ->
          (None  , (
           [(None  , None  , (
             [(( [`Snterm
-              ((Gram.obj ( (stream_quot : 'stream_quot  Gram.t ) ) )) ;
-              `Snterm
-              ((Gram.obj ( (stream_expr : 'stream_expr  Gram.t ) ) ))]  ) , (
+              ((Gram.obj ( (stream_quot: 'stream_quot  Gram.t ) ) )) ;
+              `Snterm ((Gram.obj ( (stream_expr: 'stream_expr  Gram.t ) ) ))]
+               ) , (
               (Gram.mk_action (
                 fun ((e : 'stream_expr )) ->
                   fun (_) ->
                     fun ((_loc : FanLoc.t)) ->
-                      (SeNtr ((_loc , e )) : 'stream_expr_comp ) ) ) ) ) ;
+                      (SeNtr ((_loc , e )): 'stream_expr_comp ) ) ) ) ) ;
             (( [`Snterm
-             ((Gram.obj ( (stream_expr : 'stream_expr  Gram.t ) ) ))]  ) , (
+             ((Gram.obj ( (stream_expr: 'stream_expr  Gram.t ) ) ))]  ) , (
              (Gram.mk_action (
                fun ((e : 'stream_expr )) ->
                  fun ((_loc : FanLoc.t)) ->
-                   (SeTrm ((_loc , e )) : 'stream_expr_comp ) ) ) ) )]  ) )] 
+                   (SeTrm ((_loc , e )): 'stream_expr_comp ) ) ) ) )]  ) )] 
           ) )) ()  ) ) )
   end
   

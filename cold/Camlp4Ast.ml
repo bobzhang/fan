@@ -3,8 +3,7 @@ module Ast =
   include Ast
  let  safe_string_escaped (s) =
    if (( (( (String.length s ) ) > 2) ) && (
-        (( (( (String.get s 0 ) ) = '\\') ) && (
-          (( (String.get s 1 ) ) = '$') )) )) then
+        (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then
     s
    else (String.escaped s )
  

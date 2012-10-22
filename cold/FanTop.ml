@@ -7,35 +7,36 @@ let  wrap (parse_fun) (lb) =
   let  not_filtered_token_stream = (FanLexer.from_lexbuf lb ) in
   
   let  token_stream = (Gram.filter not_filtered_token_stream ) in
+  
   (try
-    
-   let  (__strm : _ Stream.t ) = token_stream in
-   
-   (match (Stream.peek __strm )
-   with
-   | Some(`EOI , _ ) -> ( (Stream.junk __strm ) ); (raise End_of_file  )
-   | _ -> (parse_fun token_stream ))
-   with
-   |
-     (((End_of_file  |Sys.Break )
-        |FanLoc.Exc_located(_ , (End_of_file  |Sys.Break ) )) as x) ->
-     (raise x )
-   | FanLoc.Exc_located(loc , y ) ->
-     (
-     (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
-       (Printexc.to_string y ) ) )
-     );
-     (raise Exit  )
-   | x ->
-     (
-     (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x ) ) )
-     );
-     (raise Exit  ))
+  
+  let  (__strm : _ Stream.t ) = token_stream in
+  
+  (match (Stream.peek __strm )
+  with
+  | Some(`EOI , _ ) -> ( (Stream.junk __strm ) ); (raise End_of_file  )
+  | _ -> (parse_fun token_stream ))
+  with
+  |
+    (((End_of_file  |Sys.Break )
+       |FanLoc.Exc_located(_ , (End_of_file  |Sys.Break ) )) as x) ->
+    (raise x )
+  | FanLoc.Exc_located(loc , y ) ->
+    (
+    (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
+      (Printexc.to_string y ) ) )
+    );
+    (raise Exit  )
+  | x ->
+    (
+    (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x ) ) )
+    );
+    (raise Exit  ))
 let  toplevel_phrase (token_stream) =
   
   (match
   (Gram.parse_origin_tokens (
-    (Syntax.top_phrase : Ast.str_item option  Gram.t ) ) token_stream )
+    (Syntax.top_phrase: Ast.str_item option  Gram.t ) ) token_stream )
   with
   | Some(str_item) ->
     
@@ -90,23 +91,8 @@ let _ = (
         ) ) ))
 );
 (iter_and_take_callbacks ( fun ((_ , f )) -> (f ()  ) ) )
-let _ = let open
-        FanParsers in
-        (
-        (pa_r (module P) )
-        );
-        (
-        (pa_rp (module P) )
-        );
-        (
-        (pa_q (module P) )
-        );
-        (
-        (pa_g (module P) )
-        );
-        (
-        (pa_l (module P) )
-        );
-        (pa_m (module P) )
+let _ = let open FanParsers in( (pa_r (module P) ) ); ( (pa_rp (module P) )
+          ); ( (pa_q (module P) ) ); ( (pa_g (module P) ) ); (
+          (pa_l (module P) ) ); (pa_m (module P) )
 let  normal (() ) = (Toploop.parse_toplevel_phrase := Parse.toplevel_phrase)
 let  revise (() ) = (Toploop.parse_toplevel_phrase := revise_parser)
