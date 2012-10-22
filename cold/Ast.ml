@@ -9,11 +9,11 @@ and override_flag =
     OvOverride | OvNil | OvAnt of string  
 and row_var_flag =
     RvRowVar | RvNil | RvAnt of string  
-and 'a  meta_option =
-    ONone | OSome of 'a  | OAnt of string  
-and 'a  meta_list =
+and 'a   meta_option =
+    ONone | OSome of 'a   | OAnt of string  
+and 'a   meta_list =
     LNil
-  | LCons of 'a * 'a meta_list  
+  | LCons of 'a  * 'a  meta_list  
   | LAnt of string  
 and ident =
     IdAcc of loc * ident * ident 

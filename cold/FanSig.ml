@@ -1,5 +1,5 @@
-type ('a , 'loc ) stream_filter =
- (('a * 'loc ) Stream.t  -> ('a * 'loc ) Stream.t )  
+type ('a  , 'loc  ) stream_filter =
+ (('a  * 'loc  ) Stream.t  -> ('a  * 'loc  ) Stream.t )  
 type quotation = {
                    q_name:string
                    ;

@@ -624,9 +624,10 @@ and simple_expr ppf x =
       fprintf ppf "(@ ";
       expression ppf x;
       fprintf ppf "@ )"
+        
 and pp_print_label_exp ppf (l,opt,p) =
   if l = "" then
-    fprintf ppf "%a@ " pattern p
+    fprintf ppf "(%a)@ " pattern p (*single case pattern parens needed here *)
   else
     if l.[0] = '?' then 
       let len = String.length l - 1 in 
@@ -648,7 +649,10 @@ and pp_print_label_exp ppf (l,opt,p) =
         
 and pp_print_pexp_function ppf e = match e.pexp_desc with 
   | Pexp_function (label,eo,[(p,e)]) ->
-      fprintf ppf "%a@ %a" pp_print_label_exp (label,eo,p) pp_print_pexp_function e
+      if label="" then  (*normal case single branch *)
+        fprintf ppf "(%a)@ %a" pattern p pp_print_pexp_function e
+      else
+        fprintf ppf "%a@ %a" pp_print_label_exp (label,eo,p) pp_print_pexp_function e
   | _ -> fprintf ppf "=@ %a" expression e
 
 and expression ppf x =
@@ -680,8 +684,7 @@ and expression ppf x =
             -> (modname, valname)
           | Pexp_ident ({ txt = Longident.Lident(valname) ;_})
             -> ("",valname)
-          | _ -> ("",""))
-      in
+          | _ -> ("","")) in
       (match sd,l with
         | ("Array", "get"), [(_,exp1) ; (_,exp2)] ->
             pp_open_hovbox ppf indent;
@@ -710,10 +713,6 @@ and expression ppf x =
         | ("","!"),[(_,exp1)] ->
             fprintf ppf "!" ;
             simple_expr ppf exp1 ;
-(* | ("","raise"),[(_,exp)] ->
-               fprintf ppf "raising [" ;
-               expression ppf exp;
-               fprintf ppf "], says %s" st; *)
         | (_,_) ->
             pp_open_hovbox ppf (indent + 1) ;
             fprintf ppf "(" ;
@@ -742,10 +741,7 @@ and expression ppf x =
                     pp_print_space ppf () ;
                     label_x_expression_param ppf arg2
                 | _ ->
-(* fprintf ppf "(" ; *)
                     simple_expr ppf e ;
-(* fprintf ppf ")" ; *)
-                    (* list2 label_x_expression_param ppf l ~breakfirst:true "" *)
                     pp_print_list label_x_expression_param ppf l ~breakfirst:true;
               end ;
             fprintf ppf ")" ;

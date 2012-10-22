@@ -14,8 +14,15 @@
 
 (* Printing code expressions *)
 (* Authors:  Ed Pizzi, Fabrice Le Fessant *)
-(* Refactoring: Hongbo Zhang: University of Pennsylvania*)
+(* Rewrite: Hongbo Zhang: University of Pennsylvania*)
 
+(*
+  label:
+        | Ptyp_arrow of label * core_type * core_type
+        | Pcty_fun of label * core_type * class_type
+        | Pcl_fun of label * expression option * pattern * class_expr
+        | Pexp_function of label * expression option * (pattern * expression) list
+ *)
 open Asttypes
 open Format
 open Location
@@ -234,23 +241,17 @@ let fmt_virtual_flag f x =
 ;;
 
 
-let type_var_print ppf str =
-  fprintf ppf "'%s" str ;;
-
+let pp_print_tyvar ppf str =
+  fprintf ppf "'%s@ " str ;;
 let type_var_option_print ppf str =
   match str with
       None -> () (* TODO check *)
-    | Some str ->
-      fprintf ppf "'%s" str.txt ;;
+    | Some str -> pp_print_tyvar ppf str.txt ;;
 
-let fmt_class_params ppf l = match l with
-| [] -> ()
-| [x] -> fprintf ppf "%s@ " x
-| _ ->  pp_print_list pp_print_string ppf l ~sep:"," ~first:"(" ~last:")"
 
 let fmt_class_params_def ppf  l = match l with
 | [] -> ()
-| _ -> pp_print_list (fun ppf {txt;_} -> type_var_print ppf txt)
+| _ -> pp_print_list (fun ppf {txt;_} -> pp_print_tyvar ppf txt)
       ppf l ~sep:"," ~first:"[" ~last:"]"
 
 let fmt_rec_flag f x =
@@ -306,6 +307,10 @@ let is_predef_option = function
 (* FIXME what kind of error check should we do ?,
    Location for error message
  *)
+let pp_print_string_quot ppf x =
+  fprintf ppf "`%s" x 
+(*********************************************************************************)
+(***************core_type*********************************************************)
 let rec print_type_with_label ppf (label,({ptyp_desc;_}as c) ) = match label with
 | "" ->  core_type ppf c
 | s  ->
@@ -322,7 +327,7 @@ let rec print_type_with_label ppf (label,({ptyp_desc;_}as c) ) = match label wit
 and core_type ppf ({ptyp_desc;_}:Parsetree.core_type) =
   match ptyp_desc with
   | Ptyp_any -> fprintf ppf "_";       
-  | Ptyp_var s -> type_var_print ppf  s; 
+  | Ptyp_var s -> pp_print_tyvar ppf  s; 
   | Ptyp_arrow (l, ct1, ct2) ->
       fprintf ppf "@[<hov2>(%a@ ->@ %a)@ @]" (* FIXME remove parens later *)
         print_type_with_label (l,ct1) core_type ct2
@@ -331,26 +336,37 @@ and core_type ppf ({ptyp_desc;_}:Parsetree.core_type) =
   | Ptyp_constr (li, l) -> (match l with
     | [] -> fmt_longident ppf li
     | _ ->  fprintf ppf "%a@ %a@ " type_constr_list l fmt_longident li)
-  | Ptyp_variant (l, closed, _low) ->
+  | Ptyp_variant (l, closed, low) ->
       fprintf ppf "@[<hov2>%a@]" begin fun ppf l -> 
-        (match closed with
-        | true  -> fprintf ppf "[@ " ;
-        | false -> fprintf ppf "[>@ " ;);
+        (match (closed,low) with
+        | (true,None)  -> fprintf ppf "[@ " 
+        | (true,Some _) -> fprintf ppf "[<@ "
+        | (false,_) -> fprintf ppf "[>@ " );
         pp_print_list type_variant_helper ppf l ~sep:"|";
+        (match low with
+        |Some [] |None -> ()  
+        |Some xs -> fprintf ppf ">@ %a" (pp_print_list pp_print_string_quot) xs);
         fprintf ppf "@ ]";
       end l 
-
   | Ptyp_object l ->
-      fprintf ppf "@[<hov2><@ %a@ >@]" (pp_print_list core_field_type ~sep:";") l 
+      fprintf ppf "@[<hov2><@ %a@ >@]" (pp_print_list core_field_type ~sep:";") l
+        
   | Ptyp_class (li, l, low) ->   (*FIXME*)
       pp_open_hovbox ppf indent ;
-      pp_print_list core_type ppf l ~breaklast:true ;
-      fprintf ppf "#%a" fmt_longident li;
-      if ((List.length low) < 0) then begin (* done, untested *)
-        fprintf ppf "@ [> " ;
-        pp_print_list class_var ppf low;
-        fprintf ppf " ]";
-      end ;
+      (match l with
+      | [] -> ()
+      | [x] -> core_type ppf x (* pp_print_tyvar  ppf  x *)
+      | _ ->   pp_print_list core_type ppf l ~sep:"," ~first:"(" ~last:")");
+      fprintf ppf "#%a@ " fmt_longident li;
+      (match low with
+      |[] -> ()
+      | _ ->
+          fprintf ppf "[> %a]@ " (pp_print_list class_var ) low );
+      (* if ((List.length low) < 0) then begin (\* done, untested *\) *)
+      (*   fprintf ppf "@ [> " ; *)
+      (*   pp_print_list class_var ppf low; *)
+      (*   fprintf ppf " ]"; *)
+      (* end ; *)
       pp_close_box ppf ();
   | Ptyp_alias (ct, s) ->                (* done *)
       fprintf ppf "@[<hov2>(%a @ as@ '%s)@]" core_type ct s
@@ -359,7 +375,7 @@ and core_type ppf ({ptyp_desc;_}:Parsetree.core_type) =
         (match sl with 
         |[] -> ()
         | _ ->
-            pp_print_list type_var_print ~breaklast:true  ~last:"." ppf sl);
+            pp_print_list pp_print_tyvar ~breaklast:true  ~last:"." ppf sl);
         core_type ppf ct ;
       end (sl,ct)
 
@@ -388,11 +404,13 @@ and type_constr_list ppf  = function
       core_type ppf x
   | xs ->
       fprintf ppf "(%a)@ " (pp_print_list core_type ~sep:",") xs
-and pattern_with_label ppf x s =
-  if (s = "") then simple_pattern ppf x
-  else begin
+(*********************************************************************************)
+(****************************pattern**********************************************)        
+and pattern_with_label ppf x s = match s with
+|"" -> simple_pattern ppf x
+|_ -> begin
       let s =
-        if (String.get s 0 = '?') then begin
+        if s.[0]= '?' then begin
             fprintf ppf "?" ;
             String.sub s 1 ((String.length s) - 1)
           end else begin
@@ -401,7 +419,7 @@ and pattern_with_label ppf x s =
           end in
       fprintf ppf "%s" s ;
       match x.ppat_desc with
-      | Ppat_var (s2) ->
+      | Ppat_var s2 ->
           if (s <> s2.txt) then begin
               fprintf ppf ":" ;
               simple_pattern ppf x ;
@@ -422,7 +440,7 @@ and pattern_with_when ppf whenclause x =
 
 and pattern ppf x =
   match x.ppat_desc with
-    | Ppat_construct (li, po, _b) ->
+    | Ppat_construct (li, po, _b) -> (* FIXME b*)
       pp_open_hovbox ppf indent ;
       (match li.txt,po with
         | Longident.Lident("::"),
@@ -436,9 +454,6 @@ and pattern ppf x =
             fprintf ppf "%a" fmt_longident li;
             option_quiet pattern_in_parens ppf po;);
       pp_close_box ppf () ;
-(* OXX what is this boolean ??
-         bool i ppf b;               *)
-
   | _ ->
       simple_pattern ppf x
 
@@ -609,46 +624,59 @@ and simple_expr ppf x =
       fprintf ppf "(@ ";
       expression ppf x;
       fprintf ppf "@ )"
+        
+and pp_print_label_exp ppf (l,opt,p) =
+  if l = "" then
+    fprintf ppf "(%a)@ " pattern p (*single case pattern parens needed here *)
+  else
+    if l.[0] = '?' then 
+      let len = String.length l - 1 in 
+      let rest = String.sub l 1 len in begin
+        match p.ppat_desc with
+        | Ppat_var {txt;_} when txt = rest ->
+              (match opt with
+              |Some o -> fprintf ppf "?(%s=%a)@ " rest  expression o
+              | None -> fprintf ppf "?%s@ " rest)
+        | _ -> (match opt with
+          | Some o -> fprintf ppf "%s:(%a=%a)@ " l pattern p expression o
+          | None -> fprintf ppf "%s:(%a)@ " l pattern p  )
+      end
+    else
+      (match p.ppat_desc with
+      | Ppat_var {txt;_} when txt = l ->
+          fprintf ppf "~%s@ " l 
+      | _ ->  fprintf ppf "~%s:(%a)@ " l pattern p )
+        
+and pp_print_pexp_function ppf e = match e.pexp_desc with 
+  | Pexp_function (label,eo,[(p,e)]) ->
+      if label="" then  (*normal case single branch *)
+        fprintf ppf "(%a)@ %a" pattern p pp_print_pexp_function e
+      else
+        fprintf ppf "%a@ %a" pp_print_label_exp (label,eo,p) pp_print_pexp_function e
+  | _ -> fprintf ppf "=@ %a" expression e
 
 and expression ppf x =
   match x.pexp_desc with
   | Pexp_let (rf, l, e) ->
-      let l1 = (List.hd l) in
-      let l2 = (List.tl l) in
-      pp_open_hvbox ppf 0 ;
-      pp_open_hvbox ppf indent ;
-      fprintf ppf "let%a " fmt_rec_flag rf;
-      pattern_x_expression_def ppf l1;
-      pattern_x_expression_def_list ppf l2;
-      pp_close_box ppf () ;
-      fprintf ppf " in" ;
-      pp_print_space ppf () ;
-      expression_sequence ppf ~first:false ~indent:0 e ;
-      pp_close_box ppf () ;
-  | Pexp_function (label, None, [
-        { ppat_desc = Ppat_var { txt ="*opt*" ;_};_ },
-        { pexp_desc = Pexp_let (_, [
-              arg ,
-              { pexp_desc = Pexp_match (_, [ _; _, eo ] ) ;_} ], e) ;_}
-      ]
-    ) ->
-      expression ppf { x with pexp_desc = Pexp_function(label, Some eo,
-          [arg, e]) }
-
+      fprintf ppf "@[<hov>let@ %a@ %a@ in@ %a@]"
+        fmt_rec_flag rf
+        pattern_x_expression_def_list l
+        expression e 
   | Pexp_function (p, eo, l) ->
-      if (List.length l = 1) then begin
-          pp_open_hvbox ppf indent;
-          fprintf ppf "fun " ;
-          pattern_x_expression_case_single ppf (List.hd l) eo p
-        end else begin
+     ( match l with
+      | [(p',e')] ->
+          fprintf ppf "@[<hov2>fun@ %a->@ %a@]"
+            pp_print_label_exp (p,eo,p') expression e'
+      | _ -> begin
           pp_open_hvbox ppf 0;
           fprintf ppf "function" ;
           option_quiet expression_in_parens ppf eo ;
           pp_print_space ppf () ;
           pattern_x_expression_case_list ppf l ;
-        end ;
-      pp_close_box ppf ();
-  | Pexp_apply (e, l) -> (* was (e, l, _) *)
+          pp_close_box ppf ();
+        end) ;
+
+  | Pexp_apply (e, l) -> 
       let fixity = (is_infix (fixity_of_exp e)) in
       let sd =
         (match e.pexp_desc with
@@ -656,8 +684,7 @@ and expression ppf x =
             -> (modname, valname)
           | Pexp_ident ({ txt = Longident.Lident(valname) ;_})
             -> ("",valname)
-          | _ -> ("",""))
-      in
+          | _ -> ("","")) in
       (match sd,l with
         | ("Array", "get"), [(_,exp1) ; (_,exp2)] ->
             pp_open_hovbox ppf indent;
@@ -686,10 +713,6 @@ and expression ppf x =
         | ("","!"),[(_,exp1)] ->
             fprintf ppf "!" ;
             simple_expr ppf exp1 ;
-(* | ("","raise"),[(_,exp)] ->
-               fprintf ppf "raising [" ;
-               expression ppf exp;
-               fprintf ppf "], says %s" st; *)
         | (_,_) ->
             pp_open_hovbox ppf (indent + 1) ;
             fprintf ppf "(" ;
@@ -718,10 +741,7 @@ and expression ppf x =
                     pp_print_space ppf () ;
                     label_x_expression_param ppf arg2
                 | _ ->
-(* fprintf ppf "(" ; *)
                     simple_expr ppf e ;
-(* fprintf ppf ")" ; *)
-                    (* list2 label_x_expression_param ppf l ~breakfirst:true "" *)
                     pp_print_list label_x_expression_param ppf l ~breakfirst:true;
               end ;
             fprintf ppf ")" ;
@@ -943,7 +963,6 @@ and value_description ppf x =
   core_type ppf x.pval_type;
   if ((List.length x.pval_prim) > 0) then begin
     fprintf ppf " =@ " ;
-    (* list2 constant_string ppf x.pval_prim ""; *)
     pp_print_list constant_string ppf x.pval_prim ;
   end ;
   pp_close_box ppf () ;
@@ -986,7 +1005,6 @@ and type_declaration ppf x = begin
         fprintf ppf "{" ;
         pp_print_break ppf 0 indent ;
         pp_open_hvbox ppf 0;
-        (* list2 type_record_field ppf l ";" ; *)
         pp_print_list type_record_field ppf l ~sep:";";
         pp_close_box ppf () ;
         fprintf ppf "@," ;
@@ -994,7 +1012,6 @@ and type_declaration ppf x = begin
         fprintf ppf "}" ;
         pp_close_box ppf ()
     end );
-  (* list2 typedef_constraint ppf x.ptype_cstrs ~breakfirst:true "" ; *)
   pp_print_list typedef_constraint ppf x.ptype_cstrs ~breakfirst:true ;
   pp_close_box ppf () 
 end
@@ -1015,36 +1032,13 @@ and class_type ppf x =
       (match l with
         | [] -> ()
         | _  -> fprintf ppf "[" ;
-            (* list2 core_type ppf l "," ; *)
             pp_print_list core_type ppf l ~sep:",";
             fprintf ppf "]@ " );
       fprintf ppf "%a" fmt_longident li ;
       pp_close_box ppf () ;
   | Pcty_fun (l, co, cl) ->
-      pp_open_hovbox ppf indent ;
-
-      (match l with
-      | "" ->
-          core_type ppf co
-      | s when (String.get s 0 = '?') ->
-          (match co.ptyp_desc with
-          | Ptyp_constr
-              ({txt=
-                Longident.Ldot
-                  (Longident.Lident "*predef*", "option");_},l)
-            -> begin
-              fprintf ppf "%s :@ " s ;
-              type_constr_list ppf l
-            end
-          | _ -> core_type ppf co )
-      | s -> begin
-          fprintf ppf "%s :@ "s;
-          core_type ppf co ;
-      end );
-      fprintf ppf " ->@ ";
-      class_type ppf cl ;
-      pp_close_box ppf () ;
-
+        fprintf ppf "@[<hov2>(%a@ ->@ %a)@ @]" (* FIXME remove parens later *)
+        print_type_with_label (l,co) class_type cl;
 and class_signature ppf { pcsig_self = ct; pcsig_fields = l ;_} =
   pp_open_hvbox ppf 0;
   pp_open_hovbox ppf indent ;
@@ -1055,7 +1049,6 @@ and class_signature ppf { pcsig_self = ct; pcsig_fields = l ;_} =
         core_type ppf ct;
         fprintf ppf ")" );
   pp_close_box ppf () ;
-  (* list2 class_type_field ppf l ~indent:indent ~breakfirst:true ""; *)
   pp_print_list class_type_field ppf l ~indent ~breakfirst:true ;
   pp_print_break ppf 1 0;
   fprintf ppf "end";
@@ -1150,33 +1143,51 @@ and class_expr ppf x =
       pattern ppf p;
       fprintf ppf " ->";
       pp_close_box ppf ();
-      (match (eo, l) with
-        | (None, "") -> () ;
-        | (_,_) ->
-            pp_open_hovbox ppf indent;
-            (* fprintf ppf " (\* eo: "; *)
-            (* option expression ppf eo; *)
-            (* fprintf ppf "@ label: "; *)
-            (* label 0 ppf l; *)
-            (* fprintf ppf " *\)"; *)
-            pp_close_box ppf ()
-      );
+
+      (* if l <> "" then *)
+      (*   if l.[0] = '?' then *)
+      (*     fprintf "%s:" l *)
+      (*   else *)
+      (*     fprintf "~%s:" l  *)
+      (* else *)
+      (* match l with *)
+      (* |"" -> () *)
+            
+      (* (match (eo, l) with *)
+      (*   | (None, "") -> () ; *)
+      (*   | (_,_) -> *)
+      (*       if l. *)
+      (*       pp_open_hovbox ppf indent; *)
+      (*       fprintf ppf " (\* eo: "; *)
+      (*       option expression ppf eo; *)
+      (*       fprintf ppf "@ label: "; *)
+      (*       label 0 ppf l; *)
+      (*       fprintf ppf " *\)"; *)
+      (*       pp_close_box ppf () *)
+      (* ); *)
+      
       fprintf ppf "@ ";
       class_expr ppf e;
       pp_close_box ppf ();
   | Pcl_let (rf, l, ce) ->
-      let l1 = (List.hd l) in
-      let l2 = (List.tl l) in
-      pp_open_hvbox ppf 0 ;
-      pp_open_hvbox ppf indent ;
-      fprintf ppf "let%a " fmt_rec_flag rf;
-      pattern_x_expression_def ppf l1;
-      pattern_x_expression_def_list ppf l2;
-      pp_close_box ppf () ;
-      pp_close_box ppf () ;
-      fprintf ppf " in" ;
-      pp_print_space ppf () ;
-      class_expr ppf ce;
+      (* let l1 = (List.hd l) in *)
+      (* let l2 = (List.tl l) in *)
+      (* pp_open_hvbox ppf 0 ; *)
+      (* pp_open_hvbox ppf indent ; *)
+      (* fprintf ppf "let%a " fmt_rec_flag rf; *)
+      (* pattern_x_expression_def ppf l1; *)
+      (* pattern_x_expression_def_list ppf l2; *)
+      (* pattern_x_expression_def_list ppf l; *)
+      (* pp_close_box ppf () ; *)
+      (* pp_close_box ppf () ; *)
+      (* fprintf ppf " in" ; *)
+      (* pp_print_space ppf () ; *)
+      (* class_expr ppf ce; *)
+
+      fprintf ppf "@[<hov>let@ %a@ %a@ in@ %a@]"
+        fmt_rec_flag rf
+        pattern_x_expression_def_list  l
+        class_expr ce
   | Pcl_apply (ce, l) ->
       pp_open_hovbox ppf indent ;
       fprintf ppf "(";
@@ -1275,20 +1286,6 @@ and class_field ppf x =
       fprintf ppf " =@ " ;
       core_type ppf ct2;
       pp_close_box ppf ();
-(*  | Pcf_let (rf, l) ->
-(* at the time that this was written, Pcf_let was commented out
-         of the parser, rendering this untestable. In the interest of
-         completeness, the following code is designed to print what
-         the parser seems to expect *)
-(* todo: test this, eventually *)
-      let l1 = (List.hd l) in
-      let l2 = (List.tl l) in
-      pp_open_hvbox ppf indent ;
-      fprintf ppf "let%a " fmt_rec_flag rf;
-      pattern_x_expression_def ppf l1;
-      pattern_x_expression_def_list ppf l2;
-      fprintf ppf " in" ;
-      pp_close_box ppf () ; *)
   | Pcf_init (e) ->
       pp_open_hovbox ppf indent ;
       fprintf ppf "initializer@ " ;
@@ -1298,29 +1295,12 @@ and class_field ppf x =
 and class_fun_helper ppf e =
   match e.pcl_desc with
   | Pcl_fun (l, eo, p, e) ->
-      (* pattern ppf p; *)
-      (* fprintf ppf "@ "; *)
       (match (eo, l) with
         | (None, "") -> fprintf ppf "%a@ " pattern p
         | (Some x,_) ->
             fprintf ppf "%s:(%a=%a)@ " l pattern p expression x
-            (* let len =String.length l in *)
-            (* if len = 0 then failwith "class_fun_helper" *)
-            (* else  *)
-            (*   let label = String.sub l 1 (len-1) in  *)
-            (*   fprintf ppf "?(%s=%a)@ " label   expression x *)
-            (* fprintf ppf "(\* "; *)
-            (* option expression ppf eo; *)
-            (* label 0 ppf l; *)
-            (* fprintf ppf " *\)@ " *)
         | (None,_) ->
             fprintf ppf "%s:(%a)@ " l pattern p
-            (* let len = String.length l in *)
-            (* if len = 0 then failwith "class_fun_helper" *)
-            (* else *)
-            (*   let label = String.sub l 1 (len - 1) in  *)
-            (*   fprintf ppf "?%s@ "  label   *)
-
       );
       class_fun_helper ppf e;
   | _ ->
@@ -1520,42 +1500,12 @@ and structure ppf x = pp_print_list ~sep_action:pp_print_newline structure_item 
 
 (* closes one box *)
 and text_x_modtype_x_module ppf (s, mt, me) =
-(*
-  (match me.pmod_desc with
-   | Pmod_constraint (me, ({pmty_desc=(Pmty_ident (_)
-        | Pmty_signature (_))} as mt)) ->
-       (* assert false ; *) (* 3.07 - should this ever happen here? *)
-       fprintf ppf "%s :@ " s ;
-       module_type ppf mt ;
-       fprintf ppf " =" ;
-       pp_close_box ppf () ;
-       pp_print_space ppf () ;
-       module_expr ppf me ;
-   | _ ->
-*)
   fprintf ppf "%s :@ " s.txt;
   module_type ppf mt ;
   fprintf ppf " =" ;
   pp_close_box ppf () ;
   pp_print_space ppf () ;
   module_expr ppf me ;
-(*  ) ; *)
-
-(*
-(* net gain of one box (-1, +2) *)
-and string_x_modtype_x_module_list ppf l =
-  match l with
-  | [] -> ()
-  | hd :: tl ->
-      pp_close_box ppf () ;
-      pp_print_space ppf () ;
-      pp_open_hvbox ppf indent ;
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "and " ;
-      string_x_modtype_x_module ppf hd; (* closes a box *)
-      string_x_modtype_x_module_list ppf tl ; (* net open of one box *)
-*)
-
 (* net gain of one box (-1, +2) *)
 and text_x_modtype_x_module_list ppf l =
   match l with
@@ -1568,7 +1518,6 @@ and text_x_modtype_x_module_list ppf l =
       fprintf ppf "and " ;
       text_x_modtype_x_module ppf hd; (* closes a box *)
       text_x_modtype_x_module_list ppf tl ; (* net open of one box *)
-
 (* context: [hv [hov .]]  returns [hv .]
    closes inner hov box. *)
 and string_x_module_type_list ppf ?(first=true) l =
@@ -1606,15 +1555,20 @@ and structure_item ppf x =
         type_def_list_helper ppf rest;
         pp_close_box ppf ();
     | Pstr_value (rf, l) ->
-        let l1 = (List.hd l) in
-        let l2 = (List.tl l) in
-        pp_open_hvbox ppf 0 ;
-        pp_open_hvbox ppf indent ;
-        fprintf ppf "let%a " fmt_rec_flag rf;
-        pattern_x_expression_def ppf l1;
-        pattern_x_expression_def_list ppf l2;
-        pp_close_box ppf () ;
-        pp_close_box ppf () ;
+        (* let l1 = (List.hd l) in *)
+        (* let l2 = (List.tl l) in *)
+        (* pp_open_hvbox ppf 0 ; *)
+        (* pp_open_hvbox ppf indent ; *)
+        (* fprintf ppf "let%a " fmt_rec_flag rf; *)
+        (* (\* pattern_x_expression_def ppf l1; *\) *)
+        (* (\* pattern_x_expression_def_list ppf l2; *\) *)
+        (* pattern_x_expression_def_list ppf l; *)
+        (* pp_close_box ppf () ; *)
+        (* pp_close_box ppf () ; *)
+        
+        fprintf ppf "@[<hov>let@ %a@ %a@]"
+          fmt_rec_flag rf
+          pattern_x_expression_def_list l ;
     | Pstr_exception (s, ed) ->
         pp_open_hovbox ppf indent ;
         fprintf ppf "exception@ %s" s.txt;
@@ -1888,9 +1842,23 @@ and pattern_x_expression_case_list
       (pattern_x_expression_case_list ppf ~first:false r);
 
 and pattern_x_expression_def ppf (p, e) =
-  pattern ppf p ;
-  fprintf ppf " =@ " ;
-  expression ppf e;
+    fprintf ppf "%a@ %a" pattern p pp_print_pexp_function e
+(* prints a list of definitions as found in a let statement
+   note! breaks "open and close boxes in same function" convention, however
+         does always open and close the same number of boxes. (i.e. no "net
+         gain or loss" of box depth.                                         *)
+and pattern_x_expression_def_list ppf l =
+  match l with
+  | [] -> ()
+  | [x] -> pattern_x_expression_def ppf x 
+  | _ ->
+   pp_print_list pattern_x_expression_def ~sep:"and" ppf l 
+      (* pp_close_box ppf () ; *)
+      (* pp_print_space ppf () ; *)
+      (* pp_open_hvbox ppf indent ; *)
+      (* fprintf ppf "and " ; *)
+      (* pattern_x_expression_def ppf hd; *)
+      (* pattern_x_expression_def_list ppf tl ; *)
 
 and pattern_list_helper ppf p =
   match p with
@@ -1987,20 +1955,6 @@ and type_variant_helper ppf x =
   | Rinherit (ct) ->
       core_type ppf ct
 
-(* prints a list of definitions as found in a let statement
-   note! breaks "open and close boxes in same function" convention, however
-         does always open and close the same number of boxes. (i.e. no "net
-         gain or loss" of box depth.                                         *)
-and pattern_x_expression_def_list ppf l =
-  match l with
-  | [] -> ()
-  | hd :: tl ->
-      pp_close_box ppf () ;
-      pp_print_space ppf () ;
-      pp_open_hvbox ppf indent ;
-      fprintf ppf "and " ;
-      pattern_x_expression_def ppf hd;
-      pattern_x_expression_def_list ppf tl ;
 
 (* end an if statement by printing an else phrase if there is an "else"
    statement in the ast. otherwise just close the box. *)
@@ -2138,7 +2092,6 @@ let toplevel_phrase ppf x =
   match x with
   | Ptop_def (s) ->
    pp_open_hvbox ppf 0;
-      (* list2 structure_item ppf s ~breakfirst:false ~indent:0 ""; *)
    pp_print_list structure_item ppf s ~breakfirst:false ~indent:0 ;
    pp_close_box ppf ();
   | Ptop_dir (s, da) ->

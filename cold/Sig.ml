@@ -7,8 +7,8 @@ module type Warning =
  val print_warning : warning
  
  end
-type ('a , 'loc ) stream_filter =
- (('a * 'loc ) Stream.t  -> ('a * 'loc ) Stream.t )  
+type ('a  , 'loc  ) stream_filter =
+ (('a  * 'loc  ) Stream.t  -> ('a  * 'loc  ) Stream.t )  
 module type ParserImpl =
  sig
   val parse_implem :
@@ -218,12 +218,14 @@ module type SyntaxPlugin = functor (Syn : Camlp4Syntax) -> sig  end
 module type PrinterPlugin = functor (Syn : Camlp4Syntax) -> PrinterImpl
 module type ParserPlugin = functor (Syn : Camlp4Syntax) -> ParserImpl
 type 'a
+
  parser_fun =
- (?directive_handler:('a -> 'a option )   ->
-   (FanLoc.t -> (char Stream.t  -> 'a) ) )  
+ (?directive_handler:('a  -> 'a  option )   ->
+   (FanLoc.t -> (char Stream.t  -> 'a ) ) )  
 type 'a
+
  printer_fun =
- (?input_file:string  -> (?output_file:string  -> ('a -> unit) ) )  
+ (?input_file:string  -> (?output_file:string  -> ('a  -> unit) ) )  
 module type PRECAST =
  sig
   module Syntax : Camlp4Syntax

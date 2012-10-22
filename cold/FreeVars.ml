@@ -1,9 +1,9 @@
 open FanUtil
-class ['accu] c_fold_pattern_vars f init =
+class ['accu ] c_fold_pattern_vars f init =
  object
   inherit Camlp4Ast.fold as super
  val acc = init
- method acc : 'accu = acc
+ method acc : 'accu  = acc
  method patt =
   function
   | ((Ast.PaId (_ , Ast.IdLid (_ , s ) )
@@ -13,31 +13,28 @@ class ['accu] c_fold_pattern_vars f init =
   | p -> (super#patt p )
  
  end
-let fold_pattern_vars =
- fun f ->
-  fun p -> fun init -> (((((new c_fold_pattern_vars) f init )#patt) p )#acc)
-let rec fold_binding_vars =
- fun f ->
-  fun bi ->
-   fun acc ->
-    (match bi with
-     | Ast.BiAnd (_ , bi1 , bi2 ) ->
-        (fold_binding_vars f bi1 ( (fold_binding_vars f bi2 acc ) ) )
-     | Ast.BiEq (_ , p , _ ) -> (fold_pattern_vars f p acc )
-     | Ast.BiNil (_) -> acc
-     | Ast.BiAnt (_ , _ ) -> assert false)
-class ['accu] fold_free_vars (f : (string -> ('accu -> 'accu) ) )
+let  fold_pattern_vars (f) (p) (init) =
+(((((new c_fold_pattern_vars) f init )#patt) p )#acc)
+let  rec fold_binding_vars (f) (bi) (acc) =
+(match bi with
+ | Ast.BiAnd (_ , bi1 , bi2 ) ->
+    (fold_binding_vars f bi1 ( (fold_binding_vars f bi2 acc ) ) )
+ | Ast.BiEq (_ , p , _ ) -> (fold_pattern_vars f p acc )
+ | Ast.BiNil (_) -> acc
+ | Ast.BiAnt (_ , _ ) -> assert false)
+class ['accu ] fold_free_vars (f : (string -> ('accu  -> 'accu ) ) )
  ?env_init:(env_init=SSet.empty) free_init =
  object (o)
   inherit Camlp4Ast.fold as super
- val free = (free_init : 'accu)
+ val free = (free_init : 'accu )
  val env = (env_init : SSet.t)
  method free = free
- method set_env = fun env -> {< env = env  >}
- method add_atom = fun s -> {< env = (SSet.add s env )  >}
- method add_patt = fun p -> {< env = (fold_pattern_vars SSet.add p env )  >}
+ method set_env = fun (env) -> {< env = env  >}
+ method add_atom = fun (s) -> {< env = (SSet.add s env )  >}
+ method add_patt =
+  fun (p) -> {< env = (fold_pattern_vars SSet.add p env )  >}
  method add_binding =
-  fun bi -> {< env = (fold_binding_vars SSet.add bi env )  >}
+  fun (bi) -> {< env = (fold_binding_vars SSet.add bi env )  >}
  method expr =
   function
   | ((Ast.ExId (_ , Ast.IdLid (_ , s ) )
@@ -90,8 +87,6 @@ class ['accu] fold_free_vars (f : (string -> ('accu -> 'accu) ) )
   | me -> (super#module_expr me )
  
  end
-let free_vars =
- fun env_init ->
-  fun e ->
-   let fold = ((new fold_free_vars) SSet.add ~env_init:env_init SSet.empty ) in
-   ((fold#expr e )#free)
+let  free_vars (env_init) (e) =
+let  fold = ((new fold_free_vars) SSet.add ~env_init:env_init SSet.empty ) in
+((fold#expr e )#free)

@@ -92,3 +92,11 @@ and g f =
 let f ()  =
   let g = a
   and g =  3 in g ;g
+
+;;
+let f = fun (Some x) -> x
+
+
+let g () =
+  let f = fun (Some x) -> x in f ;;
+    

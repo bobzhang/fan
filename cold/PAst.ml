@@ -7,9 +7,9 @@ and private_flag = [ `PrPrivate | `PrNil | `PrAnt of string   ]
 and virtual_flag = [ `ViVirtual | `ViNil | `ViAnt of string   ] 
 and override_flag = [ `OvOverride | `OvNil | `OvAnt of string   ] 
 and row_var_flag = [ `RvRowVar | `RvNil | `RvAnt of string   ] 
-and 'a  meta_option = [ `ONone | `OSome of 'a  | `OAnt of string   ] 
-and 'a  meta_list =
-  [ `LNil | `LCons of ('a * 'a meta_list  )  | `LAnt of string   ] 
+and 'a   meta_option = [ `ONone | `OSome of 'a   | `OAnt of string   ] 
+and 'a   meta_list =
+  [ `LNil | `LCons of ('a  * 'a  meta_list  )  | `LAnt of string   ] 
 and ident =
   [ `IdAcc of (loc * ident * ident )  | `IdApp of (loc * ident * ident )  |
     `IdLid of (loc * string )  | `IdUid of (loc * string )  |
