@@ -17,13 +17,13 @@ module Make =
   (struct
     type 'a   filter = ('a  -> 'a )  
    let  interf_filters =
-   ((Queue.create ()  ) : Ast.sig_item filter  Queue.t )
+     ((Queue.create ()  ) : Ast.sig_item filter  Queue.t )
    let  fold_interf_filters (f) (i) = (Queue.fold f i interf_filters )
    let  implem_filters =
-   ((Queue.create ()  ) : Ast.str_item filter  Queue.t )
+     ((Queue.create ()  ) : Ast.str_item filter  Queue.t )
    let  fold_implem_filters (f) (i) = (Queue.fold f i implem_filters )
    let  topphrase_filters =
-   ((Queue.create ()  ) : Ast.str_item filter  Queue.t )
+     ((Queue.create ()  ) : Ast.str_item filter  Queue.t )
    let  fold_topphrase_filters (f) (i) = (Queue.fold f i topphrase_filters )
    let  register_sig_item_filter (f) = (Queue.add f interf_filters )
    let  register_str_item_filter (f) = (Queue.add f implem_filters )

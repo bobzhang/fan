@@ -4,7 +4,7 @@ module Make =
     module Ast = Camlp4Ast
    type warning = (FanLoc.t -> (string -> unit) )  
    let  default_warning (loc) (txt) =
-   (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt )
+     (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt )
    let  current_warning = (ref default_warning )
    let  print_warning (loc) (txt) = ((current_warning.contents) loc txt )
    let  a_CHAR = (Gram.mk "a_CHAR" )
@@ -42,7 +42,7 @@ module Make =
    let  class_type_declaration = (Gram.mk "class_type_declaration" )
    let  class_type_longident = (Gram.mk "class_type_longident" )
    let  class_type_longident_and_param =
-   (Gram.mk "class_type_longident_and_param" )
+     (Gram.mk "class_type_longident_and_param" )
    let  class_type_plus = (Gram.mk "class_type_plus" )
    let  comma_ctyp = (Gram.mk "comma_ctyp" )
    let  comma_expr = (Gram.mk "comma_expr" )
@@ -142,7 +142,7 @@ module Make =
    let  type_kind = (Gram.mk "type_kind" )
    let  type_longident = (Gram.mk "type_longident" )
    let  type_longident_and_parameters =
-   (Gram.mk "type_longident_and_parameters" )
+     (Gram.mk "type_longident_and_parameters" )
    let  type_parameter = (Gram.mk "type_parameter" )
    let  type_parameters = (Gram.mk "type_parameters" )
    let  typevars = (Gram.mk "typevars" )
@@ -164,21 +164,21 @@ module Make =
    let  binding_quot = (Gram.mk "quotation of binding" )
    let  rec_binding_quot = (Gram.mk "quotation of record binding" )
    let  match_case_quot =
-   (Gram.mk "quotation of match_case (try/match/function case)" )
+     (Gram.mk "quotation of match_case (try/match/function case)" )
    let  module_binding_quot = (Gram.mk "quotation of module rec binding" )
    let  ident_quot = (Gram.mk "quotation of identifier" )
    let  prefixop = (Gram.mk "prefix operator (start with '!', '?', '~')" )
    let  infixop0 =
-   (Gram.mk
-     "infix operator (level 0) (comparison operators, and some others)" )
+     (Gram.mk
+       "infix operator (level 0) (comparison operators, and some others)" )
    let  infixop1 =
-   (Gram.mk "infix operator (level 1) (start with '^', '@')" )
+     (Gram.mk "infix operator (level 1) (start with '^', '@')" )
    let  infixop2 =
-   (Gram.mk "infix operator (level 2) (start with '+', '-')" )
+     (Gram.mk "infix operator (level 2) (start with '+', '-')" )
    let  infixop3 =
-   (Gram.mk "infix operator (level 3) (start with '*', '/', '%')" )
+     (Gram.mk "infix operator (level 3) (start with '*', '/', '%')" )
    let  infixop4 =
-   (Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)" )
+     (Gram.mk "infix operator (level 4) (start with \"**\") (right assoc)" )
    let  symbol = (Gram.mk "symbol" )
    let  rule = (Gram.mk "rule" )
    let  rule_list = (Gram.mk "rule_list" )
@@ -187,19 +187,22 @@ module Make =
    let  level_list = (Gram.mk "level_list" )
    let  entry = (Gram.mk "entry" )
    let _ = (Gram.extend ( (top_phrase : 'top_phrase  Gram.t ) ) (
-             ((fun (()) ->
+             ((fun (() ) ->
                  (None  , (
                   [(None  , None  , (
-                    [((
-                      [`Stoken
-                       ((( function | `EOI -> (true) | _ -> (false) ) ,
-                         (`Normal , "`EOI" ) ))] ) , (
+                    [(( [`Stoken
+                      ((( 
+                        function
+                        | `EOI -> true
+                        | _ -> false ) , (`Normal , "`EOI" ) ))]  ) , (
                       (Gram.mk_action (
                         fun (__camlp4_0) ->
                           fun ((_loc : FanLoc.t)) ->
-                            (match __camlp4_0 with
-                             | `EOI -> ((None) : 'top_phrase )
-                             | _ -> assert false) ) ) ) )] ) )] ) )) ()  ) )
+                            
+                            (match __camlp4_0
+                            with
+                            | `EOI -> (None : 'top_phrase )
+                            | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) )
              )
    module AntiquotSyntax =
     struct
@@ -213,29 +216,40 @@ module Make =
     end
    module Quotation = (Quotation.Make)(AntiquotSyntax)
    let  wrap (directive_handler) (pa) (init_loc) (cs) =
-   let rec  loop (loc) =
-   let  (pl , stopped_at_directive ) = (pa loc cs ) in
-   (match stopped_at_directive with
-    | Some(new_loc) ->
+     
+     let rec  loop (loc) =
+     
+     let  (pl , stopped_at_directive ) = (pa loc cs ) in
+     
+     (match stopped_at_directive
+     with
+     | Some(new_loc) ->
+       
        let  pl =
-       (match (List.rev pl ) with
-        | [] -> assert false
-        | (x :: xs) ->
-           (match (directive_handler x ) with
-            | None -> xs
-            | Some(x) -> ( x ) :: xs )) in
+       
+       (match (List.rev pl )
+       with
+       | []  -> assert false
+       | x::xs ->
+         
+         (match (directive_handler x )
+         with
+         | None  -> xs
+         | Some(x) -> x :: xs )) in
        (( (List.rev pl ) ) @ ( (loop new_loc ) ))
-    | None -> pl) in (loop init_loc )
-   let  parse_implem ?(directive_handler=fun (_) -> (None))  (_loc) (cs) =
-   let  l = (wrap directive_handler ( (Gram.parse implem ) ) _loc cs ) in
-   (Ast.stSem_of_list l )
-   let  parse_interf ?(directive_handler=fun (_) -> (None))  (_loc) (cs) =
-   let  l = (wrap directive_handler ( (Gram.parse interf ) ) _loc cs ) in
-   (Ast.sgSem_of_list l )
+     | None  -> pl) in (loop init_loc )
+   let  parse_implem ?(directive_handler=fun (_) -> None)  (_loc) (cs) =
+     
+     let  l = (wrap directive_handler ( (Gram.parse implem ) ) _loc cs ) in
+     (Ast.stSem_of_list l )
+   let  parse_interf ?(directive_handler=fun (_) -> None)  (_loc) (cs) =
+     
+     let  l = (wrap directive_handler ( (Gram.parse interf ) ) _loc cs ) in
+     (Ast.sgSem_of_list l )
    let  print_interf ?input_file:(_)  ?output_file:(_)  (_) =
-   (failwith "No interface printer" )
+     (failwith "No interface printer" )
    let  print_implem ?input_file:(_)  ?output_file:(_)  (_) =
-   (failwith "No implementation printer" )
+     (failwith "No implementation printer" )
    module AstFilters = (AstFilters.Make)(struct  end)
    
    end : Sig.Camlp4Syntax)

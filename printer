@@ -1,4 +1,4 @@
 #! /bin/sh 
 # -*- Mode:Shell-script -*-
-ocamlbuild test/PprintastDriver.byte && _build/test/PprintastDriver.byte test/ast_printer_test.ml
+ocamlbuild test/PprintastDriver.d.byte && _build/test/PprintastDriver.d.byte test/ast_printer_test.ml
 otags src/AstPrint.ml

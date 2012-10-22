@@ -28,7 +28,8 @@ type gram = {
 type token_info = {prev_loc:FanLoc.t ; cur_loc:FanLoc.t ; prev_loc_only:bool }
 
 let  ghost_token_info =
-{prev_loc = FanLoc.ghost ; cur_loc = FanLoc.ghost ; prev_loc_only = false  }
+  {prev_loc = FanLoc.ghost ; cur_loc = FanLoc.ghost ; prev_loc_only = false 
+   }
 type token_stream = (token * token_info ) Stream.t  
 type efun = (token_stream -> Action.t)  
 type description = [ `Normal | `Antiquot  ] 
@@ -76,27 +77,31 @@ type ('a  , 'b  , 'c  ) foldsep =
        (('a  Stream.t  -> unit)  -> ('a  Stream.t  -> 'c ) ) ) ) )  
 let  get_filter (g) = g.gfilter
 let  token_location (r) = r.cur_loc
-let  using ({gkeywords = table ; gfilter = filter ; _ }) (kwd) =
-let  r =
-(try (Hashtbl.find table kwd ) with
- Not_found ->
-  let  r = (ref 0 ) in begin ( (Hashtbl.add table kwd r ) ); r end) in
-begin
- (
-(FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ) )
-);
- (incr r )
-end
+let  using ({gkeywords = table ; gfilter = filter ;_}) (kwd) =
+  
+  let  r =
+  (try (Hashtbl.find table kwd ) with
+   | Not_found  ->
+     
+     let  r = (ref 0 ) in begin ( (Hashtbl.add table kwd r ) ); r end) in
+  begin
+   (
+  (FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ) )
+  );
+   (incr r )
+  end
 let  mk_action = Action.mk
 let  string_of_token = FanToken.extract_string
-let  removing ({gkeywords = table ; gfilter = filter ; _ }) (kwd) =
-let  r = (Hashtbl.find table kwd ) in
-let  () = (decr r ) in
-if (( r.contents ) = 0)
-then
- begin
- (
- (FanToken.Filter.keyword_removed filter kwd )
- );
- (Hashtbl.remove table kwd )
-end else ()
+let  removing ({gkeywords = table ; gfilter = filter ;_}) (kwd) =
+  
+  let  r = (Hashtbl.find table kwd ) in
+  
+  let  ()  = (decr r ) in
+  if (( r.contents ) = 0)
+  then
+   begin
+   (
+   (FanToken.Filter.keyword_removed filter kwd )
+   );
+   (Hashtbl.remove table kwd )
+  end else ()

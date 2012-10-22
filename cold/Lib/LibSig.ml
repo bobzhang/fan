@@ -39,7 +39,7 @@ and types = Mutual of and_types  | Single of named_type
 and module_types = types list  
 type obj_dest = Obj of k  | Str_item 
 and k = Fold | Iter | Map 
-let  preserve = ["self"; "self_type"; "unit"; "result"]
+let  preserve = ["self" ; "self_type" ; "unit" ; "result"] 
 module type Config =
  sig
   val mk_variant : (string -> (ty_info list  -> Ast.expr) ) 
@@ -56,11 +56,12 @@ module type Config =
  end
 type warning_type = Abstract of string  | Qualified of string  
 let  string_of_warning_type =
-(sprintf "Warning: %a\n" (
-  fun (_) ->
-    function
-    | Abstract(s) -> ("Abstract: " ^ s)
-    | Qualified(s) -> ("Qualified: " ^ s) ) )
+  (sprintf "Warning: %a\n" (
+    fun (_) ->
+      
+      function
+      | Abstract(s) -> ("Abstract: " ^ s)
+      | Qualified(s) -> ("Qualified: " ^ s) ) )
 module type Grammar =
  sig
   type 'a   t 

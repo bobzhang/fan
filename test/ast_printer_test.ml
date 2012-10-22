@@ -79,7 +79,7 @@ let f ?x:(Some x0) y = x0+y;;
 
 let f ?x:x y = match x with Some x -> x +y0;;
 
-let f ?x y = match x with Some x -> x +y;;
+let f ?x y = match x with Some x -> x +y|None -> 0;;
 
 let f x = function
   | Some y -> 1
@@ -96,11 +96,25 @@ let f ()  =
 ;;
 let f = fun (Some x) -> x
 
+let u = function
+  | Some x when x > 0 -> x
+  | None -> 3
+;;
+
 
 let g () =
-  let f = fun (Some x) -> x in f ;;
+  let f = fun (Some x) when x > 0 -> x in f ;;
+let f = fun (Some x ) when x > 0 -> x in f ;;
 
 let u = [1;2;3;4;4];;
 let f x xs ys =
   (x+y)::xs::ys;;
     
+type u = [ `a of int * bool | `b of bool ]
+type u = { f : int; g : bool; }
+let fg = function {f;_} -> f;;
+
+
+let f = function
+  |x::xs -> x
+  | [] -> 0
