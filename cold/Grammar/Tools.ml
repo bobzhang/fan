@@ -1,15 +1,15 @@
 open LibUtil
 open Structure
 let  empty_entry (ename) (_) =
-(raise ( (Stream.Error ("entry [" ^ ( (ename ^ "] is empty") ))) ) )
+(raise ( (Stream.Error("entry [" ^ ( (ename ^ "] is empty") ))) ) )
 let  keep_prev_loc (strm) =
 (match (Stream.peek strm ) with
  | None -> Stream.sempty
- | Some (_tok0 , init_loc ) ->
-    let  rec go (prev_loc) (strm1) =
+ | Some(_tok0 , init_loc ) ->
+    let rec  go (prev_loc) (strm1) =
     let  (__strm : _ Stream.t ) = strm1 in
     (match (Stream.peek __strm ) with
-     | Some (tok , cur_loc ) ->
+     | Some(tok , cur_loc ) ->
         (
         (Stream.junk __strm )
         );
@@ -25,33 +25,33 @@ let  drop_prev_loc (strm) =
 (Stream.map ( fun ((tok , r )) -> (tok , ( r.cur_loc ) ) ) strm )
 let  get_cur_loc (strm) =
 (match (Stream.peek strm ) with
- | Some (_ , r ) -> r.cur_loc
+ | Some(_ , r ) -> r.cur_loc
  | None -> FanLoc.ghost)
 let  get_prev_loc (strm) =
 let  result =
 (match (Stream.peek strm ) with
- | Some (_ , {prev_loc = prev_loc ; prev_loc_only = true ; _ } ) ->
+ | Some(_ , {prev_loc = prev_loc ; prev_loc_only = true ; _ } ) ->
     ( (Stream.junk strm ) ); prev_loc
- | Some (_ , {prev_loc = prev_loc ; prev_loc_only = false ; _ } ) -> prev_loc
+ | Some(_ , {prev_loc = prev_loc ; prev_loc_only = false ; _ } ) -> prev_loc
  | None -> FanLoc.ghost) in result
 let  is_level_labelled (n) =
-function | {lname = Some (n1) ; _ } -> (n = n1) | _ -> (false)
+function | {lname = Some(n1) ; _ } -> (n = n1) | _ -> (false)
 let  warning_verbose = (ref true  )
-let  rec get_token_list (entry) (tokl) (last_tok) =
+let rec  get_token_list (entry) (tokl) (last_tok) =
 function
-| Node ({node = (((`Stoken _) | (`Skeyword _)) as tok) ; son = son ;
+| Node({node = (((`Stoken _) | (`Skeyword _)) as tok) ; son = son ;
    brother = DeadEnd }) ->
    (get_token_list entry ( ( last_tok ) :: tokl  ) tok son )
 | tree ->
    if (tokl = [] ) then None 
-   else (Some (( (List.rev ( ( last_tok ) :: tokl  ) ) ) , last_tok , tree ))
+   else (Some(( (List.rev ( ( last_tok ) :: tokl  ) ) ) , last_tok , tree ))
 let  eq_Stoken_ids (s1) (s2) =
 (match (s1 , s2 ) with
  | ((`Antiquot , _ ) , _ ) -> (false)
  | (_ , (`Antiquot , _ ) ) -> (false)
  | ((_ , s1 ) , (_ , s2 ) ) -> (s1 = s2))
 let  logically_eq_symbols (entry) =
-let  rec eq_symbols (s1) (s2) =
+let rec  eq_symbols (s1) (s2) =
 (match (s1 , s2 ) with
  | ((`Snterm e1) , (`Snterm e2) ) -> (( e1.ename ) = ( e2.ename ))
  | ((`Snterm e1) , `Sself ) -> (( e1.ename ) = ( entry.ename ))
@@ -68,13 +68,13 @@ let  rec eq_symbols (s1) (s2) =
  | ((`Stoken (_ , s1 )) , (`Stoken (_ , s2 )) ) -> (eq_Stoken_ids s1 s2 )
  | _ -> (s1 = s2)) and eq_trees (t1) (t2) =
 (match (t1 , t2 ) with
- | (Node (n1) , Node (n2) ) ->
+ | (Node(n1) , Node(n2) ) ->
     (( (eq_symbols ( n1.node ) ( n2.node ) ) ) && (
       (( (eq_trees ( n1.son ) ( n2.son ) ) ) && (
         (eq_trees ( n1.brother ) ( n2.brother ) ) )) ))
- | ((LocAct (_ , _ ) | DeadEnd) , (LocAct (_ , _ ) | DeadEnd) ) -> (true)
+ | ((LocAct(_ , _ ) | DeadEnd) , (LocAct(_ , _ ) | DeadEnd) ) -> (true)
  | _ -> (false))  in eq_symbols
-let  rec eq_symbol (s1) (s2) =
+let rec  eq_symbol (s1) (s2) =
 (match (s1 , s2 ) with
  | ((`Snterm e1) , (`Snterm e2) ) -> (e1 == e2)
  | ((`Snterml (e1 , l1 )) , (`Snterml (e2 , l2 )) ) ->

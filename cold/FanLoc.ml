@@ -154,16 +154,15 @@ end else (true)
 exception Exc_located of t * exn 
 let _ = (Printexc.register_printer (
           function
-          | Exc_located (t , exn ) ->
-             (Some
-               (sprintf "Exc_located(%s,%s)" ( (to_string t ) ) (
-                 (Printexc.to_string exn ) ) ))
+          | Exc_located(t , exn ) ->
+             (Some(sprintf "Exc_located(%s,%s)" ( (to_string t ) ) (
+                    (Printexc.to_string exn ) ) ))
           | _ -> (None) ) )
 let  name = (ref "_loc" )
 let  raise (loc) (exc) =
 (match exc with
- | Exc_located (_ , _ ) -> (raise exc )
- | _ -> (raise ( (Exc_located (loc , exc )) ) ))
+ | Exc_located(_ , _ ) -> (raise exc )
+ | _ -> (raise ( (Exc_located(loc , exc )) ) ))
 let  error_report ((loc , s )) =
 begin
  (

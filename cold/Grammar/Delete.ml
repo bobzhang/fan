@@ -1,45 +1,42 @@
 open Structure
 let  delete_rule_in_tree (entry) =
-let  rec delete_in_tree (symbols) (tree) =
+let rec  delete_in_tree (symbols) (tree) =
 (match (symbols , tree ) with
- | ((s :: sl) , Node (n) ) ->
+ | ((s :: sl) , Node(n) ) ->
     if (Tools.logically_eq_symbols entry s ( n.node ) ) then
      (
      (delete_son sl n )
      )
     else
      (match (delete_in_tree symbols ( n.brother ) ) with
-      | Some (dsl , t ) ->
-         (Some
-           (dsl , (
-            (Node ({node = ( n.node ) ; son = ( n.son ) ; brother = t })) ) ))
+      | Some(dsl , t ) ->
+         (Some(dsl , (
+               (Node({node = ( n.node ) ; son = ( n.son ) ; brother = t })) )
+               ))
       | None -> (None))
  | ((_ :: _) , _ ) -> (None)
- | ([] , Node (n) ) ->
+ | ([] , Node(n) ) ->
     (match (delete_in_tree []  ( n.brother ) ) with
-     | Some (dsl , t ) ->
-        (Some
-          (dsl , (
-           (Node ({node = ( n.node ) ; son = ( n.son ) ; brother = t })) ) ))
+     | Some(dsl , t ) ->
+        (Some(dsl , (
+              (Node({node = ( n.node ) ; son = ( n.son ) ; brother = t })) )
+              ))
      | None -> (None))
  | ([] , DeadEnd ) -> (None)
- | ([] , LocAct (_ , [] ) ) -> (Some (( (Some (([]))) ) , DeadEnd  ))
- | ([] , LocAct (_ , (action :: list) ) ) ->
-    (Some (None  , ( (LocAct (action , list )) ) ))) and delete_son (sl) (n)
-=
+ | ([] , LocAct(_ , [] ) ) -> (Some(( (Some(([]))) ) , DeadEnd  ))
+ | ([] , LocAct(_ , (action :: list) ) ) ->
+    (Some(None  , ( (LocAct(action , list )) ) ))) and delete_son (sl) (n) =
 (match (delete_in_tree sl ( n.son ) ) with
- | Some (Some (dsl) , DeadEnd ) ->
-    (Some (( (Some (( ( n.node ) ) :: dsl )) ) , ( n.brother ) ))
- | Some (Some (dsl) , t ) ->
-    let  t =
-    (Node ({node = ( n.node ) ; son = t ; brother = ( n.brother ) })) in
-    (Some (( (Some (( ( n.node ) ) :: dsl )) ) , t ))
- | Some (None , t ) ->
-    let  t =
-    (Node ({node = ( n.node ) ; son = t ; brother = ( n.brother ) })) in
-    (Some (None  , t ))
+ | Some(Some(dsl) , DeadEnd ) ->
+    (Some(( (Some(( ( n.node ) ) :: dsl )) ) , ( n.brother ) ))
+ | Some(Some(dsl) , t ) ->
+    let  t = (Node({node = ( n.node ) ; son = t ; brother = ( n.brother ) }))
+    in (Some(( (Some(( ( n.node ) ) :: dsl )) ) , t ))
+ | Some(None , t ) ->
+    let  t = (Node({node = ( n.node ) ; son = t ; brother = ( n.brother ) }))
+    in (Some(None  , t ))
  | None -> (None))  in delete_in_tree
-let  rec decr_keyw_use (gram) =
+let rec  decr_keyw_use (gram) =
 function
 | (`Skeyword kwd) -> (removing gram kwd )
 | (`Smeta (_ , sl , _ )) -> (List.iter ( (decr_keyw_use gram ) ) sl )
@@ -53,8 +50,8 @@ function
 | ((((`Sself | `Snext) | (`Snterm _)) | (`Snterml (_ , _ ))) | (`Stoken _)) ->
    () and decr_keyw_use_in_tree (gram) =
 function
-| (DeadEnd | LocAct (_ , _ )) -> ()
-| Node (n) ->
+| (DeadEnd | LocAct(_ , _ )) -> ()
+| Node(n) ->
    (
    (decr_keyw_use gram ( n.node ) )
    );
@@ -62,14 +59,14 @@ function
    (decr_keyw_use_in_tree gram ( n.son ) )
    );
    (decr_keyw_use_in_tree gram ( n.brother ) ) 
-let  rec delete_rule_in_suffix (entry) (symbols) =
+let rec  delete_rule_in_suffix (entry) (symbols) =
 function
 | (lev :: levs) ->
    (match (delete_rule_in_tree entry symbols ( lev.lsuffix ) ) with
-    | Some (dsl , t ) ->
+    | Some(dsl , t ) ->
        (
        (match dsl with
-        | Some (dsl) -> (List.iter ( (decr_keyw_use ( entry.egram ) ) ) dsl )
+        | Some(dsl) -> (List.iter ( (decr_keyw_use ( entry.egram ) ) ) dsl )
         | None -> ())
        );
        (match t with
@@ -82,14 +79,14 @@ function
        let  levs = (delete_rule_in_suffix entry symbols levs ) in
        ( lev ) :: levs )
 | [] -> (raise Not_found  )
-let  rec delete_rule_in_prefix (entry) (symbols) =
+let rec  delete_rule_in_prefix (entry) (symbols) =
 function
 | (lev :: levs) ->
    (match (delete_rule_in_tree entry symbols ( lev.lprefix ) ) with
-    | Some (dsl , t ) ->
+    | Some(dsl , t ) ->
        (
        (match dsl with
-        | Some (dsl) -> (List.iter ( (decr_keyw_use ( entry.egram ) ) ) dsl )
+        | Some(dsl) -> (List.iter ( (decr_keyw_use ( entry.egram ) ) ) dsl )
         | None -> ())
        );
        (match t with
@@ -110,11 +107,11 @@ let  delete_rule_in_level_list (entry) (symbols) (levs) =
  | _ -> (delete_rule_in_prefix entry symbols levs ))
 let  delete_rule (entry) (sl) =
 (match entry.edesc with
- | Dlevels (levs) ->
+ | Dlevels(levs) ->
     let  levs = (delete_rule_in_level_list entry sl levs ) in
     begin
      (
-    entry.edesc <- (Dlevels (levs))
+    entry.edesc <- (Dlevels(levs))
     );
      (
     entry.estart <-
@@ -131,4 +128,4 @@ let  delete_rule (entry) (sl) =
               let  f = (Parser.continue_parser_of_entry entry ) in
               begin ( entry.econtinue <- f ); (f lev bp a strm ) end
     end
- | Dparser (_) -> ())
+ | Dparser(_) -> ())

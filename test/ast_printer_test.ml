@@ -99,4 +99,8 @@ let f = fun (Some x) -> x
 
 let g () =
   let f = fun (Some x) -> x in f ;;
+
+let u = [1;2;3;4;4];;
+let f x xs ys =
+  (x+y)::xs::ys;;
     

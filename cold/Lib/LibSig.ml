@@ -59,8 +59,8 @@ let  string_of_warning_type =
 (sprintf "Warning: %a\n" (
   fun (_) ->
     function
-    | Abstract (s) -> ("Abstract: " ^ s)
-    | Qualified (s) -> ("Qualified: " ^ s) ) )
+    | Abstract(s) -> ("Abstract: " ^ s)
+    | Qualified(s) -> ("Qualified: " ^ s) ) )
 module type Grammar =
  sig
   type 'a   t 
@@ -72,8 +72,8 @@ module type Grammar =
  val parse_quot_string :
   ('a  t  -> (loc -> (string option  -> (string -> 'a ) ) ) ) 
  val add_quotation :
-  (?antiquot_expander:< expr : (Ast.expr -> Ast.expr)  ;
-                        patt : (Ast.patt -> Ast.patt)  ; ..  >  ->
+  (?antiquot_expander:< expr :(Ast.expr -> Ast.expr)   ;
+                        patt :(Ast.patt -> Ast.patt)   ; ..  >  ->
     (string ->
       (entry:'a  t  ->
         (mexpr:(FanLoc.t -> ('a  -> Ast.expr) )  ->

@@ -12,7 +12,7 @@ let  out_channel =
 let  mode =
 (try
   let  str = (Sys.getenv "CAMLP4_DEBUG" ) in
-  let  rec loop (acc) (i) =
+  let rec  loop (acc) (i) =
   (try
     let  pos = (String.index_from str i ':' ) in
     (loop ( (SSet.add ( (String.sub str i ( (pos - i) ) ) ) acc ) ) (
@@ -33,7 +33,7 @@ let  at_bol = (ref true  ) in
   fun (buf) ->
     fun (pos) ->
       fun (len) ->
-        for i = pos to (( (pos + len) ) - 1) do
+        for i = pos to  (( (pos + len) ) - 1) do
          (
         if at_bol.contents then ( (output_string out_channel header ) )
         else ()

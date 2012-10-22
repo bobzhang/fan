@@ -7,13 +7,13 @@ let  token_stream = (Gram.filter not_filtered_token_stream ) in
 (try
   let  (__strm : _ Stream.t ) = token_stream in
   (match (Stream.peek __strm ) with
-   | Some (`EOI , _ ) -> ( (Stream.junk __strm ) ); (raise End_of_file  )
+   | Some(`EOI , _ ) -> ( (Stream.junk __strm ) ); (raise End_of_file  )
    | _ -> (parse_fun token_stream ))
  with
  | (((End_of_file | Sys.Break)
-     | FanLoc.Exc_located (_ , (End_of_file | Sys.Break) )) as x) ->
+     | FanLoc.Exc_located(_ , (End_of_file | Sys.Break) )) as x) ->
     (raise x )
- | FanLoc.Exc_located (loc , y ) ->
+ | FanLoc.Exc_located(loc , y ) ->
     (
     (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
       (Printexc.to_string y ) ) )
@@ -28,7 +28,7 @@ let  toplevel_phrase (token_stream) =
 (match
    (Gram.parse_origin_tokens (
      (Syntax.top_phrase : Ast.str_item option  Gram.t ) ) token_stream ) with
- | Some (str_item) ->
+ | Some(str_item) ->
     let  str_item =
     (Syntax.AstFilters.fold_topphrase_filters (
       fun (t) -> fun (filter) -> (filter t ) ) str_item ) in
@@ -36,15 +36,15 @@ let  toplevel_phrase (token_stream) =
  | None -> (raise End_of_file  ))
 let  use_file (token_stream) =
 let  (pl0 , eoi ) =
-let  rec loop (()) =
+let rec  loop (()) =
 let  (pl , stopped_at_directive ) =
 (Gram.parse_origin_tokens Syntax.use_file token_stream ) in
 if (stopped_at_directive <> None ) then
  (
  (match pl with
-  | (Ast.StDir (_ , "load" , Ast.ExStr (_ , s ) ) :: []) ->
+  | (Ast.StDir(_ , "load" , Ast.ExStr(_ , s ) ) :: []) ->
      ( (Topdirs.dir_load Format.std_formatter s ) ); (loop ()  )
-  | (Ast.StDir (_ , "directory" , Ast.ExStr (_ , s ) ) :: []) ->
+  | (Ast.StDir(_ , "directory" , Ast.ExStr(_ , s ) ) :: []) ->
      ( (Topdirs.dir_directory s ) ); (loop ()  )
   | _ -> (pl , false  ))
  )
@@ -52,7 +52,7 @@ else (pl , true  ) in (loop ()  ) in
 let  pl =
 if eoi then [] 
 else
- let  rec loop (()) =
+ let rec  loop (()) =
  let  (pl , stopped_at_directive ) =
  (Gram.parse_origin_tokens Syntax.use_file token_stream ) in
  if (stopped_at_directive <> None ) then ( (pl @ ( (loop ()  ) )) ) else pl
@@ -69,7 +69,7 @@ let _ = (
   fun (loc) ->
     fun (txt) ->
       (Toploop.print_warning loc Format.err_formatter (
-        (Warnings.Camlp4 (txt)) ) ) ))
+        (Warnings.Camlp4(txt)) ) ) ))
 );
 (iter_and_take_callbacks ( fun ((_ , f )) -> (f ()  ) ) )
 let _ = let open

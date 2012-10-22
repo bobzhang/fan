@@ -14,10 +14,9 @@ module Camlp4Bin =
   (loaded_modules := ( (SSet.add name ( loaded_modules.contents ) ) ))
   let _ = (Printexc.register_printer (
             function
-            | FanLoc.Exc_located (loc , exn ) ->
-               (Some
-                 (sprintf "%s:@\n%s" ( (FanLoc.to_string loc ) ) (
-                   (Printexc.to_string exn ) ) ))
+            | FanLoc.Exc_located(loc , exn ) ->
+               (Some(sprintf "%s:@\n%s" ( (FanLoc.to_string loc ) ) (
+                      (Printexc.to_string exn ) ) ))
             | _ -> (None) ) )
   module DynLoader = (DynLoader.Make)(struct  end)
   let  (objext , libext ) =
@@ -121,23 +120,24 @@ module Camlp4Bin =
    ((rcall_callback.contents) ()  )
   end
   let  print_warning = (eprintf "%a:\n%s@." FanLoc.print )
-  let  rec parse_file (dyn_loader) (name) (pa) (getdir) =
+  let rec  parse_file (dyn_loader) (name) (pa) (getdir) =
   let  directive_handler =
-  (Some
-    (fun (ast) ->
-       (match (getdir ast ) with
-        | Some (x) ->
-           (match x with
-            | (_ , "load" , s ) -> ( (rewrite_and_load "" s ) ); (None)
-            | (_ , "directory" , s ) ->
-               ( (DynLoader.include_dir dyn_loader s ) ); (None)
-            | (_ , "use" , s ) -> (Some (parse_file dyn_loader s pa getdir ))
-            | (_ , "default_quotation" , s ) ->
-               ( (PreCast.Syntax.Quotation.default := s) ); (None)
-            | (loc , _ , _ ) ->
-               (FanLoc.raise loc (
-                 (Stream.Error ("bad directive camlp4 can not handled ")) ) ))
-        | None -> (None)))) in
+  (Some(fun (ast) ->
+          (match (getdir ast ) with
+           | Some(x) ->
+              (match x with
+               | (_ , "load" , s ) -> ( (rewrite_and_load "" s ) ); (None)
+               | (_ , "directory" , s ) ->
+                  ( (DynLoader.include_dir dyn_loader s ) ); (None)
+               | (_ , "use" , s ) ->
+                  (Some(parse_file dyn_loader s pa getdir ))
+               | (_ , "default_quotation" , s ) ->
+                  ( (PreCast.Syntax.Quotation.default := s) ); (None)
+               | (loc , _ , _ ) ->
+                  (FanLoc.raise loc (
+                    (Stream.Error("bad directive camlp4 can not handled ")) )
+                    ))
+           | None -> (None)))) in
   let  loc = (FanLoc.mk name ) in
   begin
    (
@@ -158,15 +158,15 @@ module Camlp4Bin =
       (( (parse_file dyn_loader name pa getdir ) ) |> (
         (fold_filters ( fun (t) -> fun (filter) -> (filter t ) ) ) )) ) |>
       clean) ) |> (
-    (pr ?input_file:( (Some (name)) ) ?output_file:( output_file.contents ) )
+    (pr ?input_file:( (Some(name)) ) ?output_file:( output_file.contents ) )
     ))
   let  gind =
   function
-  | Ast.SgDir (loc , n , Ast.ExStr (_ , s ) ) -> (Some (loc , n , s ))
+  | Ast.SgDir(loc , n , Ast.ExStr(_ , s ) ) -> (Some(loc , n , s ))
   | _ -> (None)
   let  gimd =
   function
-  | Ast.StDir (loc , n , Ast.ExStr (_ , s ) ) -> (Some (loc , n , s ))
+  | Ast.StDir(loc , n , Ast.ExStr(_ , s ) ) -> (Some(loc , n , s ))
   | _ -> (None)
   let  process_intf (dyn_loader) (name) =
   (process dyn_loader name PreCast.CurrentParser.parse_interf
@@ -220,11 +220,10 @@ module Camlp4Bin =
   let  task (f) (x) =
   let  () = (FanConfig.current_input_file := x) in
   (t := (
-    (Some
-      (if (( t.contents ) = None ) then ( fun (_) -> (f x ) )
-       else fun (usage) -> (usage ()  ))) )) in
+    (Some(if (( t.contents ) = None ) then ( fun (_) -> (f x ) )
+          else fun (usage) -> (usage ()  ))) )) in
   let  do_task (usage) =
-  (match t.contents with | Some (f) -> (f usage ) | None -> ()) in
+  (match t.contents with | Some(f) -> (f usage ) | None -> ()) in
   (task , do_task )
   let  input_file (x) =
   let  dyn_loader = ((DynLoader.instance.contents) ()  ) in
@@ -234,9 +233,9 @@ module Camlp4Bin =
   );
    (
   (match x with
-   | Intf (file_name) -> (task ( (process_intf dyn_loader ) ) file_name )
-   | Impl (file_name) -> (task ( (process_impl dyn_loader ) ) file_name )
-   | Str (s) ->
+   | Intf(file_name) -> (task ( (process_intf dyn_loader ) ) file_name )
+   | Impl(file_name) -> (task ( (process_impl dyn_loader ) ) file_name )
+   | Str(s) ->
       let  (f , o ) = (Filename.open_temp_file "from_string" ".ml" ) in
       begin
        (
@@ -250,65 +249,64 @@ module Camlp4Bin =
       );
        (at_exit ( fun (()) -> (Sys.remove f ) ) )
       end
-   | ModuleImpl (file_name) -> (rewrite_and_load "" file_name )
-   | IncludeDir (dir) -> (DynLoader.include_dir dyn_loader dir ))
+   | ModuleImpl(file_name) -> (rewrite_and_load "" file_name )
+   | IncludeDir(dir) -> (DynLoader.include_dir dyn_loader dir ))
   );
    ((rcall_callback.contents) ()  )
   end
   let  initial_spec_list =
-  [("-I" , ( (Arg.String (fun (x) -> (input_file ( (IncludeDir (x)) ) ))) ) ,
+  [("-I" , ( (Arg.String(fun (x) -> (input_file ( (IncludeDir(x)) ) ))) ) ,
     "<directory>  Add directory in search patch for object files." );
-   ("-where" , ( (Arg.Unit (print_stdlib)) ) ,
+   ("-where" , ( (Arg.Unit(print_stdlib)) ) ,
     "Print camlp4 library directory and exit." );
-   ("-nolib" , ( (Arg.Clear (search_stdlib)) ) ,
+   ("-nolib" , ( (Arg.Clear(search_stdlib)) ) ,
     "No automatic search for object files in library directory." );
-   ("-intf" , ( (Arg.String (fun (x) -> (input_file ( (Intf (x)) ) ))) ) ,
+   ("-intf" , ( (Arg.String(fun (x) -> (input_file ( (Intf(x)) ) ))) ) ,
     "<file>  Parse <file> as an interface, whatever its extension." );
-   ("-impl" , ( (Arg.String (fun (x) -> (input_file ( (Impl (x)) ) ))) ) ,
+   ("-impl" , ( (Arg.String(fun (x) -> (input_file ( (Impl(x)) ) ))) ) ,
     "<file>  Parse <file> as an implementation, whatever its extension." );
-   ("-str" , ( (Arg.String (fun (x) -> (input_file ( (Str (x)) ) ))) ) ,
+   ("-str" , ( (Arg.String(fun (x) -> (input_file ( (Str(x)) ) ))) ) ,
     "<string>  Parse <string> as an implementation." );
-   ("-unsafe" , ( (Arg.Set (FanConfig.unsafe)) ) ,
+   ("-unsafe" , ( (Arg.Set(FanConfig.unsafe)) ) ,
     "Generate unsafe accesses to array and strings." );
-   ("-noassert" , ( (Arg.Unit (warn_noassert)) ) ,
+   ("-noassert" , ( (Arg.Unit(warn_noassert)) ) ,
     "Obsolete, do not use this option." );
-   ("-verbose" , ( (Arg.Set (FanConfig.verbose)) ) ,
+   ("-verbose" , ( (Arg.Set(FanConfig.verbose)) ) ,
     "More verbose in parsing errors." );
-   ("-loc" , ( (Arg.Set_string (FanLoc.name)) ) , (
+   ("-loc" , ( (Arg.Set_string(FanLoc.name)) ) , (
     ("<name>   Name of the location variable (default: " ^ (
       (( FanLoc.name.contents ) ^ ").") )) ) );
    ("-QD" , (
-    (Arg.String
-      (fun (x) -> (PreCast.Syntax.Quotation.dump_file := ( (Some (x)) )))) )
-    , "<file> Dump quotation expander result in case of syntax error." );
-   ("-o" , ( (Arg.String (fun (x) -> (output_file := ( (Some (x)) )))) ) ,
+    (Arg.String(fun (x) ->
+                  (PreCast.Syntax.Quotation.dump_file := ( (Some(x)) )))) ) ,
+    "<file> Dump quotation expander result in case of syntax error." );
+   ("-o" , ( (Arg.String(fun (x) -> (output_file := ( (Some(x)) )))) ) ,
     "<file> Output on <file> instead of standard output." );
-   ("-v" , ( (Arg.Unit (print_version)) ) , "Print Camlp4 version and exit."
-    );
-   ("-version" , ( (Arg.Unit (just_print_the_version)) ) ,
+   ("-v" , ( (Arg.Unit(print_version)) ) , "Print Camlp4 version and exit." );
+   ("-version" , ( (Arg.Unit(just_print_the_version)) ) ,
     "Print Camlp4 version number and exit." );
-   ("-vnum" , ( (Arg.Unit (just_print_the_version)) ) ,
+   ("-vnum" , ( (Arg.Unit(just_print_the_version)) ) ,
     "Print Camlp4 version number and exit." );
-   ("-no_quot" , ( (Arg.Clear (FanConfig.quotations)) ) ,
+   ("-no_quot" , ( (Arg.Clear(FanConfig.quotations)) ) ,
     "Don't parse quotations, allowing to use, e.g. \"<:>\" as token." );
-   ("-loaded-modules" , ( (Arg.Set (print_loaded_modules)) ) ,
+   ("-loaded-modules" , ( (Arg.Set(print_loaded_modules)) ) ,
     "Print the list of loaded modules." );
-   ("-parser" , ( (Arg.String (rewrite_and_load "Parsers" )) ) ,
+   ("-parser" , ( (Arg.String(rewrite_and_load "Parsers" )) ) ,
     "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)" );
-   ("-printer" , ( (Arg.String (rewrite_and_load "Printers" )) ) ,
+   ("-printer" , ( (Arg.String(rewrite_and_load "Printers" )) ) ,
     "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)" );
-   ("-filter" , ( (Arg.String (rewrite_and_load "Filters" )) ) ,
+   ("-filter" , ( (Arg.String(rewrite_and_load "Filters" )) ) ,
     "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)" );
-   ("-ignore" , ( (Arg.String (ignore)) ) , "ignore the next argument" );
-   ("--" , ( (Arg.Unit (ignore)) ) , "Deprecated, does nothing" )]
+   ("-ignore" , ( (Arg.String(ignore)) ) , "ignore the next argument" );
+   ("--" , ( (Arg.Unit(ignore)) ) , "Deprecated, does nothing" )]
   let _ = (FanUtil.Options.init initial_spec_list )
   let  anon_fun (name) =
   (input_file (
-    if (Filename.check_suffix name ".mli" ) then ( (Intf (name)) )
-    else if (Filename.check_suffix name ".ml" ) then ( (Impl (name)) )
-    else if (Filename.check_suffix name objext ) then ( (ModuleImpl (name)) )
-    else if (Filename.check_suffix name libext ) then ( (ModuleImpl (name)) )
-    else (raise ( (Arg.Bad ("don't know what to do with " ^ name)) ) ) ) )
+    if (Filename.check_suffix name ".mli" ) then ( (Intf(name)) )
+    else if (Filename.check_suffix name ".ml" ) then ( (Impl(name)) )
+    else if (Filename.check_suffix name objext ) then ( (ModuleImpl(name)) )
+    else if (Filename.check_suffix name libext ) then ( (ModuleImpl(name)) )
+    else (raise ( (Arg.Bad("don't know what to do with " ^ name)) ) ) ) )
   let  main (argv) =
   let  usage (()) =
   begin
@@ -349,7 +347,7 @@ module Camlp4Bin =
      )
     else ()
    with
-   | Arg.Bad (s) ->
+   | Arg.Bad(s) ->
       (
       (eprintf "Error: %s\n" s )
       );
@@ -357,7 +355,7 @@ module Camlp4Bin =
       (eprintf "Use option -help for usage@." )
       );
       (exit 2 )
-   | Arg.Help (_) -> (usage ()  )
+   | Arg.Help(_) -> (usage ()  )
    | exc ->
       ( (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc ) ) ) ); (exit 2 ))
   let _ = (main Sys.argv )

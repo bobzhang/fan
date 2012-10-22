@@ -13,7 +13,7 @@ let  mk (g) (n) =
   fun (_) ->
     fun (_) ->
       fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  ) ) ;
- edesc = ( (Dlevels (([]))) ) }
+ edesc = ( (Dlevels(([]))) ) }
 let  action_parse (entry) (ts) =
 ((try
    let  p = if trace_parser.contents then Format.fprintf else Format.ifprintf
@@ -24,8 +24,8 @@ let  action_parse (entry) (ts) =
   with
   | Stream.Failure ->
      (FanLoc.raise ( (get_prev_loc ts ) ) (
-       (Stream.Error ("illegal begin of " ^ ( entry.ename ))) ) )
-  | (FanLoc.Exc_located (_ , _ ) as exc) -> (raise exc )
+       (Stream.Error("illegal begin of " ^ ( entry.ename ))) ) )
+  | (FanLoc.Exc_located(_ , _ ) as exc) -> (raise exc )
   | exc -> (FanLoc.raise ( (get_prev_loc ts ) ) exc )) : Action.t)
 let  lex (entry) (loc) (cs) = (((entry.egram).glexer) loc cs )
 let  lex_string (entry) (loc) (str) =
@@ -48,7 +48,7 @@ let  f (ts) = (Action.mk ( (p ts ) ) ) in
   fun (_) ->
     fun (_) ->
       fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  ) ) ;
- edesc = ( (Dparser (f)) ) }
+ edesc = ( (Dparser(f)) ) }
 let  setup_parser (e) ((p : ((token * token_info ) Stream.t  -> 'a ) )) =
 let  f (ts) = (Action.mk ( (p ts ) ) ) in
 begin
@@ -61,7 +61,7 @@ e.econtinue <-
    fun (_) ->
      fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  )
 );
- e.edesc <- (Dparser (f))
+ e.edesc <- (Dparser(f))
 end
 let  clear (e) =
 begin
@@ -75,6 +75,6 @@ e.econtinue <-
    fun (_) ->
      fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  )
 );
- e.edesc <- (Dlevels (([])))
+ e.edesc <- (Dlevels(([])))
 end
 let  obj (x) = x

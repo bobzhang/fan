@@ -70,15 +70,15 @@ let  () = (Format.bprintf buf "@[%a@]" printer v ) in (Buffer.contents buf )
 let  zfold_left ?(start=0)  ~until  ~acc  (f) =
 let  v = (ref acc ) in
 begin
- for x = start to until do (v := ( (f ( v.contents ) x ) )) done;
+ for x = start to  until do (v := ( (f ( v.contents ) x ) )) done;
  v.contents
 end
 type 'a   cont = ('a  -> exn)  
 let  callcc = fun (type u)
 ->fun ((f : (u cont  -> u) )) ->
     let module M = struct exception Return of u   end in
-    (try (f ( fun (x) -> (raise ( (M.Return (x)) ) ) ) ) with
-     M.Return (u) -> u)
+    (try (f ( fun (x) -> (raise ( (M.Return(x)) ) ) ) ) with
+     M.Return(u) -> u)
 module List = struct include List include BatList  end
 module Char = struct include BatChar  end
 module String = struct include String include BatString  end
@@ -105,9 +105,9 @@ module Stream =
   include BatStream
  include Stream
  let  rev (strm) =
- let  rec aux ((__strm : _ Stream.t )) =
+ let rec  aux ((__strm : _ Stream.t )) =
  (match (Stream.peek __strm ) with
-  | Some (x) ->
+  | Some(x) ->
      (
      (Stream.junk __strm )
      );
@@ -116,11 +116,11 @@ module Stream =
   | _ -> Stream.sempty) in (aux strm )
  let  tail ((__strm : _ Stream.t )) =
  (match (Stream.peek __strm ) with
-  | Some (_) -> ( (Stream.junk __strm ) ); __strm
+  | Some(_) -> ( (Stream.junk __strm ) ); __strm
   | _ -> Stream.sempty)
- let  rec map (f) ((__strm : _ Stream.t )) =
+ let rec  map (f) ((__strm : _ Stream.t )) =
  (match (Stream.peek __strm ) with
-  | Some (x) ->
+  | Some(x) ->
      (
      (Stream.junk __strm )
      );
@@ -134,25 +134,25 @@ module ErrorMonad =
  struct
   type log = string 
  type 'a   result = Left of 'a   | Right of log  
- let  return (x) = (Left (x))
- let  fail (x) = (Right (x))
+ let  return (x) = (Left(x))
+ let  fail (x) = (Right(x))
  let  ( >>= ) (ma) (f) =
- (match ma with | Left (v) -> (f v ) | Right (x) -> (Right (x)))
+ (match ma with | Left(v) -> (f v ) | Right(x) -> (Right(x)))
  let  bind = (>>=)
  let  map (f) =
- function | Left (v) -> (Left (f v )) | Right (s) -> (Right (s))
+ function | Left(v) -> (Left(f v )) | Right(s) -> (Right(s))
  let  ( >>| ) (ma) ((str , f )) =
- (match ma with | Left (v) -> (f v ) | Right (x) -> (Right (x ^ str)))
+ (match ma with | Left(v) -> (f v ) | Right(x) -> (Right(x ^ str)))
  let  ( >>? ) (ma) (str) =
- (match ma with | Left (_) -> ma | Right (x) -> (Right (x ^ str)))
+ (match ma with | Left(_) -> ma | Right(x) -> (Right(x ^ str)))
  let  ( <|> ) (fa) (fb) (a) =
  (match (fa a ) with
-  | (Left (_) as x) -> x
-  | Right (str) -> (( (fb a ) ) >>? str))
+  | (Left(_) as x) -> x
+  | Right(str) -> (( (fb a ) ) >>? str))
  let  unwrap (f) (a) =
- (match (f a ) with | Left (res) -> res | Right (msg) -> (failwith msg ))
+ (match (f a ) with | Left(res) -> res | Right(msg) -> (failwith msg ))
  let  mapi_m (f) (xs) =
- let  rec aux (acc) (xs) =
+ let rec  aux (acc) (xs) =
  (match xs with
   | [] -> (return []  )
   | (x :: xs) ->

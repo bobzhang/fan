@@ -94,12 +94,12 @@ module Make =
        );
        (bprintf ppf "@]" )
     | Expanding -> (pp "expanding quotation" )
-    | ParsingResult (loc , str ) ->
+    | ParsingResult(loc , str ) ->
        (
        (pp "parsing result of quotation" )
        );
        (match dump_file.contents with
-        | Some (dump_file) ->
+        | Some(dump_file) ->
            let  () = (bprintf ppf " dumping result...\n" ) in
            (try
              let  oc = (open_out_bin dump_file ) in
@@ -132,37 +132,35 @@ module Make =
    (Buffer.contents ppf )
    let _ = (Printexc.register_printer (
              function
-             | Quotation (x) -> (Some (quotation_error_to_string x ))
+             | Quotation(x) -> (Some(quotation_error_to_string x ))
              | _ -> (None) ) )
    let  expand_quotation (loc) (expander) (pos_tag) (quot) =
    let open
    FanSig in
    let  loc_name_opt =
-   if (( quot.q_loc ) = "") then None  else (Some (quot.q_loc)) in
+   if (( quot.q_loc ) = "") then None  else (Some(quot.q_loc)) in
    (try (expander loc loc_name_opt ( quot.q_contents ) ) with
-    | (FanLoc.Exc_located (_ , Quotation (_) ) as exc) -> (raise exc )
-    | FanLoc.Exc_located (iloc , exc ) ->
-       let  exc1 =
-       (Quotation (( quot.q_name ) , pos_tag , Expanding  , exc )) in
-       (raise ( (FanLoc.Exc_located (iloc , exc1 )) ) )
+    | (FanLoc.Exc_located(_ , Quotation(_) ) as exc) -> (raise exc )
+    | FanLoc.Exc_located(iloc , exc ) ->
+       let  exc1 = (Quotation(( quot.q_name ) , pos_tag , Expanding  , exc ))
+       in (raise ( (FanLoc.Exc_located(iloc , exc1 )) ) )
     | exc ->
-       let  exc1 =
-       (Quotation (( quot.q_name ) , pos_tag , Expanding  , exc )) in
-       (raise ( (FanLoc.Exc_located (loc , exc1 )) ) ))
+       let  exc1 = (Quotation(( quot.q_name ) , pos_tag , Expanding  , exc ))
+       in (raise ( (FanLoc.Exc_located(loc , exc1 )) ) ))
    let  parse_quotation_result (parse) (loc) (quot) (pos_tag) (str) =
    let open
    FanSig in
    (try (parse loc str ) with
-    | FanLoc.Exc_located (iloc , Quotation (n , pos_tag , Expanding , exc ) ) ->
-       let  ctx = (ParsingResult (iloc , ( quot.q_contents ) )) in
-       let  exc1 = (Quotation (n , pos_tag , ctx , exc )) in
-       (raise ( (FanLoc.Exc_located (iloc , exc1 )) ) )
-    | FanLoc.Exc_located (iloc , (Quotation (_) as exc) ) ->
-       (raise ( (FanLoc.Exc_located (iloc , exc )) ) )
-    | FanLoc.Exc_located (iloc , exc ) ->
-       let  ctx = (ParsingResult (iloc , ( quot.q_contents ) )) in
-       let  exc1 = (Quotation (( quot.q_name ) , pos_tag , ctx , exc )) in
-       (raise ( (FanLoc.Exc_located (iloc , exc1 )) ) ))
+    | FanLoc.Exc_located(iloc , Quotation(n , pos_tag , Expanding , exc ) ) ->
+       let  ctx = (ParsingResult(iloc , ( quot.q_contents ) )) in
+       let  exc1 = (Quotation(n , pos_tag , ctx , exc )) in
+       (raise ( (FanLoc.Exc_located(iloc , exc1 )) ) )
+    | FanLoc.Exc_located(iloc , (Quotation(_) as exc) ) ->
+       (raise ( (FanLoc.Exc_located(iloc , exc )) ) )
+    | FanLoc.Exc_located(iloc , exc ) ->
+       let  ctx = (ParsingResult(iloc , ( quot.q_contents ) )) in
+       let  exc1 = (Quotation(( quot.q_name ) , pos_tag , ctx , exc )) in
+       (raise ( (FanLoc.Exc_located(iloc , exc1 )) ) ))
    let  expand (loc) (quotation) (tag) =
    let open
    FanSig in
@@ -170,16 +168,17 @@ module Make =
    let  name = quotation.q_name in
    let  expander =
    (try (find name tag ) with
-    | (FanLoc.Exc_located (_ , Quotation (_) ) as exc) -> (raise exc )
-    | FanLoc.Exc_located (qloc , exc ) ->
+    | (FanLoc.Exc_located(_ , Quotation(_) ) as exc) -> (raise exc )
+    | FanLoc.Exc_located(qloc , exc ) ->
        (raise (
-         (FanLoc.Exc_located
-           (qloc , ( (Quotation (name , pos_tag , Finding  , exc )) ) )) ) )
+         (FanLoc.Exc_located(qloc , (
+                             (Quotation(name , pos_tag , Finding  , exc )) )
+                             )) ) )
     | exc ->
        (raise (
-         (FanLoc.Exc_located
-           (loc , ( (Quotation (name , pos_tag , Finding  , exc )) ) )) ) ))
-   in
+         (FanLoc.Exc_located(loc , (
+                             (Quotation(name , pos_tag , Finding  , exc )) )
+                             )) ) )) in
    let  loc =
    (FanLoc.join ( (FanLoc.move `start ( quotation.q_shift ) loc ) ) ) in
    (expand_quotation loc expander pos_tag quotation )
@@ -200,7 +199,7 @@ module Make =
        )) ) |> ( anti_filter#expr )) in
    let  expand_str_item (loc) (loc_name_opt) (s) =
    let  exp_ast = (expand_expr loc loc_name_opt s ) in
-   (Ast.StExp (loc , exp_ast )) in
+   (Ast.StExp(loc , exp_ast )) in
    let  expand_patt (_loc) (loc_name_opt) (s) =
    (BatRef.protect FanConfig.antiquotations true  (
      fun (_) ->
@@ -209,25 +208,23 @@ module Make =
        let  exp_ast = (anti_filter#patt meta_ast ) in
        (match loc_name_opt with
         | None -> exp_ast
-        | Some (name) ->
-           let  rec subst_first_loc =
+        | Some(name) ->
+           let rec  subst_first_loc =
            function
-           | Ast.PaApp
-              (_loc ,
-               Ast.PaId
-                (_ ,
-                 Ast.IdAcc (_ , Ast.IdUid (_ , "Ast" ) , Ast.IdUid (_ , u ) ) )
-               , _ ) ->
-              (Ast.PaApp
-                (_loc , (
-                 (Ast.PaId
-                   (_loc , (
-                    (Ast.IdAcc
-                      (_loc , ( (Ast.IdUid (_loc , "Ast" )) ) , (
-                       (Ast.IdUid (_loc , u )) ) )) ) )) ) , (
-                 (Ast.PaId (_loc , ( (Ast.IdLid (_loc , name )) ) )) ) ))
-           | Ast.PaApp (_loc , a , b ) ->
-              (Ast.PaApp (_loc , ( (subst_first_loc a ) ) , b ))
+           | Ast.PaApp(_loc ,
+                       Ast.PaId(_ ,
+                                Ast.IdAcc(_ , Ast.IdUid(_ , "Ast" ) ,
+                                          Ast.IdUid(_ , u ) ) ) , _ ) ->
+              (Ast.PaApp(_loc , (
+                         (Ast.PaId(_loc , (
+                                   (Ast.IdAcc(_loc , (
+                                              (Ast.IdUid(_loc , "Ast" )) ) ,
+                                              ( (Ast.IdUid(_loc , u )) ) )) )
+                                   )) ) , (
+                         (Ast.PaId(_loc , ( (Ast.IdLid(_loc , name )) ) )) )
+                         ))
+           | Ast.PaApp(_loc , a , b ) ->
+              (Ast.PaApp(_loc , ( (subst_first_loc a ) ) , b ))
            | p -> p in (subst_first_loc exp_ast )) ) ) in
    begin
     (
@@ -247,7 +244,7 @@ module Make =
    let  add_quotation_of_expr ~name  ~entry  =
    let  expand_fun = (parse_quot_string ( (Gram.eoi_entry entry ) ) ) in
    let  mk_fun (loc) (loc_name_opt) (s) =
-   (Ast.StExp (loc , ( (expand_fun loc loc_name_opt s ) ) )) in
+   (Ast.StExp(loc , ( (expand_fun loc loc_name_opt s ) ) )) in
    begin
     (
    (add name DynAst.expr_tag expand_fun )

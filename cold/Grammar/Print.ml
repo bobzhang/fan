@@ -1,11 +1,11 @@
 open Structure
 open Format
 type brothers = Bro of symbol * brothers list   
-let  rec flatten_tree =
+let rec  flatten_tree =
 function
 | DeadEnd -> ([])
-| LocAct (_ , _ ) -> [[] ]
-| Node ({node = n ; brother = b ; son = s }) ->
+| LocAct(_ , _ ) -> [[] ]
+| Node({node = n ; brother = b ; son = s }) ->
    (( (List.map ( fun (l) -> ( n ) :: l  ) ( (flatten_tree s ) ) ) ) @ (
      (flatten_tree b ) ))
 class text_grammar =
@@ -52,7 +52,7 @@ class text_grammar =
   fun (ppf) ->
     fun (n) ->
       fun (sl) ->
-        let  rec loop (i) =
+        let rec  loop (i) =
         function
         | [] -> ()
         | (s :: sl) ->
@@ -136,7 +136,7 @@ class text_grammar =
              );
               (
              (match lev.lname with
-              | Some (n) -> (fprintf ppf "%S@;<1 2>" n )
+              | Some(n) -> (fprintf ppf "%S@;<1 2>" n )
               | None -> ())
              );
               (
@@ -159,8 +159,8 @@ class text_grammar =
        );
         (
        (match e.edesc with
-        | Dlevels (elev) -> (self#levels ppf elev )
-        | Dparser (_) -> (fprintf ppf "<parser>" ))
+        | Dlevels(elev) -> (self#levels ppf elev )
+        | Dparser(_) -> (fprintf ppf "<parser>" ))
        );
         (fprintf ppf " ]@]" )
        end : unit)
@@ -172,18 +172,18 @@ class dump_grammar =
  method! tree =
   fun (ppf) ->
     fun (tree) ->
-      let  rec get_brothers (acc) =
+      let rec  get_brothers (acc) =
       function
       | DeadEnd -> (List.rev acc )
-      | LocAct (_ , _ ) -> (List.rev acc )
-      | Node ({node = n ; brother = b ; son = s }) ->
+      | LocAct(_ , _ ) -> (List.rev acc )
+      | Node({node = n ; brother = b ; son = s }) ->
          (get_brothers (
-           ( ( (Bro (n , ( (get_brothers []  s ) ) )) ) ) :: acc  ) b ) and
+           ( ( (Bro(n , ( (get_brothers []  s ) ) )) ) ) :: acc  ) b ) and
       print_brothers (ppf) (brothers) =
       if (brothers = [] ) then ( (fprintf ppf "@ []" ) )
       else
        (List.iter (
-         fun (Bro (n , xs )) ->
+         fun (Bro(n , xs )) ->
            begin
             (
            (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n )
@@ -202,7 +202,7 @@ class dump_grammar =
       get_children (acc) =
       function
       | [] -> (List.rev acc )
-      | (Bro (n , x ) :: []) -> (get_children ( ( n ) :: acc  ) x )
+      | (Bro(n , x ) :: []) -> (get_children ( ( n ) :: acc  ) x )
       | _ -> (raise Exit  )  in
       (print_brothers ppf ( (get_brothers []  tree ) ) )
  method! levels =
@@ -217,7 +217,7 @@ class dump_grammar =
             );
              (
             (match lev.lname with
-             | Some (n) -> (fprintf ppf "%S@;<1 2>" n )
+             | Some(n) -> (fprintf ppf "%S@;<1 2>" n )
              | None -> ())
             );
              (

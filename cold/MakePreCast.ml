@@ -23,7 +23,7 @@ module Make =
    let  callbacks = (Queue.create ()  )
    let  loaded_modules = (ref []  )
    let  iter_and_take_callbacks (f) =
-   let  rec loop (()) = (loop ( (f ( (Queue.take callbacks ) ) ) ) ) in
+   let rec  loop (()) = (loop ( (f ( (Queue.take callbacks ) ) ) ) ) in
    (try (loop ()  ) with
     Queue.Empty -> ())
    let  declare_dyn_module (m) (f) =

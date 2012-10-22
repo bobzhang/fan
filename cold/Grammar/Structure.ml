@@ -41,9 +41,9 @@ type internal_entry = {
                         ;
                         mutable estart:(int -> efun) 
                         ;
-                        mutable econtinue:(int ->
-                                            (FanLoc.t -> (Action.t -> efun) ) )
-                                            
+                        mutable
+                         econtinue:(int ->
+                                     (FanLoc.t -> (Action.t -> efun) ) ) 
                         ;
                         mutable edesc:desc
                         }

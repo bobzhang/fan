@@ -192,8 +192,8 @@ module Make =
                   [(None  , None  , (
                     [((
                       [`Stoken
-                        ((( function | `EOI -> (true) | _ -> (false) ) ,
-                          (`Normal , "`EOI" ) ))] ) , (
+                       ((( function | `EOI -> (true) | _ -> (false) ) ,
+                         (`Normal , "`EOI" ) ))] ) , (
                       (Gram.mk_action (
                         fun (__camlp4_0) ->
                           fun ((_loc : FanLoc.t)) ->
@@ -213,17 +213,17 @@ module Make =
     end
    module Quotation = (Quotation.Make)(AntiquotSyntax)
    let  wrap (directive_handler) (pa) (init_loc) (cs) =
-   let  rec loop (loc) =
+   let rec  loop (loc) =
    let  (pl , stopped_at_directive ) = (pa loc cs ) in
    (match stopped_at_directive with
-    | Some (new_loc) ->
+    | Some(new_loc) ->
        let  pl =
        (match (List.rev pl ) with
         | [] -> assert false
         | (x :: xs) ->
            (match (directive_handler x ) with
             | None -> xs
-            | Some (x) -> ( x ) :: xs )) in
+            | Some(x) -> ( x ) :: xs )) in
        (( (List.rev pl ) ) @ ( (loop new_loc ) ))
     | None -> pl) in (loop init_loc )
    let  parse_implem ?(directive_handler=fun (_) -> (None))  (_loc) (cs) =
