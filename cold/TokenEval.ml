@@ -101,8 +101,8 @@ let  backslash_in_string (strict) (store) ((__strm : _ Stream.t )) =
     );
     
     let  s = __strm in begin
-                       ( (skip_opt_linefeed s ) ); (skip_indent s )
-                       end
+    ( (skip_opt_linefeed s ) ); (skip_indent s )
+    end
   | _ ->
     
     (match 
@@ -164,6 +164,6 @@ let  string ?strict  (s) =
     );
     
     let  s = __strm in begin
-                       ( (store c ) ); (parse s )
-                       end
+    ( (store c ) ); (parse s )
+    end
   | _ -> (Buffer.contents buf )) in (parse ( (Stream.of_string s ) ) )

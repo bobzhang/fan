@@ -17,7 +17,7 @@ type 'a
  | Tag_ident
  | Tag_binding
  | Tag_rec_binding
- | Tag_module_binding 
+ | Tag_module_binding  
 let  string_of_tag =
   
   function
@@ -55,24 +55,19 @@ let  ident_tag = (Tag_ident: Ast.ident tag )
 let  binding_tag = (Tag_binding: Ast.binding tag )
 let  rec_binding_tag = (Tag_rec_binding: Ast.rec_binding tag )
 let  module_binding_tag = (Tag_module_binding: Ast.module_binding tag )
-type dyn 
+type dyn  
 external dyn_tag : ('a  tag  -> dyn tag )  = "%identity" 
-module Pack =
- functor (X : sig type 'a   t   end) ->
-  struct
-   type pack = (dyn tag  * Obj.t ) 
-  exception Pack_error
-  let  pack (tag) ((v : 'a  X.t )) =
-    (( (dyn_tag tag ) ) , ( (Obj.repr v ) ) )
-  let  unpack =
-    (fun (tag) ->
-       fun ((tag' , obj )) ->
-         if (( (dyn_tag tag ) ) = tag') then ( ((Obj.obj obj ): 'a  X.t ) )
-         else (raise Pack_error  ): ('a  tag  -> (pack -> 'a  X.t ) ) )
-  let  print_tag =
-    (fun (f) ->
-       fun ((tag , _ )) ->
-         (Format.pp_print_string f ( (string_of_tag tag ) ) ):
-      (Format.formatter -> (pack -> unit) ) )
-  
-  end
+module Pack (X:sig type 'a   t    end) =
+  struct type pack = (dyn tag  * Obj.t )   exception Pack_error
+    let  pack (tag) ((v : 'a  X.t )) =
+      (( (dyn_tag tag ) ) , ( (Obj.repr v ) ) )
+    let  unpack =
+      (fun (tag) ->
+         fun ((tag' , obj )) ->
+           if (( (dyn_tag tag ) ) = tag') then ( ((Obj.obj obj ): 'a  X.t ) )
+           else (raise Pack_error  ): ('a  tag  -> (pack -> 'a  X.t ) ) )
+    let  print_tag =
+      (fun (f) ->
+         fun ((tag , _ )) ->
+           (Format.pp_print_string f ( (string_of_tag tag ) ) ):
+        (Format.formatter -> (pack -> unit) ) )  end

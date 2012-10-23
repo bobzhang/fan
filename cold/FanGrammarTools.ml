@@ -1,7 +1,7 @@
 open Format
 open Lib
-module MetaAst = (Camlp4Ast.Meta.Make)(Lib.Meta.MetaGhostLoc)
-module Ast = Camlp4Ast
+module MetaAst  = (Camlp4Ast.Meta.Make) (Lib.Meta.MetaGhostLoc)
+module Ast  = Camlp4Ast
 open FanGrammar
 let  print_warning = (eprintf "%a:\n%s@." FanLoc.print )
 let  split_ext = (ref false  )
@@ -120,8 +120,7 @@ let  check_use (nl) (el) =
 let  new_type_var =
   
   let  i = (ref 0 ) in
-  fun (() ) ->
-    begin
+  fun (() ) -> begin
     ( (incr i ) ); ("e__" ^ ( (string_of_int ( i.contents ) ) ))
     end
 let  used_of_rule_list (rl) =

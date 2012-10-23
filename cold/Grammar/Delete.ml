@@ -143,29 +143,22 @@ let  delete_rule (entry) (sl) =
   with
   | Dlevels(levs) ->
     
-    let  levs = (delete_rule_in_level_list entry sl levs ) in
-    begin
-    (
-    entry.edesc<- Dlevels (levs)
-    );
-     (
+    let  levs = (delete_rule_in_level_list entry sl levs ) in begin
+    ( entry.edesc<- Dlevels (levs) ); (
     entry.estart<-
       fun (lev) ->
         fun (strm) ->
           
-          let  f = (Parser.start_parser_of_entry entry ) in
-          begin
+          let  f = (Parser.start_parser_of_entry entry ) in begin
           ( entry.estart<- f ); (f lev strm )
-          end
-    );
+          end );
      entry.econtinue<-
        fun (lev) ->
          fun (bp) ->
            fun (a) ->
              fun (strm) ->
                
-               let  f = (Parser.continue_parser_of_entry entry ) in
-               begin
+               let  f = (Parser.continue_parser_of_entry entry ) in begin
                ( entry.econtinue<- f ); (f lev bp a strm )
                end
     end

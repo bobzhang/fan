@@ -1,6 +1,6 @@
 open LibUtil
 open FanUtil
-module Ast = Camlp4Ast
+module Ast  = Camlp4Ast
 let  test_patt_lessminus =
   (Gram.of_parser "test_patt_lessminus" (
     fun (strm) ->

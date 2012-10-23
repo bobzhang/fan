@@ -1,4 +1,4 @@
-module P = (MakePreCast.Make)(struct  end)
+module P  = (MakePreCast.Make) (struct  end)
 open P
 let  wrap (parse_fun) (lb) =
   

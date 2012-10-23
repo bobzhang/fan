@@ -1,19 +1,19 @@
-type loc = FanLoc.t 
-and meta_bool = [ `BTrue | `BFalse | `BAnt of string   ] 
-and rec_flag = [ `ReRecursive | `ReNil | `ReAnt of string   ] 
-and direction_flag = [ `DiTo | `DiDownto | `DiAnt of string   ] 
-and mutable_flag = [ `MuMutable | `MuNil | `MuAnt of string   ] 
-and private_flag = [ `PrPrivate | `PrNil | `PrAnt of string   ] 
-and virtual_flag = [ `ViVirtual | `ViNil | `ViAnt of string   ] 
-and override_flag = [ `OvOverride | `OvNil | `OvAnt of string   ] 
-and row_var_flag = [ `RvRowVar | `RvNil | `RvAnt of string   ] 
-and 'a   meta_option = [ `ONone | `OSome of 'a   | `OAnt of string   ] 
+type loc = FanLoc.t  
+and meta_bool = [ `BTrue | `BFalse | `BAnt of string   ]  
+and rec_flag = [ `ReRecursive | `ReNil | `ReAnt of string   ]  
+and direction_flag = [ `DiTo | `DiDownto | `DiAnt of string   ]  
+and mutable_flag = [ `MuMutable | `MuNil | `MuAnt of string   ]  
+and private_flag = [ `PrPrivate | `PrNil | `PrAnt of string   ]  
+and virtual_flag = [ `ViVirtual | `ViNil | `ViAnt of string   ]  
+and override_flag = [ `OvOverride | `OvNil | `OvAnt of string   ]  
+and row_var_flag = [ `RvRowVar | `RvNil | `RvAnt of string   ]  
+and 'a   meta_option = [ `ONone | `OSome of 'a   | `OAnt of string   ]  
 and 'a   meta_list =
-  [ `LNil | `LCons of ('a  * 'a  meta_list  )  | `LAnt of string   ] 
+  [ `LNil | `LCons of ('a  * 'a  meta_list  )  | `LAnt of string   ]  
 and ident =
   [ `IdAcc of (loc * ident * ident )  | `IdApp of (loc * ident * ident )  |
     `IdLid of (loc * string )  | `IdUid of (loc * string )  |
-    `IdAnt of (loc * string )   ] 
+    `IdAnt of (loc * string )   ]  
 and ctyp =
   [ `TyNil of loc  | `TyAli of (loc * ctyp * ctyp )  | `TyAny of loc  |
     `TyApp of (loc * ctyp * ctyp )  | `TyArr of (loc * ctyp * ctyp )  |
@@ -34,7 +34,7 @@ and ctyp =
     `TyVrnSup of (loc * ctyp )  | `TyVrnInf of (loc * ctyp )  |
     `TyVrnInfSup of (loc * ctyp * ctyp )  | `TyAmp of (loc * ctyp * ctyp )  |
     `TyOfAmp of (loc * ctyp * ctyp )  | `TyPkg of (loc * module_type )  |
-    `TyAnt of (loc * string )   ] 
+    `TyAnt of (loc * string )   ]  
 and patt =
   [ `PaNil of loc  | `PaId of (loc * ident )  |
     `PaAli of (loc * patt * patt )  | `PaAnt of (loc * string )  |
@@ -51,7 +51,7 @@ and patt =
     `PaStr of (loc * string )  | `PaTup of (loc * patt )  |
     `PaTyc of (loc * patt * ctyp )  | `PaTyp of (loc * ident )  |
     `PaVrn of (loc * string )  | `PaLaz of (loc * patt )  |
-    `PaMod of (loc * string )   ] 
+    `PaMod of (loc * string )   ]  
 and expr =
   [ `ExNil of loc  | `ExId of (loc * ident )  |
     `ExAcc of (loc * expr * expr )  | `ExAnt of (loc * string )  |
@@ -76,13 +76,13 @@ and expr =
     `ExTup of (loc * expr )  | `ExCom of (loc * expr * expr )  |
     `ExTyc of (loc * expr * ctyp )  | `ExVrn of (loc * string )  |
     `ExWhi of (loc * expr * expr )  | `ExOpI of (loc * ident * expr )  |
-    `ExFUN of (loc * string * expr )  | `ExPkg of (loc * module_expr )   ] 
+    `ExFUN of (loc * string * expr )  | `ExPkg of (loc * module_expr )   ]  
 and module_type =
   [ `MtNil of loc  | `MtId of (loc * ident )  |
     `MtFun of (loc * string * module_type * module_type )  |
     `MtQuo of (loc * string )  | `MtSig of (loc * sig_item )  |
     `MtWit of (loc * module_type * with_constr )  |
-    `MtOf of (loc * module_expr )  | `MtAnt of (loc * string )   ] 
+    `MtOf of (loc * module_expr )  | `MtAnt of (loc * string )   ]  
 and sig_item =
   [ `SgNil of loc  | `SgCls of (loc * class_type )  |
     `SgClt of (loc * class_type )  | `SgSem of (loc * sig_item * sig_item ) 
@@ -93,33 +93,33 @@ and sig_item =
     `SgRecMod of (loc * module_binding )  |
     `SgMty of (loc * string * module_type )  | `SgOpn of (loc * ident )  |
     `SgTyp of (loc * ctyp )  | `SgVal of (loc * string * ctyp )  |
-    `SgAnt of (loc * string )   ] 
+    `SgAnt of (loc * string )   ]  
 and with_constr =
   [ `WcNil of loc  | `WcTyp of (loc * ctyp * ctyp )  |
     `WcMod of (loc * ident * ident )  | `WcTyS of (loc * ctyp * ctyp )  |
     `WcMoS of (loc * ident * ident )  |
     `WcAnd of (loc * with_constr * with_constr )  |
-    `WcAnt of (loc * string )   ] 
+    `WcAnt of (loc * string )   ]  
 and binding =
   [ `BiNil of loc  | `BiAnd of (loc * binding * binding )  |
-    `BiEq of (loc * patt * expr )  | `BiAnt of (loc * string )   ] 
+    `BiEq of (loc * patt * expr )  | `BiAnt of (loc * string )   ]  
 and rec_binding =
   [ `RbNil of loc  | `RbSem of (loc * rec_binding * rec_binding )  |
-    `RbEq of (loc * ident * expr )  | `RbAnt of (loc * string )   ] 
+    `RbEq of (loc * ident * expr )  | `RbAnt of (loc * string )   ]  
 and module_binding =
   [ `MbNil of loc  | `MbAnd of (loc * module_binding * module_binding )  |
     `MbColEq of (loc * string * module_type * module_expr )  |
-    `MbCol of (loc * string * module_type )  | `MbAnt of (loc * string )   ] 
+    `MbCol of (loc * string * module_type )  | `MbAnt of (loc * string )   ]  
 and match_case =
   [ `McNil of loc  | `McOr of (loc * match_case * match_case )  |
-    `McArr of (loc * patt * expr * expr )  | `McAnt of (loc * string )   ] 
+    `McArr of (loc * patt * expr * expr )  | `McAnt of (loc * string )   ]  
 and module_expr =
   [ `MeNil of loc  | `MeId of (loc * ident )  |
     `MeApp of (loc * module_expr * module_expr )  |
     `MeFun of (loc * string * module_type * module_expr )  |
     `MeStr of (loc * str_item )  |
     `MeTyc of (loc * module_expr * module_type )  | `MePkg of (loc * expr ) 
-    | `MeAnt of (loc * string )   ] 
+    | `MeAnt of (loc * string )   ]  
 and str_item =
   [ `StNil of loc  | `StCls of (loc * class_expr )  |
     `StClt of (loc * class_type )  | `StSem of (loc * str_item * str_item ) 
@@ -131,7 +131,7 @@ and str_item =
     `StRecMod of (loc * module_binding )  |
     `StMty of (loc * string * module_type )  | `StOpn of (loc * ident )  |
     `StTyp of (loc * ctyp )  | `StVal of (loc * rec_flag * binding )  |
-    `StAnt of (loc * string )   ] 
+    `StAnt of (loc * string )   ]  
 and class_type =
   [ `CtNil of loc  | `CtCon of (loc * virtual_flag * ident * ctyp )  |
     `CtFun of (loc * ctyp * class_type )  |
@@ -139,7 +139,7 @@ and class_type =
     `CtAnd of (loc * class_type * class_type )  |
     `CtCol of (loc * class_type * class_type )  |
     `CtEq of (loc * class_type * class_type )  | `CtAnt of (loc * string )  
-    ] 
+    ]  
 and class_sig_item =
   [ `CgNil of loc  | `CgCtr of (loc * ctyp * ctyp )  |
     `CgSem of (loc * class_sig_item * class_sig_item )  |
@@ -147,7 +147,7 @@ and class_sig_item =
     `CgMth of (loc * string * private_flag * ctyp )  |
     `CgVal of (loc * string * mutable_flag * virtual_flag * ctyp )  |
     `CgVir of (loc * string * private_flag * ctyp )  |
-    `CgAnt of (loc * string )   ] 
+    `CgAnt of (loc * string )   ]  
 and class_expr =
   [ `CeNil of loc  | `CeApp of (loc * class_expr * expr )  |
     `CeCon of (loc * virtual_flag * ident * ctyp )  |
@@ -157,7 +157,7 @@ and class_expr =
     `CeTyc of (loc * class_expr * class_type )  |
     `CeAnd of (loc * class_expr * class_expr )  |
     `CeEq of (loc * class_expr * class_expr )  | `CeAnt of (loc * string )  
-    ] 
+    ]  
 and class_str_item =
   [ `CrNil of loc  | `CrSem of (loc * class_str_item * class_str_item )  |
     `CrCtr of (loc * ctyp * ctyp )  |
@@ -167,4 +167,4 @@ and class_str_item =
     `CrVal of (loc * string * override_flag * mutable_flag * expr )  |
     `CrVir of (loc * string * private_flag * ctyp )  |
     `CrVvr of (loc * string * mutable_flag * ctyp )  |
-    `CrAnt of (loc * string )   ] 
+    `CrAnt of (loc * string )   ]  

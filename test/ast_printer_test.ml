@@ -40,23 +40,10 @@ class type a = object method v : int end
 
 type 'c u = ('a,'b)#a as 'c     
 
-module type S = sig 
-  class ['a, 'b] f : 'a -> 'b -> object method x : 'a method y : 'b end
-end
-module type S = sig
-  class ['a, 'b] f : f:'a -> ?g:'b -> object method x : 'a method y : 'b end
-end;;      
-
-class ['a,'b] f (v:'a) (u:'b) = object method x = v method y = u end
-
-type ('a,'b,'c)u = ('a,'b) #f as 'c    
 
 let f ~v:v0 ~u = u + v0;;
-
 let f ~v:(v0:int) y = v0 + y;;
 
-class ['a,'b] f ~v:(v:'a) ~u:(u:'b) = object method x = v method y = u end;;
-(* class ['a, 'b] f : v:'a -> u:'b -> object method x : 'a method y : 'b end;; *)
 
 type ('a,'b,'c) u  = ('a,'b)#f [> `c `a] as 'c;;
 (* empty should not print*)
@@ -134,4 +121,36 @@ let f x = object
     method x = print_int x 
 end
 
+external f : int -> int = "hah"
     
+class type b = object ('b)
+      method new_x:int-> 'b
+end
+module type S = sig 
+  class ['a, 'b] f : 'a -> 'b -> object method x : 'a method y : 'b end
+end
+
+
+module type S = sig
+  class ['a, 'b] f : f:'a -> ?g:'b -> object method x : 'a method y : 'b end
+  class a : ?f:int -> g:'a -> object  end
+end;;      
+
+class ['a,'b] f (v:'a) (u:'b) = object method x = v method y = u end
+
+type ('a,'b,'c)u = ('a,'b) #f as 'c    
+
+
+class ['a,'b] f ~v:(v:'a) ~u:u = object method x = v method y :'b= u end;;
+(* class ['a, 'b] f : v:'a -> u:'b -> object method x : 'a method y : 'b end;; *)
+class a ?(f=3) ~g:g0 =object end;;
+
+class a :  ?f:int -> object method x:int end = fun ?(f=3)  -> object method x = f end;;
+class a ?(f=3) : object method x:int end =object method x = f end;;
+class a f :object method x:int end = object method x = f end;;
+
+module type S = sig
+  type u 
+end
+
+module  X (U:S) = struct end

@@ -51,8 +51,7 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
      (flush Pervasives.stderr )
     end else ()
     );
-    a) in
-  begin
+    a) in begin
   (
   
   (match lname
@@ -67,8 +66,7 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
      );
      (flush Pervasives.stderr )
     end else ()
-  | None  -> ())
-  );
+  | None  -> ()) );
    {assoc = a ; lname = ( lev.lname ) ; lsuffix = ( lev.lsuffix ) ;
     lprefix = ( lev.lprefix ) }
   end
@@ -350,29 +348,22 @@ let  levels_of_rules (entry) (position) (rules) =
    (levs1 @ ( (( (List.rev levs ) ) @ levs2) ))
 let  extend (entry) ((position , rules )) =
   
-  let  elev = (levels_of_rules entry position rules ) in
-  begin
-  (
-  entry.edesc<- Dlevels (elev)
-  );
-   (
+  let  elev = (levels_of_rules entry position rules ) in begin
+  ( entry.edesc<- Dlevels (elev) ); (
   entry.estart<-
     fun (lev) ->
       fun (strm) ->
         
-        let  f = (Parser.start_parser_of_entry entry ) in
-        begin
+        let  f = (Parser.start_parser_of_entry entry ) in begin
         ( entry.estart<- f ); (f lev strm )
-        end
-  );
+        end );
    entry.econtinue<-
      fun (lev) ->
        fun (bp) ->
          fun (a) ->
            fun (strm) ->
              
-             let  f = (Parser.continue_parser_of_entry entry ) in
-             begin
+             let  f = (Parser.continue_parser_of_entry entry ) in begin
              ( entry.econtinue<- f ); (f lev bp a strm )
              end
   end

@@ -111,43 +111,25 @@ let  tree_failed (entry) (prev_symb_result) (prev_symb) (tree) =
   | (((`Stry _) |(`Sopt _)) |(`Stree _)) -> (txt ^ " expected")
   | _ ->
     (txt ^ ( (" expected after " ^ ( (name_of_symbol entry prev_symb ) )) )))
-  in
-  begin
+  in begin
   (
   if ((entry.egram).error_verbose).contents then
    (
    
    let  tree = (Search.tree_in_entry prev_symb tree ( entry.edesc ) ) in
    
-   let  ppf = err_formatter in
-   begin
-   (
-   (fprintf ppf "@[<v 0>@," )
-   );
-    (
-   (fprintf ppf "----------------------------------@," )
-   );
-    (
+   let  ppf = err_formatter in begin
+   ( (fprintf ppf "@[<v 0>@," ) ); (
+   (fprintf ppf "----------------------------------@," ) ); (
    (fprintf ppf "Parse error in entry [%s], rule:@;<0 2>" ( entry.ename ) )
-   );
-    (
-   (fprintf ppf "@[" )
-   );
-    (
-   (Print.text#level ppf pp_force_newline ( (Print.flatten_tree tree ) ) )
-   );
-    (
-   (fprintf ppf "@]@," )
-   );
-    (
-   (fprintf ppf "----------------------------------@," )
-   );
+   ); ( (fprintf ppf "@[" ) ); (
+   (Print.text#level ppf pp_force_newline ( (Print.flatten_tree tree ) ) ) );
+    ( (fprintf ppf "@]@," ) ); (
+   (fprintf ppf "----------------------------------@," ) );
     (fprintf ppf "@]@." )
    end
    )
-  else ()
-  );
-   (txt ^ ( (" (in [" ^ ( (( entry.ename ) ^ "])") )) ))
+  else () ); (txt ^ ( (" (in [" ^ ( (( entry.ename ) ^ "])") )) ))
   end
 let  symb_failed (entry) (prev_symb_result) (prev_symb) (symb) =
   

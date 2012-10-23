@@ -331,7 +331,7 @@ and pattern ppf x =
   | Ppat_unpack (s) ->
       fprintf ppf "(module@ %s)@ " s.txt
 
-and simple_expr ppf x =
+and simple_expr ppf x =(* FIXME*)
   match x.pexp_desc with
   | Pexp_construct (li, None, _) ->
       fprintf ppf "%a@ " longident_loc li
@@ -346,14 +346,12 @@ and simple_expr ppf x =
         fprintf ppf "%a" longident_loc li ;
   | Pexp_constant (c) -> fprintf ppf "%a" constant c;
   | Pexp_pack (me) ->
-      fprintf ppf "(module@ ";
-      pp_open_hovbox ppf indent;
-      module_expr ppf me;
-      pp_close_box ppf ();
-      fprintf ppf ")";
+      fprintf ppf "(module@ %a)"
+      module_expr me
   | Pexp_newtype (lid, e) ->
-      fprintf ppf "fun (type %s)@ ->" lid; (* bug fix *)
-      expression ppf e
+      fprintf ppf "fun (type %s)@ ->@ %a"
+        lid
+        expression  e
   | Pexp_tuple (l) ->
       fprintf ppf "@[<hov 1>(";
       pp_print_list simple_expr ppf l ~sep:",";
@@ -410,7 +408,7 @@ and simple_expr ppf x =
       pp_close_box ppf () ;
 
 
-  | _ ->
+  | _ -> (* complex case delegated to expression *)
       fprintf ppf "(@ ";
       expression ppf x;
       fprintf ppf "@ )"
@@ -577,7 +575,7 @@ and expression ppf x =
       fprintf ppf "@]";
 
   | Pexp_sequence (_e1,_e2) ->
-      fprintf ppf "@[<hv 0>begin@\n%a@\nend@]" 
+      fprintf ppf "begin@\n%a@\nend" 
       (fun ppf e -> expression_sequence  ppf ~first:false e) x ;
 
   | Pexp_constraint (e, cto1, cto2) ->
@@ -654,311 +652,222 @@ and expression ppf x =
 
 
 and value_description ppf x =
-  pp_open_hovbox ppf indent ;
-  core_type ppf x.pval_type;
-  if ((List.length x.pval_prim) > 0) then begin
-    fprintf ppf " =@ " ;
-    pp_print_list constant_string ppf x.pval_prim ;
-  end ;
-  pp_close_box ppf () ;
+  fprintf ppf "@[<hov2>%a%a@]"
+    core_type x.pval_type
+    (fun ppf x ->
+      if x.pval_prim<>[] then begin
+        fprintf ppf "@ =@ %a" 
+        (pp_print_list constant_string)
+          x.pval_prim ;
+      end ) x
+
 
 and type_declaration ppf x = begin
-  pp_open_hovbox ppf indent ;
-  (match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
-     | (None,_,Asttypes.Public) -> ()
-     | (None,_,Asttypes.Private) -> fprintf ppf "private@ "
-     | (Some y, Ptype_abstract,Asttypes.Private) -> begin
-         fprintf ppf "private@ ";
+  fprintf ppf "@[<hov2>%a%a@ %a@]"
+  (fun ppf x -> match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
+     | (None,_,Public) -> ()
+     | (None,_,Private) -> fprintf ppf "private@ "
+     | (Some y, Ptype_abstract,Private) -> 
+         fprintf ppf "private@ %a" core_type y;
+     | (Some y, _, Private) -> 
+         fprintf ppf "%a@ =@ private@ " core_type y 
+     | (Some y,Ptype_abstract, Public) -> 
          core_type ppf y;
+     | (Some y, _,Public) -> begin
+         fprintf ppf "%a@ =@ " core_type y
      end
-     | (Some y, _, Asttypes.Private) -> begin
-         core_type ppf y;
-         fprintf ppf "@ =@ private@ "
-     end
-     | (Some y,Ptype_abstract, Asttypes.Public) -> begin
-         core_type ppf y;
-     end
-     | (Some y, _,Asttypes.Public) -> begin
-         core_type ppf y;
-         fprintf ppf "@ =@ "
-     end
-  );
-  (match x.ptype_kind with
-    | Ptype_variant (first::rest) -> begin 
-        pp_open_hovbox ppf indent ;
-        pp_open_hvbox ppf 0 ;
-        type_variant_leaf ppf first true ;
-        type_variant_leaf_list ppf rest ;
-        pp_close_box ppf () ;
-        pp_close_box ppf ()
-    end
+  ) x 
+  (fun ppf x -> match x.ptype_kind with
+    | Ptype_variant (first::rest) -> 
+        fprintf ppf "@[<hov2>@[<hv>%a%a@]@]"
+          (type_variant_leaf true) first
+          type_variant_leaf_list rest
     | Ptype_variant [] ->
         assert false ;
     | Ptype_abstract -> ()
-    | Ptype_record l -> begin 
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "{" ;
-        pp_print_break ppf 0 indent ;
-        pp_open_hvbox ppf 0;
-        pp_print_list type_record_field ppf l ~sep:";";
-        pp_close_box ppf () ;
-        fprintf ppf "@," ;
-        pp_close_box ppf () ;
-        fprintf ppf "}" ;
-        pp_close_box ppf ()
-    end );
-  pp_print_list typedef_constraint ppf x.ptype_cstrs ~breakfirst:true ;
-  pp_close_box ppf () 
+    | Ptype_record l -> 
+        fprintf ppf "@[<hov2>{%a}@]"
+        (pp_print_list type_record_field ~sep:";" )  l ;
+     ) x 
+  (pp_print_list typedef_constraint ~breakfirst:true )  x.ptype_cstrs  ;
+
 end
 and exception_declaration ppf x =
   match x with
   | [] -> ()
-  | _first:: _rest ->
-      fprintf ppf "@ of@ ";
-      pp_print_list core_type ppf x ~sep:"*";
+  | _ ->
+      fprintf ppf "@ of@ %a"
+      (pp_print_list ~sep:"*" core_type)  x 
 
-and class_type ppf x =
-  match x.pcty_desc with
-  | Pcty_signature (cs) ->
+and class_type ppf x =  match x.pcty_desc with
+  | Pcty_signature cs ->
       class_signature ppf cs;
   | Pcty_constr (li, l) ->
-      pp_open_hovbox ppf indent ;
-      (match l with
-        | [] -> ()
-        | _  -> fprintf ppf "[" ;
-            pp_print_list core_type ppf l ~sep:",";
-            fprintf ppf "]@ " );
-      fprintf ppf "%a" longident_loc li ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>%a%a@]"
+      (fun ppf l -> match l with
+      | [] -> ()
+      | _  -> fprintf ppf "[%a]@ " (pp_print_list core_type ~sep:"," ) l) l 
+      longident_loc li 
   | Pcty_fun (l, co, cl) ->
         fprintf ppf "@[<hov2>(%a@ ->@ %a)@ @]" (* FIXME remove parens later *)
         print_type_with_label (l,co) class_type cl;
 and class_signature ppf { pcsig_self = ct; pcsig_fields = l ;_} =
-  pp_open_hvbox ppf 0;
-  pp_open_hovbox ppf indent ;
-  fprintf ppf "object";
-  (match ct.ptyp_desc with
+  fprintf ppf "object%a@\n%a@\nend"
+  (fun ppf ct -> match ct.ptyp_desc with
     | Ptyp_any -> ()
-    | _ -> fprintf ppf "@ (";
-        core_type ppf ct;
-        fprintf ppf ")" );
-  pp_close_box ppf () ;
-  pp_print_list class_type_field ppf l ~indent ~breakfirst:true ;
-  pp_print_break ppf 1 0;
-  fprintf ppf "end";
+    | _ -> fprintf ppf "@ (%a)" core_type ct) ct
+  (pp_print_list ~indent ~breakfirst:true class_type_field) l  ;
 
 and class_type_field ppf x =
   match x.pctf_desc with
   | Pctf_inher (ct) ->      (* todo: test this *)
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "inherit@ " ;
-      class_type ppf ct ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>inherit@ %a@]"
+        class_type ct 
   | Pctf_val (s, mf, vf, ct) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "val %s%s%s :@ "
+      fprintf ppf "@[<hov2>val @ %s%s%s@ :@ %a@]"
         (match mf with
         | Mutable -> "mutable "
         | _       -> "")
       (match vf with
         | Virtual -> "virtual "
         | _       -> "")
-      s;
-      core_type ppf ct ;
-      pp_close_box ppf () ;
+      s
+      core_type  ct 
   | Pctf_virt (s, pf, ct) ->    (* todo: test this *)
-      pp_open_hovbox ppf indent ;
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "method@ %avirtual@ %s" private_flag pf s ;
-      pp_close_box ppf () ;
-      fprintf ppf " :@ " ;
-      core_type ppf ct ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>@[<hov2>method@ %a@ virtual@ %s@]@ :@ %a@]"
+        private_flag pf
+        s
+        core_type ct 
   | Pctf_meth (s, pf, ct) ->
-      pp_open_hovbox ppf indent ;
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "method %a%s" private_flag pf s;
-      pp_close_box ppf () ;
-      fprintf ppf " :@ " ;
-      core_type ppf ct ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>@[<hov2>method@ %a@ %s@]@ :@ %a@]"
+        private_flag pf
+        s
+        core_type ct 
   | Pctf_cstr (ct1, ct2) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "constraint@ " ;
-      core_type ppf ct1;
-      fprintf ppf " =@ " ;
-      core_type ppf ct2;
-      pp_close_box ppf () ;
-
+      fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]"
+        core_type ct1
+        core_type ct2
 and class_description ppf ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
-  pp_open_hvbox ppf 0 ;
-  pp_open_hovbox ppf indent ;
-  fprintf ppf "class %a%a%s :" virtual_flag x.pci_virt
-    class_params_def ls txt ;
-  pp_close_box ppf () ;
-  pp_print_break ppf 1 indent ;
-  class_type ppf x.pci_expr ;
-  pp_close_box ppf () ;
-
+  fprintf ppf "@[<hv>@[<hov2>class@ %a%a%s@ :@]@ %a@]"
+    virtual_flag x.pci_virt
+    class_params_def ls
+    txt
+    class_type x.pci_expr
+    
 and class_type_declaration ppf x =
   class_type_declaration_ext ppf true x ;
 
 and class_type_declaration_ext ppf first ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
-  pp_open_hvbox ppf 0;
-  pp_open_hovbox ppf indent ;
-  fprintf ppf "%s@ %a%a%s =" (if (first) then "class type" else "and")
-  virtual_flag x.pci_virt class_params_def ls
-    txt ;
-  pp_close_box ppf ();
-  pp_print_break ppf 1 indent ;
-  class_type ppf x.pci_expr;
-  pp_close_box ppf ();
+  fprintf ppf "@[<hv>@[<hov2>%s@ %a%a%s@ =@]@ %a@]"
+    (if first then "class type" else "and")
+    virtual_flag x.pci_virt
+    class_params_def ls
+    txt
+    class_type x.pci_expr
 
 and class_type_declaration_list ppf ?(first=true) l =
-  if (first) then pp_open_hvbox ppf 0 ;
   match l with
-  | [] -> if (first) then pp_close_box ppf () ;
+  | [] -> () 
   | h :: [] ->
       class_type_declaration_ext ppf first h ;
-      pp_close_box ppf () ;
   | h :: t ->
       class_type_declaration_ext ppf first h ;
       pp_print_space ppf () ;
       class_type_declaration_list ppf ~first:false t ;
+
 
 and class_expr ppf x =
   match x.pcl_desc with
   | Pcl_structure (cs) ->
       class_structure ppf cs ;
   | Pcl_fun (l, eo, p, e) ->
-      pp_open_hvbox ppf indent;
-      pp_open_hovbox ppf indent;
-      fprintf ppf "fun@ ";
-      pattern ppf p;
-      fprintf ppf " ->";
-      pp_close_box ppf ();
-      fprintf ppf "@ ";
-      class_expr ppf e;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>fun@ %a@ ->@ %a@]"
+        pp_print_label_exp (l,eo,p)
+        class_expr e
   | Pcl_let (rf, l, ce) ->
       fprintf ppf "@[<hov>let@ %a@ %a@ in@ %a@]"
         rec_flag rf
         pattern_x_expression_def_list  l
         class_expr ce
   | Pcl_apply (ce, l) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "(";
-      class_expr ppf ce;
-      pp_print_list label_x_expression_param ppf l ~breakfirst:true ;
-      fprintf ppf ")";
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>(%a@ %a)@]"
+      class_expr  ce
+      (pp_print_list label_x_expression_param ~breakfirst:true ) l 
   | Pcl_constr (li, l) ->
-      pp_open_hovbox ppf indent;
-      if ((List.length l) != 0) then begin
-        fprintf ppf "[" ;
-        pp_print_list core_type ppf l ~sep:",";
-        fprintf ppf "]@ " ;
-        end ;
-      fprintf ppf "%a" longident_loc li;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>%a%a@]"
+      (fun ppf l-> if l <>[] then 
+        fprintf ppf "[%a]@ " 
+        (pp_print_list core_type  ~sep:"," ) l ) l 
+       longident_loc li
   | Pcl_constraint (ce, ct) ->
-      pp_open_hovbox ppf indent;
-      fprintf ppf "(";
-      class_expr ppf ce;
-      fprintf ppf "@ : ";
-      class_type ppf ct;
-      fprintf ppf ")";
-      pp_close_box ppf ();
-
+      fprintf ppf "@[<hov2>(%a@ :@ %a)@]"
+        class_expr ce
+        class_type ct 
 and class_structure ppf { pcstr_pat = p; pcstr_fields =  l } =
-  pp_open_hvbox ppf 0 ;
-  pp_open_hovbox ppf indent ;
-  fprintf ppf "object" ;
-  (match p.ppat_desc with
+  fprintf ppf "@[<hv>@[<hov2>object%a@]%a@ end@]"
+  (fun ppf p -> match p.ppat_desc with
     | Ppat_any -> ();
     | _ -> fprintf ppf "@ " ;
-        pattern_in_parens ppf p );
-  pp_close_box ppf () ;
-  pp_print_list class_field ppf l ~indent ~breakfirst:true;
-  fprintf ppf "@ end" ;
-  pp_close_box ppf () ;
-
+        pattern_in_parens ppf p ) p 
+  (pp_print_list class_field  ~indent ~breakfirst:true) l 
 and override ovf = match ovf with
     Override -> "!"
   | Fresh -> ""
-
 and class_field ppf x =
   match x.pcf_desc with
   | Pcf_inher (ovf, ce, so) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "inherit%s@ " (override ovf);
-      class_expr ppf ce;
-      (match so with
+      fprintf ppf "@[<hov2>inherit@ %s@ %a%a@]"
+        (override ovf)
+      class_expr ce
+      (fun ppf so -> match so with
         | None -> ();
-        | Some (s) -> fprintf ppf "@ as %s" s );
-      pp_close_box ppf ();
+        | Some (s) -> fprintf ppf "@ as %s" s ) so 
   | Pcf_val (s, mf, ovf, e) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "val%s %a%s =@ " (override ovf) mutable_flag mf s.txt ;
-      expression_sequence ppf ~indent:0 e ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>val@ %s@ %a@ %s@ =@ %a@]"
+        (override ovf)
+        mutable_flag mf
+        s.txt 
+       (fun ppf e -> expression_sequence  ~indent:0 ppf e) e 
+
   | Pcf_virt (s, pf, ct) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "method virtual %a%s" private_flag pf s.txt ;
-      fprintf ppf " :@ " ;
-      core_type ppf ct;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>method@ virtual@ %a@ %s@ :@ %a@]"
+        private_flag pf
+        s.txt 
+        core_type  ct
+
   | Pcf_valvirt (s, mf, ct) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "val virtual %s%s"
+      fprintf ppf "@[<hov2>val@ virtual@ %s@ %s@ :@ %a@]"
         (match mf with
         | Mutable -> "mutable "
         | _       -> "")
-      s.txt;
-      fprintf ppf " :@ " ;
-      core_type ppf ct;
-      pp_close_box ppf () ;
+        s.txt
+        core_type  ct
+
   | Pcf_meth (s, pf, ovf, e) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "method%s %a%s" (override ovf) private_flag pf s.txt ;
-      (match e.pexp_desc with
+      fprintf ppf "@[<hov2>method@ %s@ %a@ %s%a@]"
+        (override ovf)
+        private_flag pf
+        s.txt
+        (* FIXME special Pexp_poly handling? *)
+      (fun ppf e -> match e.pexp_desc with
         | Pexp_poly (e, Some(ct)) ->
-            fprintf ppf " :@ " ;
-            core_type ppf ct ;
-            fprintf ppf " =@ " ;
-            expression ppf e ;
+            fprintf ppf "@ :@ %a@ =@ %a" 
+            core_type  ct 
+            expression e
         | _ ->
-            fprintf ppf " =@ " ;
-            expression ppf e;
-      ) ;
-(* special Pexp_poly handling? *)
-      pp_close_box ppf () ;
+            fprintf ppf "@ =@ %a" 
+            expression  e
+      ) e 
+
   | Pcf_constr (ct1, ct2) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "constraint@ ";
-      core_type ppf ct1;
-      fprintf ppf " =@ " ;
-      core_type ppf ct2;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]"
+      core_type  ct1
+      core_type  ct2
+
   | Pcf_init (e) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "initializer@ " ;
-      expression_sequence ppf ~indent:0 e ;
-      pp_close_box ppf () ;
-(* only pretty print [class_fun] *)
-and class_fun_helper ppf e =
-  match e.pcl_desc with
-  | Pcl_fun (l, eo, p, e) ->
-      (match (eo, l) with
-        | (None, "") -> fprintf ppf "%a@ " pattern p
-        | (Some x,_) ->
-            fprintf ppf "%s:(%a=%a)@ " l pattern p expression x
-        | (None,_) ->
-            fprintf ppf "%s:(%a)@ " l pattern p
-      );
-      class_fun_helper ppf e;
-  | _ ->
-      e;
+      fprintf ppf "@[<hov2>initializer@ %a@]"
+      (fun ppf e -> expression_sequence  ~indent:0 ppf e) e 
+
 
 and class_declaration_list ppf ?(first=true) l =
   match l with
@@ -969,158 +878,116 @@ and class_declaration_list ppf ?(first=true) l =
           else begin pp_print_space ppf () ; "and" end) in
       class_declaration ppf ~str:s cd ;
       class_declaration_list ppf ~first:false l ;
-
-and class_declaration ppf ?(str="class") ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
-  pp_open_hvbox ppf indent ;
-  pp_open_hovbox ppf indent ;
-  fprintf ppf "%s %a%a%s@ " str virtual_flag x.pci_virt
-    class_params_def ls txt ;
-  let ce =
-    (match x.pci_expr.pcl_desc with
-      | Pcl_fun (_l, _eo, _p, _e) ->
+and pp_print_pexp_class_function _ppf _e = raise Not_found
+and class_declaration ppf ?(str="class") (* for the second will be changed to and FIXME*)
+    ({pci_params=(ls,_);
+      pci_name={txt;_};
+      pci_virt;
+      pci_expr={pcl_desc;_};
+      pci_variance;_ } as x) = (* FIXME pci_variance *)
+  let rec  class_fun_helper ppf e = match e.pcl_desc with
+  | Pcl_fun (l, eo, p, e) ->
+      pp_print_label_exp ppf (l,eo,p);
+      class_fun_helper ppf e
+  | _ -> e in 
+  fprintf ppf "@[<hov2>%s@ %a%a%s@ %a@]"
+    str
+    virtual_flag pci_virt
+    class_params_def ls
+    txt 
+  (fun ppf _ ->  
+    let ce =
+      (match pcl_desc with
+      | Pcl_fun _ ->
           class_fun_helper ppf x.pci_expr;
       | _ -> x.pci_expr) in
-  let ce =
-    (match ce.pcl_desc with
+    let ce =
+      (match ce.pcl_desc with
       | Pcl_constraint (ce, ct) ->
-          fprintf ppf ":@ " ;
-          class_type ppf ct ;
-          fprintf ppf "@ " ;
+          fprintf ppf ":@ %a@ " class_type  ct ;
           ce
       | _ -> ce ) in
-  fprintf ppf "=" ;
-  pp_close_box ppf () ;
-  fprintf ppf "@ " ;
-  class_expr ppf ce ;
-  pp_close_box ppf () ;
-
+  fprintf ppf "=@ %a" class_expr ce ) x 
 and module_type ppf x =
   match x.pmty_desc with
-  | Pmty_ident (li) ->
+  | Pmty_ident li ->
       fprintf ppf "%a" longident_loc li;
   | Pmty_signature (s) ->
-      pp_open_hvbox ppf 0;
-      fprintf ppf "sig";
-      pp_print_list signature_item ppf s ~breakfirst:true ~indent;
-      pp_print_break ppf 1 0;
-      fprintf ppf "end";
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov>sig%a@ end@]"
+      (pp_print_list signature_item  ~breakfirst:true ~indent) s
   | Pmty_functor (s, mt1, mt2) ->
-      pp_open_hvbox ppf indent;
-      pp_open_hovbox ppf indent;
-      fprintf ppf "functor@ (%s : " s.txt ;
-      module_type ppf mt1;
-      fprintf ppf ") ->";
-      pp_close_box ppf ();
-      pp_print_space ppf ();
-      module_type ppf mt2;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>functor@ (%s@ :@ %a)@ ->@ %a@]"
+        s.txt
+        module_type mt1
+        module_type mt2 
   | Pmty_with (mt, l) ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "(" ;
-      module_type ppf mt ;
-      fprintf ppf "@ with@ " ;
-      longident_x_with_constraint_list ppf l ;
-      fprintf ppf ")" ;
-      pp_close_box ppf () ;
+      fprintf ppf "@[<hov2>(%a@ with@ %a)@]"
+      module_type  mt 
+      (fun ppf  l -> longident_x_with_constraint_list ppf l) l
   | Pmty_typeof me ->
-      pp_open_hovbox ppf indent ;
-      fprintf ppf "module type of " ;
-      module_expr ppf me ;
-      pp_close_box ppf ()
-
+      fprintf ppf "@[<hov2>module@ type@ of@ %a@]"
+      module_expr me 
 and signature ppf x =  pp_print_list ~sep_action:pp_print_newline signature_item ppf x
 
-and signature_item ppf x :unit=
-  begin
+and signature_item ppf x :unit= begin
     match x.psig_desc with
-    | Psig_type (l) ->
-        let first = (List.hd l) in
-        let rest  = (List.tl l) in
-        pp_open_hvbox ppf 0;
-        pp_open_hvbox ppf 0;
-        fprintf ppf "type " ;
-        string_x_type_declaration ppf first;
-        pp_close_box ppf ();
-        type_def_list_helper ppf rest;
-        pp_close_box ppf ();
+    | Psig_type l ->
+        (match l with
+        | first::rest ->
+            fprintf ppf "@[<hv>@[<hov>type@ %a@]%a@]"
+            string_x_type_declaration  first
+
+            type_def_list_helper  rest
+        | _ -> failwith "signature_item")
     | Psig_value (s, vd) ->
-      let intro = if vd.pval_prim = [] then "val" else "external" in
-        pp_open_hovbox ppf indent ;
-        if (is_infix (fixity_of_string s.txt))
-          || List.mem s.txt.[0] prefix_symbols then
-          fprintf ppf "%s ( %s ) :@ "
-            intro s.txt                (* OXX done *)
-        else
-        fprintf ppf "%s %s :@ " intro s.txt;
-        value_description ppf vd;
-        pp_close_box ppf () ;
+        fprintf ppf "@[<hov2>%a@]"
+          (fun ppf (s,vd) -> 
+            let intro = if vd.pval_prim = [] then "val" else "external" in
+            if (is_infix (fixity_of_string s.txt)) || List.mem s.txt.[0] prefix_symbols then
+              fprintf ppf "%s@ (@ %s@ )@ :@ " intro s.txt                
+            else
+              fprintf ppf "%s@ %s@ :@ " intro s.txt;
+            value_description ppf vd;) (s,vd)
     | Psig_exception (s, ed) ->
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "exception %s" s.txt;
-        exception_declaration ppf ed;
-        pp_close_box ppf ();
+        fprintf ppf "@[<hov2>exception@ %s@ %a@]"
+          s.txt
+          exception_declaration  ed
     | Psig_class (l) ->
-        pp_open_hvbox ppf 0 ;
-        pp_print_list class_description ppf l ;
-        pp_close_box ppf () ;
-    | Psig_module (s, mt) ->  (* todo: check this *)
-        pp_open_hovbox ppf indent ;
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "module@ %s :" s.txt ;
-        pp_close_box ppf () ;
-        pp_print_space ppf () ;
-        module_type ppf mt;
-        pp_close_box ppf () ;
-    | Psig_open (li) ->
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "open@ %a" longident_loc li ;
-        pp_close_box ppf () ;
-    | Psig_include (mt) ->  (* todo: check this *)
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "include@ " ;
-        module_type ppf mt;
-        pp_close_box ppf () ;
-    | Psig_modtype (s, md) -> (* todo: check this *)
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "module type %s" s.txt ;
-        (match md with
+        fprintf ppf "@[<hov2>%a@]"
+        (pp_print_list class_description) l 
+    | Psig_module (s, mt) ->
+        fprintf ppf "@[<hov>module@ %s@ :@ %a@]"
+          s.txt
+          module_type  mt
+    | Psig_open li ->
+        fprintf ppf "@[<hov2>open@ %a@]" longident_loc li
+    | Psig_include (mt) ->
+        fprintf ppf "@[<hov2>include@ %a@]"
+        module_type  mt
+    | Psig_modtype (s, md) ->
+        fprintf ppf "@[<hov2>module@ type@ %s%a@]"
+          s.txt
+        (fun ppf md -> match md with
           | Pmodtype_abstract -> ()
           | Pmodtype_manifest (mt) ->
               pp_print_space ppf () ;
-              fprintf ppf " = " ;
-              module_type ppf mt;
-        );
-        pp_close_box ppf () ;
+              fprintf ppf "@ =@ %a"  module_type mt
+        ) md 
     | Psig_class_type (l) ->
         class_type_declaration_list ppf l ;
     | Psig_recmodule decls ->
-        pp_open_hvbox ppf 0 ;
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "module rec@ " ;
-        string_x_module_type_list ppf decls ; (* closes hov box *)
-        pp_close_box ppf () ;
+        fprintf ppf "@[<hov2>module@ rec@ %a@]"
+        (fun ppf x -> string_x_module_type_list ppf x)  decls 
   end;
-  (* fprintf ppf "@\n" *)
-
-
 and module_expr ppf x =
   match x.pmod_desc with
   | Pmod_structure (s) ->
-      pp_open_hvbox ppf 0;
-      fprintf ppf "struct";
-      pp_print_list structure_item ppf s ~breakfirst:true ~indent;
-      pp_print_break ppf 1 0;
-      fprintf ppf "end";
-      pp_close_box ppf (); (* bug fixed? *)
+      fprintf ppf "@[<hov2>struct%a@ end@]"
+      (pp_print_list structure_item  ~breakfirst:true ~indent) s;
   | Pmod_constraint (me, mt) ->
-      fprintf ppf "(";
-      pp_open_hovbox ppf indent;
-      module_expr ppf me;
-      fprintf ppf " :@ ";  (* <-- incorrect indentation? *)
-      module_type ppf mt;
-      pp_close_box ppf ();
-      fprintf ppf ")";
+      fprintf ppf "@[<hov2>(%a@ :@ %a)@]"
+        module_expr  me
+        module_type mt
   | Pmod_ident (li) ->
       fprintf ppf "%a" longident_loc li;
   | Pmod_functor (s, mt, me) ->
@@ -1131,21 +998,13 @@ and module_expr ppf x =
       module_expr ppf me;
       pp_close_box ppf () ;
   | Pmod_apply (me1, me2) ->
-      pp_open_hovbox ppf indent;
-      fprintf ppf "(" ;
-      module_expr ppf me1;
-      fprintf ppf ")" ;
-      pp_print_cut ppf ();
-      fprintf ppf "(" ;
-      module_expr ppf me2;
-      fprintf ppf ")" ;
-      pp_close_box ppf ();
+      fprintf ppf "@[<hov2>(%a)@ (%a)@]"
+        module_expr me1
+        module_expr  me2
   | Pmod_unpack e ->
-      fprintf ppf "(val@ ";
-      pp_open_hovbox ppf indent;
-      expression ppf e;
-      pp_close_box ppf ();
-      fprintf ppf ")";
+      fprintf ppf "@[<hov2>(val@ %a)@]"
+        expression  e
+
 
 and structure ppf x = pp_print_list ~sep_action:pp_print_newline structure_item ppf x ;
 
@@ -1215,25 +1074,49 @@ and structure_item ppf x =
         exception_declaration ppf ed;
         pp_close_box ppf () ;
     | Pstr_module (s, me) ->
-        pp_open_hvbox ppf indent;
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "module %s" s.txt ;
-        (match me.pmod_desc with
-          | Pmod_constraint (me, ({pmty_desc=(Pmty_ident (_)
-                  | Pmty_signature (_));_} as mt)) ->
-              fprintf ppf " :@ " ;
-              module_type ppf mt ;
-              fprintf ppf " =" ;
-              pp_close_box ppf () ;
-              pp_print_space ppf () ;
-              module_expr ppf me ;
-          | _ ->
-              fprintf ppf " =" ;
-              pp_close_box ppf () ;
-              pp_print_space ppf () ;
-              module_expr ppf me ;
-        ) ;
-        pp_close_box ppf ();
+        let rec module_helper me = match me.pmod_desc with
+        | Pmod_functor(s,mt,me) ->
+            fprintf ppf "(%s:%a)"
+              s.txt
+              module_type mt ;
+            module_helper me
+        | _ -> me in 
+
+          
+        fprintf ppf "@[<hov2>module@ %s@ %a@]"
+          s.txt
+          (fun ppf me ->
+            let me = module_helper me  in
+            (match me.pmod_desc with
+            | Pmod_constraint
+                (me,
+                 ({pmty_desc=(Pmty_ident (_)
+                 | Pmty_signature (_));_} as mt)) ->
+                     fprintf ppf "@ :@ %a@ =@ %a@ "  module_type mt module_expr  me 
+            | _ ->
+                fprintf ppf "@ =@ %a"  module_expr  me 
+        )) me 
+        (* pp_open_hvbox ppf indent; *)
+        (* pp_open_hovbox ppf indent ; *)
+        (* fprintf ppf "module %s" s.txt ; *)
+        (* (match me.pmod_desc with *)
+        (*   | Pmod_constraint *)
+        (*       (me, *)
+        (*        ({pmty_desc=(Pmty_ident (_) *)
+        (*        | Pmty_signature (_));_} as mt)) -> *)
+        (*       fprintf ppf " :@ " ; *)
+        (*       module_type ppf mt ; *)
+        (*       fprintf ppf " =" ; *)
+        (*       pp_close_box ppf () ; *)
+        (*       pp_print_space ppf () ; *)
+        (*       module_expr ppf me ; (\* FIXME *\) *)
+        (*   | _ -> *)
+        (*       fprintf ppf " =" ; *)
+        (*       pp_close_box ppf () ; *)
+        (*       pp_print_space ppf () ; *)
+        (*       module_expr ppf me ; *)
+        (* ) ; *)
+        (* pp_close_box ppf (); *)
     | Pstr_open (li) ->
         fprintf ppf "open %a" longident_loc li;
     | Pstr_modtype (s, mt) ->
@@ -1241,7 +1124,7 @@ and structure_item ppf x =
         fprintf ppf "module type %s =@ " s.txt;
         module_type ppf mt;
         pp_close_box ppf () ; (* bug fixed? *)
-    | Pstr_class (l) ->
+    | Pstr_class l ->
         class_declaration_list ppf l;
     | Pstr_class_type (l) ->
         class_type_declaration_list ppf l ;
@@ -1271,10 +1154,9 @@ and structure_item ppf x =
         value_description ppf vd;
         pp_close_box ppf () ;
     | Pstr_include me ->
-        pp_open_hovbox ppf indent ;
-        fprintf ppf "include " ;
-        module_expr ppf me ;
-        pp_close_box ppf () ;
+        fprintf ppf "@[<hov2>include@ %a@]"
+        module_expr  me 
+
     | Pstr_exn_rebind (s, li) ->        (* todo: check this *)
         pp_open_hovbox ppf indent ;
         fprintf ppf "exception@ %s =@ %a" s.txt longident_loc li ;
@@ -1337,8 +1219,6 @@ and longident_x_with_constraint_list ?(first=true) ppf l =
   | h :: t  ->
       if (first = false) then fprintf ppf "@ and " ;
       longident_x_with_constraint ppf h ;
-      (* fprintf ppf "@ and " ; *) (* duplicated here *)
-      (* longident_x_with_constraint ppf h ; *)
       longident_x_with_constraint_list ~first:false ppf t;
 
 and string_x_core_type_ands ?(first=true) (ppf:Format.formatter) l :unit=
@@ -1398,7 +1278,7 @@ and typedef_constraint ppf (ct1, ct2, _l) =
   core_type ppf ct2;
   pp_close_box ppf () ;
 
-and type_variant_leaf ppf (s, l,_, _) first = (* TODO *)
+and type_variant_leaf first ppf  (s, l,_, _)  = (* TODO *)
   if (first) then begin
       pp_print_if_newline ppf ();
       pp_print_string ppf "  ";
@@ -1418,7 +1298,7 @@ and type_variant_leaf_list ppf list =
   match list with
   | [] -> ()
   | first :: rest ->
-      type_variant_leaf ppf first false ;
+      type_variant_leaf false ppf first  ;
       type_variant_leaf_list ppf rest ;
 
 and type_record_field ppf (s, mf, ct,_) =
@@ -1736,3 +1616,4 @@ let top_phrase ppf x =
   toplevel_phrase ppf x;
   fprintf ppf ";;" ;
   pp_print_newline ppf ();;
+   

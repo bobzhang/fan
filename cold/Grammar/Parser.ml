@@ -14,27 +14,22 @@ let  add_loc (bp) (parse_fun) (strm) =
    (FanLoc.join bp )
    )
   else (FanLoc.merge bp ep ) in (x , loc )
-module StreamOrig = Stream
-module Stream =
- struct
-  type 'a   t = 'a  StreamOrig.t  
- exception Failure = StreamOrig.Failure
- exception Error = StreamOrig.Error
- let  peek = StreamOrig.peek
- let  junk = StreamOrig.junk
- let  dup (strm) =
-   
-   let rec  loop (n) =
-   
-   function
-   | []  -> None
-   | x::[]  -> if (n = 0) then ( Some (x) ) else None
-   | _::l -> (loop ( (n - 1) ) l ) in
-   
-   let  peek_nth (n) = (loop n ( (Stream.npeek ( (n + 1) ) strm ) ) ) in
-   (Stream.from peek_nth )
- 
- end
+module StreamOrig  = Stream
+module Stream  =
+  struct type 'a   t = 'a  StreamOrig.t   
+    exception Failure = StreamOrig.Failure exception Error = StreamOrig.Error
+    let  peek = StreamOrig.peek let  junk = StreamOrig.junk
+    let  dup (strm) =
+      
+      let rec  loop (n) =
+      
+      function
+      | []  -> None
+      | x::[]  -> if (n = 0) then ( Some (x) ) else None
+      | _::l -> (loop ( (n - 1) ) l ) in
+      
+      let  peek_nth (n) = (loop n ( (Stream.npeek ( (n + 1) ) strm ) ) ) in
+      (Stream.from peek_nth )  end
 let  try_parser (ps) (strm) =
   
   let  strm' = (Stream.dup strm ) in
@@ -45,8 +40,7 @@ let  try_parser (ps) (strm) =
   with
   | (Stream.Error(_) |FanLoc.Exc_located(_ , Stream.Error(_) )) ->
     (raise Stream.Failure  )
-  | exc -> (raise exc )) in
-  begin
+  | exc -> (raise exc )) in begin
   ( (njunk ( (StreamOrig.count strm' ) ) strm ) ); r
   end
 let  level_number (entry) (lab) =
@@ -126,19 +120,13 @@ let  recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
    if strict_parsing_warning.contents then
     (
     
-    let  msg = (Failed.tree_failed entry a s son ) in
-    begin
-    (
-    (Format.eprintf "Warning: trying to recover from syntax error" )
-    );
-     (
+    let  msg = (Failed.tree_failed entry a s son ) in begin
+    ( (Format.eprintf "Warning: trying to recover from syntax error" ) ); (
     if (( entry.ename ) <> "") then
      (
      (Format.eprintf " in [%s]" ( entry.ename ) )
      )
-    else ()
-    );
-     (Format.eprintf "\n%s%a@." msg FanLoc.print loc )
+    else () ); (Format.eprintf "\n%s%a@." msg FanLoc.print loc )
     end
     )
    else () in (do_recover parser_of_tree entry nlevn alevn loc a s son strm )

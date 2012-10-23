@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type t = Location.t 
+type t = Location.t  
 let  dump_sel (f) (x) =
   
   let  s =
@@ -190,11 +190,8 @@ let  raise (loc) (exc) =
   with
   | Exc_located(_ , _ ) -> (raise exc )
   | _ -> (raise ( Exc_located ((loc , exc )) ) ))
-let  error_report ((loc , s )) =
-  begin
-  (
-  (prerr_endline ( (to_string loc ) ) )
-  );
+let  error_report ((loc , s )) = begin
+  ( (prerr_endline ( (to_string loc ) ) ) );
    
   let  (start_bol , stop_bol , start_off , stop_off ) =
   (( (start_bol loc ) ) , ( (stop_bol loc ) ) , ( (start_off loc ) ) , (

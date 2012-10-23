@@ -1,4 +1,4 @@
-type t = ((string * FanLoc.t ) Stream.t  * (string * FanLoc.t ) Queue.t  ) 
+type t = ((string * FanLoc.t ) Stream.t  * (string * FanLoc.t ) Queue.t  )  
 let  mk (() ) =
   
   let  q = (Queue.create ()  ) in
@@ -18,8 +18,8 @@ let  filter ((_ , q )) =
     );
     
     let  xs = __strm in begin
-                        ( (Queue.add (x , loc ) q ) ); (self xs )
-                        end
+    ( (Queue.add (x , loc ) q ) ); (self xs )
+    end
   | Some(x) ->
     (
     (Stream.junk __strm )

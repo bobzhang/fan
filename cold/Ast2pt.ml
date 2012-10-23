@@ -20,25 +20,21 @@ let  mkdirection =
   | _ -> assert false
 let  conv_con =
   
-  let  t = (Hashtbl.create 73 ) in
-  begin
+  let  t = (Hashtbl.create 73 ) in begin
   (
   (List.iter ( fun ((s , s' )) -> (Hashtbl.add t s s' ) ) (
     [("True" , "true" ) ; ("False" , "false" ) ; (" True" , "True" ) ;
-    (" False" , "False" )]  ) )
-  );
+    (" False" , "False" )]  ) ) );
    fun (s) -> 
      (try (Hashtbl.find t s ) with
      | Not_found  -> s)
   end
 let  conv_lab =
   
-  let  t = (Hashtbl.create 73 ) in
-  begin
+  let  t = (Hashtbl.create 73 ) in begin
   (
   (List.iter ( fun ((s , s' )) -> (Hashtbl.add t s s' ) ) (
-    [("val" , "contents" )]  ) )
-  );
+    [("val" , "contents" )]  ) ) );
    fun (s) -> 
      (try (Hashtbl.find t s ) with
      | Not_found  -> s)

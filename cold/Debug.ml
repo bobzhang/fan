@@ -1,7 +1,7 @@
 open Format
 open FanUtil
-module Debug = struct let  mode (_) = false  end
-type section = string 
+module Debug  = struct let  mode (_) = false  end
+type section = string  
 let  out_channel =
   
   (try
@@ -48,11 +48,8 @@ let  formatter =
           else ()
           );
            
-          let  ch = buf.[i] in
-          begin
-          (
-          (output_char out_channel ch )
-          );
+          let  ch = buf.[i] in begin
+          ( (output_char out_channel ch ) );
            (( at_bol.contents ) := ( (ch = '\n') ))
           end
           done ) ( fun (() ) -> (flush out_channel ) ) )
