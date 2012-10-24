@@ -168,3 +168,7 @@ end
 
 type u = A of int
 and b = B of bool 
+
+
+class 'a f = object
+end

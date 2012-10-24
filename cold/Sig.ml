@@ -1,34 +1,34 @@
-module type Id = sig val name : string val version : string  end
+module type Id = sig  val name : string val version : string end
 module type Warning =
-  sig type warning =  (FanLoc.t -> (string -> unit) )   
+  sig  type warning =  (FanLoc.t -> (string -> unit) )  
   val default_warning : warning val current_warning : warning ref 
-  val print_warning : warning  end
-type ('a  , 'loc  )stream_filter = 
-  (('a  * 'loc  ) Stream.t  -> ('a  * 'loc  ) Stream.t )   
+  val print_warning : warning end
+type ('a ,'loc )stream_filter = 
+  (('a *'loc ) Stream.t  -> ('a *'loc ) Stream.t )  
 module type ParserImpl =
-  sig
+  sig 
    val parse_implem :
-     (?directive_handler:(Ast.str_item -> Ast.str_item option )   ->
+     (?directive_handler:(Ast.str_item -> Ast.str_item option )  ->
        (FanLoc.t -> (char Stream.t  -> Ast.str_item) ) ) 
   val parse_interf :
-    (?directive_handler:(Ast.sig_item -> Ast.sig_item option )   ->
-      (FanLoc.t -> (char Stream.t  -> Ast.sig_item) ) )   end
+    (?directive_handler:(Ast.sig_item -> Ast.sig_item option )  ->
+      (FanLoc.t -> (char Stream.t  -> Ast.sig_item) ) )  end
 module type PrinterImpl =
-  sig
+  sig 
    val print_interf :
-     (?input_file:string  ->
-       (?output_file:string  -> (Ast.sig_item -> unit) ) ) 
+     (?input_file:string ->
+       (?output_file:string -> (Ast.sig_item -> unit) ) ) 
   val print_implem :
-    (?input_file:string  ->
-      (?output_file:string  -> (Ast.str_item -> unit) ) )   end
+    (?input_file:string -> (?output_file:string -> (Ast.str_item -> unit) ) ) 
+  end
 module type Camlp4Syntax =
-  sig module AntiquotSyntax : Quotation.AntiquotSyntax
+  sig  module AntiquotSyntax : Quotation.AntiquotSyntax
   module Quotation : Quotation.S module AstFilters : AstFilters.S
   include Warning include ParserImpl include PrinterImpl
-  val interf : (Ast.sig_item list  * FanLoc.t option  ) Gram.t 
-  val implem : (Ast.str_item list  * FanLoc.t option  ) Gram.t 
+  val interf : (Ast.sig_item list *FanLoc.t option ) Gram.t 
+  val implem : (Ast.str_item list *FanLoc.t option ) Gram.t 
   val top_phrase : Ast.str_item option  Gram.t 
-  val use_file : (Ast.str_item list  * FanLoc.t option  ) Gram.t 
+  val use_file : (Ast.str_item list *FanLoc.t option ) Gram.t 
   val a_CHAR : string Gram.t  val a_FLOAT : string Gram.t 
   val a_INT : string Gram.t  val a_INT32 : string Gram.t 
   val a_INT64 : string Gram.t  val a_LABEL : string Gram.t 
@@ -51,7 +51,7 @@ module type Camlp4Syntax =
   val class_info_for_class_type : Ast.class_type Gram.t 
   val class_longident : Ast.ident Gram.t 
   val class_longident_and_param : Ast.class_expr Gram.t 
-  val class_name_and_param : (string * Ast.ctyp ) Gram.t 
+  val class_name_and_param : (string*Ast.ctyp) Gram.t 
   val class_sig_item : Ast.class_sig_item Gram.t 
   val class_sig_item_quot : Ast.class_sig_item Gram.t 
   val class_signature : Ast.class_sig_item Gram.t 
@@ -67,7 +67,7 @@ module type Camlp4Syntax =
   val comma_ctyp : Ast.ctyp Gram.t  val comma_expr : Ast.expr Gram.t 
   val comma_ipatt : Ast.patt Gram.t  val comma_patt : Ast.patt Gram.t 
   val comma_type_parameter : Ast.ctyp Gram.t 
-  val constrain : (Ast.ctyp * Ast.ctyp ) Gram.t 
+  val constrain : (Ast.ctyp*Ast.ctyp) Gram.t 
   val constructor_arg_list : Ast.ctyp Gram.t 
   val constructor_declaration : Ast.ctyp Gram.t 
   val constructor_declarations : Ast.ctyp Gram.t  val ctyp : Ast.ctyp Gram.t 
@@ -90,7 +90,7 @@ module type Camlp4Syntax =
   val label_longident : Ast.ident Gram.t  val label_patt : Ast.patt Gram.t 
   val label_patt_list : Ast.patt Gram.t  val labeled_ipatt : Ast.patt Gram.t 
   val let_binding : Ast.binding Gram.t 
-  val meth_list : (Ast.ctyp * Ast.row_var_flag ) Gram.t 
+  val meth_list : (Ast.ctyp*Ast.row_var_flag) Gram.t 
   val meth_decl : Ast.ctyp Gram.t 
   val module_binding : Ast.module_binding Gram.t 
   val module_binding0 : Ast.module_expr Gram.t 
@@ -138,7 +138,7 @@ module type Camlp4Syntax =
   val str_item_quot : Ast.str_item Gram.t 
   val str_items : Ast.str_item Gram.t  val type_constraint : unit Gram.t 
   val type_declaration : Ast.ctyp Gram.t 
-  val type_ident_and_parameters : (string * Ast.ctyp list  ) Gram.t 
+  val type_ident_and_parameters : (string*Ast.ctyp list ) Gram.t 
   val type_kind : Ast.ctyp Gram.t  val type_longident : Ast.ident Gram.t 
   val type_longident_and_parameters : Ast.ctyp Gram.t 
   val type_parameter : Ast.ctyp Gram.t 
@@ -154,7 +154,7 @@ module type Camlp4Syntax =
   val psymbol : FanGrammar.symbol Gram.t 
   val level : FanGrammar.level Gram.t 
   val level_list : FanGrammar.level list  Gram.t 
-  val entry : FanGrammar.entry Gram.t   end
+  val entry : FanGrammar.entry Gram.t  end
 module type SyntaxExtension =
   functor (Syn : Camlp4Syntax) ->
     (Camlp4Syntax with module AntiquotSyntax = Syn.AntiquotSyntax
@@ -165,24 +165,23 @@ module type SyntaxPlugin = functor (Syn : Camlp4Syntax) -> sig  end
 module type PrinterPlugin = functor (Syn : Camlp4Syntax) -> PrinterImpl
 module type ParserPlugin = functor (Syn : Camlp4Syntax) -> ParserImpl
 type 'a  parser_fun = 
-  (?directive_handler:('a  -> 'a  option )   ->
-    (FanLoc.t -> (char Stream.t  -> 'a ) ) )   
+  (?directive_handler:('a  -> 'a  option )  ->
+    (FanLoc.t -> (char Stream.t  -> 'a ) ) )  
 type 'a  printer_fun = 
-  (?input_file:string  -> (?output_file:string  -> ('a  -> unit) ) )   
+  (?input_file:string -> (?output_file:string -> ('a  -> unit) ) )  
 module type PRECAST =
-  sig module Syntax : Camlp4Syntax
+  sig  module Syntax : Camlp4Syntax
   module Printers :
-  sig module OCaml : PrinterImpl module DumpOCamlAst : PrinterImpl
-  module DumpCamlp4Ast : PrinterImpl module Null : PrinterImpl  end
+  sig  module OCaml : PrinterImpl module DumpOCamlAst : PrinterImpl
+  module DumpCamlp4Ast : PrinterImpl module Null : PrinterImpl end
   val loaded_modules : string list  ref 
-  val iter_and_take_callbacks :
-    (((string * (unit -> unit)  ) -> unit)  -> unit) 
+  val iter_and_take_callbacks : (((string*(unit -> unit) ) -> unit)  -> unit) 
   val register_str_item_parser : (Ast.str_item parser_fun  -> unit) 
   val register_sig_item_parser : (Ast.sig_item parser_fun  -> unit) 
   val register_parser :
     (Ast.str_item parser_fun  -> (Ast.sig_item parser_fun  -> unit) ) 
   val current_parser :
-    (unit -> (Ast.str_item parser_fun  * Ast.sig_item parser_fun  )) 
+    (unit -> (Ast.str_item parser_fun *Ast.sig_item parser_fun )) 
   val plugin : ((module Id ) -> ((module PLUGIN ) -> unit) ) 
   val syntax_plugin : ((module Id ) -> ((module SyntaxPlugin ) -> unit) ) 
   val syntax_extension :
@@ -201,8 +200,7 @@ module type PRECAST =
   val register_printer :
     (Ast.str_item printer_fun  -> (Ast.sig_item printer_fun  -> unit) ) 
   val current_printer :
-    (unit -> (Ast.str_item printer_fun  * Ast.sig_item printer_fun  )) 
+    (unit -> (Ast.str_item printer_fun *Ast.sig_item printer_fun )) 
   val declare_dyn_module : (string -> ((unit -> unit)  -> unit) ) 
-  module CurrentParser : ParserImpl module CurrentPrinter : PrinterImpl  end
-module type PRECAST_PLUGIN =
-  sig val apply : ((module PRECAST ) -> unit)   end
+  module CurrentParser : ParserImpl module CurrentPrinter : PrinterImpl end
+module type PRECAST_PLUGIN = sig val apply : ((module PRECAST ) -> unit)  end

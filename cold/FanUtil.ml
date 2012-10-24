@@ -4,24 +4,23 @@ let  normal_handler =
   
   function
   | Out_of_memory  -> Some ("Out of memory")
-  | Assert_failure(file , line , char ) ->
+  | Assert_failure(file,line,char) ->
     Some
-      ((sprintf "Assertion failed, file %S, line %d, char %d" file line char
-         ))
-  | Match_failure(file , line , char ) ->
+      ((sprintf "Assertion failed, file %S, line %d, char %d" file line char))
+  | Match_failure(file,line,char) ->
     Some
       ((sprintf "Pattern matching failed, file %S, line %d, char %d" file
-         line char ))
-  | Failure(str) -> Some ((sprintf "Failure: %S" str ))
-  | Invalid_argument(str) -> Some ((sprintf "Invalid argument: %S" str ))
-  | Sys_error(str) -> Some ((sprintf "I/O error: %S" str ))
-  | Stream.Failure  -> Some ((sprintf "Parse failure" ))
-  | Stream.Error(str) -> Some ((sprintf "Parse error: %s" str ))
+         line char))
+  | Failure(str) -> Some ((sprintf "Failure: %S" str))
+  | Invalid_argument(str) -> Some ((sprintf "Invalid argument: %S" str))
+  | Sys_error(str) -> Some ((sprintf "I/O error: %S" str))
+  | Stream.Failure  -> Some ((sprintf "Parse failure"))
+  | Stream.Error(str) -> Some ((sprintf "Parse error: %s" str))
   | _ -> None
-let _= (Printexc.register_printer normal_handler )
+let _= (Printexc.register_printer normal_handler)
 let  valid_float_lexeme (s) =
   
-  let  l = (String.length s ) in
+  let  l = (String.length s) in
   
   let rec  loop (i) =
   if (i >= l) then ( (s ^ ".") )
@@ -31,11 +30,11 @@ let  valid_float_lexeme (s) =
    with
    |
      (('0' |('1' |('2' |('3' |('4' |('5' |('6' |('7' |('8' |'9')))))))))
-       |'-') -> (loop ( (i + 1) ) )
-   | _ -> s) in (loop 0 )
+       |'-') -> (loop ( (i + 1) ))
+   | _ -> s) in (loop 0)
 let  float_repres (f) =
   
-  (match (classify_float f )
+  (match (classify_float f)
   with
   | FP_nan  -> "nan"
   | FP_infinite  -> if (f < 0.0) then "neg_infinity" else "infinity"
@@ -43,61 +42,59 @@ let  float_repres (f) =
     
     let  float_val =
     
-    let  s1 = (Printf.sprintf "%.12g" f ) in
-    if (f = ( (float_of_string s1 ) )) then s1
+    let  s1 = (Printf.sprintf "%.12g" f) in
+    if (f = ( (float_of_string s1) )) then s1
     else
      
-     let  s2 = (Printf.sprintf "%.15g" f ) in
-     if (f = ( (float_of_string s2 ) )) then s2
-     else (Printf.sprintf "%.18g" f ) in (valid_float_lexeme float_val ))
-let  cvt_int_literal (s) = ((~-) ( (int_of_string ( ("-" ^ s) ) ) ) )
-let  cvt_int32_literal (s) =
-  (Int32.neg ( (Int32.of_string ( ("-" ^ s) ) ) ) )
-let  cvt_int64_literal (s) =
-  (Int64.neg ( (Int64.of_string ( ("-" ^ s) ) ) ) )
+     let  s2 = (Printf.sprintf "%.15g" f) in
+     if (f = ( (float_of_string s2) )) then s2
+     else (Printf.sprintf "%.18g" f) in (valid_float_lexeme float_val))
+let  cvt_int_literal (s) = ((~-) ( (int_of_string ( ("-" ^ s) )) ))
+let  cvt_int32_literal (s) = (Int32.neg ( (Int32.of_string ( ("-" ^ s) )) ))
+let  cvt_int64_literal (s) = (Int64.neg ( (Int64.of_string ( ("-" ^ s) )) ))
 let  cvt_nativeint_literal (s) =
-  (Nativeint.neg ( (Nativeint.of_string ( ("-" ^ s) ) ) ) )
+  (Nativeint.neg ( (Nativeint.of_string ( ("-" ^ s) )) ))
 let  mk_anti ?(c="")  (n) (s) = ("\\$" ^ ( (n ^ ( (c ^ ( (":" ^ s) )) )) ))
-let  append_eLem (el) (e) = (el @ ( [e]  ))
+let  append_eLem (el) (e) = (el @ ( [e] ))
 let  is_antiquot (s) =
   
-  let  len = (String.length s ) in
+  let  len = (String.length s) in
   (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
 let  view_antiquot (s) =
   
-  let  len = (String.length s ) in
+  let  len = (String.length s) in
   if (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then
    (
    
    (try
    
-   let  pos = (String.index s ':' ) in
+   let  pos = (String.index s ':') in
    
-   let  name = (String.sub s 2 ( (pos - 2) ) ) in
+   let  name = (String.sub s 2 ( (pos - 2) )) in
    
    let  code =
-   (String.sub s ( (pos + 1) ) ( (( (( (String.length s ) ) - pos) ) - 1) ) )
-   in Some ((name , code )) with
+   (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1) ))
+   in Some ((name,code)) with
    | Not_found  -> None)
    )
   else None
 let  handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
-  if (is_antiquot s ) then
+  if (is_antiquot s) then
    (
    
-   let  pos = (String.index s ':' ) in
+   let  pos = (String.index s ':') in
    
-   let  name = (String.sub s 2 ( (pos - 2) ) ) and code =
-   (String.sub s ( (pos + 1) ) ( (( (( (String.length s ) ) - pos) ) - 1) ) )
-    in (decorate name ( (parse loc code ) ) )
+   let  name = (String.sub s 2 ( (pos - 2) )) and code =
+   (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1) ))
+   in (decorate name ( (parse loc code) ))
    )
   else default
 let  neg_string (n) =
   
-  let  len = (String.length n ) in
+  let  len = (String.length n) in
   if (( (len > 0) ) && ( (( n.[0] ) = '-') )) then
    (
-   (String.sub n 1 ( (len - 1) ) )
+   (String.sub n 1 ( (len - 1) ))
    )
   else ("-" ^ n)
 let  stream_peek_nth (n) (strm) =
@@ -105,78 +102,79 @@ let  stream_peek_nth (n) (strm) =
   let rec  loop (i) =
   
   function
-  | x::xs -> if (i = 1) then ( Some (x) ) else (loop ( (i - 1) ) xs )
-  | []  -> None in (loop n ( (Stream.npeek n strm ) ) )
-let  njunk (n) (strm) = for _i = 1 to  n do (Stream.junk strm ) done
+  | x::xs -> if (i = 1) then ( Some (x) ) else (loop ( (i - 1) ) xs)
+  | []  -> None in (loop n ( (Stream.npeek n strm) ))
+let  njunk (n) (strm) = for _i = 1 to  n do (Stream.junk strm) done
 let rec  list_remove (x) =
   
   function
-  | (y , _ )::l when (y = x) -> l
-  | d::l -> d :: (list_remove x l ) 
+  | (y,_)::l when (y = x) -> l
+  | d::l -> d::(list_remove x l)
   | []  -> []
 let  symbolchar =
   
-  let  list = ['$' ; '!' ; '%' ; '&' ; '*' ; '+' ; '-' ; '.' ; '/' ; ':' ;
-  '<' ; '=' ; '>' ; '?' ; '@' ; '^' ; '|' ; '~' ; '\\']  in
+  let  list =
+  ['$';'!';'%';'&';'*';'+';'-';'.';'/';':';'<';'=';'>';'?';'@';'^';'|';'~';'\\']
+  in
   
   let rec  loop (s) (i) =
-  if (i == ( (String.length s ) )) then true 
-  else if (List.mem ( s.[i] ) list ) then ( (loop s ( (i + 1) ) ) )
+  if (i == ( (String.length s) )) then true 
+  else if (List.mem ( s.[i] ) list) then ( (loop s ( (i + 1) )) )
   else false in loop
-let  stopped_at (_loc) = Some ((FanLoc.move_line 1 _loc ))
+let  stopped_at (_loc) = Some ((FanLoc.move_line 1 _loc))
 let  with_open_out_file (x) (f) =
   
   (match x
   with
   | Some(file) ->
     
-    let  oc = (open_out_bin file ) in begin
-    ( (f oc ) ); ( (flush oc ) ); (close_out oc )
+    let  oc = (open_out_bin file) in begin
+    ( (f oc) ); ( (flush oc) ); (close_out oc)
     end
   | None  ->
-    ( (set_binary_mode_out stdout true  ) ); ( (f stdout ) ); (flush stdout ))
+    ( (set_binary_mode_out stdout true ) ); ( (f stdout) ); (flush stdout))
 let  dump_ast (magic) (ast) (oc) = begin
-  ( (output_string oc magic ) ); (output_value oc ast )
+  ( (output_string oc magic) ); (output_value oc ast)
   end
 let  dump_pt (magic) (fname) (pt) (oc) = begin
-  ( (output_string oc magic ) ); (
-  (output_value oc ( if (fname = "-") then "" else fname ) ) );
-   (output_value oc pt )
+  ( (output_string oc magic) ); (
+  (output_value oc ( if (fname = "-") then "" else fname )) );
+   (output_value oc pt)
   end
 let  char_of_char_token (loc) (s) =
   
-  (try (TokenEval.char s )
+  (try (TokenEval.char s)
   with
-  | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
+  | (Failure(_) as exn) -> (FanLoc.raise loc exn))
 let  string_of_string_token (loc) (s) =
   
-  (try (TokenEval.string s )
+  (try (TokenEval.string s)
   with
-  | (Failure(_) as exn) -> (FanLoc.raise loc exn ))
+  | (Failure(_) as exn) -> (FanLoc.raise loc exn))
 let  remove_underscores (s) =
   
-  let  l = (String.length s ) in
+  let  l = (String.length s) in
   
-  let  buf = (Buffer.create l ) in
+  let  buf = (Buffer.create l) in
   
   let  ()  =
   (String.iter (
     fun (ch) ->
-      if (ch <> '_') then ( (ignore ( (Buffer.add_char buf ch ) ) ) ) else ()
-    ) s ) in (Buffer.contents buf )
+      if (ch <> '_') then ( (ignore ( (Buffer.add_char buf ch) )) ) else () )
+    s) in (Buffer.contents buf)
 module Options  :
-  sig type spec_list =  (string * Arg.spec * string ) list   
+  sig  type spec_list =  (string*Arg.spec*string) list  
   val init : (spec_list -> unit) 
   val add : (string -> (Arg.spec -> (string -> unit) ) ) 
   val print_usage_list : (spec_list -> unit) 
   val ext_spec_list : (unit -> spec_list) 
-  val parse : ((string -> unit)  -> (string array  -> string list ) )   end =
-  struct type spec_list =  (string * Arg.spec * string ) list    open Format
+  val parse : ((string -> unit)  -> (string array  -> string list ) )  end =
+  struct  type spec_list =  (string*Arg.spec*string) list   open Format
     let rec  action_arg (s) (sl) =
       
       function
       | Arg.Unit(f) ->
-        if (s = "") then  begin ( (f ()  ) ); Some (sl) end else None
+        if (s = "") then  begin ( (f () ) ); Some (sl) end else None
       | Arg.Bool(f) ->
         if (s = "") then
          (
@@ -185,31 +183,32 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (f ( (bool_of_string s ) ) ) ); Some (sl)
+           (try ( (f ( (bool_of_string s) )) ); Some (sl)
            with
            | Invalid_argument("bool_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (f ( (bool_of_string s ) ) ) ); Some (sl)
+         (try ( (f ( (bool_of_string s) )) ); Some (sl)
          with
          | Invalid_argument("bool_of_string") -> None)
       | Arg.Set(r) ->
         if (s = "") then  begin ( (r := true ) ); Some (sl) end else None
       | Arg.Clear(r) ->
         if (s = "") then  begin ( (r := false ) ); Some (sl) end else None
-      | Arg.Rest(f) -> ( (List.iter f ( s :: sl  ) ) ); Some ([])
+      | Arg.Rest(f) -> ( (List.iter f ( s::sl )) ); Some ([])
       | Arg.String(f) ->
         if (s = "") then
          (
          
          (match sl with
-         | s::sl -> ( (f s ) ); Some (sl)
+         | s::sl -> ( (f s) ); Some (sl)
          | []  -> None)
          )
-        else begin
-         ( (f s ) ); Some (sl)
+        else
+        begin
+        ( (f s) ); Some (sl)
         end
       | Arg.Set_string(r) ->
         if (s = "") then
@@ -219,8 +218,9 @@ module Options  :
          | s::sl -> ( (r := s) ); Some (sl)
          | []  -> None)
          )
-        else begin
-         ( (r := s) ); Some (sl)
+        else
+        begin
+        ( (r := s) ); Some (sl)
         end
       | Arg.Int(f) ->
         if (s = "") then
@@ -230,14 +230,14 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (f ( (int_of_string s ) ) ) ); Some (sl)
+           (try ( (f ( (int_of_string s) )) ); Some (sl)
            with
            | Failure("int_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (f ( (int_of_string s ) ) ) ); Some (sl)
+         (try ( (f ( (int_of_string s) )) ); Some (sl)
          with
          | Failure("int_of_string") -> None)
       | Arg.Set_int(r) ->
@@ -248,14 +248,14 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (r := ( (int_of_string s ) )) ); Some (sl)
+           (try ( (r := ( (int_of_string s) )) ); Some (sl)
            with
            | Failure("int_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (r := ( (int_of_string s ) )) ); Some (sl)
+         (try ( (r := ( (int_of_string s) )) ); Some (sl)
          with
          | Failure("int_of_string") -> None)
       | Arg.Float(f) ->
@@ -264,11 +264,12 @@ module Options  :
          
          (match sl
          with
-         | s::sl -> ( (f ( (float_of_string s ) ) ) ); Some (sl)
+         | s::sl -> ( (f ( (float_of_string s) )) ); Some (sl)
          | []  -> None)
          )
-        else begin
-         ( (f ( (float_of_string s ) ) ) ); Some (sl)
+        else
+        begin
+        ( (f ( (float_of_string s) )) ); Some (sl)
         end
       | Arg.Set_float(r) ->
         if (s = "") then
@@ -276,11 +277,12 @@ module Options  :
          
          (match sl
          with
-         | s::sl -> ( (r := ( (float_of_string s ) )) ); Some (sl)
+         | s::sl -> ( (r := ( (float_of_string s) )) ); Some (sl)
          | []  -> None)
          )
-        else begin
-         ( (r := ( (float_of_string s ) )) ); Some (sl)
+        else
+        begin
+        ( (r := ( (float_of_string s) )) ); Some (sl)
         end
       | Arg.Tuple(specs) ->
         
@@ -290,94 +292,94 @@ module Options  :
         | []  -> Some (sl)
         | spec::spec_list ->
           
-          (match (action_arg s sl spec )
+          (match (action_arg s sl spec)
           with
-          | None  -> (action_args "" []  spec_list )
-          | Some(s::sl) -> (action_args s sl spec_list )
-          | Some(sl) -> (action_args "" sl spec_list )) in
-        (action_args s sl specs )
-      | Arg.Symbol(syms , f ) ->
+          | None  -> (action_args "" []  spec_list)
+          | Some(s::sl) -> (action_args s sl spec_list)
+          | Some(sl) -> (action_args "" sl spec_list)) in
+        (action_args s sl specs)
+      | Arg.Symbol(syms,f) ->
         
-        (match if (s = "") then sl else s :: sl 
+        (match if (s = "") then sl else s::sl
         with
-        | s::sl when (List.mem s syms ) -> ( (f s ) ); Some (sl)
+        | s::sl when (List.mem s syms) -> ( (f s) ); Some (sl)
         | _ -> None)
     let  common_start (s1) (s2) =
       
       let rec  loop (i) =
-      if (( (i == ( (String.length s1 ) )) ) || (
-           (i == ( (String.length s2 ) )) )) then
+      if (( (i == ( (String.length s1) )) ) || (
+           (i == ( (String.length s2) )) )) then
        i
-      else if (( s1.[i] ) == ( s2.[i] )) then ( (loop ( (i + 1) ) ) )
-      else i in (loop 0 )
+      else if (( s1.[i] ) == ( s2.[i] )) then ( (loop ( (i + 1) )) )
+      else i in (loop 0)
     let  parse_arg (fold) (s) (sl) =
       (fold (
-        fun ((name , action , _ )) ->
+        fun ((name,action,_)) ->
           fun (acu) ->
             
-            let  i = (common_start s name ) in
-            if (i == ( (String.length name ) )) then
+            let  i = (common_start s name) in
+            if (i == ( (String.length name) )) then
              (
              
              (try
-             (action_arg ( (String.sub s i ( (( (String.length s ) ) - i) ) )
-               ) sl action ) with
+             (action_arg ( (String.sub s i ( (( (String.length s) ) - i) )) )
+               sl action) with
              | Arg.Bad(_) -> acu)
              )
-            else acu ) None  )
+            else acu ) None )
     let rec  parse_aux (fold) (anon_fun) =
       
       function
       | []  -> []
       | s::sl ->
-        if (( (( (String.length s ) ) > 1) ) && ( (( s.[0] ) = '-') )) then
+        if (( (( (String.length s) ) > 1) ) && ( (( s.[0] ) = '-') )) then
          (
          
-         (match (parse_arg fold s sl )
+         (match (parse_arg fold s sl)
          with
-         | Some(sl) -> (parse_aux fold anon_fun sl )
-         | None  -> s :: (parse_aux fold anon_fun sl ) )
+         | Some(sl) -> (parse_aux fold anon_fun sl)
+         | None  -> s::(parse_aux fold anon_fun sl))
          )
-        else begin
-         ( ((anon_fun s ): unit) ); (parse_aux fold anon_fun sl )
+        else
+        begin
+        ( ((anon_fun s): unit) ); (parse_aux fold anon_fun sl)
         end
     let  align_doc (key) (s) =
       
       let  s =
       
       let rec  loop (i) =
-      if (i = ( (String.length s ) )) then ""
-      else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) ) ) )
-      else (String.sub s i ( (( (String.length s ) ) - i) ) ) in (loop 0 ) in
+      if (i = ( (String.length s) )) then ""
+      else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) )) )
+      else (String.sub s i ( (( (String.length s) ) - i) )) in (loop 0) in
       
-      let  (p , s ) =
-      if (( (String.length s ) ) > 0) then
+      let  (p,s) =
+      if (( (String.length s) ) > 0) then
        (
        if (( s.[0] ) = '<') then
         (
         
         let rec  loop (i) =
-        if (i = ( (String.length s ) )) then ("" , s )
-        else if (( s.[i] ) <> '>') then ( (loop ( (i + 1) ) ) )
+        if (i = ( (String.length s) )) then ("",s)
+        else if (( s.[i] ) <> '>') then ( (loop ( (i + 1) )) )
         else
          
-         let  p = (String.sub s 0 ( (i + 1) ) ) in
+         let  p = (String.sub s 0 ( (i + 1) )) in
          
          let rec  loop (i) =
-         if (i >= ( (String.length s ) )) then (p , "" )
-         else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) ) ) )
-         else (p , ( (String.sub s i ( (( (String.length s ) ) - i) ) ) ) )
-         in (loop ( (i + 1) ) ) in (loop 0 )
+         if (i >= ( (String.length s) )) then (p,"")
+         else if (( s.[i] ) = ' ') then ( (loop ( (i + 1) )) )
+         else (p,( (String.sub s i ( (( (String.length s) ) - i) )) )) in
+         (loop ( (i + 1) )) in (loop 0)
         )
-       else ("" , s )
+       else ("",s)
        )
-      else ("" , "" ) in
+      else ("","") in
       
       let  tab =
       (String.make (
-        (max 1 (
-          (( (16 - ( (String.length key ) )) ) - ( (String.length p ) )) ) )
-        ) ' ' ) in (p ^ ( (tab ^ s) ))
+        (max 1 ( (( (16 - ( (String.length key) )) ) - ( (String.length p) ))
+          )) ) ' ') in (p ^ ( (tab ^ s) ))
     let  make_symlist (l) =
       
       (match l
@@ -386,41 +388,40 @@ module Options  :
       | h::t ->
         ((
           (List.fold_left ( fun (x) -> fun (y) -> (x ^ ( ("|" ^ y) )) ) (
-            ("{" ^ h) ) t ) ) ^ "}"))
+            ("{" ^ h) ) t) ) ^ "}"))
     let  print_usage_list (l) =
       (List.iter (
-        fun ((key , spec , doc )) ->
+        fun ((key,spec,doc)) ->
           
           (match spec
           with
-          | Arg.Symbol(symbs , _ ) ->
+          | Arg.Symbol(symbs,_) ->
             
-            let  s = (make_symlist symbs ) in
+            let  s = (make_symlist symbs) in
             
             let  synt = (key ^ ( (" " ^ s) )) in
-            (eprintf "  %s %s\n" synt ( (align_doc synt doc ) ) )
-          | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc ) ) )) ) l )
+            (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
+          | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc) ))) ) l)
     let  remaining_args (argv) =
       
       let rec  loop (l) (i) =
-      if (i == ( (Array.length argv ) )) then l
-      else (loop ( argv.(i) :: l  ) ( (i + 1) ) ) in
-      (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) ) ) ) )
-    let  init_spec_list = (ref []  ) let  ext_spec_list = (ref []  )
+      if (i == ( (Array.length argv) )) then l
+      else (loop ( argv.(i)::l ) ( (i + 1) )) in
+      (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
+    let  init_spec_list = (ref [] ) let  ext_spec_list = (ref [] )
     let  init (spec_list) = (init_spec_list := spec_list)
     let  add (name) (spec) (descr) =
-      (ext_spec_list := ( (name , spec , descr ) :: ext_spec_list.contents 
-        ))
+      (ext_spec_list := ( (name,spec,descr)::ext_spec_list.contents ))
     let  fold (f) (init) =
       
       let  spec_list =
       (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
       
       let  specs =
-      (Sort.list ( fun ((k1 , _ , _ )) -> fun ((k2 , _ , _ )) -> (k1 >= k2) )
-        spec_list ) in (List.fold_right f specs init )
+      (Sort.list ( fun ((k1,_,_)) -> fun ((k2,_,_)) -> (k1 >= k2) )
+        spec_list) in (List.fold_right f specs init)
     let  parse (anon_fun) (argv) =
       
-      let  remaining_args = (remaining_args argv ) in
-      (parse_aux fold anon_fun remaining_args )
-    let  ext_spec_list (() ) = ext_spec_list.contents  end 
+      let  remaining_args = (remaining_args argv) in
+      (parse_aux fold anon_fun remaining_args)
+    let  ext_spec_list (() ) = ext_spec_list.contents end 
