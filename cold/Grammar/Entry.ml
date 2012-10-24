@@ -2,7 +2,7 @@ open FanSig
 open Format
 open Structure
 open Tools
-type 'a   t = internal_entry  
+type 'a  t =  internal_entry  
 let  name (e) = e.ename
 let  print (ppf) (e) = (fprintf ppf "%a@\n" ( Print.text#entry ) e )
 let  dump (ppf) (e) = (fprintf ppf "%a@\n" ( Print.dump#entry ) e )
@@ -10,10 +10,10 @@ let  trace_parser = (ref false  )
 let  mk (g) (n) =
   {egram = g ; ename = n ; estart = ( (empty_entry n ) ) ;
    econtinue = (
-    fun (_) ->
-      fun (_) ->
-        fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  ) )
-   ; edesc = ( Dlevels ([]) ) }
+     fun (_) ->
+       fun (_) ->
+         fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  )
+     ) ; edesc = ( Dlevels ([]) ) }
 let  action_parse (entry) (ts) =
   (
     (try
@@ -51,10 +51,10 @@ let  of_parser (g) (n) ((p : ((token * token_info ) Stream.t  -> 'a ) )) =
   let  f (ts) = (Action.mk ( (p ts ) ) ) in
   {egram = g ; ename = n ; estart = ( fun (_) -> f ) ;
    econtinue = (
-    fun (_) ->
-      fun (_) ->
-        fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  ) )
-   ; edesc = ( Dparser (f) ) }
+     fun (_) ->
+       fun (_) ->
+         fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure  )
+     ) ; edesc = ( Dparser (f) ) }
 let  setup_parser (e) ((p : ((token * token_info ) Stream.t  -> 'a ) )) =
   
   let  f (ts) = (Action.mk ( (p ts ) ) ) in begin

@@ -154,3 +154,17 @@ module type S = sig
 end
 
 module  X (U:S) = struct end
+
+module rec X:sig
+  end = struct
+  end
+and Y:sig end = struct
+end
+module type S = sig 
+  module rec X:sig end
+  and Y:sig end
+end
+
+
+type u = A of int
+and b = B of bool 

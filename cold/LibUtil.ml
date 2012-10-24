@@ -14,11 +14,11 @@ module MapMake (S:Map.OrderedType) =
 module SSet  = (Set.Make) (String)
 module SMap  = (MapMake) (String)
 module IMap  =
-  (Set.Make) (struct type t = int   let  compare = Pervasives.compare  end)
+  (Set.Make) (struct type t =  int   let  compare = Pervasives.compare  end)
 module ISet  =
-  (Set.Make) (struct type t = int   let  compare = Pervasives.compare  end)
+  (Set.Make) (struct type t =  int   let  compare = Pervasives.compare  end)
 module Hashset  =
-  struct type 'a   t = ('a  , unit )  Hashtbl.t   
+  struct type 'a  t =  ('a  , unit )  Hashtbl.t   
     let  create = Hashtbl.create
     let  add (set) (x) = (Hashtbl.replace set x ()  )
     let  remove = Hashtbl.remove let  mem = Hashtbl.mem
@@ -35,17 +35,17 @@ module Hashset  =
     end
 let  mk_set = fun (type s) ->
   fun ~cmp ->
-    let module M = struct type t = s   let  compare = cmp  end in
+    let module M = struct type t =  s   let  compare = cmp  end in
       ((module (Set.Make) (M)): (module Set.S with type elt = s))
 let  mk_map = fun (type s) ->
   fun ~cmp ->
-    let module M = struct type t = s   let  compare = cmp  end in
+    let module M = struct type t =  s   let  compare = cmp  end in
       ((module (Map.Make) (M)): (module Map.S with type key = s))
 let  mk_hashtbl = fun (type s) ->
   fun ~eq ->
     fun ~hash ->
       let module M =
-        struct type t = s   let  equal = eq let  hash = hash  end in
+        struct type t =  s   let  equal = eq let  hash = hash  end in
         ((module (Hashtbl.Make) (M)): (module Hashtbl.S with type key = s))
 let  (|>) (x) (f) = (f x )
 let  (<|) (f) (x) = (f x )
@@ -74,10 +74,10 @@ let  zfold_left ?(start=0)  ~until  ~acc  (f) =
   for x = start to  until do (v := ( (f ( v.contents ) x ) )) done;
    v.contents
   end
-type 'a   cont = ('a  -> exn)   
+type 'a  cont =  ('a  -> exn)   
 let  callcc = fun (type u) ->
   fun ((f : (u cont  -> u) )) ->
-    let module M = struct exception Return of u   end in
+    let module M = struct exception Return  of u   end in
       
       (try (f ( fun (x) -> (raise ( M.Return (x) ) ) ) )
       with
@@ -137,8 +137,8 @@ module Stream  =
           (Stream.slazy ( fun (_) -> (map f xs ) ) ) ) )
       | _ -> Stream.sempty)  end
 module ErrorMonad  =
-  struct type log = string  
-    type 'a   result = Left of 'a   | Right of log   
+  struct type log =  string  
+    type 'a  result =  Left of 'a   | Right of log   
     let  return (x) = Left (x) let  fail (x) = Right (x)
     let  (>>=) (ma) (f) =
       

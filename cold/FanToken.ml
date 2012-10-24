@@ -1,12 +1,12 @@
 open Format
 open LibUtil
 open FanSig
-type error =
-   Illegal_token of string 
- | Keyword_as_label of string 
- | Illegal_token_pattern of (string * string ) 
- | Illegal_constructor of string   
-exception TokenError of error 
+type error = 
+    Illegal_token of string 
+  | Keyword_as_label of string 
+  | Illegal_token_pattern of (string * string ) 
+  | Illegal_constructor of string   
+exception TokenError  of error 
 let  print_basic_error (ppf) =
   
   function
@@ -17,11 +17,12 @@ let  print_basic_error (ppf) =
     (fprintf ppf "Illegal token pattern: %s %S" p_con p_prm )
   | Illegal_constructor(con) -> (fprintf ppf "Illegal constructor %S" con )
 let  string_of_error_msg = (to_string_of_printer print_basic_error )
-let _ = (Printexc.register_printer (
-          
-          function
-          | TokenError(e) -> Some ((string_of_error_msg e ))
-          | _ -> None ) )
+let _=
+  (Printexc.register_printer (
+    
+    function
+    | TokenError(e) -> Some ((string_of_error_msg e ))
+    | _ -> None ) )
 let  to_string =
   
   function

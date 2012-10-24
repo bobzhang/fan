@@ -77,22 +77,17 @@ let  use_file (token_stream) =
    if (stopped_at_directive <> None ) then ( (pl @ ( (loop ()  ) )) ) else pl
    in (loop ()  ) in (List.map Ast2pt.phrase ( (pl0 @ pl) ) )
 let  revise_parser = (wrap toplevel_phrase )
-let _ = (
-(Toploop.parse_toplevel_phrase := revise_parser)
-);
-(
-(Toploop.parse_use_file := ( (wrap use_file ) ))
-);
-(
-(Syntax.current_warning := (
-  fun (loc) ->
-    fun (txt) ->
-      (Toploop.print_warning loc Format.err_formatter ( Warnings.Camlp4 (txt)
-        ) ) ))
-);
-(iter_and_take_callbacks ( fun ((_ , f )) -> (f ()  ) ) )
-let _ = let open FanParsers in( (pa_r (module P) ) ); ( (pa_rp (module P) )
-          ); ( (pa_q (module P) ) ); ( (pa_g (module P) ) ); (
-          (pa_l (module P) ) ); (pa_m (module P) )
+let _= ( (Toploop.parse_toplevel_phrase := revise_parser) ); (
+  (Toploop.parse_use_file := ( (wrap use_file ) )) ); (
+  (Syntax.current_warning := (
+    fun (loc) ->
+      fun (txt) ->
+        (Toploop.print_warning loc Format.err_formatter (
+          Warnings.Camlp4 (txt) ) ) )) );
+  (iter_and_take_callbacks ( fun ((_ , f )) -> (f ()  ) ) )
+let _=
+  let open FanParsers in( (pa_r (module P) ) ); ( (pa_rp (module P) ) ); (
+    (pa_q (module P) ) ); ( (pa_g (module P) ) ); ( (pa_l (module P) ) );
+    (pa_m (module P) )
 let  normal (() ) = (Toploop.parse_toplevel_phrase := Parse.toplevel_phrase)
 let  revise (() ) = (Toploop.parse_toplevel_phrase := revise_parser)

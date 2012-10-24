@@ -18,7 +18,7 @@ let  normal_handler =
   | Stream.Failure  -> Some ((sprintf "Parse failure" ))
   | Stream.Error(str) -> Some ((sprintf "Parse error: %s" str ))
   | _ -> None
-let _ = (Printexc.register_printer normal_handler )
+let _= (Printexc.register_printer normal_handler )
 let  valid_float_lexeme (s) =
   
   let  l = (String.length s ) in
@@ -165,13 +165,13 @@ let  remove_underscores (s) =
       if (ch <> '_') then ( (ignore ( (Buffer.add_char buf ch ) ) ) ) else ()
     ) s ) in (Buffer.contents buf )
 module Options  :
-  sig type spec_list = (string * Arg.spec * string ) list   
+  sig type spec_list =  (string * Arg.spec * string ) list   
   val init : (spec_list -> unit) 
   val add : (string -> (Arg.spec -> (string -> unit) ) ) 
   val print_usage_list : (spec_list -> unit) 
   val ext_spec_list : (unit -> spec_list) 
   val parse : ((string -> unit)  -> (string array  -> string list ) )   end =
-  struct type spec_list = (string * Arg.spec * string ) list    open Format
+  struct type spec_list =  (string * Arg.spec * string ) list    open Format
     let rec  action_arg (s) (sl) =
       
       function

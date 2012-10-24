@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type t = Location.t  
+type t =  Location.t  
 let  dump_sel (f) (x) =
   
   let  s =
@@ -44,11 +44,11 @@ let  of_tuple
   ((file_name , start_line , start_bol , start_off , stop_line , stop_bol ,
     stop_off , ghost )) =
   {loc_start =
-    {pos_fname = file_name ; pos_lnum = start_line ; pos_bol = start_bol ;
-     pos_cnum = start_off } ;
+     {pos_fname = file_name ; pos_lnum = start_line ; pos_bol = start_bol ;
+      pos_cnum = start_off } ;
    loc_end =
-    {pos_fname = file_name ; pos_lnum = stop_line ; pos_bol = stop_bol ;
-     pos_cnum = stop_off } ; loc_ghost = ghost }
+     {pos_fname = file_name ; pos_lnum = stop_line ; pos_bol = stop_bol ;
+      pos_cnum = stop_off } ; loc_ghost = ghost }
 let  to_tuple
   ({loc_start =
      {pos_fname = pos_fname ; pos_lnum = start_line ; pos_bol = start_bol ;
@@ -174,15 +174,16 @@ let  check (x) (msg) =
    );
    false
   end else true
-exception Exc_located of t * exn 
-let _ = (Printexc.register_printer (
-          
-          function
-          | Exc_located(t , exn ) ->
-            Some
-              ((sprintf "Exc_located(%s,%s)" ( (to_string t ) ) (
-                 (Printexc.to_string exn ) ) ))
-          | _ -> None ) )
+exception Exc_located  of t * exn 
+let _=
+  (Printexc.register_printer (
+    
+    function
+    | Exc_located(t , exn ) ->
+      Some
+        ((sprintf "Exc_located(%s,%s)" ( (to_string t ) ) (
+           (Printexc.to_string exn ) ) ))
+    | _ -> None ) )
 let  name = (ref "_loc" )
 let  raise (loc) (exc) =
   

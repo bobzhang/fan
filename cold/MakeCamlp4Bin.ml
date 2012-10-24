@@ -10,15 +10,15 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
     let  loaded_modules = (ref SSet.empty )
     let  add_to_loaded_modules (name) =
       (loaded_modules := ( (SSet.add name ( loaded_modules.contents ) ) ))
-    let _ = (Printexc.register_printer (
-              
-              function
-              | FanLoc.Exc_located(loc , exn ) ->
-                Some
-                  ((sprintf "%s:@\n%s" ( (FanLoc.to_string loc ) ) (
-                     (Printexc.to_string exn ) ) ))
-              | _ -> None ) )
-    module DynLoader  = (DynLoader.Make) (struct  end)
+    let _=
+      (Printexc.register_printer (
+        
+        function
+        | FanLoc.Exc_located(loc , exn ) ->
+          Some
+            ((sprintf "%s:@\n%s" ( (FanLoc.to_string loc ) ) (
+               (Printexc.to_string exn ) ) ))
+        | _ -> None ) ) module DynLoader  = (DynLoader.Make) (struct  end)
     let  (objext , libext ) =
       if DynLoader.is_native then (".cmxs" , ".cmxs" )
       else (".cmo" , ".cma" )
@@ -224,12 +224,12 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       (eprintf
         "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@."
         )
-    type file_kind =
-       Intf of string 
-     | Impl of string 
-     | Str of string 
-     | ModuleImpl of string 
-     | IncludeDir of string    let  search_stdlib = (ref true  )
+    type file_kind = 
+        Intf of string 
+      | Impl of string 
+      | Str of string 
+      | ModuleImpl of string 
+      | IncludeDir of string    let  search_stdlib = (ref true  )
     let  print_loaded_modules = (ref false  )
     let  (task , do_task ) =
       
@@ -316,7 +316,7 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
        "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)" ) ;
       ("-ignore" , ( Arg.String (ignore) ) , "ignore the next argument" ) ;
       ("--" , ( Arg.Unit (ignore) ) , "Deprecated, does nothing" )] 
-    let _ = (FanUtil.Options.init initial_spec_list )
+    let _= (FanUtil.Options.init initial_spec_list )
     let  anon_fun (name) =
       (input_file (
         if (Filename.check_suffix name ".mli" ) then ( Intf (name) )
@@ -394,4 +394,4 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
         (
         (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc ) ) )
         );
-        (exit 2 )) let _ = (main Sys.argv )  end
+        (exit 2 )) let _= (main Sys.argv )  end

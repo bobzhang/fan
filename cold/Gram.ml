@@ -3,12 +3,13 @@ open Format
 open Grammar
 include Entry
 include Structure
-let _ = 
-let  gkeywords = (Hashtbl.create 301 ) in
-{gkeywords = gkeywords ;
- gfilter = ( (FanToken.Filter.mk ~is_kwd:( (Hashtbl.mem gkeywords ) ) ) ) ;
- glexer = ( (FanLexer.mk ()  ) ) ; warning_verbose = ( (ref true  ) ) ;
- error_verbose = FanConfig.verbose }
+let _=
+  
+  let  gkeywords = (Hashtbl.create 301 ) in
+  {gkeywords = gkeywords ;
+   gfilter = ( (FanToken.Filter.mk ~is_kwd:( (Hashtbl.mem gkeywords ) ) ) ) ;
+   glexer = ( (FanLexer.mk ()  ) ) ; warning_verbose = ( (ref true  ) ) ;
+   error_verbose = FanConfig.verbose }
 let  gram =
   
   let  gkeywords = (Hashtbl.create 301 ) in

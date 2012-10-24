@@ -139,32 +139,33 @@ let  retype_rule_list_without_patterns (_loc) (rl) =
       {prod = ({pattern = None  ; styp = STtok(_) ;_} as s)::[]  ;
         action = None  } ->
       {prod = (
-        [{s with
-          pattern = (
-           Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }]  )
-       ;
+         [{s with
+           pattern = (
+             Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }] 
+         ) ;
        action = (
-        Some
-          (Ast.ExApp
-             ((_loc , (
-               Ast.ExId
-                 ((_loc , (
-                   Ast.IdAcc
-                     ((_loc , ( (gm ()  ) ) , (
-                       Ast.IdLid ((_loc , "string_of_token" )) ) )) ) )) ) ,
-               ( Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) )) ) ))) ) }
+         Some
+           (Ast.ExApp
+              ((_loc , (
+                Ast.ExId
+                  ((_loc , (
+                    Ast.IdAcc
+                      ((_loc , ( (gm ()  ) ) , (
+                        Ast.IdLid ((_loc , "string_of_token" )) ) )) ) )) ) ,
+                ( Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) )) ) ))) )
+       }
     | {prod = ({pattern = None  ;_} as s)::[]  ; action = None  } ->
       {prod = (
-        [{s with
-          pattern = (
-           Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }]  )
-       ;
+         [{s with
+           pattern = (
+             Some (Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) ) }] 
+         ) ;
        action = ( Some (Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "x" )) ) ))) )
        }
     | ({prod = []  ; action = Some(_) } as r) -> r
     | _ -> (raise Exit  ) ) rl ) with
   | Exit  -> rl)
-exception NotneededTyping
+exception NotneededTyping 
 let  make_ctyp (styp) (tvar) =
   
   let rec  aux =

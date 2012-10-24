@@ -10,26 +10,25 @@ module MakeAstLifter (Syn:Sig.Camlp4Syntax) =
         let  meta_loc_expr (_loc) (_) =
           Ast.ExId ((_loc , ( Ast.IdLid ((_loc , "loc" )) ) ))  end
     module MetaAst  = (Ast.Meta.Make) (MetaLoc)
-    let _ = (Syn.AstFilters.register_str_item_filter (
-              fun (ast) ->
-                
-                let  _loc = (Ast.loc_of_str_item ast ) in
-                Ast.StExp
-                  ((_loc , (
-                    Ast.ExLet
-                      ((_loc , Ast.ReNil  , (
-                        Ast.BiEq
-                          ((_loc , (
-                            Ast.PaId
-                              ((_loc , ( Ast.IdLid ((_loc , "loc" )) ) )) ) ,
-                            (
-                            Ast.ExId
-                              ((_loc , (
-                                Ast.IdAcc
-                                  ((_loc , ( Ast.IdUid ((_loc , "FanLoc" )) )
-                                    , ( Ast.IdLid ((_loc , "ghost" )) ) )) )
-                                )) ) )) ) , (
-                        (MetaAst.Expr.meta_str_item _loc ast ) ) )) ) )) ) ) 
+    let _=
+      (Syn.AstFilters.register_str_item_filter (
+        fun (ast) ->
+          
+          let  _loc = (Ast.loc_of_str_item ast ) in
+          Ast.StExp
+            ((_loc , (
+              Ast.ExLet
+                ((_loc , Ast.ReNil  , (
+                  Ast.BiEq
+                    ((_loc , (
+                      Ast.PaId ((_loc , ( Ast.IdLid ((_loc , "loc" )) ) )) )
+                      , (
+                      Ast.ExId
+                        ((_loc , (
+                          Ast.IdAcc
+                            ((_loc , ( Ast.IdUid ((_loc , "FanLoc" )) ) , (
+                              Ast.IdLid ((_loc , "ghost" )) ) )) ) )) ) )) )
+                  , ( (MetaAst.Expr.meta_str_item _loc ast ) ) )) ) )) ) ) 
     end
 module IdExceptionTracer  =
   struct let  name = "Camlp4ExceptionTracer" let  version = Sys.ocaml_version
@@ -157,7 +156,7 @@ module MakeExceptionTracer (Syn:Sig.Camlp4Syntax) =
         | st -> (super#str_item st )
       
       end
-    let _ = (Syn.AstFilters.register_str_item_filter ( filter#str_item ) ) 
+    let _= (Syn.AstFilters.register_str_item_filter ( filter#str_item ) ) 
     end
 module IdFoldGenerator  =
   struct let  name = "Camlp4FoldGenerator" let  version = Sys.ocaml_version 
@@ -226,8 +225,8 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
       | Ast.IdAcc(_ , i1 , i2 ) ->
         (( (lid_of_ident sep i1 ) ) ^ ( (sep ^ ( (lid_of_ident sep i2 ) )) ))
       | _ -> assert false
-    type type_decl =
-     (string * Ast.ident * Ast.ctyp list  * Ast.ctyp * bool )  
+    type type_decl = 
+      (string * Ast.ident * Ast.ctyp list  * Ast.ctyp * bool )  
     let  builtin_types =
       
       let  tyMap = SMap.empty in
@@ -300,7 +299,7 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
          (SMap.add id ( (SMap.find id builtin_types ) ) (
            used_builtins.contents ) ) ))
        )
-      else () type mode = Fold | Map | Fold_map  
+      else () type mode =  Fold | Map | Fold_map  
     let  string_of_mode =
       
       function
@@ -1202,17 +1201,19 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
           | sg -> (super#sig_item sg ))
       
       end
-    let _ = (Syn.AstFilters.register_str_item_filter ( processor#str_item
-              ) )
-    let _ = (Syn.AstFilters.register_sig_item_filter ( processor#sig_item
-              ) )  end
+    let _=
+      (Syn.AstFilters.register_str_item_filter ( processor#str_item ) )
+    let _=
+      (Syn.AstFilters.register_sig_item_filter ( processor#sig_item ) ) 
+    end
 module IdLocationStripper  =
   struct let  name = "Camlp4LocationStripper"
     let  version = Sys.ocaml_version  end
 module MakeLocationStripper (Syn:Sig.Camlp4Syntax) =
   struct module Ast  = Camlp4Ast
-    let _ = (Syn.AstFilters.register_str_item_filter (
-              (Ast.map_loc ( fun (_) -> FanLoc.ghost ) )#str_item ) )  end
+    let _=
+      (Syn.AstFilters.register_str_item_filter (
+        (Ast.map_loc ( fun (_) -> FanLoc.ghost ) )#str_item ) )  end
 module IdProfiler  =
   struct let  name = "Camlp4Profiler" let  version = Sys.ocaml_version  end
 module MakeProfiler (Syn:Sig.Camlp4Syntax) =
@@ -1294,28 +1295,31 @@ module MakeProfiler (Syn:Sig.Camlp4Syntax) =
         (decorate_this_expr (
           Ast.ExFun ((_loc , ( (decorate_match_case m ) ) )) ) id )
       | e -> (decorate_this_expr ( (decorate_expr e ) ) id )
-    let _ = (Syn.AstFilters.register_str_item_filter (
-              (decorate decorate_fun )#str_item ) )  end
+    let _=
+      (Syn.AstFilters.register_str_item_filter (
+        (decorate decorate_fun )#str_item ) )  end
 module IdTrashRemover  =
   struct let  name = "Camlp4TrashRemover" let  version = Sys.ocaml_version 
     end
 module MakeTrashRemover (Syn:Sig.Camlp4Syntax) =
   struct module Ast  = Camlp4Ast
-    let _ = (Syn.AstFilters.register_str_item_filter (
-              (Ast.map_str_item (
-                
-                function
-                | Ast.StMod(_loc , "Camlp4Trash" , _ ) -> Ast.StNil (_loc)
-                | st -> st ) )#str_item ) )  end
+    let _=
+      (Syn.AstFilters.register_str_item_filter (
+        (Ast.map_str_item (
+          
+          function
+          | Ast.StMod(_loc , "Camlp4Trash" , _ ) -> Ast.StNil (_loc)
+          | st -> st ) )#str_item ) )  end
 module IdMetaGenerator  =
   struct let  name = "Camlp4MetaGenerator" let  version = Sys.ocaml_version 
     end
 module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
   struct module Ast  = Camlp4Ast
-    type t = {name:Ast.ident ; type_decls:Ast.ctyp SMap.t  ; acc:Ast.expr ;
-               app:Ast.expr ; id:Ast.expr ; tup:Ast.expr ; com:Ast.expr ;
-               str:Ast.expr ; int:Ast.expr ; flo:Ast.expr ; chr:Ast.expr ;
-               ant:Ast.ident }   let  _loc = FanLoc.ghost
+    type t = 
+      {name:Ast.ident ; type_decls:Ast.ctyp SMap.t  ; acc:Ast.expr ;
+        app:Ast.expr ; id:Ast.expr ; tup:Ast.expr ; com:Ast.expr ;
+        str:Ast.expr ; int:Ast.expr ; flo:Ast.expr ; chr:Ast.expr ;
+        ant:Ast.ident }   let  _loc = FanLoc.ghost
     let  x (i) = Ast.IdLid ((_loc , ( ("x" ^ ( (string_of_int i ) )) ) ))
     let  meta_ (s) = Ast.IdLid ((_loc , ( ("meta_" ^ s) ) ))
     let  mf_ (s) = ("mf_" ^ s)
@@ -2159,63 +2163,63 @@ module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
               (mk_meta_module
                 {name = i ; type_decls = ( (Lazy.force type_decls ) ) ;
                  app = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExApp" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExApp" )) ) )) ) )) ) ;
                  acc = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExAcc" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExAcc" )) ) )) ) )) ) ;
                  id = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExId" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExId" )) ) )) ) )) ) ;
                  tup = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExTup" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExTup" )) ) )) ) )) ) ;
                  com = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExCom" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExCom" )) ) )) ) )) ) ;
                  str = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExStr" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExStr" )) ) )) ) )) ) ;
                  int = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExInt" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExInt" )) ) )) ) )) ) ;
                  flo = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExFlo" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExFlo" )) ) )) ) )) ) ;
                  chr = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "ExChr" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "ExChr" )) ) )) ) )) ) ;
                  ant = (
-                  Ast.IdAcc
-                    ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                      Ast.IdUid ((_loc , "ExAnt" )) ) )) ) } )
+                   Ast.IdAcc
+                     ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                       Ast.IdUid ((_loc , "ExAnt" )) ) )) ) } )
             |
               Ast.MeApp(_ ,
                         Ast.MeId(_ ,
@@ -2227,67 +2231,67 @@ module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
               (mk_meta_module
                 {name = i ; type_decls = ( (Lazy.force type_decls ) ) ;
                  app = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaApp" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaApp" )) ) )) ) )) ) ;
                  acc = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaAcc" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaAcc" )) ) )) ) )) ) ;
                  id = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaId" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaId" )) ) )) ) )) ) ;
                  tup = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaTup" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaTup" )) ) )) ) )) ) ;
                  com = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaCom" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaCom" )) ) )) ) )) ) ;
                  str = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaStr" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaStr" )) ) )) ) )) ) ;
                  int = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaInt" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaInt" )) ) )) ) )) ) ;
                  flo = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaFlo" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaFlo" )) ) )) ) )) ) ;
                  chr = (
-                  Ast.ExId
-                    ((_loc , (
-                      Ast.IdAcc
-                        ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                          Ast.IdUid ((_loc , "PaChr" )) ) )) ) )) ) ;
+                   Ast.ExId
+                     ((_loc , (
+                       Ast.IdAcc
+                         ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                           Ast.IdUid ((_loc , "PaChr" )) ) )) ) )) ) ;
                  ant = (
-                  Ast.IdAcc
-                    ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
-                      Ast.IdUid ((_loc , "PaAnt" )) ) )) ) } )
+                   Ast.IdAcc
+                     ((_loc , ( Ast.IdUid ((_loc , "Ast" )) ) , (
+                       Ast.IdUid ((_loc , "PaAnt" )) ) )) ) } )
             | me -> me)
         
         end)#str_item st )
-    let _ = (Syn.AstFilters.register_str_item_filter filter )  end
+    let _= (Syn.AstFilters.register_str_item_filter filter )  end
 let  f_lift (((module P)  : (module Sig.PRECAST ))) =
   (P.syntax_plugin (module IdAstLifter) (module MakeAstLifter) )
 let  f_exn (((module P)  : (module Sig.PRECAST ))) =

@@ -1,15 +1,15 @@
 module type S =
- sig type t   exception Error  of string * string 
- val mk : (?ocaml_stdlib:bool  -> (?camlp4_stdlib:bool  -> (unit -> t) ) ) 
- val fold_load_path : (t -> ((string -> ('a  -> 'a ) )  -> ('a  -> 'a ) ) ) 
- val load : (t -> (string -> unit) ) 
- val include_dir : (t -> (string -> unit) ) 
- val find_in_path : (t -> (string -> string) )  val is_native : bool
- val instance : (unit -> t)  ref   end
+  sig type t    exception Error  of string * string 
+  val mk : (?ocaml_stdlib:bool  -> (?camlp4_stdlib:bool  -> (unit -> t) ) ) 
+  val fold_load_path : (t -> ((string -> ('a  -> 'a ) )  -> ('a  -> 'a ) ) ) 
+  val load : (t -> (string -> unit) ) 
+  val include_dir : (t -> (string -> unit) ) 
+  val find_in_path : (t -> (string -> string) )  val is_native : bool
+  val instance : (unit -> t)  ref   end
 module Make (U:sig  end) : S =
-  struct type t = string Queue.t   
+  struct type t =  string Queue.t   
     let  instance = (ref ( fun (() ) -> (failwith "empty in dynloader" ) ) )
-    exception Error of string * string 
+    exception Error  of string * string 
     let  include_dir (x) (y) = (Queue.add y x )
     let  fold_load_path (x) (f) (acc) =
       (Queue.fold ( fun (x) -> fun (y) -> (f y x ) ) acc x )

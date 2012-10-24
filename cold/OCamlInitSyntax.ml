@@ -1,6 +1,6 @@
 module Make (U:sig  end) : Sig.Camlp4Syntax =
   struct module Ast  = Camlp4Ast
-    type warning = (FanLoc.t -> (string -> unit) )   
+    type warning =  (FanLoc.t -> (string -> unit) )   
     let  default_warning (loc) (txt) =
       (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt )
     let  current_warning = (ref default_warning )
@@ -170,24 +170,24 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
     let  rule_list = (Gram.mk "rule_list" )
     let  psymbol = (Gram.mk "psymbol" ) let  level = (Gram.mk "level" )
     let  level_list = (Gram.mk "level_list" ) let  entry = (Gram.mk "entry" )
-    let _ = (Gram.extend ( (top_phrase: 'top_phrase  Gram.t ) ) (
-              ((fun (() ) ->
-                  (None  , (
-                   [(None  , None  , (
-                     [(( [`Stoken
-                       ((( 
-                         function
-                         | `EOI -> true
-                         | _ -> false ) , (`Normal , "`EOI" ) ))]  ) , (
-                       (Gram.mk_action (
-                         fun (__camlp4_0) ->
-                           fun ((_loc : FanLoc.t)) ->
-                             
-                             (match __camlp4_0
-                             with
-                             | `EOI -> (None: 'top_phrase )
-                             | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  )
-              ) )
+    let _=
+      (Gram.extend ( (top_phrase: 'top_phrase  Gram.t ) ) (
+        ((fun (() ) ->
+            (None  , (
+             [(None  , None  , (
+               [(( [`Stoken
+                 ((( 
+                   function
+                   | `EOI -> true
+                   | _ -> false ) , (`Normal , "`EOI" ) ))]  ) , (
+                 (Gram.mk_action (
+                   fun (__camlp4_0) ->
+                     fun ((_loc : FanLoc.t)) ->
+                       
+                       (match __camlp4_0
+                       with
+                       | `EOI -> (None: 'top_phrase )
+                       | _ -> assert false) ) ) ) )]  ) )]  ) )) ()  ) ) )
     module AntiquotSyntax  =
       struct module Ast  = Ast module Gram  = Gram
         let  antiquot_expr = (Gram.eoi_entry expr )

@@ -16,7 +16,7 @@ let  add_loc (bp) (parse_fun) (strm) =
   else (FanLoc.merge bp ep ) in (x , loc )
 module StreamOrig  = Stream
 module Stream  =
-  struct type 'a   t = 'a  StreamOrig.t   
+  struct type 'a  t =  'a  StreamOrig.t   
     exception Failure = StreamOrig.Failure exception Error = StreamOrig.Error
     let  peek = StreamOrig.peek let  junk = StreamOrig.junk
     let  dup (strm) =

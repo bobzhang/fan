@@ -1,23 +1,21 @@
-type 'a
-
- tag =
-   Tag_ctyp
- | Tag_patt
- | Tag_expr
- | Tag_module_type
- | Tag_sig_item
- | Tag_with_constr
- | Tag_module_expr
- | Tag_str_item
- | Tag_class_type
- | Tag_class_sig_item
- | Tag_class_expr
- | Tag_class_str_item
- | Tag_match_case
- | Tag_ident
- | Tag_binding
- | Tag_rec_binding
- | Tag_module_binding  
+type 'a  tag = 
+    Tag_ctyp
+  | Tag_patt
+  | Tag_expr
+  | Tag_module_type
+  | Tag_sig_item
+  | Tag_with_constr
+  | Tag_module_expr
+  | Tag_str_item
+  | Tag_class_type
+  | Tag_class_sig_item
+  | Tag_class_expr
+  | Tag_class_str_item
+  | Tag_match_case
+  | Tag_ident
+  | Tag_binding
+  | Tag_rec_binding
+  | Tag_module_binding  
 let  string_of_tag =
   
   function
@@ -55,10 +53,10 @@ let  ident_tag = (Tag_ident: Ast.ident tag )
 let  binding_tag = (Tag_binding: Ast.binding tag )
 let  rec_binding_tag = (Tag_rec_binding: Ast.rec_binding tag )
 let  module_binding_tag = (Tag_module_binding: Ast.module_binding tag )
-type dyn  
+type dyn   
 external dyn_tag : ('a  tag  -> dyn tag )  = "%identity" 
-module Pack (X:sig type 'a   t    end) =
-  struct type pack = (dyn tag  * Obj.t )   exception Pack_error
+module Pack (X:sig type 'a  t     end) =
+  struct type pack =  (dyn tag  * Obj.t )   exception Pack_error 
     let  pack (tag) ((v : 'a  X.t )) =
       (( (dyn_tag tag ) ) , ( (Obj.repr v ) ) )
     let  unpack =

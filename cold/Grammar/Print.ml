@@ -1,6 +1,6 @@
 open Structure
 open Format
-type brothers = Bro of symbol * brothers list    
+type brothers =  Bro of symbol * brothers list    
 let rec  flatten_tree =
   
   function

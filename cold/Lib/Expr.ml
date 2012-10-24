@@ -324,7 +324,7 @@ let  map (_loc) (p) (e) (l) =
   with
   |
     (Ast.PaId(_ , Ast.IdLid(_ , x ) ) , Ast.ExId(_ , Ast.IdLid(_ , y ) ) )
-     when (x = y) -> l
+      when (x = y) -> l
   | _ ->
     if (Ast.is_irrefut_patt p ) then
      (
@@ -1369,7 +1369,7 @@ let  capture_antiquot =
     function
     |
       ((Ast.PaAnt(_loc , s ) |Ast.PaStr(_loc , s )) as p) when
-       (is_antiquot s ) ->
+        (is_antiquot s ) ->
       
       (match (view_antiquot s )
       with
