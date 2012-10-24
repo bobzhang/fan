@@ -170,5 +170,27 @@ type u = A of int
 and b = B of bool 
 
 
-class 'a f = object
+class ['a] f = object
+end
+
+    
+include Ast
+external loc_of_ctyp :
+  (ctyp -> FanLoc.t)  = "%field0"
+external loc_of_patt :
+    (patt -> FanLoc.t)  = "%field0"
+external loc_of_expr :
+    (expr -> FanLoc.t)  = "%field0"
+external loc_of_module_type :
+    (module_type -> FanLoc.t)  = "%field0"
+external loc_of_module_expr :
+    (module_expr -> FanLoc.t)  = "%field0"
+
+let f = function
+  | 'a'..'z' -> 1
+  | _ -> 2
+let rec f : 'a 'b . 'a list = []
+
+module type S = sig
+  module U : S with type u = x and type ('a,'b) m = ('a,'b)x  and type 'c h = M.h
 end
