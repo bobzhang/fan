@@ -83,7 +83,6 @@ let is_predef_option = function
   | _ -> false
         
 type space_formatter = (unit, Format.formatter, unit) format
-
       
 let pp_print_list
     ?sep:(sep:('a,'b,'c)format option)
@@ -192,12 +191,12 @@ class printer  ()= object(self:'self)
   method type_var_option ppf str =
     match str with
     |  None -> () 
-    | Some {txt;_} -> self#tyvar ppf txt 
+    | Some {txt;_} -> self#tyvar ppf txt
+
+  (* c ['a,'b] *)                                                                         
   method class_params_def ppf =  function
    | [] -> ()
-   | l ->  
-   fprintf ppf "[%a]"
-   (self#list (fun ppf {txt;_} -> self#tyvar ppf txt) ~sep:",") l 
+   | l ->  fprintf ppf "[%a]" (self#list (fun ppf {txt;_} -> self#tyvar ppf txt) ~sep:",") l 
    
   method type_with_label ppf (label,({ptyp_desc;_}as c) ) =
     match label with
@@ -669,24 +668,24 @@ class printer  ()= object(self:'self)
     let class_type_field ppf x =
       match x.pctf_desc with
       | Pctf_inher (ct) ->  
-          fprintf ppf "@[<hov2>inherit@ %a@]" self#class_type ct 
+          fprintf ppf "inherit@ %a" self#class_type ct 
       | Pctf_val (s, mf, vf, ct) ->
-          fprintf ppf "@[<hov2>val @ %a%a%s@ :@ %a@]"
+          fprintf ppf "val @ %a%a%s@ :@ %a"
             self#mutable_flag mf self#virtual_flag vf s  self#core_type  ct 
       | Pctf_virt (s, pf, ct) ->    (* todo: test this *)
-          fprintf ppf "@[<hov2>@[<hov2>method@ %a@ virtual@ %s@]@ :@ %a@]"
+          fprintf ppf "method@ %a@ virtual@ %s@ :@ %a"
             self#private_flag pf s  self#core_type ct 
       | Pctf_meth (s, pf, ct) ->
-          fprintf ppf "@[<hov2>@[<hov2>method@ %a@ %s@]@ :@ %a@]"
+          fprintf ppf "method@ %a@ %s@]@ :@ %a"
             self#private_flag pf s self#core_type ct 
       | Pctf_cstr (ct1, ct2) ->
-          fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]"
+          fprintf ppf "constraint@ %a@ =@ %a"
             self#core_type ct1 self#core_type ct2 in 
-    fprintf ppf "object%a@\n%a@\nend"
+    fprintf ppf "object%a@\n%a@;<1 -2>end"
       (fun ppf ct -> match ct.ptyp_desc with
       | Ptyp_any -> ()
       | _ -> fprintf ppf "@ (%a)" self#core_type ct) ct
-      (self#list  (* ~breakfirst:true *) class_type_field) l  ;
+      (self#list   class_type_field) l  ;
 
   method class_type_declaration_list ppf  l =
     let class_type_declaration ppf ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
@@ -694,9 +693,9 @@ class printer  ()= object(self:'self)
         self#class_type x.pci_expr in 
     match l with
     | [] -> () 
-    | [h] -> fprintf ppf "@[<hov2>class@ type@ %a@]" class_type_declaration   h 
+    | [h] -> fprintf ppf "@[<hv2>class@ type@ %a@]" class_type_declaration   h 
     | _ ->
-        fprintf ppf "@[<hov2>class@ type@ %a@]"
+        fprintf ppf "@[<hv2>class@ type@ %a@]"
           (self#list class_type_declaration ~sep:"@\nand@ ") l 
 
   method class_expr ppf x =
@@ -879,7 +878,7 @@ class printer  ()= object(self:'self)
         fprintf ppf "@[<hov2>(%a)@ (%a)@]" self#module_expr me1  self#module_expr  me2
     | Pmod_unpack e ->
         fprintf ppf "@[<hov2>(val@ %a)@]"  self#expression  e
-  method structure ppf x = self#list ~sep:"@\n" self#structure_item ppf x ;
+  method structure ppf x = self#list ~sep:"@." self#structure_item ppf x ;
   method structure_item ppf x = begin
     match x.pstr_desc with
     | Pstr_eval (e) ->

@@ -33,10 +33,9 @@ type 'a u = [< `a | `b > `a `b]
 
 type 'a c =  < draw:int; .. >  as 'a
 
-class a = object end
 type 'a u = (#a as 'a)    
 
-class type a = object method v : int end
+
 
 type 'c u = ('a,'b)#a as 'c     
 
@@ -48,13 +47,6 @@ let f ~v:(v0:int) y = v0 + y;;
 type ('a,'b,'c) u  = ('a,'b)#f [> `c `a] as 'c;;
 (* empty should not print*)
  
-class ['a] circle (c : 'a) = object
-  constraint 'a = #point
-  val mutable center = c
-  method center = center
-  method set_center c = center <- c
-  method move = center#move
-end
 
 let sum (lst : _ #iterator) = lst#fold (fun x y -> x+y) 0    
     
@@ -105,37 +97,17 @@ let _ = begin
   (!a, !a.b, !(a.b))
 end
 
-let f x = object
-    method x = print_int x 
-end
 
 external f : int -> int = "hah"
     
-class type b = object ('b)
-      method new_x:int-> 'b
-end
-module type S = sig 
-  class ['a, 'b] f : 'a -> 'b -> object method x : 'a method y : 'b end
-end
 
 
-module type S = sig
-  class ['a, 'b] f : f:'a -> ?g:'b -> object method x : 'a method y : 'b end
-  class a : ?f:int -> g:'a -> object  end
-end;;      
 
-class ['a,'b] f (v:'a) (u:'b) = object method x = v method y = u end
+
 
 type ('a,'b,'c)u = ('a,'b) #f as 'c    
 
 
-class ['a,'b] f ~v:(v:'a) ~u:u = object method x = v method y :'b= u end;;
-(* class ['a, 'b] f : v:'a -> u:'b -> object method x : 'a method y : 'b end;; *)
-class a ?(f=3) ~g:g0 =object end;;
-
-class a :  ?f:int -> object method x:int end = fun ?(f=3)  -> object method x = f end;;
-class a ?(f=3) : object method x:int end =object method x = f end;;
-class a f :object method x:int end = object method x = f end;;
 
 module type S = sig
   type u 
@@ -158,8 +130,6 @@ type u = A of int
 and b = B of bool 
 
 
-class ['a] f = object
-end
 
     
 include Ast
