@@ -76,7 +76,12 @@ class
                 begin
                 (fprintf ppf "%s %a" ( (String.sub n i ( (j - i) )) ) (
                   self#symbol1 ) s);
-                if (sl = [] ) then () 
+                if
+                (sl = [] )
+                then
+                begin
+                ()
+                end
                 else
                 begin
                 begin
@@ -169,24 +174,31 @@ class
             | Node({node = n;brother = b;son = s}) ->
               (get_brothers ( Bro ((n,( (get_brothers []  s) )))::acc ) b))
           and print_brothers (ppf) (brothers) =
-          if (brothers = [] ) then ( (fprintf ppf "@ []") )
+          if
+          (brothers = [] )
+          then
+          begin
+          (fprintf ppf "@ []")
+          end
           else
-           (List.iter (
-             (fun (Bro(n,xs)) ->
-               begin
-               (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n);
-               
-               (match xs
-               with
-               | []  -> ()
-                 | _::[]  ->
-                   
-                   (try (print_children ppf ( (get_children []  xs) ))
-                   with
-                   | Exit  -> (fprintf ppf ":%a" print_brothers xs))
-                 | _ -> (fprintf ppf ":%a" print_brothers xs));
-               (fprintf ppf "@]")
-               end) ) brothers) and print_children (ppf) =
+          begin
+          (List.iter (
+            (fun (Bro(n,xs)) ->
+              begin
+              (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n);
+              
+              (match xs
+              with
+              | []  -> ()
+                | _::[]  ->
+                  
+                  (try (print_children ppf ( (get_children []  xs) ))
+                  with
+                  | Exit  -> (fprintf ppf ":%a" print_brothers xs))
+                | _ -> (fprintf ppf ":%a" print_brothers xs));
+              (fprintf ppf "@]")
+              end) ) brothers)
+          end and print_children (ppf) =
           (List.iter ( (fprintf ppf ";@ %a" ( self#symbol )) )) and
           get_children (acc) =
           

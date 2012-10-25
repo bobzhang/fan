@@ -105,11 +105,16 @@ let  check_keyword_as_label (tok) (loc) (is_kwd) =
   let  s = 
   (match tok with
   | (`LABEL s) -> s | (`OPTLABEL s) -> s | _ -> "") in
-  if (( (s <> "") ) && ( (is_kwd s) )) then
-   (
-   (err ( Keyword_as_label (s) ) loc)
-   )
-  else ()
+  if
+  (( (s <> "") ) && ( (is_kwd s) ))
+  then
+  begin
+  (err ( Keyword_as_label (s) ) loc)
+  end
+  else
+  begin
+  ()
+  end
 let  check_unknown_keywords (tok) (loc) =
   
   (match tok with

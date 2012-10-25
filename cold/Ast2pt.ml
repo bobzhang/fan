@@ -147,11 +147,16 @@ let rec  ctyp =
       let  (f,al) = (Ctyp.fa []  f) in
       
       let  (is_cls,li) = (ctyp_long_id f) in
-      if is_cls then
-       (
-       (mktyp loc ( Ptyp_class ((li,( (List.map ctyp al) ),[] )) ))
-       )
-      else (mktyp loc ( Ptyp_constr ((li,( (List.map ctyp al) ))) ))
+      if
+      is_cls
+      then
+      begin
+      (mktyp loc ( Ptyp_class ((li,( (List.map ctyp al) ),[] )) ))
+      end
+      else
+      begin
+      (mktyp loc ( Ptyp_constr ((li,( (List.map ctyp al) ))) ))
+      end
     | TyArr(loc,TyLab(_,lab,t1),t2) ->
       (mktyp loc ( Ptyp_arrow ((lab,( (ctyp t1) ),( (ctyp t2) ))) ))
     | TyArr(loc,TyOlb(loc1,lab,t1),t2) ->
@@ -248,7 +253,11 @@ let  mktype (loc) (tl) (cl) (tk) (tp) (tm) =
   let  (params,variance) = (List.split tl) in
   {ptype_params = params;ptype_cstrs = cl;ptype_kind = tk;ptype_private = tp;
     ptype_manifest = tm;ptype_loc = loc;ptype_variance = variance}
-let  mkprivate' (m) = if m then Private  else Public
+let  mkprivate' (m) = if m then begin
+                      Private
+                      end else begin
+                      Public
+                      end
 let  mkprivate =
   
   (function
@@ -289,16 +298,20 @@ let rec  type_decl (tl) (cl) (loc) (m) (pflag) =
         Ptype_variant ((List.map mkvariant ( (list_of_ctyp t [] ) ))) ) (
         (mkprivate' pflag) ) m)
     | t ->
-      if (m <> None ) then
-       (
-       (error loc "only one manifest type allowed by definition")
-       )
+      if
+      (m <> None )
+      then
+      begin
+      (error loc "only one manifest type allowed by definition")
+      end
       else
-       
-       let  m = 
-       (match t with
-       | Ast.TyNil(_) -> None | _ -> Some ((ctyp t))) in
-       (mktype loc tl cl Ptype_abstract  ( (mkprivate' pflag) ) m))
+      begin
+      
+      let  m = 
+      (match t with
+      | Ast.TyNil(_) -> None | _ -> Some ((ctyp t))) in
+      (mktype loc tl cl Ptype_abstract  ( (mkprivate' pflag) ) m)
+      end)
 let  type_decl (tl) (cl) (t) (loc) = (type_decl tl cl loc None  false  t)
 let  mkvalue_desc (loc) (t) (p) =
   {pval_type = ( (ctyp t) );pval_prim = p;pval_loc = loc}
@@ -393,22 +406,44 @@ let rec  patt_fa (al) =
   (function
   | PaApp(_,f,a) -> (patt_fa ( a::al ) f) | f -> (f,al))
 let rec  deep_mkrangepat (loc) (c1) (c2) =
-  if (c1 = c2) then ( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) )
+  if
+  (c1 = c2)
+  then
+  begin
+  (mkghpat loc ( Ppat_constant (Const_char (c1)) ))
+  end
   else
-   (mkghpat loc (
-     Ppat_or
-       ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
-         (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
-         ))) ))
+  begin
+  (mkghpat loc (
+    Ppat_or
+      ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
+        (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
+        ))) ))
+  end
 let rec  mkrangepat (loc) (c1) (c2) =
-  if (c1 > c2) then ( (mkrangepat loc c2 c1) )
-  else if (c1 = c2) then ( (mkpat loc ( Ppat_constant (Const_char (c1)) )) )
+  if
+  (c1 > c2)
+  then
+  begin
+  (mkrangepat loc c2 c1)
+  end
   else
-   (mkpat loc (
-     Ppat_or
-       ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
-         (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
-         ))) ))
+  begin
+  if
+  (c1 = c2)
+  then
+  begin
+  (mkpat loc ( Ppat_constant (Const_char (c1)) ))
+  end
+  else
+  begin
+  (mkpat loc (
+    Ppat_or
+      ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
+        (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
+        ))) ))
+  end
+  end
 let rec  patt =
   
   (function
@@ -448,32 +483,38 @@ let rec  patt =
       (match (patt f).ppat_desc
       with
       | Ppat_construct(li,None ,_) ->
-        if (constructors_arity () ) then
-         (
-         (mkpat loc (
-           Ppat_construct
-             ((li,( Some ((mkpat loc ( Ppat_tuple (al) ))) ),true )) ))
-         )
+        if
+        (constructors_arity () )
+        then
+        begin
+        (mkpat loc (
+          Ppat_construct
+            ((li,( Some ((mkpat loc ( Ppat_tuple (al) ))) ),true )) ))
+        end
         else
-         
-         let  a =
-         
-         (match al with
-         | a::[]  -> a | _ -> (mkpat loc ( Ppat_tuple (al) ))) in
-         (mkpat loc ( Ppat_construct ((li,( Some (a) ),false )) ))
+        begin
+        
+        let  a =
+        
+        (match al with
+        | a::[]  -> a | _ -> (mkpat loc ( Ppat_tuple (al) ))) in
+        (mkpat loc ( Ppat_construct ((li,( Some (a) ),false )) ))
+        end
         | Ppat_variant(s,None ) ->
           
           let  a =
-          if (constructors_arity () ) then
-           (
-           (mkpat loc ( Ppat_tuple (al) ))
-           )
+          if
+          (constructors_arity () )
+          then
+          begin
+          (mkpat loc ( Ppat_tuple (al) ))
+          end
           else
-           
-           (match al
-           with
-           | a::[]  -> a | _ -> (mkpat loc ( Ppat_tuple (al) ))) in
-          (mkpat loc ( Ppat_variant ((s,( Some (a) ))) ))
+          begin
+          
+          (match al with
+          | a::[]  -> a | _ -> (mkpat loc ( Ppat_tuple (al) )))
+          end in (mkpat loc ( Ppat_variant ((s,( Some (a) ))) ))
         | _ ->
           (error ( (loc_of_patt f) )
             "this is not a constructor, it cannot be applied in a pattern"))
@@ -548,7 +589,12 @@ let rec  patt =
       
       let  (wildcards,ps) = (List.partition is_wildcard ps) in
       
-      let  is_closed = if (wildcards = [] ) then Closed  else Open in
+      let  is_closed =
+      if (wildcards = [] ) then begin
+      Closed
+      end else begin
+      Open
+      end in
       (mkpat loc ( Ppat_record ((( (List.map mklabpat ps) ),is_closed)) ))
     | PaStr(loc,s) ->
       (mkpat loc (
@@ -624,34 +670,40 @@ let rec  expr =
       | Pexp_construct(li,None ,_) ->
         
         let  al = (List.map snd al) in
-        if (constructors_arity () ) then
-         (
-         (mkexp loc (
-           Pexp_construct
-             ((li,( Some ((mkexp loc ( Pexp_tuple (al) ))) ),true )) ))
-         )
+        if
+        (constructors_arity () )
+        then
+        begin
+        (mkexp loc (
+          Pexp_construct
+            ((li,( Some ((mkexp loc ( Pexp_tuple (al) ))) ),true )) ))
+        end
         else
-         
-         let  a =
-         
-         (match al with
-         | a::[]  -> a | _ -> (mkexp loc ( Pexp_tuple (al) ))) in
-         (mkexp loc ( Pexp_construct ((li,( Some (a) ),false )) ))
+        begin
+        
+        let  a =
+        
+        (match al with
+        | a::[]  -> a | _ -> (mkexp loc ( Pexp_tuple (al) ))) in
+        (mkexp loc ( Pexp_construct ((li,( Some (a) ),false )) ))
+        end
         | Pexp_variant(s,None ) ->
           
           let  al = (List.map snd al) in
           
           let  a =
-          if (constructors_arity () ) then
-           (
-           (mkexp loc ( Pexp_tuple (al) ))
-           )
+          if
+          (constructors_arity () )
+          then
+          begin
+          (mkexp loc ( Pexp_tuple (al) ))
+          end
           else
-           
-           (match al
-           with
-           | a::[]  -> a | _ -> (mkexp loc ( Pexp_tuple (al) ))) in
-          (mkexp loc ( Pexp_variant ((s,( Some (a) ))) ))
+          begin
+          
+          (match al with
+          | a::[]  -> a | _ -> (mkexp loc ( Pexp_tuple (al) )))
+          end in (mkexp loc ( Pexp_variant ((s,( Some (a) ))) ))
         | _ -> (mkexp loc ( Pexp_apply ((( (expr f) ),al)) )))
     | ExAre(loc,e1,e2) ->
       (mkexp loc (
@@ -1287,7 +1339,11 @@ let rec  expr =
       (class_str_item cst1 ( (class_str_item cst2 l) ))
     | CrInh(loc,ov,ce,pb) ->
       
-      let  opb = if (pb = "") then None  else Some (pb) in
+      let  opb = if (pb = "") then begin
+                 None
+                 end else begin
+                 Some (pb)
+                 end in
       (mkcf loc (
         Pcf_inher ((( (override_flag loc ov) ),( (class_expr ce) ),opb)) ))::l
     | CrIni(loc,e) -> (mkcf loc ( Pcf_init ((expr e)) ))::l

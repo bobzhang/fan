@@ -27,7 +27,11 @@ let  string_of_patt (patt) =
     patt) in
   
   let  str = (Buffer.contents buf) in
-  if (str = "") then ( assert false ) else str
+  if (str = "") then begin
+  assert false
+  end else begin
+  str
+  end
 let  check_not_tok (s) =
   
   (match s
@@ -90,9 +94,9 @@ let  check_use (nl) (el) =
     (Hashtbl.iter (
       (fun (_) ->
         (fun ((r,e)) ->
-          if (( r.contents ) = UsedNotScanned )
+          if
+          (( r.contents ) = UsedNotScanned )
           then
-          
           begin
           begin
           (r := UsedScanned );
@@ -105,17 +109,26 @@ let  check_use (nl) (el) =
                   (List.iter ( (fun (s) -> (mark_symbol modif tbl s)) ) (
                     rule.prod ))) ) rules)) ) ( e.levels ))
           end
-          end else ())) ) tbl)
+          end
+          else
+          begin
+          ()
+          end)) ) tbl)
     end done in
   (Hashtbl.iter (
     (fun (s) ->
       (fun ((r,e)) ->
-        if (( r.contents ) = Unused ) then
-         (
-         (print_warning ( (e.name).loc ) (
-           ("Unused local entry \"" ^ ( (s ^ "\"") )) ))
-         )
-        else ())) ) tbl)
+        if
+        (( r.contents ) = Unused )
+        then
+        begin
+        (print_warning ( (e.name).loc ) (
+          ("Unused local entry \"" ^ ( (s ^ "\"") )) ))
+        end
+        else
+        begin
+        ()
+        end)) ) tbl)
 let  new_type_var =
   
   let  i = (ref 0) in
@@ -170,14 +183,18 @@ let  make_ctyp (styp) (tvar) =
     | STapp(_loc,t1,t2) -> Ast.TyApp ((_loc,( (aux t1) ),( (aux t2) )))
     | STquo(_loc,s) -> Ast.TyQuo ((_loc,s))
     | STself(_loc,x) ->
-      if (tvar = "") then
-       (
-       (FanLoc.raise _loc (
-         Stream.Error
-           (("'" ^ ( (x ^ "' illegal in anonymous entry level") ))) ))
-       )
-      else Ast.TyQuo ((_loc,tvar)) | STtok(_loc) -> (raise NotneededTyping )
-    | STtyp(t) -> t) in
+      if
+      (tvar = "")
+      then
+      begin
+      (FanLoc.raise _loc (
+        Stream.Error (("'" ^ ( (x ^ "' illegal in anonymous entry level") )))
+        ))
+      end
+      else
+      begin
+      Ast.TyQuo ((_loc,tvar))
+      end | STtok(_loc) -> (raise NotneededTyping ) | STtyp(t) -> t) in
   
   (try Some ((aux styp)) with
   | NotneededTyping  -> None)
@@ -335,17 +352,22 @@ let  text_of_action (_loc) (psl) ((rtvar :  string ))
              (succ i) ))))) ) (e,0) psl) in
   
   let  txt =
-  if meta_action.contents then
-   (
-   Ast.ExApp
-     ((_loc,(
-       Ast.ExId
-         ((_loc,(
-           Ast.IdAcc
-             ((_loc,( Ast.IdUid ((_loc,"Obj")) ),( Ast.IdLid ((_loc,"magic"))
-               ))) ))) ),( (MetaAst.Expr.meta_expr _loc txt) )))
-   )
-  else txt in
+  if
+  meta_action.contents
+  then
+  begin
+  Ast.ExApp
+    ((_loc,(
+      Ast.ExId
+        ((_loc,(
+          Ast.IdAcc
+            ((_loc,( Ast.IdUid ((_loc,"Obj")) ),( Ast.IdLid ((_loc,"magic"))
+              ))) ))) ),( (MetaAst.Expr.meta_expr _loc txt) )))
+  end
+  else
+  begin
+  txt
+  end in
   Ast.ExApp
     ((_loc,(
       Ast.ExId
@@ -449,27 +471,34 @@ let rec  make_expr (entry) (tvar) =
                                 Ast.TyQuo ((_loc,( n.tvar ))) ))) ))) ))) ),(
                     Ast.ExStr ((_loc,lab)) ))) ))) )))
         | None  ->
-          if (( n.tvar ) = tvar) then ( Ast.ExVrn ((_loc,"Sself")) )
+          if
+          (( n.tvar ) = tvar)
+          then
+          begin
+          Ast.ExVrn ((_loc,"Sself"))
+          end
           else
-           Ast.ExApp
-             ((_loc,( Ast.ExVrn ((_loc,"Snterm")) ),(
-               Ast.ExApp
-                 ((_loc,(
-                   Ast.ExId
-                     ((_loc,(
-                       Ast.IdAcc
-                         ((_loc,( (gm () ) ),( Ast.IdLid ((_loc,"obj")) )))
-                       ))) ),(
-                   Ast.ExTyc
-                     ((_loc,( n.expr ),(
-                       Ast.TyApp
-                         ((_loc,(
-                           Ast.TyId
-                             ((_loc,(
-                               Ast.IdAcc
-                                 ((_loc,( (gm () ) ),( Ast.IdLid ((_loc,"t"))
-                                   ))) ))) ),( Ast.TyQuo ((_loc,( n.tvar )))
-                           ))) ))) ))) ))))
+          begin
+          Ast.ExApp
+            ((_loc,( Ast.ExVrn ((_loc,"Snterm")) ),(
+              Ast.ExApp
+                ((_loc,(
+                  Ast.ExId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( (gm () ) ),( Ast.IdLid ((_loc,"obj")) ))) )))
+                  ),(
+                  Ast.ExTyc
+                    ((_loc,( n.expr ),(
+                      Ast.TyApp
+                        ((_loc,(
+                          Ast.TyId
+                            ((_loc,(
+                              Ast.IdAcc
+                                ((_loc,( (gm () ) ),( Ast.IdLid ((_loc,"t"))
+                                  ))) ))) ),( Ast.TyQuo ((_loc,( n.tvar )))
+                          ))) ))) ))) )))
+          end)
     | TXopt(_loc,t) ->
       Ast.ExApp
         ((_loc,( Ast.ExVrn ((_loc,"Sopt")) ),( (make_expr entry "" t) )))
@@ -626,9 +655,25 @@ let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
             (match (e.name).expr
             with
             | Ast.ExId(_,Ast.IdLid(_,_)) ->
-              if (List.exists ( (same_tvar e) ) nl) then ll
-              else if (List.exists ( (same_tvar e) ) ll) then ll
-              else e.name::ll | _ -> ll))) ) el [] ) in
+              if
+              (List.exists ( (same_tvar e) ) nl)
+              then
+              begin
+              ll
+              end
+              else
+              begin
+              if
+              (List.exists ( (same_tvar e) ) ll)
+              then
+              begin
+              ll
+              end
+              else
+              begin
+              e.name::ll
+              end
+              end | _ -> ll))) ) el [] ) in
       
       let  local_binding_of_name =
       
@@ -766,26 +811,29 @@ let  mk_tok (_loc) ?restrict  (p) (t) =
     let  p' = (Camlp4Ast.wildcarder#patt p) in
     
     let  match_fun =
-    if (Camlp4Ast.is_irrefut_patt p') then
-     (
-     Ast.ExFun
-       ((_loc,(
-         Ast.McArr
-           ((_loc,p',( Ast.ExNil (_loc) ),(
-             Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ))) )))
-     )
+    if
+    (Camlp4Ast.is_irrefut_patt p')
+    then
+    begin
+    Ast.ExFun
+      ((_loc,(
+        Ast.McArr
+          ((_loc,p',( Ast.ExNil (_loc) ),(
+            Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ))) )))
+    end
     else
-     Ast.ExFun
-       ((_loc,(
-         Ast.McOr
-           ((_loc,(
-             Ast.McArr
-               ((_loc,p',( Ast.ExNil (_loc) ),(
-                 Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ))) ),(
-             Ast.McArr
-               ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),(
-                 Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) ))) ))) ))) )))
-    in
+    begin
+    Ast.ExFun
+      ((_loc,(
+        Ast.McOr
+          ((_loc,(
+            Ast.McArr
+              ((_loc,p',( Ast.ExNil (_loc) ),(
+                Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ))) ),(
+            Ast.McArr
+              ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),(
+                Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) ))) ))) ))) )))
+    end in
     
     let  descr = (string_of_patt p') in
     

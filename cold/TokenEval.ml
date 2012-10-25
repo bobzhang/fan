@@ -2,9 +2,20 @@ let  valch (x) = (( (Char.code x) ) - ( (Char.code '0') ))
 let  valch_hex (x) =
   
   let  d = (Char.code x) in
-  if (d >= 97) then ( (d - 87) )
-  else if (d >= 65) then ( (d - 55) )
-  else (d - 48)
+  if
+  (d >= 97)
+  then
+  begin
+  (d - 87)
+  end
+  else
+  begin
+  if (d >= 65) then begin
+  (d - 55)
+  end else begin
+  (d - 48)
+  end
+  end
 let rec  skip_indent ((__strm : _ Stream.t )) =
   
   (match (Stream.peek __strm)
@@ -22,8 +33,16 @@ let  skip_opt_linefeed ((__strm : _ Stream.t )) =
     ()
     end | _ -> ())
 let  chr (c) =
-  if (( (c < 0) ) || ( (c > 255) )) then ( (failwith "invalid char token") )
-  else (Char.chr c)
+  if
+  (( (c < 0) ) || ( (c > 255) ))
+  then
+  begin
+  (failwith "invalid char token")
+  end
+  else
+  begin
+  (Char.chr c)
+  end
 let  backslash ((__strm : _ Stream.t )) =
   
   (match (Stream.peek __strm)
@@ -120,25 +139,37 @@ let  backslash_in_string (strict) (store) ((__strm : _ Stream.t )) =
             (store c)
             end | _ -> (failwith "invalid string token"))))
 let  char (s) =
-  if (( (String.length s) ) = 1) then ( s.[0] )
-  else if (( (String.length s) ) = 0) then
-        (
-        (failwith "invalid char token")
-        )
+  if
+  (( (String.length s) ) = 1)
+  then
+  begin
+  s.[0]
+  end
   else
-   
-   let  (__strm : _ Stream.t ) = (Stream.of_string s) in
-   
-   (match (Stream.peek __strm)
-   with
-   | Some('\\') ->
-     begin
-     (Stream.junk __strm);
-     
-     (try (backslash __strm)
-     with
-     | Stream.Failure  -> (raise ( Stream.Error ("") )))
-     end | _ -> (failwith "invalid char token"))
+  begin
+  if
+  (( (String.length s) ) = 0)
+  then
+  begin
+  (failwith "invalid char token")
+  end
+  else
+  begin
+  
+  let  (__strm : _ Stream.t ) = (Stream.of_string s) in
+  
+  (match (Stream.peek __strm)
+  with
+  | Some('\\') ->
+    begin
+    (Stream.junk __strm);
+    
+    (try (backslash __strm)
+    with
+    | Stream.Failure  -> (raise ( Stream.Error ("") )))
+    end | _ -> (failwith "invalid char token"))
+  end
+  end
 let  string ?strict  (s) =
   
   let  buf = (Buffer.create 23) in

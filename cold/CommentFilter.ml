@@ -31,8 +31,16 @@ let  filter ((_,q)) =
 let  take_list ((_,q)) =
   
   let rec  self (accu) =
-  if (Queue.is_empty q) then accu else (self ( (Queue.take q)::accu )) in
-  (self [] )
+  if
+  (Queue.is_empty q)
+  then
+  begin
+  accu
+  end
+  else
+  begin
+  (self ( (Queue.take q)::accu ))
+  end in (self [] )
 let  take_stream = fst
 let  define (token_fiter) (comments_strm) =
   (FanToken.Filter.define_filter token_fiter (

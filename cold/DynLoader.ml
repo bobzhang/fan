@@ -19,14 +19,19 @@ module Make (U:sig  end) : S =
       
       let  q = (Queue.create () ) in
       begin
-      if ocaml_stdlib then
-       (
-       (include_dir q FanConfig.ocaml_standard_library)
-       )
-      else ();
-      if camlp4_stdlib
+      if
+      ocaml_stdlib
       then
-      
+      begin
+      (include_dir q FanConfig.ocaml_standard_library)
+      end
+      else
+      begin
+      ()
+      end;
+      if
+      camlp4_stdlib
+      then
       begin
       begin
       (include_dir q FanConfig.camlp4_standard_library);
@@ -37,53 +42,83 @@ module Make (U:sig  end) : S =
         (Filename.concat FanConfig.camlp4_standard_library "Camlp4Filters")
         ))
       end
-      end else ();
+      end
+      else
+      begin
+      ()
+      end;
       (include_dir q ".");
       q
       end
     let  find_in_path (x) (name) =
-      if (not ( (Filename.is_implicit name) )) then
-       (
-       if (Sys.file_exists name) then name else (raise Not_found )
-       )
+      if
+      (not ( (Filename.is_implicit name) ))
+      then
+      begin
+      if
+      (Sys.file_exists name)
+      then
+      begin
+      name
+      end
       else
-       
-       let  res =
-       (fold_load_path x (
-         (fun (dir) ->
-           
-           (function
-           | None  ->
-             
-             let  fullname = (Filename.concat dir name) in
-             if (Sys.file_exists fullname) then ( Some (fullname) ) else None
-             | x -> x)) ) None ) in
-       
-       (match res with
-       | None  -> (raise Not_found ) | Some(x) -> x)
+      begin
+      (raise Not_found )
+      end
+      end
+      else
+      begin
+      
+      let  res =
+      (fold_load_path x (
+        (fun (dir) ->
+          
+          (function
+          | None  ->
+            
+            let  fullname = (Filename.concat dir name) in
+            if
+            (Sys.file_exists fullname)
+            then
+            begin
+            Some (fullname)
+            end
+            else
+            begin
+            None
+            end | x -> x)) ) None ) in
+      
+      (match res with
+      | None  -> (raise Not_found ) | Some(x) -> x)
+      end
     let  load =
       
       let  _initialized = (ref false ) in
       (fun (_path) ->
         (fun (file) ->
           begin
-          if (not ( _initialized.contents )) then
-           (
-           
-           (try
-           begin
-           (Dynlink.init () );
-           (Dynlink.allow_unsafe_modules true );
-           (_initialized := true )
-           end
-           with
-           | Dynlink.Error(e) ->
-             (raise (
-               Error
-                 (("Camlp4's dynamic loader initialization",(
-                   (Dynlink.error_message e) ))) )))
-           )
-          else ();
+          if
+          (not ( _initialized.contents ))
+          then
+          begin
+          
+          (try
+          begin
+          (Dynlink.init () );
+          (Dynlink.allow_unsafe_modules true );
+          (_initialized := true )
+          end
+          with
+          | Dynlink.Error(e) ->
+            (raise (
+              Error
+                (("Camlp4's dynamic loader initialization",(
+                  (Dynlink.error_message e) ))) )))
+          end
+          else
+          begin
+          ()
+          end;
           
           let  fname =
           

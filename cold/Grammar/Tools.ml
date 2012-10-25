@@ -57,8 +57,16 @@ let rec  get_token_list (entry) (tokl) (last_tok) =
                                                                    DeadEnd })
     -> (get_token_list entry ( last_tok::tokl ) tok son)
     | tree ->
-      if (tokl = [] ) then None 
-      else Some ((( (List.rev ( last_tok::tokl )) ),last_tok,tree)))
+      if
+      (tokl = [] )
+      then
+      begin
+      None
+      end
+      else
+      begin
+      Some ((( (List.rev ( last_tok::tokl )) ),last_tok,tree))
+      end)
 let  eq_Stoken_ids (s1) (s2) =
   
   (match (s1,s2)

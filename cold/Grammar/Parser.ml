@@ -9,11 +9,16 @@ let  add_loc (bp) (parse_fun) (strm) =
   let  ep = (loc_ep strm) in
   
   let  loc =
-  if (( (FanLoc.start_off bp) ) > ( (FanLoc.stop_off ep) )) then
-   (
-   (FanLoc.join bp)
-   )
-  else (FanLoc.merge bp ep) in (x,loc)
+  if
+  (( (FanLoc.start_off bp) ) > ( (FanLoc.stop_off ep) ))
+  then
+  begin
+  (FanLoc.join bp)
+  end
+  else
+  begin
+  (FanLoc.merge bp ep)
+  end in (x,loc)
 module StreamOrig  = Stream
 module Stream  =
   struct type 'a t =  'a  StreamOrig.t  
@@ -24,8 +29,12 @@ module Stream  =
       let rec  loop (n) =
       
       (function
-      | []  -> None | x::[]  -> if (n = 0) then ( Some (x) ) else None
-        | _::l -> (loop ( (n - 1) ) l)) in
+      | []  -> None
+        | x::[]  -> if (n = 0) then begin
+                    Some (x)
+                    end else begin
+                    None
+                    end | _::l -> (loop ( (n - 1) ) l)) in
       
       let  peek_nth (n) = (loop n ( (Stream.npeek ( (n + 1) ) strm) )) in
       (Stream.from peek_nth) end
@@ -50,8 +59,16 @@ let  level_number (entry) (lab) =
   (function
   | []  -> (failwith ( ("unknown level " ^ lab) ))
     | lev::levs ->
-      if (Tools.is_level_labelled lab lev) then levn
-      else (lookup ( (succ levn) ) levs)) in
+      if
+      (Tools.is_level_labelled lab lev)
+      then
+      begin
+      levn
+      end
+      else
+      begin
+      (lookup ( (succ levn) ) levs)
+      end) in
   
   (match entry.edesc
   with
@@ -87,11 +104,16 @@ let  continue (entry) (loc) (a) (s) (son) (p1) ((__strm : _ Stream.t )) =
     (raise ( Stream.Error ((Failed.tree_failed entry a s son)) ))) in
   (Action.mk ( (fun (_) -> (Action.getf act a)) ))
 let  skip_if_empty (bp) (strm) =
-  if (( (loc_bp strm) ) = bp) then
-   (
-   (Action.mk ( (fun (_) -> (raise Stream.Failure )) ))
-   )
-  else (raise Stream.Failure )
+  if
+  (( (loc_bp strm) ) = bp)
+  then
+  begin
+  (Action.mk ( (fun (_) -> (raise Stream.Failure )) ))
+  end
+  else
+  begin
+  (raise Stream.Failure )
+  end
 let  do_recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
   ((__strm : _ Stream.t )) =
   
@@ -106,28 +128,42 @@ let  do_recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
         __strm)))
 let  recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
   (strm) =
-  if strict_parsing.contents then
-   (
-   (raise ( Stream.Error ((Failed.tree_failed entry a s son)) ))
-   )
+  if
+  strict_parsing.contents
+  then
+  begin
+  (raise ( Stream.Error ((Failed.tree_failed entry a s son)) ))
+  end
   else
-   
-   let  _ =
-   if strict_parsing_warning.contents then
-    (
-    
-    let  msg = (Failed.tree_failed entry a s son) in
-    begin
-    (Format.eprintf "Warning: trying to recover from syntax error");
-    if (( entry.ename ) <> "") then
-     (
-     (Format.eprintf " in [%s]" ( entry.ename ))
-     )
-    else ();
-    (Format.eprintf "\n%s%a@." msg FanLoc.print loc)
-    end
-    )
-   else () in (do_recover parser_of_tree entry nlevn alevn loc a s son strm)
+  begin
+  
+  let  _ =
+  if
+  strict_parsing_warning.contents
+  then
+  begin
+  
+  let  msg = (Failed.tree_failed entry a s son) in
+  begin
+  (Format.eprintf "Warning: trying to recover from syntax error");
+  if
+  (( entry.ename ) <> "")
+  then
+  begin
+  (Format.eprintf " in [%s]" ( entry.ename ))
+  end
+  else
+  begin
+  ()
+  end;
+  (Format.eprintf "\n%s%a@." msg FanLoc.print loc)
+  end
+  end
+  else
+  begin
+  ()
+  end in (do_recover parser_of_tree entry nlevn alevn loc a s son strm)
+  end
 let rec  parser_of_tree (entry) (nlevn) (alevn) =
   
   (function
@@ -537,24 +573,31 @@ let rec  start_parser_of_levels (entry) (clevn) =
             | _ ->
               (fun (levn) ->
                 (fun (strm) ->
-                  if (levn > clevn) then ( (p1 levn strm) )
+                  if
+                  (levn > clevn)
+                  then
+                  begin
+                  (p1 levn strm)
+                  end
                   else
-                   
-                   let  bp = (loc_bp strm) in
-                   
-                   let  (__strm : _ Stream.t ) = strm in
-                   
-                   (match
-                   
-                   (try Some ((add_loc bp p2 __strm))
-                   with
-                   | Stream.Failure  -> None)
-                   with
-                   | Some(act,loc) ->
-                     
-                     let  a = (Action.getf act loc) in
-                     ((entry.econtinue) levn loc a strm)
-                     | _ -> (p1 levn __strm)))))))
+                  begin
+                  
+                  let  bp = (loc_bp strm) in
+                  
+                  let  (__strm : _ Stream.t ) = strm in
+                  
+                  (match
+                  
+                  (try Some ((add_loc bp p2 __strm))
+                  with
+                  | Stream.Failure  -> None)
+                  with
+                  | Some(act,loc) ->
+                    
+                    let  a = (Action.getf act loc) in
+                    ((entry.econtinue) levn loc a strm)
+                    | _ -> (p1 levn __strm))
+                  end)))))
 let  start_parser_of_entry (entry) =
   
   (match entry.edesc
@@ -589,19 +632,26 @@ let rec  continue_parser_of_levels (entry) (clevn) =
             (fun (bp) ->
               (fun (a) ->
                 (fun (strm) ->
-                  if (levn > clevn) then ( (p1 levn bp a strm) )
+                  if
+                  (levn > clevn)
+                  then
+                  begin
+                  (p1 levn bp a strm)
+                  end
                   else
-                   
-                   let  (__strm : _ Stream.t ) = strm in
-                   
-                   (try (p1 levn bp a __strm)
-                   with
-                   | Stream.Failure  ->
-                     
-                     let  (act,loc) = (add_loc bp p2 __strm) in
-                     
-                     let  a = (Action.getf2 act a loc) in
-                     ((entry.econtinue) levn loc a strm))))))))
+                  begin
+                  
+                  let  (__strm : _ Stream.t ) = strm in
+                  
+                  (try (p1 levn bp a __strm)
+                  with
+                  | Stream.Failure  ->
+                    
+                    let  (act,loc) = (add_loc bp p2 __strm) in
+                    
+                    let  a = (Action.getf2 act a loc) in
+                    ((entry.econtinue) levn loc a strm))
+                  end))))))
 let  continue_parser_of_entry (entry) =
   
   (match entry.edesc

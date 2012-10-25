@@ -20,7 +20,16 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
                (Printexc.to_string exn) ))) | _ -> None) ))
     module DynLoader  = (DynLoader.Make) (struct  end)
     let  (objext,libext) =
-      if DynLoader.is_native then (".cmxs",".cmxs") else (".cmo",".cma")
+      if
+      DynLoader.is_native
+      then
+      begin
+      (".cmxs",".cmxs")
+      end
+      else
+      begin
+      (".cmo",".cma")
+      end
     let  rewrite_and_load (n) (x) =
       
       let  dyn_loader = ((DynLoader.instance.contents) () ) in
@@ -34,10 +43,13 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       end in
       
       let  load (n) =
-      if (( (SSet.mem n ( loaded_modules.contents )) ) || (
-           (List.mem n ( PreCast.loaded_modules.contents )) )) then
-       ()
-       
+      if
+      (( (SSet.mem n ( loaded_modules.contents )) ) || (
+        (List.mem n ( PreCast.loaded_modules.contents )) ))
+      then
+      begin
+      ()
+      end
       else
       begin
       begin
@@ -158,11 +170,21 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       begin
       (PreCast.Syntax.current_warning := print_warning);
       
-      let  ic = if (name = "-") then stdin else (open_in_bin name) in
+      let  ic =
+      if (name = "-") then begin
+      stdin
+      end else begin
+      (open_in_bin name)
+      end in
       
       let  cs = (Stream.of_channel ic) in
       
-      let  clear (() ) = if (name = "-") then ()  else (close_in ic) in
+      let  clear (() ) =
+      if (name = "-") then begin
+      ()
+      end else begin
+      (close_in ic)
+      end in
       
       let  phr =
       
@@ -222,17 +244,31 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       begin
       (eprintf
         "Usage: camlp4 [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
-        ( if DynLoader.is_native then "cmxs     " else "(cmo|cma)" ));
+        (
+        if
+        DynLoader.is_native
+        then
+        begin
+        "cmxs     "
+        end
+        else
+        begin
+        "(cmo|cma)"
+        end ));
       (FanUtil.Options.print_usage_list ini_sl);
-      if (ext_sl <> [] )
+      if
+      (ext_sl <> [] )
       then
-      
       begin
       begin
       (eprintf "Options added by loaded object files:@.");
       (FanUtil.Options.print_usage_list ext_sl)
       end
-      end else ()
+      end
+      else
+      begin
+      ()
+      end
       end
     let  warn_noassert (() ) =
       (eprintf
@@ -253,8 +289,16 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       let  ()  = (FanConfig.current_input_file := x) in
       (t := (
         Some
-          (if (( t.contents ) = None ) then ( (fun (_) -> (f x)) )
-           else (fun (usage) -> (usage () ))) )) in
+          (if
+           (( t.contents ) = None )
+           then
+           begin
+           (fun (_) -> (f x))
+           end
+           else
+           begin
+           (fun (usage) -> (usage () ))
+           end) )) in
       
       let  do_task (usage) =
       
@@ -340,17 +384,43 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
     let _= (FanUtil.Options.init initial_spec_list)
     let  anon_fun (name) =
       (input_file (
-        if (Filename.check_suffix name ".mli") then ( Intf (name) )
-        else if (Filename.check_suffix name ".ml") then ( Impl (name) )
-        else if (Filename.check_suffix name objext) then
-              (
-              ModuleImpl (name)
-              )
-        else if (Filename.check_suffix name libext) then
-              (
-              ModuleImpl (name)
-              )
-        else (raise ( Arg.Bad (("don't know what to do with " ^ name)) )) ))
+        if
+        (Filename.check_suffix name ".mli")
+        then
+        begin
+        Intf (name)
+        end
+        else
+        begin
+        if
+        (Filename.check_suffix name ".ml")
+        then
+        begin
+        Impl (name)
+        end
+        else
+        begin
+        if
+        (Filename.check_suffix name objext)
+        then
+        begin
+        ModuleImpl (name)
+        end
+        else
+        begin
+        if
+        (Filename.check_suffix name libext)
+        then
+        begin
+        ModuleImpl (name)
+        end
+        else
+        begin
+        (raise ( Arg.Bad (("don't know what to do with " ^ name)) ))
+        end
+        end
+        end
+        end ))
     let  main (argv) =
       
       let  usage (() ) =
@@ -393,11 +463,16 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       let  ()  = (do_task usage) in
       
       let  ()  = (call_callback () ) in
-      if print_loaded_modules.contents then
-       (
-       (SSet.iter ( (eprintf "%s@.") ) ( loaded_modules.contents ))
-       )
-      else ()
+      if
+      print_loaded_modules.contents
+      then
+      begin
+      (SSet.iter ( (eprintf "%s@.") ) ( loaded_modules.contents ))
+      end
+      else
+      begin
+      ()
+      end
       with
       | Arg.Bad(s) ->
         begin

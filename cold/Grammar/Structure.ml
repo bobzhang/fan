@@ -95,12 +95,16 @@ let  removing ({gkeywords = table;gfilter = filter;_}) (kwd) =
   let  r = (Hashtbl.find table kwd) in
   
   let  ()  = (decr r) in
-  if (( r.contents ) = 0)
+  if
+  (( r.contents ) = 0)
   then
-  
   begin
   begin
   (FanToken.Filter.keyword_removed filter kwd);
   (Hashtbl.remove table kwd)
   end
-  end else ()
+  end
+  else
+  begin
+  ()
+  end

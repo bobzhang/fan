@@ -29,9 +29,16 @@ let  mode =
   in
   
   let  sections = (loop SSet.empty 0) in
-  if (SSet.mem "*" sections) then ( (fun (_) -> true) )
-  else (fun (x) -> (SSet.mem x sections))
-  with
+  if
+  (SSet.mem "*" sections)
+  then
+  begin
+  (fun (_) -> true)
+  end
+  else
+  begin
+  (fun (x) -> (SSet.mem x sections))
+  end with
   | Not_found  -> (fun (_) -> false))
 let  formatter =
   
@@ -44,8 +51,16 @@ let  formatter =
         (fun (len) ->
           for i = pos to  (( (pos + len) ) - 1) do
             begin
-            if at_bol.contents then ( (output_string out_channel header) )
-            else ();
+            if
+            at_bol.contents
+            then
+            begin
+            (output_string out_channel header)
+            end
+            else
+            begin
+            ()
+            end;
             
             let  ch = buf.[i] in
             begin

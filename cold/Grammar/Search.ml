@@ -19,25 +19,32 @@ let  tree_in_entry (prev_symb) (tree) =
     with
     | Some(t) -> Some (Node ({node = `Sself;son = t;brother = DeadEnd }))
       | None  -> (search_tree ( level.lprefix ))) and search_tree (t) =
-    if (( (tree <> DeadEnd ) ) && ( (t == tree) )) then ( Some (t) )
+    if
+    (( (tree <> DeadEnd ) ) && ( (t == tree) ))
+    then
+    begin
+    Some (t)
+    end
     else
-     
-     (match t
-     with
-     | Node(n) ->
-       
-       (match (search_symbol ( n.node ))
-       with
-       | Some(symb) ->
-         Some (Node ({node = symb;son = ( n.son );brother = DeadEnd }))
-         | None  ->
-           
-           (match (search_tree ( n.son ))
-           with
-           | Some(t) ->
-             Some (Node ({node = ( n.node );son = t;brother = DeadEnd }))
-             | None  -> (search_tree ( n.brother ))))
-       | (LocAct(_,_) |DeadEnd ) -> None) and search_symbol (symb) =
+    begin
+    
+    (match t
+    with
+    | Node(n) ->
+      
+      (match (search_symbol ( n.node ))
+      with
+      | Some(symb) ->
+        Some (Node ({node = symb;son = ( n.son );brother = DeadEnd }))
+        | None  ->
+          
+          (match (search_tree ( n.son ))
+          with
+          | Some(t) ->
+            Some (Node ({node = ( n.node );son = t;brother = DeadEnd }))
+            | None  -> (search_tree ( n.brother ))))
+      | (LocAct(_,_) |DeadEnd ) -> None)
+    end and search_symbol (symb) =
     
     (match symb
     with

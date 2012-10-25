@@ -91,8 +91,16 @@ module Make (U:sig  end) : Sig.PRECAST =
     let  enable_null_printer (() ) =
       (replace_printer (module PrinterNull.Id) (module PrinterNull.P))
     let  enable_auto (isatty) =
-      if (isatty () ) then ( (enable_ocaml_printer () ) )
-      else (enable_dump_ocaml_ast_printer () )
+      if
+      (isatty () )
+      then
+      begin
+      (enable_ocaml_printer () )
+      end
+      else
+      begin
+      (enable_dump_ocaml_ast_printer () )
+      end
     module Printers  =
       struct module OCaml  = PrinterOCaml.P
         module DumpOCamlAst  = PrinterDumpOCamlAst.P

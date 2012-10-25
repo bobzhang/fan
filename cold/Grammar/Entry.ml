@@ -25,7 +25,16 @@ let  action_parse (entry) (ts) =
     (try
     
     let  p =
-    if trace_parser.contents then Format.fprintf else Format.ifprintf in
+    if
+    trace_parser.contents
+    then
+    begin
+    Format.fprintf
+    end
+    else
+    begin
+    Format.ifprintf
+    end in
     
     let  ()  = (p Format.err_formatter "@[<4>%s@ " ( entry.ename )) in
     

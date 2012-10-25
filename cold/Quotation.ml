@@ -76,7 +76,12 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
       
       let  ppf = (Buffer.create 30) in
       
-      let  name = if (name = "") then ( default.contents ) else name in
+      let  name =
+      if (name = "") then begin
+      default.contents
+      end else begin
+      name
+      end in
       
       let  pp (x) =
       (bprintf ppf "@?@[<2>While %s %S in a position of %S:" x name position)
@@ -139,7 +144,16 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
       let open FanSig
         in
         let  loc_name_opt =
-        if (( quot.q_loc ) = "") then None  else Some (quot.q_loc) in
+        if
+        (( quot.q_loc ) = "")
+        then
+        begin
+        None
+        end
+        else
+        begin
+        Some (quot.q_loc)
+        end in
         
         (try (expander loc loc_name_opt ( quot.q_contents ))
         with

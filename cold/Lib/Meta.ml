@@ -47,12 +47,16 @@ module MetaLoc  : Ast.META_LOC =
                               ),( Ast.PaInt ((_loc,( (string_of_int f) ))) )))
                           ),( Ast.PaInt ((_loc,( (string_of_int g) ))) )))
                       ),(
-                      if h then
-                       (
-                       Ast.PaId ((_loc,( Ast.IdUid ((_loc,"True")) )))
-                       )
-                      else Ast.PaId ((_loc,( Ast.IdUid ((_loc,"False")) )))
-                      ))) ))) ))) )))
+                      if
+                      h
+                      then
+                      begin
+                      Ast.PaId ((_loc,( Ast.IdUid ((_loc,"True")) )))
+                      end
+                      else
+                      begin
+                      Ast.PaId ((_loc,( Ast.IdUid ((_loc,"False")) )))
+                      end ))) ))) ))) )))
     let  meta_loc_expr (_loc) (location) =
       
       let  (a,b,c,d,e,f,g,h) = (FanLoc.to_tuple location) in
@@ -93,12 +97,16 @@ module MetaLoc  : Ast.META_LOC =
                               ),( Ast.ExInt ((_loc,( (string_of_int f) ))) )))
                           ),( Ast.ExInt ((_loc,( (string_of_int g) ))) )))
                       ),(
-                      if h then
-                       (
-                       Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
-                       )
-                      else Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
-                      ))) ))) ))) ))) end 
+                      if
+                      h
+                      then
+                      begin
+                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
+                      end
+                      else
+                      begin
+                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
+                      end ))) ))) ))) ))) end 
 module MetaGhostLoc  : Ast.META_LOC =
   struct
     let  meta_loc_patt (_loc) (_) =

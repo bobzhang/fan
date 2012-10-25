@@ -64,14 +64,19 @@ let  wrap_stream_parser (p) (loc) (s) =
     (FanLoc.raise loc e)
     end)
 let  parse_file_with ~rule  (file) =
-  if (Sys.file_exists file) then
-   (
-   
-   let  ch = (open_in file) in
-   
-   let  st = (Stream.of_channel ch) in (parse rule ( (FanLoc.mk file) ) st)
-   )
-  else (failwithf "@[file: %s not found@]@." file)
+  if
+  (Sys.file_exists file)
+  then
+  begin
+  
+  let  ch = (open_in file) in
+  
+  let  st = (Stream.of_channel ch) in (parse rule ( (FanLoc.mk file) ) st)
+  end
+  else
+  begin
+  (failwithf "@[file: %s not found@]@." file)
+  end
 let  delete_rule = Delete.delete_rule
 let  srules (e) (rl) = `Stree
   ((List.fold_left ( (flip ( (uncurry ( (Insert.insert_tree e) )) )) )

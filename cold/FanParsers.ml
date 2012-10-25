@@ -25,9 +25,16 @@ module MakeDebugParser (Syntax:Sig.Camlp4Syntax) =
           acc)) in
       
       let  sections = (loop SSet.empty 0) in
-      if (SSet.mem "*" sections) then ( (fun (_) -> true) )
-      else (fun (x) -> (SSet.mem x sections))
-      with
+      if
+      (SSet.mem "*" sections)
+      then
+      begin
+      (fun (_) -> true)
+      end
+      else
+      begin
+      (fun (x) -> (SSet.mem x sections))
+      end with
       | Not_found  -> (fun (_) -> false))
     let  mk_debug_mode (_loc) =
       
@@ -1734,61 +1741,65 @@ module MakeListComprehension (Syntax:Sig.Camlp4Syntax) =
         ))
       end
     let _=
-      if (is_revised ~expr:expr ~sem_expr_for_list:sem_expr_for_list) then
-       (
-       
-       let  _ = (expr :'expr  Gram.t  ) and _ =
-       (comprehension_or_sem_expr_for_list
-         :'comprehension_or_sem_expr_for_list  Gram.t  ) in
-       (Gram.extend (
-         (comprehension_or_sem_expr_for_list
-           :'comprehension_or_sem_expr_for_list  Gram.t  ) ) (
-         (((fun (() ) ->
-             (None ,(
-              [(None ,None ,(
-                [(( [`Snterml
-                  ((( (Gram.obj ( (expr :'expr  Gram.t  ) )) ),"top"));`Skeyword
-                  ("::");`Snterm ((Gram.obj ( (expr :'expr  Gram.t  ) )))]
-                  ),(
-                  (Gram.mk_action (
-                    (fun ((last : 'expr )) ->
-                      (fun (_) ->
-                        (fun ((e : 'expr )) ->
-                          (fun ((_loc :  FanLoc.t )) ->
-                            (Ast.ExApp
-                               ((_loc,(
-                                 Ast.ExApp
-                                   ((_loc,(
-                                     Ast.ExId
-                                       ((_loc,( Ast.IdUid ((_loc,"::")) )))
-                                     ),e)) ),last))
-                              :'comprehension_or_sem_expr_for_list  ))))) ))
-                  ));(( [`Snterml
-                      ((( (Gram.obj ( (expr :'expr  Gram.t  ) )) ),"top"));`Skeyword
-                      (";");`Snterm
-                      ((Gram.obj (
-                         (sem_expr_for_list :'sem_expr_for_list  Gram.t  ) )));`Skeyword
-                      ("::");`Snterm
-                      ((Gram.obj ( (expr :'expr  Gram.t  ) )))] ),(
-                      (Gram.mk_action (
-                        (fun ((last : 'expr )) ->
-                          (fun (_) ->
-                            (fun ((mk : 'sem_expr_for_list )) ->
-                              (fun (_) ->
-                                (fun ((e : 'expr )) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
-                                    (Ast.ExApp
-                                       ((_loc,(
-                                         Ast.ExApp
-                                           ((_loc,(
-                                             Ast.ExId
-                                               ((_loc,(
-                                                 Ast.IdUid ((_loc,"::")) )))
-                                             ),e)) ),( (mk last) )))
-                                      :'comprehension_or_sem_expr_for_list  )))))))
-                        )) ))] ))] )))) () ) ))
-       )
-      else () end
+      if
+      (is_revised ~expr:expr ~sem_expr_for_list:sem_expr_for_list)
+      then
+      begin
+      
+      let  _ = (expr :'expr  Gram.t  ) and _ =
+      (comprehension_or_sem_expr_for_list
+        :'comprehension_or_sem_expr_for_list  Gram.t  ) in
+      (Gram.extend (
+        (comprehension_or_sem_expr_for_list
+          :'comprehension_or_sem_expr_for_list  Gram.t  ) ) (
+        (((fun (() ) ->
+            (None ,(
+             [(None ,None ,(
+               [(( [`Snterml
+                 ((( (Gram.obj ( (expr :'expr  Gram.t  ) )) ),"top"));`Skeyword
+                 ("::");`Snterm ((Gram.obj ( (expr :'expr  Gram.t  ) )))] ),(
+                 (Gram.mk_action (
+                   (fun ((last : 'expr )) ->
+                     (fun (_) ->
+                       (fun ((e : 'expr )) ->
+                         (fun ((_loc :  FanLoc.t )) ->
+                           (Ast.ExApp
+                              ((_loc,(
+                                Ast.ExApp
+                                  ((_loc,(
+                                    Ast.ExId
+                                      ((_loc,( Ast.IdUid ((_loc,"::")) )))
+                                    ),e)) ),last))
+                             :'comprehension_or_sem_expr_for_list  ))))) ))
+                 ));(( [`Snterml
+                     ((( (Gram.obj ( (expr :'expr  Gram.t  ) )) ),"top"));`Skeyword
+                     (";");`Snterm
+                     ((Gram.obj (
+                        (sem_expr_for_list :'sem_expr_for_list  Gram.t  ) )));`Skeyword
+                     ("::");`Snterm ((Gram.obj ( (expr :'expr  Gram.t  ) )))]
+                     ),(
+                     (Gram.mk_action (
+                       (fun ((last : 'expr )) ->
+                         (fun (_) ->
+                           (fun ((mk : 'sem_expr_for_list )) ->
+                             (fun (_) ->
+                               (fun ((e : 'expr )) ->
+                                 (fun ((_loc :  FanLoc.t )) ->
+                                   (Ast.ExApp
+                                      ((_loc,(
+                                        Ast.ExApp
+                                          ((_loc,(
+                                            Ast.ExId
+                                              ((_loc,(
+                                                Ast.IdUid ((_loc,"::")) )))
+                                            ),e)) ),( (mk last) )))
+                                     :'comprehension_or_sem_expr_for_list  )))))))
+                       )) ))] ))] )))) () ) ))
+      end
+      else
+      begin
+      ()
+      end end
 module IdMacroParser  =
   struct let  name = "Camlp4MacroParser" let  version = Sys.ocaml_version end
 module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
@@ -1880,16 +1891,20 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                                  with
                                  | Ast.ExTup(_,e) -> (Ast.list_of_expr e [] )
                                    | e -> [e]) in
-                                 if (( (List.length el) ) = (
-                                      (List.length sl) )) then
-                                  (
-                                  
-                                  let  env = (List.combine sl el) in
-                                  (((new Expr.subst) _loc env)#expr e)
-                                  )
-                                 else (incorrect_number _loc el sl) :'expr  )
-                               | _ -> assert false)))) )) ))] ))] )))) () )
-            ));
+                                 if
+                                 (( (List.length el) ) = ( (List.length sl)
+                                   ))
+                                 then
+                                 begin
+                                 
+                                 let  env = (List.combine sl el) in
+                                 (((new Expr.subst) _loc env)#expr e)
+                                 end
+                                 else
+                                 begin
+                                 (incorrect_number _loc el sl)
+                                 end :'expr  ) | _ -> assert false)))) )) ))]
+                   ))] )))) () ) ));
           (Gram.extend ( (patt :'patt  Gram.t  ) ) (
             (((fun (() ) ->
                 (( Some (`Level ("simple")) ),(
@@ -1915,18 +1930,22 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                                  with
                                  | Ast.PaTup(_,p) -> (Ast.list_of_patt p [] )
                                    | p -> [p]) in
-                                 if (( (List.length pl) ) = (
-                                      (List.length sl) )) then
-                                  (
-                                  
-                                  let  env = (List.combine sl pl) in
-                                  
-                                  let  p = (Expr.substp _loc env e) in
-                                  (((new Ast.reloc) _loc)#patt p)
-                                  )
-                                 else (incorrect_number _loc pl sl) :'patt  )
-                               | _ -> assert false)))) )) ))] ))] )))) () )
-            ))
+                                 if
+                                 (( (List.length pl) ) = ( (List.length sl)
+                                   ))
+                                 then
+                                 begin
+                                 
+                                 let  env = (List.combine sl pl) in
+                                 
+                                 let  p = (Expr.substp _loc env e) in
+                                 (((new Ast.reloc) _loc)#patt p)
+                                 end
+                                 else
+                                 begin
+                                 (incorrect_number _loc pl sl)
+                                 end :'patt  ) | _ -> assert false)))) )) ))]
+                   ))] )))) () ) ))
           end | None  -> ());
       (defined := ( (x,eo)::defined.contents ))
       end
@@ -1979,15 +1998,27 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
           (define ( Some (([] ,e)) ) n) | _ -> (invalid_arg s))
     let  include_dirs = (ref [] )
     let  add_include_dir (str) =
-      if (str <> "") then
-       (
-       
-       let  str =
-       if (( str.[(( (String.length str) ) - 1)] ) = '/') then str
-       else (str ^ "/") in
-       (include_dirs := ( (( include_dirs.contents ) @ ( [str] )) ))
-       )
-      else ()
+      if
+      (str <> "")
+      then
+      begin
+      
+      let  str =
+      if
+      (( str.[(( (String.length str) ) - 1)] ) = '/')
+      then
+      begin
+      str
+      end
+      else
+      begin
+      (str ^ "/")
+      end in (include_dirs := ( (( include_dirs.contents ) @ ( [str] )) ))
+      end
+      else
+      begin
+      ()
+      end
     let  parse_include_file (rule) =
       
       let  dir_ok (file) (dir) = (Sys.file_exists ( (dir ^ file) )) in
@@ -2017,8 +2048,12 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                               nil
                               end
         | SdITE(b,l1,l2) ->
-          (execute_macro_list nil cons ( if b then l1 else l2 ))
-        | SdLazy(l) -> (Lazy.force l)) and execute_macro_list (nil) (cons) =
+          (execute_macro_list nil cons ( if b then begin
+                                         l1
+                                         end else begin
+                                         l2
+                                         end )) | SdLazy(l) -> (Lazy.force l))
+      and execute_macro_list (nil) (cons) =
       
       (function
       | []  -> nil
@@ -2038,12 +2073,17 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
       let  test = (Stack.top stack) in
       
       let  item =
-      if (( (test && ( (branch = Then ) )) ) || (
-           (( (not test) ) && ( (branch = Else ) )) )) then
-       (
-       (execute_macro nil cons macro_def)
-       )
-      else nil in SdStr (item)
+      if
+      (( (test && ( (branch = Then ) )) ) || (
+        (( (not test) ) && ( (branch = Else ) )) ))
+      then
+      begin
+      (execute_macro nil cons macro_def)
+      end
+      else
+      begin
+      nil
+      end in SdStr (item)
     let _=
       
       let  _ = (expr :'expr  Gram.t  ) and _ =
@@ -2686,24 +2726,37 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                                   (fun ((i : 'uident )) ->
                                     (fun (_) ->
                                       (fun ((_loc :  FanLoc.t )) ->
-                                        (if (is_defined i) then e2 else e1
-                                          :'expr  ))))))) )) ));(( [`Skeyword
-                                                                 ("IFDEF");`Snterm
-                                                                 ((Gram.obj (
+                                        (if
+                                         (is_defined i)
+                                         then
+                                         begin
+                                         e2
+                                         end
+                                         else
+                                         begin
+                                         e1
+                                         end :'expr  ))))))) )) ));((
+                                                                    [`Skeyword
+                                                                    ("IFDEF");`Snterm
+                                                                    (
+                                                                    (Gram.obj
+                                                                    (
                                                                     (uident
                                                                     :'uident 
                                                                     Gram.t  )
                                                                     )));`Skeyword
-                                                                 ("THEN");`Sself;`Snterm
-                                                                 ((Gram.obj (
+                                                                    ("THEN");`Sself;`Snterm
+                                                                    (
+                                                                    (Gram.obj
+                                                                    (
                                                                     (else_expr
                                                                     :'else_expr
                                                                      Gram.t 
                                                                     ) )))]
-                                                                 ),(
-                                                                 (Gram.mk_action
-                                                                   (
-                                                                   (fun
+                                                                    ),(
+                                                                    (Gram.mk_action
+                                                                    (
+                                                                    (fun
                                                                     ((e2 :
                                                                     'else_expr
                                                                     )) ->
@@ -2723,13 +2776,19 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                                                                     ((_loc : 
                                                                     FanLoc.t
                                                                     )) ->
-                                                                    (if 
+                                                                    (if
                                                                     (is_defined
-                                                                    i) then
+                                                                    i)
+                                                                    then
+                                                                    begin
                                                                     e1
-                                                                    else e2
+                                                                    end
+                                                                    else
+                                                                    begin
+                                                                    e2
+                                                                    end
                                                                     :'expr  )))))))
-                                                                   )) ))] ))]
+                                                                    )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (patt :'patt  Gram.t  ) ) (
         (((fun (() ) ->
@@ -2748,30 +2807,47 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                              (fun ((i : 'uident )) ->
                                (fun (_) ->
                                  (fun ((_loc :  FanLoc.t )) ->
-                                   (if (is_defined i) then p2 else p1 :'patt 
-                                     ))))))))) )) ));(( [`Skeyword
-                                                      ("IFDEF");`Snterm
-                                                      ((Gram.obj (
-                                                         (uident :'uident 
-                                                           Gram.t  ) )));`Skeyword
-                                                      ("THEN");`Sself;`Skeyword
-                                                      ("ELSE");`Sself;`Snterm
-                                                      ((Gram.obj (
-                                                         (endif :'endif 
-                                                           Gram.t  ) )))] ),(
-                                                      (Gram.mk_action (
-                                                        (fun (_) ->
-                                                          (fun
-                                                            ((p2 : 'patt ))
-                                                            ->
-                                                            (fun (_) ->
-                                                              (fun
-                                                                ((p1 : 'patt
-                                                                   )) ->
-                                                                (fun (_) ->
-                                                                  (fun
-                                                                    (
-                                                                    (i :
+                                   (if
+                                    (is_defined i)
+                                    then
+                                    begin
+                                    p2
+                                    end
+                                    else
+                                    begin
+                                    p1
+                                    end :'patt  ))))))))) )) ));(( [`Skeyword
+                                                                 ("IFDEF");`Snterm
+                                                                 ((Gram.obj (
+                                                                    (uident
+                                                                    :'uident 
+                                                                    Gram.t  )
+                                                                    )));`Skeyword
+                                                                 ("THEN");`Sself;`Skeyword
+                                                                 ("ELSE");`Sself;`Snterm
+                                                                 ((Gram.obj (
+                                                                    (endif
+                                                                    :'endif 
+                                                                    Gram.t  )
+                                                                    )))] ),(
+                                                                 (Gram.mk_action
+                                                                   (
+                                                                   (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((p2 :
+                                                                    'patt ))
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((p1 :
+                                                                    'patt ))
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((i :
                                                                     'uident ))
                                                                     ->
                                                                     (fun (_)
@@ -2780,14 +2856,20 @@ module MakeMacroParser (Syntax:Sig.Camlp4Syntax) =
                                                                     ((_loc : 
                                                                     FanLoc.t
                                                                     )) ->
-                                                                    (if 
+                                                                    (if
                                                                     (is_defined
-                                                                    i) then
+                                                                    i)
+                                                                    then
+                                                                    begin
                                                                     p1
-                                                                    else p2
+                                                                    end
+                                                                    else
+                                                                    begin
+                                                                    p2
+                                                                    end
                                                                     :'patt  )))))))))
-                                                        )) ))] ))] )))) () )
-        ));
+                                                                   )) ))] ))]
+             )))) () ) ));
       (Gram.extend ( (uident :'uident  Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -12333,96 +12415,69 @@ module MakeRevisedParser (Syntax:Sig.Camlp4Syntax) =
                                    (fun ((pf : 'opt_private )) ->
                                      (fun ((o : 'method_opt_override )) ->
                                        (fun ((_loc :  FanLoc.t )) ->
-                                         (if (o <> Ast.OvNil ) then
-                                           (
-                                           (raise (
-                                             Stream.Error
-                                               ("override (!) is incompatible with virtual")
-                                             ))
-                                           )
-                                          else Ast.CrVir ((_loc,l,pf,t))
-                                           :'class_str_item  )))))))) )) ));
+                                         (if
+                                          (o <> Ast.OvNil )
+                                          then
+                                          begin
+                                          (raise (
+                                            Stream.Error
+                                              ("override (!) is incompatible with virtual")
+                                            ))
+                                          end
+                                          else
+                                          begin
+                                          Ast.CrVir ((_loc,l,pf,t))
+                                          end :'class_str_item  )))))))) ))
+                         ));(( [`Snterm
+                             ((Gram.obj (
+                                (method_opt_override :'method_opt_override 
+                                  Gram.t  ) )));`Snterm
+                             ((Gram.obj (
+                                (opt_private :'opt_private  Gram.t  ) )));`Snterm
+                             ((Gram.obj ( (label :'label  Gram.t  ) )));`Snterm
+                             ((Gram.obj ( (opt_polyt :'opt_polyt  Gram.t  )
+                                )));`Snterm
+                             ((Gram.obj (
+                                (fun_binding :'fun_binding  Gram.t  ) )))]
+                             ),(
+                             (Gram.mk_action (
+                               (fun ((e : 'fun_binding )) ->
+                                 (fun ((topt : 'opt_polyt )) ->
+                                   (fun ((l : 'label )) ->
+                                     (fun ((pf : 'opt_private )) ->
+                                       (fun ((o : 'method_opt_override )) ->
+                                         (fun ((_loc :  FanLoc.t )) ->
+                                           (Ast.CrMth ((_loc,l,o,pf,e,topt))
+                                             :'class_str_item  ))))))) )) ));
                (( [`Snterm
                 ((Gram.obj (
-                   (method_opt_override :'method_opt_override  Gram.t  ) )));`Snterm
+                   (method_opt_override :'method_opt_override  Gram.t  ) )));`Skeyword
+                ("virtual");`Snterm
                 ((Gram.obj ( (opt_private :'opt_private  Gram.t  ) )));`Snterm
-                ((Gram.obj ( (label :'label  Gram.t  ) )));`Snterm
-                ((Gram.obj ( (opt_polyt :'opt_polyt  Gram.t  ) )));`Snterm
-                ((Gram.obj ( (fun_binding :'fun_binding  Gram.t  ) )))] ),(
+                ((Gram.obj ( (label :'label  Gram.t  ) )));`Skeyword
+                (":");`Snterm
+                ((Gram.obj ( (poly_type :'poly_type  Gram.t  ) )))] ),(
                 (Gram.mk_action (
-                  (fun ((e : 'fun_binding )) ->
-                    (fun ((topt : 'opt_polyt )) ->
+                  (fun ((t : 'poly_type )) ->
+                    (fun (_) ->
                       (fun ((l : 'label )) ->
                         (fun ((pf : 'opt_private )) ->
-                          (fun ((o : 'method_opt_override )) ->
-                            (fun ((_loc :  FanLoc.t )) ->
-                              (Ast.CrMth ((_loc,l,o,pf,e,topt))
-                                :'class_str_item  ))))))) )) ));(( [`Snterm
-                                                                 ((Gram.obj (
-                                                                    (method_opt_override
-                                                                    :'method_opt_override
-                                                                     Gram.t 
-                                                                    ) )));`Skeyword
-                                                                 ("virtual");`Snterm
-                                                                 ((Gram.obj (
-                                                                    (opt_private
-                                                                    :'opt_private
-                                                                     Gram.t 
-                                                                    ) )));`Snterm
-                                                                 ((Gram.obj (
-                                                                    (label
-                                                                    :'label 
-                                                                    Gram.t  )
-                                                                    )));`Skeyword
-                                                                 (":");`Snterm
-                                                                 ((Gram.obj (
-                                                                    (poly_type
-                                                                    :'poly_type
-                                                                     Gram.t 
-                                                                    ) )))]
-                                                                 ),(
-                                                                 (Gram.mk_action
-                                                                   (
-                                                                   (fun
-                                                                    ((t :
-                                                                    'poly_type
-                                                                    )) ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((l :
-                                                                    'label ))
-                                                                    ->
-                                                                    (fun
-                                                                    ((pf :
-                                                                    'opt_private
-                                                                    )) ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((o :
-                                                                    'method_opt_override
-                                                                    )) ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (if 
-                                                                    (o <>
-                                                                    Ast.OvNil
-                                                                    ) then
-                                                                    (
-                                                                    (raise (
-                                                                    Stream.Error
-                                                                    ("override (!) is incompatible with virtual")
-                                                                    ))
-                                                                    )
-                                                                    else
-                                                                    Ast.CrVir
-                                                                    ((_loc,l,pf,t))
-                                                                    :'class_str_item
-                                                                     ))))))))
-                                                                   )) ));
+                          (fun (_) ->
+                            (fun ((o : 'method_opt_override )) ->
+                              (fun ((_loc :  FanLoc.t )) ->
+                                (if
+                                 (o <> Ast.OvNil )
+                                 then
+                                 begin
+                                 (raise (
+                                   Stream.Error
+                                     ("override (!) is incompatible with virtual")
+                                   ))
+                                 end
+                                 else
+                                 begin
+                                 Ast.CrVir ((_loc,l,pf,t))
+                                 end :'class_str_item  )))))))) )) ));
                (( [`Snterm
                 ((Gram.obj (
                    (value_val_opt_override :'value_val_opt_override  Gram.t 
@@ -12439,89 +12494,49 @@ module MakeRevisedParser (Syntax:Sig.Camlp4Syntax) =
                           (fun (_) ->
                             (fun ((o : 'value_val_opt_override )) ->
                               (fun ((_loc :  FanLoc.t )) ->
-                                (if (o <> Ast.OvNil ) then
-                                  (
-                                  (raise (
-                                    Stream.Error
-                                      ("override (!) is incompatible with virtual")
-                                    ))
-                                  )
-                                 else Ast.CrVvr ((_loc,l,mf,t))
-                                  :'class_str_item  )))))))) )) ));((
-                                                                    [`Snterm
-                                                                    (
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (value_val_opt_override
-                                                                    :'value_val_opt_override
-                                                                     Gram.t 
-                                                                    ) )));`Snterm
-                                                                    (
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (opt_mutable
-                                                                    :'opt_mutable
-                                                                     Gram.t 
-                                                                    ) )));`Skeyword
-                                                                    ("virtual");`Snterm
-                                                                    (
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (label
-                                                                    :'label 
-                                                                    Gram.t  )
-                                                                    )));`Skeyword
-                                                                    (":");`Snterm
-                                                                    (
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (poly_type
-                                                                    :'poly_type
-                                                                     Gram.t 
-                                                                    ) )))]
-                                                                    ),(
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    (fun
-                                                                    ((t :
-                                                                    'poly_type
-                                                                    )) ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((l :
-                                                                    'label ))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((mf :
-                                                                    'opt_mutable
-                                                                    )) ->
-                                                                    (fun
-                                                                    ((o :
-                                                                    'value_val_opt_override
-                                                                    )) ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (if 
-                                                                    (o <>
-                                                                    Ast.OvNil
-                                                                    ) then
-                                                                    (
-                                                                    (raise (
-                                                                    Stream.Error
-                                                                    ("override (!) is incompatible with virtual")
-                                                                    ))
-                                                                    )
-                                                                    else
-                                                                    Ast.CrVvr
-                                                                    ((_loc,l,mf,t))
-                                                                    :'class_str_item
-                                                                     ))))))))
-                                                                    )) ));
+                                (if
+                                 (o <> Ast.OvNil )
+                                 then
+                                 begin
+                                 (raise (
+                                   Stream.Error
+                                     ("override (!) is incompatible with virtual")
+                                   ))
+                                 end
+                                 else
+                                 begin
+                                 Ast.CrVvr ((_loc,l,mf,t))
+                                 end :'class_str_item  )))))))) )) ));
+               (( [`Snterm
+                ((Gram.obj (
+                   (value_val_opt_override :'value_val_opt_override  Gram.t 
+                     ) )));`Snterm
+                ((Gram.obj ( (opt_mutable :'opt_mutable  Gram.t  ) )));`Skeyword
+                ("virtual");`Snterm
+                ((Gram.obj ( (label :'label  Gram.t  ) )));`Skeyword
+                (":");`Snterm
+                ((Gram.obj ( (poly_type :'poly_type  Gram.t  ) )))] ),(
+                (Gram.mk_action (
+                  (fun ((t : 'poly_type )) ->
+                    (fun (_) ->
+                      (fun ((l : 'label )) ->
+                        (fun (_) ->
+                          (fun ((mf : 'opt_mutable )) ->
+                            (fun ((o : 'value_val_opt_override )) ->
+                              (fun ((_loc :  FanLoc.t )) ->
+                                (if
+                                 (o <> Ast.OvNil )
+                                 then
+                                 begin
+                                 (raise (
+                                   Stream.Error
+                                     ("override (!) is incompatible with virtual")
+                                   ))
+                                 end
+                                 else
+                                 begin
+                                 Ast.CrVvr ((_loc,l,mf,t))
+                                 end :'class_str_item  )))))))) )) ));
                (( [`Snterm
                 ((Gram.obj (
                    (value_val_opt_override :'value_val_opt_override  Gram.t 
@@ -17344,8 +17359,11 @@ module MakeRevisedParserParser (Syntax:Sig.Camlp4Syntax) =
       with
       | Ast.ExId(_,Ast.IdLid(_,x)) ->
         
-        let  x = if (x = v) then strm_n else x in
-        Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) )))
+        let  x = if (x = v) then begin
+                 strm_n
+                 end else begin
+                 x
+                 end in Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) )))
         | Ast.ExId(_,Ast.IdUid(_,_)) -> e | Ast.ExInt(_,_) -> e
         | Ast.ExChr(_,_) -> e | Ast.ExStr(_,_) -> e | Ast.ExAcc(_,_,_) -> e
         | Ast.ExLet(_,rf,bi,e) ->
@@ -17363,8 +17381,11 @@ module MakeRevisedParserParser (Syntax:Sig.Camlp4Syntax) =
         | Ast.BiEq(_loc,Ast.PaId(_,Ast.IdLid(_,v')),e) ->
           Ast.BiEq
             ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,v')) ))) ),(
-              if (v = v') then e else (subst v e) )))
-        | _ -> (raise Not_found ))
+              if (v = v') then begin
+              e
+              end else begin
+              (subst v e)
+              end ))) | _ -> (raise Not_found ))
     let  stream_pattern_component (skont) (ckont) =
       
       (function
@@ -17437,95 +17458,133 @@ module MakeRevisedParserParser (Syntax:Sig.Camlp4Syntax) =
               Ast.ExApp
                 ((_loc,e,( Ast.ExId ((_loc,( Ast.IdLid ((_loc,strm_n)) ))) ))))
           in
-          if (pattern_eq_expression p skont) then
-           (
-           if (is_raise_failure ckont) then e
-           else if (handle_failure e) then e
-           else
-            Ast.ExTry
-              ((_loc,e,(
-                Ast.McArr
-                  ((_loc,(
-                    Ast.PaId
-                      ((_loc,(
-                        Ast.IdAcc
-                          ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                            Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
-                    Ast.ExNil (_loc) ),ckont)) )))
-           )
-          else if (is_raise_failure ckont) then
-                (
-                Ast.ExLet ((_loc,Ast.ReNil ,( Ast.BiEq ((_loc,p,e)) ),skont))
-                )
-          else if (pattern_eq_expression (
-                    Ast.PaApp
-                      ((_loc,(
-                        Ast.PaId ((_loc,( Ast.IdUid ((_loc,"Some")) ))) ),p))
-                    ) skont) then
-                (
-                Ast.ExTry
-                  ((_loc,(
-                    Ast.ExApp
-                      ((_loc,(
-                        Ast.ExId ((_loc,( Ast.IdUid ((_loc,"Some")) ))) ),e))
-                    ),(
-                    Ast.McArr
-                      ((_loc,(
-                        Ast.PaId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                                Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
-                        Ast.ExNil (_loc) ),ckont)) )))
-                )
-          else if (is_raise ckont) then
-                (
-                
-                let  tst =
-                if (handle_failure e) then e
-                else
-                 Ast.ExTry
-                   ((_loc,e,(
-                     Ast.McArr
-                       ((_loc,(
-                         Ast.PaId
-                           ((_loc,(
-                             Ast.IdAcc
-                               ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                                 Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
-                         Ast.ExNil (_loc) ),ckont)) ))) in
-                Ast.ExLet
-                  ((_loc,Ast.ReNil ,( Ast.BiEq ((_loc,p,tst)) ),skont))
-                )
+          if
+          (pattern_eq_expression p skont)
+          then
+          begin
+          if
+          (is_raise_failure ckont)
+          then
+          begin
+          e
+          end
           else
-           Ast.ExMat
-             ((_loc,(
-               Ast.ExTry
-                 ((_loc,(
-                   Ast.ExApp
-                     ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"Some")) )))
-                       ),e)) ),(
-                   Ast.McArr
-                     ((_loc,(
-                       Ast.PaId
-                         ((_loc,(
-                           Ast.IdAcc
-                             ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                               Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
-                       Ast.ExNil (_loc) ),(
-                       Ast.ExId ((_loc,( Ast.IdUid ((_loc,"None")) ))) ))) )))
-               ),(
-               Ast.McOr
-                 ((_loc,(
-                   Ast.McArr
-                     ((_loc,(
-                       Ast.PaApp
-                         ((_loc,(
-                           Ast.PaId ((_loc,( Ast.IdUid ((_loc,"Some")) )))
-                           ),p)) ),( Ast.ExNil (_loc) ),skont)) ),(
-                   Ast.McArr
-                     ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),ckont))
-                   ))) )))
+          begin
+          if
+          (handle_failure e)
+          then
+          begin
+          e
+          end
+          else
+          begin
+          Ast.ExTry
+            ((_loc,e,(
+              Ast.McArr
+                ((_loc,(
+                  Ast.PaId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
+                  Ast.ExNil (_loc) ),ckont)) )))
+          end
+          end
+          end
+          else
+          begin
+          if
+          (is_raise_failure ckont)
+          then
+          begin
+          Ast.ExLet ((_loc,Ast.ReNil ,( Ast.BiEq ((_loc,p,e)) ),skont))
+          end
+          else
+          begin
+          if
+          (pattern_eq_expression (
+            Ast.PaApp
+              ((_loc,( Ast.PaId ((_loc,( Ast.IdUid ((_loc,"Some")) ))) ),p))
+            ) skont)
+          then
+          begin
+          Ast.ExTry
+            ((_loc,(
+              Ast.ExApp
+                ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"Some")) ))) ),e))
+              ),(
+              Ast.McArr
+                ((_loc,(
+                  Ast.PaId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
+                  Ast.ExNil (_loc) ),ckont)) )))
+          end
+          else
+          begin
+          if
+          (is_raise ckont)
+          then
+          begin
+          
+          let  tst =
+          if
+          (handle_failure e)
+          then
+          begin
+          e
+          end
+          else
+          begin
+          Ast.ExTry
+            ((_loc,e,(
+              Ast.McArr
+                ((_loc,(
+                  Ast.PaId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
+                  Ast.ExNil (_loc) ),ckont)) )))
+          end in
+          Ast.ExLet ((_loc,Ast.ReNil ,( Ast.BiEq ((_loc,p,tst)) ),skont))
+          end
+          else
+          begin
+          Ast.ExMat
+            ((_loc,(
+              Ast.ExTry
+                ((_loc,(
+                  Ast.ExApp
+                    ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"Some")) )))
+                      ),e)) ),(
+                  Ast.McArr
+                    ((_loc,(
+                      Ast.PaId
+                        ((_loc,(
+                          Ast.IdAcc
+                            ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                              Ast.IdUid ((_loc,"Failure")) ))) ))) ),(
+                      Ast.ExNil (_loc) ),(
+                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"None")) ))) ))) )))
+              ),(
+              Ast.McOr
+                ((_loc,(
+                  Ast.McArr
+                    ((_loc,(
+                      Ast.PaApp
+                        ((_loc,(
+                          Ast.PaId ((_loc,( Ast.IdUid ((_loc,"Some")) )))
+                          ),p)) ),( Ast.ExNil (_loc) ),skont)) ),(
+                  Ast.McArr
+                    ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),ckont))
+                  ))) )))
+          end
+          end
+          end
+          end
         | SpStr(_loc,p) ->
           
           (try
@@ -17801,86 +17860,105 @@ module MakeRevisedParserParser (Syntax:Sig.Camlp4Syntax) =
               ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
                 Ast.IdLid ((_loc,"sempty")) ))) )))
         | SeTrm(_loc,e)::[]  ->
-          if (not_computing e) then
-           (
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExId
-                 ((_loc,(
-                   Ast.IdAcc
-                     ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                       Ast.IdLid ((_loc,"ising")) ))) ))) ),e))
-           )
+          if
+          (not_computing e)
+          then
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExId
+                ((_loc,(
+                  Ast.IdAcc
+                    ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                      Ast.IdLid ((_loc,"ising")) ))) ))) ),e))
+          end
           else
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExId
-                 ((_loc,(
-                   Ast.IdAcc
-                     ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                       Ast.IdLid ((_loc,"lsing")) ))) ))) ),( (slazy _loc e)
-               )))
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExId
+                ((_loc,(
+                  Ast.IdAcc
+                    ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                      Ast.IdLid ((_loc,"lsing")) ))) ))) ),( (slazy _loc e)
+              )))
+          end
         | SeTrm(_loc,e)::secl ->
-          if (not_computing e) then
-           (
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExApp
-                 ((_loc,(
-                   Ast.ExId
-                     ((_loc,(
-                       Ast.IdAcc
-                         ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                           Ast.IdLid ((_loc,"icons")) ))) ))) ),e)) ),(
-               (cstream gloc secl) )))
-           )
+          if
+          (not_computing e)
+          then
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExApp
+                ((_loc,(
+                  Ast.ExId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdLid ((_loc,"icons")) ))) ))) ),e)) ),(
+              (cstream gloc secl) )))
+          end
           else
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExApp
-                 ((_loc,(
-                   Ast.ExId
-                     ((_loc,(
-                       Ast.IdAcc
-                         ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                           Ast.IdLid ((_loc,"lcons")) ))) ))) ),(
-                   (slazy _loc e) ))) ),( (cstream gloc secl) )))
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExApp
+                ((_loc,(
+                  Ast.ExId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdLid ((_loc,"lcons")) ))) ))) ),(
+                  (slazy _loc e) ))) ),( (cstream gloc secl) )))
+          end
         | SeNtr(_loc,e)::[]  ->
-          if (not_computing e) then e
+          if
+          (not_computing e)
+          then
+          begin
+          e
+          end
           else
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExId
-                 ((_loc,(
-                   Ast.IdAcc
-                     ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                       Ast.IdLid ((_loc,"slazy")) ))) ))) ),( (slazy _loc e)
-               )))
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExId
+                ((_loc,(
+                  Ast.IdAcc
+                    ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                      Ast.IdLid ((_loc,"slazy")) ))) ))) ),( (slazy _loc e)
+              )))
+          end
         | SeNtr(_loc,e)::secl ->
-          if (not_computing e) then
-           (
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExApp
-                 ((_loc,(
-                   Ast.ExId
-                     ((_loc,(
-                       Ast.IdAcc
-                         ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                           Ast.IdLid ((_loc,"iapp")) ))) ))) ),e)) ),(
-               (cstream gloc secl) )))
-           )
+          if
+          (not_computing e)
+          then
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExApp
+                ((_loc,(
+                  Ast.ExId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdLid ((_loc,"iapp")) ))) ))) ),e)) ),(
+              (cstream gloc secl) )))
+          end
           else
-           Ast.ExApp
-             ((_loc,(
-               Ast.ExApp
-                 ((_loc,(
-                   Ast.ExId
-                     ((_loc,(
-                       Ast.IdAcc
-                         ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
-                           Ast.IdLid ((_loc,"lapp")) ))) ))) ),(
-                   (slazy _loc e) ))) ),( (cstream gloc secl) ))))
+          begin
+          Ast.ExApp
+            ((_loc,(
+              Ast.ExApp
+                ((_loc,(
+                  Ast.ExId
+                    ((_loc,(
+                      Ast.IdAcc
+                        ((_loc,( Ast.IdUid ((_loc,"Stream")) ),(
+                          Ast.IdLid ((_loc,"lapp")) ))) ))) ),(
+                  (slazy _loc e) ))) ),( (cstream gloc secl) )))
+          end)
     let _=
       
       let  _ = (expr :'expr  Gram.t  ) and _ =

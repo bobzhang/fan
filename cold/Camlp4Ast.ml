@@ -1,10 +1,17 @@
 module Ast  =
   struct include Ast
     let  safe_string_escaped (s) =
-      if (( (( (String.length s) ) > 2) ) && (
-           (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then
-       s
-      else (String.escaped s) end
+      if
+      (( (( (String.length s) ) > 2) ) && (
+        (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
+      then
+      begin
+      s
+      end
+      else
+      begin
+      (String.escaped s)
+      end end
 include Ast
 external loc_of_ctyp : ( ctyp  ->  FanLoc.t )  = "%field0"
 external loc_of_patt : ( patt  ->  FanLoc.t )  = "%field0"
@@ -45,8 +52,12 @@ let  ident_of_expr =
   | Ast.ExApp(_loc,e1,e2) -> Ast.IdApp ((_loc,( (self e1) ),( (self e2) )))
     | Ast.ExAcc(_loc,e1,e2) -> Ast.IdAcc ((_loc,( (self e1) ),( (self e2) )))
     | Ast.ExId(_,Ast.IdLid(_,_)) -> (error () )
-    | Ast.ExId(_,i) -> if (is_module_longident i) then i else (error () )
-    | _ -> (error () )) in
+    | Ast.ExId(_,i) ->
+      if (is_module_longident i) then begin
+      i
+      end else begin
+      (error () )
+      end | _ -> (error () )) in
   
   (function
   | Ast.ExId(_,i) -> i | Ast.ExApp(_,_,_) -> (error () ) | t -> (self t))
@@ -60,8 +71,13 @@ let  ident_of_ctyp =
   (function
   | Ast.TyApp(_loc,t1,t2) -> Ast.IdApp ((_loc,( (self t1) ),( (self t2) )))
     | Ast.TyId(_,Ast.IdLid(_,_)) -> (error () )
-    | Ast.TyId(_,i) -> if (is_module_longident i) then i else (error () )
-    | _ -> (error () )) in 
+    | Ast.TyId(_,i) ->
+      if (is_module_longident i) then begin
+      i
+      end else begin
+      (error () )
+      end | _ -> (error () )) in
+  
   (function
   | Ast.TyId(_,i) -> i | t -> (self t))
 let  ident_of_patt =
@@ -74,8 +90,13 @@ let  ident_of_patt =
   (function
   | Ast.PaApp(_loc,p1,p2) -> Ast.IdApp ((_loc,( (self p1) ),( (self p2) )))
     | Ast.PaId(_,Ast.IdLid(_,_)) -> (error () )
-    | Ast.PaId(_,i) -> if (is_module_longident i) then i else (error () )
-    | _ -> (error () )) in 
+    | Ast.PaId(_,i) ->
+      if (is_module_longident i) then begin
+      i
+      end else begin
+      (error () )
+      end | _ -> (error () )) in
+  
   (function
   | Ast.PaId(_,i) -> i | p -> (self p))
 let rec  is_irrefut_patt =

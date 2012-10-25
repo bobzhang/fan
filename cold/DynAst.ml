@@ -54,8 +54,16 @@ module Pack (X:sig type 'a t   end) =
     let  unpack =
       ((fun (tag) ->
          (fun ((tag',obj)) ->
-           if (( (dyn_tag tag) ) = tag') then ( ((Obj.obj obj) :'a  X.t  ) )
-           else (raise Pack_error ))) :('a  tag  -> ( pack  -> 'a  X.t ) )  )
+           if
+           (( (dyn_tag tag) ) = tag')
+           then
+           begin
+           ((Obj.obj obj) :'a  X.t  )
+           end
+           else
+           begin
+           (raise Pack_error )
+           end)) :('a  tag  -> ( pack  -> 'a  X.t ) )  )
     let  print_tag =
       ((fun (f) ->
          (fun ((tag,_)) ->

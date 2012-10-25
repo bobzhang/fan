@@ -38,7 +38,11 @@ class
       |
         ((Ast.ExId(_,Ast.IdLid(_,s)) |Ast.ExLab(_,s,Ast.ExNil(_)))
           |Ast.ExOlb(_,s,Ast.ExNil(_))) ->
-        if (SSet.mem s env) then o else {<free = (f s free)>}
+        if (SSet.mem s env) then begin
+        o
+        end else begin
+        {<free = (f s free)>}
+        end
         | Ast.ExLet(_,Ast.ReNil ,bi,e) ->
           ((((o#add_binding bi)#expr e)#set_env env)#binding bi)
         | Ast.ExLet(_,Ast.ReRecursive ,bi,e) ->

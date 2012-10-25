@@ -6,18 +6,21 @@ let  delete_rule_in_tree (entry) =
   (match (symbols,tree)
   with
   | (s::sl,Node(n)) ->
-    if (Tools.logically_eq_symbols entry s ( n.node )) then
-     (
-     (delete_son sl n)
-     )
+    if
+    (Tools.logically_eq_symbols entry s ( n.node ))
+    then
+    begin
+    (delete_son sl n)
+    end
     else
-     
-     (match (delete_in_tree symbols ( n.brother ))
-     with
-     | Some(dsl,t) ->
-       Some
-         ((dsl,( Node ({node = ( n.node );son = ( n.son );brother = t}) )))
-       | None  -> None) | (_::_,_) -> None
+    begin
+    
+    (match (delete_in_tree symbols ( n.brother ))
+    with
+    | Some(dsl,t) ->
+      Some ((dsl,( Node ({node = ( n.node );son = ( n.son );brother = t}) )))
+      | None  -> None)
+    end | (_::_,_) -> None
     | ([] ,Node(n)) ->
       
       (match (delete_in_tree []  ( n.brother ))

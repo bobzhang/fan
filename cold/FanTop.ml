@@ -53,34 +53,54 @@ let  use_file (token_stream) =
   
   let  (pl,stopped_at_directive) =
   (Gram.parse_origin_tokens Syntax.use_file token_stream) in
-  if (stopped_at_directive <> None ) then
-   (
-   
-   (match pl
-   with
-   | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
-     begin
-     (Topdirs.dir_load Format.std_formatter s);
-     (loop () )
-     end
-     | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
-       begin
-       (Topdirs.dir_directory s);
-       (loop () )
-       end | _ -> (pl,false ))
-   )
-  else (pl,true ) in (loop () ) in
+  if
+  (stopped_at_directive <> None )
+  then
+  begin
+  
+  (match pl
+  with
+  | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
+    begin
+    (Topdirs.dir_load Format.std_formatter s);
+    (loop () )
+    end
+    | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
+      begin
+      (Topdirs.dir_directory s);
+      (loop () )
+      end | _ -> (pl,false ))
+  end
+  else
+  begin
+  (pl,true )
+  end in (loop () ) in
   
   let  pl =
-  if eoi then [] 
+  if
+  eoi
+  then
+  begin
+  []
+  end
   else
-   
-   let rec  loop (() ) =
-   
-   let  (pl,stopped_at_directive) =
-   (Gram.parse_origin_tokens Syntax.use_file token_stream) in
-   if (stopped_at_directive <> None ) then ( (pl @ ( (loop () ) )) ) else pl
-   in (loop () ) in (List.map Ast2pt.phrase ( (pl0 @ pl) ))
+  begin
+  
+  let rec  loop (() ) =
+  
+  let  (pl,stopped_at_directive) =
+  (Gram.parse_origin_tokens Syntax.use_file token_stream) in
+  if
+  (stopped_at_directive <> None )
+  then
+  begin
+  (pl @ ( (loop () ) ))
+  end
+  else
+  begin
+  pl
+  end in (loop () )
+  end in (List.map Ast2pt.phrase ( (pl0 @ pl) ))
 let  revise_parser = (wrap toplevel_phrase)
 let _=
   begin

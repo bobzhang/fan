@@ -56,7 +56,11 @@ let rec  name_of_symbol_failed (entry) =
         (List.fold_left (
           (fun (s) ->
             (fun (tok) ->
-              (( if (s = "") then "" else (s ^ " then ") ) ^ (
+              (( if (s = "") then begin
+                 ""
+                 end else begin
+                 (s ^ " then ")
+                 end ) ^ (
                 
                 (match tok
                 with
@@ -109,24 +113,29 @@ let  tree_failed (entry) (prev_symb_result) (prev_symb) (tree) =
       (txt ^ ( (" expected after " ^ ( (name_of_symbol entry prev_symb) )) )))
   in
   begin
-  if ((entry.egram).error_verbose).contents then
-   (
-   
-   let  tree = (Search.tree_in_entry prev_symb tree ( entry.edesc )) in
-   
-   let  ppf = err_formatter in
-   begin
-   (fprintf ppf "@[<v 0>@,");
-   (fprintf ppf "----------------------------------@,");
-   (fprintf ppf "Parse error in entry [%s], rule:@;<0 2>" ( entry.ename ));
-   (fprintf ppf "@[");
-   (Print.text#level ppf pp_force_newline ( (Print.flatten_tree tree) ));
-   (fprintf ppf "@]@,");
-   (fprintf ppf "----------------------------------@,");
-   (fprintf ppf "@]@.")
-   end
-   )
-  else ();
+  if
+  ((entry.egram).error_verbose).contents
+  then
+  begin
+  
+  let  tree = (Search.tree_in_entry prev_symb tree ( entry.edesc )) in
+  
+  let  ppf = err_formatter in
+  begin
+  (fprintf ppf "@[<v 0>@,");
+  (fprintf ppf "----------------------------------@,");
+  (fprintf ppf "Parse error in entry [%s], rule:@;<0 2>" ( entry.ename ));
+  (fprintf ppf "@[");
+  (Print.text#level ppf pp_force_newline ( (Print.flatten_tree tree) ));
+  (fprintf ppf "@]@,");
+  (fprintf ppf "----------------------------------@,");
+  (fprintf ppf "@]@.")
+  end
+  end
+  else
+  begin
+  ()
+  end;
   (txt ^ ( (" (in [" ^ ( (( entry.ename ) ^ "])") )) ))
   end
 let  symb_failed (entry) (prev_symb_result) (prev_symb) (symb) =

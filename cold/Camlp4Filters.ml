@@ -146,14 +146,38 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
     let  xik (i) (k) =
       
       let  i =
-      if (i < 0) then ( assert false )
-      else if (i = 0) then ""
-      else (sf "_i%d" i) in
+      if
+      (i < 0)
+      then
+      begin
+      assert
+      false
+      end
+      else
+      begin
+      if (i = 0) then begin
+      ""
+      end else begin
+      (sf "_i%d" i)
+      end
+      end in
       
       let  k =
-      if (k < 1) then ( assert false )
-      else if (k = 1) then ""
-      else (sf "_k%d" k) in (sf "_x%s%s" i k)
+      if
+      (k < 1)
+      then
+      begin
+      assert
+      false
+      end
+      else
+      begin
+      if (k = 1) then begin
+      ""
+      end else begin
+      (sf "_k%d" k)
+      end
+      end in (sf "_x%s%s" i k)
     let  exik (i) (k) =
       Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (xik i k) ))) )))
     let  pxik (i) (k) =
@@ -194,8 +218,12 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
       | Some(x) -> Some ((f x)) | None  -> None)
     let  list_init (f) (n) =
       
-      let rec  self (m) = if (m = n) then []  else (f m)::(self ( (succ m) ))
-      in (self 0)
+      let rec  self (m) =
+      if (m = n) then begin
+      []
+      end else begin
+      (f m)::(self ( (succ m) ))
+      end in (self 0)
     let rec  lid_of_ident (sep) =
       
       (function
@@ -300,13 +328,18 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
         (fun (((name,_,_,_,_) as decl)) -> (SMap.add name decl)) ) concr
         tyMap) in tyMap let  used_builtins = (ref SMap.empty)
     let  store_if_builtin_type (id) =
-      if (SMap.mem id builtin_types) then
-       (
-       (used_builtins := (
-         (SMap.add id ( (SMap.find id builtin_types) ) (
-           used_builtins.contents )) ))
-       )
-      else () type mode =  | Fold | Map | Fold_map 
+      if
+      (SMap.mem id builtin_types)
+      then
+      begin
+      (used_builtins := (
+        (SMap.add id ( (SMap.find id builtin_types) ) (
+          used_builtins.contents )) ))
+      end
+      else
+      begin
+      ()
+      end type mode =  | Fold | Map | Fold_map 
     let  string_of_mode =
       
       (function
@@ -314,35 +347,104 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
     module Gen (X:sig val size :  int  val mode :  mode  end) =
       struct let  size = X.size let  mode = X.mode
         let  tuplify_expr (f) =
-          if (size <= 0) then ( assert false )
-          else if (size = 1) then ( (f 1) )
+          if
+          (size <= 0)
+          then
+          begin
+          assert
+          false
+          end
           else
-           
-           let rec  loop (k) =
-           if (k = 2) then ( (f 2) )
-           else Ast.ExCom ((_loc,( (loop ( (k - 1) )) ),( (f k) ))) in
-           Ast.ExTup
-             ((_loc,( Ast.ExCom ((_loc,( (f 1) ),( (loop size) ))) )))
+          begin
+          if
+          (size = 1)
+          then
+          begin
+          (f 1)
+          end
+          else
+          begin
+          
+          let rec  loop (k) =
+          if
+          (k = 2)
+          then
+          begin
+          (f 2)
+          end
+          else
+          begin
+          Ast.ExCom ((_loc,( (loop ( (k - 1) )) ),( (f k) )))
+          end in
+          Ast.ExTup ((_loc,( Ast.ExCom ((_loc,( (f 1) ),( (loop size) ))) )))
+          end
+          end
         let  tuplify_patt (f) =
-          if (size <= 0) then ( assert false )
-          else if (size = 1) then ( (f 1) )
+          if
+          (size <= 0)
+          then
+          begin
+          assert
+          false
+          end
           else
-           
-           let rec  loop (k) =
-           if (k = 2) then ( (f 2) )
-           else Ast.PaCom ((_loc,( (loop ( (k - 1) )) ),( (f k) ))) in
-           Ast.PaTup
-             ((_loc,( Ast.PaCom ((_loc,( (f 1) ),( (loop size) ))) )))
-        let  xiks (i) = (tuplify_expr ( (exik i) ))
+          begin
+          if
+          (size = 1)
+          then
+          begin
+          (f 1)
+          end
+          else
+          begin
+          
+          let rec  loop (k) =
+          if
+          (k = 2)
+          then
+          begin
+          (f 2)
+          end
+          else
+          begin
+          Ast.PaCom ((_loc,( (loop ( (k - 1) )) ),( (f k) )))
+          end in
+          Ast.PaTup ((_loc,( Ast.PaCom ((_loc,( (f 1) ),( (loop size) ))) )))
+          end
+          end let  xiks (i) = (tuplify_expr ( (exik i) ))
         let  tuplify_type (typ) =
-          if (size <= 0) then ( assert false )
-          else if (size = 1) then typ
+          if
+          (size <= 0)
+          then
+          begin
+          assert
+          false
+          end
           else
-           
-           let rec  loop (k) =
-           if (k = 2) then typ
-           else Ast.TySta ((_loc,( (loop ( (k - 1) )) ),typ)) in
-           Ast.TyTup ((_loc,( Ast.TySta ((_loc,typ,( (loop size) ))) )))
+          begin
+          if
+          (size = 1)
+          then
+          begin
+          typ
+          end
+          else
+          begin
+          
+          let rec  loop (k) =
+          if
+          (k = 2)
+          then
+          begin
+          typ
+          end
+          else
+          begin
+          Ast.TySta ((_loc,( (loop ( (k - 1) )) ),typ))
+          end in
+          Ast.TyTup ((_loc,( Ast.TySta ((_loc,typ,( (loop size) ))) )))
+          end
+          end
         let  tuplify_tycon (tycon) =
           (tuplify_type ( Ast.TyId ((_loc,( Ast.IdLid ((_loc,tycon)) ))) ))
         let rec  patt_of_expr =
@@ -453,8 +555,16 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
         let  default_match_case =
           
           let  mk (k) =
-          if (k = 1) then ( Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) ))) )
-          else Ast.PaAny (_loc) in
+          if
+          (k = 1)
+          then
+          begin
+          Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))
+          end
+          else
+          begin
+          Ast.PaAny (_loc)
+          end in
           
           (match mode
           with
@@ -507,9 +617,16 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
               inherit  Ast.fold as super
               method !  ctyp =
                 (fun (t) ->
-                  if (is_unknown t) then ( (raise Exit ) )
-                  else (super#ctyp t)) end)#ctyp t) in false
-          with
+                  if
+                  (is_unknown t)
+                  then
+                  begin
+                  (raise Exit )
+                  end
+                  else
+                  begin
+                  (super#ctyp t)
+                  end) end)#ctyp t) in false with
           | Exit  -> true)
         let  opt_bind' (ox) (e1) (mk_e2) =
           
@@ -685,19 +802,22 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
                 ((_loc,( (complete_match_case match_case_of_poly_sum_type t)
                   )))
             | (Ast.TyVrnSup(_,t) |Ast.TyPrv(_,Ast.TyVrnSup(_,t))) ->
-              if (size > 1) then
-               (
-               Ast.ExFun
-                 ((_loc,( (complete_match_case match_case_of_poly_sum_type t)
-                   )))
-               )
+              if
+              (size > 1)
+              then
+              begin
+              Ast.ExFun
+                ((_loc,( (complete_match_case match_case_of_poly_sum_type t)
+                  )))
+              end
               else
-               Ast.ExFun
-                 ((_loc,(
-                   Ast.McOr
-                     ((_loc,( (match_case_of_poly_sum_type t)
-                       ),default_match_case)) ))) | _ -> assert false) and
-          string_of_type_param (t) =
+              begin
+              Ast.ExFun
+                ((_loc,(
+                  Ast.McOr
+                    ((_loc,( (match_case_of_poly_sum_type t)
+                      ),default_match_case)) )))
+              end | _ -> assert false) and string_of_type_param (t) =
           
           (match t
           with
@@ -725,7 +845,12 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
           
           let  ty = (method_type_of_type_decl type_decl) in
           
-          let  priv = if priv then Ast.PrPrivate  else Ast.PrNil in
+          let  priv =
+          if priv then begin
+          Ast.PrPrivate
+          end else begin
+          Ast.PrNil
+          end in
           Ast.CrSem
             ((_loc,( Ast.CrMth ((_loc,id1,Ast.OvNil ,priv,funs,ty)) ),acc))
           and ctyp_name_of_name_params (name) (params) =
@@ -733,21 +858,26 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
           method_type_of_type_decl ((_,name,params,ctyp,_)) =
           
           let  t = (ctyp_name_of_name_params name params) in
-          if (( (mode = Map ) ) && ( (not ( (contains_unknown ctyp) )) )) then
-           (
-           
-           let  out_params =
-           (List.map (
-             
-             (function
-             | Ast.TyQuo(_,i) -> Ast.TyQuo ((_loc,( (i ^ "_out") )))
-               | _ -> assert false) ) params) in
-           
-           let  t_out = (ctyp_name_of_name_params name out_params) in
-           (method_type_of_type t t_out params out_params)
-           )
-          else (method_type_of_type t t params [] ) and method_type_of_type
-          (t_in) (t_out) (params_in) (params_out) =
+          if
+          (( (mode = Map ) ) && ( (not ( (contains_unknown ctyp) )) ))
+          then
+          begin
+          
+          let  out_params =
+          (List.map (
+            
+            (function
+            | Ast.TyQuo(_,i) -> Ast.TyQuo ((_loc,( (i ^ "_out") )))
+              | _ -> assert false) ) params) in
+          
+          let  t_out = (ctyp_name_of_name_params name out_params) in
+          (method_type_of_type t t_out params out_params)
+          end
+          else
+          begin
+          (method_type_of_type t t params [] )
+          end and method_type_of_type (t_in) (t_out) (params_in) (params_out)
+          =
           
           let  rt (t) =
           
@@ -845,28 +975,33 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
               Ast.TyQuo ((_loc,"b")) ) []  [] ) ))) in
         
         let  failure =
-        if (n > 1) then
-         (
-         
-         let  name = (string_of_mode mode) in
-         Ast.CrMth
-           ((_loc,( (sf "%s%d_failure" name n) ),Ast.OvNil ,Ast.PrNil ,(
-             Ast.ExFun
-               ((_loc,(
-                 Ast.McArr
-                   ((_loc,( (M.tuplify_patt ( (pxik 0) )) ),(
-                     Ast.ExNil (_loc) ),(
-                     Ast.ExApp
-                       ((_loc,(
-                         Ast.ExId ((_loc,( Ast.IdLid ((_loc,"failwith")) )))
-                         ),(
-                         Ast.ExStr
-                           ((_loc,(
-                             (Ast.safe_string_escaped (
-                               (sf "%s%d_failure: default implementation"
-                                 name n) )) ))) ))) ))) ))) ),gen_type))
-         )
-        else Ast.CrNil (_loc) in
+        if
+        (n > 1)
+        then
+        begin
+        
+        let  name = (string_of_mode mode) in
+        Ast.CrMth
+          ((_loc,( (sf "%s%d_failure" name n) ),Ast.OvNil ,Ast.PrNil ,(
+            Ast.ExFun
+              ((_loc,(
+                Ast.McArr
+                  ((_loc,( (M.tuplify_patt ( (pxik 0) )) ),( Ast.ExNil (_loc)
+                    ),(
+                    Ast.ExApp
+                      ((_loc,(
+                        Ast.ExId ((_loc,( Ast.IdLid ((_loc,"failwith")) )))
+                        ),(
+                        Ast.ExStr
+                          ((_loc,(
+                            (Ast.safe_string_escaped (
+                              (sf "%s%d_failure: default implementation" name
+                                n) )) ))) ))) ))) ))) ),gen_type))
+        end
+        else
+        begin
+        Ast.CrNil (_loc)
+        end in
         
         let  gen_type =
         Ast.TyPol
@@ -909,14 +1044,18 @@ module MakeFoldGenerator (Syn:Sig.Camlp4Syntax) =
               Ast.TyQuo ((_loc,"b")) ) []  [] ) ))) in
         
         let  failure =
-        if (n > 1) then
-         (
-         
-         let  name = (string_of_mode mode) in
-         Ast.CgMth
-           ((_loc,( (sf "%s%d_failure" name n) ),Ast.PrNil ,gen_type))
-         )
-        else Ast.CgNil (_loc) in
+        if
+        (n > 1)
+        then
+        begin
+        
+        let  name = (string_of_mode mode) in
+        Ast.CgMth ((_loc,( (sf "%s%d_failure" name n) ),Ast.PrNil ,gen_type))
+        end
+        else
+        begin
+        Ast.CgNil (_loc)
+        end in
         
         let  gen_type =
         Ast.TyPol
@@ -1313,89 +1452,96 @@ module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
                         in
                         
                         let  e =
-                        if (List.mem cons (
-                             ["BAnt";"OAnt";"LAnt";"ReAnt";"DiAnt";"MuAnt";"PrAnt";"ViAnt";"OvAnt";"RvAnt"]
-                             )) then
-                         (
-                         Ast.ExApp
-                           ((_loc,(
-                             Ast.ExApp
-                               ((_loc,( Ast.ExId ((_loc,( m.ant ))) ),(
-                                 Ast.ExId
-                                   ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) )))
-                             ),(
-                             Ast.ExId ((_loc,( Ast.IdLid ((_loc,"x0")) ))) )))
-                         )
-                        else if (is_antiquot_data_ctor cons) then
-                              (
-                              (expr_of_data_ctor_decl ( m.ant ) tyargs)
-                              )
+                        if
+                        (List.mem cons (
+                          ["BAnt";"OAnt";"LAnt";"ReAnt";"DiAnt";"MuAnt";"PrAnt";"ViAnt";"OvAnt";"RvAnt"]
+                          ))
+                        then
+                        begin
+                        Ast.ExApp
+                          ((_loc,(
+                            Ast.ExApp
+                              ((_loc,( Ast.ExId ((_loc,( m.ant ))) ),(
+                                Ast.ExId
+                                  ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) )))
+                            ),( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"x0")) )))
+                            )))
+                        end
                         else
-                         (fold_args tyargs (
-                           (fun (ty) ->
-                             (fun (i) ->
-                               (fun (acc) ->
-                                 
-                                 let rec  fcall_of_ctyp (ty) =
-                                 
-                                 (match ty
-                                 with
-                                 | Ast.TyId(_,id) ->
-                                   Ast.ExId
-                                     ((_loc,(
-                                       (meta_ ( (string_of_ident id) )) )))
-                                   | Ast.TyTup(_,Ast.TySta(_,t1,t2)) ->
-                                     Ast.ExFun
-                                       ((_loc,(
-                                         Ast.McArr
-                                           ((_loc,(
-                                             Ast.PaId
-                                               ((_loc,(
-                                                 Ast.IdLid ((_loc,"_loc")) )))
-                                             ),( Ast.ExNil (_loc) ),(
-                                             Ast.ExFun
-                                               ((_loc,(
-                                                 Ast.McArr
-                                                   ((_loc,(
-                                                     Ast.PaTup
-                                                       ((_loc,(
-                                                         Ast.PaCom
-                                                           ((_loc,(
-                                                             Ast.PaId
-                                                               ((_loc,(
-                                                                 Ast.IdLid
-                                                                   ((_loc,"x1"))
-                                                                 ))) ),(
-                                                             Ast.PaId
-                                                               ((_loc,(
-                                                                 Ast.IdLid
-                                                                   ((_loc,"x2"))
-                                                                 ))) ))) )))
-                                                     ),( Ast.ExNil (_loc) ),(
-                                                     Ast.ExApp
-                                                       ((_loc,(
-                                                         Ast.ExApp
-                                                           ((_loc,( m.tup ),(
-                                                             Ast.ExId
-                                                               ((_loc,(
-                                                                 Ast.IdLid
-                                                                   ((_loc,"_loc"))
-                                                                 ))) ))) ),(
-                                                         Ast.ExApp
-                                                           ((_loc,(
-                                                             Ast.ExApp
-                                                               ((_loc,(
-                                                                 Ast.ExApp
-                                                                   ((_loc,(
+                        begin
+                        if
+                        (is_antiquot_data_ctor cons)
+                        then
+                        begin
+                        (expr_of_data_ctor_decl ( m.ant ) tyargs)
+                        end
+                        else
+                        begin
+                        (fold_args tyargs (
+                          (fun (ty) ->
+                            (fun (i) ->
+                              (fun (acc) ->
+                                
+                                let rec  fcall_of_ctyp (ty) =
+                                
+                                (match ty
+                                with
+                                | Ast.TyId(_,id) ->
+                                  Ast.ExId
+                                    ((_loc,( (meta_ ( (string_of_ident id) ))
+                                      )))
+                                  | Ast.TyTup(_,Ast.TySta(_,t1,t2)) ->
+                                    Ast.ExFun
+                                      ((_loc,(
+                                        Ast.McArr
+                                          ((_loc,(
+                                            Ast.PaId
+                                              ((_loc,(
+                                                Ast.IdLid ((_loc,"_loc")) )))
+                                            ),( Ast.ExNil (_loc) ),(
+                                            Ast.ExFun
+                                              ((_loc,(
+                                                Ast.McArr
+                                                  ((_loc,(
+                                                    Ast.PaTup
+                                                      ((_loc,(
+                                                        Ast.PaCom
+                                                          ((_loc,(
+                                                            Ast.PaId
+                                                              ((_loc,(
+                                                                Ast.IdLid
+                                                                  ((_loc,"x1"))
+                                                                ))) ),(
+                                                            Ast.PaId
+                                                              ((_loc,(
+                                                                Ast.IdLid
+                                                                  ((_loc,"x2"))
+                                                                ))) ))) )))
+                                                    ),( Ast.ExNil (_loc) ),(
+                                                    Ast.ExApp
+                                                      ((_loc,(
+                                                        Ast.ExApp
+                                                          ((_loc,( m.tup ),(
+                                                            Ast.ExId
+                                                              ((_loc,(
+                                                                Ast.IdLid
+                                                                  ((_loc,"_loc"))
+                                                                ))) ))) ),(
+                                                        Ast.ExApp
+                                                          ((_loc,(
+                                                            Ast.ExApp
+                                                              ((_loc,(
+                                                                Ast.ExApp
+                                                                  ((_loc,(
                                                                     m.com ),(
                                                                     Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,"_loc"))
                                                                     ))) )))
-                                                                 ),(
-                                                                 Ast.ExApp
-                                                                   ((_loc,(
+                                                                ),(
+                                                                Ast.ExApp
+                                                                  ((_loc,(
                                                                     Ast.ExApp
                                                                     ((_loc,(
                                                                     (fcall_of_ctyp
@@ -1411,11 +1557,11 @@ module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
                                                                     Ast.IdLid
                                                                     ((_loc,"x1"))
                                                                     ))) )))
-                                                                 ))) ),(
-                                                             Ast.ExApp
-                                                               ((_loc,(
-                                                                 Ast.ExApp
-                                                                   ((_loc,(
+                                                                ))) ),(
+                                                            Ast.ExApp
+                                                              ((_loc,(
+                                                                Ast.ExApp
+                                                                  ((_loc,(
                                                                     (fcall_of_ctyp
                                                                     t2) ),(
                                                                     Ast.ExId
@@ -1423,34 +1569,34 @@ module MakeMetaGenerator (Syn:Sig.Camlp4Syntax) =
                                                                     Ast.IdLid
                                                                     ((_loc,"_loc"))
                                                                     ))) )))
-                                                                 ),(
-                                                                 Ast.ExId
-                                                                   ((_loc,(
+                                                                ),(
+                                                                Ast.ExId
+                                                                  ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,"x2"))
                                                                     ))) )))
-                                                             ))) ))) ))) )))
-                                             ))) )))
-                                   | Ast.TyApp(_,t1,t2) ->
-                                     Ast.ExApp
-                                       ((_loc,( (fcall_of_ctyp t1) ),(
-                                         (fcall_of_ctyp t2) )))
-                                   | Ast.TyQuo(_,s) ->
-                                     Ast.ExId
-                                       ((_loc,(
-                                         Ast.IdLid ((_loc,( (mf_ s) ))) )))
-                                   | _ -> failure) in
-                                 (m_app m acc (
-                                   Ast.ExApp
-                                     ((_loc,(
-                                       Ast.ExApp
-                                         ((_loc,( (fcall_of_ctyp ty) ),(
-                                           Ast.ExId
-                                             ((_loc,(
-                                               Ast.IdLid ((_loc,"_loc")) )))
-                                           ))) ),(
-                                       Ast.ExId ((_loc,( (x i) ))) ))) )))))
-                           ) init) in
+                                                            ))) ))) ))) )))
+                                            ))) )))
+                                  | Ast.TyApp(_,t1,t2) ->
+                                    Ast.ExApp
+                                      ((_loc,( (fcall_of_ctyp t1) ),(
+                                        (fcall_of_ctyp t2) )))
+                                  | Ast.TyQuo(_,s) ->
+                                    Ast.ExId
+                                      ((_loc,( Ast.IdLid ((_loc,( (mf_ s) )))
+                                        ))) | _ -> failure) in
+                                (m_app m acc (
+                                  Ast.ExApp
+                                    ((_loc,(
+                                      Ast.ExApp
+                                        ((_loc,( (fcall_of_ctyp ty) ),(
+                                          Ast.ExId
+                                            ((_loc,(
+                                              Ast.IdLid ((_loc,"_loc")) )))
+                                          ))) ),( Ast.ExId ((_loc,( (x i) )))
+                                      ))) ))))) ) init)
+                        end
+                        end in
                         Ast.McOr
                           ((_loc,(
                             Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e))
