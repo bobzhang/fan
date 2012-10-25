@@ -5,31 +5,27 @@ let  is_before (s1) (s2) =
   (match (s1,s2)
   with
   | (((`Skeyword _) |(`Stoken _)),((`Skeyword _) |(`Stoken _))) -> false
-  | (((`Skeyword _) |(`Stoken _)),_) -> true
-  | _ -> false)
+    | (((`Skeyword _) |(`Stoken _)),_) -> true | _ -> false)
 let rec  derive_eps =
   
-  function
+  (function
   | (((`Slist0 _) |(`Slist0sep (_,_))) |(`Sopt _)) -> true
-  | (`Stry s) -> (derive_eps s)
-  | (`Stree t) -> (tree_derive_eps t)
-  | ((((`Slist1 _) |(`Slist1sep (_,_))) |(`Stoken _)) |(`Skeyword _)) ->
-    false
-  | (((((`Smeta (_,_,_)) |(`Snterm _)) |(`Snterml (_,_))) |`Snext) |`Sself)
-    -> false and tree_derive_eps =
+    | (`Stry s) -> (derive_eps s) | (`Stree t) -> (tree_derive_eps t)
+    | ((((`Slist1 _) |(`Slist1sep (_,_))) |(`Stoken _)) |(`Skeyword _)) ->
+      false
+    | (((((`Smeta (_,_,_)) |(`Snterm _)) |(`Snterml (_,_))) |`Snext) |`Sself)
+      -> false) and tree_derive_eps =
   
-  function
+  (function
   | LocAct(_,_) -> true
-  | Node({node = s;brother = bro;son = son}) ->
-    (( (( (derive_eps s) ) && ( (tree_derive_eps son) )) ) || (
-      (tree_derive_eps bro) ))
-  | DeadEnd  -> false
+    | Node({node = s;brother = bro;son = son}) ->
+      (( (( (derive_eps s) ) && ( (tree_derive_eps son) )) ) || (
+        (tree_derive_eps bro) )) | DeadEnd  -> false)
 let  empty_lev (lname) (assoc) =
   
   let  assoc = 
   (match assoc with
-  | Some(a) -> a
-  | None  -> `LA) in
+  | Some(a) -> a | None  -> `LA) in
   {assoc = assoc;lname = lname;lsuffix = DeadEnd ;lprefix = DeadEnd }
 let  change_lev (entry) (lev) (n) (lname) (assoc) =
   
@@ -38,20 +34,20 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
   (match assoc
   with
   | None  -> lev.assoc
-  | Some(a) ->
-    begin
-    if (( (a <> ( lev.assoc )) ) && (
-         ((entry.egram).warning_verbose).contents ))
-    then
-    
-    begin
-    begin
-    (eprintf "<W> Changing associativity of level \"%s\"\n" n);
-    (flush Pervasives.stderr)
-    end
-    end else ();
-    a
-    end) in
+    | Some(a) ->
+      begin
+      if (( (a <> ( lev.assoc )) ) && (
+           ((entry.egram).warning_verbose).contents ))
+      then
+      
+      begin
+      begin
+      (eprintf "<W> Changing associativity of level \"%s\"\n" n);
+      (flush Pervasives.stderr)
+      end
+      end else ();
+      a
+      end) in
   begin
   
   (match lname
@@ -66,86 +62,85 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
     (eprintf "<W> Level label \"%s\" ignored\n" n);
     (flush Pervasives.stderr)
     end
-    end else ()
-  | None  -> ());
+    end else () | None  -> ());
   {assoc = a;lname = ( lev.lname );lsuffix = ( lev.lsuffix );lprefix = (
                                                                lev.lprefix )}
   end
 let  change_to_self (entry) =
   
-  function
-  | (`Snterm e) when (e == entry) -> `Sself
-  | x -> x
+  (function
+  | (`Snterm e) when (e == entry) -> `Sself | x -> x)
 let  get_level (entry) (position) (levs) =
   
   (match position
   with
   | Some(`First) -> ([] ,empty_lev,levs)
-  | Some(`Last) -> (levs,empty_lev,[] )
-  | Some((`Level n)) ->
-    
-    let rec  get =
-    
-    function
-    | []  ->
-      begin
-      (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ));
-      (flush Pervasives.stderr);
-      (failwith "Grammar.extend")
-      end
-    | lev::levs ->
-      if (Tools.is_level_labelled n lev) then
-       ([] ,( (change_lev entry lev n) ),levs)
-      else
-       
-       let  (levs1,rlev,levs2) = (get levs) in (( lev::levs1 ),rlev,levs2) in
-    (get levs)
-  | Some((`Before n)) ->
-    
-    let rec  get =
-    
-    function
-    | []  ->
-      begin
-      (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ));
-      (flush Pervasives.stderr);
-      (failwith "Grammar.extend")
-      end
-    | lev::levs ->
-      if (Tools.is_level_labelled n lev) then ([] ,empty_lev,( lev::levs ))
-      else
-       
-       let  (levs1,rlev,levs2) = (get levs) in (( lev::levs1 ),rlev,levs2) in
-    (get levs)
-  | Some((`After n)) ->
-    
-    let rec  get =
-    
-    function
-    | []  ->
-      begin
-      (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ));
-      (flush Pervasives.stderr);
-      (failwith "Grammar.extend")
-      end
-    | lev::levs ->
-      if (Tools.is_level_labelled n lev) then (( [lev] ),empty_lev,levs)
-      else
-       
-       let  (levs1,rlev,levs2) = (get levs) in (( lev::levs1 ),rlev,levs2) in
-    (get levs)
-  | None  ->
-    
-    (match levs
-    with
-    | lev::levs -> ([] ,( (change_lev entry lev "<top>") ),levs)
-    | []  -> ([] ,empty_lev,[] )))
+    | Some(`Last) -> (levs,empty_lev,[] )
+    | Some((`Level n)) ->
+      
+      let rec  get =
+      
+      (function
+      | []  ->
+        begin
+        (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
+          ));
+        (flush Pervasives.stderr);
+        (failwith "Grammar.extend")
+        end
+        | lev::levs ->
+          if (Tools.is_level_labelled n lev) then
+           ([] ,( (change_lev entry lev n) ),levs)
+          else
+           
+           let  (levs1,rlev,levs2) = (get levs) in
+           (( lev::levs1 ),rlev,levs2)) in (get levs)
+    | Some((`Before n)) ->
+      
+      let rec  get =
+      
+      (function
+      | []  ->
+        begin
+        (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
+          ));
+        (flush Pervasives.stderr);
+        (failwith "Grammar.extend")
+        end
+        | lev::levs ->
+          if (Tools.is_level_labelled n lev) then
+           ([] ,empty_lev,( lev::levs ))
+          else
+           
+           let  (levs1,rlev,levs2) = (get levs) in
+           (( lev::levs1 ),rlev,levs2)) in (get levs)
+    | Some((`After n)) ->
+      
+      let rec  get =
+      
+      (function
+      | []  ->
+        begin
+        (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
+          ));
+        (flush Pervasives.stderr);
+        (failwith "Grammar.extend")
+        end
+        | lev::levs ->
+          if (Tools.is_level_labelled n lev) then (( [lev] ),empty_lev,levs)
+          else
+           
+           let  (levs1,rlev,levs2) = (get levs) in
+           (( lev::levs1 ),rlev,levs2)) in (get levs)
+    | None  ->
+      
+      (match levs
+      with
+      | lev::levs -> ([] ,( (change_lev entry lev "<top>") ),levs)
+        | []  -> ([] ,empty_lev,[] )))
 let rec  check_gram (entry) =
   
-  function
+  (function
   | (`Snterm e) ->
     if (( e.egram ) != ( entry.egram ))
     then
@@ -159,75 +154,69 @@ let rec  check_gram (entry) =
     (failwith "Grammar.extend error")
     end
     end else ()
-  | (`Snterml (e,_)) ->
-    if (( e.egram ) != ( entry.egram ))
-    then
-    
-    begin
-    begin
-    (eprintf
-      "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
-      ( entry.ename ) ( e.ename ));
-    (flush Pervasives.stderr);
-    (failwith "Grammar.extend error")
-    end
-    end else ()
-  | (`Smeta (_,sl,_)) -> (List.iter ( (check_gram entry) ) sl)
-  | (`Slist0sep (s,t)) -> begin
-    (check_gram entry t);
-    (check_gram entry s)
-    end
-  | (`Slist1sep (s,t)) -> begin
-    (check_gram entry t);
-    (check_gram entry s)
-    end
-  | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) ->
-    (check_gram entry s)
-  | (`Stree t) -> (tree_check_gram entry t)
-  | (((`Snext |`Sself) |(`Stoken _)) |(`Skeyword _)) -> () and
+    | (`Snterml (e,_)) ->
+      if (( e.egram ) != ( entry.egram ))
+      then
+      
+      begin
+      begin
+      (eprintf
+        "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
+        ( entry.ename ) ( e.ename ));
+      (flush Pervasives.stderr);
+      (failwith "Grammar.extend error")
+      end
+      end else ()
+    | (`Smeta (_,sl,_)) -> (List.iter ( (check_gram entry) ) sl)
+    | (`Slist0sep (s,t)) -> begin
+      (check_gram entry t);
+      (check_gram entry s)
+      end
+    | (`Slist1sep (s,t)) -> begin
+      (check_gram entry t);
+      (check_gram entry s)
+      end
+    | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) ->
+      (check_gram entry s) | (`Stree t) -> (tree_check_gram entry t)
+    | (((`Snext |`Sself) |(`Stoken _)) |(`Skeyword _)) -> ()) and
   tree_check_gram (entry) =
   
-  function
+  (function
   | Node({node = n;brother = bro;son = son}) ->
     begin
     (check_gram entry n);
     (tree_check_gram entry bro);
     (tree_check_gram entry son)
-    end
-  | (LocAct(_,_) |DeadEnd ) -> ()
+    end | (LocAct(_,_) |DeadEnd ) -> ())
 let  get_initial =
   
-  function
-  | `Sself::symbols -> (true ,symbols)
-  | symbols -> (false ,symbols)
+  (function
+  | `Sself::symbols -> (true ,symbols) | symbols -> (false ,symbols))
 let  insert_tokens (gram) (symbols) =
   
   let rec  insert =
   
-  function
+  (function
   | (`Smeta (_,sl,_)) -> (List.iter insert sl)
-  | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) -> (insert s)
-  | (`Slist0sep (s,t)) -> begin
-    (insert s);
-    (insert t)
-    end
-  | (`Slist1sep (s,t)) -> begin
-    (insert s);
-    (insert t)
-    end
-  | (`Stree t) -> (tinsert t)
-  | (`Skeyword kwd) -> (using gram kwd)
-  | (((((`Snterm _) |(`Snterml (_,_))) |`Snext) |`Sself) |(`Stoken _)) -> ()
-  and tinsert =
+    | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) -> (insert s)
+    | (`Slist0sep (s,t)) -> begin
+      (insert s);
+      (insert t)
+      end | (`Slist1sep (s,t)) -> begin
+            (insert s);
+            (insert t)
+            end | (`Stree t) -> (tinsert t)
+    | (`Skeyword kwd) -> (using gram kwd)
+    | (((((`Snterm _) |(`Snterml (_,_))) |`Snext) |`Sself) |(`Stoken _)) ->
+      ()) and tinsert =
   
-  function
+  (function
   | Node({node = s;brother = bro;son = son}) ->
     begin
     (insert s);
     (tinsert bro);
     (tinsert son)
-    end
-  | (LocAct(_,_) |DeadEnd ) -> () in (List.iter insert symbols)
+    end | (LocAct(_,_) |DeadEnd ) -> ()) in (List.iter insert symbols)
 let  insert_tree (entry) (gsymbols) (action) (tree) =
   
   let rec  insert (symbols) (tree) =
@@ -235,29 +224,31 @@ let  insert_tree (entry) (gsymbols) (action) (tree) =
   (match symbols
   with
   | s::sl -> (insert_in_tree s sl tree)
-  | []  ->
-    
-    (match tree
-    with
-    | Node({node = s;son = son;brother = bro}) ->
-      Node ({node = s;son = son;brother = ( (insert []  bro) )})
-    | LocAct(old_action,action_list) ->
+    | []  ->
       
-      let  ()  =
-      if ((entry.egram).warning_verbose).contents then
-       (
-       (eprintf "<W> Grammar extension: in [%s] some rule has been masked@."
-         ( entry.ename ))
-       )
-      else () in LocAct ((action,( old_action::action_list )))
-    | DeadEnd  -> LocAct ((action,[] )))) and insert_in_tree (s) (sl) (tree)
-  =
+      (match tree
+      with
+      | Node({node = s;son = son;brother = bro}) ->
+        Node ({node = s;son = son;brother = ( (insert []  bro) )})
+        | LocAct(old_action,action_list) ->
+          
+          let  ()  =
+          if ((entry.egram).warning_verbose).contents then
+           (
+           (eprintf
+             "<W> Grammar extension: in [%s] some rule has been masked@." (
+             entry.ename ))
+           )
+          else () in LocAct ((action,( old_action::action_list )))
+        | DeadEnd  -> LocAct ((action,[] )))) and insert_in_tree (s) (sl)
+  (tree) =
   
   (match (try_insert s sl tree)
   with
   | Some(t) -> t
-  | None  -> Node ({node = s;son = ( (insert sl DeadEnd ) );brother = tree}))
-  and try_insert (s) (sl) (tree) =
+    | None  ->
+      Node ({node = s;son = ( (insert sl DeadEnd ) );brother = tree})) and
+  try_insert (s) (sl) (tree) =
   
   (match tree
   with
@@ -277,8 +268,8 @@ let  insert_tree (entry) (gsymbols) (action) (tree) =
           (match (try_insert s sl bro)
           with
           | Some(bro) -> bro
-          | None  ->
-            Node ({node = s;son = ( (insert sl DeadEnd ) );brother = bro}))
+            | None  ->
+              Node ({node = s;son = ( (insert sl DeadEnd ) );brother = bro}))
           in 
           let  t = Node ({node = s1;son = son;brother = bro}) in Some (t)
           )
@@ -289,8 +280,8 @@ let  insert_tree (entry) (gsymbols) (action) (tree) =
      | Some(bro) ->
        
        let  t = Node ({node = s1;son = son;brother = bro}) in Some (t)
-     | None  -> None)
-  | (LocAct(_,_) |DeadEnd ) -> None) in (insert gsymbols tree)
+       | None  -> None) | (LocAct(_,_) |DeadEnd ) -> None) in
+  (insert gsymbols tree)
 let  insert_level (entry) (e1) (symbols) (action) (slev) =
   
   (match e1
@@ -301,9 +292,13 @@ let  insert_level (entry) (e1) (symbols) (action) (slev) =
                                                        symbols action (
                                                        slev.lsuffix )) );
       lprefix = ( slev.lprefix )}
-  | false  ->
-    {assoc = ( slev.assoc );lname = ( slev.lname );lsuffix = ( slev.lsuffix );
-      lprefix = ( (insert_tree entry symbols action ( slev.lprefix )) )})
+    | false  ->
+      {assoc = ( slev.assoc );lname = ( slev.lname );lsuffix = ( slev.lsuffix
+                                                       );lprefix = (
+                                                           (insert_tree entry
+                                                             symbols action (
+                                                             slev.lprefix ))
+                                                           )})
 let  levels_of_rules (entry) (position) (rules) =
   
   let  elev =
@@ -311,12 +306,12 @@ let  levels_of_rules (entry) (position) (rules) =
   (match entry.edesc
   with
   | Dlevels(elev) -> elev
-  | Dparser(_) ->
-    begin
-    (eprintf "Error: entry not extensible: \"%s\"\n" ( entry.ename ));
-    (flush Pervasives.stderr);
-    (failwith "Grammar.extend")
-    end) in
+    | Dparser(_) ->
+      begin
+      (eprintf "Error: entry not extensible: \"%s\"\n" ( entry.ename ));
+      (flush Pervasives.stderr);
+      (failwith "Grammar.extend")
+      end) in
   if (rules = [] ) then elev
   else
    

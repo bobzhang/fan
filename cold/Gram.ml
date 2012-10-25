@@ -91,9 +91,8 @@ let  eoi_entry (entry) =
          [(None ,None ,(
            [(( [`Snterm ((obj ( (entry :'entry  t  ) )));`Stoken
              ((( 
-               function
-               | `EOI -> true
-               | _ -> false ),(`Normal,"`EOI")))] ),(
+               (function
+               | `EOI -> true | _ -> false) ),(`Normal,"`EOI")))] ),(
              (mk_action (
                (fun (__camlp4_0) ->
                  (fun ((x : 'entry )) ->
@@ -101,6 +100,5 @@ let  eoi_entry (entry) =
                      
                      (match __camlp4_0
                      with
-                     | `EOI -> (x :'entry_eoi  )
-                     | _ -> assert false)))) )) ))] ))] )))) () ) )) in
-  entry_eoi
+                     | `EOI -> (x :'entry_eoi  ) | _ -> assert false)))) ))
+             ))] ))] )))) () ) )) in entry_eoi

@@ -215,7 +215,24 @@ let _ = object
   method x: string -> string = print_int 3 
 end
 
-let  mk_set = fun (type s) ->
-  fun ~cmp ->
-    let module M = struct  type t =   s   let  compare = cmp end in
-      ((module (Set.Make) (M)) :(module Set.S with type elt =  s ) )
+(* let  mk_set = fun (type s) -> *)
+(*   fun ~cmp -> *)
+(*     let module M = struct  type t =   s   let  compare = cmp end in *)
+(*       ((module (Set.Make) (M)) :(module Set.S with type elt =  s ) ) *)
+
+let mk_set (type s) ~cmp =
+  let module M = struct type t = s let compare = cmp end in
+  (module Set.Make(M) :Set.S with type elt = s)
+let mk s (type s) (type u)  = s ;;
+let mk (type s) s (type u)  = s ;;
+
+type u = [`a | `b];;
+
+type u = v = A of int ;;
+type u = v = private A of int ;;
+
+type _ a =
+| A : int -> int a
+| B : float -> float a
+type _ a = A : int -> int a
+type _ a = A : int -> int a | B : int -> float a    

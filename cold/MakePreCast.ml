@@ -1,5 +1,5 @@
 module Make (U:sig  end) : Sig.PRECAST =
-  struct  module Syntax  = (OCamlInitSyntax.Make) (U)
+  struct module Syntax  = (OCamlInitSyntax.Make) (U)
     let  sig_item_parser =
       (ref (
         (fun ?directive_handler:(_) ->
@@ -94,25 +94,25 @@ module Make (U:sig  end) : Sig.PRECAST =
       if (isatty () ) then ( (enable_ocaml_printer () ) )
       else (enable_dump_ocaml_ast_printer () )
     module Printers  =
-      struct  module OCaml  = PrinterOCaml.P
+      struct module OCaml  = PrinterOCaml.P
         module DumpOCamlAst  = PrinterDumpOCamlAst.P
         module DumpCamlp4Ast  = PrinterDumpCamlp4Ast.P
         module Null  = PrinterNull.P end
     let _= (sig_item_parser := Syntax.parse_interf)
     let _= (str_item_parser := Syntax.parse_implem)
     module CurrentParser  =
-      struct 
-         let  parse_interf ?directive_handler  (loc) (strm) =
-           ((sig_item_parser.contents) ?directive_handler:directive_handler
-             loc strm)
+      struct
+        let  parse_interf ?directive_handler  (loc) (strm) =
+          ((sig_item_parser.contents) ?directive_handler:directive_handler
+            loc strm)
         let  parse_implem ?directive_handler  (loc) (strm) =
           ((str_item_parser.contents) ?directive_handler:directive_handler
             loc strm) end
     module CurrentPrinter  =
-      struct 
-         let  print_interf ?input_file  ?output_file  (ast) =
-           ((sig_item_printer.contents) ?input_file:input_file
-             ?output_file:output_file ast)
+      struct
+        let  print_interf ?input_file  ?output_file  (ast) =
+          ((sig_item_printer.contents) ?input_file:input_file
+            ?output_file:output_file ast)
         let  print_implem ?input_file  ?output_file  (ast) =
           ((str_item_printer.contents) ?input_file:input_file
             ?output_file:output_file ast) end end 

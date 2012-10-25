@@ -1,5 +1,5 @@
 module Make (U:sig  end) : Sig.Camlp4Syntax =
-  struct  module Ast  = Camlp4Ast
+  struct module Ast  = Camlp4Ast
     type warning =  ( FanLoc.t  -> ( string  ->  unit ) )  
     let  default_warning (loc) (txt) =
       (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt)
@@ -175,19 +175,18 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
              [(None ,None ,(
                [(( [`Stoken
                  ((( 
-                   function
-                   | `EOI -> true
-                   | _ -> false ),(`Normal,"`EOI")))] ),(
+                   (function
+                   | `EOI -> true | _ -> false) ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
                      (fun ((_loc :  FanLoc.t )) ->
                        
                        (match __camlp4_0
                        with
-                       | `EOI -> (None :'top_phrase  )
-                       | _ -> assert false))) )) ))] ))] )))) () ) ))
+                       | `EOI -> (None :'top_phrase  ) | _ -> assert false)))
+                   )) ))] ))] )))) () ) ))
     module AntiquotSyntax  =
-      struct  module Ast  = Ast module Gram  = Gram
+      struct module Ast  = Ast module Gram  = Gram
         let  antiquot_expr = (Gram.eoi_entry expr)
         let  antiquot_patt = (Gram.eoi_entry patt)
         let  parse_expr (loc) (str) =
@@ -210,12 +209,13 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
         (match (List.rev pl)
         with
         | []  -> assert false
-        | x::xs ->
-          
-          (match (directive_handler x) with
-          | None  -> xs
-          | Some(x) -> x::xs)) in (( (List.rev pl) ) @ ( (loop new_loc) ))
-      | None  -> pl) in (loop init_loc)
+          | x::xs ->
+            
+            (match (directive_handler x)
+            with
+            | None  -> xs | Some(x) -> x::xs)) in
+        (( (List.rev pl) ) @ ( (loop new_loc) )) | None  -> pl) in
+      (loop init_loc)
     let  parse_implem ?(directive_handler=(fun (_) -> None))  (_loc) (cs) =
       
       let  l = (wrap directive_handler ( (Gram.parse implem) ) _loc cs) in

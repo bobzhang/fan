@@ -21,14 +21,13 @@ let  filter ((_,q)) =
     (self xs)
     end
     end
-  | Some(x) ->
-    begin
-    (Stream.junk __strm);
-    
-    let  xs = __strm in
-    (Stream.icons x ( (Stream.slazy ( (fun (_) -> (self xs)) )) ))
-    end
-  | _ -> Stream.sempty) in self
+    | Some(x) ->
+      begin
+      (Stream.junk __strm);
+      
+      let  xs = __strm in
+      (Stream.icons x ( (Stream.slazy ( (fun (_) -> (self xs)) )) ))
+      end | _ -> Stream.sempty) in self
 let  take_list ((_,q)) =
   
   let rec  self (accu) =

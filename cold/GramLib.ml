@@ -10,29 +10,29 @@ let  test_patt_lessminus =
       (match (stream_peek_nth n strm)
       with
       | Some((`KEYWORD "<-"),_) -> n
-      | Some((`KEYWORD ("[" |"[<")),_) ->
-        (skip_patt ( (( (ignore_upto "]" ( (n + 1) )) ) + 1) ))
-      | Some((`KEYWORD "("),_) ->
-        (skip_patt ( (( (ignore_upto ")" ( (n + 1) )) ) + 1) ))
-      | Some((`KEYWORD "{"),_) ->
-        (skip_patt ( (( (ignore_upto "}" ( (n + 1) )) ) + 1) ))
-      |
-        (Some((`KEYWORD ((("as" |"::") |",") |"_")),_)
-          |Some(((`LIDENT _) |(`UIDENT _)),_)) -> (skip_patt ( (n + 1) ))
-      | (Some(_) |None ) -> (raise Stream.Failure )) and ignore_upto
+        | Some((`KEYWORD ("[" |"[<")),_) ->
+          (skip_patt ( (( (ignore_upto "]" ( (n + 1) )) ) + 1) ))
+        | Some((`KEYWORD "("),_) ->
+          (skip_patt ( (( (ignore_upto ")" ( (n + 1) )) ) + 1) ))
+        | Some((`KEYWORD "{"),_) ->
+          (skip_patt ( (( (ignore_upto "}" ( (n + 1) )) ) + 1) ))
+        |
+          (Some((`KEYWORD ((("as" |"::") |",") |"_")),_)
+            |Some(((`LIDENT _) |(`UIDENT _)),_)) -> (skip_patt ( (n + 1) ))
+        | (Some(_) |None ) -> (raise Stream.Failure )) and ignore_upto
       (end_kwd) (n) =
       
       (match (stream_peek_nth n strm)
       with
       | Some((`KEYWORD prm),_) when (prm = end_kwd) -> n
-      | Some((`KEYWORD ("[" |"[<")),_) ->
-        (ignore_upto end_kwd ( (( (ignore_upto "]" ( (n + 1) )) ) + 1) ))
-      | Some((`KEYWORD "("),_) ->
-        (ignore_upto end_kwd ( (( (ignore_upto ")" ( (n + 1) )) ) + 1) ))
-      | Some((`KEYWORD "{"),_) ->
-        (ignore_upto end_kwd ( (( (ignore_upto "}" ( (n + 1) )) ) + 1) ))
-      | Some(_) -> (ignore_upto end_kwd ( (n + 1) ))
-      | None  -> (raise Stream.Failure )) in (skip_patt 1)) ))
+        | Some((`KEYWORD ("[" |"[<")),_) ->
+          (ignore_upto end_kwd ( (( (ignore_upto "]" ( (n + 1) )) ) + 1) ))
+        | Some((`KEYWORD "("),_) ->
+          (ignore_upto end_kwd ( (( (ignore_upto ")" ( (n + 1) )) ) + 1) ))
+        | Some((`KEYWORD "{"),_) ->
+          (ignore_upto end_kwd ( (( (ignore_upto "}" ( (n + 1) )) ) + 1) ))
+        | Some(_) -> (ignore_upto end_kwd ( (n + 1) ))
+        | None  -> (raise Stream.Failure )) in (skip_patt 1)) ))
 let  is_revised ~expr  ~sem_expr_for_list  =
   
   (try
@@ -56,8 +56,7 @@ let  setup_op_parser (entry) (p) =
         
         let  _loc = (Gram.token_location ti) in
         Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) )))
-        end
-      | _ -> (raise Stream.Failure ))) ))
+        end | _ -> (raise Stream.Failure ))) ))
 let rec  infix_kwds_filter ((__strm : _ Stream.t )) =
   
   (match (Stream.peek __strm)
@@ -88,21 +87,19 @@ let rec  infix_kwds_filter ((__strm : _ Stream.t )) =
         let  xs = __strm in
         (Stream.lcons ( (fun (_) -> (`LIDENT (i),_loc)) ) (
           (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) ))
-        end
-      | _ -> (raise ( Stream.Error ("") )))
+        end | _ -> (raise ( Stream.Error ("") )))
       end
-    | _ ->
+      | _ ->
+        
+        let  xs = __strm in
+        (Stream.icons tok (
+          (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) )))
+    end
+    | Some(x) ->
+      begin
+      (Stream.junk __strm);
       
       let  xs = __strm in
-      (Stream.icons tok (
-        (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) )))
-    end
-  | Some(x) ->
-    begin
-    (Stream.junk __strm);
-    
-    let  xs = __strm in
-    (Stream.icons x ( (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) ))
-      ))
-    end
-  | _ -> (raise Stream.Failure ))
+      (Stream.icons x (
+        (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) ))
+      end | _ -> (raise Stream.Failure ))

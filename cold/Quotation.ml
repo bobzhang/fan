@@ -1,12 +1,12 @@
 open Lib
 open LibUtil
 module type AntiquotSyntax =
-  sig  val parse_expr : ( FanLoc.t  -> ( string  ->  Ast.expr ) ) 
+  sig val parse_expr : ( FanLoc.t  -> ( string  ->  Ast.expr ) ) 
   val parse_patt : ( FanLoc.t  -> ( string  ->  Ast.patt ) )  end
 module type S =
-  sig 
-   type 'a expand_fun = 
-   ( FanLoc.t  -> ( string  option  -> ( string  -> 'a ) ) )  
+  sig
+  type 'a expand_fun = 
+  ( FanLoc.t  -> ( string  option  -> ( string  -> 'a ) ) )  
   val add : ( string  -> ('a  DynAst.tag  -> ('a  expand_fun  ->  unit ) ) ) 
   val find : ( string  -> ('a  DynAst.tag  -> 'a  expand_fun ) ) 
   val default :  string  ref 
@@ -35,9 +35,9 @@ module type S =
     (name: string  -> (entry: Ast.match_case  Gram.t  ->  unit ) )  end
 open Format
 module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
-  struct 
-     type 'a expand_fun = 
-     ( FanLoc.t  -> ( string  option  -> ( string  -> 'a ) ) )  
+  struct
+    type 'a expand_fun = 
+    ( FanLoc.t  -> ( string  option  -> ( string  -> 'a ) ) )  
     module Exp_key  = (DynAst.Pack) (struct type 'a t =   unit   end)
     module Exp_fun  =
       (DynAst.Pack) (struct type 'a t =  'a  expand_fun   end)
@@ -57,8 +57,7 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
         
         (try (Hashtbl.find default_tbl str)
         with
-        | Not_found  -> default.contents)
-      | name -> name)
+        | Not_found  -> default.contents) | name -> name)
     let  find (name) (tag) =
       
       let  key = (( (expander_name tag name) ),( (Exp_key.pack tag () ) )) in
@@ -69,7 +68,7 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
       in (expanders_table := ( elt::expanders_table.contents ))
     let  dump_file = (ref None )
     type quotation_error_message = 
-      Finding | Expanding | ParsingResult of  FanLoc.t * string  
+    | Finding | Expanding | ParsingResult of  FanLoc.t * string  
     type quotation_error = 
     ( string * string * quotation_error_message * exn ) 
     exception Quotation of  quotation_error 
@@ -96,47 +95,46 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
             (bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
               Exp_key.print_tag t)) ) ( expanders_table.contents ));
         (bprintf ppf "@]")
-        end
-      | Expanding  -> (pp "expanding quotation")
-      | ParsingResult(loc,str) ->
-        begin
-        (pp "parsing result of quotation");
-        
-        (match dump_file.contents
-        with
-        | Some(dump_file) ->
-          
-          let  ()  = (bprintf ppf " dumping result...\n") in
-          
-          (try
-          
-          let  oc = (open_out_bin dump_file) in
+        end | Expanding  -> (pp "expanding quotation")
+        | ParsingResult(loc,str) ->
           begin
-          (output_string oc str);
-          (output_string oc "\n");
-          (flush oc);
-          (close_out oc);
-          (bprintf ppf "%a:" FanLoc.print (
-            (FanLoc.set_file_name dump_file loc) ))
-          end
+          (pp "parsing result of quotation");
+          
+          (match dump_file.contents
           with
-          | _ ->
-            (bprintf ppf
-              "Error while dumping result in file %S; dump aborted"
-              dump_file))
-        | None  ->
-          (bprintf ppf
-            "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))
-        end) in
+          | Some(dump_file) ->
+            
+            let  ()  = (bprintf ppf " dumping result...\n") in
+            
+            (try
+            
+            let  oc = (open_out_bin dump_file) in
+            begin
+            (output_string oc str);
+            (output_string oc "\n");
+            (flush oc);
+            (close_out oc);
+            (bprintf ppf "%a:" FanLoc.print (
+              (FanLoc.set_file_name dump_file loc) ))
+            end
+            with
+            | _ ->
+              (bprintf ppf
+                "Error while dumping result in file %S; dump aborted"
+                dump_file))
+            | None  ->
+              (bprintf ppf
+                "\n(consider setting variable Quotation.dump_file, or using the -QD option)"))
+          end) in
       
       let  ()  = (bprintf ppf "@\n%s@]@." ( (Printexc.to_string exn) )) in
       (Buffer.contents ppf)
     let _=
       (Printexc.register_printer (
         
-        function
-        | Quotation(x) -> Some ((quotation_error_to_string x))
-        | _ -> None ))
+        (function
+        | Quotation(x) -> Some ((quotation_error_to_string x)) | _ -> None)
+        ))
     let  expand_quotation (loc) (expander) (pos_tag) (quot) =
       let open FanSig
         in
@@ -146,14 +144,14 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
         (try (expander loc loc_name_opt ( quot.q_contents ))
         with
         | (FanLoc.Exc_located(_,Quotation(_)) as exc) -> (raise exc)
-        | FanLoc.Exc_located(iloc,exc) ->
-          
-          let  exc1 = Quotation ((( quot.q_name ),pos_tag,Expanding ,exc)) in
-          (raise ( FanLoc.Exc_located ((iloc,exc1)) ))
-        | exc ->
-          
-          let  exc1 = Quotation ((( quot.q_name ),pos_tag,Expanding ,exc)) in
-          (raise ( FanLoc.Exc_located ((loc,exc1)) )))
+          | FanLoc.Exc_located(iloc,exc) ->
+            
+            let  exc1 = Quotation ((( quot.q_name ),pos_tag,Expanding ,exc))
+            in (raise ( FanLoc.Exc_located ((iloc,exc1)) ))
+          | exc ->
+            
+            let  exc1 = Quotation ((( quot.q_name ),pos_tag,Expanding ,exc))
+            in (raise ( FanLoc.Exc_located ((loc,exc1)) )))
     let  parse_quotation_result (parse) (loc) (quot) (pos_tag) (str) =
       let open FanSig
         in
@@ -165,14 +163,14 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
           
           let  exc1 = Quotation ((n,pos_tag,ctx,exc)) in
           (raise ( FanLoc.Exc_located ((iloc,exc1)) ))
-        | FanLoc.Exc_located(iloc,(Quotation(_) as exc)) ->
-          (raise ( FanLoc.Exc_located ((iloc,exc)) ))
-        | FanLoc.Exc_located(iloc,exc) ->
-          
-          let  ctx = ParsingResult ((iloc,( quot.q_contents ))) in
-          
-          let  exc1 = Quotation ((( quot.q_name ),pos_tag,ctx,exc)) in
-          (raise ( FanLoc.Exc_located ((iloc,exc1)) )))
+          | FanLoc.Exc_located(iloc,(Quotation(_) as exc)) ->
+            (raise ( FanLoc.Exc_located ((iloc,exc)) ))
+          | FanLoc.Exc_located(iloc,exc) ->
+            
+            let  ctx = ParsingResult ((iloc,( quot.q_contents ))) in
+            
+            let  exc1 = Quotation ((( quot.q_name ),pos_tag,ctx,exc)) in
+            (raise ( FanLoc.Exc_located ((iloc,exc1)) )))
     let  expand (loc) (quotation) (tag) =
       let open FanSig
         in
@@ -185,14 +183,14 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
         (try (find name tag)
         with
         | (FanLoc.Exc_located(_,Quotation(_)) as exc) -> (raise exc)
-        | FanLoc.Exc_located(qloc,exc) ->
-          (raise (
-            FanLoc.Exc_located
-              ((qloc,( Quotation ((name,pos_tag,Finding ,exc)) ))) ))
-        | exc ->
-          (raise (
-            FanLoc.Exc_located
-              ((loc,( Quotation ((name,pos_tag,Finding ,exc)) ))) ))) in
+          | FanLoc.Exc_located(qloc,exc) ->
+            (raise (
+              FanLoc.Exc_located
+                ((qloc,( Quotation ((name,pos_tag,Finding ,exc)) ))) ))
+          | exc ->
+            (raise (
+              FanLoc.Exc_located
+                ((loc,( Quotation ((name,pos_tag,Finding ,exc)) ))) ))) in
         
         let  loc =
         (FanLoc.join ( (FanLoc.move `start ( quotation.q_shift ) loc) )) in
@@ -235,25 +233,25 @@ module Make (TheAntiquotSyntax:AntiquotSyntax) : S =
           (match loc_name_opt
           with
           | None  -> exp_ast
-          | Some(name) ->
-            
-            let rec  subst_first_loc =
-            
-            function
-            |
-              Ast.PaApp(_loc,Ast.PaId(_,Ast.IdAcc(_,Ast.IdUid(_,"Ast"),Ast.IdUid
-                                                  (_,u))),_) ->
-              Ast.PaApp
-                ((_loc,(
-                  Ast.PaId
-                    ((_loc,(
-                      Ast.IdAcc
-                        ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                          Ast.IdUid ((_loc,u)) ))) ))) ),(
-                  Ast.PaId ((_loc,( Ast.IdLid ((_loc,name)) ))) )))
-            | Ast.PaApp(_loc,a,b) ->
-              Ast.PaApp ((_loc,( (subst_first_loc a) ),b))
-            | p -> p in (subst_first_loc exp_ast))) )) in
+            | Some(name) ->
+              
+              let rec  subst_first_loc =
+              
+              (function
+              |
+                Ast.PaApp(_loc,Ast.PaId(_,Ast.IdAcc(_,Ast.IdUid(_,"Ast"),Ast.IdUid
+                                                    (_,u))),_) ->
+                Ast.PaApp
+                  ((_loc,(
+                    Ast.PaId
+                      ((_loc,(
+                        Ast.IdAcc
+                          ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                            Ast.IdUid ((_loc,u)) ))) ))) ),(
+                    Ast.PaId ((_loc,( Ast.IdLid ((_loc,name)) ))) )))
+                | Ast.PaApp(_loc,a,b) ->
+                  Ast.PaApp ((_loc,( (subst_first_loc a) ),b)) | p -> p) in
+              (subst_first_loc exp_ast))) )) in
       begin
       (add name DynAst.expr_tag expand_expr);
       (add name DynAst.patt_tag expand_patt);

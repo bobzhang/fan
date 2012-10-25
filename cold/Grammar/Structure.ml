@@ -3,7 +3,7 @@ type assoc =  [ `NA|`RA|`LA]
 type position = 
 [ `First|`Last|`Before of  string |`After of  string |`Level of  string ] 
 module Action  =
-  struct  type t =   Obj.t   let  mk = (Obj.repr :('a  ->  t )  )
+  struct type t =   Obj.t   let  mk = (Obj.repr :('a  ->  t )  )
     let  get = (Obj.obj :( t  -> 'a )  )
     let  getf = (Obj.obj :( t  -> ('a  -> 'b ) )  )
     let  getf2 = (Obj.obj :( t  -> ('a  -> ('b  -> 'c ) ) )  ) end
@@ -42,7 +42,7 @@ type internal_entry =
                                                                     ->  efun
                                                                     ) ) ) ;
   mutable  edesc: desc } and desc = 
-  Dlevels of  level  list  | Dparser of ( token_stream  ->  Action.t )  and
+| Dlevels of  level  list  | Dparser of ( token_stream  ->  Action.t )  and
 level = 
 { assoc: assoc ; lname: string  option ; lsuffix: tree ; lprefix: tree } and
 symbol = 
@@ -55,7 +55,7 @@ symbol =
   `Stry of  symbol |`Sself|`Snext|`Stoken of  token_pattern |`Skeyword of 
                                                                string |
   `Stree of  tree ] and tree = 
-  Node of  node  | LocAct of  Action.t * Action.t  list  | DeadEnd and node =
+| Node of  node  | LocAct of  Action.t * Action.t  list  | DeadEnd and node =
  { node: symbol ; son: tree ; brother: tree } 
 type production_rule =  ( symbol  list * Action.t ) 
 type single_extend_statment = 

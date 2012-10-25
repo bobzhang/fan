@@ -1,24 +1,24 @@
 open Structure
 let  tree_in_entry (prev_symb) (tree) =
   
-  function
+  (function
   | Dlevels(levels) ->
     
     let rec  search_levels =
     
-    function
+    (function
     | []  -> tree
-    | level::levels ->
-      
-      (match (search_level level)
-      with
-      | Some(tree) -> tree
-      | None  -> (search_levels levels)) and search_level (level) =
+      | level::levels ->
+        
+        (match (search_level level)
+        with
+        | Some(tree) -> tree | None  -> (search_levels levels))) and
+    search_level (level) =
     
     (match (search_tree ( level.lsuffix ))
     with
     | Some(t) -> Some (Node ({node = `Sself;son = t;brother = DeadEnd }))
-    | None  -> (search_tree ( level.lprefix ))) and search_tree (t) =
+      | None  -> (search_tree ( level.lprefix ))) and search_tree (t) =
     if (( (tree <> DeadEnd ) ) && ( (t == tree) )) then ( Some (t) )
     else
      
@@ -30,14 +30,14 @@ let  tree_in_entry (prev_symb) (tree) =
        with
        | Some(symb) ->
          Some (Node ({node = symb;son = ( n.son );brother = DeadEnd }))
-       | None  ->
-         
-         (match (search_tree ( n.son ))
-         with
-         | Some(t) ->
-           Some (Node ({node = ( n.node );son = t;brother = DeadEnd }))
-         | None  -> (search_tree ( n.brother ))))
-     | (LocAct(_,_) |DeadEnd ) -> None) and search_symbol (symb) =
+         | None  ->
+           
+           (match (search_tree ( n.son ))
+           with
+           | Some(t) ->
+             Some (Node ({node = ( n.node );son = t;brother = DeadEnd }))
+             | None  -> (search_tree ( n.brother ))))
+       | (LocAct(_,_) |DeadEnd ) -> None) and search_symbol (symb) =
     
     (match symb
     with
@@ -46,57 +46,49 @@ let  tree_in_entry (prev_symb) (tree) =
                |(`Slist0sep (_,_))) |(`Slist1 _)) |(`Slist1sep (_,_)))
             |(`Sopt _)) |(`Stry _)) |(`Stoken _)) |(`Stree _))
         |(`Skeyword _)) when (symb == prev_symb) -> Some (symb)
-    | (`Slist0 symb) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Slist0 (symb))
-      | None  -> None)
-    | (`Slist0sep (symb,sep)) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Slist0sep ((symb,sep)))
-      | None  ->
+      | (`Slist0 symb) ->
         
-        (match (search_symbol sep)
+        (match (search_symbol symb)
         with
-        | Some(sep) -> Some (`Slist0sep ((symb,sep)))
-        | None  -> None))
-    | (`Slist1 symb) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Slist1 (symb))
-      | None  -> None)
-    | (`Slist1sep (symb,sep)) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Slist1sep ((symb,sep)))
-      | None  ->
+        | Some(symb) -> Some (`Slist0 (symb)) | None  -> None)
+      | (`Slist0sep (symb,sep)) ->
         
-        (match (search_symbol sep)
+        (match (search_symbol symb)
         with
-        | Some(sep) -> Some (`Slist1sep ((symb,sep)))
-        | None  -> None))
-    | (`Sopt symb) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Sopt (symb))
-      | None  -> None)
-    | (`Stry symb) ->
-      
-      (match (search_symbol symb)
-      with
-      | Some(symb) -> Some (`Stry (symb))
-      | None  -> None)
-    | (`Stree t) ->
-      
-      (match (search_tree t)
-      with
-      | Some(t) -> Some (`Stree (t))
-      | None  -> None)
-    | _ -> None) in (search_levels levels)
-  | Dparser(_) -> tree
+        | Some(symb) -> Some (`Slist0sep ((symb,sep)))
+          | None  ->
+            
+            (match (search_symbol sep)
+            with
+            | Some(sep) -> Some (`Slist0sep ((symb,sep))) | None  -> None))
+      | (`Slist1 symb) ->
+        
+        (match (search_symbol symb)
+        with
+        | Some(symb) -> Some (`Slist1 (symb)) | None  -> None)
+      | (`Slist1sep (symb,sep)) ->
+        
+        (match (search_symbol symb)
+        with
+        | Some(symb) -> Some (`Slist1sep ((symb,sep)))
+          | None  ->
+            
+            (match (search_symbol sep)
+            with
+            | Some(sep) -> Some (`Slist1sep ((symb,sep))) | None  -> None))
+      | (`Sopt symb) ->
+        
+        (match (search_symbol symb)
+        with
+        | Some(symb) -> Some (`Sopt (symb)) | None  -> None)
+      | (`Stry symb) ->
+        
+        (match (search_symbol symb)
+        with
+        | Some(symb) -> Some (`Stry (symb)) | None  -> None)
+      | (`Stree t) ->
+        
+        (match (search_tree t)
+        with
+        | Some(t) -> Some (`Stree (t)) | None  -> None) | _ -> None) in
+    (search_levels levels) | Dparser(_) -> tree)

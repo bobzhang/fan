@@ -17,23 +17,22 @@ let  wrap (parse_fun) (lb) =
   | Some(`EOI,_) -> begin
     (Stream.junk __strm);
     (raise End_of_file )
-    end
-  | _ -> (parse_fun token_stream))
+    end | _ -> (parse_fun token_stream))
   with
   |
     (((End_of_file  |Sys.Break )
        |FanLoc.Exc_located(_,(End_of_file  |Sys.Break ))) as x) -> (raise x)
-  | FanLoc.Exc_located(loc,y) ->
-    begin
-    (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
-      (Printexc.to_string y) ));
-    (raise Exit )
-    end
-  | x ->
-    begin
-    (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ));
-    (raise Exit )
-    end)
+    | FanLoc.Exc_located(loc,y) ->
+      begin
+      (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
+        (Printexc.to_string y) ));
+      (raise Exit )
+      end
+    | x ->
+      begin
+      (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ));
+      (raise Exit )
+      end)
 let  toplevel_phrase (token_stream) =
   
   (match
@@ -45,8 +44,7 @@ let  toplevel_phrase (token_stream) =
     let  str_item =
     (Syntax.AstFilters.fold_topphrase_filters (
       (fun (t) -> (fun (filter) -> (filter t))) ) str_item) in
-    (Ast2pt.phrase str_item)
-  | None  -> (raise End_of_file ))
+    (Ast2pt.phrase str_item) | None  -> (raise End_of_file ))
 let  use_file (token_stream) =
   
   let  (pl0,eoi) =
@@ -65,12 +63,11 @@ let  use_file (token_stream) =
      (Topdirs.dir_load Format.std_formatter s);
      (loop () )
      end
-   | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
-     begin
-     (Topdirs.dir_directory s);
-     (loop () )
-     end
-   | _ -> (pl,false ))
+     | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
+       begin
+       (Topdirs.dir_directory s);
+       (loop () )
+       end | _ -> (pl,false ))
    )
   else (pl,true ) in (loop () ) in
   

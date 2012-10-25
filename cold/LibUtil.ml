@@ -1,7 +1,7 @@
 open Format
 let  failwithf (fmt) = (ksprintf failwith fmt)
 module MapMake (S:Map.OrderedType) =
-  struct  include (Map.Make) (S)
+  struct include (Map.Make) (S)
     let  of_list (lst) =
       (List.fold_left ( (fun (acc) -> (fun ((k,v)) -> (add k v acc))) ) empty
         lst)
@@ -14,11 +14,11 @@ module MapMake (S:Map.OrderedType) =
 module SSet  = (Set.Make) (String)
 module SMap  = (MapMake) (String)
 module IMap  =
-  (Set.Make) (struct  type t =   int   let  compare = Pervasives.compare end)
+  (Set.Make) (struct type t =   int   let  compare = Pervasives.compare end)
 module ISet  =
-  (Set.Make) (struct  type t =   int   let  compare = Pervasives.compare end)
+  (Set.Make) (struct type t =   int   let  compare = Pervasives.compare end)
 module Hashset  =
-  struct  type 'a t =  ('a , unit ) Hashtbl.t   let  create = Hashtbl.create
+  struct type 'a t =  ('a , unit ) Hashtbl.t   let  create = Hashtbl.create
     let  add (set) (x) = (Hashtbl.replace set x () )
     let  remove = Hashtbl.remove let  mem = Hashtbl.mem
     let  iter (f) = (Hashtbl.iter ( (fun (v) -> (fun (() ) -> (f v))) ))
@@ -33,21 +33,15 @@ module Hashset  =
       end
     let  to_list (set) = (fold ( (fun (x) -> (fun (y) -> x::y)) ) set [] )
     end
-let  mk_set = fun (type s) ->
-  (fun ~cmp ->
-    let module M = struct  type t =   s   let  compare = cmp end in
-      ((module (Set.Make) (M)) :(module Set.S with type elt =  s ) ))
-let  mk_map = fun (type s) ->
-  (fun ~cmp ->
-    let module M = struct  type t =   s   let  compare = cmp end in
-      ((module (Map.Make) (M)) :(module Map.S with type key =  s ) ))
-let  mk_hashtbl = fun (type s) ->
-  (fun ~eq ->
-    (fun ~hash ->
-      let module M =
-        struct  type t =   s   let  equal = eq let  hash = hash end in
-        ((module (Hashtbl.Make) (M)) :(module Hashtbl.S with type key =  s )
-          )))
+let  mk_set (type s) ~cmp  =
+  let module M = struct type t =   s   let  compare = cmp end in
+    ((module (Set.Make) (M)) :(module Set.S with type elt =  s ) )
+let  mk_map (type s) ~cmp  =
+  let module M = struct type t =   s   let  compare = cmp end in
+    ((module (Map.Make) (M)) :(module Map.S with type key =  s ) )
+let  mk_hashtbl (type s) ~eq  ~hash  =
+  let module M = struct type t =   s   let  equal = eq let  hash = hash end
+    in ((module (Hashtbl.Make) (M)) :(module Hashtbl.S with type key =  s ) )
 let  (|>) (x) (f) = (f x)
 let  (<|) (f) (x) = (f x)
 let  (|-) (f) (g) (x) = (g ( (f x) ))
@@ -76,20 +70,19 @@ let  zfold_left ?(start=0)  ~until  ~acc  (f) =
   v.contents
   end
 type 'a cont =  ('a  ->  exn )  
-let  callcc = fun (type u) ->
-  (fun ((f : ( u  cont  ->  u ) )) ->
-    let module M = struct exception Return of  u  end in
-      
-      (try (f ( (fun (x) -> (raise ( M.Return (x) ))) ))
-      with
-      | M.Return(u) -> u))
-module List  = struct  include List include BatList end
+let  callcc (type u) ((f : ( u  cont  ->  u ) )) =
+  let module M = struct exception Return of  u  end in
+    
+    (try (f ( (fun (x) -> (raise ( M.Return (x) ))) ))
+    with
+    | M.Return(u) -> u)
+module List  = struct include List include BatList end
 module Char  = struct include BatChar end
-module String  = struct  include String include BatString end
+module String  = struct include String include BatString end
 module Ref  = struct include BatRef end
 module Option  = struct include BatOption end
 module Buffer  =
-  struct  include BatBuffer
+  struct include BatBuffer
     let  (+>) (buf) (chr) = begin
       (Buffer.add_char buf chr);
       buf
@@ -98,13 +91,13 @@ module Buffer  =
             buf
             end end
 module Hashtbl  =
-  struct  include BatHashtbl
+  struct include BatHashtbl
     let  keys (tbl) =
       (fold ( (fun (k) -> (fun (_) -> (fun (acc) -> k::acc))) ) tbl [] )
     let  values (tbl) =
       (fold ( (fun (_) -> (fun (v) -> (fun (acc) -> v::acc))) ) tbl [] ) end
 module Stream  =
-  struct  include BatStream include Stream
+  struct include BatStream include Stream
     let  rev (strm) =
       
       let rec  aux ((__strm : _ Stream.t )) =
@@ -117,8 +110,7 @@ module Stream  =
         
         let  xs = __strm in
         (Stream.lapp ( (fun (_) -> (aux xs)) ) ( (Stream.ising x) ))
-        end
-      | _ -> Stream.sempty) in (aux strm)
+        end | _ -> Stream.sempty) in (aux strm)
     let  tail ((__strm : _ Stream.t )) =
       
       (match (Stream.peek __strm)
@@ -126,8 +118,7 @@ module Stream  =
       | Some(_) -> begin
         (Stream.junk __strm);
         __strm
-        end
-      | _ -> Stream.sempty)
+        end | _ -> Stream.sempty)
     let rec  map (f) ((__strm : _ Stream.t )) =
       
       (match (Stream.peek __strm)
@@ -139,43 +130,36 @@ module Stream  =
         let  xs = __strm in
         (Stream.lcons ( (fun (_) -> (f x)) ) (
           (Stream.slazy ( (fun (_) -> (map f xs)) )) ))
-        end
-      | _ -> Stream.sempty) end
+        end | _ -> Stream.sempty) end
 module ErrorMonad  =
-  struct  type log =   string  
-    type 'a result =  Left of 'a  | Right of  log  
+  struct type log =   string  
+    type 'a result =  | Left of 'a  | Right of  log  
     let  return (x) = Left (x) let  fail (x) = Right (x)
     let  (>>=) (ma) (f) =
       
       (match ma with
-      | Left(v) -> (f v)
-      | Right(x) -> Right (x)) let  bind = (>>=)
+      | Left(v) -> (f v) | Right(x) -> Right (x)) let  bind = (>>=)
     let  map (f) =
       
-      function
-      | Left(v) -> Left ((f v))
-      | Right(s) -> Right (s)
+      (function
+      | Left(v) -> Left ((f v)) | Right(s) -> Right (s))
     let  (>>|) (ma) ((str,f)) =
       
       (match ma with
-      | Left(v) -> (f v)
-      | Right(x) -> Right ((x ^ str)))
+      | Left(v) -> (f v) | Right(x) -> Right ((x ^ str)))
     let  (>>?) (ma) (str) =
       
       (match ma with
-      | Left(_) -> ma
-      | Right(x) -> Right ((x ^ str)))
+      | Left(_) -> ma | Right(x) -> Right ((x ^ str)))
     let  (<|>) (fa) (fb) (a) =
       
       (match (fa a)
       with
-      | (Left(_) as x) -> x
-      | Right(str) -> (( (fb a) ) >>? str))
+      | (Left(_) as x) -> x | Right(str) -> (( (fb a) ) >>? str))
     let  unwrap (f) (a) =
       
       (match (f a) with
-      | Left(res) -> res
-      | Right(msg) -> (failwith msg))
+      | Left(res) -> res | Right(msg) -> (failwith msg))
     let  mapi_m (f) (xs) =
       
       let rec  aux (acc) (xs) =
@@ -183,8 +167,8 @@ module ErrorMonad  =
       (match xs
       with
       | []  -> (return [] )
-      | x::xs ->
-        (( (f x acc) ) >>= (
-          (fun (x) ->
-            (( (aux ( (acc + 1) ) xs) ) >>= (
-              (fun (xs) -> (return ( x::xs ))) ))) ))) in (aux 0 xs) end
+        | x::xs ->
+          (( (f x acc) ) >>= (
+            (fun (x) ->
+              (( (aux ( (acc + 1) ) xs) ) >>= (
+                (fun (xs) -> (return ( x::xs ))) ))) ))) in (aux 0 xs) end

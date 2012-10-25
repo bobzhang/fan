@@ -1,28 +1,28 @@
-module type Id = sig  val name :  string  val version :  string  end
+module type Id = sig val name :  string  val version :  string  end
 module type Warning =
-  sig  type warning =  ( FanLoc.t  -> ( string  ->  unit ) )  
+  sig type warning =  ( FanLoc.t  -> ( string  ->  unit ) )  
   val default_warning :  warning  val current_warning :  warning  ref 
   val print_warning :  warning  end
 type ('a ,'loc )stream_filter = 
 (('a *'loc ) Stream.t  -> ('a *'loc ) Stream.t )  
 module type ParserImpl =
-  sig 
-   val parse_implem :
-     (?directive_handler:( Ast.str_item  ->  Ast.str_item  option )  ->
-       ( FanLoc.t  -> ( char  Stream.t  ->  Ast.str_item ) ) ) 
+  sig
+  val parse_implem :
+    (?directive_handler:( Ast.str_item  ->  Ast.str_item  option )  ->
+      ( FanLoc.t  -> ( char  Stream.t  ->  Ast.str_item ) ) ) 
   val parse_interf :
     (?directive_handler:( Ast.sig_item  ->  Ast.sig_item  option )  ->
       ( FanLoc.t  -> ( char  Stream.t  ->  Ast.sig_item ) ) )  end
 module type PrinterImpl =
-  sig 
-   val print_interf :
-     (?input_file: string  ->
-       (?output_file: string  -> ( Ast.sig_item  ->  unit ) ) ) 
+  sig
+  val print_interf :
+    (?input_file: string  ->
+      (?output_file: string  -> ( Ast.sig_item  ->  unit ) ) ) 
   val print_implem :
     (?input_file: string  ->
       (?output_file: string  -> ( Ast.str_item  ->  unit ) ) )  end
 module type Camlp4Syntax =
-  sig  module AntiquotSyntax : Quotation.AntiquotSyntax
+  sig module AntiquotSyntax : Quotation.AntiquotSyntax
   module Quotation : Quotation.S module AstFilters : AstFilters.S
   include Warning include ParserImpl include PrinterImpl
   val interf : ( Ast.sig_item  list * FanLoc.t  option ) Gram.t 
@@ -179,9 +179,9 @@ type 'a parser_fun =
 type 'a printer_fun = 
 (?input_file: string  -> (?output_file: string  -> ('a  ->  unit ) ) )  
 module type PRECAST =
-  sig  module Syntax : Camlp4Syntax
+  sig module Syntax : Camlp4Syntax
   module Printers :
-  sig  module OCaml : PrinterImpl module DumpOCamlAst : PrinterImpl
+  sig module OCaml : PrinterImpl module DumpOCamlAst : PrinterImpl
   module DumpCamlp4Ast : PrinterImpl module Null : PrinterImpl end
   val loaded_modules :  string  list  ref 
   val iter_and_take_callbacks :

@@ -1,5 +1,5 @@
 module type S =
-  sig  type t   exception Error of  string * string 
+  sig type t   exception Error of  string * string 
   val mk :
     (?ocaml_stdlib: bool  -> (?camlp4_stdlib: bool  -> ( unit  ->  t ) ) ) 
   val fold_load_path :
@@ -9,7 +9,7 @@ module type S =
   val find_in_path : ( t  -> ( string  ->  string ) )  val is_native :  bool 
   val instance : ( unit  ->  t )  ref  end
 module Make (U:sig  end) : S =
-  struct  type t =   string  Queue.t  
+  struct type t =   string  Queue.t  
     let  instance = (ref ( (fun (() ) -> (failwith "empty in dynloader")) ))
     exception Error of  string * string 
     let  include_dir (x) (y) = (Queue.add y x)
@@ -52,16 +52,15 @@ module Make (U:sig  end) : S =
        (fold_load_path x (
          (fun (dir) ->
            
-           function
+           (function
            | None  ->
              
              let  fullname = (Filename.concat dir name) in
              if (Sys.file_exists fullname) then ( Some (fullname) ) else None
-           | x -> x) ) None ) in
+             | x -> x)) ) None ) in
        
        (match res with
-       | None  -> (raise Not_found )
-       | Some(x) -> x)
+       | None  -> (raise Not_found ) | Some(x) -> x)
     let  load =
       
       let  _initialized = (ref false ) in

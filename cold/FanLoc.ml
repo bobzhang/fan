@@ -8,10 +8,8 @@ let  dump_sel (f) (x) =
   
   (match x
   with
-  | `start -> "`start"
-  | `stop -> "`stop"
-  | `both -> "`both"
-  | _ -> "<not-printable>") in (pp_print_string f s)
+  | `start -> "`start" | `stop -> "`stop" | `both -> "`both"
+    | _ -> "<not-printable>") in (pp_print_string f s)
 let  dump_pos (f) (x) =
   (fprintf f "@[<hov 2>{ line = %d ;@ bol = %d ;@ off = %d } : pos@]" (
     x.pos_lnum ) ( x.pos_bol ) ( x.pos_cnum ))
@@ -61,12 +59,8 @@ let  better_file_name (a) (b) =
   
   (match (a,b)
   with
-  | ("","") -> a
-  | ("",x) -> x
-  | (x,"") -> x
-  | ("-",x) -> x
-  | (x,"-") -> x
-  | (x,_) -> x)
+  | ("","") -> a | ("",x) -> x | (x,"") -> x | ("-",x) -> x | (x,"-") -> x
+    | (x,_) -> x)
 let  of_lexbuf (lb) =
   
   let  start = (Lexing.lexeme_start_p lb) and stop = (Lexing.lexeme_end_p lb)
@@ -86,19 +80,19 @@ let  merge (a) (b) =
    (match (( a.loc_ghost ),( b.loc_ghost ))
    with
    | (false ,false ) -> {a with loc_end = ( b.loc_end )}
-   | (true ,true ) -> {a with loc_end = ( b.loc_end )}
-   | (true ,_) -> {a with loc_end = ( b.loc_end )}
-   | (_,true ) -> {b with loc_start = ( a.loc_start )}) in r
+     | (true ,true ) -> {a with loc_end = ( b.loc_end )}
+     | (true ,_) -> {a with loc_end = ( b.loc_end )}
+     | (_,true ) -> {b with loc_start = ( a.loc_start )}) in r
 let  join (x) = {x with loc_end = ( x.loc_start )}
 let  map (f) (start_stop_both) (x) =
   
   (match start_stop_both
   with
   | `start -> {x with loc_start = ( (f ( x.loc_start )) )}
-  | `stop -> {x with loc_end = ( (f ( x.loc_end )) )}
-  | `both ->
-    {x with
-      loc_start = ( (f ( x.loc_start )) );loc_end = ( (f ( x.loc_end )) )})
+    | `stop -> {x with loc_end = ( (f ( x.loc_end )) )}
+    | `both ->
+      {x with
+        loc_start = ( (f ( x.loc_start )) );loc_end = ( (f ( x.loc_end )) )})
 let  move_pos (chars) (x) = {x with pos_cnum = ( (( x.pos_cnum ) + chars) )}
 let  move (s) (chars) (x) = (map ( (move_pos chars) ) s x)
 let  move_line (lines) (x) =
@@ -181,19 +175,18 @@ exception Exc_located of  t * exn
 let _=
   (Printexc.register_printer (
     
-    function
+    (function
     | Exc_located(t,exn) ->
       Some
         ((sprintf "Exc_located(%s,%s)" ( (to_string t) ) (
-           (Printexc.to_string exn) )))
-    | _ -> None ))
+           (Printexc.to_string exn) ))) | _ -> None) ))
 let  name = (ref "_loc")
 let  raise (loc) (exc) =
   
   (match exc
   with
   | Exc_located(_,_) -> (raise exc)
-  | _ -> (raise ( Exc_located ((loc,exc)) )))
+    | _ -> (raise ( Exc_located ((loc,exc)) )))
 let  error_report ((loc,s)) =
   begin
   (prerr_endline ( (to_string loc) ));

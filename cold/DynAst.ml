@@ -1,5 +1,5 @@
 type 'a tag = 
-  Tag_ctyp
+| Tag_ctyp
 | Tag_patt
 | Tag_expr
 | Tag_module_type
@@ -18,24 +18,17 @@ type 'a tag =
 | Tag_module_binding 
 let  string_of_tag =
   
-  function
-  | Tag_ctyp  -> "ctyp"
-  | Tag_patt  -> "patt"
-  | Tag_expr  -> "expr"
-  | Tag_module_type  -> "module_type"
-  | Tag_sig_item  -> "sig_item"
-  | Tag_with_constr  -> "with_constr"
-  | Tag_module_expr  -> "module_expr"
-  | Tag_str_item  -> "str_item"
-  | Tag_class_type  -> "class_type"
-  | Tag_class_sig_item  -> "class_sig_item"
-  | Tag_class_expr  -> "class_expr"
-  | Tag_class_str_item  -> "class_str_item"
-  | Tag_match_case  -> "match_case"
-  | Tag_ident  -> "ident"
-  | Tag_binding  -> "binding"
-  | Tag_rec_binding  -> "rec_binding"
-  | Tag_module_binding  -> "module_binding"
+  (function
+  | Tag_ctyp  -> "ctyp" | Tag_patt  -> "patt" | Tag_expr  -> "expr"
+    | Tag_module_type  -> "module_type" | Tag_sig_item  -> "sig_item"
+    | Tag_with_constr  -> "with_constr" | Tag_module_expr  -> "module_expr"
+    | Tag_str_item  -> "str_item" | Tag_class_type  -> "class_type"
+    | Tag_class_sig_item  -> "class_sig_item"
+    | Tag_class_expr  -> "class_expr"
+    | Tag_class_str_item  -> "class_str_item"
+    | Tag_match_case  -> "match_case" | Tag_ident  -> "ident"
+    | Tag_binding  -> "binding" | Tag_rec_binding  -> "rec_binding"
+    | Tag_module_binding  -> "module_binding")
 let  ctyp_tag = (Tag_ctyp : Ast.ctyp  tag  )
 let  patt_tag = (Tag_patt : Ast.patt  tag  )
 let  expr_tag = (Tag_expr : Ast.expr  tag  )
@@ -56,7 +49,7 @@ let  module_binding_tag = (Tag_module_binding : Ast.module_binding  tag  )
 type dyn  
 external dyn_tag : ('a  tag  ->  dyn  tag )  = "%identity"
 module Pack (X:sig type 'a t   end) =
-  struct  type pack =  ( dyn  tag * Obj.t )  exception Pack_error
+  struct type pack =  ( dyn  tag * Obj.t )  exception Pack_error
     let  pack (tag) ((v : 'a  X.t )) = (( (dyn_tag tag) ),( (Obj.repr v) ))
     let  unpack =
       ((fun (tag) ->
