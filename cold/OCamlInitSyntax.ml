@@ -1,6 +1,6 @@
 module Make (U:sig  end) : Sig.Camlp4Syntax =
   struct  module Ast  = Camlp4Ast
-    type warning =  (FanLoc.t -> (string -> unit) )  
+    type warning =  ( FanLoc.t  -> ( string  ->  unit ) )  
     let  default_warning (loc) (txt) =
       (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt)
     let  current_warning = (ref default_warning)
@@ -169,8 +169,8 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
     let  level = (Gram.mk "level") let  level_list = (Gram.mk "level_list")
     let  entry = (Gram.mk "entry")
     let _=
-      (Gram.extend ( (top_phrase: 'top_phrase  Gram.t ) ) (
-        ((fun (() ) ->
+      (Gram.extend ( (top_phrase :'top_phrase  Gram.t  ) ) (
+        (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [(( [`Stoken
@@ -179,13 +179,13 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
                    | `EOI -> true
                    | _ -> false ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
-                   fun (__camlp4_0) ->
-                     fun ((_loc : FanLoc.t)) ->
+                   (fun (__camlp4_0) ->
+                     (fun ((_loc :  FanLoc.t )) ->
                        
                        (match __camlp4_0
                        with
-                       | `EOI -> (None: 'top_phrase )
-                       | _ -> assert false) )) ))] ))] ))) () ) ))
+                       | `EOI -> (None :'top_phrase  )
+                       | _ -> assert false))) )) ))] ))] )))) () ) ))
     module AntiquotSyntax  =
       struct  module Ast  = Ast module Gram  = Gram
         let  antiquot_expr = (Gram.eoi_entry expr)
@@ -216,11 +216,11 @@ module Make (U:sig  end) : Sig.Camlp4Syntax =
           | None  -> xs
           | Some(x) -> x::xs)) in (( (List.rev pl) ) @ ( (loop new_loc) ))
       | None  -> pl) in (loop init_loc)
-    let  parse_implem ?(directive_handler=fun (_) -> None)  (_loc) (cs) =
+    let  parse_implem ?(directive_handler=(fun (_) -> None))  (_loc) (cs) =
       
       let  l = (wrap directive_handler ( (Gram.parse implem) ) _loc cs) in
       (Ast.stSem_of_list l)
-    let  parse_interf ?(directive_handler=fun (_) -> None)  (_loc) (cs) =
+    let  parse_interf ?(directive_handler=(fun (_) -> None))  (_loc) (cs) =
       
       let  l = (wrap directive_handler ( (Gram.parse interf) ) _loc cs) in
       (Ast.sgSem_of_list l)

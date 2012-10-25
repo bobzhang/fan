@@ -23,7 +23,7 @@ let  string_of_patt (patt) =
   
   let  ()  =
   (Format.bprintf buf "%a@?" (
-    fun (fmt) -> fun (p) -> (AstPrint.pattern fmt ( (Ast2pt.patt p) )) )
+    (fun (fmt) -> (fun (p) -> (AstPrint.pattern fmt ( (Ast2pt.patt p) )))) )
     patt) in
   
   let  str = (Buffer.contents buf) in
@@ -47,11 +47,14 @@ let  mark_used (modif) (tbl) (n) =
     
     function
     | (({contents = Unused } as r),_) ->
-      ( (r := UsedNotScanned ) ); (modif := true )
+      begin
+      (r := UsedNotScanned );
+      (modif := true )
+      end
     | _ -> () ) rll) with
   | Not_found  -> ())
 let  mark_symbol (modif) (tbl) (symb) =
-  (List.iter ( fun (e) -> (mark_used modif tbl e) ) ( symb.used ))
+  (List.iter ( (fun (e) -> (mark_used modif tbl e)) ) ( symb.used ))
 let  check_use (nl) (el) =
   
   let  tbl = (Hashtbl.create 301) in
@@ -60,7 +63,7 @@ let  check_use (nl) (el) =
   
   let  ()  =
   (List.iter (
-    fun (e) ->
+    (fun (e) ->
       
       let  u =
       
@@ -68,67 +71,68 @@ let  check_use (nl) (el) =
       with
       | Ast.ExId(_,Ast.IdLid(_,_)) -> Unused
       | _ -> UsedNotScanned) in
-      (Hashtbl.add tbl ( (e.name).tvar ) (( (ref u) ),e)) ) el) in
+      (Hashtbl.add tbl ( (e.name).tvar ) (( (ref u) ),e))) ) el) in
   
   let  ()  =
   (List.iter (
-    fun (n) ->
+    (fun (n) ->
       
       (try
       
       let  rll = (Hashtbl.find_all tbl ( n.tvar )) in
-      (List.iter ( fun ((r,_)) -> (r := UsedNotScanned ) ) rll)
+      (List.iter ( (fun ((r,_)) -> (r := UsedNotScanned )) ) rll)
       with
-      | _ -> ()) ) nl) in
+      | _ -> ())) ) nl) in
   
   let  ()  = (modif := true ) in
   
   let  ()  =
   while modif.contents do
-   (
-  (modif := false )
-  );
-   (Hashtbl.iter (
-     fun (_) ->
-       fun ((r,e)) ->
-         if (( r.contents ) = UsedNotScanned )
-         then
-         
-         begin
-         (
-         (r := UsedScanned )
-         );
-         (List.iter (
-           fun (level) ->
-             
-             let  rules = level.rules in
-             (List.iter (
-               fun (rule) ->
-                 (List.iter ( fun (s) -> (mark_symbol modif tbl s) ) (
-                   rule.prod )) ) rules) ) ( e.levels ))
-         end else () ) tbl)
-  done in
+    begin
+    (modif := false );
+    (Hashtbl.iter (
+      (fun (_) ->
+        (fun ((r,e)) ->
+          if (( r.contents ) = UsedNotScanned )
+          then
+          
+          begin
+          begin
+          (r := UsedScanned );
+          (List.iter (
+            (fun (level) ->
+              
+              let  rules = level.rules in
+              (List.iter (
+                (fun (rule) ->
+                  (List.iter ( (fun (s) -> (mark_symbol modif tbl s)) ) (
+                    rule.prod ))) ) rules)) ) ( e.levels ))
+          end
+          end else ())) ) tbl)
+    end done in
   (Hashtbl.iter (
-    fun (s) ->
-      fun ((r,e)) ->
+    (fun (s) ->
+      (fun ((r,e)) ->
         if (( r.contents ) = Unused ) then
          (
          (print_warning ( (e.name).loc ) (
            ("Unused local entry \"" ^ ( (s ^ "\"") )) ))
          )
-        else () ) tbl)
+        else ())) ) tbl)
 let  new_type_var =
   
   let  i = (ref 0) in
-  fun (() ) -> begin
-    ( (incr i) ); ("e__" ^ ( (string_of_int ( i.contents )) ))
-    end
+  (fun (() ) ->
+    begin
+    (incr i);
+    ("e__" ^ ( (string_of_int ( i.contents )) ))
+    end)
 let  used_of_rule_list (rl) =
   (List.fold_left (
-    fun (nl) ->
-      fun (r) ->
-        (List.fold_left ( fun (nl) -> fun (s) -> (( s.used ) @ nl) ) nl (
-          r.prod )) ) []  rl)
+    (fun (nl) ->
+      (fun (r) ->
+        (List.fold_left ( (fun (nl) -> (fun (s) -> (( s.used ) @ nl))) ) nl (
+          r.prod )))) ) []  rl)
 let  retype_rule_list_without_patterns (_loc) (rl) =
   
   (try
@@ -139,7 +143,7 @@ let  retype_rule_list_without_patterns (_loc) (rl) =
       ->
       {prod = (
          [{s with
-           pattern = ( Some (Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))) )}]
+            pattern = ( Some (Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))) )}]
          );action = (
              Some
                (Ast.ExApp
@@ -153,12 +157,12 @@ let  retype_rule_list_without_patterns (_loc) (rl) =
     | {prod = ({pattern = None ;_} as s)::[] ;action = None } ->
       {prod = (
          [{s with
-           pattern = ( Some (Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))) )}]
+            pattern = ( Some (Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))) )}]
          );action = ( Some (Ast.ExId ((_loc,( Ast.IdLid ((_loc,"x")) )))) )}
     | ({prod = [] ;action = Some(_)} as r) -> r
     | _ -> (raise Exit ) ) rl) with
   | Exit  -> rl)
-exception NotneededTyping 
+exception NotneededTyping
 let  make_ctyp (styp) (tvar) =
   
   let rec  aux =
@@ -195,8 +199,8 @@ let  make_ctyp_expr (styp) (tvar) (expr) =
   | Some(t) ->
     
     let  _loc = (Camlp4Ast.loc_of_expr expr) in Ast.ExTyc ((_loc,expr,t)))
-let  text_of_action (_loc) (psl) ((rtvar : string))
-  ((act : Ast.expr option )) ((tvar : string)) =
+let  text_of_action (_loc) (psl) ((rtvar :  string ))
+  ((act :  Ast.expr  option )) ((tvar :  string )) =
   
   let  locid =
   Ast.PaId ((_loc,( Ast.IdLid ((_loc,( FanLoc.name.contents ))) ))) in
@@ -210,7 +214,7 @@ let  text_of_action (_loc) (psl) ((rtvar : string))
   
   let  (tok_match_pl,act,_) =
   (List.fold_left (
-    fun (((tok_match_pl,act,i) as accu)) ->
+    (fun (((tok_match_pl,act,i) as accu)) ->
       
       function
       | {pattern = None ;_} -> accu
@@ -248,7 +252,7 @@ let  text_of_action (_loc) (psl) ((rtvar : string))
                 ((_loc,( Ast.ExId ((_loc,( Ast.IdLid ((_loc,id)) )))
                   ),tok_pl)) ),( Ast.PaCom ((_loc,p,match_pl)) )))) ),act,(
          (succ i) ))
-      | _ -> accu ) (None ,act,0) psl) in
+      | _ -> accu) ) (None ,act,0) psl) in
   
   let  e =
   
@@ -293,8 +297,8 @@ let  text_of_action (_loc) (psl) ((rtvar : string))
   
   let  (txt,_) =
   (List.fold_left (
-    fun ((txt,i)) ->
-      fun (s) ->
+    (fun ((txt,i)) ->
+      (fun (s) ->
         
         (match s.pattern
         with
@@ -328,7 +332,7 @@ let  text_of_action (_loc) (psl) ((rtvar : string))
           ((
            Ast.ExFun
              ((_loc,( Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),txt)) ))) ),(
-           (succ i) ))) ) (e,0) psl) in
+           (succ i) ))))) ) (e,0) psl) in
   
   let  txt =
   if meta_action.contents then
@@ -350,12 +354,12 @@ let  text_of_action (_loc) (psl) ((rtvar : string))
           ))) ),txt))
 let  srules (loc) (t) (rl) (tvar) =
   (List.map (
-    fun (r) ->
+    (fun (r) ->
       
-      let  sl = (List.map ( fun (s) -> s.text ) ( r.prod )) in
+      let  sl = (List.map ( (fun (s) -> s.text) ) ( r.prod )) in
       
       let  ac = (text_of_action loc ( r.prod ) t ( r.action ) tvar) in
-      (sl,ac) ) rl)
+      (sl,ac)) ) rl)
 let rec  make_expr (entry) (tvar) =
   
   function
@@ -363,13 +367,13 @@ let rec  make_expr (entry) (tvar) =
     
     let  el =
     (List.fold_right (
-      fun (t) ->
-        fun (el) ->
+      (fun (t) ->
+        (fun (el) ->
           Ast.ExApp
             ((_loc,(
               Ast.ExApp
                 ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"::")) ))) ),(
-                  (make_expr entry "" t) ))) ),el)) ) tl (
+                  (make_expr entry "" t) ))) ),el)))) ) tl (
       Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )) in
     Ast.ExApp
       ((_loc,(
@@ -500,42 +504,42 @@ let rec  make_expr (entry) (tvar) =
                           ((_loc,( (Ast.safe_string_escaped descr) ))) ))) )))
                 ))) ))) ))) and make_expr_rules (_loc) (n) (rl) (tvar) =
   (List.fold_left (
-    fun (txt) ->
-      fun ((sl,ac)) ->
+    (fun (txt) ->
+      (fun ((sl,ac)) ->
         
         let  sl =
         (List.fold_right (
-          fun (t) ->
-            fun (txt) ->
+          (fun (t) ->
+            (fun (txt) ->
               
               let  x = (make_expr n tvar t) in
               Ast.ExApp
                 ((_loc,(
                   Ast.ExApp
                     ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"::")) )))
-                      ),x)) ),txt)) ) sl (
+                      ),x)) ),txt)))) ) sl (
           Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )) in
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
               ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"::")) ))) ),(
-                Ast.ExTup ((_loc,( Ast.ExCom ((_loc,sl,ac)) ))) ))) ),txt)) )
-    ( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) ) rl)
+                Ast.ExTup ((_loc,( Ast.ExCom ((_loc,sl,ac)) ))) ))) ),txt))))
+    ) ( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) ) rl)
 let  expr_of_delete_rule (_loc) (n) (sl) =
   
   let  sl =
   (List.fold_right (
-    fun (s) ->
-      fun (e) ->
+    (fun (s) ->
+      (fun (e) ->
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
               ((_loc,( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"::")) ))) ),(
-                (make_expr n "" ( s.text )) ))) ),e)) ) sl (
+                (make_expr n "" ( s.text )) ))) ),e)))) ) sl (
     Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )) in (( n.expr ),sl)
 let  mk_name (_loc) (i) =
   {expr = ( Ast.ExId ((_loc,i)) );tvar = ( (Ident.tvar_of_ident i) );
-   loc = _loc}
+    loc = _loc}
 let  slist (loc) (min) (sep) (symb) = TXlist ((loc,min,symb,sep))
 let  text_of_entry (_loc) (e) =
   
@@ -564,8 +568,8 @@ let  text_of_entry (_loc) (e) =
   
   let  txt =
   (List.fold_right (
-    fun (level) ->
-      fun (txt) ->
+    (fun (level) ->
+      (fun (txt) ->
         
         let  lab =
         
@@ -599,7 +603,7 @@ let  text_of_entry (_loc) (e) =
                 Ast.ExTup
                   ((_loc,(
                     Ast.ExCom ((_loc,lab,( Ast.ExCom ((_loc,ass,e)) ))) )))
-                ))) ),txt)) in txt ) ( e.levels ) (
+                ))) ),txt)) in txt)) ) ( e.levels ) (
     Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )) in (ent,pos,txt)
 let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
   
@@ -607,16 +611,15 @@ let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
   with
   | None  -> default
   | Some(nl) ->
-    (
-    (check_use nl el)
-    );
+    begin
+    (check_use nl el);
     
     let  ll =
     
     let  same_tvar (e) (n) = (( (e.name).tvar ) = ( n.tvar )) in
     (List.fold_right (
-      fun (e) ->
-        fun (ll) ->
+      (fun (e) ->
+        (fun (ll) ->
           
           (match (e.name).expr
           with
@@ -624,7 +627,7 @@ let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
             if (List.exists ( (same_tvar e) ) nl) then ll
             else if (List.exists ( (same_tvar e) ) ll) then ll
             else e.name::ll
-          | _ -> ll) ) el [] ) in
+          | _ -> ll))) ) el [] ) in
     
     let  local_binding_of_name =
     
@@ -667,9 +670,9 @@ let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
       
       let  locals =
       (List.fold_right (
-        fun (name) ->
-          fun (acc) ->
-            Ast.BiAnd ((_loc,acc,( (local_binding_of_name name) ))) ) xs (
+        (fun (name) ->
+          (fun (acc) ->
+            Ast.BiAnd ((_loc,acc,( (local_binding_of_name name) ))))) ) xs (
         (local_binding_of_name x) )) in
       
       let  entry_mk =
@@ -703,21 +706,22 @@ let  let_in_of_extend (_loc) (gram) (gl) (el) (default) =
       
       let  globals =
       (List.fold_right (
-        fun (name) ->
-          fun (acc) ->
+        (fun (name) ->
+          (fun (acc) ->
             Ast.BiAnd
               ((_loc,acc,(
                 Ast.BiEq
-                  ((_loc,( Ast.PaAny (_loc) ),( (expr_of_name name) ))) ))) )
-        xs ( Ast.BiEq ((_loc,( Ast.PaAny (_loc) ),( (expr_of_name x) ))) ))
-      in Ast.ExLet ((_loc,Ast.ReNil ,globals,e))))
+                  ((_loc,( Ast.PaAny (_loc) ),( (expr_of_name name) ))) )))))
+        ) xs ( Ast.BiEq ((_loc,( Ast.PaAny (_loc) ),( (expr_of_name x) ))) ))
+      in Ast.ExLet ((_loc,Ast.ReNil ,globals,e)))
+    end)
 let  text_of_functorial_extend (_loc) (gram) (gl) (el) =
   
   let  args =
   
   let  el =
   (List.map (
-    fun (e) ->
+    (fun (e) ->
       
       let  (ent,pos,txt) = (text_of_entry ( (e.name).loc ) e) in
       Ast.ExApp
@@ -738,7 +742,7 @@ let  text_of_functorial_extend (_loc) (gram) (gl) (el) =
                       ),( Ast.ExNil (_loc) ),(
                       Ast.ExTup ((_loc,( Ast.ExCom ((_loc,pos,txt)) ))) )))
                   ))) ),( Ast.ExId ((_loc,( Ast.IdUid ((_loc,"()")) ))) )))
-          ))) ) el) in
+          )))) ) el) in
   
   (match el
   with
@@ -747,8 +751,9 @@ let  text_of_functorial_extend (_loc) (gram) (gl) (el) =
   | e::el ->
     Ast.ExSeq
       ((_loc,(
-        (List.fold_left ( fun (acc) -> fun (x) -> Ast.ExSem ((_loc,acc,x)) )
-          e el) )))) in (let_in_of_extend _loc gram gl el args)
+        (List.fold_left (
+          (fun (acc) -> (fun (x) -> Ast.ExSem ((_loc,acc,x)))) ) e el) ))))
+  in (let_in_of_extend _loc gram gl el args)
 let  mk_tok (_loc) ?restrict  (p) (t) =
   
   (match restrict
@@ -833,7 +838,7 @@ let  sfold (_loc) (n) (foldfun) (f) (e) (s) =
                  ),( Ast.TyAny (_loc) )))) ),( s.styp ))) ),styp)) in
   {used = ( s.used );text = ( TXmeta ((_loc,n,( [s.text] ),e,t)) );styp =
                                                                     styp;
-   pattern = None }
+    pattern = None }
 let  sfoldsep (_loc) (n) (foldfun) (f) (e) (s) (sep) =
   
   let  styp = STquo ((_loc,( (new_type_var () ) ))) in
@@ -865,4 +870,4 @@ let  sfoldsep (_loc) (n) (foldfun) (f) (e) (s) (sep) =
                                             TXmeta
                                               ((_loc,n,( [s.text;sep.text]
                                                 ),e,t)) );styp = styp;
-   pattern = None }
+    pattern = None }

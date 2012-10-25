@@ -3,7 +3,7 @@ open FanUtil
 module Ast  = Camlp4Ast
 let  test_patt_lessminus =
   (Gram.of_parser "test_patt_lessminus" (
-    fun (strm) ->
+    (fun (strm) ->
       
       let rec  skip_patt (n) =
       
@@ -32,37 +32,39 @@ let  test_patt_lessminus =
       | Some((`KEYWORD "{"),_) ->
         (ignore_upto end_kwd ( (( (ignore_upto "}" ( (n + 1) )) ) + 1) ))
       | Some(_) -> (ignore_upto end_kwd ( (n + 1) ))
-      | None  -> (raise Stream.Failure )) in (skip_patt 1) ))
+      | None  -> (raise Stream.Failure )) in (skip_patt 1)) ))
 let  is_revised ~expr  ~sem_expr_for_list  =
   
-  (try (
+  (try
+  begin
   (Gram.delete_rule expr ( [`Skeyword ("[");`Snterm
-    ((Gram.obj ( (sem_expr_for_list: 'sem_expr_for_list  Gram.t ) )));`Skeyword
-    ("::");`Snterm ((Gram.obj ( (expr: 'expr  Gram.t ) )));`Skeyword ("]")]
-    )) ); true with
+    ((Gram.obj ( (sem_expr_for_list :'sem_expr_for_list  Gram.t  ) )));`Skeyword
+    ("::");`Snterm ((Gram.obj ( (expr :'expr  Gram.t  ) )));`Skeyword ("]")]
+    ));
+  true
+  end with
   | Not_found  -> false)
 let  setup_op_parser (entry) (p) =
   (Gram.setup_parser entry (
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match (Stream.peek __strm)
       with
       | Some(((`KEYWORD x) |(`SYMBOL x)),ti) when (p x) ->
-        (
-        (Stream.junk __strm)
-        );
+        begin
+        (Stream.junk __strm);
         
         let  _loc = (Gram.token_location ti) in
         Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) )))
-      | _ -> (raise Stream.Failure )) ))
+        end
+      | _ -> (raise Stream.Failure ))) ))
 let rec  infix_kwds_filter ((__strm : _ Stream.t )) =
   
   (match (Stream.peek __strm)
   with
   | Some(((`KEYWORD "("),_) as tok) ->
-    (
-    (Stream.junk __strm)
-    );
+    begin
+    (Stream.junk __strm);
     
     let  xs = __strm in
     
@@ -74,31 +76,33 @@ let rec  infix_kwds_filter ((__strm : _ Stream.t )) =
       Some((`KEYWORD
              (((((((("or" |"mod") |"land") |"lor") |"lxor") |"lsl") |"lsr")
                 |"asr") as i)),_loc) ->
-      (
-      (Stream.junk __strm)
-      );
+      begin
+      (Stream.junk __strm);
       
       (match (Stream.peek __strm)
       with
       | Some((`KEYWORD ")"),_) ->
-        (
-        (Stream.junk __strm)
-        );
+        begin
+        (Stream.junk __strm);
         
         let  xs = __strm in
-        (Stream.lcons ( fun (_) -> (`LIDENT (i),_loc) ) (
-          (Stream.slazy ( fun (_) -> (infix_kwds_filter xs) )) ))
+        (Stream.lcons ( (fun (_) -> (`LIDENT (i),_loc)) ) (
+          (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) ))
+        end
       | _ -> (raise ( Stream.Error ("") )))
+      end
     | _ ->
       
       let  xs = __strm in
       (Stream.icons tok (
-        (Stream.slazy ( fun (_) -> (infix_kwds_filter xs) )) )))
+        (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) )) )))
+    end
   | Some(x) ->
-    (
-    (Stream.junk __strm)
-    );
+    begin
+    (Stream.junk __strm);
     
     let  xs = __strm in
-    (Stream.icons x ( (Stream.slazy ( fun (_) -> (infix_kwds_filter xs) )) ))
+    (Stream.icons x ( (Stream.slazy ( (fun (_) -> (infix_kwds_filter xs)) ))
+      ))
+    end
   | _ -> (raise Stream.Failure ))

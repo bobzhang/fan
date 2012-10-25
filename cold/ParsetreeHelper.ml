@@ -33,7 +33,7 @@ let  array_function_no_loc (str) (name) =
     if FanConfig.unsafe.contents then ( ("unsafe_" ^ name) ) else name ))
 let  array_function (loc) (str) (name) =
   (with_loc ( (array_function_no_loc str name) ) loc)
-let  mkli (sloc) (s) ((list : string list )) =
+let  mkli (sloc) (s) ((list :  string  list )) =
   
   let  aux =
   
@@ -42,7 +42,7 @@ let  mkli (sloc) (s) ((list : string list )) =
   | x::[]  -> (ldot ( (lident x) ) s)
   | x::y::z ->
     (List.fold_left ldot ( (ldot ( (lident x) ) y) ) ( (z @ ( [s] )) )) in
-  (with_loc ( (aux ( (List.filter ( fun (s) -> (s <> "") ) list) )) ) sloc)
+  (with_loc ( (aux ( (List.filter ( (fun (s) -> (s <> "")) ) list) )) ) sloc)
 let  varify_constructors (var_names) =
   
   let rec  loop (t) =
@@ -72,8 +72,8 @@ let  varify_constructors (var_names) =
     Ptyp_poly ((string_lst,( (loop core_type) )))
   | Ptyp_package(longident,lst) ->
     Ptyp_package
-      ((longident,( (List.map ( fun ((n,typ)) -> (n,( (loop typ) )) ) lst) ))))
-  in {t with ptyp_desc = desc} and loop_core_field (t) =
+      ((longident,( (List.map ( (fun ((n,typ)) -> (n,( (loop typ) ))) ) lst)
+        )))) in {t with ptyp_desc = desc} and loop_core_field (t) =
   
   let  desc =
   

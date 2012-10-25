@@ -16,7 +16,7 @@ let  add_loc (bp) (parse_fun) (strm) =
   else (FanLoc.merge bp ep) in (x,loc)
 module StreamOrig  = Stream
 module Stream  =
-  struct  type 'a  t =  'a  StreamOrig.t  
+  struct  type 'a t =  'a  StreamOrig.t  
     exception Failure = StreamOrig.Failure exception Error = StreamOrig.Error
     let  peek = StreamOrig.peek let  junk = StreamOrig.junk
     let  dup (strm) =
@@ -40,8 +40,10 @@ let  try_parser (ps) (strm) =
   with
   | (Stream.Error(_) |FanLoc.Exc_located(_,Stream.Error(_))) ->
     (raise Stream.Failure )
-  | exc -> (raise exc)) in begin
-  ( (njunk ( (StreamOrig.count strm') ) strm) ); r
+  | exc -> (raise exc)) in
+  begin
+  (njunk ( (StreamOrig.count strm') ) strm);
+  r
   end
 let  level_number (entry) (lab) =
   
@@ -89,11 +91,11 @@ let  continue (entry) (loc) (a) (s) (son) (p1) ((__strm : _ Stream.t )) =
   with
   | Stream.Failure  ->
     (raise ( Stream.Error ((Failed.tree_failed entry a s son)) ))) in
-  (Action.mk ( fun (_) -> (Action.getf act a) ))
+  (Action.mk ( (fun (_) -> (Action.getf act a)) ))
 let  skip_if_empty (bp) (strm) =
   if (( (loc_bp strm) ) = bp) then
    (
-   (Action.mk ( fun (_) -> (raise Stream.Failure ) ))
+   (Action.mk ( (fun (_) -> (raise Stream.Failure )) ))
    )
   else (raise Stream.Failure )
 let  do_recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
@@ -120,29 +122,31 @@ let  recover (parser_of_tree) (entry) (nlevn) (alevn) (loc) (a) (s) (son)
    if strict_parsing_warning.contents then
     (
     
-    let  msg = (Failed.tree_failed entry a s son) in begin
-    ( (Format.eprintf "Warning: trying to recover from syntax error") ); (
+    let  msg = (Failed.tree_failed entry a s son) in
+    begin
+    (Format.eprintf "Warning: trying to recover from syntax error");
     if (( entry.ename ) <> "") then
      (
      (Format.eprintf " in [%s]" ( entry.ename ))
      )
-    else () ); (Format.eprintf "\n%s%a@." msg FanLoc.print loc)
+    else ();
+    (Format.eprintf "\n%s%a@." msg FanLoc.print loc)
     end
     )
    else () in (do_recover parser_of_tree entry nlevn alevn loc a s son strm)
 let rec  parser_of_tree (entry) (nlevn) (alevn) =
   
   function
-  | DeadEnd  -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure )
-  | LocAct(act,_) -> fun ((__strm : _ Stream.t )) -> act
+  | DeadEnd  -> (fun ((__strm : _ Stream.t )) -> (raise Stream.Failure ))
+  | LocAct(act,_) -> (fun ((__strm : _ Stream.t )) -> act)
   | Node({node = `Sself;son = LocAct(act,_);brother = DeadEnd }) ->
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
-      let  a = ((entry.estart) alevn __strm) in (Action.getf act a)
+      let  a = ((entry.estart) alevn __strm) in (Action.getf act a))
   | Node({node = `Sself;son = LocAct(act,_);brother = bro}) ->
     
     let  p2 = (parser_of_tree entry nlevn alevn bro) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match
       
@@ -151,7 +155,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       | Stream.Failure  -> None)
       with
       | Some(a) -> (Action.getf act a)
-      | _ -> (p2 __strm))
+      | _ -> (p2 __strm)))
   | Node({node = s;son = son;brother = DeadEnd }) ->
     
     let  tokl =
@@ -170,7 +174,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       let  p1 = (parser_of_tree entry nlevn alevn son) in
       
       let  p1 = (parser_cont p1 entry nlevn alevn s son) in
-      fun (strm) ->
+      (fun (strm) ->
         
         let  bp = (loc_bp strm) in
         
@@ -183,7 +187,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
         (try (p1 bp a __strm)
         with
         | Stream.Failure  -> (raise ( Stream.Error ("") ))) in
-        (Action.getf act a)
+        (Action.getf act a))
     | Some(tokl,last_tok,son) ->
       
       let  p1 = (parser_of_tree entry nlevn alevn son) in
@@ -210,7 +214,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       let  p1 = (parser_cont p1 entry nlevn alevn s son) in
       
       let  p2 = (parser_of_tree entry nlevn alevn bro) in
-      fun (strm) ->
+      (fun (strm) ->
         
         let  bp = (loc_bp strm) in
         
@@ -228,7 +232,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
           with
           | Stream.Failure  -> (raise ( Stream.Error ("") ))) in
           (Action.getf act a)
-        | _ -> (p2 __strm))
+        | _ -> (p2 __strm)))
     | Some(tokl,last_tok,son) ->
       
       let  p1 = (parser_of_tree entry nlevn alevn son) in
@@ -238,10 +242,10 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       let  p1 = (parser_of_token_list p1 tokl) in
       
       let  p2 = (parser_of_tree entry nlevn alevn bro) in
-      fun ((__strm : _ Stream.t )) ->
+      (fun ((__strm : _ Stream.t )) ->
         
         (try (p1 __strm) with
-        | Stream.Failure  -> (p2 __strm))) and parser_cont (p1) (entry)
+        | Stream.Failure  -> (p2 __strm)))) and parser_cont (p1) (entry)
   (nlevn) (alevn) (s) (son) (loc) (a) ((__strm : _ Stream.t )) =
   
   (try (p1 __strm)
@@ -267,9 +271,13 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       
       (match (stream_peek_nth n strm)
       with
-      | Some(tok,_) when (tematch tok) -> ( (njunk n strm) ); (Action.mk tok)
+      | Some(tok,_) when (tematch tok) ->
+        begin
+        (njunk n strm);
+        (Action.mk tok)
+        end
       | _ -> (raise Stream.Failure )) in
-      fun (strm) ->
+      (fun (strm) ->
         
         let  bp = (loc_bp strm) in
         
@@ -282,7 +290,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
         (try (p1 bp a __strm)
         with
         | Stream.Failure  -> (raise ( Stream.Error ("") ))) in
-        (Action.getf act a)
+        (Action.getf act a))
     | _ ->
       
       let  ps (strm) =
@@ -293,12 +301,12 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       | _ -> (raise Stream.Failure )) in
       
       let  p1 = (loop ( (n + 1) ) tokl) in
-      fun ((__strm : _ Stream.t )) ->
+      (fun ((__strm : _ Stream.t )) ->
         
         let  tok = (ps __strm) in
         
         let  s = __strm in 
-        let  act = (p1 s) in (Action.getf act tok))
+        let  act = (p1 s) in (Action.getf act tok)))
   | (`Skeyword kwd)::tokl ->
     
     (match tokl
@@ -310,9 +318,12 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       (match (stream_peek_nth n strm)
       with
       | Some(tok,_) when (FanToken.match_keyword kwd tok) ->
-        ( (njunk n strm) ); (Action.mk tok)
+        begin
+        (njunk n strm);
+        (Action.mk tok)
+        end
       | _ -> (raise Stream.Failure )) in
-      fun (strm) ->
+      (fun (strm) ->
         
         let  bp = (loc_bp strm) in
         
@@ -325,7 +336,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
         (try (p1 bp a __strm)
         with
         | Stream.Failure  -> (raise ( Stream.Error ("") ))) in
-        (Action.getf act a)
+        (Action.getf act a))
     | _ ->
       
       let  ps (strm) =
@@ -336,12 +347,12 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       | _ -> (raise Stream.Failure )) in
       
       let  p1 = (loop ( (n + 1) ) tokl) in
-      fun ((__strm : _ Stream.t )) ->
+      (fun ((__strm : _ Stream.t )) ->
         
         let  tok = (ps __strm) in
         
         let  s = __strm in 
-        let  act = (p1 s) in (Action.getf act tok))
+        let  act = (p1 s) in (Action.getf act tok)))
   | _ -> (invalid_arg "parser_of_token_list") in (loop 1 tokl) and
   parser_of_symbol (entry) (nlevn) =
   
@@ -352,8 +363,8 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
     
     let  pl = (List.map ( (parser_of_symbol entry nlevn) ) symbl) in
     (Obj.magic (
-      (List.fold_left ( fun (act) -> fun (p) -> (Obj.magic act p) ) act pl)
-      ))
+      (List.fold_left ( (fun (act) -> (fun (p) -> (Obj.magic act p))) ) act
+        pl) ))
   | (`Slist0 s) ->
     
     let  ps = (parser_of_symbol entry nlevn s) in
@@ -366,9 +377,9 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
     with
     | Some(a) -> (loop ( a::al ) __strm)
     | _ -> al) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
-      let  a = (loop []  __strm) in (Action.mk ( (List.rev a) ))
+      let  a = (loop []  __strm) in (Action.mk ( (List.rev a) )))
   | (`Slist0sep (symb,sep)) ->
     
     let  ps = (parser_of_symbol entry nlevn symb) in
@@ -391,7 +402,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
         (raise ( Stream.Error ((Failed.symb_failed entry v sep symb)) ))) in
       (kont ( a::al ) __strm)
     | _ -> al) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match 
       (try Some ((ps __strm)) with
@@ -400,7 +411,7 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
       | Some(a) ->
         
         let  s = __strm in (Action.mk ( (List.rev ( (kont ( [a] ) s) )) ))
-      | _ -> (Action.mk [] ))
+      | _ -> (Action.mk [] )))
   | (`Slist1 s) ->
     
     let  ps = (parser_of_symbol entry nlevn s) in
@@ -413,11 +424,11 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
     with
     | Some(a) -> (loop ( a::al ) __strm)
     | _ -> al) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       let  a = (ps __strm) in
       
-      let  s = __strm in (Action.mk ( (List.rev ( (loop ( [a] ) s) )) ))
+      let  s = __strm in (Action.mk ( (List.rev ( (loop ( [a] ) s) )) )))
   | (`Slist1sep (symb,sep)) ->
     
     let  ps = (parser_of_symbol entry nlevn symb) in
@@ -444,61 +455,69 @@ let rec  parser_of_tree (entry) (nlevn) (alevn) =
           (raise ( Stream.Error ((Failed.symb_failed entry v sep symb)) ))))
       in (kont ( a::al ) __strm)
     | _ -> al) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       let  a = (ps __strm) in
       
-      let  s = __strm in (Action.mk ( (List.rev ( (kont ( [a] ) s) )) ))
+      let  s = __strm in (Action.mk ( (List.rev ( (kont ( [a] ) s) )) )))
   | (`Sopt s) ->
     
     let  ps = (parser_of_symbol entry nlevn s) in
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match 
       (try Some ((ps __strm)) with
       | Stream.Failure  -> None)
       with
       | Some(a) -> (Action.mk ( Some (a) ))
-      | _ -> (Action.mk None ))
+      | _ -> (Action.mk None )))
   | (`Stry s) ->
     
     let  ps = (parser_of_symbol entry nlevn s) in (try_parser ps)
   | (`Stree t) ->
     
     let  pt = (parser_of_tree entry 1 0 t) in
-    fun (strm) ->
+    (fun (strm) ->
       
       let  bp = (loc_bp strm) in
       
       let  (__strm : _ Stream.t ) = strm in
       
-      let  (act,loc) = (add_loc bp pt __strm) in (Action.getf act loc)
-  | (`Snterm e) -> fun ((__strm : _ Stream.t )) -> ((e.estart) 0 __strm)
+      let  (act,loc) = (add_loc bp pt __strm) in (Action.getf act loc))
+  | (`Snterm e) -> (fun ((__strm : _ Stream.t )) -> ((e.estart) 0 __strm))
   | (`Snterml (e,l)) ->
-    fun ((__strm : _ Stream.t )) ->
-      ((e.estart) ( (level_number e l) ) __strm)
-  | `Sself -> fun ((__strm : _ Stream.t )) -> ((entry.estart) 0 __strm)
-  | `Snext -> fun ((__strm : _ Stream.t )) -> ((entry.estart) nlevn __strm)
+    (fun ((__strm : _ Stream.t )) ->
+      ((e.estart) ( (level_number e l) ) __strm))
+  | `Sself -> (fun ((__strm : _ Stream.t )) -> ((entry.estart) 0 __strm))
+  | `Snext -> (fun ((__strm : _ Stream.t )) -> ((entry.estart) nlevn __strm))
   | (`Skeyword kwd) ->
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match (Stream.peek __strm)
       with
       | Some(tok,_) when (FanToken.match_keyword kwd tok) ->
-        ( (Stream.junk __strm) ); (Action.mk tok)
-      | _ -> (raise Stream.Failure ))
+        begin
+        (Stream.junk __strm);
+        (Action.mk tok)
+        end
+      | _ -> (raise Stream.Failure )))
   | (`Stoken (f,_)) ->
-    fun ((__strm : _ Stream.t )) ->
+    (fun ((__strm : _ Stream.t )) ->
       
       (match (Stream.peek __strm)
       with
-      | Some(tok,_) when (f tok) -> ( (Stream.junk __strm) ); (Action.mk tok)
-      | _ -> (raise Stream.Failure )) and parse_top_symb (entry) (symb)
+      | Some(tok,_) when (f tok) ->
+        begin
+        (Stream.junk __strm);
+        (Action.mk tok)
+        end
+      | _ -> (raise Stream.Failure ))) and parse_top_symb (entry) (symb)
   (strm) = (parser_of_symbol entry 0 ( (top_symb entry symb) ) strm)
 let rec  start_parser_of_levels (entry) (clevn) =
   
   function
-  | []  -> fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure )
+  | []  ->
+    (fun (_) -> (fun ((__strm : _ Stream.t )) -> (raise Stream.Failure )))
   | lev::levs ->
     
     let  p1 = (start_parser_of_levels entry ( (succ clevn) ) levs) in
@@ -519,8 +538,8 @@ let rec  start_parser_of_levels (entry) (clevn) =
       (match levs
       with
       | []  ->
-        fun (levn) ->
-          fun (strm) ->
+        (fun (levn) ->
+          (fun (strm) ->
             
             let  bp = (loc_bp strm) in
             
@@ -531,10 +550,10 @@ let rec  start_parser_of_levels (entry) (clevn) =
             let  strm = __strm in
             
             let  a = (Action.getf act loc) in
-            ((entry.econtinue) levn loc a strm)
+            ((entry.econtinue) levn loc a strm)))
       | _ ->
-        fun (levn) ->
-          fun (strm) ->
+        (fun (levn) ->
+          (fun (strm) ->
             if (levn > clevn) then ( (p1 levn strm) )
             else
              
@@ -552,21 +571,22 @@ let rec  start_parser_of_levels (entry) (clevn) =
                
                let  a = (Action.getf act loc) in
                ((entry.econtinue) levn loc a strm)
-             | _ -> (p1 levn __strm))))
+             | _ -> (p1 levn __strm))))))
 let  start_parser_of_entry (entry) =
   
   (match entry.edesc
   with
   | Dlevels([] ) -> (Tools.empty_entry ( entry.ename ))
   | Dlevels(elev) -> (start_parser_of_levels entry 0 elev)
-  | Dparser(p) -> fun (_) -> p)
+  | Dparser(p) -> (fun (_) -> p))
 let rec  continue_parser_of_levels (entry) (clevn) =
   
   function
   | []  ->
-    fun (_) ->
-      fun (_) ->
-        fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure )
+    (fun (_) ->
+      (fun (_) ->
+        (fun (_) ->
+          (fun ((__strm : _ Stream.t )) -> (raise Stream.Failure )))))
   | lev::levs ->
     
     let  p1 = (continue_parser_of_levels entry ( (succ clevn) ) levs) in
@@ -583,10 +603,10 @@ let rec  continue_parser_of_levels (entry) (clevn) =
       | `RA -> clevn) in
       
       let  p2 = (parser_of_tree entry ( (succ clevn) ) alevn tree) in
-      fun (levn) ->
-        fun (bp) ->
-          fun (a) ->
-            fun (strm) ->
+      (fun (levn) ->
+        (fun (bp) ->
+          (fun (a) ->
+            (fun (strm) ->
               if (levn > clevn) then ( (p1 levn bp a strm) )
               else
                
@@ -599,7 +619,7 @@ let rec  continue_parser_of_levels (entry) (clevn) =
                  let  (act,loc) = (add_loc bp p2 __strm) in
                  
                  let  a = (Action.getf2 act a loc) in
-                 ((entry.econtinue) levn loc a strm)))
+                 ((entry.econtinue) levn loc a strm)))))))
 let  continue_parser_of_entry (entry) =
   
   (match entry.edesc
@@ -607,14 +627,15 @@ let  continue_parser_of_entry (entry) =
   | Dlevels(elev) ->
     
     let  p = (continue_parser_of_levels entry 0 elev) in
-    fun (levn) ->
-      fun (bp) ->
-        fun (a) ->
-          fun ((__strm : _ Stream.t )) ->
+    (fun (levn) ->
+      (fun (bp) ->
+        (fun (a) ->
+          (fun ((__strm : _ Stream.t )) ->
             
             (try (p levn bp a __strm) with
-            | Stream.Failure  -> a)
+            | Stream.Failure  -> a)))))
   | Dparser(_) ->
-    fun (_) ->
-      fun (_) ->
-        fun (_) -> fun ((__strm : _ Stream.t )) -> (raise Stream.Failure ))
+    (fun (_) ->
+      (fun (_) ->
+        (fun (_) ->
+          (fun ((__strm : _ Stream.t )) -> (raise Stream.Failure ))))))

@@ -51,9 +51,15 @@ let rec  decr_keyw_use (gram) =
   | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) ->
     (decr_keyw_use gram s)
   | (`Slist0sep (s1,s2)) ->
-    ( (decr_keyw_use gram s1) ); (decr_keyw_use gram s2)
+    begin
+    (decr_keyw_use gram s1);
+    (decr_keyw_use gram s2)
+    end
   | (`Slist1sep (s1,s2)) ->
-    ( (decr_keyw_use gram s1) ); (decr_keyw_use gram s2)
+    begin
+    (decr_keyw_use gram s1);
+    (decr_keyw_use gram s2)
+    end
   | (`Stree t) -> (decr_keyw_use_in_tree gram t)
   | ((((`Sself |`Snext) |(`Snterm _)) |(`Snterml (_,_))) |(`Stoken _)) -> ()
   and decr_keyw_use_in_tree (gram) =
@@ -61,13 +67,11 @@ let rec  decr_keyw_use (gram) =
   function
   | (DeadEnd  |LocAct(_,_)) -> ()
   | Node(n) ->
-    (
-    (decr_keyw_use gram ( n.node ))
-    );
-    (
-    (decr_keyw_use_in_tree gram ( n.son ))
-    );
+    begin
+    (decr_keyw_use gram ( n.node ));
+    (decr_keyw_use_in_tree gram ( n.son ));
     (decr_keyw_use_in_tree gram ( n.brother ))
+    end
 let rec  delete_rule_in_suffix (entry) (symbols) =
   
   function
@@ -76,13 +80,12 @@ let rec  delete_rule_in_suffix (entry) (symbols) =
     (match (delete_rule_in_tree entry symbols ( lev.lsuffix ))
     with
     | Some(dsl,t) ->
-      (
+      begin
       
       (match dsl
       with
       | Some(dsl) -> (List.iter ( (decr_keyw_use ( entry.egram )) ) dsl)
-      | None  -> ())
-      );
+      | None  -> ());
       
       (match t
       with
@@ -94,6 +97,7 @@ let rec  delete_rule_in_suffix (entry) (symbols) =
                                                                    lev.lprefix
                                                                    )} in
         lev::levs)
+      end
     | None  ->
       
       let  levs = (delete_rule_in_suffix entry symbols levs) in lev::levs)
@@ -106,13 +110,12 @@ let rec  delete_rule_in_prefix (entry) (symbols) =
     (match (delete_rule_in_tree entry symbols ( lev.lprefix ))
     with
     | Some(dsl,t) ->
-      (
+      begin
       
       (match dsl
       with
       | Some(dsl) -> (List.iter ( (decr_keyw_use ( entry.egram )) ) dsl)
-      | None  -> ())
-      );
+      | None  -> ());
       
       (match t
       with
@@ -123,6 +126,7 @@ let rec  delete_rule_in_prefix (entry) (symbols) =
         {assoc = ( lev.assoc );lname = ( lev.lname );lsuffix = ( lev.lsuffix
                                                        );lprefix = t} in
         lev::levs)
+      end
     | None  ->
       
       let  levs = (delete_rule_in_prefix entry symbols levs) in lev::levs)
@@ -141,23 +145,28 @@ let  delete_rule (entry) (sl) =
   with
   | Dlevels(levs) ->
     
-    let  levs = (delete_rule_in_level_list entry sl levs) in begin
-    ( entry.edesc<- Dlevels (levs) ); (
-    entry.estart<-
-      fun (lev) ->
-        fun (strm) ->
+    let  levs = (delete_rule_in_level_list entry sl levs) in
+    begin
+    entry.edesc <- Dlevels (levs);
+    entry.estart <-
+      (fun (lev) ->
+        (fun (strm) ->
           
-          let  f = (Parser.start_parser_of_entry entry) in begin
-          ( entry.estart<- f ); (f lev strm)
-          end );
-     entry.econtinue<-
-       fun (lev) ->
-         fun (bp) ->
-           fun (a) ->
-             fun (strm) ->
-               
-               let  f = (Parser.continue_parser_of_entry entry) in begin
-               ( entry.econtinue<- f ); (f lev bp a strm)
-               end
+          let  f = (Parser.start_parser_of_entry entry) in
+          begin
+          entry.estart <- f;
+          (f lev strm)
+          end));
+    entry.econtinue <-
+      (fun (lev) ->
+        (fun (bp) ->
+          (fun (a) ->
+            (fun (strm) ->
+              
+              let  f = (Parser.continue_parser_of_entry entry) in
+              begin
+              entry.econtinue <- f;
+              (f lev bp a strm)
+              end))))
     end
   | Dparser(_) -> ())

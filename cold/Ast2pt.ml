@@ -20,22 +20,24 @@ let  mkdirection =
   | _ -> assert false
 let  conv_con =
   
-  let  t = (Hashtbl.create 73) in begin
-  (
-  (List.iter ( fun ((s,s')) -> (Hashtbl.add t s s') ) (
+  let  t = (Hashtbl.create 73) in
+  begin
+  (List.iter ( (fun ((s,s')) -> (Hashtbl.add t s s')) ) (
     [("True","true");("False","false");(" True","True");(" False","False")]
-    )) ); fun (s) -> 
-            (try (Hashtbl.find t s) with
-            | Not_found  -> s)
+    ));
+  (fun (s) -> 
+    (try (Hashtbl.find t s) with
+    | Not_found  -> s))
   end
 let  conv_lab =
   
-  let  t = (Hashtbl.create 73) in begin
-  (
-  (List.iter ( fun ((s,s')) -> (Hashtbl.add t s s') ) ( [("val","contents")]
-    )) ); fun (s) -> 
-            (try (Hashtbl.find t s) with
-            | Not_found  -> s)
+  let  t = (Hashtbl.create 73) in
+  begin
+  (List.iter ( (fun ((s,s')) -> (Hashtbl.add t s s')) ) (
+    [("val","contents")] ));
+  (fun (s) -> 
+    (try (Hashtbl.find t s) with
+    | Not_found  -> s))
   end
 let  mkrf =
   
@@ -43,7 +45,7 @@ let  mkrf =
   | Ast.ReRecursive  -> Recursive
   | Ast.ReNil  -> Nonrecursive
   | _ -> assert false
-let  ident_tag ?(conv_lid=fun (x) -> x)  (i) =
+let  ident_tag ?(conv_lid=(fun (x) -> x))  (i) =
   
   let rec  self (i) (acc) =
   
@@ -94,7 +96,7 @@ let  long_lident (msg) (id) =
   | _ -> (error ( (loc_of_ident id) ) msg))
 let  long_type_ident = (long_lident "invalid long identifier type")
 let  long_class_ident = (long_lident "invalid class name")
-let  long_uident_noloc ?(conv_con=fun (x) -> x)  (i) =
+let  long_uident_noloc ?(conv_con=(fun (x) -> x))  (i) =
   
   (match (ident_tag i)
   with
@@ -242,13 +244,13 @@ let rec  ctyp =
     | Ast.MtWit(_,Ast.MtId(_,i),wc) ->
       (( (long_uident i) ),( (package_type_constraints wc [] ) ))
     | Ast.MtId(_,i) -> (( (long_uident i) ),[] )
-    | mt -> (error ( (loc_of_module_type mt) ) "unexpected package type"):
-    (module_type -> package_type) )
+    | mt -> (error ( (loc_of_module_type mt) ) "unexpected package type")
+    :( module_type  ->  package_type )  )
 let  mktype (loc) (tl) (cl) (tk) (tp) (tm) =
   
   let  (params,variance) = (List.split tl) in
   {ptype_params = params;ptype_cstrs = cl;ptype_kind = tk;ptype_private = tp;
-   ptype_manifest = tm;ptype_loc = loc;ptype_variance = variance}
+    ptype_manifest = tm;ptype_loc = loc;ptype_variance = variance}
 let  mkprivate' (m) = if m then Private  else Public
 let  mkprivate =
   
@@ -382,19 +384,19 @@ let  mkwithtyp (pwith_type) (loc) (id_tpl) (ct) =
    (pwith_type
      {ptype_params = params;ptype_cstrs = [] ;ptype_kind = kind;ptype_private
                                                                   = priv;
-      ptype_manifest = ( Some (ct) );ptype_loc = loc;ptype_variance =
-                                                       variance}) ))
+       ptype_manifest = ( Some (ct) );ptype_loc = loc;ptype_variance =
+                                                        variance}) ))
 let rec  mkwithc (wc) (acc) =
   
   (match wc
   with
   | Ast.WcNil(_) -> acc
   | Ast.WcTyp(loc,id_tpl,ct) ->
-    (mkwithtyp ( fun (x) -> Pwith_type (x) ) loc id_tpl ct)::acc
+    (mkwithtyp ( (fun (x) -> Pwith_type (x)) ) loc id_tpl ct)::acc
   | Ast.WcMod(_,i1,i2) ->
     (( (long_uident i1) ),( Pwith_module ((long_uident i2)) ))::acc
   | Ast.WcTyS(loc,id_tpl,ct) ->
-    (mkwithtyp ( fun (x) -> Pwith_typesubst (x) ) loc id_tpl ct)::acc
+    (mkwithtyp ( (fun (x) -> Pwith_typesubst (x)) ) loc id_tpl ct)::acc
   | Ast.WcMoS(_,i1,i2) ->
     (( (long_uident i1) ),( Pwith_modsubst ((long_uident i2)) ))::acc
   | Ast.WcAnd(_,wc1,wc2) -> (mkwithc wc1 ( (mkwithc wc2 acc) ))
@@ -609,8 +611,8 @@ let rec  expr =
     
     let  (_,e) =
     (List.fold_left (
-      fun ((loc_bp,e1)) ->
-        fun ((loc_ep,ml,e2)) ->
+      (fun ((loc_bp,e1)) ->
+        (fun ((loc_ep,ml,e2)) ->
           
           (match e2
           with
@@ -620,7 +622,7 @@ let rec  expr =
             (loc,(
              (mkexp loc (
                Pexp_field ((e1,( (mkli sloc ( (conv_lab s) ) ml) ))) )) ))
-          | _ -> (error ( (loc_of_expr e2) ) "lowercase identifier expected"))
+          | _ -> (error ( (loc_of_expr e2) ) "lowercase identifier expected"))))
       ) (loc,e) l) in e
   | ExAnt(loc,_) -> (error loc "antiquotation not allowed here")
   | (ExApp(loc,_,_) as f) ->
@@ -907,7 +909,7 @@ let rec  expr =
     
     let  vars = (id_to_string vs) in
     
-    let  ampersand_vars = (List.map ( fun (x) -> ("&" ^ x) ) vars) in
+    let  ampersand_vars = (List.map ( (fun (x) -> ("&" ^ x)) ) vars) in
     
     let  ty' = (varify_constructors vars ( (ctyp ty) )) in
     
@@ -977,10 +979,10 @@ let rec  expr =
     
     let  cl =
     (List.map (
-      fun ((t1,t2)) ->
+      (fun ((t1,t2)) ->
         
         let  loc = (FanLoc.merge ( (loc_of_ctyp t1) ) ( (loc_of_ctyp t2) ))
-        in (( (ctyp t1) ),( (ctyp t2) ),loc) ) cl) in
+        in (( (ctyp t1) ),( (ctyp t2) ),loc)) ) cl) in
     (( (with_loc c cloc) ),(
      (type_decl ( (List.fold_right optional_type_parameters tl [] ) ) cl td
        cloc) ))::acc
@@ -1182,8 +1184,8 @@ let rec  expr =
     | t ->
       (( (loc_of_ctyp t) ),( (List.split ( (class_parameters t [] ) )) ))) in
     {pci_virt = ( (mkvirtual vir) );pci_params = (params,loc_params);
-     pci_name = ( (with_loc name nloc) );pci_expr = ( (class_expr ce) );
-     pci_loc = loc;pci_variance = variance}
+      pci_name = ( (with_loc name nloc) );pci_expr = ( (class_expr ce) );
+      pci_loc = loc;pci_variance = variance}
   | ce -> (error ( (loc_of_class_expr ce) ) "bad class definition")) and
   class_info_class_type (ci) =
   
@@ -1201,8 +1203,8 @@ let rec  expr =
     | t ->
       (( (loc_of_ctyp t) ),( (List.split ( (class_parameters t [] ) )) ))) in
     {pci_virt = ( (mkvirtual vir) );pci_params = (params,loc_params);
-     pci_name = ( (with_loc name nloc) );pci_expr = ( (class_type ct) );
-     pci_loc = loc;pci_variance = variance}
+      pci_name = ( (with_loc name nloc) );pci_expr = ( (class_type ct) );
+      pci_loc = loc;pci_variance = variance}
   | ct ->
     (error ( (loc_of_class_type ct) )
       "bad class/class type declaration/definition")) and class_sig_item (c)

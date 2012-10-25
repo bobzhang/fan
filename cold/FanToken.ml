@@ -2,11 +2,11 @@ open Format
 open LibUtil
 open FanSig
 type error = 
-    Illegal_token of string
-  | Keyword_as_label of string
-  | Illegal_token_pattern of (string*string)
-  | Illegal_constructor of string 
-exception TokenError  of error
+  Illegal_token of  string 
+| Keyword_as_label of  string 
+| Illegal_token_pattern of ( string * string )
+| Illegal_constructor of  string  
+exception TokenError of  error 
 let  print_basic_error (ppf) =
   
   function
@@ -66,14 +66,17 @@ let rec  ignore_layout ((__strm : _ Stream.t )) =
   (match (Stream.peek __strm)
   with
   | Some(((((`COMMENT _) |(`BLANKS _)) |`NEWLINE) |(`LINE_DIRECTIVE _)),_) ->
-    ( (Stream.junk __strm) ); (ignore_layout __strm)
+    begin
+    (Stream.junk __strm);
+    (ignore_layout __strm)
+    end
   | Some(x) ->
-    (
-    (Stream.junk __strm)
-    );
+    begin
+    (Stream.junk __strm);
     
     let  s = __strm in
-    (Stream.icons x ( (Stream.slazy ( fun (_) -> (ignore_layout s) )) ))
+    (Stream.icons x ( (Stream.slazy ( (fun (_) -> (ignore_layout s)) )) ))
+    end
   | _ -> Stream.sempty)
 let  print (ppf) (x) = (pp_print_string ppf ( (token_to_string x) ))
 let  match_keyword (kwd) =
@@ -124,6 +127,6 @@ module Filter  =
       let  f ((tok,loc)) =
       
       let  tok = (keyword_conversion tok ( x.is_kwd )) in (tok,loc) in
-      fun (strm) -> ((x.filter) ( (Stream.map f strm) ))
-    let  define_filter (x) (f) = x.filter<- (f ( x.filter ))
+      (fun (strm) -> ((x.filter) ( (Stream.map f strm) )))
+    let  define_filter (x) (f) = x.filter <- (f ( x.filter ))
     let  keyword_added (_) (_) (_) = () let  keyword_removed (_) (_) = () end

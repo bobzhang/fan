@@ -5,8 +5,8 @@ open LibUtil
 module Camlp4Bin (PreCast:Sig.PRECAST) =
   struct 
      let  printers =
-       ((Hashtbl.create 30): (string,(module Sig.PRECAST_PLUGIN ))  Hashtbl.t
-         ) let  rcall_callback = (ref ( fun (() ) -> () ))
+       ((Hashtbl.create 30) :( string ,(module Sig.PRECAST_PLUGIN)) Hashtbl.t
+          ) let  rcall_callback = (ref ( (fun (() ) -> ()) ))
     let  loaded_modules = (ref SSet.empty)
     let  add_to_loaded_modules (name) =
       (loaded_modules := ( (SSet.add name ( loaded_modules.contents )) ))
@@ -27,8 +27,10 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       
       let  find_in_path = (DynLoader.find_in_path dyn_loader) in
       
-      let  real_load (name) = begin
-      ( (add_to_loaded_modules name) ); (DynLoader.load dyn_loader name)
+      let  real_load (name) =
+      begin
+      (add_to_loaded_modules name);
+      (DynLoader.load dyn_loader name)
       end in
       
       let  load (n) =
@@ -38,12 +40,12 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
        
       else
       begin
-      (
-      (add_to_loaded_modules n)
-      );
+      begin
+      (add_to_loaded_modules n);
       (DynLoader.load dyn_loader ( (n ^ objext) ))
-      end in begin
-      (
+      end
+      end in
+      begin
       
       (match (n,( (String.lowercase x) ))
       with
@@ -54,7 +56,10 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       |
         (("Parsers" |""),((("pa_rp.cmo" |"rp") |"rparser")
                            |"camlp4ocamlrevisedparserparser.cmo")) ->
-        ( (pa_r (module PreCast)) ); (pa_rp (module PreCast))
+        begin
+        (pa_r (module PreCast));
+        (pa_rp (module PreCast))
+        end
       |
         (("Parsers" |""),(((("pa_extend.cmo" |"pa_extend_m.cmo") |"g")
                             |"grammar") |"camlp4grammarparser.cmo")) ->
@@ -66,22 +71,14 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       | (("Parsers" |""),("q" |"camlp4quotationexpander.cmo")) ->
         (pa_q (module PreCast))
       | (("Parsers" |""),"rf") ->
-        (
-        (pa_r (module PreCast))
-        );
-        (
-        (pa_rp (module PreCast))
-        );
-        (
-        (pa_q (module PreCast))
-        );
-        (
-        (pa_g (module PreCast))
-        );
-        (
-        (pa_l (module PreCast))
-        );
+        begin
+        (pa_r (module PreCast));
+        (pa_rp (module PreCast));
+        (pa_q (module PreCast));
+        (pa_g (module PreCast));
+        (pa_l (module PreCast));
         (pa_m (module PreCast))
+        end
       | (("Parsers" |""),"debug") -> (pa_debug (module PreCast))
       | (("Parsers" |""),("comp" |"camlp4listcomprehension.cmo")) ->
         (pa_l (module PreCast))
@@ -112,24 +109,25 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       | (("Printers" |""),(("d" |"dumpcamlp4") |"camlp4astdumper.cmo")) ->
         (PreCast.enable_dump_camlp4_ast_printer () )
       | (("Printers" |""),(("a" |"auto") |"camlp4autoprinter.cmo")) ->
-        (
-        (load "Camlp4Autoprinter")
-        );
+        begin
+        (load "Camlp4Autoprinter");
         
         let  (module P)  = (Hashtbl.find printers "camlp4autoprinter") in
         (P.apply (module PreCast))
+        end
       | _ ->
         
         let  y = ("Camlp4" ^ ( (n ^ ( ("/" ^ ( (x ^ objext) )) )) )) in
         (real_load ( 
           (try (find_in_path y) with
-          | Not_found  -> x) ))) ); ((rcall_callback.contents) () )
+          | Not_found  -> x) )));
+      ((rcall_callback.contents) () )
       end let  print_warning = (eprintf "%a:\n%s@." FanLoc.print)
     let rec  parse_file (dyn_loader) (name) (pa) (getdir) =
       
       let  directive_handler =
       Some
-        (fun (ast) ->
+        ((fun (ast) ->
            
            (match (getdir ast)
            with
@@ -137,20 +135,30 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
              
              (match x
              with
-             | (_,"load",s) -> ( (rewrite_and_load "" s) ); None
+             | (_,"load",s) -> begin
+               (rewrite_and_load "" s);
+               None
+               end
              | (_,"directory",s) ->
-               ( (DynLoader.include_dir dyn_loader s) ); None
+               begin
+               (DynLoader.include_dir dyn_loader s);
+               None
+               end
              | (_,"use",s) -> Some ((parse_file dyn_loader s pa getdir))
              | (_,"default_quotation",s) ->
-               ( (PreCast.Syntax.Quotation.default := s) ); None
+               begin
+               (PreCast.Syntax.Quotation.default := s);
+               None
+               end
              | (loc,_,_) ->
                (FanLoc.raise loc (
                  Stream.Error ("bad directive camlp4 can not handled ") )))
-           | None  -> None)) in
+           | None  -> None))) in
       
-      let  loc = (FanLoc.mk name) in begin
-      ( (PreCast.Syntax.current_warning := print_warning) );
-       
+      let  loc = (FanLoc.mk name) in
+      begin
+      (PreCast.Syntax.current_warning := print_warning);
+      
       let  ic = if (name = "-") then stdin else (open_in_bin name) in
       
       let  cs = (Stream.of_channel ic) in
@@ -161,8 +169,12 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       
       (try (pa ?directive_handler:directive_handler loc cs)
       with
-      | x -> ( (clear () ) ); (raise x)) in begin
-      ( (clear () ) ); phr
+      | x -> begin
+        (clear () );
+        (raise x)
+        end) in begin
+      (clear () );
+      phr
       end
       end let  output_file = (ref None )
     let  process (dyn_loader) (name) (pa) (pr) (clean) (fold_filters)
@@ -170,8 +182,8 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       ((
         ((
           (( (parse_file dyn_loader name pa getdir) ) |> (
-            (fold_filters ( fun (t) -> fun (filter) -> (filter t) )) )) ) |>
-          clean) ) |> (
+            (fold_filters ( (fun (t) -> (fun (filter) -> (filter t))) )) )) )
+          |> clean) ) |> (
         (pr ?input_file:( Some (name) ) ?output_file:( output_file.contents
           )) ))
     let  gind =
@@ -194,40 +206,46 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
         PreCast.CurrentPrinter.print_implem (
         (new Camlp4Ast.clean_ast)#str_item )
         PreCast.Syntax.AstFilters.fold_implem_filters gimd)
-    let  just_print_the_version (() ) = begin
-      ( (printf "%s@." FanConfig.version) ); (exit 0)
+    let  just_print_the_version (() ) =
+      begin
+      (printf "%s@." FanConfig.version);
+      (exit 0)
       end
-    let  print_version (() ) = begin
-      ( (eprintf "Camlp4 version %s@." FanConfig.version) ); (exit 0)
+    let  print_version (() ) =
+      begin
+      (eprintf "Camlp4 version %s@." FanConfig.version);
+      (exit 0)
       end
-    let  print_stdlib (() ) = begin
-      ( (printf "%s@." FanConfig.camlp4_standard_library) ); (exit 0)
+    let  print_stdlib (() ) =
+      begin
+      (printf "%s@." FanConfig.camlp4_standard_library);
+      (exit 0)
       end
-    let  usage (ini_sl) (ext_sl) = begin
-      (
+    let  usage (ini_sl) (ext_sl) =
+      begin
       (eprintf
         "Usage: camlp4 [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
-        ( if DynLoader.is_native then "cmxs     " else "(cmo|cma)" )) ); (
-      (FanUtil.Options.print_usage_list ini_sl) );
-       if (ext_sl <> [] )
-       then
-       
-       begin
-       (
-       (eprintf "Options added by loaded object files:@.")
-       );
-       (FanUtil.Options.print_usage_list ext_sl)
-       end else ()
+        ( if DynLoader.is_native then "cmxs     " else "(cmo|cma)" ));
+      (FanUtil.Options.print_usage_list ini_sl);
+      if (ext_sl <> [] )
+      then
+      
+      begin
+      begin
+      (eprintf "Options added by loaded object files:@.");
+      (FanUtil.Options.print_usage_list ext_sl)
+      end
+      end else ()
       end
     let  warn_noassert (() ) =
       (eprintf
         "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@.")
     type file_kind = 
-        Intf of string
-      | Impl of string
-      | Str of string
-      | ModuleImpl of string
-      | IncludeDir of string  let  search_stdlib = (ref true )
+      Intf of  string 
+    | Impl of  string 
+    | Str of  string 
+    | ModuleImpl of  string 
+    | IncludeDir of  string   let  search_stdlib = (ref true )
     let  print_loaded_modules = (ref false )
     let  (task,do_task) =
       
@@ -238,8 +256,8 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       let  ()  = (FanConfig.current_input_file := x) in
       (t := (
         Some
-          (if (( t.contents ) = None ) then ( fun (_) -> (f x) )
-           else fun (usage) -> (usage () )) )) in
+          (if (( t.contents ) = None ) then ( (fun (_) -> (f x)) )
+           else (fun (usage) -> (usage () ))) )) in
       
       let  do_task (usage) =
       
@@ -248,8 +266,9 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       | None  -> ()) in (task,do_task)
     let  input_file (x) =
       
-      let  dyn_loader = ((DynLoader.instance.contents) () ) in begin
-      ( ((rcall_callback.contents) () ) ); (
+      let  dyn_loader = ((DynLoader.instance.contents) () ) in
+      begin
+      ((rcall_callback.contents) () );
       
       (match x
       with
@@ -257,28 +276,30 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       | Impl(file_name) -> (task ( (process_impl dyn_loader) ) file_name)
       | Str(s) ->
         
-        let  (f,o) = (Filename.open_temp_file "from_string" ".ml") in begin
-        ( (output_string o s) ); ( (close_out o) ); (
-        (task ( (process_impl dyn_loader) ) f) );
-         (at_exit ( fun (() ) -> (Sys.remove f) ))
+        let  (f,o) = (Filename.open_temp_file "from_string" ".ml") in
+        begin
+        (output_string o s);
+        (close_out o);
+        (task ( (process_impl dyn_loader) ) f);
+        (at_exit ( (fun (() ) -> (Sys.remove f)) ))
         end
       | ModuleImpl(file_name) -> (rewrite_and_load "" file_name)
-      | IncludeDir(dir) -> (DynLoader.include_dir dyn_loader dir)) );
-       ((rcall_callback.contents) () )
+      | IncludeDir(dir) -> (DynLoader.include_dir dyn_loader dir));
+      ((rcall_callback.contents) () )
       end
     let  initial_spec_list =
-      [("-I",( Arg.String (fun (x) -> (input_file ( IncludeDir (x) )))
+      [("-I",( Arg.String ((fun (x) -> (input_file ( IncludeDir (x) ))))
         ),"<directory>  Add directory in search patch for object files.");
       ("-where",( Arg.Unit (print_stdlib)
        ),"Print camlp4 library directory and exit.");("-nolib",(
                                                       Arg.Clear
                                                         (search_stdlib)
                                                       ),"No automatic search for object files in library directory.");
-      ("-intf",( Arg.String (fun (x) -> (input_file ( Intf (x) )))
+      ("-intf",( Arg.String ((fun (x) -> (input_file ( Intf (x) ))))
        ),"<file>  Parse <file> as an interface, whatever its extension.");
-      ("-impl",( Arg.String (fun (x) -> (input_file ( Impl (x) )))
+      ("-impl",( Arg.String ((fun (x) -> (input_file ( Impl (x) ))))
        ),"<file>  Parse <file> as an implementation, whatever its extension.");
-      ("-str",( Arg.String (fun (x) -> (input_file ( Str (x) )))
+      ("-str",( Arg.String ((fun (x) -> (input_file ( Str (x) ))))
        ),"<string>  Parse <string> as an implementation.");("-unsafe",(
                                                             Arg.Set
                                                               (FanConfig.unsafe)
@@ -291,11 +312,11 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
        ("<name>   Name of the location variable (default: " ^ (
          (( FanLoc.name.contents ) ^ ").") )) ));("-QD",(
                                                   Arg.String
-                                                    (fun (x) ->
+                                                    ((fun (x) ->
                                                        (PreCast.Syntax.Quotation.dump_file
-                                                         := ( Some (x) )))
+                                                         := ( Some (x) ))))
                                                   ),"<file> Dump quotation expander result in case of syntax error.");
-      ("-o",( Arg.String (fun (x) -> (output_file := ( Some (x) )))
+      ("-o",( Arg.String ((fun (x) -> (output_file := ( Some (x) ))))
        ),"<file> Output on <file> instead of standard output.");("-v",(
                                                                  Arg.Unit
                                                                    (print_version)
@@ -337,9 +358,10 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
         else (raise ( Arg.Bad (("don't know what to do with " ^ name)) )) ))
     let  main (argv) =
       
-      let  usage (() ) = begin
-      ( (usage initial_spec_list ( (FanUtil.Options.ext_spec_list () ) )) );
-       (exit 0)
+      let  usage (() ) =
+      begin
+      (usage initial_spec_list ( (FanUtil.Options.ext_spec_list () ) ));
+      (exit 0)
       end in
       
       (try
@@ -348,14 +370,14 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       (DynLoader.mk ~ocaml_stdlib:( search_stdlib.contents ) ~camlp4_stdlib:(
         search_stdlib.contents ) () ) in
       
-      let  ()  = (DynLoader.instance := ( fun (() ) -> dynloader )) in
+      let  ()  = (DynLoader.instance := ( (fun (() ) -> dynloader) )) in
       
       let  call_callback (() ) =
       (PreCast.iter_and_take_callbacks (
-        fun ((name,module_callback)) ->
+        (fun ((name,module_callback)) ->
           
-          let  ()  = (add_to_loaded_modules name) in (module_callback () ) ))
-      in
+          let  ()  = (add_to_loaded_modules name) in (module_callback () ))
+        )) in
       
       let  ()  = (call_callback () ) in
       
@@ -368,13 +390,11 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       | []  -> ()
       | ((("-help" |"--help") |"-h") |"-?")::_ -> (usage () )
       | s::_ ->
-        (
-        (eprintf "%s: unknown or misused option\n" s)
-        );
-        (
-        (eprintf "Use option -help for usage@.")
-        );
-        (exit 2)) in
+        begin
+        (eprintf "%s: unknown or misused option\n" s);
+        (eprintf "Use option -help for usage@.");
+        (exit 2)
+        end) in
       
       let  ()  = (do_task usage) in
       
@@ -386,14 +406,14 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
       else ()
       with
       | Arg.Bad(s) ->
-        (
-        (eprintf "Error: %s\n" s)
-        );
-        (
-        (eprintf "Use option -help for usage@.")
-        );
+        begin
+        (eprintf "Error: %s\n" s);
+        (eprintf "Use option -help for usage@.");
         (exit 2)
+        end
       | Arg.Help(_) -> (usage () )
       | exc ->
-        ( (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc) )) ); (exit 2))
-    let _= (main Sys.argv) end
+        begin
+        (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc) ));
+        (exit 2)
+        end) let _= (main Sys.argv) end

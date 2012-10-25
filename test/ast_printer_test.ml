@@ -73,14 +73,7 @@ let f x = function
   | None -> 0 
 
 let a f = f
-and g f =
-  g ; g
 
-let f ()  =
-  let g = a
-  and g =  3 in g ;g
-
-;;
 let f = fun (Some x) -> x
 
 let u = function
@@ -106,11 +99,6 @@ let f = function
   |x::xs -> x
   | [] -> 0;;
 
-let _ = begin
-  ignore (a.[0],b.(1));
-  a.[0] <- 3;
-  b.(1) <- 4; 
-end
 
 
 let _ = begin
@@ -194,3 +182,40 @@ let rec f : 'a 'b . 'a list = []
 module type S = sig
   module U : S with type u = x and type ('a,'b) m = ('a,'b)x  and type 'c h = M.h
 end
+
+let _ = begin
+  print_int 4;
+  print_int 10;
+end
+    
+let _ = begin
+  begin
+    print_int 3;
+    print_int 2;
+  end
+    begin
+      print_int 3;
+      print_int 2;
+    end
+end
+and g f =
+  g ; g
+let f ()  =
+  let g = a
+  and g =  3 in g ;g
+
+;;
+let _ = begin
+  ignore (a.[0],b.(1));
+  a.[0] <- 3;
+  b.(1) <- 4; 
+end
+
+let _ = object
+  method x: string -> string = print_int 3 
+end
+
+let  mk_set = fun (type s) ->
+  fun ~cmp ->
+    let module M = struct  type t =   s   let  compare = cmp end in
+      ((module (Set.Make) (M)) :(module Set.S with type elt =  s ) )

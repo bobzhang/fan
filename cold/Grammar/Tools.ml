@@ -16,18 +16,18 @@ let  keep_prev_loc (strm) =
     (match (Stream.peek __strm)
     with
     | Some(tok,cur_loc) ->
-      (
-      (Stream.junk __strm)
-      );
+      begin
+      (Stream.junk __strm);
       
       let  strm = __strm in
       (Stream.lcons (
-        fun (_) ->
-          (tok,{prev_loc = prev_loc;cur_loc = cur_loc;prev_loc_only = false })
-        ) ( (Stream.slazy ( fun (_) -> (go cur_loc strm) )) ))
+        (fun (_) ->
+          (tok,{prev_loc = prev_loc;cur_loc = cur_loc;prev_loc_only = false }))
+        ) ( (Stream.slazy ( (fun (_) -> (go cur_loc strm)) )) ))
+      end
     | _ -> Stream.sempty) in (go init_loc strm))
 let  drop_prev_loc (strm) =
-  (Stream.map ( fun ((tok,r)) -> (tok,( r.cur_loc )) ) strm)
+  (Stream.map ( (fun ((tok,r)) -> (tok,( r.cur_loc ))) ) strm)
 let  get_cur_loc (strm) =
   
   (match (Stream.peek strm)
@@ -41,7 +41,10 @@ let  get_prev_loc (strm) =
   (match (Stream.peek strm)
   with
   | Some(_,{prev_loc = prev_loc;prev_loc_only = true ;_}) ->
-    ( (Stream.junk strm) ); prev_loc
+    begin
+    (Stream.junk strm);
+    prev_loc
+    end
   | Some(_,{prev_loc = prev_loc;prev_loc_only = false ;_}) -> prev_loc
   | None  -> FanLoc.ghost) in result
 let  is_level_labelled (n) =

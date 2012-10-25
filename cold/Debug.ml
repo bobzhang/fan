@@ -1,7 +1,7 @@
 open Format
 open FanUtil
 module Debug  = struct let  mode (_) = false end
-type section =  string 
+type section =   string  
 let  out_channel =
   
   (try
@@ -29,27 +29,28 @@ let  mode =
   in
   
   let  sections = (loop SSet.empty 0) in
-  if (SSet.mem "*" sections) then ( fun (_) -> true )
-  else fun (x) -> (SSet.mem x sections) with
-  | Not_found  -> fun (_) -> false)
+  if (SSet.mem "*" sections) then ( (fun (_) -> true) )
+  else (fun (x) -> (SSet.mem x sections))
+  with
+  | Not_found  -> (fun (_) -> false))
 let  formatter =
   
   let  header = "camlp4-debug: " in
   
   let  at_bol = (ref true ) in
   (make_formatter (
-    fun (buf) ->
-      fun (pos) ->
-        fun (len) ->
+    (fun (buf) ->
+      (fun (pos) ->
+        (fun (len) ->
           for i = pos to  (( (pos + len) ) - 1) do
-           (
-          if at_bol.contents then ( (output_string out_channel header) )
-          else ()
-          );
-           
-          let  ch = buf.[i] in begin
-          ( (output_char out_channel ch) );
-           (( at_bol.contents ) := ( (ch = '\n') ))
-          end
-          done ) ( fun (() ) -> (flush out_channel) ))
+            begin
+            if at_bol.contents then ( (output_string out_channel header) )
+            else ();
+            
+            let  ch = buf.[i] in
+            begin
+            (output_char out_channel ch);
+            (( at_bol.contents ) := ( (ch = '\n') ))
+            end
+            end done))) ) ( (fun (() ) -> (flush out_channel)) ))
 let  printf (section) (fmt) = (fprintf formatter ( ("%s: " ^^ fmt) ) section)

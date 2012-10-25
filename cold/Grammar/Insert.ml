@@ -39,20 +39,20 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
   with
   | None  -> lev.assoc
   | Some(a) ->
-    (
+    begin
     if (( (a <> ( lev.assoc )) ) && (
          ((entry.egram).warning_verbose).contents ))
     then
     
     begin
-    (
-    (eprintf "<W> Changing associativity of level \"%s\"\n" n)
-    );
+    begin
+    (eprintf "<W> Changing associativity of level \"%s\"\n" n);
     (flush Pervasives.stderr)
-    end else ()
-    );
-    a) in begin
-  (
+    end
+    end else ();
+    a
+    end) in
+  begin
   
   (match lname
   with
@@ -62,14 +62,14 @@ let  change_lev (entry) (lev) (n) (lname) (assoc) =
     then
     
     begin
-    (
-    (eprintf "<W> Level label \"%s\" ignored\n" n)
-    );
+    begin
+    (eprintf "<W> Level label \"%s\" ignored\n" n);
     (flush Pervasives.stderr)
+    end
     end else ()
-  | None  -> ()) );
-   {assoc = a;lname = ( lev.lname );lsuffix = ( lev.lsuffix );lprefix = (
-                                                                lev.lprefix )}
+  | None  -> ());
+  {assoc = a;lname = ( lev.lname );lsuffix = ( lev.lsuffix );lprefix = (
+                                                               lev.lprefix )}
   end
 let  change_to_self (entry) =
   
@@ -88,14 +88,12 @@ let  get_level (entry) (position) (levs) =
     
     function
     | []  ->
-      (
+      begin
       (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ))
-      );
-      (
-      (flush Pervasives.stderr)
-      );
+        ));
+      (flush Pervasives.stderr);
       (failwith "Grammar.extend")
+      end
     | lev::levs ->
       if (Tools.is_level_labelled n lev) then
        ([] ,( (change_lev entry lev n) ),levs)
@@ -109,14 +107,12 @@ let  get_level (entry) (position) (levs) =
     
     function
     | []  ->
-      (
+      begin
       (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ))
-      );
-      (
-      (flush Pervasives.stderr)
-      );
+        ));
+      (flush Pervasives.stderr);
       (failwith "Grammar.extend")
+      end
     | lev::levs ->
       if (Tools.is_level_labelled n lev) then ([] ,empty_lev,( lev::levs ))
       else
@@ -129,14 +125,12 @@ let  get_level (entry) (position) (levs) =
     
     function
     | []  ->
-      (
+      begin
       (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n ( entry.ename
-        ))
-      );
-      (
-      (flush Pervasives.stderr)
-      );
+        ));
+      (flush Pervasives.stderr);
       (failwith "Grammar.extend")
+      end
     | lev::levs ->
       if (Tools.is_level_labelled n lev) then (( [lev] ),empty_lev,levs)
       else
@@ -157,34 +151,36 @@ let rec  check_gram (entry) =
     then
     
     begin
-    (
+    begin
     (eprintf
       "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
-      ( entry.ename ) ( e.ename ))
-    );
-    (
-    (flush Pervasives.stderr)
-    );
+      ( entry.ename ) ( e.ename ));
+    (flush Pervasives.stderr);
     (failwith "Grammar.extend error")
+    end
     end else ()
   | (`Snterml (e,_)) ->
     if (( e.egram ) != ( entry.egram ))
     then
     
     begin
-    (
+    begin
     (eprintf
       "Error: entries \"%s\" and \"%s\" do not belong to the same grammar.\n"
-      ( entry.ename ) ( e.ename ))
-    );
-    (
-    (flush Pervasives.stderr)
-    );
+      ( entry.ename ) ( e.ename ));
+    (flush Pervasives.stderr);
     (failwith "Grammar.extend error")
+    end
     end else ()
   | (`Smeta (_,sl,_)) -> (List.iter ( (check_gram entry) ) sl)
-  | (`Slist0sep (s,t)) -> ( (check_gram entry t) ); (check_gram entry s)
-  | (`Slist1sep (s,t)) -> ( (check_gram entry t) ); (check_gram entry s)
+  | (`Slist0sep (s,t)) -> begin
+    (check_gram entry t);
+    (check_gram entry s)
+    end
+  | (`Slist1sep (s,t)) -> begin
+    (check_gram entry t);
+    (check_gram entry s)
+    end
   | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) ->
     (check_gram entry s)
   | (`Stree t) -> (tree_check_gram entry t)
@@ -193,13 +189,11 @@ let rec  check_gram (entry) =
   
   function
   | Node({node = n;brother = bro;son = son}) ->
-    (
-    (check_gram entry n)
-    );
-    (
-    (tree_check_gram entry bro)
-    );
+    begin
+    (check_gram entry n);
+    (tree_check_gram entry bro);
     (tree_check_gram entry son)
+    end
   | (LocAct(_,_) |DeadEnd ) -> ()
 let  get_initial =
   
@@ -213,8 +207,14 @@ let  insert_tokens (gram) (symbols) =
   function
   | (`Smeta (_,sl,_)) -> (List.iter insert sl)
   | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) -> (insert s)
-  | (`Slist0sep (s,t)) -> ( (insert s) ); (insert t)
-  | (`Slist1sep (s,t)) -> ( (insert s) ); (insert t)
+  | (`Slist0sep (s,t)) -> begin
+    (insert s);
+    (insert t)
+    end
+  | (`Slist1sep (s,t)) -> begin
+    (insert s);
+    (insert t)
+    end
   | (`Stree t) -> (tinsert t)
   | (`Skeyword kwd) -> (using gram kwd)
   | (((((`Snterm _) |(`Snterml (_,_))) |`Snext) |`Sself) |(`Stoken _)) -> ()
@@ -222,7 +222,11 @@ let  insert_tokens (gram) (symbols) =
   
   function
   | Node({node = s;brother = bro;son = son}) ->
-    ( (insert s) ); ( (tinsert bro) ); (tinsert son)
+    begin
+    (insert s);
+    (tinsert bro);
+    (tinsert son)
+    end
   | (LocAct(_,_) |DeadEnd ) -> () in (List.iter insert symbols)
 let  insert_tree (entry) (gsymbols) (action) (tree) =
   
@@ -296,10 +300,10 @@ let  insert_level (entry) (e1) (symbols) (action) (slev) =
                                                      (insert_tree entry
                                                        symbols action (
                                                        slev.lsuffix )) );
-     lprefix = ( slev.lprefix )}
+      lprefix = ( slev.lprefix )}
   | false  ->
     {assoc = ( slev.assoc );lname = ( slev.lname );lsuffix = ( slev.lsuffix );
-     lprefix = ( (insert_tree entry symbols action ( slev.lprefix )) )})
+      lprefix = ( (insert_tree entry symbols action ( slev.lprefix )) )})
 let  levels_of_rules (entry) (position) (rules) =
   
   let  elev =
@@ -308,13 +312,11 @@ let  levels_of_rules (entry) (position) (rules) =
   with
   | Dlevels(elev) -> elev
   | Dparser(_) ->
-    (
-    (eprintf "Error: entry not extensible: \"%s\"\n" ( entry.ename ))
-    );
-    (
-    (flush Pervasives.stderr)
-    );
-    (failwith "Grammar.extend")) in
+    begin
+    (eprintf "Error: entry not extensible: \"%s\"\n" ( entry.ename ));
+    (flush Pervasives.stderr);
+    (failwith "Grammar.extend")
+    end) in
   if (rules = [] ) then elev
   else
    
@@ -322,15 +324,15 @@ let  levels_of_rules (entry) (position) (rules) =
    
    let  (levs,_) =
    (List.fold_left (
-     fun ((levs,make_lev)) ->
-       fun ((lname,assoc,level)) ->
+     (fun ((levs,make_lev)) ->
+       (fun ((lname,assoc,level)) ->
          
          let  lev = (make_lev lname assoc) in
          
          let  lev =
          (List.fold_left (
-           fun (lev) ->
-             fun ((symbols,action)) ->
+           (fun (lev) ->
+             (fun ((symbols,action)) ->
                
                let  symbols = (List.map ( (change_to_self entry) ) symbols)
                in
@@ -340,27 +342,32 @@ let  levels_of_rules (entry) (position) (rules) =
                let  (e1,symbols) = (get_initial symbols) in
                
                let  ()  = (insert_tokens ( entry.egram ) symbols) in
-               (insert_level entry e1 symbols action lev) ) lev level) in
-         (( lev::levs ),empty_lev) ) ([] ,make_lev) rules) in
+               (insert_level entry e1 symbols action lev))) ) lev level) in
+         (( lev::levs ),empty_lev))) ) ([] ,make_lev) rules) in
    (levs1 @ ( (( (List.rev levs) ) @ levs2) ))
 let  extend (entry) ((position,rules)) =
   
-  let  elev = (levels_of_rules entry position rules) in begin
-  ( entry.edesc<- Dlevels (elev) ); (
-  entry.estart<-
-    fun (lev) ->
-      fun (strm) ->
+  let  elev = (levels_of_rules entry position rules) in
+  begin
+  entry.edesc <- Dlevels (elev);
+  entry.estart <-
+    (fun (lev) ->
+      (fun (strm) ->
         
-        let  f = (Parser.start_parser_of_entry entry) in begin
-        ( entry.estart<- f ); (f lev strm)
-        end );
-   entry.econtinue<-
-     fun (lev) ->
-       fun (bp) ->
-         fun (a) ->
-           fun (strm) ->
-             
-             let  f = (Parser.continue_parser_of_entry entry) in begin
-             ( entry.econtinue<- f ); (f lev bp a strm)
-             end
+        let  f = (Parser.start_parser_of_entry entry) in
+        begin
+        entry.estart <- f;
+        (f lev strm)
+        end));
+  entry.econtinue <-
+    (fun (lev) ->
+      (fun (bp) ->
+        (fun (a) ->
+          (fun (strm) ->
+            
+            let  f = (Parser.continue_parser_of_entry entry) in
+            begin
+            entry.econtinue <- f;
+            (f lev bp a strm)
+            end))))
   end

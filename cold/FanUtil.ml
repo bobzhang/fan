@@ -24,13 +24,9 @@ let  valid_float_lexeme (s) =
   
   let rec  loop (i) =
   if (i >= l) then ( (s ^ ".") )
-  else
-   
-   (match s.[i]
-   with
-   |
-     (('0' |('1' |('2' |('3' |('4' |('5' |('6' |('7' |('8' |'9')))))))))
-       |'-') -> (loop ( (i + 1) ))
+  else 
+   (match s.[i] with
+   | (('0'..'9') |'-') -> (loop ( (i + 1) ))
    | _ -> s) in (loop 0)
 let  float_repres (f) =
   
@@ -129,17 +125,26 @@ let  with_open_out_file (x) (f) =
   | Some(file) ->
     
     let  oc = (open_out_bin file) in begin
-    ( (f oc) ); ( (flush oc) ); (close_out oc)
+    (f oc);
+    (flush oc);
+    (close_out oc)
     end
   | None  ->
-    ( (set_binary_mode_out stdout true ) ); ( (f stdout) ); (flush stdout))
-let  dump_ast (magic) (ast) (oc) = begin
-  ( (output_string oc magic) ); (output_value oc ast)
+    begin
+    (set_binary_mode_out stdout true );
+    (f stdout);
+    (flush stdout)
+    end)
+let  dump_ast (magic) (ast) (oc) =
+  begin
+  (output_string oc magic);
+  (output_value oc ast)
   end
-let  dump_pt (magic) (fname) (pt) (oc) = begin
-  ( (output_string oc magic) ); (
-  (output_value oc ( if (fname = "-") then "" else fname )) );
-   (output_value oc pt)
+let  dump_pt (magic) (fname) (pt) (oc) =
+  begin
+  (output_string oc magic);
+  (output_value oc ( if (fname = "-") then "" else fname ));
+  (output_value oc pt)
   end
 let  char_of_char_token (loc) (s) =
   
@@ -159,22 +164,26 @@ let  remove_underscores (s) =
   
   let  ()  =
   (String.iter (
-    fun (ch) ->
-      if (ch <> '_') then ( (ignore ( (Buffer.add_char buf ch) )) ) else () )
-    s) in (Buffer.contents buf)
+    (fun (ch) ->
+      if (ch <> '_') then ( (ignore ( (Buffer.add_char buf ch) )) ) else ())
+    ) s) in (Buffer.contents buf)
 module Options  :
-  sig  type spec_list =  (string*Arg.spec*string) list  
-  val init : (spec_list -> unit) 
-  val add : (string -> (Arg.spec -> (string -> unit) ) ) 
-  val print_usage_list : (spec_list -> unit) 
-  val ext_spec_list : (unit -> spec_list) 
-  val parse : ((string -> unit)  -> (string array  -> string list ) )  end =
-  struct  type spec_list =  (string*Arg.spec*string) list   open Format
+  sig  type spec_list =  ( string * Arg.spec * string ) list  
+  val init : ( spec_list  ->  unit ) 
+  val add : ( string  -> ( Arg.spec  -> ( string  ->  unit ) ) ) 
+  val print_usage_list : ( spec_list  ->  unit ) 
+  val ext_spec_list : ( unit  ->  spec_list ) 
+  val parse : (( string  ->  unit )  -> ( string  array  ->  string  list ) ) 
+  end =
+  struct  type spec_list =  ( string * Arg.spec * string ) list   open Format
     let rec  action_arg (s) (sl) =
       
       function
       | Arg.Unit(f) ->
-        if (s = "") then  begin ( (f () ) ); Some (sl) end else None
+        if (s = "") then  begin begin
+        (f () );
+        Some (sl)
+        end end else None
       | Arg.Bool(f) ->
         if (s = "") then
          (
@@ -183,44 +192,69 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (f ( (bool_of_string s) )) ); Some (sl)
-           with
+           (try begin
+           (f ( (bool_of_string s) ));
+           Some (sl)
+           end with
            | Invalid_argument("bool_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (f ( (bool_of_string s) )) ); Some (sl)
-         with
+         (try begin
+         (f ( (bool_of_string s) ));
+         Some (sl)
+         end with
          | Invalid_argument("bool_of_string") -> None)
       | Arg.Set(r) ->
-        if (s = "") then  begin ( (r := true ) ); Some (sl) end else None
+        if (s = "") then  begin begin
+        (r := true );
+        Some (sl)
+        end end else None
       | Arg.Clear(r) ->
-        if (s = "") then  begin ( (r := false ) ); Some (sl) end else None
-      | Arg.Rest(f) -> ( (List.iter f ( s::sl )) ); Some ([])
+        if (s = "") then  begin begin
+        (r := false );
+        Some (sl)
+        end end else None
+      | Arg.Rest(f) -> begin
+        (List.iter f ( s::sl ));
+        Some ([])
+        end
       | Arg.String(f) ->
         if (s = "") then
          (
          
          (match sl with
-         | s::sl -> ( (f s) ); Some (sl)
+         | s::sl -> begin
+           (f s);
+           Some (sl)
+           end
          | []  -> None)
          )
         else
         begin
-        ( (f s) ); Some (sl)
+        begin
+        (f s);
+        Some (sl)
+        end
         end
       | Arg.Set_string(r) ->
         if (s = "") then
          (
          
          (match sl with
-         | s::sl -> ( (r := s) ); Some (sl)
+         | s::sl -> begin
+           (r := s);
+           Some (sl)
+           end
          | []  -> None)
          )
         else
         begin
-        ( (r := s) ); Some (sl)
+        begin
+        (r := s);
+        Some (sl)
+        end
         end
       | Arg.Int(f) ->
         if (s = "") then
@@ -230,15 +264,19 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (f ( (int_of_string s) )) ); Some (sl)
-           with
+           (try begin
+           (f ( (int_of_string s) ));
+           Some (sl)
+           end with
            | Failure("int_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (f ( (int_of_string s) )) ); Some (sl)
-         with
+         (try begin
+         (f ( (int_of_string s) ));
+         Some (sl)
+         end with
          | Failure("int_of_string") -> None)
       | Arg.Set_int(r) ->
         if (s = "") then
@@ -248,15 +286,19 @@ module Options  :
          with
          | s::sl ->
            
-           (try ( (r := ( (int_of_string s) )) ); Some (sl)
-           with
+           (try begin
+           (r := ( (int_of_string s) ));
+           Some (sl)
+           end with
            | Failure("int_of_string") -> None)
          | []  -> None)
          )
         else
          
-         (try ( (r := ( (int_of_string s) )) ); Some (sl)
-         with
+         (try begin
+         (r := ( (int_of_string s) ));
+         Some (sl)
+         end with
          | Failure("int_of_string") -> None)
       | Arg.Float(f) ->
         if (s = "") then
@@ -264,12 +306,18 @@ module Options  :
          
          (match sl
          with
-         | s::sl -> ( (f ( (float_of_string s) )) ); Some (sl)
+         | s::sl -> begin
+           (f ( (float_of_string s) ));
+           Some (sl)
+           end
          | []  -> None)
          )
         else
         begin
-        ( (f ( (float_of_string s) )) ); Some (sl)
+        begin
+        (f ( (float_of_string s) ));
+        Some (sl)
+        end
         end
       | Arg.Set_float(r) ->
         if (s = "") then
@@ -277,12 +325,18 @@ module Options  :
          
          (match sl
          with
-         | s::sl -> ( (r := ( (float_of_string s) )) ); Some (sl)
+         | s::sl -> begin
+           (r := ( (float_of_string s) ));
+           Some (sl)
+           end
          | []  -> None)
          )
         else
         begin
-        ( (r := ( (float_of_string s) )) ); Some (sl)
+        begin
+        (r := ( (float_of_string s) ));
+        Some (sl)
+        end
         end
       | Arg.Tuple(specs) ->
         
@@ -302,7 +356,10 @@ module Options  :
         
         (match if (s = "") then sl else s::sl
         with
-        | s::sl when (List.mem s syms) -> ( (f s) ); Some (sl)
+        | s::sl when (List.mem s syms) -> begin
+          (f s);
+          Some (sl)
+          end
         | _ -> None)
     let  common_start (s1) (s2) =
       
@@ -314,8 +371,8 @@ module Options  :
       else i in (loop 0)
     let  parse_arg (fold) (s) (sl) =
       (fold (
-        fun ((name,action,_)) ->
-          fun (acu) ->
+        (fun ((name,action,_)) ->
+          (fun (acu) ->
             
             let  i = (common_start s name) in
             if (i == ( (String.length name) )) then
@@ -326,7 +383,7 @@ module Options  :
                sl action) with
              | Arg.Bad(_) -> acu)
              )
-            else acu ) None )
+            else acu)) ) None )
     let rec  parse_aux (fold) (anon_fun) =
       
       function
@@ -342,7 +399,10 @@ module Options  :
          )
         else
         begin
-        ( ((anon_fun s): unit) ); (parse_aux fold anon_fun sl)
+        begin
+        ((anon_fun s) : unit  );
+        (parse_aux fold anon_fun sl)
+        end
         end
     let  align_doc (key) (s) =
       
@@ -387,11 +447,11 @@ module Options  :
       | []  -> "<none>"
       | h::t ->
         ((
-          (List.fold_left ( fun (x) -> fun (y) -> (x ^ ( ("|" ^ y) )) ) (
+          (List.fold_left ( (fun (x) -> (fun (y) -> (x ^ ( ("|" ^ y) )))) ) (
             ("{" ^ h) ) t) ) ^ "}"))
     let  print_usage_list (l) =
       (List.iter (
-        fun ((key,spec,doc)) ->
+        (fun ((key,spec,doc)) ->
           
           (match spec
           with
@@ -401,7 +461,7 @@ module Options  :
             
             let  synt = (key ^ ( (" " ^ s) )) in
             (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
-          | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc) ))) ) l)
+          | _ -> (eprintf "  %s %s\n" key ( (align_doc key doc) )))) ) l)
     let  remaining_args (argv) =
       
       let rec  loop (l) (i) =
@@ -418,7 +478,7 @@ module Options  :
       (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
       
       let  specs =
-      (Sort.list ( fun ((k1,_,_)) -> fun ((k2,_,_)) -> (k1 >= k2) )
+      (Sort.list ( (fun ((k1,_,_)) -> (fun ((k2,_,_)) -> (k1 >= k2))) )
         spec_list) in (List.fold_right f specs init)
     let  parse (anon_fun) (argv) =
       

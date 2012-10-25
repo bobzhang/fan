@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type t =  Location.t 
+type t =   Location.t  
 let  dump_sel (f) (x) =
   
   let  s =
@@ -30,7 +30,7 @@ let  dump (f) (x) =
     (( (x.loc_end).pos_cnum ) - ( (x.loc_start).pos_bol )) ) (
     (x.loc_end).pos_lnum ) (
     (( (x.loc_end).pos_cnum ) - ( (x.loc_end).pos_bol )) ) (
-    fun (o) -> if x.loc_ghost then ( (fprintf o " (ghost)") ) else () ))
+    (fun (o) -> if x.loc_ghost then ( (fprintf o " (ghost)") ) else ()) ))
 let  start_pos (name) =
   {pos_fname = name;pos_lnum = 1;pos_bol = 0;pos_cnum = 0}
 let  ghost_name = "ghost-location"
@@ -39,16 +39,16 @@ let  ghost =
                                             );loc_ghost = true }
 let  mk (file_name) =
   {loc_start = ( (start_pos file_name) );loc_end = ( (start_pos file_name) );
-   loc_ghost = false }
+    loc_ghost = false }
 let  of_tuple
   ((file_name,start_line,start_bol,start_off,stop_line,stop_bol,stop_off,ghost))
   =
   {loc_start =
      {pos_fname = file_name;pos_lnum = start_line;pos_bol = start_bol;
-      pos_cnum = start_off};loc_end =
-                              {pos_fname = file_name;pos_lnum = stop_line;
-                               pos_bol = stop_bol;pos_cnum = stop_off};
-   loc_ghost = ghost}
+       pos_cnum = start_off};loc_end =
+                               {pos_fname = file_name;pos_lnum = stop_line;
+                                 pos_bol = stop_bol;pos_cnum = stop_off};
+    loc_ghost = ghost}
 let  to_tuple
   ({loc_start =
       {pos_fname = pos_fname;pos_lnum = start_line;pos_bol = start_bol;
@@ -98,7 +98,7 @@ let  map (f) (start_stop_both) (x) =
   | `stop -> {x with loc_end = ( (f ( x.loc_end )) )}
   | `both ->
     {x with
-     loc_start = ( (f ( x.loc_start )) );loc_end = ( (f ( x.loc_end )) )})
+      loc_start = ( (f ( x.loc_start )) );loc_end = ( (f ( x.loc_end )) )})
 let  move_pos (chars) (x) = {x with pos_cnum = ( (( x.pos_cnum ) + chars) )}
 let  move (s) (chars) (x) = (map ( (move_pos chars) ) s x)
 let  move_line (lines) (x) =
@@ -108,7 +108,7 @@ let  move_line (lines) (x) =
   in (map move_line_pos `both x)
 let  shift (width) (x) =
   {x with
-   loc_start = ( x.loc_end );loc_end = ( (move_pos width ( x.loc_end )) )}
+    loc_start = ( x.loc_end );loc_end = ( (move_pos width ( x.loc_end )) )}
 let  file_name (x) = (x.loc_start).pos_fname
 let  start_line (x) = (x.loc_start).pos_lnum
 let  stop_line (x) = (x.loc_end).pos_lnum
@@ -119,9 +119,9 @@ let  stop_off (x) = (x.loc_end).pos_cnum
 let  is_ghost (x) = x.loc_ghost
 let  set_file_name (s) (x) =
   {x with
-   loc_start = {x.loc_start with pos_fname = s};loc_end =
-                                                  {x.loc_end with
-                                                   pos_fname = s}}
+    loc_start = {x.loc_start with pos_fname = s};loc_end =
+                                                   {x.loc_end with
+                                                     pos_fname = s}}
 let  ghostify (x) = {x with loc_ghost = true }
 let  make_absolute (x) =
   
@@ -133,10 +133,10 @@ let  make_absolute (x) =
    
    let  new_name = (Filename.concat pwd old_name) in
    {x with
-    loc_start = {x.loc_start with pos_fname = new_name};loc_end =
-                                                          {x.loc_end with
-                                                           pos_fname =
-                                                             new_name}}
+     loc_start = {x.loc_start with pos_fname = new_name};loc_end =
+                                                           {x.loc_end with
+                                                             pos_fname =
+                                                               new_name}}
    )
   else x
 let  strictly_before (x) (y) =
@@ -172,12 +172,12 @@ let  check (x) (msg) =
   then
   
   begin
-  (
-  (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x)
-  );
+  begin
+  (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x);
   false
+  end
   end else true
-exception Exc_located  of t*exn
+exception Exc_located of  t * exn 
 let _=
   (Printexc.register_printer (
     
@@ -194,9 +194,10 @@ let  raise (loc) (exc) =
   with
   | Exc_located(_,_) -> (raise exc)
   | _ -> (raise ( Exc_located ((loc,exc)) )))
-let  error_report ((loc,s)) = begin
-  ( (prerr_endline ( (to_string loc) )) );
-   
+let  error_report ((loc,s)) =
+  begin
+  (prerr_endline ( (to_string loc) ));
+  
   let  (start_bol,stop_bol,start_off,stop_off) =
   (( (start_bol loc) ),( (stop_bol loc) ),( (start_off loc) ),(
    (stop_off loc) )) in

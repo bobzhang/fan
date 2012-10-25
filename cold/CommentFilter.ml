@@ -1,4 +1,4 @@
-type t =  ((string*FanLoc.t) Stream.t *(string*FanLoc.t) Queue.t ) 
+type t =  (( string * FanLoc.t ) Stream.t *( string * FanLoc.t ) Queue.t ) 
 let  mk (() ) =
   
   let  q = (Queue.create () ) in
@@ -13,20 +13,21 @@ let  filter ((_,q)) =
   (match (Stream.peek __strm)
   with
   | Some((`COMMENT x),loc) ->
-    (
-    (Stream.junk __strm)
-    );
+    begin
+    (Stream.junk __strm);
     
     let  xs = __strm in begin
-    ( (Queue.add (x,loc) q) ); (self xs)
+    (Queue.add (x,loc) q);
+    (self xs)
+    end
     end
   | Some(x) ->
-    (
-    (Stream.junk __strm)
-    );
+    begin
+    (Stream.junk __strm);
     
     let  xs = __strm in
-    (Stream.icons x ( (Stream.slazy ( fun (_) -> (self xs) )) ))
+    (Stream.icons x ( (Stream.slazy ( (fun (_) -> (self xs)) )) ))
+    end
   | _ -> Stream.sempty) in self
 let  take_list ((_,q)) =
   
@@ -36,5 +37,5 @@ let  take_list ((_,q)) =
 let  take_stream = fst
 let  define (token_fiter) (comments_strm) =
   (FanToken.Filter.define_filter token_fiter (
-    fun (previous) ->
-      fun (strm) -> (previous ( (filter comments_strm strm) )) ))
+    (fun (previous) ->
+      (fun (strm) -> (previous ( (filter comments_strm strm) )))) ))
