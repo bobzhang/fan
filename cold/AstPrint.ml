@@ -83,31 +83,6 @@ let is_predef_option = function
   | _ -> false
         
 type space_formatter = (unit, Format.formatter, unit) format
-      
-let pp_print_list
-    ?sep:(sep:('a,'b,'c)format option)
-    ?first:(first:('a,'b,'c)format option)
-    ?last:(last:('a,'b,'c)format option)
-    f ppf xs =
-  let first = match first with Some x -> x |None -> ""
-  and last = match last with Some x -> x |None -> ""
-  and sep = match sep with Some x -> x |None -> "@ " in
-  let aux  ppf  = function
-    | [] -> ()
-    | [x] -> f ppf x
-    | xs ->
-        let rec loop  ppf = function
-          | [x] -> f ppf x ;
-          | x::xs -> begin
-              fprintf ppf ("%a"^^sep) f x ;
-              loop  ppf xs
-          end
-          | _ -> assert false in begin 
-              fprintf ppf first;
-              loop ppf xs;
-              fprintf ppf last;
-          end in
-  aux ppf xs 
 
 let override = function
   | Override -> "!"
@@ -175,9 +150,10 @@ class printer  ()= object(self:'self)
   method  virtual_flag ppf  = function
     | Concrete -> ()
     | Virtual -> fprintf ppf "virtual@ "
+  (* trailing space added *)        
   method rec_flag ppf = function
     | Nonrecursive -> ()
-    | Recursive | Default -> fprintf ppf "rec@ "
+    | Recursive | Default -> fprintf ppf "rec@;"
   method direction_flag ppf = function
     | Upto -> fprintf ppf "to@ "
     | Downto -> fprintf ppf "downto@ "
@@ -186,7 +162,7 @@ class printer  ()= object(self:'self)
     | Private -> fprintf ppf "private@ "
 
   method constant_string ppf s = fprintf ppf "%S" s 
-  method tyvar ppf str = fprintf ppf "'%s@ " str
+  method tyvar ppf str = fprintf ppf "'%s" str
   method string_quot ppf x = fprintf ppf "`%s" x 
   method type_var_option ppf str =
     match str with
@@ -268,7 +244,7 @@ class printer  ()= object(self:'self)
                  | [] -> ()
                  | _ ->
                   fprintf ppf "%a@ .@ "
-                    (self#list self#tyvar ~sep:"")  l) (List.rev l)) sl  self#core_type ct 
+                    (self#list self#tyvar ~sep:"@;")  l) (List.rev l)) sl  self#core_type ct 
       | Ptyp_package (lid, cstrs) ->
          let aux ppf (s, ct) =
             fprintf ppf "type %a@ =@ %a" self#longident_loc s self#core_type ct  in
@@ -450,7 +426,7 @@ class printer  ()= object(self:'self)
   method expression ppf x =
     match x.pexp_desc with
     | Pexp_let (rf, l, e) ->
-        fprintf ppf "@\n@[<hov>let@ %a@ %a@ in@ %a@]" (*no identation here, a new line*)
+        fprintf ppf "@[<2>let %a%a in@;<1 -2>%a@]" (*no identation here, a new line*)
           self#rec_flag rf
           self#pattern_x_expression_def_list l
           self#expression e 
@@ -465,7 +441,7 @@ class printer  ()= object(self:'self)
                 fprintf ppf "@[<hov2>(fun@ %a->@ %a)@]" (* FIXME IMPROVE later *)
                   self#label_exp (p,eo,p') self#expression e')
         | _ -> 
-            fprintf ppf "@\n@[<hov>(function@\n%a)@]" (* a new line *)
+            fprintf ppf "@[(function@\n%a)@]" (* a new line *)
               self#case_list  l ;)
 
     | Pexp_apply (e, l) ->
@@ -495,11 +471,11 @@ class printer  ()= object(self:'self)
                   (fun ppf l -> self#list self#label_x_expression_param (* ~breakfirst:true *) ppf l)  l)
 
     | Pexp_match (e, l) ->
-        fprintf ppf "@\n@[<hov>(match@ %a@ with@\n@[<hov>%a@])@]" (*a new line*)
+        fprintf ppf "begin@;match@;%a@;with@;%a@;end" (*a new line*)
           self#expression e
           self#case_list  l 
     | Pexp_try (e, l) ->
-        fprintf ppf "@\n@[<hov>(try@ %a@ with@\n@[<hov>%a@])@]"
+        fprintf ppf "begin@;try@;%a@;with@;@[<hov>%a@]@;end"
           self#expression e  self#case_list l 
     | Pexp_construct (li, eo, _)  ->
         (*
@@ -543,10 +519,10 @@ class printer  ()= object(self:'self)
           self#longident_loc li 
           self#expression e2;
     | Pexp_ifthenelse (e1, e2, eo) ->
-        fprintf ppf "@[<hv0>if@ %a@ then@ begin@\n%a@\nend%a@]"
+        fprintf ppf "@[<0>if@;%a@;then begin@;@[<2>%a@]@\nend%a@]"
           self#expression e1 self#expression e2
           (self#option self#expression
-             ~first:"@ else@ begin@\n" ~last:"@\nend") eo
+             ~first:"@;else begin@;@[<2>" ~last:"@]@\nend") eo
           
     | Pexp_sequence _ ->
         let rec sequence_helper acc = function
@@ -591,7 +567,7 @@ class printer  ()= object(self:'self)
     | Pexp_object cs ->
         fprintf ppf "@[<hov2>%a@]" self#class_structure cs 
     | Pexp_open (lid, e) ->
-        fprintf ppf "@[<hov2>let@ open@ %a@ in%a@]" self#longident_loc lid
+        fprintf ppf "@[<2>let open %a in@;%a@]" self#longident_loc lid
           self#expression  e 
     | _ -> self#simple_expr ppf x
 
@@ -606,45 +582,6 @@ class printer  ()= object(self:'self)
         end) x
 
 
-  method type_declaration ppf x = begin
-    let  type_variant_leaf ppf  (s, l,gadt, _loc)  = match gadt with
-    |None -> 
-        fprintf ppf "@[<hov2>|@ %s%a@]" s.txt
-          (fun ppf l -> match l with
-          | [] -> ()
-          | _ -> fprintf ppf "@ of@ %a" (self#list self#core_type ~sep:"*") l) l
-    |Some x ->
-        fprintf ppf "@[<hov2>|@ %s:@ %a@]" s.txt
-          (self#list self#core_type ~sep:"@ ->@ ") (l@[x]) in
-    fprintf ppf "@[<hov2>%a%a@ %a@]"
-      (fun ppf x -> match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
-      | (None,_,Public) -> ()
-      | (None,_,Private) -> fprintf ppf "private@ "
-      | (Some y, Ptype_abstract,Private) -> 
-          fprintf ppf "private@ %a" self#core_type y;
-      | (Some y, _, Private) -> 
-          fprintf ppf "%a@ =@ private@ " self#core_type y 
-      | (Some y,Ptype_abstract, Public) -> 
-          self#core_type ppf y;
-      | (Some y, _,Public) -> begin
-          fprintf ppf "%a@ =@ " self#core_type y (* manifest types*)
-      end) x 
-      (fun ppf x -> match x.ptype_kind with  (*here only normal variant types allowed here*)
-      | Ptype_variant xs -> 
-          fprintf ppf "@[<hov2>@[<hv>%a@]@]"
-            (self#list type_variant_leaf) xs
-      | Ptype_abstract -> ()
-      | Ptype_record l ->
-          let type_record_field ppf (s, mf, ct,_) =
-            fprintf ppf "@[<hov2>%a@ %s:%a@]" self#mutable_flag mf s.txt self#core_type ct in
-          fprintf ppf "@[<hov2>{%a}@]"
-            (self#list type_record_field ~sep:";" )  l ;
-      ) x
-      (self#list
-         (fun ppf (ct1,ct2,_) ->
-           fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]"
-             self#core_type ct1 self#core_type ct2 ) (* ~breakfirst:true *) )  x.ptype_cstrs  ;
-  end
   method exception_declaration ppf (s,ed) =
     fprintf ppf "@[<hov2>exception@ %s%a@]" s
       (fun ppf ed -> match ed with
@@ -704,7 +641,7 @@ class printer  ()= object(self:'self)
     | Pcl_fun (l, eo, p, e) ->
         fprintf ppf "@[<hov2>fun@ %a@ ->@ %a@]" self#label_exp (l,eo,p)  self#class_expr e
     | Pcl_let (rf, l, ce) ->
-        fprintf ppf "@[<hov>let@ %a@ %a@ in@ %a@]" self#rec_flag rf
+        fprintf ppf "@[<hov>let@;%a%a@ in@ %a@]" self#rec_flag rf
           self#pattern_x_expression_def_list  l
           self#class_expr ce
     | Pcl_apply (ce, l) ->
@@ -761,7 +698,7 @@ class printer  ()= object(self:'self)
           (* FIXME special Pexp_poly handling? move right arguments left *)
           (fun ppf e -> match e.pexp_desc with
           | Pexp_poly (e, ct) ->
-              fprintf ppf "%a=@ %a"
+              fprintf ppf "%a=@;%a"
                 (self#option self#core_type ~first:":" ) ct
                 self#expression e
           | _ ->
@@ -879,18 +816,39 @@ class printer  ()= object(self:'self)
     | Pmod_unpack e ->
         fprintf ppf "@[<hov2>(val@ %a)@]"  self#expression  e
   method structure ppf x = self#list ~sep:"@." self#structure_item ppf x ;
+  method pattern_x_expression_def_list ppf l =
+    let pattern_x_expression_def ppf (p, e) =
+      let rec pp_print_pexp_function ppf e =
+        begin  match e.pexp_desc with 
+        | Pexp_function (label,eo,[(p,e')]) ->
+            if label="" then  (*normal case single branch *)
+              match e'.pexp_desc with
+              | Pexp_when _  -> fprintf ppf "=@ %a" self#expression e
+              | _ -> 
+                  fprintf ppf "(%a)@ %a" self#pattern p pp_print_pexp_function e'
+            else
+              fprintf ppf "%a@ %a" self#label_exp (label,eo,p) pp_print_pexp_function e'
+        | Pexp_newtype (str,e') ->
+            fprintf ppf "(type@ %s)@ %a" str pp_print_pexp_function e'
+        | _ -> fprintf ppf "=@ %a" self#expression e end in 
+      begin match e.pexp_desc with
+      | Pexp_when (e1,e2) ->
+          fprintf ppf "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]" self#pattern p self#expression e1 self#expression e2 
+      | _ -> fprintf ppf "%a@ %a" self#pattern p pp_print_pexp_function e end in 
+    begin match l with
+    | [] -> ()
+    | [x] -> pattern_x_expression_def ppf x 
+    | _ ->
+        self#list pattern_x_expression_def ~sep:"@ and@ " ppf l  end
+    
   method structure_item ppf x = begin
     match x.pstr_desc with
     | Pstr_eval (e) ->
         fprintf ppf "@[<hov2>let@ _=@ %a@]" self#expression e 
     | Pstr_type [] -> assert false
     | Pstr_type l  -> self#type_def_list ppf l 
-    | Pstr_value (rf, l) ->
-        fprintf ppf "@[<hov2>let@ %a@ %a@]"
-          self#rec_flag rf
-          self#pattern_x_expression_def_list l ;
-    | Pstr_exception (s, ed) ->
-        self#exception_declaration ppf (s.txt,ed)
+    | Pstr_value (rf, l) -> fprintf ppf "@[<hov2>let %a%a@]"  self#rec_flag rf self#pattern_x_expression_def_list l
+    | Pstr_exception (s, ed) -> self#exception_declaration ppf (s.txt,ed)
     | Pstr_module (s, me) ->
         let rec module_helper me = match me.pmod_desc with
         | Pmod_functor(s,mt,me) ->
@@ -972,20 +930,61 @@ class printer  ()= object(self:'self)
               (fun ppf l2 -> List.iter (text_x_modtype_x_module ppf) l2) l2 
         | _ -> assert false
   end
+  (* shared by [Pstr_type,Psig_type]*)    
   method  type_def_list ppf  l =
     let aux ppf (s, ({ptype_params;ptype_kind;ptype_manifest;_} as td )) =
-      fprintf ppf "%a%s%a"
+      fprintf ppf "%a %s%a"
         (self#list self#type_var_option ~sep:"," ~first:"(" ~last:")")
         ptype_params s.txt
         (fun ppf td ->begin match ptype_kind, ptype_manifest with
         | Ptype_abstract, None -> ()
-        | _ , _ -> fprintf ppf "@ =@ " end;
-          fprintf ppf "@ %a" self#type_declaration td ) td  in 
+        | _ , _ -> fprintf ppf " =@;" end;
+          fprintf ppf "%a" self#type_declaration td ) td  in 
     match l with
     | [] -> () ;
-    | [x] -> fprintf ppf "@[<hov>type@ %a@]" aux x
-    | xs -> fprintf ppf "@[<hov>type@ %a@]" (self#list aux ~sep:"and@ ") xs 
-
+    | [x] -> fprintf ppf "@[<2>type %a@]" aux x
+    | xs -> fprintf ppf "@[<v>@[<2>type %a"
+          (self#list aux ~sep:"@]@,@[<2>and " ~last:"@]@]") xs 
+  (* called by type_def_list *)        
+  method type_declaration ppf x = begin
+    let  type_variant_leaf ppf  (s, l,gadt, _loc)  = match gadt with
+    |None -> 
+        fprintf ppf "@\n|@;%s%a" s.txt
+          (fun ppf l -> match l with
+          | [] -> ()
+          | _ -> fprintf ppf "@;of@;%a" (self#list self#core_type ~sep:"*") l) l
+    |Some x ->
+        fprintf ppf "@\n|@;%s:@;%a" s.txt
+          (self#list self#core_type ~sep:"@;->@;") (l@[x]) in
+    fprintf ppf "%a%a@ %a"
+      (fun ppf x -> match (x.ptype_manifest,x.ptype_kind,x.ptype_private) with
+      | (None,_,Public) ->  fprintf ppf "@;"
+      | (None,_,Private) -> fprintf ppf "private@;"
+      | (Some y, Ptype_abstract,Private) -> 
+          fprintf ppf "private@;%a" self#core_type y;
+      | (Some y, _, Private) -> 
+          fprintf ppf "%a = private@;" self#core_type y 
+      | (Some y,Ptype_abstract, Public) ->  self#core_type ppf y;
+      | (Some y, _,Public) -> begin
+          fprintf ppf "%a =@;" self#core_type y (* manifest types*)
+      end) x 
+      (fun ppf x -> match x.ptype_kind with
+        (*here only normal variant types allowed here*)
+      | Ptype_variant xs -> 
+          fprintf ppf "%a"
+            (self#list ~sep:"" type_variant_leaf) xs
+      | Ptype_abstract -> ()
+      | Ptype_record l ->
+          let type_record_field ppf (s, mf, ct,_) =
+            fprintf ppf "@[<hov2>%a@ %s:%a@]" self#mutable_flag mf s.txt self#core_type ct in
+          fprintf ppf "@[<hov2>{%a}@]"
+            (self#list type_record_field ~sep:";" )  l ;
+      ) x
+      (self#list
+         (fun ppf (ct1,ct2,_) ->
+           fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]"
+             self#core_type ct1 self#core_type ct2 ))  x.ptype_cstrs  ;
+  end
 
   method case_list ppf (l:(pattern * expression) list) :unit=
     let aux ppf (p,e) =
@@ -993,39 +992,12 @@ class printer  ()= object(self:'self)
         (match e with
         | {pexp_desc = Pexp_when (e1, e2);_} -> (e2, Some (e1))
         | _ -> (e, None)) in
-      fprintf ppf "@[<hov2>|@ %a%a@ ->@ %a@]"
-        self#pattern p (self#option self#expression ~first:"@ when@ ") w self#expression e in
-    fprintf ppf "@[<hov2>%a@]" (self#list aux) l 
+      fprintf ppf "| %a%a@;->@;@[<2>@;<2 2>%a@]"
+        self#pattern p (self#option self#expression ~first:"@;when@;") w self#expression e in
+    self#list aux ~first:"@[<v>@[<2>" ~last:"@]@]" ~sep:"@]@,@[<2>"  ppf l 
+    (* fprintf ppf "%a" (self#list aux ~sep:"@\n@;<2 2>") l  *)
 
 
-(* prints a list of definitions as found in a let statement
-   note! breaks "open and close boxes in same function" convention, however
-   does always open and close the same number of boxes. (i.e. no "net
-   gain or loss" of box depth.                                         *)
-   method pattern_x_expression_def_list ppf l =
-   let pattern_x_expression_def ppf (p, e) =
-   let rec pp_print_pexp_function ppf e =
-   begin  match e.pexp_desc with 
-   | Pexp_function (label,eo,[(p,e')]) ->
-   if label="" then  (*normal case single branch *)
-   match e'.pexp_desc with
-   | Pexp_when _  -> fprintf ppf "=@ %a" self#expression e
-   | _ -> 
-   fprintf ppf "(%a)@ %a" self#pattern p pp_print_pexp_function e'
-   else
-   fprintf ppf "%a@ %a" self#label_exp (label,eo,p) pp_print_pexp_function e'
-   | Pexp_newtype (str,e') ->
-   fprintf ppf "(type@ %s)@ %a" str pp_print_pexp_function e'
-   | _ -> fprintf ppf "=@ %a" self#expression e end in 
-   begin match e.pexp_desc with
-   | Pexp_when (e1,e2) ->
-   fprintf ppf "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]" self#pattern p self#expression e1 self#expression e2 
-   | _ -> fprintf ppf "%a@ %a" self#pattern p pp_print_pexp_function e end in 
-   begin match l with
-   | [] -> ()
-   | [x] -> pattern_x_expression_def ppf x 
-   | _ ->
-   self#list pattern_x_expression_def ~sep:"@ and@ " ppf l  end
 
 
 

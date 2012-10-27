@@ -4,202 +4,167 @@ open Format
 open LibUtil
 module Camlp4Bin (PreCast:Sig.PRECAST) =
   struct
-    let  printers =
+    let printers =
       ((Hashtbl.create 30) :( string ,(module Sig.PRECAST_PLUGIN)) Hashtbl.t 
-        ) let  rcall_callback = (ref ( (fun (() ) -> ()) ))
-    let  loaded_modules = (ref SSet.empty)
-    let  add_to_loaded_modules (name) =
+        ) let rcall_callback = (ref ( (fun (() ) -> ()) ))
+    let loaded_modules = (ref SSet.empty)
+    let add_to_loaded_modules (name) =
       (loaded_modules := ( (SSet.add name ( loaded_modules.contents )) ))
     let _=
       (Printexc.register_printer (
-        
         (function
         | FanLoc.Exc_located(loc,exn) ->
-          Some
-            ((sprintf "%s:@\n%s" ( (FanLoc.to_string loc) ) (
-               (Printexc.to_string exn) ))) | _ -> None) ))
-    module DynLoader  = (DynLoader.Make) (struct  end)
-    let  (objext,libext) =
-      if
-      DynLoader.is_native
-      then
-      begin
-      (".cmxs",".cmxs")
+            Some
+              ((sprintf "%s:@\n%s" ( (FanLoc.to_string loc) ) (
+                 (Printexc.to_string exn) )))
+        | _ ->   None) )) module DynLoader  = (DynLoader.Make) (struct  end)
+    let (objext,libext) =
+      if DynLoader.is_native then begin (".cmxs",".cmxs")
+      end else begin (".cmo",".cma")
       end
-      else
-      begin
-      (".cmo",".cma")
-      end
-    let  rewrite_and_load (n) (x) =
-      
-      let  dyn_loader = ((DynLoader.instance.contents) () ) in
-      
-      let  find_in_path = (DynLoader.find_in_path dyn_loader) in
-      
-      let  real_load (name) =
-      begin
-      (add_to_loaded_modules name);
-      (DynLoader.load dyn_loader name)
-      end in
-      
-      let  load (n) =
-      if
-      (( (SSet.mem n ( loaded_modules.contents )) ) || (
-        (List.mem n ( PreCast.loaded_modules.contents )) ))
-      then
-      begin
-      ()
-      end
-      else
-      begin
-      begin
-      (add_to_loaded_modules n);
-      (DynLoader.load dyn_loader ( (n ^ objext) ))
-      end
-      end in
-      begin
-      
-      (match (n,( (String.lowercase x) ))
-      with
-      |
-        (("Parsers" |""),(((("pa_r.cmo" |"r") |"ocamlr") |"ocamlrevised")
-                           |"camlp4ocamlrevisedparser.cmo")) ->
-        (pa_r (module PreCast))
-        |
-          (("Parsers" |""),((("pa_rp.cmo" |"rp") |"rparser")
-                             |"camlp4ocamlrevisedparserparser.cmo")) ->
-          begin
-          (pa_r (module PreCast));
-          (pa_rp (module PreCast))
+    let rewrite_and_load (n) (x) =
+      let dyn_loader = ((DynLoader.instance.contents) () ) in
+      let find_in_path = (DynLoader.find_in_path dyn_loader) in
+      let real_load (name) =
+        begin
+        (add_to_loaded_modules name);
+        (DynLoader.load dyn_loader name)
+        end in
+      let load (n) =
+        if
+        (( (SSet.mem n ( loaded_modules.contents )) ) || (
+          (List.mem n ( PreCast.loaded_modules.contents )) ))
+        then begin ()
+        end else begin
+        begin
+          (add_to_loaded_modules n);
+          (DynLoader.load dyn_loader ( (n ^ objext) ))
           end
-        |
-          (("Parsers" |""),(((("pa_extend.cmo" |"pa_extend_m.cmo") |"g")
-                              |"grammar") |"camlp4grammarparser.cmo")) ->
-          (pa_g (module PreCast))
-        |
-          (("Parsers" |""),((("pa_macro.cmo" |"m") |"macro")
-                             |"camlp4macroparser.cmo")) ->
-          (pa_m (module PreCast))
-        | (("Parsers" |""),("q" |"camlp4quotationexpander.cmo")) ->
-          (pa_q (module PreCast))
-        | (("Parsers" |""),"rf") ->
-          begin
-          (pa_r (module PreCast));
-          (pa_rp (module PreCast));
-          (pa_q (module PreCast));
-          (pa_g (module PreCast));
-          (pa_l (module PreCast));
-          (pa_m (module PreCast))
-          end | (("Parsers" |""),"debug") -> (pa_debug (module PreCast))
-        | (("Parsers" |""),("comp" |"camlp4listcomprehension.cmo")) ->
-          (pa_l (module PreCast))
-        | (("Filters" |""),("lift" |"camlp4astlifter.cmo")) ->
-          (f_lift (module PreCast))
-        | (("Filters" |""),("exn" |"camlp4exceptiontracer.cmo")) ->
-          (f_exn (module PreCast))
-        | (("Filters" |""),("prof" |"camlp4profiler.cmo")) ->
-          (f_prof (module PreCast))
-        | (("Filters" |""),("map" |"camlp4mapgenerator.cmo")) ->
-          (f_fold (module PreCast))
-        | (("Filters" |""),("fold" |"camlp4foldgenerator.cmo")) ->
-          (f_fold (module PreCast))
-        | (("Filters" |""),("meta" |"camlp4metagenerator.cmo")) ->
-          (f_meta (module PreCast))
-        | (("Filters" |""),("trash" |"camlp4trashremover.cmo")) ->
-          (f_trash (module PreCast))
-        | (("Filters" |""),("striploc" |"camlp4locationstripper.cmo")) ->
-          (f_striploc (module PreCast))
-        |
-          (("Printers" |""),((("pr_o.cmo" |"o") |"ocaml")
-                              |"camlp4ocamlprinter.cmo")) ->
-          (PreCast.enable_ocaml_printer () )
-        |
-          (("Printers" |""),((("pr_dump.cmo" |"p") |"dumpocaml")
-                              |"camlp4ocamlastdumper.cmo")) ->
-          (PreCast.enable_dump_ocaml_ast_printer () )
-        | (("Printers" |""),(("d" |"dumpcamlp4") |"camlp4astdumper.cmo")) ->
-          (PreCast.enable_dump_camlp4_ast_printer () )
-        | (("Printers" |""),(("a" |"auto") |"camlp4autoprinter.cmo")) ->
-          begin
-          (load "Camlp4Autoprinter");
-          
-          let  (module P)  = (Hashtbl.find printers "camlp4autoprinter") in
-          (P.apply (module PreCast))
-          end
-        | _ ->
-          
-          let  y = ("Camlp4" ^ ( (n ^ ( ("/" ^ ( (x ^ objext) )) )) )) in
-          (real_load ( 
-            (try (find_in_path y) with
-            | Not_found  -> x) )));
-      ((rcall_callback.contents) () )
-      end let  print_warning = (eprintf "%a:\n%s@." FanLoc.print)
-    let rec  parse_file (dyn_loader) (name) (pa) (getdir) =
-      
-      let  directive_handler =
-      Some
-        ((fun (ast) ->
-           
-           (match (getdir ast)
-           with
-           | Some(x) ->
-             
-             (match x
-             with
-             | (_,"load",s) -> begin
-               (rewrite_and_load "" s);
-               None
+        end in
+      begin
+        begin
+        match
+        (n,( (String.lowercase x) ))
+        with
+        | (("Parsers" |""),(((("pa_r.cmo" |"r") |"ocamlr") |"ocamlrevised")
+                             |"camlp4ocamlrevisedparser.cmo"))
+          ->   (pa_r (module PreCast))
+        | (("Parsers" |""),((("pa_rp.cmo" |"rp") |"rparser")
+                             |"camlp4ocamlrevisedparserparser.cmo"))
+          ->   begin
+               (pa_r (module PreCast));
+               (pa_rp (module PreCast))
                end
-               | (_,"directory",s) ->
-                 begin
-                 (DynLoader.include_dir dyn_loader s);
-                 None
+        | (("Parsers" |""),(((("pa_extend.cmo" |"pa_extend_m.cmo") |"g")
+                              |"grammar") |"camlp4grammarparser.cmo"))
+          ->   (pa_g (module PreCast))
+        | (("Parsers" |""),((("pa_macro.cmo" |"m") |"macro")
+                             |"camlp4macroparser.cmo"))
+          ->   (pa_m (module PreCast))
+        | (("Parsers" |""),("q" |"camlp4quotationexpander.cmo")) ->
+            (pa_q (module PreCast))
+        | (("Parsers" |""),"rf") ->
+            begin
+            (pa_r (module PreCast));
+            (pa_rp (module PreCast));
+            (pa_q (module PreCast));
+            (pa_g (module PreCast));
+            (pa_l (module PreCast));
+            (pa_m (module PreCast))
+            end
+        | (("Parsers" |""),"debug") ->   (pa_debug (module PreCast))
+        | (("Parsers" |""),("comp" |"camlp4listcomprehension.cmo")) ->
+            (pa_l (module PreCast))
+        | (("Filters" |""),("lift" |"camlp4astlifter.cmo")) ->
+            (f_lift (module PreCast))
+        | (("Filters" |""),("exn" |"camlp4exceptiontracer.cmo")) ->
+            (f_exn (module PreCast))
+        | (("Filters" |""),("prof" |"camlp4profiler.cmo")) ->
+            (f_prof (module PreCast))
+        | (("Filters" |""),("map" |"camlp4mapgenerator.cmo")) ->
+            (f_fold (module PreCast))
+        | (("Filters" |""),("fold" |"camlp4foldgenerator.cmo")) ->
+            (f_fold (module PreCast))
+        | (("Filters" |""),("meta" |"camlp4metagenerator.cmo")) ->
+            (f_meta (module PreCast))
+        | (("Filters" |""),("trash" |"camlp4trashremover.cmo")) ->
+            (f_trash (module PreCast))
+        | (("Filters" |""),("striploc" |"camlp4locationstripper.cmo")) ->
+            (f_striploc (module PreCast))
+        | (("Printers" |""),((("pr_o.cmo" |"o") |"ocaml")
+                              |"camlp4ocamlprinter.cmo"))
+          ->   (PreCast.enable_ocaml_printer () )
+        | (("Printers" |""),((("pr_dump.cmo" |"p") |"dumpocaml")
+                              |"camlp4ocamlastdumper.cmo"))
+          ->   (PreCast.enable_dump_ocaml_ast_printer () )
+        | (("Printers" |""),(("d" |"dumpcamlp4") |"camlp4astdumper.cmo")) ->
+            (PreCast.enable_dump_camlp4_ast_printer () )
+        | (("Printers" |""),(("a" |"auto") |"camlp4autoprinter.cmo")) ->
+            begin
+            (load "Camlp4Autoprinter");
+            let (module P)  = (Hashtbl.find printers "camlp4autoprinter") in
+            (P.apply (module PreCast))
+            end
+        | _ ->
+            let y = ("Camlp4" ^ ( (n ^ ( ("/" ^ ( (x ^ objext) )) )) )) in
+            (real_load ( begin try (find_in_path y) with | Not_found  ->   x
+              end ))
+        end;
+        ((rcall_callback.contents) () )
+        end let print_warning = (eprintf "%a:\n%s@." FanLoc.print)
+    let rec parse_file (dyn_loader) (name) (pa) (getdir) =
+      let directive_handler =
+        Some
+          ((fun (ast) -> begin match (getdir ast) with
+             | Some(x) ->
+                 begin match x with
+                 | (_,"load",s) ->   begin
+                                     (rewrite_and_load "" s);
+                                     None
+                                     end
+                 | (_,"directory",s) ->
+                     begin
+                     (DynLoader.include_dir dyn_loader s);
+                     None
+                     end
+                 | (_,"use",s) ->
+                     Some ((parse_file dyn_loader s pa getdir))
+                 | (_,"default_quotation",s) ->
+                     begin
+                     (PreCast.Syntax.Quotation.default := s);
+                     None
+                     end
+                 | (loc,_,_) ->
+                     (FanLoc.raise loc (
+                       Stream.Error ("bad directive camlp4 can not handled ")
+                       ))
                  end
-               | (_,"use",s) -> Some ((parse_file dyn_loader s pa getdir))
-               | (_,"default_quotation",s) ->
-                 begin
-                 (PreCast.Syntax.Quotation.default := s);
-                 None
-                 end
-               | (loc,_,_) ->
-                 (FanLoc.raise loc (
-                   Stream.Error ("bad directive camlp4 can not handled ") )))
-             | None  -> None))) in
-      
-      let  loc = (FanLoc.mk name) in
+             | None  ->   None end)) in
+      let loc = (FanLoc.mk name) in
       begin
-      (PreCast.Syntax.current_warning := print_warning);
-      
-      let  ic =
-      if (name = "-") then begin
-      stdin
-      end else begin
-      (open_in_bin name)
-      end in
-      
-      let  cs = (Stream.of_channel ic) in
-      
-      let  clear (() ) =
-      if (name = "-") then begin
-      ()
-      end else begin
-      (close_in ic)
-      end in
-      
-      let  phr =
-      
-      (try (pa ?directive_handler:directive_handler loc cs)
-      with
-      | x -> begin
-        (clear () );
-        (raise x)
-        end) in begin
-      (clear () );
-      phr
-      end
-      end let  output_file = (ref None )
-    let  process (dyn_loader) (name) (pa) (pr) (clean) (fold_filters)
-      (getdir) =
+        (PreCast.Syntax.current_warning := print_warning);
+        let ic =
+          if (name = "-") then begin stdin
+          end else begin (open_in_bin name)
+          end in
+        let cs = (Stream.of_channel ic) in
+        let clear (() ) =
+          if (name = "-") then begin ()
+          end else begin (close_in ic)
+          end in
+        let phr = begin try (pa ?directive_handler:directive_handler loc cs)
+          with | x ->   begin
+                        (clear () );
+                        (raise x)
+                        end
+          end in
+        begin
+          (clear () );
+          phr
+          end
+        end let output_file = (ref None )
+    let process (dyn_loader) (name) (pa) (pr) (clean) (fold_filters) (getdir)
+      =
       ((
         ((
           (( (parse_file dyn_loader name pa getdir) ) |> (
@@ -207,126 +172,103 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
           |> clean) ) |> (
         (pr ?input_file:( Some (name) ) ?output_file:( output_file.contents
           )) ))
-    let  gind =
-      
+    let gind =
       (function
-      | Ast.SgDir(loc,n,Ast.ExStr(_,s)) -> Some ((loc,n,s)) | _ -> None)
-    let  gimd =
-      
+      | Ast.SgDir(loc,n,Ast.ExStr(_,s)) ->   Some ((loc,n,s))
+      | _ ->   None)
+    let gimd =
       (function
-      | Ast.StDir(loc,n,Ast.ExStr(_,s)) -> Some ((loc,n,s)) | _ -> None)
-    let  process_intf (dyn_loader) (name) =
+      | Ast.StDir(loc,n,Ast.ExStr(_,s)) ->   Some ((loc,n,s))
+      | _ ->   None)
+    let process_intf (dyn_loader) (name) =
       (process dyn_loader name PreCast.CurrentParser.parse_interf
         PreCast.CurrentPrinter.print_interf (
         (new Camlp4Ast.clean_ast)#sig_item )
         PreCast.Syntax.AstFilters.fold_interf_filters gind)
-    let  process_impl (dyn_loader) (name) =
+    let process_impl (dyn_loader) (name) =
       (process dyn_loader name PreCast.CurrentParser.parse_implem
         PreCast.CurrentPrinter.print_implem (
         (new Camlp4Ast.clean_ast)#str_item )
         PreCast.Syntax.AstFilters.fold_implem_filters gimd)
-    let  just_print_the_version (() ) =
+    let just_print_the_version (() ) =
       begin
       (printf "%s@." FanConfig.version);
       (exit 0)
       end
-    let  print_version (() ) =
+    let print_version (() ) =
       begin
       (eprintf "Camlp4 version %s@." FanConfig.version);
       (exit 0)
       end
-    let  print_stdlib (() ) =
+    let print_stdlib (() ) =
       begin
       (printf "%s@." FanConfig.camlp4_standard_library);
       (exit 0)
       end
-    let  usage (ini_sl) (ext_sl) =
+    let usage (ini_sl) (ext_sl) =
       begin
       (eprintf
         "Usage: camlp4 [load-options] [--] [other-options]\nOptions:\n<file>.ml        Parse this implementation file\n<file>.mli       Parse this interface file\n<file>.%s Load this module inside the Camlp4 core@."
         (
-        if
-        DynLoader.is_native
-        then
-        begin
-        "cmxs     "
-        end
-        else
-        begin
-        "(cmo|cma)"
+        if DynLoader.is_native then begin "cmxs     "
+        end else begin "(cmo|cma)"
         end ));
       (FanUtil.Options.print_usage_list ini_sl);
-      if
-      (ext_sl <> [] )
-      then
+      if (ext_sl <> [] ) then begin
       begin
-      begin
-      (eprintf "Options added by loaded object files:@.");
-      (FanUtil.Options.print_usage_list ext_sl)
+        (eprintf "Options added by loaded object files:@.");
+        (FanUtil.Options.print_usage_list ext_sl)
+        end
+      end else begin ()
       end
       end
-      else
-      begin
-      ()
-      end
-      end
-    let  warn_noassert (() ) =
+    let warn_noassert (() ) =
       (eprintf
         "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@.")
-    type file_kind = 
-    | Intf of  string 
-    | Impl of  string 
-    | Str of  string 
-    | ModuleImpl of  string 
-    | IncludeDir of  string   let  search_stdlib = (ref true )
-    let  print_loaded_modules = (ref false )
-    let  (task,do_task) =
-      
-      let  t = (ref None ) in
-      
-      let  task (f) (x) =
-      
-      let  ()  = (FanConfig.current_input_file := x) in
-      (t := (
-        Some
-          (if
-           (( t.contents ) = None )
-           then
-           begin
-           (fun (_) -> (f x))
-           end
-           else
-           begin
-           (fun (usage) -> (usage () ))
-           end) )) in
-      
-      let  do_task (usage) =
-      
-      (match t.contents with
-      | Some(f) -> (f usage) | None  -> ()) in (task,do_task)
-    let  input_file (x) =
-      
-      let  dyn_loader = ((DynLoader.instance.contents) () ) in
+    type  file_kind =  
+      | Intf of  string 
+      | Impl of  string 
+      | Str of  string 
+      | ModuleImpl of  string 
+      | IncludeDir of  string   let search_stdlib = (ref true )
+    let print_loaded_modules = (ref false )
+    let (task,do_task) =
+      let t = (ref None ) in
+      let task (f) (x) =
+        let ()  = (FanConfig.current_input_file := x) in
+        (t := (
+          Some
+            (if (( t.contents ) = None ) then begin (fun (_) -> (f x))
+             end else begin (fun (usage) -> (usage () ))
+             end) )) in
+      let do_task (usage) = begin match t.contents with
+        | Some(f) ->   (f usage)
+        | None  ->   () end in
+      (task,do_task)
+    let input_file (x) =
+      let dyn_loader = ((DynLoader.instance.contents) () ) in
       begin
-      ((rcall_callback.contents) () );
-      
-      (match x
-      with
-      | Intf(file_name) -> (task ( (process_intf dyn_loader) ) file_name)
-        | Impl(file_name) -> (task ( (process_impl dyn_loader) ) file_name)
+        ((rcall_callback.contents) () );
+        begin
+        match
+        x
+        with
+        | Intf(file_name) ->   (task ( (process_intf dyn_loader) ) file_name)
+        | Impl(file_name) ->   (task ( (process_impl dyn_loader) ) file_name)
         | Str(s) ->
-          
-          let  (f,o) = (Filename.open_temp_file "from_string" ".ml") in
-          begin
-          (output_string o s);
-          (close_out o);
-          (task ( (process_impl dyn_loader) ) f);
-          (at_exit ( (fun (() ) -> (Sys.remove f)) ))
-          end | ModuleImpl(file_name) -> (rewrite_and_load "" file_name)
-        | IncludeDir(dir) -> (DynLoader.include_dir dyn_loader dir));
-      ((rcall_callback.contents) () )
-      end
-    let  initial_spec_list =
+            let (f,o) = (Filename.open_temp_file "from_string" ".ml") in
+            begin
+              (output_string o s);
+              (close_out o);
+              (task ( (process_impl dyn_loader) ) f);
+              (at_exit ( (fun (() ) -> (Sys.remove f)) ))
+              end
+        | ModuleImpl(file_name) ->   (rewrite_and_load "" file_name)
+        | IncludeDir(dir) ->   (DynLoader.include_dir dyn_loader dir)
+        end;
+        ((rcall_callback.contents) () )
+        end
+    let initial_spec_list =
       [("-I",( Arg.String ((fun (x) -> (input_file ( IncludeDir (x) ))))
         ),"<directory>  Add directory in search patch for object files.");
       ("-where",( Arg.Unit (print_stdlib)
@@ -382,106 +324,67 @@ module Camlp4Bin (PreCast:Sig.PRECAST) =
                                                                     ),"ignore the next argument");
       ("--",( Arg.Unit (ignore) ),"Deprecated, does nothing")]
     let _= (FanUtil.Options.init initial_spec_list)
-    let  anon_fun (name) =
+    let anon_fun (name) =
       (input_file (
-        if
-        (Filename.check_suffix name ".mli")
-        then
-        begin
-        Intf (name)
-        end
-        else
-        begin
-        if
-        (Filename.check_suffix name ".ml")
-        then
-        begin
-        Impl (name)
-        end
-        else
-        begin
-        if
-        (Filename.check_suffix name objext)
-        then
-        begin
+        if (Filename.check_suffix name ".mli") then begin Intf (name)
+        end else begin
+        if (Filename.check_suffix name ".ml") then begin Impl (name)
+        end else begin
+        if (Filename.check_suffix name objext) then begin
         ModuleImpl (name)
-        end
-        else
-        begin
-        if
-        (Filename.check_suffix name libext)
-        then
-        begin
+        end else begin
+        if (Filename.check_suffix name libext) then begin
         ModuleImpl (name)
-        end
-        else
-        begin
+        end else begin
         (raise ( Arg.Bad (("don't know what to do with " ^ name)) ))
         end
         end
         end
         end ))
-    let  main (argv) =
-      
-      let  usage (() ) =
-      begin
-      (usage initial_spec_list ( (FanUtil.Options.ext_spec_list () ) ));
-      (exit 0)
-      end in
-      
-      (try
-      
-      let  dynloader =
-      (DynLoader.mk ~ocaml_stdlib:( search_stdlib.contents ) ~camlp4_stdlib:(
-        search_stdlib.contents ) () ) in
-      
-      let  ()  = (DynLoader.instance := ( (fun (() ) -> dynloader) )) in
-      
-      let  call_callback (() ) =
-      (PreCast.iter_and_take_callbacks (
-        (fun ((name,module_callback)) ->
-          
-          let  ()  = (add_to_loaded_modules name) in (module_callback () ))
-        )) in
-      
-      let  ()  = (call_callback () ) in
-      
-      let  ()  = (rcall_callback := call_callback) in
-      
-      let  ()  =
-      
-      (match (FanUtil.Options.parse anon_fun argv)
-      with
-      | []  -> () | ((("-help" |"--help") |"-h") |"-?")::_ -> (usage () )
-        | s::_ ->
-          begin
-          (eprintf "%s: unknown or misused option\n" s);
-          (eprintf "Use option -help for usage@.");
-          (exit 2)
-          end) in
-      
-      let  ()  = (do_task usage) in
-      
-      let  ()  = (call_callback () ) in
-      if
-      print_loaded_modules.contents
-      then
-      begin
-      (SSet.iter ( (eprintf "%s@.") ) ( loaded_modules.contents ))
-      end
-      else
-      begin
-      ()
-      end
-      with
-      | Arg.Bad(s) ->
+    let main (argv) =
+      let usage (() ) =
         begin
-        (eprintf "Error: %s\n" s);
-        (eprintf "Use option -help for usage@.");
-        (exit 2)
-        end | Arg.Help(_) -> (usage () )
+        (usage initial_spec_list ( (FanUtil.Options.ext_spec_list () ) ));
+        (exit 0)
+        end in
+      begin try
+        let dynloader =
+          (DynLoader.mk ~ocaml_stdlib:( search_stdlib.contents )
+            ~camlp4_stdlib:( search_stdlib.contents ) () ) in
+        let ()  = (DynLoader.instance := ( (fun (() ) -> dynloader) )) in
+        let call_callback (() ) =
+          (PreCast.iter_and_take_callbacks (
+            (fun ((name,module_callback)) ->
+              let ()  = (add_to_loaded_modules name) in (module_callback () ))
+            )) in
+        let ()  = (call_callback () ) in
+        let ()  = (rcall_callback := call_callback) in
+        let ()  = begin match (FanUtil.Options.parse anon_fun argv) with
+          | []  ->   ()
+          | ((("-help" |"--help") |"-h") |"-?")::_ ->   (usage () )
+          | s::_ ->
+              begin
+              (eprintf "%s: unknown or misused option\n" s);
+              (eprintf "Use option -help for usage@.");
+              (exit 2)
+              end
+          end in
+        let ()  = (do_task usage) in
+        let ()  = (call_callback () ) in
+        if print_loaded_modules.contents then begin
+        (SSet.iter ( (eprintf "%s@.") ) ( loaded_modules.contents ))
+        end else begin ()
+        end with
+        | Arg.Bad(s) ->
+            begin
+            (eprintf "Error: %s\n" s);
+            (eprintf "Use option -help for usage@.");
+            (exit 2)
+            end
+        | Arg.Help(_) ->   (usage () )
         | exc ->
-          begin
-          (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc) ));
-          (exit 2)
-          end) let _= (main Sys.argv) end
+            begin
+            (eprintf "@[<v0>%s@]@." ( (Printexc.to_string exc) ));
+            (exit 2)
+            end
+        end let _= (main Sys.argv) end

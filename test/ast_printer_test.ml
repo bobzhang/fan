@@ -126,8 +126,6 @@ module type S = sig
 end
 
 
-type u = A of int
-and b = B of bool 
 
 
 
@@ -196,13 +194,3 @@ let mk_set (type s) ~cmp =
 let mk s (type s) (type u)  = s ;;
 let mk (type s) s (type u)  = s ;;
 
-type u = [`a | `b];;
-
-type u = v = A of int ;;
-type u = v = private A of int ;;
-
-type _ a =
-| A : int -> int a
-| B : float -> float a
-type _ a = A : int -> int a
-type _ a = A : int -> int a | B : int -> float a    

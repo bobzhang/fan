@@ -1,4 +1,4 @@
-type t  
+type  t  
 val mk : ( unit  ->  t ) 
 val define : ( FanToken.Filter.t  -> ( t  ->  unit ) ) 
 val filter :

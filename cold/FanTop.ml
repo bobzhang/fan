@@ -1,107 +1,75 @@
 module P  = (MakePreCast.Make) (struct  end)
 open P
-let  wrap (parse_fun) (lb) =
-  
-  let  ()  = (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) )) in
-  
-  let  not_filtered_token_stream = (FanLexer.from_lexbuf lb) in
-  
-  let  token_stream = (Gram.filter not_filtered_token_stream) in
-  
-  (try
-  
-  let  (__strm : _ Stream.t ) = token_stream in
-  
-  (match (Stream.peek __strm)
-  with
-  | Some(`EOI,_) -> begin
-    (Stream.junk __strm);
-    (raise End_of_file )
-    end | _ -> (parse_fun token_stream))
-  with
-  |
-    (((End_of_file  |Sys.Break )
-       |FanLoc.Exc_located(_,(End_of_file  |Sys.Break ))) as x) -> (raise x)
+let wrap (parse_fun) (lb) =
+  let ()  = (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) )) in
+  let not_filtered_token_stream = (FanLexer.from_lexbuf lb) in
+  let token_stream = (Gram.filter not_filtered_token_stream) in begin try
+    let (__strm : _ Stream.t ) = token_stream in begin match
+      (Stream.peek __strm) with
+      | Some(`EOI,_) ->   begin
+                          (Stream.junk __strm);
+                          (raise End_of_file )
+                          end
+      | _ ->   (parse_fun token_stream) end
+    with
+    | (((End_of_file  |Sys.Break )
+         |FanLoc.Exc_located(_,(End_of_file  |Sys.Break ))) as x)
+      ->   (raise x)
     | FanLoc.Exc_located(loc,y) ->
-      begin
-      (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
-        (Printexc.to_string y) ));
-      (raise Exit )
-      end
+        begin
+        (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
+          (Printexc.to_string y) ));
+        (raise Exit )
+        end
     | x ->
-      begin
-      (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ));
-      (raise Exit )
-      end)
-let  toplevel_phrase (token_stream) =
-  
-  (match
-  (Gram.parse_origin_tokens (
-    (Syntax.top_phrase : Ast.str_item  option  Gram.t  ) ) token_stream)
-  with
-  | Some(str_item) ->
-    
-    let  str_item =
-    (Syntax.AstFilters.fold_topphrase_filters (
-      (fun (t) -> (fun (filter) -> (filter t))) ) str_item) in
-    (Ast2pt.phrase str_item) | None  -> (raise End_of_file ))
-let  use_file (token_stream) =
-  
-  let  (pl0,eoi) =
-  
-  let rec  loop (() ) =
-  
-  let  (pl,stopped_at_directive) =
-  (Gram.parse_origin_tokens Syntax.use_file token_stream) in
-  if
-  (stopped_at_directive <> None )
-  then
-  begin
-  
-  (match pl
-  with
-  | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
-    begin
-    (Topdirs.dir_load Format.std_formatter s);
-    (loop () )
+        begin
+        (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ));
+        (raise Exit )
+        end
     end
-    | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
-      begin
-      (Topdirs.dir_directory s);
-      (loop () )
-      end | _ -> (pl,false ))
-  end
-  else
-  begin
-  (pl,true )
-  end in (loop () ) in
-  
-  let  pl =
-  if
-  eoi
-  then
-  begin
-  []
-  end
-  else
-  begin
-  
-  let rec  loop (() ) =
-  
-  let  (pl,stopped_at_directive) =
-  (Gram.parse_origin_tokens Syntax.use_file token_stream) in
-  if
-  (stopped_at_directive <> None )
-  then
-  begin
-  (pl @ ( (loop () ) ))
-  end
-  else
-  begin
-  pl
-  end in (loop () )
-  end in (List.map Ast2pt.phrase ( (pl0 @ pl) ))
-let  revise_parser = (wrap toplevel_phrase)
+let toplevel_phrase (token_stream) = begin match
+  (Gram.parse_origin_tokens (
+    (Syntax.top_phrase : Ast.str_item  option  Gram.t  ) ) token_stream) with
+  | Some(str_item) ->
+      let str_item =
+        (Syntax.AstFilters.fold_topphrase_filters (
+          (fun (t) -> (fun (filter) -> (filter t))) ) str_item) in
+      (Ast2pt.phrase str_item)
+  | None  ->   (raise End_of_file ) end
+let use_file (token_stream) =
+  let (pl0,eoi) =
+    let rec loop (() ) =
+      let (pl,stopped_at_directive) =
+        (Gram.parse_origin_tokens Syntax.use_file token_stream) in
+      if (stopped_at_directive <> None ) then begin
+      begin match pl with
+        | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
+            begin
+            (Topdirs.dir_load Format.std_formatter s);
+            (loop () )
+            end
+        | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
+            begin
+            (Topdirs.dir_directory s);
+            (loop () )
+            end
+        | _ ->   (pl,false ) end
+      end else begin (pl,true )
+      end in
+    (loop () ) in
+  let pl =
+    if eoi then begin []
+    end else begin
+    let rec loop (() ) =
+      let (pl,stopped_at_directive) =
+        (Gram.parse_origin_tokens Syntax.use_file token_stream) in
+      if (stopped_at_directive <> None ) then begin (pl @ ( (loop () ) ))
+      end else begin pl
+      end in
+    (loop () )
+    end in
+  (List.map Ast2pt.phrase ( (pl0 @ pl) ))
+let revise_parser = (wrap toplevel_phrase)
 let _=
   begin
   (Toploop.parse_toplevel_phrase := revise_parser);
@@ -114,8 +82,8 @@ let _=
   (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) ))
   end
 let _=
-  let open FanParsers
-    inbegin
+  let open FanParsers in
+    begin
     (pa_r (module P));
     (pa_rp (module P));
     (pa_q (module P));
@@ -123,5 +91,5 @@ let _=
     (pa_l (module P));
     (pa_m (module P))
     end
-let  normal (() ) = (Toploop.parse_toplevel_phrase := Parse.toplevel_phrase)
-let  revise (() ) = (Toploop.parse_toplevel_phrase := revise_parser)
+let normal (() ) = (Toploop.parse_toplevel_phrase := Parse.toplevel_phrase)
+let revise (() ) = (Toploop.parse_toplevel_phrase := revise_parser)

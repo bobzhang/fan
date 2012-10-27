@@ -1,105 +1,95 @@
 module Make (U:sig  end) : Sig.PRECAST =
   struct module Syntax  = (OCamlInitSyntax.Make) (U)
-    let  sig_item_parser =
+    let sig_item_parser =
       (ref (
         (fun ?directive_handler:(_) ->
           (fun (_) -> (fun (_) -> (failwith "No interface parser")))) ))
-    let  str_item_parser =
+    let str_item_parser =
       (ref (
         (fun ?directive_handler:(_) ->
           (fun (_) -> (fun (_) -> (failwith "No implementation parser")))) ))
-    let  sig_item_printer =
+    let sig_item_printer =
       (ref (
         (fun ?input_file:(_) ->
           (fun ?output_file:(_) ->
             (fun (_) -> (failwith "No interface printer")))) ))
-    let  str_item_printer =
+    let str_item_printer =
       (ref (
         (fun ?input_file:(_) ->
           (fun ?output_file:(_) ->
             (fun (_) -> (failwith "No implementation printer")))) ))
-    let  callbacks = (Queue.create () ) let  loaded_modules = (ref [] )
-    let  iter_and_take_callbacks (f) =
-      
-      let rec  loop (() ) = (loop ( (f ( (Queue.take callbacks) )) )) in
-      
-      (try (loop () ) with
-      | Queue.Empty  -> ())
-    let  declare_dyn_module (m) (f) =
+    let callbacks = (Queue.create () ) let loaded_modules = (ref [] )
+    let iter_and_take_callbacks (f) =
+      let rec loop (() ) = (loop ( (f ( (Queue.take callbacks) )) )) in begin
+        try (loop () ) with | Queue.Empty  ->   () end
+    let declare_dyn_module (m) (f) =
       begin
       (loaded_modules := ( m::loaded_modules.contents ));
       (Queue.add (m,f) callbacks)
-      end let  register_str_item_parser (f) = (str_item_parser := f)
-    let  register_sig_item_parser (f) = (sig_item_parser := f)
-    let  register_parser (f) (g) =
+      end let register_str_item_parser (f) = (str_item_parser := f)
+    let register_sig_item_parser (f) = (sig_item_parser := f)
+    let register_parser (f) (g) =
       begin
       (str_item_parser := f);
       (sig_item_parser := g)
       end
-    let  current_parser (() ) =
+    let current_parser (() ) =
       (( str_item_parser.contents ),( sig_item_parser.contents ))
-    let  register_str_item_printer (f) = (str_item_printer := f)
-    let  register_sig_item_printer (f) = (sig_item_printer := f)
-    let  register_printer (f) (g) =
+    let register_str_item_printer (f) = (str_item_printer := f)
+    let register_sig_item_printer (f) = (sig_item_printer := f)
+    let register_printer (f) (g) =
       begin
       (str_item_printer := f);
       (sig_item_printer := g)
       end
-    let  current_printer (() ) =
+    let current_printer (() ) =
       (( str_item_printer.contents ),( sig_item_printer.contents ))
-    let  plugin (((module Id)  : (module Sig.Id)))
+    let plugin (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.PLUGIN))) =
       (declare_dyn_module Id.name (
         (fun (_) -> let module M = (Maker) (struct  end) in ()) ))
-    let  syntax_plugin (((module Id)  : (module Sig.Id)))
+    let syntax_plugin (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.SyntaxPlugin))) =
       (declare_dyn_module Id.name (
         (fun (_) -> let module M = (Maker) (Syntax) in ()) ))
-    let  syntax_extension (((module Id)  : (module Sig.Id)))
+    let syntax_extension (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.SyntaxExtension))) =
       (declare_dyn_module Id.name (
         (fun (_) -> let module M = (Maker) (Syntax) in ()) ))
-    let  printer_plugin (((module Id)  : (module Sig.Id)))
+    let printer_plugin (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.PrinterPlugin))) =
       (declare_dyn_module Id.name (
         (fun (_) ->
           let module M = (Maker) (Syntax) in
             (register_printer M.print_implem M.print_interf)) ))
-    let  replace_printer (((module Id)  : (module Sig.Id)))
+    let replace_printer (((module Id)  : (module Sig.Id)))
       (((module P)  : (module Sig.PrinterImpl))) =
       (declare_dyn_module Id.name (
         (fun (_) -> (register_printer P.print_implem P.print_interf)) ))
-    let  replace_parser (((module Id)  : (module Sig.Id)))
+    let replace_parser (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.ParserImpl))) =
       (declare_dyn_module Id.name (
         (fun (_) -> (register_parser Maker.parse_implem Maker.parse_interf))
         ))
-    let  parser_plugin (((module Id)  : (module Sig.Id)))
+    let parser_plugin (((module Id)  : (module Sig.Id)))
       (((module Maker)  : (module Sig.ParserPlugin))) =
       (declare_dyn_module Id.name (
         (fun (_) ->
           let module M = (Maker) (Syntax) in
             (register_parser M.parse_implem M.parse_interf)) ))
-    let  enable_ocaml_printer (() ) =
+    let enable_ocaml_printer (() ) =
       (replace_printer (module PrinterOCaml.Id) (module PrinterOCaml.P))
-    let  enable_dump_ocaml_ast_printer (() ) =
+    let enable_dump_ocaml_ast_printer (() ) =
       (replace_printer (module PrinterDumpOCamlAst.Id) (module
         PrinterDumpOCamlAst.P))
-    let  enable_dump_camlp4_ast_printer (() ) =
+    let enable_dump_camlp4_ast_printer (() ) =
       (replace_printer (module PrinterDumpCamlp4Ast.Id) (module
         PrinterDumpCamlp4Ast.P))
-    let  enable_null_printer (() ) =
+    let enable_null_printer (() ) =
       (replace_printer (module PrinterNull.Id) (module PrinterNull.P))
-    let  enable_auto (isatty) =
-      if
-      (isatty () )
-      then
-      begin
-      (enable_ocaml_printer () )
-      end
-      else
-      begin
-      (enable_dump_ocaml_ast_printer () )
+    let enable_auto (isatty) =
+      if (isatty () ) then begin (enable_ocaml_printer () )
+      end else begin (enable_dump_ocaml_ast_printer () )
       end
     module Printers  =
       struct module OCaml  = PrinterOCaml.P
@@ -110,17 +100,17 @@ module Make (U:sig  end) : Sig.PRECAST =
     let _= (str_item_parser := Syntax.parse_implem)
     module CurrentParser  =
       struct
-        let  parse_interf ?directive_handler  (loc) (strm) =
+        let parse_interf ?directive_handler  (loc) (strm) =
           ((sig_item_parser.contents) ?directive_handler:directive_handler
             loc strm)
-        let  parse_implem ?directive_handler  (loc) (strm) =
+        let parse_implem ?directive_handler  (loc) (strm) =
           ((str_item_parser.contents) ?directive_handler:directive_handler
             loc strm) end
     module CurrentPrinter  =
       struct
-        let  print_interf ?input_file  ?output_file  (ast) =
+        let print_interf ?input_file  ?output_file  (ast) =
           ((sig_item_printer.contents) ?input_file:input_file
             ?output_file:output_file ast)
-        let  print_implem ?input_file  ?output_file  (ast) =
+        let print_implem ?input_file  ?output_file  (ast) =
           ((str_item_printer.contents) ?input_file:input_file
             ?output_file:output_file ast) end end 
