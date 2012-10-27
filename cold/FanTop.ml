@@ -1,4 +1,6 @@
-module P  = (MakePreCast.Make) (struct  end)
+module P = MakePreCast.Make(struct
+  
+  end)
 open P
 let wrap (parse_fun) (lb) =
   let ()  = (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) )) in
@@ -12,8 +14,8 @@ let wrap (parse_fun) (lb) =
                           end
       | _ ->   (parse_fun token_stream) end
     with
-    | (((End_of_file  |Sys.Break )
-         |FanLoc.Exc_located(_,(End_of_file  |Sys.Break ))) as x)
+    | ((End_of_file |Sys.Break
+        |FanLoc.Exc_located(_,(End_of_file |Sys.Break ))) as x)
       ->   (raise x)
     | FanLoc.Exc_located(loc,y) ->
         begin
@@ -26,7 +28,7 @@ let wrap (parse_fun) (lb) =
         (Format.eprintf "@[<0>%s@]@." ( (Printexc.to_string x) ));
         (raise Exit )
         end
-    end
+  end
 let toplevel_phrase (token_stream) = begin match
   (Gram.parse_origin_tokens (
     (Syntax.top_phrase : Ast.str_item  option  Gram.t  ) ) token_stream) with
@@ -42,7 +44,7 @@ let use_file (token_stream) =
       let (pl,stopped_at_directive) =
         (Gram.parse_origin_tokens Syntax.use_file token_stream) in
       if (stopped_at_directive <> None ) then begin
-      begin match pl with
+        begin match pl with
         | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
             begin
             (Topdirs.dir_load Format.std_formatter s);
@@ -54,19 +56,23 @@ let use_file (token_stream) =
             (loop () )
             end
         | _ ->   (pl,false ) end
-      end else begin (pl,true )
+      end else begin
+        (pl,true )
       end in
     (loop () ) in
   let pl =
-    if eoi then begin []
+    if eoi then begin
+      []
     end else begin
-    let rec loop (() ) =
-      let (pl,stopped_at_directive) =
-        (Gram.parse_origin_tokens Syntax.use_file token_stream) in
-      if (stopped_at_directive <> None ) then begin (pl @ ( (loop () ) ))
-      end else begin pl
-      end in
-    (loop () )
+      let rec loop (() ) =
+        let (pl,stopped_at_directive) =
+          (Gram.parse_origin_tokens Syntax.use_file token_stream) in
+        if (stopped_at_directive <> None ) then begin
+          (pl @ ( (loop () ) ))
+        end else begin
+          pl
+        end in
+      (loop () )
     end in
   (List.map Ast2pt.phrase ( (pl0 @ pl) ))
 let revise_parser = (wrap toplevel_phrase)

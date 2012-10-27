@@ -43,14 +43,17 @@ let debug_filtered_token_stream (entry) (tokens) =
   (filter_and_parse_tokens entry (
     (Stream.map ( (fun (t) -> (t,FanLoc.ghost)) ) tokens) ))
 let parse_string_safe (entry) (loc) (s) = begin try
-  (parse_string entry loc s) with
+  (parse_string entry loc s)
+  with
   | FanLoc.Exc_located(loc,e) ->
     begin
     (eprintf "%s" ( (Printexc.to_string e) ));
     (FanLoc.error_report (loc,s));
     (FanLoc.raise loc e)
     end end
-let wrap_stream_parser (p) (loc) (s) = begin try (p loc s) with
+let wrap_stream_parser (p) (loc) (s) = begin try
+  (p loc s)
+  with
   | FanLoc.Exc_located(loc,e) ->
     begin
     (eprintf "error: %s@." ( (FanLoc.to_string loc) ));
@@ -58,9 +61,10 @@ let wrap_stream_parser (p) (loc) (s) = begin try (p loc s) with
     end end
 let parse_file_with ~rule  (file) =
   if (Sys.file_exists file) then begin
-  let ch = (open_in file) in
-  let st = (Stream.of_channel ch) in (parse rule ( (FanLoc.mk file) ) st)
-  end else begin (failwithf "@[file: %s not found@]@." file)
+    let ch = (open_in file) in
+    let st = (Stream.of_channel ch) in (parse rule ( (FanLoc.mk file) ) st)
+  end else begin
+    (failwithf "@[file: %s not found@]@." file)
   end
 let delete_rule = Delete.delete_rule
 let srules (e) (rl) = `Stree

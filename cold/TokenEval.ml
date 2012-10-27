@@ -1,18 +1,21 @@
 let valch (x) = (( (Char.code x) ) - ( (Char.code '0') ))
 let valch_hex (x) =
   let d = (Char.code x) in
-  if (d >= 97) then begin (d - 87)
+  if (d >= 97) then begin
+    (d - 87)
   end else begin
-  if (d >= 65) then begin (d - 55)
-  end else begin (d - 48)
-  end
+    if (d >= 65) then begin
+      (d - 55)
+    end else begin
+      (d - 48)
+    end
   end
 let rec skip_indent ((__strm : _ Stream.t )) = begin match
   (Stream.peek __strm) with
-  | Some(' ' |'\t') ->   begin
-                         (Stream.junk __strm);
-                         (skip_indent __strm)
-                         end
+  | Some(' '|'\t') ->   begin
+                        (Stream.junk __strm);
+                        (skip_indent __strm)
+                        end
   | _ ->   () end
 let skip_opt_linefeed ((__strm : _ Stream.t )) = begin match
   (Stream.peek __strm) with
@@ -23,12 +26,13 @@ let skip_opt_linefeed ((__strm : _ Stream.t )) = begin match
   | _ ->   () end
 let chr (c) =
   if (( (c < 0) ) || ( (c > 255) )) then begin
-  (failwith "invalid char token")
-  end else begin (Char.chr c)
+    (failwith "invalid char token")
+  end else begin
+    (Char.chr c)
   end
 let backslash ((__strm : _ Stream.t )) = begin match (Stream.peek __strm)
   with
-  | Some(((((('\n' |'\r') |'\\') |'\'') |' ') |'"') as x) ->
+  | Some(('\n'|'\r'|'\\'|'\''|' '|'"') as x) ->
       begin
       (Stream.junk __strm);
       x
@@ -83,14 +87,14 @@ let backslash ((__strm : _ Stream.t )) = begin match (Stream.peek __strm)
       match
       (Stream.peek __strm)
       with
-      | Some(((('0'..'9') |('a'..'f')) |('A'..'F')) as c1) ->
+      | Some(('0'|('1'..'9')|('a'..'f')|('A'..'F')) as c1) ->
           begin
           (Stream.junk __strm);
           begin
           match
           (Stream.peek __strm)
           with
-          | Some(((('0'..'9') |('a'..'f')) |('A'..'F')) as c2) ->
+          | Some(('0'|('1'..'9')|('a'..'f')|('A'..'F')) as c2) ->
               begin
               (Stream.junk __strm);
               (chr ( (( (16 * ( (valch_hex c1) )) ) + ( (valch_hex c2) )) ))
@@ -117,8 +121,10 @@ let backslash_in_string (strict) (store) ((__strm : _ Stream.t )) = begin
         end
       end
   | _ ->
-      begin match begin try Some ((backslash __strm)) with
-      | Stream.Failure  ->   None end with
+      begin match begin try Some ((backslash __strm))
+      with
+      | Stream.Failure  ->   None
+    end with
       | Some(x) ->   (store x)
       | _ ->
           begin match (Stream.peek __strm) with
@@ -131,25 +137,29 @@ let backslash_in_string (strict) (store) ((__strm : _ Stream.t )) = begin
           | _ ->   (failwith "invalid string token") end
       end end
 let char (s) =
-  if (( (String.length s) ) = 1) then begin s.[0]
+  if (( (String.length s) ) = 1) then begin
+    s.[0]
   end else begin
-  if (( (String.length s) ) = 0) then begin
-  (failwith "invalid char token")
-  end else begin
-  let (__strm : _ Stream.t ) = (Stream.of_string s) in begin match
-    (Stream.peek __strm) with
-    | Some('\\') ->
-        begin
-        (Stream.junk __strm);
-        begin
-        try
-        (backslash __strm)
-        with
-        | Stream.Failure  ->   (raise ( Stream.Error ("") ))
-        end
-        end
-    | _ ->   (failwith "invalid char token") end
-  end
+    if (( (String.length s) ) = 0) then begin
+      (failwith "invalid char token")
+    end else begin
+      let (__strm : _ Stream.t ) = (Stream.of_string s) in begin match
+        (Stream.peek __strm) with
+        | Some('\\') ->
+            begin
+            (Stream.junk __strm);
+            begin
+            try
+            (backslash __strm)
+            with
+            | Stream.Failure
+            
+            ->
+              (raise ( Stream.Error ("") ))
+          end
+            end
+        | _ ->   (failwith "invalid char token") end
+    end
   end
 let string ?strict  (s) =
   let buf = (Buffer.create 23) in
@@ -160,9 +170,10 @@ let string ?strict  (s) =
         begin
         (Stream.junk __strm);
         let _ = begin try
-          (backslash_in_string ( (strict <> None ) ) store __strm) with
-          | Stream.Failure  ->   (raise ( Stream.Error ("") )) end in
-        (parse __strm)
+          (backslash_in_string ( (strict <> None ) ) store __strm)
+          with
+          | Stream.Failure  ->   (raise ( Stream.Error ("") ))
+        end in (parse __strm)
         end
     | Some(c) ->
         begin

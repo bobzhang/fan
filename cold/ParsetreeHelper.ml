@@ -27,8 +27,10 @@ let mkpolytype (t) = begin match t.ptyp_desc with
   | _ ->   {t with ptyp_desc = ( Ptyp_poly (([] ,t)) )} end
 let array_function_no_loc (str) (name) =
   (ldot ( (lident str) ) (
-    if FanConfig.unsafe.contents then begin ("unsafe_" ^ name)
-    end else begin name
+    if FanConfig.unsafe.contents then begin
+      ("unsafe_" ^ name)
+    end else begin
+      name
     end ))
 let array_function (loc) (str) (name) =
   (with_loc ( (array_function_no_loc str name) ) loc)

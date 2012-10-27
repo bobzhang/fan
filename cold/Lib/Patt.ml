@@ -5,8 +5,10 @@ let mklist (_loc) =
     | []  ->   Ast.PaId ((_loc,( Ast.IdUid ((_loc,"[]")) )))
     | p1::pl ->
         let _loc =
-          if top then begin _loc
-          end else begin (FanLoc.merge ( (loc_of_patt p1) ) _loc)
+          if top then begin
+            _loc
+          end else begin
+            (FanLoc.merge ( (loc_of_patt p1) ) _loc)
           end in
         Ast.PaApp
           ((_loc,(

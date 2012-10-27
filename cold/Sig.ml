@@ -1,6 +1,6 @@
 module type Id = sig val name :  string  val version :  string  end
 module type Warning =
-  sig type  warning = ( FanLoc.t  -> ( string  ->  unit ) )  
+  sig type warning = ( FanLoc.t  -> ( string  ->  unit ) )  
   val default_warning :  warning  val current_warning :  warning  ref 
   val print_warning :  warning  end
 type ('a,'loc) stream_filter = (('a*'loc) Stream.t  -> ('a*'loc) Stream.t )  

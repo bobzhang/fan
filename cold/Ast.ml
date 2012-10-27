@@ -1,33 +1,33 @@
-type  loc =  FanLoc.t  
-and  meta_bool =  
+type loc =  FanLoc.t  
+and meta_bool =  
   | BTrue
   | BFalse
   | BAnt of  string  
-and  rec_flag =  
+and rec_flag =  
   | ReRecursive
   | ReNil
   | ReAnt of  string  
-and  direction_flag =  
+and direction_flag =  
   | DiTo
   | DiDownto
   | DiAnt of  string  
-and  mutable_flag =  
+and mutable_flag =  
   | MuMutable
   | MuNil
   | MuAnt of  string  
-and  private_flag =  
+and private_flag =  
   | PrPrivate
   | PrNil
   | PrAnt of  string  
-and  virtual_flag =  
+and virtual_flag =  
   | ViVirtual
   | ViNil
   | ViAnt of  string  
-and  override_flag =  
+and override_flag =  
   | OvOverride
   | OvNil
   | OvAnt of  string  
-and  row_var_flag =  
+and row_var_flag =  
   | RvRowVar
   | RvNil
   | RvAnt of  string  
@@ -39,13 +39,13 @@ and 'a meta_list =
   | LNil
   | LCons of 'a*'a meta_list 
   | LAnt of  string  
-and  ident =  
+and ident =  
   | IdAcc of  loc * ident * ident 
   | IdApp of  loc * ident * ident 
   | IdLid of  loc * string 
   | IdUid of  loc * string 
   | IdAnt of  loc * string  
-and  ctyp =  
+and ctyp =  
   | TyNil of  loc 
   | TyAli of  loc * ctyp * ctyp 
   | TyAny of  loc 
@@ -86,7 +86,7 @@ and  ctyp =
   | TyOfAmp of  loc * ctyp * ctyp 
   | TyPkg of  loc * module_type 
   | TyAnt of  loc * string  
-and  patt =  
+and patt =  
   | PaNil of  loc 
   | PaId of  loc * ident 
   | PaAli of  loc * patt * patt 
@@ -116,7 +116,7 @@ and  patt =
   | PaVrn of  loc * string 
   | PaLaz of  loc * patt 
   | PaMod of  loc * string  
-and  expr =  
+and expr =  
   | ExNil of  loc 
   | ExId of  loc * ident 
   | ExAcc of  loc * expr * expr 
@@ -161,7 +161,7 @@ and  expr =
   | ExOpI of  loc * ident * expr 
   | ExFUN of  loc * string * expr 
   | ExPkg of  loc * module_expr  
-and  module_type =  
+and module_type =  
   | MtNil of  loc 
   | MtId of  loc * ident 
   | MtFun of  loc * string * module_type * module_type 
@@ -170,7 +170,7 @@ and  module_type =
   | MtWit of  loc * module_type * with_constr 
   | MtOf of  loc * module_expr 
   | MtAnt of  loc * string  
-and  sig_item =  
+and sig_item =  
   | SgNil of  loc 
   | SgCls of  loc * class_type 
   | SgClt of  loc * class_type 
@@ -186,7 +186,7 @@ and  sig_item =
   | SgTyp of  loc * ctyp 
   | SgVal of  loc * string * ctyp 
   | SgAnt of  loc * string  
-and  with_constr =  
+and with_constr =  
   | WcNil of  loc 
   | WcTyp of  loc * ctyp * ctyp 
   | WcMod of  loc * ident * ident 
@@ -194,28 +194,28 @@ and  with_constr =
   | WcMoS of  loc * ident * ident 
   | WcAnd of  loc * with_constr * with_constr 
   | WcAnt of  loc * string  
-and  binding =  
+and binding =  
   | BiNil of  loc 
   | BiAnd of  loc * binding * binding 
   | BiEq of  loc * patt * expr 
   | BiAnt of  loc * string  
-and  rec_binding =  
+and rec_binding =  
   | RbNil of  loc 
   | RbSem of  loc * rec_binding * rec_binding 
   | RbEq of  loc * ident * expr 
   | RbAnt of  loc * string  
-and  module_binding =  
+and module_binding =  
   | MbNil of  loc 
   | MbAnd of  loc * module_binding * module_binding 
   | MbColEq of  loc * string * module_type * module_expr 
   | MbCol of  loc * string * module_type 
   | MbAnt of  loc * string  
-and  match_case =  
+and match_case =  
   | McNil of  loc 
   | McOr of  loc * match_case * match_case 
   | McArr of  loc * patt * expr * expr 
   | McAnt of  loc * string  
-and  module_expr =  
+and module_expr =  
   | MeNil of  loc 
   | MeId of  loc * ident 
   | MeApp of  loc * module_expr * module_expr 
@@ -224,7 +224,7 @@ and  module_expr =
   | MeTyc of  loc * module_expr * module_type 
   | MePkg of  loc * expr 
   | MeAnt of  loc * string  
-and  str_item =  
+and str_item =  
   | StNil of  loc 
   | StCls of  loc * class_expr 
   | StClt of  loc * class_type 
@@ -241,7 +241,7 @@ and  str_item =
   | StTyp of  loc * ctyp 
   | StVal of  loc * rec_flag * binding 
   | StAnt of  loc * string  
-and  class_type =  
+and class_type =  
   | CtNil of  loc 
   | CtCon of  loc * virtual_flag * ident * ctyp 
   | CtFun of  loc * ctyp * class_type 
@@ -250,7 +250,7 @@ and  class_type =
   | CtCol of  loc * class_type * class_type 
   | CtEq of  loc * class_type * class_type 
   | CtAnt of  loc * string  
-and  class_sig_item =  
+and class_sig_item =  
   | CgNil of  loc 
   | CgCtr of  loc * ctyp * ctyp 
   | CgSem of  loc * class_sig_item * class_sig_item 
@@ -259,7 +259,7 @@ and  class_sig_item =
   | CgVal of  loc * string * mutable_flag * virtual_flag * ctyp 
   | CgVir of  loc * string * private_flag * ctyp 
   | CgAnt of  loc * string  
-and  class_expr =  
+and class_expr =  
   | CeNil of  loc 
   | CeApp of  loc * class_expr * expr 
   | CeCon of  loc * virtual_flag * ident * ctyp 
@@ -270,7 +270,7 @@ and  class_expr =
   | CeAnd of  loc * class_expr * class_expr 
   | CeEq of  loc * class_expr * class_expr 
   | CeAnt of  loc * string  
-and  class_str_item =  
+and class_str_item =  
   | CrNil of  loc 
   | CrSem of  loc * class_str_item * class_str_item 
   | CrCtr of  loc * ctyp * ctyp 

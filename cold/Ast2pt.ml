@@ -22,14 +22,18 @@ let conv_con =
     (List.iter ( (fun ((s,s')) -> (Hashtbl.add t s s')) ) (
       [("True","true");("False","false");(" True","True");(" False","False")]
       ));
-    (fun (s) -> begin try (Hashtbl.find t s) with | Not_found  ->   s end)
+    (fun (s) -> begin try (Hashtbl.find t s)
+      with
+      | Not_found  ->   s end)
     end
 let conv_lab =
   let t = (Hashtbl.create 73) in
   begin
     (List.iter ( (fun ((s,s')) -> (Hashtbl.add t s s')) ) (
       [("val","contents")] ));
-    (fun (s) -> begin try (Hashtbl.find t s) with | Not_found  ->   s end)
+    (fun (s) -> begin try (Hashtbl.find t s)
+      with
+      | Not_found  ->   s end)
     end
 let mkrf =
   (function
@@ -51,15 +55,15 @@ let ident_tag ?(conv_lid=(fun (x) -> x))  (i) =
         begin match (acc,s) with
         | (None ,"") ->   None
         | (None ,s) ->   Some ((( (lident s) ),`uident))
-        | (Some(_,(`uident |`app)),"") ->   acc
-        | (Some(x,(`uident |`app)),s) ->   Some ((( (ldot x s) ),`uident))
+        | (Some(_,(`uident|`app)),"") ->   acc
+        | (Some(x,(`uident|`app)),s) ->   Some ((( (ldot x s) ),`uident))
         | _ ->
             (error ( (Camlp4Ast.loc_of_ident i) ) "invalid long identifier")
         end
     | Ast.IdLid(_,s) ->
         let x = begin match acc with
           | None  ->   (lident ( (conv_lid s) ))
-          | Some(acc,(`uident |`app)) ->   (ldot acc ( (conv_lid s) ))
+          | Some(acc,(`uident|`app)) ->   (ldot acc ( (conv_lid s) ))
           | _ ->   (error ( (loc_of_ident i) ) "invalid long identifier")
           end in
         Some ((x,`lident))
@@ -115,9 +119,9 @@ let rec ctyp =
       let (f,al) = (Ctyp.fa []  f) in
       let (is_cls,li) = (ctyp_long_id f) in
       if is_cls then begin
-      (mktyp loc ( Ptyp_class ((li,( (List.map ctyp al) ),[] )) ))
+        (mktyp loc ( Ptyp_class ((li,( (List.map ctyp al) ),[] )) ))
       end else begin
-      (mktyp loc ( Ptyp_constr ((li,( (List.map ctyp al) ))) ))
+        (mktyp loc ( Ptyp_constr ((li,( (List.map ctyp al) ))) ))
       end
   | TyArr(loc,TyLab(_,lab,t1),t2) ->
       (mktyp loc ( Ptyp_arrow ((lab,( (ctyp t1) ),( (ctyp t2) ))) ))
@@ -166,11 +170,9 @@ let rec ctyp =
   | TyCol(loc,_,_) ->   (error loc "type1 : type2 not allowed here")
   | TySem(loc,_,_) ->   (error loc "type1 ; type2 not allowed here")
   | TyAnt(loc,_) ->   (error loc "antiquotation not allowed here")
-  | (((((((((((((TyOfAmp(_,_,_) |TyAmp(_,_,_)) |TySta(_,_,_)) |TyCom(_,_,_))
-               |TyVrn(_,_)) |TyQuM(_,_)) |TyQuP(_,_)) |TyDcl(_,_,_,_,_))
-           |TyAnP(_)) |TyAnM(_)) |TyTypePol(_,_,_)) |TyObj(_,_,RvAnt(_)))
-       |TyNil(_)) |TyTup(_,_))
-    ->   assert false) and row_field =
+  | (TyOfAmp(_,_,_)|TyAmp(_,_,_)|TySta(_,_,_)|TyCom(_,_,_)|TyVrn(_,_)|TyQuM
+    (_,_)|TyQuP(_,_)|TyDcl(_,_,_,_,_)|TyAnP(_)|TyAnM(_)|TyTypePol(_,_,_)|TyObj
+    (_,_,RvAnt(_))|TyNil(_)|TyTup(_,_)) ->   assert false) and row_field =
   (function
   | Ast.TyNil(_) ->   []
   | Ast.TyVrn(_,i) ->   [Rtag ((i,true ,[] ))]
@@ -205,8 +207,10 @@ let mktype (loc) (tl) (cl) (tk) (tp) (tm) =
   let (params,variance) = (List.split tl) in
   {ptype_params = params;ptype_cstrs = cl;ptype_kind = tk;ptype_private = tp;
     ptype_manifest = tm;ptype_loc = loc;ptype_variance = variance}
-let mkprivate' (m) = if m then begin Private
-                     end else begin Public
+let mkprivate' (m) = if m then begin
+                       Private
+                     end else begin
+                       Public
                      end
 let mkprivate =
   (function
@@ -248,12 +252,12 @@ let rec type_decl (tl) (cl) (loc) (m) (pflag) =
         (mkprivate' pflag) ) m)
   | t ->
       if (m <> None ) then begin
-      (error loc "only one manifest type allowed by definition")
+        (error loc "only one manifest type allowed by definition")
       end else begin
-      let m = begin match t with
-        | Ast.TyNil(_) ->   None
-        | _ ->   Some ((ctyp t)) end in
-      (mktype loc tl cl Ptype_abstract  ( (mkprivate' pflag) ) m)
+        let m = begin match t with
+          | Ast.TyNil(_) ->   None
+          | _ ->   Some ((ctyp t)) end in
+        (mktype loc tl cl Ptype_abstract  ( (mkprivate' pflag) ) m)
       end)
 let type_decl (tl) (cl) (t) (loc) = (type_decl tl cl loc None  false  t)
 let mkvalue_desc (loc) (t) (p) =
@@ -269,8 +273,7 @@ let mkmutable =
   | Ast.MuNil  ->   Immutable
   | _ ->   assert false)
 let paolab (lab) (p) = begin match (lab,p) with
-  | ("",(Ast.PaId(_,Ast.IdLid(_,i))
-          |Ast.PaTyc(_,Ast.PaId(_,Ast.IdLid(_,i)),_)))
+  | ("",(Ast.PaId(_,Ast.IdLid(_,i))|Ast.PaTyc(_,Ast.PaId(_,Ast.IdLid(_,i)),_)))
     ->   i
   | ("",p) ->   (error ( (loc_of_patt p) ) "bad ast in label")
   | _ ->   lab end
@@ -336,25 +339,27 @@ let rec patt_fa (al) =
   | f ->   (f,al))
 let rec deep_mkrangepat (loc) (c1) (c2) =
   if (c1 = c2) then begin
-  (mkghpat loc ( Ppat_constant (Const_char (c1)) ))
+    (mkghpat loc ( Ppat_constant (Const_char (c1)) ))
   end else begin
-  (mkghpat loc (
-    Ppat_or
-      ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
-        (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
-        ))) ))
+    (mkghpat loc (
+      Ppat_or
+        ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
+          (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) )
+            c2) ))) ))
   end
 let rec mkrangepat (loc) (c1) (c2) =
-  if (c1 > c2) then begin (mkrangepat loc c2 c1)
+  if (c1 > c2) then begin
+    (mkrangepat loc c2 c1)
   end else begin
-  if (c1 = c2) then begin (mkpat loc ( Ppat_constant (Const_char (c1)) ))
-  end else begin
-  (mkpat loc (
-    Ppat_or
-      ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
-        (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) ) c2)
-        ))) ))
-  end
+    if (c1 = c2) then begin
+      (mkpat loc ( Ppat_constant (Const_char (c1)) ))
+    end else begin
+      (mkpat loc (
+        Ppat_or
+          ((( (mkghpat loc ( Ppat_constant (Const_char (c1)) )) ),(
+            (deep_mkrangepat loc ( (Char.chr ( (( (Char.code c1) ) + 1) )) )
+              c2) ))) ))
+    end
   end
 let rec patt =
   (function
@@ -385,21 +390,21 @@ let rec patt =
       let al = (List.map patt al) in begin match (patt f).ppat_desc with
         | Ppat_construct(li,None ,_) ->
             if (constructors_arity () ) then begin
-            (mkpat loc (
-              Ppat_construct
-                ((li,( Some ((mkpat loc ( Ppat_tuple (al) ))) ),true )) ))
+              (mkpat loc (
+                Ppat_construct
+                  ((li,( Some ((mkpat loc ( Ppat_tuple (al) ))) ),true )) ))
             end else begin
-            let a = begin match al with
-              | a::[]  ->   a
-              | _ ->   (mkpat loc ( Ppat_tuple (al) )) end in
-            (mkpat loc ( Ppat_construct ((li,( Some (a) ),false )) ))
+              let a = begin match al with
+                | a::[]  ->   a
+                | _ ->   (mkpat loc ( Ppat_tuple (al) )) end in
+              (mkpat loc ( Ppat_construct ((li,( Some (a) ),false )) ))
             end
         | Ppat_variant(s,None ) ->
             let a =
               if (constructors_arity () ) then begin
-              (mkpat loc ( Ppat_tuple (al) ))
+                (mkpat loc ( Ppat_tuple (al) ))
               end else begin
-              begin match al with
+                begin match al with
                 | a::[]  ->   a
                 | _ ->   (mkpat loc ( Ppat_tuple (al) )) end
               end in
@@ -413,37 +418,37 @@ let rec patt =
   | PaChr(loc,s) ->
       (mkpat loc ( Ppat_constant (Const_char ((char_of_char_token loc s))) ))
   | PaInt(loc,s) ->
-      let i = begin try (int_of_string s) with
+      let i = begin try (int_of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int")
-        end in
-      (mkpat loc ( Ppat_constant (Const_int (i)) ))
+      end in (mkpat loc ( Ppat_constant (Const_int (i)) ))
   | PaInt32(loc,s) ->
-      let i32 = begin try (Int32.of_string s) with
+      let i32 = begin try (Int32.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int32")
-        end in
-      (mkpat loc ( Ppat_constant (Const_int32 (i32)) ))
+      end in (mkpat loc ( Ppat_constant (Const_int32 (i32)) ))
   | PaInt64(loc,s) ->
-      let i64 = begin try (Int64.of_string s) with
+      let i64 = begin try (Int64.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int64")
-        end in
-      (mkpat loc ( Ppat_constant (Const_int64 (i64)) ))
+      end in (mkpat loc ( Ppat_constant (Const_int64 (i64)) ))
   | PaNativeInt(loc,s) ->
-      let nati = begin try (Nativeint.of_string s) with
+      let nati = begin try (Nativeint.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type nativeint")
-        end in
-      (mkpat loc ( Ppat_constant (Const_nativeint (nati)) ))
+      end in (mkpat loc ( Ppat_constant (Const_nativeint (nati)) ))
   | PaFlo(loc,s) ->
       (mkpat loc ( Ppat_constant (Const_float ((remove_underscores s))) ))
   | PaLab(loc,_,_) ->   (error loc "labeled pattern not allowed here")
-  | (PaOlb(loc,_,_) |PaOlbi(loc,_,_,_)) ->
+  | (PaOlb(loc,_,_)|PaOlbi(loc,_,_,_)) ->
       (error loc "labeled pattern not allowed here")
   | PaOrp(loc,p1,p2) ->
       (mkpat loc ( Ppat_or ((( (patt p1) ),( (patt p2) ))) ))
@@ -460,8 +465,10 @@ let rec patt =
                         | _ ->   false) in
       let (wildcards,ps) = (List.partition is_wildcard ps) in
       let is_closed =
-        if (wildcards = [] ) then begin Closed
-        end else begin Open
+        if (wildcards = [] ) then begin
+          Closed
+        end else begin
+          Open
         end in
       (mkpat loc ( Ppat_record ((( (List.map mklabpat ps) ),is_closed)) ))
   | PaStr(loc,s) ->
@@ -479,7 +486,7 @@ let rec patt =
   | PaVrn(loc,s) ->   (mkpat loc ( Ppat_variant ((( (conv_con s) ),None )) ))
   | PaLaz(loc,p) ->   (mkpat loc ( Ppat_lazy ((patt p)) ))
   | PaMod(loc,m) ->   (mkpat loc ( Ppat_unpack ((with_loc m loc)) ))
-  | ((((PaEq(_,_,_) |PaSem(_,_,_)) |PaCom(_,_,_)) |PaNil(_)) as p) ->
+  | ((PaEq(_,_,_)|PaSem(_,_,_)|PaCom(_,_,_)|PaNil(_)) as p) ->
       (error ( (loc_of_patt p) ) "invalid pattern")) and mklabpat =
   (function
   | Ast.PaEq(_,i,p) ->   (( (ident ~conv_lid:conv_lab i) ),( (patt p) ))
@@ -491,7 +498,7 @@ let override_flag (loc) =
   | _ ->   (error loc "antiquotation not allowed here"))
 let rec expr =
   (function
-  | ((ExAcc(loc,_,_) |Ast.ExId(loc,Ast.IdAcc(_,_,_))) as e) ->
+  | ((ExAcc(loc,_,_)|Ast.ExId(loc,Ast.IdAcc(_,_,_))) as e) ->
       let (e,l) = begin match (Expr.sep_expr []  e) with
         | (loc,ml,Ast.ExId(sloc,Ast.IdUid(_,s)))::l ->
             let ca = (constructors_arity () ) in
@@ -525,22 +532,22 @@ let rec expr =
         | Pexp_construct(li,None ,_) ->
             let al = (List.map snd al) in
             if (constructors_arity () ) then begin
-            (mkexp loc (
-              Pexp_construct
-                ((li,( Some ((mkexp loc ( Pexp_tuple (al) ))) ),true )) ))
+              (mkexp loc (
+                Pexp_construct
+                  ((li,( Some ((mkexp loc ( Pexp_tuple (al) ))) ),true )) ))
             end else begin
-            let a = begin match al with
-              | a::[]  ->   a
-              | _ ->   (mkexp loc ( Pexp_tuple (al) )) end in
-            (mkexp loc ( Pexp_construct ((li,( Some (a) ),false )) ))
+              let a = begin match al with
+                | a::[]  ->   a
+                | _ ->   (mkexp loc ( Pexp_tuple (al) )) end in
+              (mkexp loc ( Pexp_construct ((li,( Some (a) ),false )) ))
             end
         | Pexp_variant(s,None ) ->
             let al = (List.map snd al) in
             let a =
               if (constructors_arity () ) then begin
-              (mkexp loc ( Pexp_tuple (al) ))
+                (mkexp loc ( Pexp_tuple (al) ))
               end else begin
-              begin match al with
+                begin match al with
                 | a::[]  ->   a
                 | _ ->   (mkexp loc ( Pexp_tuple (al) )) end
               end in
@@ -621,33 +628,33 @@ let rec expr =
         Pexp_ifthenelse ((( (expr e1) ),( (expr e2) ),( Some ((expr e3)) )))
         ))
   | ExInt(loc,s) ->
-      let i = begin try (int_of_string s) with
+      let i = begin try (int_of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int")
-        end in
-      (mkexp loc ( Pexp_constant (Const_int (i)) ))
+      end in (mkexp loc ( Pexp_constant (Const_int (i)) ))
   | ExInt32(loc,s) ->
-      let i32 = begin try (Int32.of_string s) with
+      let i32 = begin try (Int32.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int32")
-        end in
-      (mkexp loc ( Pexp_constant (Const_int32 (i32)) ))
+      end in (mkexp loc ( Pexp_constant (Const_int32 (i32)) ))
   | ExInt64(loc,s) ->
-      let i64 = begin try (Int64.of_string s) with
+      let i64 = begin try (Int64.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type int64")
-        end in
-      (mkexp loc ( Pexp_constant (Const_int64 (i64)) ))
+      end in (mkexp loc ( Pexp_constant (Const_int64 (i64)) ))
   | ExNativeInt(loc,s) ->
-      let nati = begin try (Nativeint.of_string s) with
+      let nati = begin try (Nativeint.of_string s)
+        with
         | Failure(_) ->
           (error loc
             "Integer literal exceeds the range of representable integers of type nativeint")
-        end in
-      (mkexp loc ( Pexp_constant (Const_nativeint (nati)) ))
+      end in (mkexp loc ( Pexp_constant (Const_nativeint (nati)) ))
   | ExLab(loc,_,_) ->   (error loc "labeled expression not allowed here")
   | ExLaz(loc,e) ->   (mkexp loc ( Pexp_lazy ((expr e)) ))
   | ExLet(loc,rf,bi,e) ->
@@ -735,7 +742,7 @@ let rec expr =
   | Ast.ExSem(loc,_,_) ->
       (error loc
         "expr; expr: not allowed here, use do {...} or [|...|] to surround them")
-  | ((ExId(_,_) |ExNil(_)) as e) ->
+  | ((ExId(_,_)|ExNil(_)) as e) ->
       (error ( (loc_of_expr e) ) "invalid expr")) and patt_of_lab (_loc)
   (lab) =
   (function
@@ -979,7 +986,7 @@ let rec expr =
           ({pcsig_self = ( (ctyp t) );pcsig_fields = cil;pcsig_loc = loc}) ))
   | CtCon(loc,_,_,_) ->
       (error loc "invalid virtual class inside a class type")
-  | ((((CtAnt(_,_) |CtEq(_,_,_)) |CtCol(_,_,_)) |CtAnd(_,_,_)) |CtNil(_)) ->
+  | (CtAnt(_,_)|CtEq(_,_,_)|CtCol(_,_,_)|CtAnd(_,_,_)|CtNil(_)) ->
       assert false) and class_info_class_expr (ci) = begin match ci with
   | CeEq(_,CeCon(loc,vir,IdLid(nloc,name),params),ce) ->
       let (loc_params,(params,variance)) = begin match params with
@@ -993,8 +1000,8 @@ let rec expr =
         pci_loc = loc;pci_variance = variance}
   | ce ->   (error ( (loc_of_class_expr ce) ) "bad class definition") end and
   class_info_class_type (ci) = begin match ci with
-  | (CtEq(_,CtCon(loc,vir,IdLid(nloc,name),params),ct)
-      |CtCol(_,CtCon(loc,vir,IdLid(nloc,name),params),ct))
+  | (CtEq(_,CtCon(loc,vir,IdLid(nloc,name),params),ct)|CtCol(_,CtCon(loc,vir,IdLid
+                                                                    (nloc,name),params),ct))
     ->
       let (loc_params,(params,variance)) = begin match params with
         | Ast.TyNil(_) ->   (loc,([] ,[] ))
@@ -1068,17 +1075,20 @@ let rec expr =
         ))
   | CeCon(loc,_,_,_) ->
       (error loc "invalid virtual class inside a class expression")
-  | (((CeAnt(_,_) |CeEq(_,_,_)) |CeAnd(_,_,_)) |CeNil(_)) ->   assert false)
-  and class_str_item (c) (l) = begin match c with
+  | (CeAnt(_,_)|CeEq(_,_,_)|CeAnd(_,_,_)|CeNil(_)) ->   assert false) and
+  class_str_item (c) (l) = begin match c with
   | CrNil(_) ->   l
   | CrCtr(loc,t1,t2) ->
       (mkcf loc ( Pcf_constr ((( (ctyp t1) ),( (ctyp t2) ))) ))::l
   | Ast.CrSem(_,cst1,cst2) ->
       (class_str_item cst1 ( (class_str_item cst2 l) ))
   | CrInh(loc,ov,ce,pb) ->
-      let opb = if (pb = "") then begin None
-                end else begin Some (pb)
-                end in
+      let opb =
+        if (pb = "") then begin
+          None
+        end else begin
+          Some (pb)
+        end in
       (mkcf loc (
         Pcf_inher ((( (override_flag loc ov) ),( (class_expr ce) ),opb)) ))::l
   | CrIni(loc,e) ->   (mkcf loc ( Pcf_init ((expr e)) ))::l

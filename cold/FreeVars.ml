@@ -6,9 +6,8 @@ class
     method   acc :'accu= acc
     method   patt =
       (function
-      | ((Ast.PaId(_,Ast.IdLid(_,s)) |Ast.PaLab(_,s,Ast.PaNil(_)))
-          |Ast.PaOlb(_,s,Ast.PaNil(_)))
-        ->   {<acc = (f s acc)>}
+      | (Ast.PaId(_,Ast.IdLid(_,s))|Ast.PaLab(_,s,Ast.PaNil(_))|Ast.PaOlb
+        (_,s,Ast.PaNil(_))) ->   {<acc = (f s acc)>}
       | p ->   (super#patt p)) end
 let fold_pattern_vars (f) (p) (init) =
   (((new c_fold_pattern_vars) f init)#patt p)#acc
@@ -31,11 +30,12 @@ class
       (fun (bi) -> {<env = (fold_binding_vars SSet.add bi env)>})
     method   expr =
       (function
-      | ((Ast.ExId(_,Ast.IdLid(_,s)) |Ast.ExLab(_,s,Ast.ExNil(_)))
-          |Ast.ExOlb(_,s,Ast.ExNil(_)))
-        ->
-          if (SSet.mem s env) then begin o
-          end else begin {<free = (f s free)>}
+      | (Ast.ExId(_,Ast.IdLid(_,s))|Ast.ExLab(_,s,Ast.ExNil(_))|Ast.ExOlb
+        (_,s,Ast.ExNil(_))) ->
+          if (SSet.mem s env) then begin
+            o
+          end else begin
+            {<free = (f s free)>}
           end
       | Ast.ExLet(_,Ast.ReNil ,bi,e) ->
           ((((o#add_binding bi)#expr e)#set_env env)#binding bi)
@@ -43,7 +43,7 @@ class
           ((((o#add_binding bi)#expr e)#binding bi)#set_env env)
       | Ast.ExFor(_,s,e1,e2,_,e3) ->
           (((((o#expr e1)#expr e2)#add_atom s)#expr e3)#set_env env)
-      | (Ast.ExId(_,_) |Ast.ExNew(_,_)) ->   o
+      | (Ast.ExId(_,_)|Ast.ExNew(_,_)) ->   o
       | Ast.ExObj(_,p,cst) ->
           (((o#add_patt p)#class_str_item cst)#set_env env)
       | e ->   (super#expr e))

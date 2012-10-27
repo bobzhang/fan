@@ -1,7 +1,7 @@
 open Format
 open LibUtil
 open FanSig
-type  error =  
+type error =  
   | Illegal_token of  string 
   | Keyword_as_label of  string 
   | Illegal_token_pattern of ( string * string )
@@ -60,7 +60,7 @@ let check_keyword (_) = true
 let error_on_unknown_keywords = (ref false )
 let rec ignore_layout ((__strm : _ Stream.t )) = begin match
   (Stream.peek __strm) with
-  | Some(((((`COMMENT _) |(`BLANKS _)) |`NEWLINE) |(`LINE_DIRECTIVE _)),_) ->
+  | Some(((`COMMENT _)|(`BLANKS _)|`NEWLINE|(`LINE_DIRECTIVE _)),_) ->
       begin
       (Stream.junk __strm);
       (ignore_layout __strm)
@@ -79,19 +79,18 @@ let match_keyword (kwd) =
   | _ ->   false)
 let extract_string =
   (function
-  | ((((((((((((((((`KEYWORD s) |(`SYMBOL s)) |(`LIDENT s)) |(`UIDENT s))
-                 |(`INT (_,s))) |(`INT32 (_,s))) |(`INT64 (_,s)))
-              |(`NATIVEINT (_,s))) |(`FLOAT (_,s))) |(`CHAR (_,s)))
-           |(`STRING (_,s))) |(`LABEL s)) |(`OPTLABEL s)) |(`COMMENT s))
-       |(`BLANKS s)) |(`ESCAPED_IDENT s))
-    ->   s
+  | ((`KEYWORD s)|(`SYMBOL s)|(`LIDENT s)|(`UIDENT s)|(`INT (_,s))|(`INT32
+                                                                    (_,s))|
+    (`INT64 (_,s))|(`NATIVEINT (_,s))|(`FLOAT (_,s))|(`CHAR (_,s))|(`STRING
+                                                                    (_,s))|
+    (`LABEL s)|(`OPTLABEL s)|(`COMMENT s)|(`BLANKS s)|(`ESCAPED_IDENT s)) ->
+      s
   | tok ->
       (invalid_arg (
         ("Cannot extract a string from this token: " ^ ( (to_string tok) ))
         )))
 let keyword_conversion (tok) (is_kwd) = begin match tok with
-  | (((`SYMBOL s) |(`LIDENT s)) |(`UIDENT s)) when (is_kwd s) ->
-      `KEYWORD (s)
+  | ((`SYMBOL s)|(`LIDENT s)|(`UIDENT s)) when (is_kwd s) ->   `KEYWORD (s)
   | (`ESCAPED_IDENT s) ->   `LIDENT (s)
   | _ ->   tok end
 let check_keyword_as_label (tok) (loc) (is_kwd) =
@@ -100,17 +99,20 @@ let check_keyword_as_label (tok) (loc) (is_kwd) =
     | (`OPTLABEL s) ->   s
     | _ ->   "" end in
   if (( (s <> "") ) && ( (is_kwd s) )) then begin
-  (err ( Keyword_as_label (s) ) loc)
-  end else begin ()
+    (err ( Keyword_as_label (s) ) loc)
+  end else begin
+    ()
   end
 let check_unknown_keywords (tok) (loc) = begin match tok with
   | (`SYMBOL s) ->   (err ( Illegal_token (s) ) loc)
   | _ ->   () end
-module Filter  =
-  struct let mk ~is_kwd  = {is_kwd = is_kwd;filter = ignore_layout}
-    let filter (x) =
-      let f ((tok,loc)) =
-        let tok = (keyword_conversion tok ( x.is_kwd )) in (tok,loc) in
-      (fun (strm) -> ((x.filter) ( (Stream.map f strm) )))
-    let define_filter (x) (f) = x.filter <- (f ( x.filter ))
-    let keyword_added (_) (_) (_) = () let keyword_removed (_) (_) = () end
+module Filter =
+  struct
+  let mk ~is_kwd  = {is_kwd = is_kwd;filter = ignore_layout}
+  let filter (x) =
+    let f ((tok,loc)) =
+      let tok = (keyword_conversion tok ( x.is_kwd )) in (tok,loc) in
+    (fun (strm) -> ((x.filter) ( (Stream.map f strm) )))
+  let define_filter (x) (f) = x.filter <- (f ( x.filter ))
+  let keyword_added (_) (_) (_) = () let keyword_removed (_) (_) = ()
+  end

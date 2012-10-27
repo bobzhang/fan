@@ -1,9 +1,10 @@
-type  t = (( string * FanLoc.t ) Stream.t *( string * FanLoc.t ) Queue.t ) 
+type t = (( string * FanLoc.t ) Stream.t *( string * FanLoc.t ) Queue.t ) 
 let mk (() ) =
   let q = (Queue.create () ) in
-  let f (_) = begin try Some ((Queue.take q)) with | Queue.Empty  ->   None
-    end in
-  (( (Stream.from f) ),q)
+  let f (_) = begin try Some ((Queue.take q))
+    with
+    | Queue.Empty  ->   None
+  end in (( (Stream.from f) ),q)
 let filter ((_,q)) =
   let rec self ((__strm : _ Stream.t )) = begin match (Stream.peek __strm)
     with
@@ -25,8 +26,10 @@ let filter ((_,q)) =
   self
 let take_list ((_,q)) =
   let rec self (accu) =
-    if (Queue.is_empty q) then begin accu
-    end else begin (self ( (Queue.take q)::accu ))
+    if (Queue.is_empty q) then begin
+      accu
+    end else begin
+      (self ( (Queue.take q)::accu ))
     end in
   (self [] )
 let take_stream = fst

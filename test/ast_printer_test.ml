@@ -25,9 +25,6 @@ type 'a u = [< `a | `b] as 'a
 type 'a u = [< `a | `b > `a] as 'a
 type u = [`a | `b]
 
-type 'a ab = [< `a|`b] as 'a 
-type 'a ac = 'a constraint 'a = [< `a | `c ]
-type ('a,'b) m = [< `m of 'a ab & 'a ac ] as 'b
 
 type 'a u = [< `a | `b > `a `b]
 

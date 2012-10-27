@@ -1,5 +1,5 @@
 open FanUtil
-module Ast  = Camlp4Ast
+module Ast = Camlp4Ast
 let rec sep_expr (acc) =
   (function
   | Ast.ExAcc(_,e1,e2) ->   (sep_expr ( (sep_expr acc e2) ) e1)
@@ -26,8 +26,10 @@ let mklist (_loc) =
     | []  ->   Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) )))
     | e1::el ->
         let _loc =
-          if top then begin _loc
-          end else begin (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc)
+          if top then begin
+            _loc
+          end else begin
+            (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc)
           end in
         Ast.ExApp
           ((_loc,(
@@ -58,8 +60,10 @@ let mklist_last ?last  (_loc) =
         | None  ->   Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) end
     | e1::el ->
         let _loc =
-          if top then begin _loc
-          end else begin (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc)
+          if top then begin
+            _loc
+          end else begin
+            (FanLoc.merge ( (Ast.loc_of_expr e1) ) _loc)
           end in
         Ast.ExApp
           ((_loc,(
@@ -69,7 +73,7 @@ let mklist_last ?last  (_loc) =
   (loop true )
 let mksequence (_loc) =
   (function
-  | ((Ast.ExSem(_,_,_) |Ast.ExAnt(_,_)) as e) ->   Ast.ExSeq ((_loc,e))
+  | ((Ast.ExSem(_,_,_)|Ast.ExAnt(_,_)) as e) ->   Ast.ExSeq ((_loc,e))
   | e ->   e)
 let mksequence' (_loc) =
   (function
@@ -77,7 +81,7 @@ let mksequence' (_loc) =
   | e ->   e)
 let bigarray_get (_loc) (arr) (arg) =
   let coords = begin match arg with
-    | (Ast.ExTup(_,Ast.ExCom(_,e1,e2)) |Ast.ExCom(_,e1,e2)) ->
+    | (Ast.ExTup(_,Ast.ExCom(_,e1,e2))|Ast.ExCom(_,e1,e2)) ->
         (Ast.list_of_expr e1 ( (Ast.list_of_expr e2 [] ) ))
     | _ ->   [arg] end in
   begin match coords with
@@ -257,126 +261,127 @@ let map (_loc) (p) (e) (l) = begin match (p,e) with
       l
   | _ ->
       if (Ast.is_irrefut_patt p) then begin
-      Ast.ExApp
-        ((_loc,(
-          Ast.ExApp
-            ((_loc,(
-              Ast.ExId
-                ((_loc,(
-                  Ast.IdAcc
-                    ((_loc,( Ast.IdUid ((_loc,"List")) ),(
-                      Ast.IdLid ((_loc,"map")) ))) ))) ),(
-              Ast.ExFun
-                ((_loc,( Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e)) ))) )))
-          ),l))
+        Ast.ExApp
+          ((_loc,(
+            Ast.ExApp
+              ((_loc,(
+                Ast.ExId
+                  ((_loc,(
+                    Ast.IdAcc
+                      ((_loc,( Ast.IdUid ((_loc,"List")) ),(
+                        Ast.IdLid ((_loc,"map")) ))) ))) ),(
+                Ast.ExFun
+                  ((_loc,( Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e)) ))) )))
+            ),l))
       end else begin
-      Ast.ExApp
-        ((_loc,(
-          Ast.ExApp
-            ((_loc,(
-              Ast.ExApp
-                ((_loc,(
-                  Ast.ExId
-                    ((_loc,(
-                      Ast.IdAcc
-                        ((_loc,( Ast.IdUid ((_loc,"List")) ),(
-                          Ast.IdLid ((_loc,"fold_right")) ))) ))) ),(
-                  Ast.ExFun
-                    ((_loc,(
-                      Ast.McOr
-                        ((_loc,(
-                          Ast.McArr
-                            ((_loc,p,(
-                              Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
-                              ),(
-                              Ast.ExApp
-                                ((_loc,(
-                                  Ast.ExFun
-                                    ((_loc,(
-                                      Ast.McArr
-                                        ((_loc,(
-                                          Ast.PaId
-                                            ((_loc,( Ast.IdLid ((_loc,"x"))
-                                              ))) ),( Ast.ExNil (_loc) ),(
-                                          Ast.ExFun
-                                            ((_loc,(
-                                              Ast.McArr
-                                                ((_loc,(
-                                                  Ast.PaId
-                                                    ((_loc,(
-                                                      Ast.IdLid ((_loc,"xs"))
-                                                      ))) ),(
-                                                  Ast.ExNil (_loc) ),(
-                                                  Ast.ExApp
-                                                    ((_loc,(
-                                                      Ast.ExApp
-                                                        ((_loc,(
-                                                          Ast.ExId
-                                                            ((_loc,(
-                                                              Ast.IdUid
-                                                                ((_loc,"::"))
-                                                              ))) ),(
-                                                          Ast.ExId
-                                                            ((_loc,(
-                                                              Ast.IdLid
-                                                                ((_loc,"x"))
-                                                              ))) ))) ),(
-                                                      Ast.ExId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"xs")) )))
-                                                      ))) ))) ))) ))) )))
-                                  ),e)) ))) ),(
-                          Ast.McArr
-                            ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc)
-                              ),(
-                              Ast.ExFun
-                                ((_loc,(
-                                  Ast.McArr
-                                    ((_loc,(
-                                      Ast.PaId
-                                        ((_loc,( Ast.IdLid ((_loc,"l")) )))
-                                      ),( Ast.ExNil (_loc) ),(
-                                      Ast.ExId
-                                        ((_loc,( Ast.IdLid ((_loc,"l")) )))
-                                      ))) ))) ))) ))) ))) ))) ),l)) ),(
-          Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )))
+        Ast.ExApp
+          ((_loc,(
+            Ast.ExApp
+              ((_loc,(
+                Ast.ExApp
+                  ((_loc,(
+                    Ast.ExId
+                      ((_loc,(
+                        Ast.IdAcc
+                          ((_loc,( Ast.IdUid ((_loc,"List")) ),(
+                            Ast.IdLid ((_loc,"fold_right")) ))) ))) ),(
+                    Ast.ExFun
+                      ((_loc,(
+                        Ast.McOr
+                          ((_loc,(
+                            Ast.McArr
+                              ((_loc,p,(
+                                Ast.ExId
+                                  ((_loc,( Ast.IdUid ((_loc,"True")) ))) ),(
+                                Ast.ExApp
+                                  ((_loc,(
+                                    Ast.ExFun
+                                      ((_loc,(
+                                        Ast.McArr
+                                          ((_loc,(
+                                            Ast.PaId
+                                              ((_loc,( Ast.IdLid ((_loc,"x"))
+                                                ))) ),( Ast.ExNil (_loc) ),(
+                                            Ast.ExFun
+                                              ((_loc,(
+                                                Ast.McArr
+                                                  ((_loc,(
+                                                    Ast.PaId
+                                                      ((_loc,(
+                                                        Ast.IdLid
+                                                          ((_loc,"xs")) )))
+                                                    ),( Ast.ExNil (_loc) ),(
+                                                    Ast.ExApp
+                                                      ((_loc,(
+                                                        Ast.ExApp
+                                                          ((_loc,(
+                                                            Ast.ExId
+                                                              ((_loc,(
+                                                                Ast.IdUid
+                                                                  ((_loc,"::"))
+                                                                ))) ),(
+                                                            Ast.ExId
+                                                              ((_loc,(
+                                                                Ast.IdLid
+                                                                  ((_loc,"x"))
+                                                                ))) ))) ),(
+                                                        Ast.ExId
+                                                          ((_loc,(
+                                                            Ast.IdLid
+                                                              ((_loc,"xs"))
+                                                            ))) ))) ))) )))
+                                            ))) ))) ),e)) ))) ),(
+                            Ast.McArr
+                              ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc)
+                                ),(
+                                Ast.ExFun
+                                  ((_loc,(
+                                    Ast.McArr
+                                      ((_loc,(
+                                        Ast.PaId
+                                          ((_loc,( Ast.IdLid ((_loc,"l")) )))
+                                        ),( Ast.ExNil (_loc) ),(
+                                        Ast.ExId
+                                          ((_loc,( Ast.IdLid ((_loc,"l")) )))
+                                        ))) ))) ))) ))) ))) ))) ),l)) ),(
+            Ast.ExId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) )))
       end end
 let filter (_loc) (p) (b) (l) =
   if (Ast.is_irrefut_patt p) then begin
-  Ast.ExApp
-    ((_loc,(
-      Ast.ExApp
-        ((_loc,(
-          Ast.ExId
-            ((_loc,(
-              Ast.IdAcc
-                ((_loc,( Ast.IdUid ((_loc,"List")) ),(
-                  Ast.IdLid ((_loc,"filter")) ))) ))) ),(
-          Ast.ExFun ((_loc,( Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),b)) )))
-          ))) ),l))
+    Ast.ExApp
+      ((_loc,(
+        Ast.ExApp
+          ((_loc,(
+            Ast.ExId
+              ((_loc,(
+                Ast.IdAcc
+                  ((_loc,( Ast.IdUid ((_loc,"List")) ),(
+                    Ast.IdLid ((_loc,"filter")) ))) ))) ),(
+            Ast.ExFun
+              ((_loc,( Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),b)) ))) )))
+        ),l))
   end else begin
-  Ast.ExApp
-    ((_loc,(
-      Ast.ExApp
-        ((_loc,(
-          Ast.ExId
-            ((_loc,(
-              Ast.IdAcc
-                ((_loc,( Ast.IdUid ((_loc,"List")) ),(
-                  Ast.IdLid ((_loc,"filter")) ))) ))) ),(
-          Ast.ExFun
-            ((_loc,(
-              Ast.McOr
-                ((_loc,(
-                  Ast.McArr
-                    ((_loc,p,(
-                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ),b))
-                  ),(
-                  Ast.McArr
-                    ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),(
-                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) ))) ))) )))
-              ))) ))) ),l))
+    Ast.ExApp
+      ((_loc,(
+        Ast.ExApp
+          ((_loc,(
+            Ast.ExId
+              ((_loc,(
+                Ast.IdAcc
+                  ((_loc,( Ast.IdUid ((_loc,"List")) ),(
+                    Ast.IdLid ((_loc,"filter")) ))) ))) ),(
+            Ast.ExFun
+              ((_loc,(
+                Ast.McOr
+                  ((_loc,(
+                    Ast.McArr
+                      ((_loc,p,(
+                        Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) ))) ),b))
+                    ),(
+                    Ast.McArr
+                      ((_loc,( Ast.PaAny (_loc) ),( Ast.ExNil (_loc) ),(
+                        Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) ))) )))
+                    ))) ))) ))) ),l))
   end
 let concat (_loc) (l) =
   Ast.ExApp
@@ -404,11 +409,15 @@ let substp (_loc) (env) =
     | Ast.ExApp(_,e1,e2) ->   Ast.PaApp ((_loc,( (loop e1) ),( (loop e2) )))
     | Ast.ExNil(_) ->   Ast.PaNil (_loc)
     | Ast.ExId(_,Ast.IdLid(_,x)) ->
-        begin try (List.assoc x env) with
-        | Not_found  ->   Ast.PaId ((_loc,( Ast.IdLid ((_loc,x)) ))) end
+        begin try (List.assoc x env)
+        with
+        | Not_found  ->   Ast.PaId ((_loc,( Ast.IdLid ((_loc,x)) )))
+      end
     | Ast.ExId(_,Ast.IdUid(_,x)) ->
-        begin try (List.assoc x env) with
-        | Not_found  ->   Ast.PaId ((_loc,( Ast.IdUid ((_loc,x)) ))) end
+        begin try (List.assoc x env)
+        with
+        | Not_found  ->   Ast.PaId ((_loc,( Ast.IdUid ((_loc,x)) )))
+      end
     | Ast.ExInt(_,x) ->   Ast.PaInt ((_loc,x))
     | Ast.ExStr(_,s) ->   Ast.PaStr ((_loc,s))
     | Ast.ExTup(_,x) ->   Ast.PaTup ((_loc,( (loop x) )))
@@ -428,13 +437,15 @@ class
     inherit  (Ast.reloc _loc) as super
     method !  expr =
       (function
-      | ((Ast.ExId(_,Ast.IdLid(_,x)) |Ast.ExId(_,Ast.IdUid(_,x))) as e) ->
-          begin try (List.assoc x env) with | Not_found  ->   (super#expr e)
-          end
+      | ((Ast.ExId(_,Ast.IdLid(_,x))|Ast.ExId(_,Ast.IdUid(_,x))) as e) ->
+          begin try (List.assoc x env)
+          with
+          | Not_found  ->   (super#expr e)
+        end
       | ((Ast.ExApp(_loc,Ast.ExId(_,Ast.IdUid(_,"LOCATION_OF")),Ast.ExId
-                    (_,Ast.IdLid(_,x)))
-           |Ast.ExApp(_loc,Ast.ExId(_,Ast.IdUid(_,"LOCATION_OF")),Ast.ExId
-                      (_,Ast.IdUid(_,x)))) as e)
+                    (_,Ast.IdLid(_,x)))|Ast.ExApp(_loc,Ast.ExId(_,Ast.IdUid
+                                                                (_,"LOCATION_OF")),Ast.ExId
+                                                  (_,Ast.IdUid(_,x)))) as e)
         ->
           begin try
           let loc = (Ast.loc_of_expr ( (List.assoc x env) )) in
@@ -479,22 +490,28 @@ class
                               ),( Ast.ExInt ((_loc,( (string_of_int g) ))) )))
                           ),(
                           if h then begin
-                          Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
+                            Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
                           end else begin
-                          Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
+                            Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
                           end ))) ))) ))) )))
-          with | Not_found  ->   (super#expr e) end
+          with
+          | Not_found  ->   (super#expr e)
+        end
       | e ->   (super#expr e))
     method !  patt =
       (function
-      | ((Ast.PaId(_,Ast.IdLid(_,x)) |Ast.PaId(_,Ast.IdUid(_,x))) as p) ->
-          begin try (substp _loc []  ( (List.assoc x env) )) with
-          | Not_found  ->   (super#patt p) end
+      | ((Ast.PaId(_,Ast.IdLid(_,x))|Ast.PaId(_,Ast.IdUid(_,x))) as p) ->
+          begin try (substp _loc []  ( (List.assoc x env) ))
+          with
+          | Not_found  ->   (super#patt p)
+        end
       | p ->   (super#patt p)) end
 let map_expr =
   (function
-  | (Ast.ExApp(_,e,Ast.ExId(_,Ast.IdUid(_,"NOTHING")))
-      |Ast.ExFun(_,Ast.McArr(_,Ast.PaId(_,Ast.IdUid(_,"NOTHING")),Ast.ExNil(_),e)))
+  | (Ast.ExApp(_,e,Ast.ExId(_,Ast.IdUid(_,"NOTHING")))|Ast.ExFun(_,Ast.McArr
+                                                                 (_,Ast.PaId
+                                                                  (_,Ast.IdUid
+                                                                   (_,"NOTHING")),Ast.ExNil(_),e)))
     ->   e
   | Ast.ExId(_loc,Ast.IdLid(_,"__FILE__")) ->
       Ast.ExStr
@@ -539,9 +556,9 @@ let map_expr =
                           ),( Ast.ExInt ((_loc,( (string_of_int g) ))) )))
                       ),(
                       if h then begin
-                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
+                        Ast.ExId ((_loc,( Ast.IdUid ((_loc,"True")) )))
                       end else begin
-                      Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
+                        Ast.ExId ((_loc,( Ast.IdUid ((_loc,"False")) )))
                       end ))) ))) ))) )))
   | e ->   e)
 let antiquot_expander ~parse_patt  ~parse_expr  =
@@ -549,7 +566,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     inherit  Ast.map as super
     method !  patt =
       (function
-      | ((Ast.PaAnt(_loc,s) |Ast.PaStr(_loc,s)) as p) ->
+      | ((Ast.PaAnt(_loc,s)|Ast.PaStr(_loc,s)) as p) ->
           let mloc (_loc) =
             (Meta.MetaLocQuotation.meta_loc_patt _loc _loc) in
           (handle_antiquot_in_string ~s:s ~default:p ~parse:parse_patt
@@ -747,7 +764,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
       | p ->   (super#patt p))
     method !  expr =
       (function
-      | ((Ast.ExAnt(_loc,s) |Ast.ExStr(_loc,s)) as e) ->
+      | ((Ast.ExAnt(_loc,s)|Ast.ExStr(_loc,s)) as e) ->
           let mloc (_loc) =
             (Meta.MetaLocQuotation.meta_loc_expr _loc _loc) in
           (handle_antiquot_in_string ~s:s ~default:e ~parse:parse_expr
@@ -1243,7 +1260,7 @@ let capture_antiquot =
     inherit  Camlp4Ast.map as super val  mutable  constraints = []
     method !  patt =
       (function
-      | ((Ast.PaAnt(_loc,s) |Ast.PaStr(_loc,s)) as p) when (is_antiquot s) ->
+      | ((Ast.PaAnt(_loc,s)|Ast.PaStr(_loc,s)) as p) when (is_antiquot s) ->
           begin match (view_antiquot s) with
           | Some(_name,code) ->
               let cons = Ast.ExId ((_loc,( Ast.IdLid ((_loc,code)) ))) in

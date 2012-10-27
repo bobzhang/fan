@@ -50,3 +50,64 @@ let ident_tag ?(conv_lid=(fun (x) -> x))  (i) =
   | Some(x) -> x
   | None  -> (error ( (loc_of_ident i) ) "invalid long identifier ") end 
   
+let mode = begin try
+  let str = (Sys.getenv "CAMLP4_DEBUG") in
+  let rec loop (acc) (i) = begin try
+    let pos = (String.index_from str i ':') in
+    (loop ( (SSet.add ( (String.sub str i ( (pos - i) )) ) acc) ) ( (pos + 1)
+      ))
+    with
+    | Not_found  ->
+      (SSet.add ( (String.sub str i ( (( (String.length str) ) - i) )) ) acc)
+    end in
+  let sections = (loop SSet.empty 0) in
+  if (SSet.mem "*" sections) then begin (fun (_) -> true)
+  end else begin (fun (x) -> (SSet.mem x sections))
+  end with | Not_found  ->   (fun (_) -> false) end
+    
+let formatter =
+  let header = "camlp4-debug: " in
+  let at_bol = (ref true ) in
+  (make_formatter (
+    (fun (buf) ->
+      (fun (pos) ->
+        (fun (len) ->
+          for i = pos to  (( (pos + len) ) - 1) do
+            begin
+            if at_bol.contents then begin
+            (output_string out_channel header)
+            end else begin ()
+            end;
+            let ch = buf.[i] in
+            begin
+              (output_char out_channel ch);
+              (( at_bol.contents ) := ( (ch = '\n') ))
+              end
+            end done))) ) ( (fun (() ) -> (flush out_channel)) ))
+let simple_try =try List.find x lst with Not_found  -> 3 
+
+let u = function
+    (Ast.PaVrn(_,_) |Ast.PaStr(_,_) |Ast.PaRng(_,_,_)
+     |Ast.PaFlo(_,_) |Ast.PaNativeInt(_,_) |Ast.PaInt64(_,_)
+     |Ast.PaInt32(_,_) |Ast.PaInt(_,_) |Ast.PaChr(_,_)
+     |Ast.PaTyp(_,_) |Ast.PaArr(_,_) |Ast.PaAnt(_,_)) -> 1
+  | 3 -> 2 
+
+let v =
+  (fun (ppf) ->
+    (function
+        | (`Smeta (n,sl,_)) ->   (self#meta ppf n sl)
+        | (`Slist0 s) ->   (fprintf ppf "LIST0 %a" ( self#symbol1 ) s)
+        | (`Slist0sep (s,t)) ->
+            (fprintf ppf "LIST0 %a SEP %a" ( self#symbol1 ) s ( self#symbol1
+              ) t)
+        | (`Slist1 s) ->   (fprintf ppf "LIST1 %a" ( self#symbol1 ) s)
+        | (`Slist1sep (s,t)) ->
+            (fprintf ppf "LIST1 %a SEP %a" ( self#symbol1 ) s ( self#symbol1
+              ) t)
+        | (`Sopt s) ->   (fprintf ppf "OPT %a" ( self#symbol1 ) s)
+        | (`Stry s) ->   (fprintf ppf "TRY %a" ( self#symbol1 ) s)
+        | (`Snterml (e,l)) ->   (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
+        | ((`Snterm _|`Snext|`Sself|(`Stree _)|(`Stoken _)|(`Skeyword _)) as s) ->
+            (self#symbol1 ppf s)))
+        

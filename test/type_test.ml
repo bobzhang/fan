@@ -30,6 +30,10 @@ type u = [`a | `b];;
 type u = v = A of int ;;
 type u = v = private A of int ;;
 
+type 'a ab = [< `a|`b] as 'a 
+type 'a ac = 'a constraint 'a = [< `a | `c ]
+type ('a,'b) m = [< `m of 'a ab & 'a ac ] as 'b
+
 type _ a =
 | A : int -> int a
 | B : float -> float a
@@ -40,12 +44,33 @@ type _ a = A : int -> int a | B : int -> float a
 
 type ('u,'v) a =
   | A of int list * bool
-  | B of bool 
+  | B of bool
 
+type  gram = 
+  { gfilter: filter ;
+    gkeywords:( string , int  ref ) Hashtbl.t ;
+    glexer:
+      ( FanLoc.t ->
+        (char Stream.t  ->
+              ( token * FanLoc.t ) Stream.t ) ) ;
+    warning_verbose: bool  ref ;
+    error_verbose: bool  ref }
+and  symbol =
+  [ `Smeta of ( string * symbol  list * Action.t )
+  | `Snterm of  internal_entry
+  | `Snterml of ( internal_entry * string )
+  | `Slist0 of  symbol
+  | `Slist0sep of  ( symbol * symbol )
+  | `Slist1 of  symbol
+  | `Slist1sep of ( symbol * symbol )
+  | `Sopt of  symbol
+  | `Stry of  symbol
+  | `Sself
+  | `Snext
+  | `Stoken of  token_pattern
+  | `Skeyword of string
+  | `Stree of  tree ]
+        
 
-
-
-
-
-
-
+type +'a my = H of 'a | D;;
+type (+'a,-'b) u = H of 'a | D of ('b -> int)

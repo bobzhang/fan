@@ -3,9 +3,9 @@ let delete_rule_in_tree (entry) =
   let rec delete_in_tree (symbols) (tree) = begin match (symbols,tree) with
     | (s::sl,Node(n)) ->
         if (Tools.logically_eq_symbols entry s ( n.node )) then begin
-        (delete_son sl n)
+          (delete_son sl n)
         end else begin
-        begin match (delete_in_tree symbols ( n.brother )) with
+          begin match (delete_in_tree symbols ( n.brother )) with
           | Some(dsl,t) ->
               Some
                 ((dsl,(
@@ -40,8 +40,7 @@ let rec decr_keyw_use (gram) =
   (function
   | (`Skeyword kwd) ->   (removing gram kwd)
   | (`Smeta (_,sl,_)) ->   (List.iter ( (decr_keyw_use gram) ) sl)
-  | ((((`Slist0 s) |(`Slist1 s)) |(`Sopt s)) |(`Stry s)) ->
-      (decr_keyw_use gram s)
+  | ((`Slist0 s)|(`Slist1 s)|(`Sopt s)|(`Stry s)) ->   (decr_keyw_use gram s)
   | (`Slist0sep (s1,s2)) ->
       begin
       (decr_keyw_use gram s1);
@@ -53,10 +52,10 @@ let rec decr_keyw_use (gram) =
       (decr_keyw_use gram s2)
       end
   | (`Stree t) ->   (decr_keyw_use_in_tree gram t)
-  | ((((`Sself |`Snext) |(`Snterm _)) |(`Snterml (_,_))) |(`Stoken _)) ->
-      ()) and decr_keyw_use_in_tree (gram) =
+  | (`Sself|`Snext|(`Snterm _)|(`Snterml (_,_))|(`Stoken _)) ->   ()) and
+  decr_keyw_use_in_tree (gram) =
   (function
-  | (DeadEnd  |LocAct(_,_)) ->   ()
+  | (DeadEnd |LocAct(_,_)) ->   ()
   | Node(n) ->
       begin
       (decr_keyw_use gram ( n.node ));

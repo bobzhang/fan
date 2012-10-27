@@ -1,6 +1,6 @@
 open Structure
 open Format
-type  brothers =  
+type brothers =  
   | Bro of  symbol * brothers  list  
 let rec flatten_tree =
   (function
@@ -32,8 +32,8 @@ class
         | (`Sopt s) ->   (fprintf ppf "OPT %a" ( self#symbol1 ) s)
         | (`Stry s) ->   (fprintf ppf "TRY %a" ( self#symbol1 ) s)
         | (`Snterml (e,l)) ->   (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
-        | (((((((`Snterm _) |`Snext) |`Sself) |(`Stree _)) |(`Stoken _))
-             |(`Skeyword _)) as s)
+        | (((`Snterm _)|`Snext|`Sself|(`Stree _)|(`Stoken _)|(`Skeyword _))
+            as s)
           ->   (self#symbol1 ppf s)))
     method   description =
       (fun (ppf) ->
@@ -53,9 +53,8 @@ class
             end
         | (`Skeyword s) ->   (fprintf ppf "%S" s)
         | (`Stree t) ->   (self#tree ppf t)
-        | (((((((((`Smeta (_,_,_)) |(`Snterml (_,_))) |(`Slist0 _))
-                 |(`Slist0sep (_,_))) |(`Slist1 _)) |(`Slist1sep (_,_)))
-              |(`Sopt _)) |(`Stry _)) as s)
+        | (((`Smeta (_,_,_))|(`Snterml (_,_))|(`Slist0 _)|(`Slist0sep (_,_))|
+            (`Slist1 _)|(`Slist1sep (_,_))|(`Sopt _)|(`Stry _)) as s)
           ->   (fprintf ppf "(%a)" ( self#symbol ) s)))
     method   meta =
       (fun (ppf) ->
@@ -65,14 +64,18 @@ class
               (function
               | []  ->   ()
               | s::sl ->
-                  let j = begin try (String.index_from n i ' ') with
-                    | Not_found  ->   (String.length n) end in
+                  let j = begin try
+                    (String.index_from n i ' ')
+                    with
+                    | Not_found  ->   (String.length n)
+                  end in
                   begin
                     (fprintf ppf "%s %a" ( (String.sub n i ( (j - i) )) ) (
                       self#symbol1 ) s);
-                    if (sl = [] ) then begin ()
+                    if (sl = [] ) then begin
+                      ()
                     end else begin
-                    begin
+                      begin
                       (fprintf ppf " ");
                       (loop ( (min ( (j + 1) ) ( (String.length n) )) ) sl)
                       end
@@ -166,25 +169,28 @@ class
             | Node({node = n;brother = b;son = s}) ->
                 (get_brothers ( Bro ((n,( (get_brothers []  s) )))::acc ) b))
             and print_brothers (ppf) (brothers) =
-            if (brothers = [] ) then begin (fprintf ppf "@ []")
+            if (brothers = [] ) then begin
+              (fprintf ppf "@ []")
             end else begin
-            (List.iter (
-              (fun (Bro(n,xs)) ->
-                begin
-                (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n);
-                begin
-                match
-                xs
-                with
-                | []  ->   ()
-                | _::[]  ->
-                    begin try (print_children ppf ( (get_children []  xs) ))
-                    with | Exit  ->   (fprintf ppf ":%a" print_brothers xs)
+              (List.iter (
+                (fun (Bro(n,xs)) ->
+                  begin
+                  (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n);
+                  begin
+                  match
+                  xs
+                  with
+                  | []  ->   ()
+                  | _::[]  ->
+                      begin try
+                      (print_children ppf ( (get_children []  xs) ))
+                      with
+                      | Exit  ->   (fprintf ppf ":%a" print_brothers xs)
                     end
-                | _ ->   (fprintf ppf ":%a" print_brothers xs)
-                end;
-                (fprintf ppf "@]")
-                end) ) brothers)
+                  | _ ->   (fprintf ppf ":%a" print_brothers xs)
+                  end;
+                  (fprintf ppf "@]")
+                  end) ) brothers)
             end and print_children (ppf) =
             (List.iter ( (fprintf ppf ";@ %a" ( self#symbol )) )) and
             get_children (acc) =

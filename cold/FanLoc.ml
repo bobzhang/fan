@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type  t =  Location.t  
+type t =  Location.t  
 let dump_sel (f) (x) =
   let s = begin match x with
     | `start ->   "`start"
@@ -28,8 +28,10 @@ let dump (f) (x) =
     (x.loc_end).pos_lnum ) (
     (( (x.loc_end).pos_cnum ) - ( (x.loc_end).pos_bol )) ) (
     (fun (o) ->
-      if x.loc_ghost then begin (fprintf o " (ghost)")
-      end else begin ()
+      if x.loc_ghost then begin
+        (fprintf o " (ghost)")
+      end else begin
+        ()
       end) ))
 let start_pos (name) =
   {pos_fname = name;pos_lnum = 1;pos_bol = 0;pos_cnum = 0}
@@ -73,14 +75,15 @@ let of_lexing_position (pos) =
 let start_pos (x) = x.loc_start
 let stop_pos (x) = x.loc_end
 let merge (a) (b) =
-  if (a == b) then begin a
+  if (a == b) then begin
+    a
   end else begin
-  let r = begin match (( a.loc_ghost ),( b.loc_ghost )) with
-    | (false ,false ) ->   {a with loc_end = ( b.loc_end )}
-    | (true ,true ) ->   {a with loc_end = ( b.loc_end )}
-    | (true ,_) ->   {a with loc_end = ( b.loc_end )}
-    | (_,true ) ->   {b with loc_start = ( a.loc_start )} end in
-  r
+    let r = begin match (( a.loc_ghost ),( b.loc_ghost )) with
+      | (false ,false ) ->   {a with loc_end = ( b.loc_end )}
+      | (true ,true ) ->   {a with loc_end = ( b.loc_end )}
+      | (true ,_) ->   {a with loc_end = ( b.loc_end )}
+      | (_,true ) ->   {b with loc_start = ( a.loc_start )} end in
+    r
   end
 let join (x) = {x with loc_end = ( x.loc_start )}
 let map (f) (start_stop_both) (x) = begin match start_stop_both with
@@ -117,13 +120,14 @@ let make_absolute (x) =
   let pwd = (Sys.getcwd () ) in
   let old_name = (x.loc_start).pos_fname in
   if (Filename.is_relative old_name) then begin
-  let new_name = (Filename.concat pwd old_name) in
-  {x with
-    loc_start = {x.loc_start with pos_fname = new_name};loc_end =
-                                                          {x.loc_end with
-                                                            pos_fname =
-                                                              new_name}}
-  end else begin x
+    let new_name = (Filename.concat pwd old_name) in
+    {x with
+      loc_start = {x.loc_start with pos_fname = new_name};loc_end =
+                                                            {x.loc_end with
+                                                              pos_fname =
+                                                                new_name}}
+  end else begin
+    x
   end
 let strictly_before (x) (y) =
   let b =
@@ -137,28 +141,30 @@ let to_string (x) =
       a.pos_lnum ) ( (( a.pos_cnum ) - ( a.pos_bol )) ) (
       (( b.pos_cnum ) - ( a.pos_bol )) )) in
   if (( (x.loc_start).pos_lnum ) <> ( (x.loc_end).pos_lnum )) then begin
-  (sprintf "%s (end at line %d, character %d)" res ( (x.loc_end).pos_lnum ) (
-    (( b.pos_cnum ) - ( b.pos_bol )) ))
-  end else begin res
+    (sprintf "%s (end at line %d, character %d)" res ( (x.loc_end).pos_lnum )
+      ( (( b.pos_cnum ) - ( b.pos_bol )) ))
+  end else begin
+    res
   end
 let print (out) (x) = (pp_print_string out ( (to_string x) ))
 let check (x) (msg) =
   if
-  (( (( (start_line x) ) > ( (stop_line x) )) ) || (
-    (( (( (start_bol x) ) > ( (stop_bol x) )) ) || (
-      (( (( (start_off x) ) > ( (stop_off x) )) ) || (
-        (( (( (start_line x) ) < 0) ) || (
-          (( (( (stop_line x) ) < 0) ) || (
-            (( (( (start_bol x) ) < 0) ) || (
-              (( (( (stop_bol x) ) < 0) ) || (
-                (( (( (start_off x) ) < 0) ) || ( (( (stop_off x) ) < 0) ))
-                )) )) )) )) )) )) ))
-  then begin
-  begin
+      (( (( (start_line x) ) > ( (stop_line x) )) ) || (
+        (( (( (start_bol x) ) > ( (stop_bol x) )) ) || (
+          (( (( (start_off x) ) > ( (stop_off x) )) ) || (
+            (( (( (start_line x) ) < 0) ) || (
+              (( (( (stop_line x) ) < 0) ) || (
+                (( (( (start_bol x) ) < 0) ) || (
+                  (( (( (stop_bol x) ) < 0) ) || (
+                    (( (( (start_off x) ) < 0) ) || ( (( (stop_off x) ) < 0)
+                      )) )) )) )) )) )) )) ))
+      then begin
+    begin
     (eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x);
     false
     end
-  end else begin true
+  end else begin
+    true
   end
 exception Exc_located of  t * exn 
 let _=

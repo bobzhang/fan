@@ -15,9 +15,10 @@ let tree_in_entry (prev_symb) (tree) =
             Some (Node ({node = `Sself;son = t;brother = DeadEnd }))
         | None  ->   (search_tree ( level.lprefix )) end and search_tree (t)
         =
-        if (( (tree <> DeadEnd ) ) && ( (t == tree) )) then begin Some (t)
+        if (( (tree <> DeadEnd ) ) && ( (t == tree) )) then begin
+          Some (t)
         end else begin
-        begin match t with
+          begin match t with
           | Node(n) ->
               begin match (search_symbol ( n.node )) with
               | Some(symb) ->
@@ -31,13 +32,11 @@ let tree_in_entry (prev_symb) (tree) =
                            ({node = ( n.node );son = t;brother = DeadEnd }))
                   | None  ->   (search_tree ( n.brother )) end
               end
-          | (LocAct(_,_) |DeadEnd ) ->   None end
+          | (LocAct(_,_)|DeadEnd ) ->   None end
         end and search_symbol (symb) = begin match symb with
-        | (((((((((((`Snterm _) |(`Snterml (_,_))) |(`Slist0 _))
-                   |(`Slist0sep (_,_))) |(`Slist1 _)) |(`Slist1sep (_,_)))
-                |(`Sopt _)) |(`Stry _)) |(`Stoken _)) |(`Stree _))
-            |(`Skeyword _))
-          when (symb == prev_symb) ->   Some (symb)
+        | ((`Snterm _)|(`Snterml (_,_))|(`Slist0 _)|(`Slist0sep (_,_))|
+          (`Slist1 _)|(`Slist1sep (_,_))|(`Sopt _)|(`Stry _)|(`Stoken _)|
+          (`Stree _)|(`Skeyword _)) when (symb == prev_symb) ->   Some (symb)
         | (`Slist0 symb) ->
             begin match (search_symbol symb) with
             | Some(symb) ->   Some (`Slist0 (symb))

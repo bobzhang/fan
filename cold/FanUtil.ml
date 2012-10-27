@@ -21,28 +21,34 @@ let _= (Printexc.register_printer normal_handler)
 let valid_float_lexeme (s) =
   let l = (String.length s) in
   let rec loop (i) =
-    if (i >= l) then begin (s ^ ".")
+    if (i >= l) then begin
+      (s ^ ".")
     end else begin
-    begin match s.[i] with
-      | (('0'..'9') |'-') ->   (loop ( (i + 1) ))
+      begin match s.[i] with
+      | ('0'|('1'..'9')|'-') ->   (loop ( (i + 1) ))
       | _ ->   s end
     end in
   (loop 0)
 let float_repres (f) = begin match (classify_float f) with
   | FP_nan  ->   "nan"
   | FP_infinite  ->
-      if (f < 0.0) then begin "neg_infinity"
-      end else begin "infinity"
+      if (f < 0.0) then begin
+        "neg_infinity"
+      end else begin
+        "infinity"
       end
   | _ ->
       let float_val =
         let s1 = (Printf.sprintf "%.12g" f) in
-        if (f = ( (float_of_string s1) )) then begin s1
+        if (f = ( (float_of_string s1) )) then begin
+          s1
         end else begin
-        let s2 = (Printf.sprintf "%.15g" f) in
-        if (f = ( (float_of_string s2) )) then begin s2
-        end else begin (Printf.sprintf "%.18g" f)
-        end
+          let s2 = (Printf.sprintf "%.15g" f) in
+          if (f = ( (float_of_string s2) )) then begin
+            s2
+          end else begin
+            (Printf.sprintf "%.18g" f)
+          end
         end in
       (valid_float_lexeme float_val) end
 let cvt_int_literal (s) = ((~-) ( (int_of_string ( ("-" ^ s) )) ))
@@ -57,37 +63,45 @@ let is_antiquot (s) =
   (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
 let view_antiquot (s) =
   let len = (String.length s) in
-  if (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
-  then begin
-  begin try
+  if (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then begin
+    begin try
     let pos = (String.index s ':') in
     let name = (String.sub s 2 ( (pos - 2) )) in
     let code =
       (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1)
         )) in
-    Some ((name,code)) with | Not_found  ->   None end
-  end else begin None
+    Some ((name,code))
+    with
+    | Not_found  ->   None
+  end
+  end else begin
+    None
   end
 let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   if (is_antiquot s) then begin
-  let pos = (String.index s ':') in
-  let name = (String.sub s 2 ( (pos - 2) )) and code =
-    (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1) )) in
-  (decorate name ( (parse loc code) ))
-  end else begin default
+    let pos = (String.index s ':') in
+    let name = (String.sub s 2 ( (pos - 2) )) and code =
+      (String.sub s ( (pos + 1) ) ( (( (( (String.length s) ) - pos) ) - 1)
+        )) in
+    (decorate name ( (parse loc code) ))
+  end else begin
+    default
   end
 let neg_string (n) =
   let len = (String.length n) in
   if (( (len > 0) ) && ( (( n.[0] ) = '-') )) then begin
-  (String.sub n 1 ( (len - 1) ))
-  end else begin ("-" ^ n)
+    (String.sub n 1 ( (len - 1) ))
+  end else begin
+    ("-" ^ n)
   end
 let stream_peek_nth (n) (strm) =
   let rec loop (i) =
     (function
     | x::xs ->
-        if (i = 1) then begin Some (x)
-        end else begin (loop ( (i - 1) ) xs)
+        if (i = 1) then begin
+          Some (x)
+        end else begin
+          (loop ( (i - 1) ) xs)
         end
     | []  ->   None) in
   (loop n ( (Stream.npeek n strm) ))
@@ -101,11 +115,14 @@ let symbolchar =
   let list =
     ['$';'!';'%';'&';'*';'+';'-';'.';'/';':';'<';'=';'>';'?';'@';'^';'|';'~';'\\'] in
   let rec loop (s) (i) =
-    if (i == ( (String.length s) )) then begin true
+    if (i == ( (String.length s) )) then begin
+      true
     end else begin
-    if (List.mem ( s.[i] ) list) then begin (loop s ( (i + 1) ))
-    end else begin false
-    end
+      if (List.mem ( s.[i] ) list) then begin
+        (loop s ( (i + 1) ))
+      end else begin
+        false
+      end
     end in
   loop
 let stopped_at (_loc) = Some ((FanLoc.move_line 1 _loc))
@@ -131,14 +148,21 @@ let dump_ast (magic) (ast) (oc) =
 let dump_pt (magic) (fname) (pt) (oc) =
   begin
   (output_string oc magic);
-  (output_value oc ( if (fname = "-") then begin ""
-                     end else begin fname
-                     end ));
+  (output_value oc (
+    if (fname = "-") then begin
+      ""
+    end else begin
+      fname
+    end ));
   (output_value oc pt)
   end
-let char_of_char_token (loc) (s) = begin try (TokenEval.char s) with
+let char_of_char_token (loc) (s) = begin try
+  (TokenEval.char s)
+  with
   | (Failure(_) as exn) ->   (FanLoc.raise loc exn) end
-let string_of_string_token (loc) (s) = begin try (TokenEval.string s) with
+let string_of_string_token (loc) (s) = begin try
+  (TokenEval.string s)
+  with
   | (Failure(_) as exn) ->   (FanLoc.raise loc exn) end
 let remove_underscores (s) =
   let l = (String.length s) in
@@ -146,276 +170,330 @@ let remove_underscores (s) =
   let ()  =
     (String.iter (
       (fun (ch) ->
-        if (ch <> '_') then begin (ignore ( (Buffer.add_char buf ch) ))
-        end else begin ()
+        if (ch <> '_') then begin
+          (ignore ( (Buffer.add_char buf ch) ))
+        end else begin
+          ()
         end) ) s) in
   (Buffer.contents buf)
-module Options  :
-  sig type  spec_list = ( string * Arg.spec * string ) list  
+module Options :
+  sig type spec_list = ( string * Arg.spec * string ) list  
   val init : ( spec_list  ->  unit ) 
   val add : ( string  -> ( Arg.spec  -> ( string  ->  unit ) ) ) 
   val print_usage_list : ( spec_list  ->  unit ) 
   val ext_spec_list : ( unit  ->  spec_list ) 
   val parse : (( string  ->  unit )  -> ( string  array  ->  string  list ) ) 
-  end =
-  struct type  spec_list = ( string * Arg.spec * string ) list   open Format
-    let rec action_arg (s) (sl) =
-      (function
-      | Arg.Unit(f) ->
-          if (s = "") then begin begin
-                                   (f () );
-                                   Some (sl)
-                                   end
-          end else begin None
+  end = struct
+  type spec_list = ( string * Arg.spec * string ) list   open Format
+  let rec action_arg (s) (sl) =
+    (function
+    | Arg.Unit(f) ->
+        if (s = "") then begin
+          begin
+          (f () );
+          Some (sl)
           end
-      | Arg.Bool(f) ->
-          if (s = "") then begin
+        end else begin
+          None
+        end
+    | Arg.Bool(f) ->
+        if (s = "") then begin
           begin match sl with
-            | s::sl ->
-                begin try begin
+          | s::sl ->
+              begin try
+              begin
                 (f ( (bool_of_string s) ));
                 Some (sl)
-                end with | Invalid_argument("bool_of_string") ->   None end
-            | []  ->   None end
-          end else begin
-          begin try begin
+                end
+              with
+              | Invalid_argument("bool_of_string") ->   None
+            end
+          | []  ->   None end
+        end else begin
+          begin try
+          begin
             (f ( (bool_of_string s) ));
             Some (sl)
-            end with | Invalid_argument("bool_of_string") ->   None end
+            end
+          with
+          | Invalid_argument("bool_of_string") ->   None
+        end
+        end
+    | Arg.Set(r) ->
+        if (s = "") then begin
+          begin
+          (r := true );
+          Some (sl)
           end
-      | Arg.Set(r) ->
-          if (s = "") then begin begin
-                                   (r := true );
-                                   Some (sl)
-                                   end
-          end else begin None
+        end else begin
+          None
+        end
+    | Arg.Clear(r) ->
+        if (s = "") then begin
+          begin
+          (r := false );
+          Some (sl)
           end
-      | Arg.Clear(r) ->
-          if (s = "") then begin begin
-                                   (r := false );
-                                   Some (sl)
-                                   end
-          end else begin None
-          end
-      | Arg.Rest(f) ->   begin
-                         (List.iter f ( s::sl ));
-                         Some ([])
-                         end
-      | Arg.String(f) ->
-          if (s = "") then begin
+        end else begin
+          None
+        end
+    | Arg.Rest(f) ->   begin
+                       (List.iter f ( s::sl ));
+                       Some ([])
+                       end
+    | Arg.String(f) ->
+        if (s = "") then begin
           begin match sl with
-            | s::sl ->   begin
-                         (f s);
-                         Some (sl)
-                         end
-            | []  ->   None end
-          end else begin begin
-                           (f s);
-                           Some (sl)
-                           end
+          | s::sl ->   begin
+                       (f s);
+                       Some (sl)
+                       end
+          | []  ->   None end
+        end else begin
+          begin
+          (f s);
+          Some (sl)
           end
-      | Arg.Set_string(r) ->
-          if (s = "") then begin
+        end
+    | Arg.Set_string(r) ->
+        if (s = "") then begin
           begin match sl with
-            | s::sl ->   begin
-                         (r := s);
-                         Some (sl)
-                         end
-            | []  ->   None end
-          end else begin begin
-                           (r := s);
-                           Some (sl)
-                           end
+          | s::sl ->   begin
+                       (r := s);
+                       Some (sl)
+                       end
+          | []  ->   None end
+        end else begin
+          begin
+          (r := s);
+          Some (sl)
           end
-      | Arg.Int(f) ->
-          if (s = "") then begin
+        end
+    | Arg.Int(f) ->
+        if (s = "") then begin
           begin match sl with
-            | s::sl ->
-                begin try begin
+          | s::sl ->
+              begin try
+              begin
                 (f ( (int_of_string s) ));
                 Some (sl)
-                end with | Failure("int_of_string") ->   None end
-            | []  ->   None end
-          end else begin
-          begin try begin
+                end
+              with
+              | Failure("int_of_string") ->   None
+            end
+          | []  ->   None end
+        end else begin
+          begin try
+          begin
             (f ( (int_of_string s) ));
             Some (sl)
-            end with | Failure("int_of_string") ->   None end
-          end
-      | Arg.Set_int(r) ->
-          if (s = "") then begin
+            end
+          with
+          | Failure("int_of_string") ->   None
+        end
+        end
+    | Arg.Set_int(r) ->
+        if (s = "") then begin
           begin match sl with
-            | s::sl ->
-                begin try begin
+          | s::sl ->
+              begin try
+              begin
                 (r := ( (int_of_string s) ));
                 Some (sl)
-                end with | Failure("int_of_string") ->   None end
-            | []  ->   None end
-          end else begin
-          begin try begin
+                end
+              with
+              | Failure("int_of_string") ->   None
+            end
+          | []  ->   None end
+        end else begin
+          begin try
+          begin
             (r := ( (int_of_string s) ));
             Some (sl)
-            end with | Failure("int_of_string") ->   None end
-          end
-      | Arg.Float(f) ->
-          if (s = "") then begin
-          begin match sl with
-            | s::sl ->   begin
-                         (f ( (float_of_string s) ));
-                         Some (sl)
-                         end
-            | []  ->   None end
-          end else begin begin
-                           (f ( (float_of_string s) ));
-                           Some (sl)
-                           end
-          end
-      | Arg.Set_float(r) ->
-          if (s = "") then begin
-          begin match sl with
-            | s::sl ->   begin
-                         (r := ( (float_of_string s) ));
-                         Some (sl)
-                         end
-            | []  ->   None end
-          end else begin begin
-                           (r := ( (float_of_string s) ));
-                           Some (sl)
-                           end
-          end
-      | Arg.Tuple(specs) ->
-          let rec action_args (s) (sl) =
-            (function
-            | []  ->   Some (sl)
-            | spec::spec_list ->
-                begin match (action_arg s sl spec) with
-                | None  ->   (action_args "" []  spec_list)
-                | Some(s::sl) ->   (action_args s sl spec_list)
-                | Some(sl) ->   (action_args "" sl spec_list) end) in
-          (action_args s sl specs)
-      | Arg.Symbol(syms,f) ->
-          begin match if (s = "") then begin sl
-                      end else begin s::sl
-                      end
+            end
           with
-          | s::sl when (List.mem s syms) ->   begin
-                                              (f s);
-                                              Some (sl)
-                                              end
-          | _ ->   None end)
-    let common_start (s1) (s2) =
-      let rec loop (i) =
-        if
-        (( (i == ( (String.length s1) )) ) || ( (i == ( (String.length s2) ))
-          ))
-        then begin i
+          | Failure("int_of_string") ->   None
+        end
+        end
+    | Arg.Float(f) ->
+        if (s = "") then begin
+          begin match sl with
+          | s::sl ->   begin
+                       (f ( (float_of_string s) ));
+                       Some (sl)
+                       end
+          | []  ->   None end
         end else begin
-        if (( s1.[i] ) == ( s2.[i] )) then begin (loop ( (i + 1) ))
-        end else begin i
-        end
-        end in
-      (loop 0)
-    let parse_arg (fold) (s) (sl) =
-      (fold (
-        (fun ((name,action,_)) ->
-          (fun (acu) ->
-            let i = (common_start s name) in
-            if (i == ( (String.length name) )) then begin
-            begin try
-              (action_arg ( (String.sub s i ( (( (String.length s) ) - i) ))
-                ) sl action)
-              with | Arg.Bad(_) ->   acu end
-            end else begin acu
-            end)) ) None )
-    let rec parse_aux (fold) (anon_fun) =
-      (function
-      | []  ->   []
-      | s::sl ->
-          if (( (( (String.length s) ) > 1) ) && ( (( s.[0] ) = '-') ))
-          then begin
-          begin match (parse_arg fold s sl) with
-            | Some(sl) ->   (parse_aux fold anon_fun sl)
-            | None  ->   s::(parse_aux fold anon_fun sl) end
-          end else begin
           begin
-            ((anon_fun s) : unit  );
-            (parse_aux fold anon_fun sl)
-            end
-          end)
-    let align_doc (key) (s) =
-      let s =
-        let rec loop (i) =
-          if (i = ( (String.length s) )) then begin ""
-          end else begin
-          if (( s.[i] ) = ' ') then begin (loop ( (i + 1) ))
-          end else begin (String.sub s i ( (( (String.length s) ) - i) ))
+          (f ( (float_of_string s) ));
+          Some (sl)
           end
-          end in
-        (loop 0) in
-      let (p,s) =
-        if (( (String.length s) ) > 0) then begin
-        if (( s.[0] ) = '<') then begin
-        let rec loop (i) =
-          if (i = ( (String.length s) )) then begin ("",s)
-          end else begin
-          if (( s.[i] ) <> '>') then begin (loop ( (i + 1) ))
-          end else begin
-          let p = (String.sub s 0 ( (i + 1) )) in
-          let rec loop (i) =
-            if (i >= ( (String.length s) )) then begin (p,"")
-            end else begin
-            if (( s.[i] ) = ' ') then begin (loop ( (i + 1) ))
-            end else begin
-            (p,( (String.sub s i ( (( (String.length s) ) - i) )) ))
-            end
-            end in
-          (loop ( (i + 1) ))
-          end
-          end in
-        (loop 0)
-        end else begin ("",s)
         end
-        end else begin ("","")
+    | Arg.Set_float(r) ->
+        if (s = "") then begin
+          begin match sl with
+          | s::sl ->   begin
+                       (r := ( (float_of_string s) ));
+                       Some (sl)
+                       end
+          | []  ->   None end
+        end else begin
+          begin
+          (r := ( (float_of_string s) ));
+          Some (sl)
+          end
+        end
+    | Arg.Tuple(specs) ->
+        let rec action_args (s) (sl) =
+          (function
+          | []  ->   Some (sl)
+          | spec::spec_list ->
+              begin match (action_arg s sl spec) with
+              | None  ->   (action_args "" []  spec_list)
+              | Some(s::sl) ->   (action_args s sl spec_list)
+              | Some(sl) ->   (action_args "" sl spec_list) end) in
+        (action_args s sl specs)
+    | Arg.Symbol(syms,f) ->
+        begin match if (s = "") then begin
+                      sl
+                    end else begin
+                      s::sl
+                    end
+        with
+        | s::sl when (List.mem s syms) ->   begin
+                                            (f s);
+                                            Some (sl)
+                                            end
+        | _ ->   None end)
+  let common_start (s1) (s2) =
+    let rec loop (i) =
+      if
+          (( (i == ( (String.length s1) )) ) || (
+            (i == ( (String.length s2) )) ))
+          then begin
+        i
+      end else begin
+        if (( s1.[i] ) == ( s2.[i] )) then begin
+          (loop ( (i + 1) ))
+        end else begin
+          i
+        end
+      end in
+    (loop 0)
+  let parse_arg (fold) (s) (sl) =
+    (fold (
+      (fun ((name,action,_)) ->
+        (fun (acu) ->
+          let i = (common_start s name) in
+          if (i == ( (String.length name) )) then begin
+            begin try
+            (action_arg ( (String.sub s i ( (( (String.length s) ) - i) )) )
+              sl action)
+            with
+            | Arg.Bad(_) ->   acu
+          end
+          end else begin
+            acu
+          end)) ) None )
+  let rec parse_aux (fold) (anon_fun) =
+    (function
+    | []  ->   []
+    | s::sl ->
+        if (( (( (String.length s) ) > 1) ) && ( (( s.[0] ) = '-') )) then begin
+          begin match (parse_arg fold s sl) with
+          | Some(sl) ->   (parse_aux fold anon_fun sl)
+          | None  ->   s::(parse_aux fold anon_fun sl) end
+        end else begin
+          begin
+          ((anon_fun s) : unit  );
+          (parse_aux fold anon_fun sl)
+          end
+        end)
+  let align_doc (key) (s) =
+    let s =
+      let rec loop (i) =
+        if (i = ( (String.length s) )) then begin
+          ""
+        end else begin
+          if (( s.[i] ) = ' ') then begin
+            (loop ( (i + 1) ))
+          end else begin
+            (String.sub s i ( (( (String.length s) ) - i) ))
+          end
         end in
-      let tab =
-        (String.make (
-          (max 1 (
-            (( (16 - ( (String.length key) )) ) - ( (String.length p) )) )) )
-          ' ') in
-      (p ^ ( (tab ^ s) ))
-    let make_symlist (l) = begin match l with
-      | []  ->   "<none>"
-      | h::t ->
-          ((
-            (List.fold_left ( (fun (x) -> (fun (y) -> (x ^ ( ("|" ^ y) )))) )
-              ( ("{" ^ h) ) t) ) ^ "}") end
-    let print_usage_list (l) =
-      (List.iter (
-        (fun ((key,spec,doc)) -> begin match spec with
-          | Arg.Symbol(symbs,_) ->
-              let s = (make_symlist symbs) in
-              let synt = (key ^ ( (" " ^ s) )) in
-              (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
-          | _ ->   (eprintf "  %s %s\n" key ( (align_doc key doc) )) end) )
-        l)
-    let remaining_args (argv) =
-      let rec loop (l) (i) =
-        if (i == ( (Array.length argv) )) then begin l
-        end else begin (loop ( argv.(i)::l ) ( (i + 1) ))
-        end in
-      (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
-    let init_spec_list = (ref [] ) let ext_spec_list = (ref [] )
-    let init (spec_list) = (init_spec_list := spec_list)
-    let add (name) (spec) (descr) =
-      (ext_spec_list := ( (name,spec,descr)::ext_spec_list.contents ))
-    let fold (f) (init) =
-      let spec_list =
-        (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
-      let specs =
-        (Sort.list ( (fun ((k1,_,_)) -> (fun ((k2,_,_)) -> (k1 >= k2))) )
-          spec_list) in
-      (List.fold_right f specs init)
-    let parse (anon_fun) (argv) =
-      let remaining_args = (remaining_args argv) in
-      (parse_aux fold anon_fun remaining_args)
-    let ext_spec_list (() ) = ext_spec_list.contents end 
+      (loop 0) in
+    let (p,s) =
+      if (( (String.length s) ) > 0) then begin
+        if (( s.[0] ) = '<') then begin
+          let rec loop (i) =
+            if (i = ( (String.length s) )) then begin
+              ("",s)
+            end else begin
+              if (( s.[i] ) <> '>') then begin
+                (loop ( (i + 1) ))
+              end else begin
+                let p = (String.sub s 0 ( (i + 1) )) in
+                let rec loop (i) =
+                  if (i >= ( (String.length s) )) then begin
+                    (p,"")
+                  end else begin
+                    if (( s.[i] ) = ' ') then begin
+                      (loop ( (i + 1) ))
+                    end else begin
+                      (p,( (String.sub s i ( (( (String.length s) ) - i) ))
+                       ))
+                    end
+                  end in
+                (loop ( (i + 1) ))
+              end
+            end in
+          (loop 0)
+        end else begin
+          ("",s)
+        end
+      end else begin
+        ("","")
+      end in
+    let tab =
+      (String.make (
+        (max 1 ( (( (16 - ( (String.length key) )) ) - ( (String.length p) ))
+          )) ) ' ') in
+    (p ^ ( (tab ^ s) ))
+  let make_symlist (l) = begin match l with
+    | []  ->   "<none>"
+    | h::t ->
+        ((
+          (List.fold_left ( (fun (x) -> (fun (y) -> (x ^ ( ("|" ^ y) )))) ) (
+            ("{" ^ h) ) t) ) ^ "}") end
+  let print_usage_list (l) =
+    (List.iter (
+      (fun ((key,spec,doc)) -> begin match spec with
+        | Arg.Symbol(symbs,_) ->
+            let s = (make_symlist symbs) in
+            let synt = (key ^ ( (" " ^ s) )) in
+            (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
+        | _ ->   (eprintf "  %s %s\n" key ( (align_doc key doc) )) end) ) l)
+  let remaining_args (argv) =
+    let rec loop (l) (i) =
+      if (i == ( (Array.length argv) )) then begin
+        l
+      end else begin
+        (loop ( argv.(i)::l ) ( (i + 1) ))
+      end in
+    (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
+  let init_spec_list = (ref [] ) let ext_spec_list = (ref [] )
+  let init (spec_list) = (init_spec_list := spec_list)
+  let add (name) (spec) (descr) =
+    (ext_spec_list := ( (name,spec,descr)::ext_spec_list.contents ))
+  let fold (f) (init) =
+    let spec_list =
+      (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
+    let specs =
+      (Sort.list ( (fun ((k1,_,_)) -> (fun ((k2,_,_)) -> (k1 >= k2))) )
+        spec_list) in
+    (List.fold_right f specs init)
+  let parse (anon_fun) (argv) =
+    let remaining_args = (remaining_args argv) in
+    (parse_aux fold anon_fun remaining_args)
+  let ext_spec_list (() ) = ext_spec_list.contents
+  end 

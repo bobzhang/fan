@@ -1,11 +1,14 @@
 open Format
 open FanUtil
-module Debug  = struct let mode (_) = false end
-type  section =  string  
+module Debug = struct
+  let mode (_) = false
+  end
+type section =  string  
 let out_channel = begin try
   let f = (Sys.getenv "CAMLP4_DEBUG_FILE") in
   (open_out_gen ( [Open_wronly;Open_creat;Open_append;Open_text] ) 438 f)
-  with | Not_found  ->   Pervasives.stderr end
+  with
+  | Not_found  ->   Pervasives.stderr end
 let mode = begin try
   let str = (Sys.getenv "CAMLP4_DEBUG") in
   let rec loop (acc) (i) = begin try
@@ -15,11 +18,15 @@ let mode = begin try
     with
     | Not_found  ->
       (SSet.add ( (String.sub str i ( (( (String.length str) ) - i) )) ) acc)
-    end in
+  end in
   let sections = (loop SSet.empty 0) in
-  if (SSet.mem "*" sections) then begin (fun (_) -> true)
-  end else begin (fun (x) -> (SSet.mem x sections))
-  end with | Not_found  ->   (fun (_) -> false) end
+  if (SSet.mem "*" sections) then begin
+    (fun (_) -> true)
+  end else begin
+    (fun (x) -> (SSet.mem x sections))
+  end
+  with
+  | Not_found  ->   (fun (_) -> false) end
 let formatter =
   let header = "camlp4-debug: " in
   let at_bol = (ref true ) in
@@ -30,8 +37,9 @@ let formatter =
           for i = pos to  (( (pos + len) ) - 1) do
             begin
             if at_bol.contents then begin
-            (output_string out_channel header)
-            end else begin ()
+              (output_string out_channel header)
+            end else begin
+              ()
             end;
             let ch = buf.[i] in
             begin
