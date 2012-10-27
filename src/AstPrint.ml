@@ -179,7 +179,10 @@ class printer  ()= object(self:'self)
   (* c ['a,'b] *)                                                                         
   method class_params_def ppf =  function
    | [] -> ()
-   | l ->  fprintf ppf "[%a]" (self#list (fun ppf {txt;_} -> self#tyvar ppf txt) ~sep:",") l 
+   | l ->
+       fprintf ppf "[%a] " (* space *)
+         (self#list (fun ppf ({txt;_},s) ->
+           fprintf ppf "%s%a" (type_variance s) self#tyvar txt) ~sep:",") l 
    
   method type_with_label ppf (label,({ptyp_desc;_}as c) ) =
     match label with
@@ -580,7 +583,7 @@ class printer  ()= object(self:'self)
     | Pexp_poly _ -> 
         assert false
     | Pexp_object cs ->
-        fprintf ppf "@[<hov2>%a@]" self#class_structure cs 
+        fprintf ppf "%a" self#class_structure cs 
     | Pexp_open (lid, e) ->
         fprintf ppf "@[<2>let open %a in@;%a@]" self#longident_loc lid
           self#expression  e 
@@ -607,13 +610,13 @@ class printer  ()= object(self:'self)
   | Pcty_signature cs ->
       self#class_signature ppf cs;
   | Pcty_constr (li, l) ->
-      fprintf ppf "@[<hov2>%a%a@]"
+      fprintf ppf "%a%a"
         (fun ppf l -> match l with
         | [] -> ()
         | _  -> fprintf ppf "[%a]@ " (self#list self#core_type ~sep:"," ) l) l 
         self#longident_loc li 
   | Pcty_fun (l, co, cl) ->
-      fprintf ppf "@[<hov2>(%a@ ->@ %a)@ @]" (* FIXME remove parens later *)
+      fprintf ppf "(%a@ ->@ %a)@ " (* FIXME remove parens later *)
         self#type_with_label (l,co) self#class_type cl;
 
   method class_signature ppf { pcsig_self = ct; pcsig_fields = l ;_} =
@@ -633,15 +636,15 @@ class printer  ()= object(self:'self)
       | Pctf_cstr (ct1, ct2) ->
           fprintf ppf "constraint@ %a@ =@ %a"
             self#core_type ct1 self#core_type ct2 in 
-    fprintf ppf "object%a@\n%a@;<1 -2>end"
+    fprintf ppf "@\nobject%a@\n%a@\nend"
       (fun ppf ct -> match ct.ptyp_desc with
       | Ptyp_any -> ()
       | _ -> fprintf ppf "@ (%a)" self#core_type ct) ct
-      (self#list   class_type_field) l  ;
+      (self#list   class_type_field ~sep:"@\n") l  ;
 
   method class_type_declaration_list ppf  l =
-    let class_type_declaration ppf ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
-      fprintf ppf "%a%a%s@ =@ %a" self#virtual_flag x.pci_virt  self#class_params_def ls txt
+    let class_type_declaration ppf ({pci_params=(ls,_);pci_name={txt;_};pci_variance;_} as x) =
+      fprintf ppf "%a%a%s@ =@ %a" self#virtual_flag x.pci_virt  self#class_params_def (List.combine ls pci_variance) txt
         self#class_type x.pci_expr in 
     match l with
     | [] -> () 
@@ -654,59 +657,55 @@ class printer  ()= object(self:'self)
     match x.pcl_desc with
     | Pcl_structure (cs) ->  self#class_structure ppf cs ;
     | Pcl_fun (l, eo, p, e) ->
-        fprintf ppf "@[<hov2>fun@ %a@ ->@ %a@]" self#label_exp (l,eo,p)  self#class_expr e
+        fprintf ppf "fun@ %a@ ->@ %a" self#label_exp (l,eo,p)  self#class_expr e
     | Pcl_let (rf, l, ce) ->
-        fprintf ppf "@[<hov>let@;%a%a@ in@ %a@]" self#rec_flag rf
+        fprintf ppf "let@;%a%a@ in@ %a" self#rec_flag rf
           self#pattern_x_expression_def_list  l
           self#class_expr ce
     | Pcl_apply (ce, l) ->
-        fprintf ppf "@[<hov2>(%a@ %a)@]"
+        fprintf ppf "(%a@ %a)"
           self#class_expr  ce
           (self#list self#label_x_expression_param (* ~breakfirst:true *) ) l 
     | Pcl_constr (li, l) ->
-        fprintf ppf "@[<hov2>%a%a@]"
+        fprintf ppf "%a%a"
           (fun ppf l-> if l <>[] then 
             fprintf ppf "[%a]@ " 
               (self#list self#core_type  ~sep:"," ) l ) l 
           self#longident_loc li
     | Pcl_constraint (ce, ct) ->
-        fprintf ppf "@[<hov2>(%a@ :@ %a)@]"
+        fprintf ppf "(%a@ :@ %a)"
           self#class_expr ce
           self#class_type ct 
   method class_structure ppf { pcstr_pat = p; pcstr_fields =  l } =
-    fprintf ppf "object@\n%a%a@ end"
+    fprintf ppf "object%a%a@\nend"
       (fun ppf p -> match p.ppat_desc with
-      | Ppat_any -> ();
-      | _ -> fprintf ppf "@ " ;
-          self#pattern_in_parens ppf p ) p (self#list self#class_field  ) l 
+      | Ppat_any -> fprintf ppf "@\n";
+      | _ -> fprintf ppf "%a@\n"  self#pattern_in_parens  p ) p
+      (self#list ~first:"@[<v0>" ~last:"@]" self#class_field  ~sep:"@;") l 
   method class_field ppf x =
     match x.pcf_desc with
     | Pcf_inher (ovf, ce, so) ->
-        fprintf ppf "@[<hov2>inherit@ %s@ %a%a@]"
+        fprintf ppf "@[<2>inherit@ %s@ %a%a@]"
           (override ovf)
           self#class_expr ce
           (fun ppf so -> match so with
           | None -> ();
           | Some (s) -> fprintf ppf "@ as %s" s ) so 
     | Pcf_val (s, mf, ovf, e) ->
-        fprintf ppf "@[<hov2>val@ %s@ %a@ %s@ =@ %a@]"
-          (override ovf)
-          self#mutable_flag mf
-          s.txt 
-          self#expression  e 
-
+        fprintf ppf "@[<>val%s@ %a%s@ =@ %a@]" (override ovf)  self#mutable_flag mf
+          s.txt  self#expression  e 
     | Pcf_virt (s, pf, ct) ->
-        fprintf ppf "@[<hov2>method@ virtual@ %a@ %s@ :@ %a@]"  self#private_flag pf
+        fprintf ppf "@[<2>method@ virtual@ %a@ %s@ :@ %a@]"  self#private_flag pf
           s.txt   self#core_type  ct
     | Pcf_valvirt (s, mf, ct) ->
-        fprintf ppf "@[<hov2>val@ virtual@ %s@ %s@ :@ %a@]"
+        fprintf ppf "@[<2>val@ virtual@ %s@ %s@ :@ %a@]"
           (match mf with
           | Mutable -> "mutable "
           | _       -> "")
           s.txt
           self#core_type  ct
     | Pcf_meth (s, pf, ovf, e) ->
-        fprintf ppf "@[<hov2>method@ %s@ %a@ %s@ %a@]"
+        fprintf ppf "@[<2>method%s%a %s@ %a@]"
           (override ovf)
           self#private_flag pf
           s.txt
@@ -719,9 +718,9 @@ class printer  ()= object(self:'self)
           | _ ->
               self#expression ppf e ) e 
     | Pcf_constr (ct1, ct2) ->
-        fprintf ppf "@[<hov2>constraint@ %a@ =@ %a@]" self#core_type  ct1 self#core_type  ct2
+        fprintf ppf "@[<2>constraint %a =@;%a@]" self#core_type  ct1 self#core_type  ct2
     | Pcf_init (e) ->
-        fprintf ppf "@[<hov2>initializer@ %a@]" self#expression e 
+        fprintf ppf "@[<2>initializer@ %a@]" self#expression e 
   method module_type ppf x =
     match x.pmty_desc with
     | Pmty_ident li ->
@@ -773,9 +772,9 @@ class printer  ()= object(self:'self)
     | Psig_exception (s, ed) ->
         self#exception_declaration ppf (s.txt,ed)
     | Psig_class (l) ->
-        let class_description ppf ({pci_params=(ls,_);pci_name={txt;_};_} as x) =
+        let class_description ppf ({pci_params=(ls,_);pci_name={txt;_};pci_variance;_} as x) =
           fprintf ppf "@[<hv>@[<hov2>class@ %a%a%s@ :@]@ %a@]"  self#virtual_flag x.pci_virt
-            self#class_params_def ls  txt  self#class_type x.pci_expr in 
+            self#class_params_def (List.combine ls pci_variance)  txt  self#class_type x.pci_expr in 
         fprintf ppf "@[<hov2>%a@]"
           (self#list class_description) l 
     | Psig_module (s, mt) ->
@@ -894,12 +893,14 @@ class printer  ()= object(self:'self)
               pci_virt;
               pci_expr={pcl_desc;_};
               pci_variance;_ } as x) = (* FIXME pci_variance *)
+          let ls = List.combine ls pci_variance in
           let rec  class_fun_helper ppf e = match e.pcl_desc with
           | Pcl_fun (l, eo, p, e) ->
               self#label_exp ppf (l,eo,p);
               class_fun_helper ppf e
-          | _ -> e in 
-          fprintf ppf "@[<hov2>@ %a%a%s@ %a@]"  self#virtual_flag pci_virt self#class_params_def ls txt 
+          | _ -> e in
+          (* fprintf std_formatter "@%a%a%s%a" pp_print_int 3 pp_print_int 3 "haha" pp_print_int 3;; segfault *)
+          fprintf ppf "%a%a%s %a"  self#virtual_flag pci_virt self#class_params_def ls txt 
             (fun ppf _ ->  
               let ce =
                 (match pcl_desc with
@@ -909,13 +910,13 @@ class printer  ()= object(self:'self)
               let ce =
                 (match ce.pcl_desc with
                 | Pcl_constraint (ce, ct) ->
-                    fprintf ppf ":@ %a@ " self#class_type  ct ;
+                    fprintf ppf ": @[%a@] " self#class_type  ct ;
                     ce
                 | _ -> ce ) in
-              fprintf ppf "=@ %a" self#class_expr ce ) x in
+              fprintf ppf "= %a" self#class_expr ce ) x in
         (match l with
-        |[x ] -> fprintf ppf "@[<hov2>class@ %a@]" class_declaration x
-        | xs -> fprintf ppf "@[<hov2>class@ %a@]"
+        |[x ] -> fprintf ppf "@[<2>class %a@]" class_declaration x
+        | xs -> fprintf ppf "@[<2>class %a@]"
               (self#list class_declaration ~sep:"@\nand@ ") xs )
     | Pstr_class_type (l) ->
         self#class_type_declaration_list ppf l ;

@@ -191,3 +191,50 @@ let mk_set (type s) ~cmp =
 let mk s (type s) (type u)  = s ;;
 let mk (type s) s (type u)  = s ;;
 
+let _ =
+  (Gram.extend ( (start_debug :'start_debug Gram.t  ) ) (
+        (((fun (() ) ->
+            (None ,(
+             [(None ,None ,(
+               [(( [`Stoken
+                 (((
+                   (function
+                   | (`LIDENT "camlp4_debug") ->   true
+                   | _ ->   false) ),(`Normal,"(`LIDENT \"camlp4_debug\")")))]
+                 ),(
+                 (Gram.mk_action (
+                   (fun (__camlp4_0) ->
+                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       with
+                       | (`LIDENT "camlp4_debug") ->
+                           (Some ("Camlp4") :'start_debug )
+                       | _ ->   assert false end)) )) ));(( [`Stoken
+                                                          (((
+                                                            (function
+                                                            | (`LIDENT
+                                                                "debug")
+                                                              ->   true
+                                                            | _ ->   false)
+                                                            ),(`Normal,"(`LIDENT \"debug\")")))]
+                                                          ),(
+                                                          (Gram.mk_action (
+                                                            (fun (__camlp4_0)
+                                                              ->
+                                                              (fun
+                                                                ((_loc : 
+                                                                   FanLoc.t ))
+                                                                -> begin
+                                                                match
+                                                                __camlp4_0
+                                                                with
+                                                                | (`LIDENT
+                                                                    "debug")
+                                                                  ->
+                                                                    (None
+                                                                    :'start_debug
+                                                                    )
+                                                                | _ ->
+                                                                    assert
+                                                                    false
+                                                                end)) )) ))]
+               ))] )))) () ) ))
