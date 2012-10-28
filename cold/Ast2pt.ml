@@ -202,7 +202,7 @@ let rec ctyp =
        (( (long_uident i) ),( (package_type_constraints wc [] ) ))
    | Ast.MtId(_,i) ->   (( (long_uident i) ),[] )
    | mt ->   (error ( (loc_of_module_type mt) ) "unexpected package type"))
-    :( module_type  ->  package_type )  )
+    :module_type  -> package_type  )
 let mktype (loc) (tl) (cl) (tk) (tp) (tm) =
   let (params,variance) = (List.split tl) in
   {ptype_params = params;ptype_cstrs = cl;ptype_kind = tk;ptype_private = tp;

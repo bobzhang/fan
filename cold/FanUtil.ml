@@ -177,14 +177,14 @@ let remove_underscores (s) =
         end) ) s) in
   (Buffer.contents buf)
 module Options :
-  sig type spec_list = ( string * Arg.spec * string ) list  
-  val init : ( spec_list  ->  unit ) 
-  val add : ( string  -> ( Arg.spec  -> ( string  ->  unit ) ) ) 
-  val print_usage_list : ( spec_list  ->  unit ) 
-  val ext_spec_list : ( unit  ->  spec_list ) 
-  val parse : (( string  ->  unit )  -> ( string  array  ->  string  list ) ) 
-  end = struct
-  type spec_list = ( string * Arg.spec * string ) list   open Format
+  sig type spec_list = (string *Arg.spec *string ) list  
+  val init : spec_list  -> unit 
+  val add : string  -> Arg.spec  -> string  -> unit 
+  val print_usage_list : spec_list  -> unit 
+  val ext_spec_list : unit  -> spec_list 
+  val parse : (string  -> unit ) -> string  array  -> string  list  end =
+  struct
+  type spec_list = (string *Arg.spec *string ) list   open Format
   let rec action_arg (s) (sl) =
     (function
     | Arg.Unit(f) ->
@@ -405,7 +405,7 @@ module Options :
           | None  ->   s::(parse_aux fold anon_fun sl) end
         end else begin
           begin
-          ((anon_fun s) : unit  );
+          ((anon_fun s) :unit  );
           (parse_aux fold anon_fun sl)
           end
         end)

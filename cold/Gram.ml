@@ -88,8 +88,7 @@ let eoi_entry (entry) =
                (mk_action (
                  (fun (__camlp4_0) ->
                    (fun ((x : 'entry)) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with | `EOI ->   (x :'entry_eoi )
-                            | _ ->   assert false end))) )) ))] ))] )))) () )
-      )) in
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
+                       | `EOI ->   (x :'entry_eoi )
+                       | _ ->   assert false end))) )) ))] ))] )))) () ) )) in
   entry_eoi

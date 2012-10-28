@@ -121,15 +121,16 @@ module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
     | m ->   m)
   let filter =
     object
-      inherit  Ast.map as super
-      method !  expr =
-        (function
-        | Ast.ExFun(_loc,m) ->   Ast.ExFun ((_loc,( (map_match_case m) )))
-        | x ->   (super#expr x))
-      method !  str_item =
-        (function
-        | (Ast.StMod(_,"Debug",_) as st) ->   st
-        | st ->   (super#str_item st)) end
+    inherit  Ast.map as super
+    method! expr =
+      (function
+      | Ast.ExFun(_loc,m) ->   Ast.ExFun ((_loc,( (map_match_case m) )))
+      | x ->   (super#expr x))
+    method! str_item =
+      (function
+      | (Ast.StMod(_,"Debug",_) as st) ->   st
+      | st ->   (super#str_item st))
+    end
   let _= (Syn.AstFilters.register_str_item_filter ( filter#str_item ))
   end
 module IdFoldGenerator = struct
@@ -202,7 +203,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     | Ast.IdAcc(_,i1,i2) ->
         (( (lid_of_ident sep i1) ) ^ ( (sep ^ ( (lid_of_ident sep i2) )) ))
     | _ ->   assert false)
-  type type_decl = ( string * Ast.ident * Ast.ctyp  list * Ast.ctyp * bool ) 
+  type type_decl = (string *Ast.ident *Ast.ctyp  list *Ast.ctyp *bool ) 
   let builtin_types =
     let tyMap = SMap.empty in
     let tyMap =
@@ -276,7 +277,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     | Fold  ->   "fold"
     | Map  ->   "map"
     | Fold_map  ->   "fold_map")
-  module Gen(X:sig val size :  int  val mode :  mode  end) =
+  module Gen(X:sig val size : int  val mode : mode  end) =
     struct
     let size = X.size let mode = X.mode
     let tuplify_expr (f) =
@@ -459,14 +460,15 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     let contains_unknown (t) = begin try
       let (_ : < .. >) =
         ((object
-            inherit  Ast.fold as super
-            method !  ctyp =
-              (fun (t) ->
-                if (is_unknown t) then begin
-                  (raise Exit )
-                end else begin
-                  (super#ctyp t)
-                end) end)#ctyp t) in
+           inherit  Ast.fold as super
+           method! ctyp =
+             (fun (t) ->
+               if (is_unknown t) then begin
+                 (raise Exit )
+               end else begin
+                 (super#ctyp t)
+               end)
+           end)#ctyp t) in
       false
       with
       | Exit  ->   true end
@@ -706,13 +708,14 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
         end and class_sig_item_of_type_decl (_)
       (((name,_,_,t,_) as type_decl)) (acc) =
       let (_ : < .. >) =
-        ((object
-             (self)inherit  Ast.fold as super
-            method !  ctyp =
-              (function
-              | Ast.TyId(_,Ast.IdLid(_,id)) ->
-                  let ()  = (store_if_builtin_type id) in self
-              | t ->   (super#ctyp t)) end)#ctyp t) in
+        ((object(self)
+           inherit  Ast.fold as super
+           method! ctyp =
+             (function
+             | Ast.TyId(_,Ast.IdLid(_,id)) ->
+                 let ()  = (store_if_builtin_type id) in self
+             | t ->   (super#ctyp t))
+           end)#ctyp t) in
       Ast.CgSem
         ((_loc,(
           Ast.CgMth
@@ -850,9 +853,9 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
       with
       | (End_of_file |Scanf.Scan_failure(_)) ->   default
     end in
-    object
-       (self)inherit  Ast.map as super
-      method !  str_item =
+    object(self)
+      inherit  Ast.map as super
+      method! str_item =
         (fun (st) -> begin match st with
           | Ast.StTyp(_,t) ->   begin
                                 (last := t);
@@ -883,7 +886,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               let st1 = (self#str_item st1) in
               Ast.StSem ((_loc,st1,( (self#str_item st2) )))
           | st ->   (super#str_item st) end)
-      method !  sig_item =
+      method! sig_item =
         (fun (sg) -> begin match sg with
           | Ast.SgTyp(_,t) ->   begin
                                 (last := t);
@@ -915,7 +918,8 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
           | Ast.SgSem(_,sg1,sg2) ->
               let sg1 = (self#sig_item sg1) in
               Ast.SgSem ((_loc,sg1,( (self#sig_item sg2) )))
-          | sg ->   (super#sig_item sg) end) end
+          | sg ->   (super#sig_item sg) end)
+      end
   let _= (Syn.AstFilters.register_str_item_filter ( processor#str_item ))
   let _= (Syn.AstFilters.register_sig_item_filter ( processor#sig_item ))
   end
@@ -936,30 +940,31 @@ module MakeProfiler(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   let decorate_binding (decorate_fun) =
     (object
-       inherit  Ast.map as super
-       method !  binding =
-         (function
-         | Ast.BiEq(_loc,Ast.PaId(_,Ast.IdLid(_,id)),(Ast.ExFun(_,_) as e))
-           ->
-             Ast.BiEq
-               ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,id)) ))) ),(
-                 (decorate_fun id e) )))
-         | b ->   (super#binding b)) end)#binding
+      inherit  Ast.map as super
+      method! binding =
+        (function
+        | Ast.BiEq(_loc,Ast.PaId(_,Ast.IdLid(_,id)),(Ast.ExFun(_,_) as e)) ->
+            Ast.BiEq
+              ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,id)) ))) ),(
+                (decorate_fun id e) )))
+        | b ->   (super#binding b))
+      end)#binding
   let decorate (decorate_fun) =
-    object
-       (o)inherit  Ast.map as super
-      method !  str_item =
-        (function
-        | Ast.StVal(_loc,r,b) ->
-            Ast.StVal ((_loc,r,( (decorate_binding decorate_fun b) )))
-        | st ->   (super#str_item st))
-      method !  expr =
-        (function
-        | Ast.ExLet(_loc,r,b,e) ->
-            Ast.ExLet
-              ((_loc,r,( (decorate_binding decorate_fun b) ),( (o#expr e) )))
-        | (Ast.ExFun(_loc,_) as e) ->   (decorate_fun "<fun>" e)
-        | e ->   (super#expr e)) end
+    object(o)
+    inherit  Ast.map as super
+    method! str_item =
+      (function
+      | Ast.StVal(_loc,r,b) ->
+          Ast.StVal ((_loc,r,( (decorate_binding decorate_fun b) )))
+      | st ->   (super#str_item st))
+    method! expr =
+      (function
+      | Ast.ExLet(_loc,r,b,e) ->
+          Ast.ExLet
+            ((_loc,r,( (decorate_binding decorate_fun b) ),( (o#expr e) )))
+      | (Ast.ExFun(_loc,_) as e) ->   (decorate_fun "<fun>" e)
+      | e ->   (super#expr e))
+    end
   let decorate_this_expr (e) (id) =
     let buf = (Buffer.create 42) in
     let _loc = (Ast.loc_of_expr e) in
@@ -1015,18 +1020,18 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   type t = 
     {
-    name:  Ast.ident ;
-    type_decls:  Ast.ctyp  SMap.t ;
-    acc:  Ast.expr ;
-    app:  Ast.expr ;
-    id:  Ast.expr ;
-    tup:  Ast.expr ;
-    com:  Ast.expr ;
-    str:  Ast.expr ;
-    int:  Ast.expr ;
-    flo:  Ast.expr ;
-    chr:  Ast.expr ;
-    ant:  Ast.ident }  let _loc = FanLoc.ghost
+    name: Ast.ident ;
+    type_decls: Ast.ctyp  SMap.t ;
+    acc: Ast.expr ;
+    app: Ast.expr ;
+    id: Ast.expr ;
+    tup: Ast.expr ;
+    com: Ast.expr ;
+    str: Ast.expr ;
+    int: Ast.expr ;
+    flo: Ast.expr ;
+    chr: Ast.expr ;
+    ant: Ast.ident }  let _loc = FanLoc.ghost
   let x (i) = Ast.IdLid ((_loc,( ("x" ^ ( (string_of_int i) )) )))
   let meta_ (s) = Ast.IdLid ((_loc,( ("meta_" ^ s) )))
   let mf_ (s) = ("mf_" ^ s)
@@ -1361,202 +1366,196 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
             | _ ->   assert false end))) ) ( Ast.BiNil (_loc) ))
   let find_type_decls =
     object
-      inherit  Ast.fold as super val   accu = SMap.empty method   get = accu
-      method !  ctyp =
-        (function
-        | (Ast.TyDcl(_,name,_,_,_) as t) ->
-            {<accu = (SMap.add name t accu)>}
-        | t ->   (super#ctyp t)) end
+    inherit  Ast.fold as super
+    val accu = SMap.empty
+    method get = accu
+    method! ctyp =
+      (function
+      | (Ast.TyDcl(_,name,_,_,_) as t) ->   {<accu = (SMap.add name t accu)>}
+      | t ->   (super#ctyp t))
+    end
   let filter (st) =
     let type_decls = lazy ( (find_type_decls#str_item st)#get ) in
     ((object
-        inherit  Ast.map as super
-        method !  module_expr =
-          (fun (me) ->
-            let mk_meta_module (m) =
-              let bi = (mk_meta m) in
-              Ast.MeStr
-                ((_loc,(
-                  Ast.StSem
-                    ((_loc,(
-                      Ast.StVal
-                        ((_loc,Ast.ReNil ,(
-                          Ast.BiEq
-                            ((_loc,(
-                              Ast.PaId
-                                ((_loc,( Ast.IdLid ((_loc,"meta_string")) )))
-                              ),(
-                              Ast.ExFun
-                                ((_loc,(
-                                  Ast.McArr
-                                    ((_loc,(
-                                      Ast.PaId
-                                        ((_loc,( Ast.IdLid ((_loc,"_loc")) )))
-                                      ),( Ast.ExNil (_loc) ),(
-                                      Ast.ExFun
-                                        ((_loc,(
-                                          Ast.McArr
-                                            ((_loc,(
-                                              Ast.PaId
-                                                ((_loc,(
-                                                  Ast.IdLid ((_loc,"s")) )))
-                                              ),( Ast.ExNil (_loc) ),(
-                                              Ast.ExApp
-                                                ((_loc,(
-                                                  Ast.ExApp
-                                                    ((_loc,( m.str ),(
-                                                      Ast.ExId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"_loc"))
-                                                          ))) ))) ),(
-                                                  Ast.ExApp
-                                                    ((_loc,(
-                                                      Ast.ExId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"safe_string_escaped"))
-                                                          ))) ),(
-                                                      Ast.ExId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"s")) )))
-                                                      ))) ))) ))) ))) ))) )))
-                              ))) ))) ),(
-                      Ast.StSem
-                        ((_loc,(
-                          Ast.StVal
-                            ((_loc,Ast.ReNil ,(
-                              Ast.BiEq
-                                ((_loc,(
-                                  Ast.PaId
-                                    ((_loc,( Ast.IdLid ((_loc,"meta_int")) )))
-                                  ),(
-                                  Ast.ExFun
-                                    ((_loc,(
-                                      Ast.McArr
-                                        ((_loc,(
-                                          Ast.PaId
-                                            ((_loc,(
-                                              Ast.IdLid ((_loc,"_loc")) )))
-                                          ),( Ast.ExNil (_loc) ),(
-                                          Ast.ExFun
-                                            ((_loc,(
-                                              Ast.McArr
-                                                ((_loc,(
-                                                  Ast.PaId
-                                                    ((_loc,(
-                                                      Ast.IdLid ((_loc,"s"))
-                                                      ))) ),(
-                                                  Ast.ExNil (_loc) ),(
-                                                  Ast.ExApp
-                                                    ((_loc,(
-                                                      Ast.ExApp
-                                                        ((_loc,( m.int ),(
-                                                          Ast.ExId
-                                                            ((_loc,(
-                                                              Ast.IdLid
-                                                                ((_loc,"_loc"))
-                                                              ))) ))) ),(
-                                                      Ast.ExId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"s")) )))
-                                                      ))) ))) ))) ))) ))) )))
-                              ))) ),(
-                          Ast.StSem
-                            ((_loc,(
-                              Ast.StVal
-                                ((_loc,Ast.ReNil ,(
-                                  Ast.BiEq
-                                    ((_loc,(
-                                      Ast.PaId
-                                        ((_loc,(
-                                          Ast.IdLid ((_loc,"meta_float")) )))
-                                      ),(
-                                      Ast.ExFun
-                                        ((_loc,(
-                                          Ast.McArr
-                                            ((_loc,(
-                                              Ast.PaId
-                                                ((_loc,(
-                                                  Ast.IdLid ((_loc,"_loc"))
-                                                  ))) ),( Ast.ExNil (_loc)
-                                              ),(
-                                              Ast.ExFun
-                                                ((_loc,(
-                                                  Ast.McArr
-                                                    ((_loc,(
-                                                      Ast.PaId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"s")) )))
-                                                      ),( Ast.ExNil (_loc)
-                                                      ),(
-                                                      Ast.ExApp
-                                                        ((_loc,(
-                                                          Ast.ExApp
-                                                            ((_loc,( 
-                                                              m.flo ),(
-                                                              Ast.ExId
-                                                                ((_loc,(
-                                                                  Ast.IdLid
-                                                                    (
-                                                                    (_loc,"_loc"))
-                                                                  ))) ))) ),(
-                                                          Ast.ExId
-                                                            ((_loc,(
-                                                              Ast.IdLid
-                                                                ((_loc,"s"))
-                                                              ))) ))) ))) )))
-                                              ))) ))) ))) ))) ),(
-                              Ast.StSem
-                                ((_loc,(
-                                  Ast.StVal
-                                    ((_loc,Ast.ReNil ,(
-                                      Ast.BiEq
-                                        ((_loc,(
-                                          Ast.PaId
-                                            ((_loc,(
-                                              Ast.IdLid ((_loc,"meta_char"))
-                                              ))) ),(
-                                          Ast.ExFun
-                                            ((_loc,(
-                                              Ast.McArr
-                                                ((_loc,(
-                                                  Ast.PaId
-                                                    ((_loc,(
-                                                      Ast.IdLid
-                                                        ((_loc,"_loc")) )))
-                                                  ),( Ast.ExNil (_loc) ),(
-                                                  Ast.ExFun
-                                                    ((_loc,(
-                                                      Ast.McArr
-                                                        ((_loc,(
-                                                          Ast.PaId
-                                                            ((_loc,(
-                                                              Ast.IdLid
-                                                                ((_loc,"s"))
-                                                              ))) ),(
-                                                          Ast.ExNil (_loc)
-                                                          ),(
-                                                          Ast.ExApp
-                                                            ((_loc,(
-                                                              Ast.ExApp
-                                                                ((_loc,(
-                                                                  m.chr ),(
-                                                                  Ast.ExId
-                                                                    (
-                                                                    (_loc,(
+       inherit  Ast.map as super
+       method! module_expr =
+         (fun (me) ->
+           let mk_meta_module (m) =
+             let bi = (mk_meta m) in
+             Ast.MeStr
+               ((_loc,(
+                 Ast.StSem
+                   ((_loc,(
+                     Ast.StVal
+                       ((_loc,Ast.ReNil ,(
+                         Ast.BiEq
+                           ((_loc,(
+                             Ast.PaId
+                               ((_loc,( Ast.IdLid ((_loc,"meta_string")) )))
+                             ),(
+                             Ast.ExFun
+                               ((_loc,(
+                                 Ast.McArr
+                                   ((_loc,(
+                                     Ast.PaId
+                                       ((_loc,( Ast.IdLid ((_loc,"_loc")) )))
+                                     ),( Ast.ExNil (_loc) ),(
+                                     Ast.ExFun
+                                       ((_loc,(
+                                         Ast.McArr
+                                           ((_loc,(
+                                             Ast.PaId
+                                               ((_loc,(
+                                                 Ast.IdLid ((_loc,"s")) )))
+                                             ),( Ast.ExNil (_loc) ),(
+                                             Ast.ExApp
+                                               ((_loc,(
+                                                 Ast.ExApp
+                                                   ((_loc,( m.str ),(
+                                                     Ast.ExId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"_loc")) )))
+                                                     ))) ),(
+                                                 Ast.ExApp
+                                                   ((_loc,(
+                                                     Ast.ExId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"safe_string_escaped"))
+                                                         ))) ),(
+                                                     Ast.ExId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"s")) )))
+                                                     ))) ))) ))) ))) ))) )))
+                             ))) ))) ),(
+                     Ast.StSem
+                       ((_loc,(
+                         Ast.StVal
+                           ((_loc,Ast.ReNil ,(
+                             Ast.BiEq
+                               ((_loc,(
+                                 Ast.PaId
+                                   ((_loc,( Ast.IdLid ((_loc,"meta_int")) )))
+                                 ),(
+                                 Ast.ExFun
+                                   ((_loc,(
+                                     Ast.McArr
+                                       ((_loc,(
+                                         Ast.PaId
+                                           ((_loc,( Ast.IdLid ((_loc,"_loc"))
+                                             ))) ),( Ast.ExNil (_loc) ),(
+                                         Ast.ExFun
+                                           ((_loc,(
+                                             Ast.McArr
+                                               ((_loc,(
+                                                 Ast.PaId
+                                                   ((_loc,(
+                                                     Ast.IdLid ((_loc,"s"))
+                                                     ))) ),( Ast.ExNil (_loc)
+                                                 ),(
+                                                 Ast.ExApp
+                                                   ((_loc,(
+                                                     Ast.ExApp
+                                                       ((_loc,( m.int ),(
+                                                         Ast.ExId
+                                                           ((_loc,(
+                                                             Ast.IdLid
+                                                               ((_loc,"_loc"))
+                                                             ))) ))) ),(
+                                                     Ast.ExId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"s")) )))
+                                                     ))) ))) ))) ))) ))) )))
+                             ))) ),(
+                         Ast.StSem
+                           ((_loc,(
+                             Ast.StVal
+                               ((_loc,Ast.ReNil ,(
+                                 Ast.BiEq
+                                   ((_loc,(
+                                     Ast.PaId
+                                       ((_loc,(
+                                         Ast.IdLid ((_loc,"meta_float")) )))
+                                     ),(
+                                     Ast.ExFun
+                                       ((_loc,(
+                                         Ast.McArr
+                                           ((_loc,(
+                                             Ast.PaId
+                                               ((_loc,(
+                                                 Ast.IdLid ((_loc,"_loc")) )))
+                                             ),( Ast.ExNil (_loc) ),(
+                                             Ast.ExFun
+                                               ((_loc,(
+                                                 Ast.McArr
+                                                   ((_loc,(
+                                                     Ast.PaId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"s")) )))
+                                                     ),( Ast.ExNil (_loc) ),(
+                                                     Ast.ExApp
+                                                       ((_loc,(
+                                                         Ast.ExApp
+                                                           ((_loc,( m.flo ),(
+                                                             Ast.ExId
+                                                               ((_loc,(
+                                                                 Ast.IdLid
+                                                                   ((_loc,"_loc"))
+                                                                 ))) ))) ),(
+                                                         Ast.ExId
+                                                           ((_loc,(
+                                                             Ast.IdLid
+                                                               ((_loc,"s"))
+                                                             ))) ))) ))) )))
+                                             ))) ))) ))) ))) ),(
+                             Ast.StSem
+                               ((_loc,(
+                                 Ast.StVal
+                                   ((_loc,Ast.ReNil ,(
+                                     Ast.BiEq
+                                       ((_loc,(
+                                         Ast.PaId
+                                           ((_loc,(
+                                             Ast.IdLid ((_loc,"meta_char"))
+                                             ))) ),(
+                                         Ast.ExFun
+                                           ((_loc,(
+                                             Ast.McArr
+                                               ((_loc,(
+                                                 Ast.PaId
+                                                   ((_loc,(
+                                                     Ast.IdLid
+                                                       ((_loc,"_loc")) )))
+                                                 ),( Ast.ExNil (_loc) ),(
+                                                 Ast.ExFun
+                                                   ((_loc,(
+                                                     Ast.McArr
+                                                       ((_loc,(
+                                                         Ast.PaId
+                                                           ((_loc,(
+                                                             Ast.IdLid
+                                                               ((_loc,"s"))
+                                                             ))) ),(
+                                                         Ast.ExNil (_loc) ),(
+                                                         Ast.ExApp
+                                                           ((_loc,(
+                                                             Ast.ExApp
+                                                               ((_loc,( 
+                                                                 m.chr ),(
+                                                                 Ast.ExId
+                                                                   ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,"_loc"))
                                                                     ))) )))
-                                                              ),(
-                                                              Ast.ExApp
-                                                                ((_loc,(
-                                                                  Ast.ExId
-                                                                    (
-                                                                    (_loc,(
+                                                             ),(
+                                                             Ast.ExApp
+                                                               ((_loc,(
+                                                                 Ast.ExId
+                                                                   ((_loc,(
                                                                     Ast.IdAcc
                                                                     ((_loc,(
                                                                     Ast.IdUid
@@ -1565,107 +1564,97 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     Ast.IdLid
                                                                     ((_loc,"escaped"))
                                                                     ))) )))
-                                                                  ),(
-                                                                  Ast.ExId
-                                                                    (
-                                                                    (_loc,(
+                                                                 ),(
+                                                                 Ast.ExId
+                                                                   ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,"s"))
                                                                     ))) )))
-                                                              ))) ))) ))) )))
-                                              ))) ))) ))) ),(
-                                  Ast.StSem
-                                    ((_loc,(
-                                      Ast.StVal
-                                        ((_loc,Ast.ReNil ,(
-                                          Ast.BiEq
-                                            ((_loc,(
-                                              Ast.PaId
-                                                ((_loc,(
-                                                  Ast.IdLid
-                                                    ((_loc,"meta_bool")) )))
-                                              ),(
-                                              Ast.ExFun
-                                                ((_loc,(
-                                                  Ast.McArr
-                                                    ((_loc,(
-                                                      Ast.PaId
-                                                        ((_loc,(
-                                                          Ast.IdLid
-                                                            ((_loc,"_loc"))
-                                                          ))) ),(
-                                                      Ast.ExNil (_loc) ),(
-                                                      Ast.ExFun
-                                                        ((_loc,(
-                                                          Ast.McOr
-                                                            ((_loc,(
-                                                              Ast.McArr
-                                                                ((_loc,(
-                                                                  Ast.PaId
-                                                                    (
-                                                                    (_loc,(
+                                                             ))) ))) ))) )))
+                                             ))) ))) ))) ),(
+                                 Ast.StSem
+                                   ((_loc,(
+                                     Ast.StVal
+                                       ((_loc,Ast.ReNil ,(
+                                         Ast.BiEq
+                                           ((_loc,(
+                                             Ast.PaId
+                                               ((_loc,(
+                                                 Ast.IdLid
+                                                   ((_loc,"meta_bool")) )))
+                                             ),(
+                                             Ast.ExFun
+                                               ((_loc,(
+                                                 Ast.McArr
+                                                   ((_loc,(
+                                                     Ast.PaId
+                                                       ((_loc,(
+                                                         Ast.IdLid
+                                                           ((_loc,"_loc")) )))
+                                                     ),( Ast.ExNil (_loc) ),(
+                                                     Ast.ExFun
+                                                       ((_loc,(
+                                                         Ast.McOr
+                                                           ((_loc,(
+                                                             Ast.McArr
+                                                               ((_loc,(
+                                                                 Ast.PaId
+                                                                   ((_loc,(
                                                                     Ast.IdUid
                                                                     ((_loc,"False"))
                                                                     ))) ),(
-                                                                  Ast.ExNil
-                                                                    (_loc)
-                                                                  ),(
-                                                                  (m_uid m
-                                                                    "False")
-                                                                  ))) ),(
-                                                              Ast.McArr
-                                                                ((_loc,(
-                                                                  Ast.PaId
-                                                                    (
-                                                                    (_loc,(
+                                                                 Ast.ExNil
+                                                                   (_loc) ),(
+                                                                 (m_uid m
+                                                                   "False")
+                                                                 ))) ),(
+                                                             Ast.McArr
+                                                               ((_loc,(
+                                                                 Ast.PaId
+                                                                   ((_loc,(
                                                                     Ast.IdUid
                                                                     ((_loc,"True"))
                                                                     ))) ),(
-                                                                  Ast.ExNil
-                                                                    (_loc)
-                                                                  ),(
-                                                                  (m_uid m
-                                                                    "True")
-                                                                  ))) ))) )))
-                                                      ))) ))) ))) ))) ),(
-                                      Ast.StSem
-                                        ((_loc,(
-                                          Ast.StVal
-                                            ((_loc,Ast.ReRecursive ,(
-                                              Ast.BiEq
-                                                ((_loc,(
-                                                  Ast.PaId
-                                                    ((_loc,(
-                                                      Ast.IdLid
-                                                        ((_loc,"meta_list"))
-                                                      ))) ),(
-                                                  Ast.ExFun
-                                                    ((_loc,(
-                                                      Ast.McArr
-                                                        ((_loc,(
-                                                          Ast.PaId
-                                                            ((_loc,(
-                                                              Ast.IdLid
-                                                                ((_loc,"mf_a"))
-                                                              ))) ),(
-                                                          Ast.ExNil (_loc)
-                                                          ),(
-                                                          Ast.ExFun
-                                                            ((_loc,(
-                                                              Ast.McArr
-                                                                ((_loc,(
-                                                                  Ast.PaId
-                                                                    (
-                                                                    (_loc,(
+                                                                 Ast.ExNil
+                                                                   (_loc) ),(
+                                                                 (m_uid m
+                                                                   "True") )))
+                                                             ))) ))) ))) )))
+                                             ))) ))) ),(
+                                     Ast.StSem
+                                       ((_loc,(
+                                         Ast.StVal
+                                           ((_loc,Ast.ReRecursive ,(
+                                             Ast.BiEq
+                                               ((_loc,(
+                                                 Ast.PaId
+                                                   ((_loc,(
+                                                     Ast.IdLid
+                                                       ((_loc,"meta_list"))
+                                                     ))) ),(
+                                                 Ast.ExFun
+                                                   ((_loc,(
+                                                     Ast.McArr
+                                                       ((_loc,(
+                                                         Ast.PaId
+                                                           ((_loc,(
+                                                             Ast.IdLid
+                                                               ((_loc,"mf_a"))
+                                                             ))) ),(
+                                                         Ast.ExNil (_loc) ),(
+                                                         Ast.ExFun
+                                                           ((_loc,(
+                                                             Ast.McArr
+                                                               ((_loc,(
+                                                                 Ast.PaId
+                                                                   ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,"_loc"))
                                                                     ))) ),(
-                                                                  Ast.ExNil
-                                                                    (_loc)
-                                                                  ),(
-                                                                  Ast.ExFun
-                                                                    (
-                                                                    (_loc,(
+                                                                 Ast.ExNil
+                                                                   (_loc) ),(
+                                                                 Ast.ExFun
+                                                                   ((_loc,(
                                                                     Ast.McOr
                                                                     ((_loc,(
                                                                     Ast.McArr
@@ -1764,36 +1753,40 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     ))) )))
                                                                     )) ))) )))
                                                                     ))) )))
-                                                              ))) ))) ))) )))
-                                              ))) ),(
-                                          Ast.StVal
-                                            ((_loc,Ast.ReRecursive ,bi)) )))
-                                      ))) ))) ))) ))) ))) ))) in
-            begin match (super#module_expr me) with
-              | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
-                                                 (_,"MetaGeneratorExpr"))),Ast.MeId
-                          (_,i))
-                ->
-                  (mk_meta_module
-                    {name = i;type_decls = ( (Lazy.force type_decls) );
-                      app = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExApp")) ))) ))) );
-                      acc = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExAcc")) ))) ))) );
-                      id = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExId")) ))) ))) );tup = (
+                                                             ))) ))) ))) )))
+                                             ))) ),(
+                                         Ast.StVal
+                                           ((_loc,Ast.ReRecursive ,bi)) )))
+                                     ))) ))) ))) ))) ))) ))) in
+           begin match (super#module_expr me) with
+             | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
+                                                (_,"MetaGeneratorExpr"))),Ast.MeId
+                         (_,i))
+               ->
+                 (mk_meta_module
+                   {name = i;type_decls = ( (Lazy.force type_decls) );
+                     app = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"ExApp")) ))) ))) );acc = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"ExAcc"))
+                                                                    ))) ))) );
+                     id = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"ExId")) ))) ))) );tup = (
                                                                     Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdAcc
@@ -1804,64 +1797,80 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     Ast.IdUid
                                                                     ((_loc,"ExTup"))
                                                                     ))) ))) );
-                      com = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExCom")) ))) ))) );
-                      str = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExStr")) ))) ))) );
-                      int = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExInt")) ))) ))) );
-                      flo = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExFlo")) ))) ))) );
-                      chr = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"ExChr")) ))) ))) );
-                      ant = (
-                        Ast.IdAcc
-                          ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                            Ast.IdUid ((_loc,"ExAnt")) ))) )})
-              | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
-                                                 (_,"MetaGeneratorPatt"))),Ast.MeId
-                          (_,i))
-                ->
-                  (mk_meta_module
-                    {name = i;type_decls = ( (Lazy.force type_decls) );
-                      app = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaApp")) ))) ))) );
-                      acc = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaAcc")) ))) ))) );
-                      id = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaId")) ))) ))) );tup = (
+                     com = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"ExCom")) ))) ))) );str = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"ExStr"))
+                                                                    ))) ))) );
+                     int = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"ExInt")) ))) ))) );flo = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"ExFlo"))
+                                                                    ))) ))) );
+                     chr = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"ExChr")) ))) ))) );ant = (
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"ExAnt"))
+                                                                    ))) )})
+             | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
+                                                (_,"MetaGeneratorPatt"))),Ast.MeId
+                         (_,i))
+               ->
+                 (mk_meta_module
+                   {name = i;type_decls = ( (Lazy.force type_decls) );
+                     app = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"PaApp")) ))) ))) );acc = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"PaAcc"))
+                                                                    ))) ))) );
+                     id = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"PaId")) ))) ))) );tup = (
                                                                     Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdAcc
@@ -1872,41 +1881,54 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     Ast.IdUid
                                                                     ((_loc,"PaTup"))
                                                                     ))) ))) );
-                      com = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaCom")) ))) ))) );
-                      str = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaStr")) ))) ))) );
-                      int = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaInt")) ))) ))) );
-                      flo = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaFlo")) ))) ))) );
-                      chr = (
-                        Ast.ExId
-                          ((_loc,(
-                            Ast.IdAcc
-                              ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                                Ast.IdUid ((_loc,"PaChr")) ))) ))) );
-                      ant = (
-                        Ast.IdAcc
-                          ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
-                            Ast.IdUid ((_loc,"PaAnt")) ))) )})
-              | me ->   me end) end)#str_item st)
+                     com = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"PaCom")) ))) ))) );str = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"PaStr"))
+                                                                    ))) ))) );
+                     int = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"PaInt")) ))) ))) );flo = (
+                                                                    Ast.ExId
+                                                                    ((_loc,(
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"PaFlo"))
+                                                                    ))) ))) );
+                     chr = (
+                       Ast.ExId
+                         ((_loc,(
+                           Ast.IdAcc
+                             ((_loc,( Ast.IdUid ((_loc,"Ast")) ),(
+                               Ast.IdUid ((_loc,"PaChr")) ))) ))) );ant = (
+                                                                    Ast.IdAcc
+                                                                    ((_loc,(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"Ast"))
+                                                                    ),(
+                                                                    Ast.IdUid
+                                                                    ((_loc,"PaAnt"))
+                                                                    ))) )})
+             | me ->   me end)
+       end)#str_item st)
   let _= (Syn.AstFilters.register_str_item_filter filter)
   end
 let f_lift (((module P)  : (module Sig.PRECAST))) =

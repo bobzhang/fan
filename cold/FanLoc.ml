@@ -1,7 +1,7 @@
 open Format
 open Location
 open Lexing
-type t =  Location.t  
+type t = Location.t  
 let dump_sel (f) (x) =
   let s = begin match x with
     | `start ->   "`start"
@@ -166,7 +166,7 @@ let check (x) (msg) =
   end else begin
     true
   end
-exception Exc_located of  t * exn 
+exception Exc_located of t *exn 
 let _=
   (Printexc.register_printer (
     (function

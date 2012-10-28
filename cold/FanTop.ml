@@ -31,7 +31,7 @@ let wrap (parse_fun) (lb) =
   end
 let toplevel_phrase (token_stream) = begin match
   (Gram.parse_origin_tokens (
-    (Syntax.top_phrase : Ast.str_item  option  Gram.t  ) ) token_stream) with
+    (Syntax.top_phrase :Ast.str_item  option  Gram.t  ) ) token_stream) with
   | Some(str_item) ->
       let str_item =
         (Syntax.AstFilters.fold_topphrase_filters (

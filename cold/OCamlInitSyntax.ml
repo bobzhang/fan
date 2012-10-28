@@ -1,6 +1,5 @@
 module Make(U:sig  end) : Sig.Camlp4Syntax = struct
-  module Ast = Camlp4Ast
-  type warning = ( FanLoc.t  -> ( string  ->  unit ) )  
+  module Ast = Camlp4Ast type warning = FanLoc.t  -> string  -> unit  
   let default_warning (loc) (txt) =
     (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt)
   let current_warning = (ref default_warning)
@@ -166,7 +165,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
                    | _ ->   false) ),(`Normal,"`EOI")))] ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | `EOI ->   (None :'top_phrase )
                      | _ ->   assert false end)) )) ))] ))] )))) () ) ))
   module AntiquotSyntax = struct

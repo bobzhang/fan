@@ -89,7 +89,7 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun (__camlp4_1) ->
                          (fun (__camlp4_0) ->
                            (fun ((m : 'start_debug)) ->
-                             (fun ((_loc :  FanLoc.t )) -> begin match
+                             (fun ((_loc : FanLoc.t )) -> begin match
                                (__camlp4_1,__camlp4_0) with
                                | ((`STRING (_,fmt)),(`LIDENT section)) ->
                                    (begin match (x,( (debug_mode section) ))
@@ -111,8 +111,8 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
                                                      Ast.IdUid ((_loc,"()"))
                                                      ))) ),(
                                                  (mk_debug _loc m fmt section
-                                                   args) ))) ),e)) end :'expr
-                                     )
+                                                   args) ))) ),e)) end :
+                                     'expr )
                                | _ ->   assert false end)))))) )) ))] ))] ))))
           () ) ));
       (Gram.extend ( (end_or_in :'end_or_in Gram.t  ) ) (
@@ -124,11 +124,11 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> (Some (e) :'end_or_in ))))
+                       (fun ((_loc : FanLoc.t )) -> (Some (e) :'end_or_in ))))
                    )) ));(( [`Skeyword ("end")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (None :'end_or_in ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (start_debug :'start_debug Gram.t  ) ) (
         (((fun (() ) ->
@@ -142,8 +142,7 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LIDENT "camlp4_debug") ->
                            (Some ("Camlp4") :'start_debug )
                        | _ ->   assert false end)) )) ));(( [`Stoken
@@ -159,7 +158,7 @@ module MakeDebugParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -205,8 +204,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
       ((grammar_entry_create "qualid") :'qualid Gram.t  ) and qualuid =
       ((grammar_entry_create "qualuid") :'qualuid Gram.t  ) and
       delete_rule_header =
-      ((grammar_entry_create "delete_rule_header") :'delete_rule_header
-        Gram.t  )
+      ((grammar_entry_create "delete_rule_header")
+        :'delete_rule_header Gram.t  )
       and delete_rule_body =
       ((grammar_entry_create "delete_rule_body") :'delete_rule_body Gram.t  )
       and extend_body =
@@ -222,23 +221,23 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (_) ->
                      (fun ((e : 'delete_rule_body)) ->
-                       (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) -> (e :'expr ))))) )) ));
-               (( [`Skeyword ("EXTEND");`Snterm
-                ((Gram.obj ( (extend_body :'extend_body Gram.t  ) )));`Skeyword
-                ("END")] ),(
-                (Gram.mk_action (
-                  (fun (_) ->
-                    (fun ((e : 'extend_body)) ->
-                      (fun (_) -> (fun ((_loc :  FanLoc.t )) -> (e :'expr )))))
-                  )) ))] ))] )))) () ) ));
+                       (fun (_) -> (fun ((_loc : FanLoc.t )) -> (e :'expr )))))
+                   )) ));(( [`Skeyword ("EXTEND");`Snterm
+                          ((Gram.obj ( (extend_body :'extend_body Gram.t  )
+                             )));`Skeyword ("END")] ),(
+                          (Gram.mk_action (
+                            (fun (_) ->
+                              (fun ((e : 'extend_body)) ->
+                                (fun (_) ->
+                                  (fun ((_loc : FanLoc.t )) -> (e :'expr )))))
+                            )) ))] ))] )))) () ) ));
       (Gram.extend ( (extend_header :'extend_header Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      ((None ,( (gm () ) )) :'extend_header )) )) ));((
                                                                     [`Snterm
                                                                     ((Gram.obj
@@ -254,9 +253,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'qualuid))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (let old
                                                                     =
                                                                     (gm () ) in
@@ -278,7 +277,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((i : 'qualid)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (let old = (gm () ) in
                                let ()  = (grammar_module_name := t) in
                                (( Some (i) ),old) :'extend_header ))))))) ))
@@ -296,13 +295,13 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                       ),(
                       (Gram.mk_action (
                         (fun ((e : 'entry)) ->
-                          (fun ((_loc :  FanLoc.t )) -> (e :'e__1 ))) )) ))]
+                          (fun ((_loc : FanLoc.t )) -> (e :'e__1 ))) )) ))]
                     )))] ),(
                  (Gram.mk_action (
                    (fun ((el : 'e__1 list )) ->
                      (fun ((global_list : 'global option )) ->
                        (fun (((gram,old) : 'extend_header)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (let res =
                               (text_of_functorial_extend _loc gram
                                 global_list el) in
@@ -325,7 +324,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((n : 'name)) ->
                          (fun ((old : 'delete_rule_header)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (let (e,b) = (expr_of_delete_rule _loc n sl) in
                               let res =
                                 Ast.ExApp
@@ -350,7 +349,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((g : 'qualuid)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (let old = (gm () ) in
                         let ()  = (grammar_module_name := g) in old
                          :'delete_rule_header ))) )) ))] ))] )))) () ) ));
@@ -364,8 +363,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`UIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`UIDENT x) ->   (Ast.IdUid ((_loc,x)) :'qualuid )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -386,10 +384,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -418,8 +415,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`LIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LIDENT i) ->   (Ast.IdLid ((_loc,i)) :'qualid )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -433,7 +429,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -458,7 +454,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((xs : 'qualid)) ->
                     (fun (_) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`UIDENT x) ->
                               (Ast.IdAcc ((_loc,( Ast.IdUid ((_loc,x)) ),xs))
@@ -481,7 +477,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (__camlp4_1) ->
                      (fun (_) ->
                        (fun (__camlp4_0) ->
-                         (fun ((_loc :  FanLoc.t )) -> begin match
+                         (fun ((_loc : FanLoc.t )) -> begin match
                            (__camlp4_1,__camlp4_0) with
                            | ((`LIDENT "t"),(`UIDENT x)) ->
                                (Ast.IdUid ((_loc,x)) :'t_qualid )
@@ -509,10 +505,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -547,7 +542,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun ((sl : 'name list )) ->
                        (fun (_) ->
                          (fun (__camlp4_0) ->
-                           (fun ((_loc :  FanLoc.t )) -> begin match
+                           (fun ((_loc : FanLoc.t )) -> begin match
                              __camlp4_0 with
                              | (`UIDENT "GLOBAL") ->   (sl :'global )
                              | _ ->   assert false end))))) )) ))] ))] ))))
@@ -565,9 +560,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun ((pos : 'position option )) ->
                        (fun (_) ->
                          (fun ((n : 'name)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
-                             ((mk_entry ~name:n ~pos:pos ~levels:ll) :'entry
-                               )))))) )) ))] ))] )))) () ) ));
+                           (fun ((_loc : FanLoc.t )) ->
+                             ((mk_entry ~name:n ~pos:pos ~levels:ll) :
+                               'entry )))))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (position :'position Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -582,7 +577,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((n : 'string)) ->
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`UIDENT (("Before"|"After"|"Level") as x)) ->
                              (Ast.ExApp ((_loc,( Ast.ExVrn ((_loc,x)) ),n))
@@ -602,10 +597,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  (__camlp4_0)
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -634,7 +628,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun ((ll : 'level list )) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) -> (ll :'level_list )))))
+                         (fun ((_loc : FanLoc.t )) -> (ll :'level_list )))))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (level :'level Gram.t  ) ) (
         (((fun (() ) ->
@@ -649,8 +643,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                       ),(
                       (Gram.mk_action (
                         (fun (__camlp4_0) ->
-                          (fun ((_loc :  FanLoc.t )) -> begin match
-                            __camlp4_0 with
+                          (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
+                            with
                             | (`STRING (_,x)) ->   (x :'e__2 )
                             | _ ->   assert false end)) )) ))] )));`Sopt
                  (`Snterm ((Gram.obj ( (assoc :'assoc Gram.t  ) ))));`Snterm
@@ -659,7 +653,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((rules : 'rule_list)) ->
                      (fun ((ass : 'assoc option )) ->
                        (fun ((lab : 'e__2 option )) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((mk_level ~label:lab ~assoc:ass ~rules:rules)
                              :'level ))))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (assoc :'assoc Gram.t  ) ) (
@@ -672,8 +666,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`UIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`UIDENT x) ->
                            ((failwithf
                               "%s is not a correct associativity:(LA|RA|NA)"
@@ -691,7 +684,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -720,7 +713,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun ((rules : 'rule list )) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((retype_rule_list_without_patterns _loc rules)
                              :'rule_list ))))) )) ));(( [`Skeyword
                                                       ("[");`Skeyword ("]")]
@@ -729,7 +722,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         (fun (_) ->
                                                           (fun (_) ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               ->
                                                               ([] :'rule_list
@@ -745,7 +738,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    ((Gram.obj ( (semi_sep :'semi_sep Gram.t  ) )))))] ),(
                  (Gram.mk_action (
                    (fun ((psl : 'psymbol list )) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((mk_rule ~prod:psl ~action:None ) :'rule ))) )) ));
                (( [`Slist0sep
                 ((`Snterm
@@ -756,9 +749,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((act : 'expr)) ->
                     (fun (_) ->
                       (fun ((psl : 'psymbol list )) ->
-                        (fun ((_loc :  FanLoc.t )) ->
-                          ((mk_rule ~prod:psl ~action:( Some (act) )) :'rule
-                            ))))) )) ))] ))] )))) () ) ));
+                        (fun ((_loc : FanLoc.t )) ->
+                          ((mk_rule ~prod:psl ~action:( Some (act) )) :
+                            'rule ))))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (psymbol :'psymbol Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -766,7 +759,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (symbol :'symbol Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((s : 'symbol)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (s :'psymbol ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (s :'psymbol ))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (symbol :'symbol Gram.t  ) )));`Skeyword
                 ("{");`Snterm
@@ -777,7 +770,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun ((p : 'pattern)) ->
                       (fun (_) ->
                         (fun ((s : 'symbol)) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             ({s with pattern = ( Some (p) )} :'psymbol ))))))
                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (symbol :'symbol Gram.t  ) ) (
@@ -792,7 +785,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((s : 'symbol)) ->
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`UIDENT "TRY") ->
                              (let text = TXtry ((_loc,( s.text ))) in
@@ -817,10 +810,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (__camlp4_0)
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -896,10 +888,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -928,10 +919,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -1001,7 +991,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun ((s_t : 'symbol)) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) -> (s_t :'symbol ))))) ))
+                        (fun ((_loc : FanLoc.t )) -> (s_t :'symbol ))))) ))
                 ));(( [`Snterm ((Gram.obj ( (name :'name Gram.t  ) )));`Sopt
                     ((Gram.srules symbol (
                        [(( [`Stoken
@@ -1017,7 +1007,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                          (Gram.mk_action (
                            (fun (__camlp4_1) ->
                              (fun (__camlp4_0) ->
-                               (fun ((_loc :  FanLoc.t )) -> begin match
+                               (fun ((_loc : FanLoc.t )) -> begin match
                                  (__camlp4_1,__camlp4_0) with
                                  | ((`STRING (_,s)),(`UIDENT "Level")) ->
                                      (s :'e__4 )
@@ -1025,7 +1015,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     (Gram.mk_action (
                       (fun ((lev : 'e__4 option )) ->
                         (fun ((n : 'name)) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             ((mk_symbol ~used:( [n.tvar] ) ~text:(
                                TXnterm ((_loc,n,lev)) ) ~styp:(
                                STquo ((_loc,( n.tvar ))) ) ~pattern:None )
@@ -1040,7 +1030,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                    (Gram.mk_action (
                                                      (fun (__camlp4_0) ->
                                                        (fun
-                                                         ((_loc :  FanLoc.t ))
+                                                         ((_loc : FanLoc.t ))
                                                          -> begin match
                                                          __camlp4_0 with
                                                          | (`STRING (_,s)) ->
@@ -1064,7 +1054,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun ((p : 'patt option )) ->
                    (fun ((i : 'a_ident)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (let p = begin match p with
                             | None  ->   Ast.PaVrn ((_loc,i))
                             | Some(p) ->
@@ -1109,18 +1099,20 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                       ("[");`Slist0sep
                                                       ((`Snterm
                                                         ((Gram.obj (
-                                                           (rule :'rule
-                                                             Gram.t  ) ))),`Skeyword
+                                                           (rule
+                                                             :'rule Gram.t  )
+                                                           ))),`Skeyword
                                                         ("|")));`Skeyword
                                                       ("]")] ),(
                                                       (Gram.mk_action (
                                                         (fun (_) ->
                                                           (fun
-                                                            ((rl : 'rule list
-                                                               )) ->
+                                                            ((rl :
+                                                               'rule list ))
+                                                            ->
                                                             (fun (_) ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (let rl =
@@ -1145,39 +1137,79 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     ((_loc,t))
                                                                    )
                                                                    ~pattern:None
-                                                                   ) :'symbol
-                                                                  ))))) )) ));
-              (( [`Stoken
-               ((( (function
-                   | (`UIDENT "NEXT") ->   true
-                   | _ ->   false) ),(`Normal,"(`UIDENT \"NEXT\")")))] ),(
-               (Gram.mk_action (
-                 (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
-                     | (`UIDENT "NEXT") ->
-                         ((mk_symbol ~used:[]  ~text:( TXnext (_loc) )
-                            ~styp:( STself ((_loc,"NEXT")) ) ~pattern:None )
-                           :'symbol )
-                     | _ ->   assert false end)) )) ));(( [`Stoken
-                                                        (((
-                                                          (function
-                                                          | (`UIDENT "SELF")
-                                                            ->   true
-                                                          | _ ->   false)
-                                                          ),(`Normal,"(`UIDENT \"SELF\")")))]
-                                                        ),(
-                                                        (Gram.mk_action (
-                                                          (fun (__camlp4_0)
-                                                            ->
-                                                            (fun
-                                                              ((_loc : 
-                                                                 FanLoc.t ))
-                                                              -> begin match
-                                                              __camlp4_0 with
-                                                              | (`UIDENT
-                                                                  "SELF")
-                                                                ->
-                                                                  ((mk_symbol
+                                                                   ) :
+                                                                  'symbol )))))
+                                                        )) ));(( [`Stoken
+                                                               (((
+                                                                 (function
+                                                                 | (`UIDENT
+                                                                    "NEXT")
+                                                                   -> 
+                                                                     true
+                                                                 | _ ->
+                                                                     false)
+                                                                 ),(`Normal,"(`UIDENT \"NEXT\")")))]
+                                                               ),(
+                                                               (Gram.mk_action
+                                                                 (
+                                                                 (fun
+                                                                   (__camlp4_0)
+                                                                   ->
+                                                                   (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
+                                                                    match
+                                                                    __camlp4_0
+                                                                    with
+                                                                    | (`UIDENT
+                                                                    "NEXT")
+                                                                    ->
+                                                                      ((mk_symbol
+                                                                    ~used:[] 
+                                                                    ~text:(
+                                                                    TXnext
+                                                                    (_loc) )
+                                                                    ~styp:(
+                                                                    STself
+                                                                    ((_loc,"NEXT"))
+                                                                    )
+                                                                    ~pattern:None
+                                                                    )
+                                                                    :'symbol
+                                                                    )
+                                                                    | _ ->
+                                                                      assert
+                                                                    false
+                                                                    end)) ))
+                                                               ));(( [`Stoken
+                                                                   (((
+                                                                    (function
+                                                                    | (`UIDENT
+                                                                    "SELF")
+                                                                    -> 
+                                                                      true
+                                                                    | _ ->
+                                                                      false)
+                                                                    ),
+                                                                    (`Normal,"(`UIDENT \"SELF\")")))]
+                                                                   ),(
+                                                                   (Gram.mk_action
+                                                                    (
+                                                                    (fun
+                                                                    (__camlp4_0)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
+                                                                    match
+                                                                    __camlp4_0
+                                                                    with
+                                                                    | (`UIDENT
+                                                                    "SELF")
+                                                                    ->
+                                                                      ((mk_symbol
                                                                     ~used:[] 
                                                                     ~text:(
                                                                     TXself
@@ -1190,11 +1222,12 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     )
                                                                     :'symbol
                                                                     )
-                                                              | _ ->
-                                                                  assert
-                                                                  false end))
-                                                          )) ))] ))] )))) ()
-          ) ));
+                                                                    | _ ->
+                                                                      assert
+                                                                    false
+                                                                    end)) ))
+                                                                   ))] ))] ))))
+          () ) ));
       (Gram.extend ( (pattern :'pattern Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -1208,7 +1241,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun (_) ->
                          (fun ((p1 : 'pattern)) ->
                            (fun (_) ->
-                             (fun ((_loc :  FanLoc.t )) ->
+                             (fun ((_loc : FanLoc.t )) ->
                                (Ast.PaTup
                                   ((_loc,( Ast.PaCom ((_loc,p1,p2)) )))
                                  :'pattern ))))))) )) ));(( [`Skeyword
@@ -1223,9 +1256,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (p
                                                                     :'pattern
                                                                     ))))) ))
@@ -1236,9 +1269,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaAny
                                                                     (_loc)
                                                                     :'pattern
@@ -1249,7 +1282,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`LIDENT _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`LIDENT i) ->
                           (Ast.PaId ((_loc,( Ast.IdLid ((_loc,i)) )))
                             :'pattern )
@@ -1262,13 +1295,13 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((p : 'pattern)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'comma_patt ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'comma_patt ))) )) ));
                (( [`Sself;`Skeyword (",");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((p2 : 'comma_patt)) ->
                     (fun (_) ->
                       (fun ((p1 : 'comma_patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaCom ((_loc,p1,p2)) :'comma_patt ))))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (name :'name Gram.t  ) ) (
@@ -1278,7 +1311,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (qualid :'qualid Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((il : 'qualid)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((mk_name _loc il) :'name ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (string :'string Gram.t  ) ) (
         (((fun (() ) ->
@@ -1291,8 +1324,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`ANTIQUOT ("",s)) ->
                            ((AntiquotSyntax.parse_expr _loc s) :'string )
                        | _ ->   assert false end)) )) ));(( [`Stoken
@@ -1307,7 +1339,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -1332,7 +1364,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword (";")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> (() :'semi_sep ))) )) ))]
+                     (fun ((_loc : FanLoc.t )) -> (() :'semi_sep ))) )) ))]
                ))] )))) () ) ))
       end
   let _=
@@ -1362,7 +1394,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun ((e : 'simple_expr)) ->
                            (fun ((f : 'simple_expr)) ->
                              (fun (__camlp4_0) ->
-                               (fun ((_loc :  FanLoc.t )) -> begin match
+                               (fun ((_loc : FanLoc.t )) -> begin match
                                  (__camlp4_1,__camlp4_0) with
                                  | ((`UIDENT "SEP"),(`UIDENT "FOLD1")) ->
                                      ((sfoldsep _loc "FOLD1 SEP" "sfold1sep"
@@ -1385,7 +1417,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((e : 'simple_expr)) ->
                           (fun ((f : 'simple_expr)) ->
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 (__camlp4_1,__camlp4_0) with
                                 | ((`UIDENT "SEP"),(`UIDENT "FOLD0")) ->
                                     ((sfoldsep _loc "FOLD0 SEP" "sfold0sep" f
@@ -1403,11 +1435,11 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun ((e : 'simple_expr)) ->
                       (fun ((f : 'simple_expr)) ->
                         (fun (__camlp4_0) ->
-                          (fun ((_loc :  FanLoc.t )) -> begin match
-                            __camlp4_0 with
+                          (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
+                            with
                             | (`UIDENT "FOLD1") ->
-                                ((sfold _loc "FOLD1" "sfold1" f e s) :'symbol
-                                  )
+                                ((sfold _loc "FOLD1" "sfold1" f e s) :
+                                  'symbol )
                             | _ ->   assert false end))))) )) ));(( [`Stoken
                                                                   (((
                                                                     (function
@@ -1450,10 +1482,9 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -1483,13 +1514,13 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun ((e : 'expr)) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) -> (e :'simple_expr )))))
+                         (fun ((_loc : FanLoc.t )) -> (e :'simple_expr )))))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )))]
                           ),(
                           (Gram.mk_action (
                             (fun ((i : 'a_LIDENT)) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.ExId ((_loc,( Ast.IdLid ((_loc,i)) )))
                                   :'simple_expr ))) )) ))] ))] )))) () ) ))
       end
@@ -1532,9 +1563,8 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (_) ->
                      (fun ((e : 'comprehension_or_sem_expr_for_list)) ->
-                       (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) -> (e :'expr ))))) )) ))]
-               ))] )))) () ) ));
+                       (fun (_) -> (fun ((_loc : FanLoc.t )) -> (e :'expr )))))
+                   )) ))] ))] )))) () ) ));
       (Gram.extend (
         (comprehension_or_sem_expr_for_list
           :'comprehension_or_sem_expr_for_list Gram.t  ) ) (
@@ -1545,7 +1575,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                  ((( (Gram.obj ( (expr :'expr Gram.t  ) )) ),"top"))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExApp
                           ((_loc,(
                             Ast.ExApp
@@ -1563,7 +1593,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((l : 'item list )) ->
                     (fun (_) ->
                       (fun ((e : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           ((Expr.compr _loc e l)
                             :'comprehension_or_sem_expr_for_list ))))) )) ));
                (( [`Snterml
@@ -1572,7 +1602,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((e : 'expr)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.ExApp
                            ((_loc,(
                              Ast.ExApp
@@ -1591,7 +1621,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((mk : 'sem_expr_for_list)) ->
                     (fun (_) ->
                       (fun ((e : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExApp
                              ((_loc,(
                                Ast.ExApp
@@ -1612,24 +1642,23 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                  ((( (Gram.obj ( (expr :'expr Gram.t  ) )) ),"top"))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (`cond (e) :'item ))) ))
-                 ));(( [`Stry
-                     ((Gram.srules item (
-                        [(( [`Snterm
-                          ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
-                          ("<-")] ),(
-                          (Gram.mk_action (
-                            (fun (_) ->
-                              (fun ((p : 'patt)) ->
-                                (fun ((_loc :  FanLoc.t )) -> (p :'e__5 ))))
-                            )) ))] )));`Snterml
-                     ((( (Gram.obj ( (expr :'expr Gram.t  ) )) ),"top"))] ),(
+                     (fun ((_loc : FanLoc.t )) -> (`cond (e) :'item ))) )) ));
+               (( [`Stry
+                ((Gram.srules item (
+                   [(( [`Snterm
+                     ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
+                     ("<-")] ),(
                      (Gram.mk_action (
-                       (fun ((e : 'expr)) ->
-                         (fun ((p : 'e__5)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
-                             (`gen ((p,e)) :'item )))) )) ))] ))] )))) () )
-        ))
+                       (fun (_) ->
+                         (fun ((p : 'patt)) ->
+                           (fun ((_loc : FanLoc.t )) -> (p :'e__5 )))) )) ))]
+                   )));`Snterml
+                ((( (Gram.obj ( (expr :'expr Gram.t  ) )) ),"top"))] ),(
+                (Gram.mk_action (
+                  (fun ((e : 'expr)) ->
+                    (fun ((p : 'e__5)) ->
+                      (fun ((_loc : FanLoc.t )) -> (`gen ((p,e)) :'item ))))
+                  )) ))] ))] )))) () ) ))
       end
   let _=
     if (is_revised ~expr:expr ~sem_expr_for_list:sem_expr_for_list) then begin
@@ -1649,7 +1678,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((last : 'expr)) ->
                      (fun (_) ->
                        (fun ((e : 'expr)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.ExApp
                               ((_loc,(
                                 Ast.ExApp
@@ -1670,7 +1699,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((mk : 'sem_expr_for_list)) ->
                         (fun (_) ->
                           (fun ((e : 'expr)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.ExApp
                                  ((_loc,(
                                    Ast.ExApp
@@ -1691,9 +1720,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
   include Syntax module Ast = Camlp4Ast
   type 'a item_or_def =  
     | SdStr of 'a
-    | SdDef of  string *( string  list * Ast.expr ) option 
-    | SdUnd of  string 
-    | SdITE of  bool *'a item_or_def  list *'a item_or_def  list 
+    | SdDef of string *(string  list *Ast.expr ) option 
+    | SdUnd of string 
+    | SdITE of bool *'a item_or_def  list *'a item_or_def  list 
     | SdLazy of 'a Lazy.t   let defined = (ref [] )
   let is_defined (i) = (List.mem_assoc i ( defined.contents ))
   let incorrect_number (loc) (l1) (l2) =
@@ -1720,7 +1749,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Antiquot,"(`UIDENT __x)")))] ),(
                    (Gram.mk_action (
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`UIDENT _) ->
                              ((((new Ast.reloc) _loc)#expr e) :'expr )
@@ -1736,7 +1765,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Antiquot,"(`UIDENT __x)")))] ),(
                    (Gram.mk_action (
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`UIDENT _) ->
                              (let p = (Expr.substp _loc []  e) in
@@ -1758,7 +1787,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Gram.mk_action (
                      (fun ((param : 'expr)) ->
                        (fun (__camlp4_0) ->
-                         (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                         (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                            with
                            | (`UIDENT _) ->
                                (let el = begin match param with
@@ -1789,7 +1818,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                    (Gram.mk_action (
                      (fun ((param : 'patt)) ->
                        (fun (__camlp4_0) ->
-                         (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                         (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                            with
                            | (`UIDENT _) ->
                                (let pl = begin match param with
@@ -1941,13 +1970,13 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
       ((grammar_entry_create "smlist_then") :'smlist_then Gram.t  ) and
       else_expr = ((grammar_entry_create "else_expr") :'else_expr Gram.t  )
       and else_macro_def_sig =
-      ((grammar_entry_create "else_macro_def_sig") :'else_macro_def_sig
-        Gram.t  )
+      ((grammar_entry_create "else_macro_def_sig")
+        :'else_macro_def_sig Gram.t  )
       and else_macro_def =
       ((grammar_entry_create "else_macro_def") :'else_macro_def Gram.t  ) and
       uident_eval_ifndef =
-      ((grammar_entry_create "uident_eval_ifndef") :'uident_eval_ifndef
-        Gram.t  )
+      ((grammar_entry_create "uident_eval_ifndef")
+        :'uident_eval_ifndef Gram.t  )
       and uident_eval_ifdef =
       ((grammar_entry_create "uident_eval_ifdef") :'uident_eval_ifdef Gram.t 
         )
@@ -1962,7 +1991,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (macro_def :'macro_def Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'macro_def)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((execute_macro ( Ast.StNil (_loc) ) (
                           (fun (a) -> (fun (b) -> Ast.StSem ((_loc,a,b)))) )
                           x) :'str_item ))) )) ))] ))] )))) () ) ));
@@ -1975,7 +2004,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'macro_def_sig)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((execute_macro ( Ast.SgNil (_loc) ) (
                           (fun (a) -> (fun (b) -> Ast.SgSem ((_loc,a,b)))) )
                           x) :'sig_item ))) )) ))] ))] )))) () ) ));
@@ -1990,7 +2019,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`STRING (_,fname)) ->
                              (SdLazy
@@ -2001,18 +2030,18 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (uident_eval_ifndef
                                                                   :'uident_eval_ifndef
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Skeyword
                                                              ("THEN");`Snterm
                                                              ((Gram.obj (
                                                                 (smlist_then
                                                                   :'smlist_then
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
                                                                 (else_macro_def
                                                                   :'else_macro_def
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2031,9 +2060,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((make_SdITE_result
                                                                     st1 st2)
                                                                     :'macro_def
@@ -2051,14 +2080,14 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun (_) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               ((make_SdITE_result st1 st2) :'macro_def )))))))
                   )) ));(( [`Skeyword ("UNDEF");`Snterm
                          ((Gram.obj ( (uident :'uident Gram.t  ) )))] ),(
                          (Gram.mk_action (
                            (fun ((i : 'uident)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (SdUnd (i) :'macro_def )))) )) ));((
                                                                     [`Skeyword
                                                                     ("DEFINE");`Snterm
@@ -2089,9 +2118,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (SdDef
                                                                     ((i,def))
                                                                     :'macro_def
@@ -2109,7 +2138,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`STRING (_,fname)) ->
                              (SdLazy
@@ -2120,18 +2149,18 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (uident_eval_ifndef
                                                                   :'uident_eval_ifndef
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Skeyword
                                                              ("THEN");`Snterm
                                                              ((Gram.obj (
                                                                 (sglist_then
                                                                   :'sglist_then
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
                                                                 (else_macro_def_sig
                                                                   :'else_macro_def_sig
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2150,9 +2179,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((make_SdITE_result
                                                                     sg1 sg2)
                                                                     :'macro_def_sig
@@ -2171,21 +2200,21 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun (_) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               ((make_SdITE_result sg1 sg2) :'macro_def_sig )))))))
                   )) ));(( [`Skeyword ("UNDEF");`Snterm
                          ((Gram.obj ( (uident :'uident Gram.t  ) )))] ),(
                          (Gram.mk_action (
                            (fun ((i : 'uident)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (SdUnd (i) :'macro_def_sig )))) )) ));
                (( [`Skeyword ("DEFINE");`Snterm
                 ((Gram.obj ( (uident :'uident Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((i : 'uident)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (SdDef ((i,None )) :'macro_def_sig )))) )) ))] ))] ))))
           () ) ));
       (Gram.extend ( (uident_eval_ifdef :'uident_eval_ifdef Gram.t  ) ) (
@@ -2195,7 +2224,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (uident :'uident Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((i : 'uident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Stack.push ( (is_defined i) ) stack)
                          :'uident_eval_ifdef ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (uident_eval_ifndef :'uident_eval_ifndef Gram.t  ) ) (
@@ -2205,7 +2234,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (uident :'uident Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((i : 'uident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Stack.push ( (not ( (is_defined i) )) ) stack)
                          :'uident_eval_ifndef ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (else_macro_def :'else_macro_def Gram.t  ) ) (
@@ -2215,18 +2244,17 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> ([] :'else_macro_def )))
-                   )) ));(( [`Skeyword ("ELSE");`Snterm
-                          ((Gram.obj ( (smlist_else :'smlist_else Gram.t  )
-                             )));`Snterm
-                          ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
-                          (Gram.mk_action (
-                            (fun (_) ->
-                              (fun ((st : 'smlist_else)) ->
-                                (fun (_) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
-                                    (st :'else_macro_def ))))) )) ))] ))] ))))
-          () ) ));
+                     (fun ((_loc : FanLoc.t )) -> ([] :'else_macro_def ))) ))
+                 ));(( [`Skeyword ("ELSE");`Snterm
+                     ((Gram.obj ( (smlist_else :'smlist_else Gram.t  ) )));`Snterm
+                     ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
+                     (Gram.mk_action (
+                       (fun (_) ->
+                         (fun ((st : 'smlist_else)) ->
+                           (fun (_) ->
+                             (fun ((_loc : FanLoc.t )) ->
+                               (st :'else_macro_def ))))) )) ))] ))] )))) ()
+          ) ));
       (Gram.extend ( (else_macro_def_sig :'else_macro_def_sig Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -2234,33 +2262,18 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
-                       ([] :'else_macro_def_sig ))) )) ));(( [`Skeyword
-                                                           ("ELSE");`Snterm
-                                                           ((Gram.obj (
-                                                              (sglist_else
-                                                                :'sglist_else
-                                                                Gram.t  ) )));`Snterm
-                                                           ((Gram.obj (
-                                                              (endif :'endif
-                                                                Gram.t  ) )))]
-                                                           ),(
-                                                           (Gram.mk_action (
-                                                             (fun (_) ->
-                                                               (fun
-                                                                 ((st :
-                                                                    'sglist_else))
-                                                                 ->
-                                                                 (fun (_) ->
-                                                                   (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (st
-                                                                    :'else_macro_def_sig
-                                                                    ))))) ))
-                                                           ))] ))] )))) () )
-        ));
+                     (fun ((_loc : FanLoc.t )) -> ([] :'else_macro_def_sig )))
+                   )) ));(( [`Skeyword ("ELSE");`Snterm
+                          ((Gram.obj ( (sglist_else :'sglist_else Gram.t  )
+                             )));`Snterm
+                          ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
+                          (Gram.mk_action (
+                            (fun (_) ->
+                              (fun ((st : 'sglist_else)) ->
+                                (fun (_) ->
+                                  (fun ((_loc : FanLoc.t )) ->
+                                    (st :'else_macro_def_sig ))))) )) ))] ))]
+             )))) () ) ));
       (Gram.extend ( (else_expr :'else_expr Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -2268,7 +2281,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (endif :'endif Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExId ((_loc,( Ast.IdUid ((_loc,"()")) )))
                          :'else_expr ))) )) ));(( [`Skeyword ("ELSE");`Snterm
                                                 ((Gram.obj (
@@ -2281,8 +2294,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                     (fun ((e : 'expr)) ->
                                                       (fun (_) ->
                                                         (fun
-                                                          ((_loc :  FanLoc.t
-                                                             )) ->
+                                                          ((_loc : FanLoc.t ))
+                                                          ->
                                                           (e :'else_expr )))))
                                                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (smlist_then :'smlist_then Gram.t  ) ) (
@@ -2297,16 +2310,17 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((si : 'str_item)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (SdStr (si) :'e__6 )))) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (macro_def
                                                                   :'macro_def
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
-                                                                (semi :'semi
-                                                                  Gram.t  )
+                                                                (semi
+                                                                  :'semi
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2316,9 +2330,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'macro_def))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((execute_macro_if_active_branch
                                                                     _loc (
                                                                     Ast.StNil
@@ -2331,12 +2345,13 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     Ast.StSem
                                                                     ((_loc,a,b))))
                                                                     ) Then 
-                                                                    d) :'e__6
-                                                                    )))) ))
-                                                             ))] )))] ),(
+                                                                    d) :
+                                                                    'e__6 ))))
+                                                               )) ))] )))]
+                 ),(
                  (Gram.mk_action (
                    (fun ((sml : 'e__6 list )) ->
-                     (fun ((_loc :  FanLoc.t )) -> (sml :'smlist_then ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (sml :'smlist_then ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (smlist_else :'smlist_else Gram.t  ) ) (
         (((fun (() ) ->
@@ -2350,16 +2365,17 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((si : 'str_item)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (SdStr (si) :'e__7 )))) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (macro_def
                                                                   :'macro_def
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
-                                                                (semi :'semi
-                                                                  Gram.t  )
+                                                                (semi
+                                                                  :'semi
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2369,9 +2385,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'macro_def))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((execute_macro_if_active_branch
                                                                     _loc (
                                                                     Ast.StNil
@@ -2384,12 +2400,13 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     Ast.StSem
                                                                     ((_loc,a,b))))
                                                                     ) Else 
-                                                                    d) :'e__7
-                                                                    )))) ))
-                                                             ))] )))] ),(
+                                                                    d) :
+                                                                    'e__7 ))))
+                                                               )) ))] )))]
+                 ),(
                  (Gram.mk_action (
                    (fun ((sml : 'e__7 list )) ->
-                     (fun ((_loc :  FanLoc.t )) -> (sml :'smlist_else ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (sml :'smlist_else ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (sglist_then :'sglist_then Gram.t  ) ) (
         (((fun (() ) ->
@@ -2403,16 +2420,17 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((si : 'sig_item)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (SdStr (si) :'e__8 )))) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (macro_def_sig
                                                                   :'macro_def_sig
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
-                                                                (semi :'semi
-                                                                  Gram.t  )
+                                                                (semi
+                                                                  :'semi
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2422,9 +2440,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'macro_def_sig))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((execute_macro_if_active_branch
                                                                     _loc (
                                                                     Ast.SgNil
@@ -2437,12 +2455,13 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     Ast.SgSem
                                                                     ((_loc,a,b))))
                                                                     ) Then 
-                                                                    d) :'e__8
-                                                                    )))) ))
-                                                             ))] )))] ),(
+                                                                    d) :
+                                                                    'e__8 ))))
+                                                               )) ))] )))]
+                 ),(
                  (Gram.mk_action (
                    (fun ((sgl : 'e__8 list )) ->
-                     (fun ((_loc :  FanLoc.t )) -> (sgl :'sglist_then ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (sgl :'sglist_then ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (sglist_else :'sglist_else Gram.t  ) ) (
         (((fun (() ) ->
@@ -2456,16 +2475,17 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((si : 'sig_item)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (SdStr (si) :'e__9 )))) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (macro_def_sig
                                                                   :'macro_def_sig
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
-                                                                (semi :'semi
-                                                                  Gram.t  )
+                                                                (semi
+                                                                  :'semi
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -2475,9 +2495,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'macro_def_sig))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((execute_macro_if_active_branch
                                                                     _loc (
                                                                     Ast.SgNil
@@ -2490,12 +2510,13 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     Ast.SgSem
                                                                     ((_loc,a,b))))
                                                                     ) Else 
-                                                                    d) :'e__9
-                                                                    )))) ))
-                                                             ))] )))] ),(
+                                                                    d) :
+                                                                    'e__9 ))))
+                                                               )) ))] )))]
+                 ),(
                  (Gram.mk_action (
                    (fun ((sgl : 'e__9 list )) ->
-                     (fun ((_loc :  FanLoc.t )) -> (sgl :'sglist_else ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (sgl :'sglist_else ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (endif :'endif Gram.t  ) ) (
         (((fun (() ) ->
@@ -2503,53 +2524,50 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [(( [`Skeyword ("ENDIF")] ),(
                  (Gram.mk_action (
-                   (fun (_) -> (fun ((_loc :  FanLoc.t )) -> (() :'endif )))
+                   (fun (_) -> (fun ((_loc : FanLoc.t )) -> (() :'endif )))
                    )) ));(( [`Skeyword ("END")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) -> (() :'endif )))
-                            )) ))] ))] )))) () ) ));
+                              (fun ((_loc : FanLoc.t )) -> (() :'endif ))) ))
+                          ))] ))] )))) () ) ));
       (Gram.extend ( (opt_macro_value :'opt_macro_value Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (None :'opt_macro_value ))
-                   )) ));(( [`Skeyword ("=");`Snterm
-                          ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
-                          (Gram.mk_action (
-                            (fun ((e : 'expr)) ->
-                              (fun (_) ->
-                                (fun ((_loc :  FanLoc.t )) ->
-                                  (Some (([] ,e)) :'opt_macro_value )))) ))
-                          ));(( [`Skeyword ("(");`Slist1sep
-                              (((
-                                (Gram.srules opt_macro_value (
-                                  [(( [`Stoken
-                                    (((
-                                      (function
-                                      | (`LIDENT _) ->   true
-                                      | _ ->   false)
-                                      ),(`Normal,"(`LIDENT _)")))] ),(
-                                    (Gram.mk_action (
-                                      (fun (__camlp4_0) ->
-                                        (fun ((_loc :  FanLoc.t )) -> begin
-                                          match __camlp4_0 with
-                                          | (`LIDENT x) ->   (x :'e__10 )
-                                          | _ ->   assert false end)) )) ))]
-                                  )) ),`Skeyword (",")));`Skeyword
-                              (")");`Skeyword ("=");`Snterm
-                              ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
-                              (Gram.mk_action (
-                                (fun ((e : 'expr)) ->
-                                  (fun (_) ->
-                                    (fun (_) ->
-                                      (fun ((pl : 'e__10 list )) ->
-                                        (fun (_) ->
-                                          (fun ((_loc :  FanLoc.t )) ->
-                                            (Some ((pl,e)) :'opt_macro_value
-                                              ))))))) )) ))] ))] )))) () ) ));
+                   (fun ((_loc : FanLoc.t )) -> (None :'opt_macro_value )) ))
+                 ));(( [`Skeyword ("=");`Snterm
+                     ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
+                     (Gram.mk_action (
+                       (fun ((e : 'expr)) ->
+                         (fun (_) ->
+                           (fun ((_loc : FanLoc.t )) ->
+                             (Some (([] ,e)) :'opt_macro_value )))) )) ));
+               (( [`Skeyword ("(");`Slist1sep
+                (((
+                  (Gram.srules opt_macro_value (
+                    [(( [`Stoken
+                      ((( (function
+                          | (`LIDENT _) ->   true
+                          | _ ->   false) ),(`Normal,"(`LIDENT _)")))] ),(
+                      (Gram.mk_action (
+                        (fun (__camlp4_0) ->
+                          (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
+                            with
+                            | (`LIDENT x) ->   (x :'e__10 )
+                            | _ ->   assert false end)) )) ))] )) ),`Skeyword
+                  (",")));`Skeyword (")");`Skeyword ("=");`Snterm
+                ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
+                (Gram.mk_action (
+                  (fun ((e : 'expr)) ->
+                    (fun (_) ->
+                      (fun (_) ->
+                        (fun ((pl : 'e__10 list )) ->
+                          (fun (_) ->
+                            (fun ((_loc : FanLoc.t )) ->
+                              (Some ((pl,e)) :'opt_macro_value ))))))) )) ))]
+               ))] )))) () ) ));
       (Gram.extend ( (expr :'expr Gram.t  ) ) (
         (((fun (() ) ->
             (( Some (`Level ("top")) ),(
@@ -2566,7 +2584,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun (_) ->
                            (fun (__camlp4_0) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) -> begin match
+                               (fun ((_loc : FanLoc.t )) -> begin match
                                  __camlp4_0 with
                                  | (`LIDENT i) ->
                                      ((((new Expr.subst) _loc ( [(i,def)] ))#expr
@@ -2582,7 +2600,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((i : 'uident)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (if (is_defined i) then begin
                                  e2
                                end else begin
@@ -2590,13 +2608,14 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                end :'expr ))))))) )) ));(( [`Skeyword
                                                          ("IFDEF");`Snterm
                                                          ((Gram.obj (
-                                                            (uident :'uident
-                                                              Gram.t  ) )));`Skeyword
+                                                            (uident
+                                                              :'uident Gram.t 
+                                                              ) )));`Skeyword
                                                          ("THEN");`Sself;`Snterm
                                                          ((Gram.obj (
                                                             (else_expr
                                                               :'else_expr
-                                                              Gram.t  ) )))]
+                                                                 Gram.t  ) )))]
                                                          ),(
                                                          (Gram.mk_action (
                                                            (fun
@@ -2614,9 +2633,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (if
                                                                      (is_defined
                                                                     i) then begin
@@ -2643,7 +2662,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                            (fun (_) ->
                              (fun ((i : 'uident)) ->
                                (fun (_) ->
-                                 (fun ((_loc :  FanLoc.t )) ->
+                                 (fun ((_loc : FanLoc.t )) ->
                                    (if (is_defined i) then begin
                                       p2
                                     end else begin
@@ -2684,9 +2703,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (if
                                                                      (is_defined
                                                                     i) then begin
@@ -2707,8 +2726,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`UIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`UIDENT i) ->   (i :'uident )
                        | _ ->   assert false end)) )) ))] ))] )))) () ) ));
       (Gram.extend ( (expr :'expr Gram.t  ) ) (
@@ -2720,7 +2738,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((s : 'a_ident)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.ExVrn ((_loc,s)) :'expr )))) )) ));((
                                                                   [`Skeyword
                                                                   ("`");
@@ -2736,9 +2754,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2752,9 +2770,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2768,9 +2786,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2784,9 +2802,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2800,9 +2818,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2816,9 +2834,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2832,9 +2850,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2848,9 +2866,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__11 )))
@@ -2865,9 +2883,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExVrn
                                                                     ((_loc,kwd))
                                                                     :'expr ))))
@@ -2882,7 +2900,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((s : 'a_ident)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.PaVrn ((_loc,s)) :'patt )))) )) ));((
                                                                   [`Skeyword
                                                                   ("`");
@@ -2898,9 +2916,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2914,9 +2932,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2930,9 +2948,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2946,9 +2964,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2962,9 +2980,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2978,9 +2996,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (x)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Gram.string_of_token
                                                                     x)
                                                                     :'e__12 )))
@@ -2995,9 +3013,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaVrn
                                                                     ((_loc,kwd))
                                                                     :'patt ))))
@@ -3305,8 +3323,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       (comma_ctyp :'comma_ctyp Gram.t  ) and _ =
       (class_type_quot :'class_type_quot Gram.t  ) and _ =
       (class_type_plus :'class_type_plus Gram.t  ) and _ =
-      (class_type_longident_and_param :'class_type_longident_and_param Gram.t
-         )
+      (class_type_longident_and_param
+        :'class_type_longident_and_param Gram.t  )
       and _ = (class_type_longident :'class_type_longident Gram.t  ) and _ =
       (class_type_declaration :'class_type_declaration Gram.t  ) and _ =
       (class_type :'class_type Gram.t  ) and _ =
@@ -3355,8 +3373,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       ((grammar_entry_create "value_val_opt_override")
         :'value_val_opt_override Gram.t  )
       and method_opt_override =
-      ((grammar_entry_create "method_opt_override") :'method_opt_override
-        Gram.t  )
+      ((grammar_entry_create "method_opt_override")
+        :'method_opt_override Gram.t  )
       and module_longident_dot_lparen =
       ((grammar_entry_create "module_longident_dot_lparen")
         :'module_longident_dot_lparen Gram.t  )
@@ -3364,8 +3382,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
       ((grammar_entry_create "optional_type_parameter")
         :'optional_type_parameter Gram.t  )
       and fun_def_cont_no_when =
-      ((grammar_entry_create "fun_def_cont_no_when") :'fun_def_cont_no_when
-        Gram.t  )
+      ((grammar_entry_create "fun_def_cont_no_when")
+        :'fun_def_cont_no_when Gram.t  )
       and fun_def_cont =
       ((grammar_entry_create "fun_def_cont") :'fun_def_cont Gram.t  ) and
       sequence' = ((grammar_entry_create "sequence'") :'sequence' Gram.t  )
@@ -3383,7 +3401,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun ((st : 'str_items)) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.MeStr ((_loc,st)) :'module_expr ))))) )) ));
                (( [`Skeyword ("functor");`Skeyword ("(");`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
@@ -3399,7 +3417,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                             (fun ((i : 'a_UIDENT)) ->
                               (fun (_) ->
                                 (fun (_) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
+                                  (fun ((_loc : FanLoc.t )) ->
                                     (Ast.MeFun ((_loc,i,t,me)) :'module_expr
                                       )))))))))) )) ))] ));(( Some ("apply")
                                                             ),None ,(
@@ -3418,9 +3436,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MeApp
                                                                     ((_loc,me1,me2))
                                                                     :'module_expr
@@ -3439,7 +3457,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((e : 'expr)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.MePkg
                                    ((_loc,(
                                      Ast.ExTyc
@@ -3465,9 +3483,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MePkg
                                                                     ((_loc,e))
                                                                     :'module_expr
@@ -3488,9 +3506,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (me
                                                                     :'module_expr
                                                                     ))))) ))
@@ -3504,7 +3522,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((me : 'module_expr)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.MeTyc ((_loc,me,mt)) :'module_expr )))))))
                  )) ));(( [`Snterm
                         ((Gram.obj (
@@ -3512,7 +3530,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         ),(
                         (Gram.mk_action (
                           (fun ((i : 'module_longident)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.MeId ((_loc,i)) :'module_expr ))) )) ));
               (( [`Stoken
                ((( (function
@@ -3520,7 +3538,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | (`QUOTATION x) ->
                          ((Quotation.expand _loc x DynAst.module_expr_tag)
                            :'module_expr )
@@ -3537,7 +3555,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           (fun (__camlp4_0)
                                                             ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               -> begin match
                                                               __camlp4_0 with
@@ -3550,7 +3568,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (mk_anti
                                                                     ~c:"module_expr"
                                                                     n s) )))
-                                                                    :'module_expr
+                                                                    :
+                                                                    'module_expr
                                                                     )
                                                               | _ ->
                                                                   assert
@@ -3564,7 +3583,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.StExp ((_loc,e)) :'str_item ))) )) ));(( [`Stoken
                                                                    (((
                                                                     (function
@@ -3582,10 +3601,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -3610,7 +3628,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"stri"|"anti"|"list") as n),s)) ->
                           (Ast.StAnt ((_loc,( (mk_anti ~c:"str_item" n s) )))
                             :'str_item )
@@ -3620,7 +3638,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ((Gram.obj (
                                                             (class_type_declaration
                                                               :'class_type_declaration
-                                                              Gram.t  ) )))]
+                                                                 Gram.t  ) )))]
                                                          ),(
                                                          (Gram.mk_action (
                                                            (fun
@@ -3630,9 +3648,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              (fun (_) ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.StClt
                                                                     ((_loc,ctd))
                                                                     :'str_item
@@ -3642,7 +3660,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (class_declaration
                                                                   :'class_declaration
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -3652,9 +3670,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  ->
                                                                  (fun (_) ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.StCls
                                                                     ((_loc,cd))
                                                                     :'str_item
@@ -3690,9 +3708,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.StExp
                                                                     ((_loc,(
                                                                     Ast.ExOpI
@@ -3712,7 +3730,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((m : 'a_UIDENT)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.StExp
                                    ((_loc,( Ast.ExLmd ((_loc,m,mb,e)) )))
                                   :'str_item )))))))) )) ));(( [`Skeyword
@@ -3720,12 +3738,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (opt_rec
                                                                   :'opt_rec
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
                                                                 (binding
                                                                   :'binding
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -3740,9 +3758,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (begin
                                                                     match bi
                                                                     with
@@ -3794,9 +3812,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.StExp
                                                                     ((_loc,(
                                                                     Ast.ExLet
@@ -3811,7 +3829,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((td : 'type_declaration)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.StTyp ((_loc,td)) :'str_item )))) )) ));
                (( [`Skeyword ("open");`Snterm
                 ((Gram.obj ( (module_longident :'module_longident Gram.t  )
@@ -3819,7 +3837,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((i : 'module_longident)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.StOpn ((_loc,i)) :'str_item )))) )) ));((
                                                                     [`Skeyword
                                                                     ("module");`Skeyword
@@ -3854,9 +3872,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.StMty
                                                                     ((_loc,i,mt))
                                                                     :'str_item
@@ -3869,7 +3887,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((mb : 'module_binding)) ->
                     (fun (_) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.StRecMod ((_loc,mb)) :'str_item ))))) )) ));
                (( [`Skeyword ("module");`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Snterm
@@ -3879,14 +3897,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((mb : 'module_binding0)) ->
                     (fun ((i : 'a_UIDENT)) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.StMod ((_loc,i,mb)) :'str_item ))))) )) ));
                (( [`Skeyword ("include");`Snterm
                 ((Gram.obj ( (module_expr :'module_expr Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((me : 'module_expr)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.StInc ((_loc,me)) :'str_item )))) )) ));
                (( [`Skeyword ("external");`Snterm
                 ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Skeyword
@@ -3901,7 +3919,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun (_) ->
                           (fun ((i : 'a_LIDENT)) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.StExt ((_loc,i,t,sl)) :'str_item ))))))))
                   )) ));(( [`Skeyword ("exception");`Snterm
                          ((Gram.obj (
@@ -3916,7 +3934,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (fun (_) ->
                                (fun ((t : 'constructor_declaration)) ->
                                  (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
+                                   (fun ((_loc : FanLoc.t )) ->
                                      (Ast.StExc ((_loc,t,( Ast.OSome (i) )))
                                        :'str_item )))))) )) ));(( [`Skeyword
                                                                 ("exception");`Snterm
@@ -3935,9 +3953,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.StExc
                                                                     ((_loc,t,Ast.ONone
                                                                     ))
@@ -3954,7 +3972,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((me : 'module_expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> (me :'module_binding0 ))))
+                       (fun ((_loc : FanLoc.t )) -> (me :'module_binding0 ))))
                    )) ));(( [`Skeyword (":");`Snterm
                           ((Gram.obj ( (module_type :'module_type Gram.t  )
                              )));`Skeyword ("=");`Snterm
@@ -3965,7 +3983,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                               (fun (_) ->
                                 (fun ((mt : 'module_type)) ->
                                   (fun (_) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.MeTyc ((_loc,me,mt))
                                         :'module_binding0 )))))) )) ));
                (( [`Skeyword ("(");`Snterm
@@ -3980,7 +3998,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun (_) ->
                           (fun ((m : 'a_UIDENT)) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.MeFun ((_loc,m,mt,mb)) :'module_binding0
                                   )))))))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (module_binding :'module_binding Gram.t  ) ) (
@@ -3999,7 +4017,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun ((mt : 'module_type)) ->
                          (fun (_) ->
                            (fun ((m : 'a_UIDENT)) ->
-                             (fun ((_loc :  FanLoc.t )) ->
+                             (fun ((_loc : FanLoc.t )) ->
                                (Ast.MbColEq ((_loc,m,mt,me)) :'module_binding
                                  ))))))) )) ));(( [`Stoken
                                                 (((
@@ -4010,8 +4028,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                 ),(
                                                 (Gram.mk_action (
                                                   (fun (__camlp4_0) ->
-                                                    (fun
-                                                      ((_loc :  FanLoc.t ))
+                                                    (fun ((_loc : FanLoc.t ))
                                                       -> begin match
                                                       __camlp4_0 with
                                                       | (`QUOTATION x) ->
@@ -4064,10 +4081,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -4092,7 +4108,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`ANTIQUOT (\"\",_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("" as n),s)) ->
                           (Ast.MbAnt
                              ((_loc,( (mk_anti ~c:"module_binding" n s) )))
@@ -4110,7 +4126,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -4146,9 +4162,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_binding))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MbAnd
                                                                     ((_loc,b1,b2))
                                                                     :'module_binding
@@ -4171,7 +4187,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (fun ((i : 'a_UIDENT)) ->
                                (fun (_) ->
                                  (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
+                                   (fun ((_loc : FanLoc.t )) ->
                                      (Ast.MtFun ((_loc,i,t,mt)) :'module_type
                                        )))))))))) )) ))] ));(( Some ("with")
                                                              ),None ,(
@@ -4180,7 +4196,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ("with");`Snterm
                                                                ((Gram.obj (
                                                                   (with_constr
-                                                                    :'with_constr
+                                                                    :
+                                                                    'with_constr
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -4196,9 +4213,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_type))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MtWit
                                                                     ((_loc,mt,wc))
                                                                     :'module_type
@@ -4211,7 +4228,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun ((mt2 : 'module_type)) ->
                       (fun ((mt1 : 'module_type)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           ((ModuleType.app mt1 mt2) :'module_type ))))) )) ))]
               ));(( Some (".") ),None ,(
                   [(( [`Sself;`Skeyword (".");`Sself] ),(
@@ -4219,7 +4236,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((mt2 : 'module_type)) ->
                         (fun (_) ->
                           (fun ((mt1 : 'module_type)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               ((ModuleType.acc mt1 mt2) :'module_type )))))
                       )) ))] ));(( Some ("sig") ),None ,(
                                  [(( [`Skeyword ("sig");`Snterm
@@ -4230,7 +4247,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                      (fun (_) ->
                                        (fun ((sg : 'sig_items)) ->
                                          (fun (_) ->
-                                           (fun ((_loc :  FanLoc.t )) ->
+                                           (fun ((_loc : FanLoc.t )) ->
                                              (Ast.MtSig ((_loc,sg))
                                                :'module_type ))))) )) ))] ));
              (( Some ("simple") ),None ,(
@@ -4242,20 +4259,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun (_) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.MtOf ((_loc,me)) :'module_type )))))) )) ));
               (( [`Skeyword ("(");`Sself;`Skeyword (")")] ),(
                (Gram.mk_action (
                  (fun (_) ->
                    (fun ((mt : 'module_type)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> (mt :'module_type )))))
+                       (fun ((_loc : FanLoc.t )) -> (mt :'module_type )))))
                  )) ));(( [`Skeyword ("'");`Snterm
                         ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )))] ),(
                         (Gram.mk_action (
                           (fun ((i : 'a_ident)) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.MtQuo ((_loc,i)) :'module_type )))) ))
                         ));(( [`Snterm
                             ((Gram.obj (
@@ -4264,7 +4281,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                             ),(
                             (Gram.mk_action (
                               (fun ((i : 'module_longident_with_app)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (Ast.MtId ((_loc,i)) :'module_type ))) ))
                             ));(( [`Stoken
                                 (((
@@ -4274,7 +4291,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                   ),(`Normal,"(`QUOTATION _)")))] ),(
                                 (Gram.mk_action (
                                   (fun (__camlp4_0) ->
-                                    (fun ((_loc :  FanLoc.t )) -> begin match
+                                    (fun ((_loc : FanLoc.t )) -> begin match
                                       __camlp4_0 with
                                       | (`QUOTATION x) ->
                                           ((Quotation.expand _loc x
@@ -4290,7 +4307,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | (`ANTIQUOT (((""|"mtyp"|"anti"|"list") as n),s)) ->
                          (Ast.MtAnt
                             ((_loc,( (mk_anti ~c:"module_type" n s) )))
@@ -4308,7 +4325,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((ctd : 'class_type_declaration)) ->
                      (fun (_) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.SgClt ((_loc,ctd)) :'sig_item ))))) )) ));
                (( [`Skeyword ("class");`Snterm
                 ((Gram.obj ( (class_description :'class_description Gram.t  )
@@ -4316,7 +4333,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((cd : 'class_description)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.SgCls ((_loc,cd)) :'sig_item )))) )) ));
                (( [`Skeyword ("val");`Snterm
                 ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Skeyword
@@ -4326,7 +4343,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((i : 'a_LIDENT)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.SgVal ((_loc,i,t)) :'sig_item )))))) )) ));
                (( [`Skeyword ("type");`Snterm
                 ((Gram.obj ( (type_declaration :'type_declaration Gram.t  )
@@ -4334,7 +4351,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((t : 'type_declaration)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.SgTyp ((_loc,t)) :'sig_item )))) )) ));((
                                                                     [`Skeyword
                                                                     ("open");`Snterm
@@ -4353,9 +4370,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.SgOpn
                                                                     ((_loc,i))
                                                                     :'sig_item
@@ -4367,19 +4384,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((i : 'a_ident)) ->
                     (fun (_) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.SgMty ((_loc,i,( Ast.MtNil (_loc) )))
                             :'sig_item ))))) )) ));(( [`Skeyword
                                                     ("module");`Skeyword
                                                     ("type");`Snterm
                                                     ((Gram.obj (
-                                                       (a_ident :'a_ident
-                                                         Gram.t  ) )));`Skeyword
+                                                       (a_ident
+                                                         :'a_ident Gram.t  )
+                                                       )));`Skeyword
                                                     ("=");`Snterm
                                                     ((Gram.obj (
                                                        (module_type
-                                                         :'module_type Gram.t
-                                                          ) )))] ),(
+                                                         :'module_type Gram.t 
+                                                         ) )))] ),(
                                                     (Gram.mk_action (
                                                       (fun
                                                         ((mt : 'module_type))
@@ -4391,12 +4409,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (_) ->
                                                               (fun (_) ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  ->
                                                                   (Ast.SgMty
                                                                     ((_loc,i,mt))
-                                                                    :'sig_item
+                                                                    :
+                                                                    'sig_item
                                                                     )))))))
                                                       )) ));(( [`Skeyword
                                                              ("module");`Skeyword
@@ -4404,7 +4423,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (module_rec_declaration
                                                                   :'module_rec_declaration
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -4416,9 +4435,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.SgRecMod
                                                                     ((_loc,mb))
                                                                     :'sig_item
@@ -4448,9 +4467,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.SgMod
                                                                     ((_loc,i,mt))
                                                                     :'sig_item
@@ -4473,9 +4492,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.SgInc
                                                                     ((_loc,mt))
                                                                     :'sig_item
@@ -4494,7 +4513,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun (_) ->
                           (fun ((i : 'a_LIDENT)) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.SgExt ((_loc,i,t,sl)) :'sig_item ))))))))
                   )) ));(( [`Skeyword ("exception");`Snterm
                          ((Gram.obj (
@@ -4503,7 +4522,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          (Gram.mk_action (
                            (fun ((t : 'constructor_declaration)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (Ast.SgExc ((_loc,t)) :'sig_item )))) )) ));
                (( [`Stoken
                 ((( (function
@@ -4511,7 +4530,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.sig_item_tag)
                             :'sig_item )
@@ -4528,7 +4547,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -4565,7 +4584,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun (_) ->
                            (fun ((i : 'a_UIDENT)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (Ast.MtFun ((_loc,i,t,mt))
                                    :'module_declaration )))))))) )) ));
                (( [`Skeyword (":");`Snterm
@@ -4573,7 +4592,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((mt : 'module_type)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (mt :'module_declaration )))) )) ))] ))] )))) () ) ));
       (Gram.extend (
         (module_rec_declaration :'module_rec_declaration Gram.t  ) ) (
@@ -4588,7 +4607,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((mt : 'module_type)) ->
                      (fun (_) ->
                        (fun ((m : 'a_UIDENT)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.MbCol ((_loc,m,mt)) :'module_rec_declaration
                              ))))) )) ));(( [`Stoken
                                           (((
@@ -4599,7 +4618,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                           ),(
                                           (Gram.mk_action (
                                             (fun (__camlp4_0) ->
-                                              (fun ((_loc :  FanLoc.t )) ->
+                                              (fun ((_loc : FanLoc.t )) ->
                                                 begin match __camlp4_0 with
                                                 | (`QUOTATION x) ->
                                                     ((Quotation.expand _loc x
@@ -4619,7 +4638,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                    (Gram.mk_action (
                                                      (fun (__camlp4_0) ->
                                                        (fun
-                                                         ((_loc :  FanLoc.t ))
+                                                         ((_loc : FanLoc.t ))
                                                          -> begin match
                                                          __camlp4_0 with
                                                          | (`ANTIQUOT
@@ -4641,7 +4660,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((m2 : 'module_rec_declaration)) ->
                     (fun (_) ->
                       (fun ((m1 : 'module_rec_declaration)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.MbAnd ((_loc,m1,m2)) :'module_rec_declaration
                             ))))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (with_constr :'with_constr Gram.t  ) ) (
@@ -4652,14 +4671,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (module_longident :'module_longident Gram.t  )
                     )));`Skeyword (":=");`Snterm
                  ((Gram.obj (
-                    (module_longident_with_app :'module_longident_with_app
-                      Gram.t  ) )))] ),(
+                    (module_longident_with_app
+                      :'module_longident_with_app Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((i2 : 'module_longident_with_app)) ->
                      (fun (_) ->
                        (fun ((i1 : 'module_longident)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.WcMoS ((_loc,i1,i2)) :'with_constr ))))))
                    )) ));(( [`Skeyword ("type");`Snterm
                           ((Gram.obj (
@@ -4673,7 +4692,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                 (fun ((t1 : 'type_longident_and_parameters))
                                   ->
                                   (fun (_) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.WcTyS ((_loc,t1,t2)) :'with_constr
                                         )))))) )) ));(( [`Skeyword
                                                       ("type");`Stoken
@@ -4695,10 +4714,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ->
                                                               (fun (_) ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`ANTIQUOT
@@ -4724,13 +4743,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           ((Gram.obj (
                                                              (module_longident
                                                                :'module_longident
-                                                               Gram.t  ) )));`Skeyword
+                                                                  Gram.t  )
+                                                             )));`Skeyword
                                                           ("=");`Snterm
                                                           ((Gram.obj (
                                                              (module_longident_with_app
                                                                :'module_longident_with_app
-                                                               Gram.t  ) )))]
-                                                          ),(
+                                                                  Gram.t  )
+                                                             )))] ),(
                                                           (Gram.mk_action (
                                                             (fun
                                                               ((i2 :
@@ -4743,9 +4763,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun (_) ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.WcMod
                                                                     ((_loc,i1,i2))
                                                                     :'with_constr
@@ -4755,12 +4775,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((Gram.obj (
                                                                  (type_longident_and_parameters
                                                                    :'type_longident_and_parameters
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               ("=");`Snterm
                                                               ((Gram.obj (
-                                                                 (ctyp :'ctyp
-                                                                   Gram.t  )
+                                                                 (ctyp
+                                                                   :'ctyp
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -4776,9 +4797,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.WcTyp
                                                                     ((_loc,t1,t2))
                                                                     :'with_constr
@@ -4817,10 +4838,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -4849,7 +4869,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.with_constr_tag)
                             :'with_constr )
@@ -4866,7 +4886,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -4902,9 +4922,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'with_constr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.WcAnd
                                                                     ((_loc,wc1,wc2))
                                                                     :'with_constr
@@ -4925,7 +4945,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun ((cst : 'class_structure)) ->
                        (fun ((csp : 'opt_class_self_patt)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.ExObj ((_loc,csp,cst)) :'expr )))))) )) ));
                (( [`Skeyword ("while");`Snterm
                 ((Gram.obj ( (sequence :'sequence Gram.t  ) )));`Skeyword
@@ -4936,25 +4956,28 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((e : 'sequence)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.ExWhi
                                ((_loc,( (Expr.mksequence' _loc e) ),seq))
                               :'expr )))))) )) ));(( [`Skeyword
                                                    ("for");`Snterm
                                                    ((Gram.obj (
-                                                      (a_LIDENT :'a_LIDENT
-                                                        Gram.t  ) )));`Skeyword
+                                                      (a_LIDENT
+                                                        :'a_LIDENT Gram.t  )
+                                                      )));`Skeyword
                                                    ("=");`Snterm
                                                    ((Gram.obj (
-                                                      (sequence :'sequence
-                                                        Gram.t  ) )));`Snterm
+                                                      (sequence
+                                                        :'sequence Gram.t  )
+                                                      )));`Snterm
                                                    ((Gram.obj (
                                                       (direction_flag
                                                         :'direction_flag
-                                                        Gram.t  ) )));`Snterm
+                                                           Gram.t  ) )));`Snterm
                                                    ((Gram.obj (
-                                                      (sequence :'sequence
-                                                        Gram.t  ) )));`Skeyword
+                                                      (sequence
+                                                        :'sequence Gram.t  )
+                                                      )));`Skeyword
                                                    ("do");`Snterm
                                                    ((Gram.obj (
                                                       (do_sequence
@@ -4984,9 +5007,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExFor
                                                                     ((_loc,i,(
                                                                     (Expr.mksequence'
@@ -5001,8 +5024,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             ((Gram.obj (
                                                                (do_sequence
                                                                  :'do_sequence
-                                                                 Gram.t  ) )))]
-                                                            ),(
+                                                                    Gram.t  )
+                                                               )))] ),(
                                                             (Gram.mk_action (
                                                               (fun
                                                                 ((seq :
@@ -5011,9 +5034,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Expr.mksequence
                                                                     _loc seq)
                                                                     :'expr ))))
@@ -5044,9 +5067,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExIfe
                                                                     ((_loc,e1,e2,e3))
                                                                     :'expr ))))))))
@@ -5060,14 +5083,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((e : 'sequence)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.ExTry
                                ((_loc,( (Expr.mksequence' _loc e) ),a))
                               :'expr )))))) )) ));(( [`Skeyword
                                                    ("match");`Snterm
                                                    ((Gram.obj (
-                                                      (sequence :'sequence
-                                                        Gram.t  ) )));`Skeyword
+                                                      (sequence
+                                                        :'sequence Gram.t  )
+                                                      )));`Skeyword
                                                    ("with");`Snterm
                                                    ((Gram.obj (
                                                       (match_case
@@ -5082,7 +5106,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            ->
                                                            (fun (_) ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                ->
                                                                (Ast.ExMat
@@ -5096,8 +5120,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             ((Gram.obj (
                                                                (fun_def
                                                                  :'fun_def
-                                                                 Gram.t  ) )))]
-                                                            ),(
+                                                                    Gram.t  )
+                                                               )))] ),(
                                                             (Gram.mk_action (
                                                               (fun
                                                                 ((e :
@@ -5106,26 +5130,29 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (e :'expr
-                                                                    )))) ))
-                                                            ));(( [`Skeyword
-                                                                ("fun");`Skeyword
-                                                                ("[");`Slist0sep
-                                                                ((`Snterm
-                                                                  ((Gram.obj
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (e :
+                                                                    'expr ))))
+                                                              )) ));((
+                                                                    [`Skeyword
+                                                                    ("fun");`Skeyword
+                                                                    ("[");`Slist0sep
+                                                                    ((`Snterm
+                                                                    ((Gram.obj
                                                                     (
                                                                     (match_case0
                                                                     :'match_case0
                                                                     Gram.t  )
                                                                     ))),`Skeyword
-                                                                  ("|")));`Skeyword
-                                                                ("]")] ),(
-                                                                (Gram.mk_action
-                                                                  (
-                                                                  (fun (_) ->
+                                                                    ("|")));`Skeyword
+                                                                    ("]")]
+                                                                    ),(
+                                                                    (Gram.mk_action
+                                                                    (
+                                                                    (fun (_)
+                                                                    ->
                                                                     (fun
                                                                     ((a :
                                                                     'match_case0
@@ -5136,15 +5163,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExFun
                                                                     ((_loc,(
                                                                     (Ast.mcOr_of_list
                                                                     a) )))
                                                                     :'expr ))))))
-                                                                  )) ));
+                                                                    )) ));
                (( [`Skeyword ("let");`Skeyword ("open");`Snterm
                 ((Gram.obj ( (module_longident :'module_longident Gram.t  )
                    )));`Skeyword ("in");`Sself] ),(
@@ -5154,7 +5181,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((i : 'module_longident)) ->
                         (fun (_) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.ExOpI ((_loc,i,e)) :'expr ))))))) )) ));
                (( [`Skeyword ("let");`Skeyword ("module");`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Snterm
@@ -5167,7 +5194,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((m : 'a_UIDENT)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.ExLmd ((_loc,m,mb,e)) :'expr )))))))) ))
                 ));(( [`Skeyword ("let");`Snterm
                     ((Gram.obj ( (opt_rec :'opt_rec Gram.t  ) )));`Snterm
@@ -5179,7 +5206,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           (fun ((bi : 'binding)) ->
                             (fun ((r : 'opt_rec)) ->
                               (fun (_) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (Ast.ExLet ((_loc,r,bi,x)) :'expr )))))))
                       )) ))] ));(( Some ("where") ),None ,(
                                  [(( [`Sself;`Skeyword ("where");`Snterm
@@ -5193,7 +5220,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                        (fun ((rf : 'opt_rec)) ->
                                          (fun (_) ->
                                            (fun ((e : 'expr)) ->
-                                             (fun ((_loc :  FanLoc.t )) ->
+                                             (fun ((_loc : FanLoc.t )) ->
                                                (Ast.ExLet ((_loc,rf,lb,e))
                                                  :'expr )))))) )) ))] ));
              (( Some (":=") ),( Some (`NA) ),(
@@ -5204,7 +5231,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun ((e2 : 'expr)) ->
                       (fun (_) ->
                         (fun ((e1 : 'expr)) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (begin match (Expr.bigarray_set _loc e1 e2) with
                               | Some(e) ->   e
                               | None  ->   Ast.ExAss ((_loc,e1,e2)) end
@@ -5221,7 +5248,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((e1 : 'expr))
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                ->
                                                                (Ast.ExAss
@@ -5263,9 +5290,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5280,15 +5307,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((e2 : 'expr)) ->
                     (fun ((op : 'infixop5)) ->
                       (fun ((e1 : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExApp ((_loc,( Ast.ExApp ((_loc,op,e1)) ),e2))
                             :'expr ))))) )) ))] ));(( Some ("<") ),(
                                                     Some (`LA) ),(
                                                     [(( [`Sself;`Snterm
                                                       ((Gram.obj (
-                                                         (infixop0 :'infixop0
-                                                           Gram.t  ) )));`Sself]
-                                                      ),(
+                                                         (infixop0
+                                                           :'infixop0 Gram.t 
+                                                           ) )));`Sself] ),(
                                                       (Gram.mk_action (
                                                         (fun ((e2 : 'expr))
                                                           ->
@@ -5299,7 +5326,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((e1 : 'expr))
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (Ast.ExApp
@@ -5337,9 +5364,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5354,15 +5381,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((e2 : 'expr)) ->
                     (fun ((op : 'infixop2)) ->
                       (fun ((e1 : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExApp ((_loc,( Ast.ExApp ((_loc,op,e1)) ),e2))
                             :'expr ))))) )) ))] ));(( Some ("*") ),(
                                                     Some (`LA) ),(
                                                     [(( [`Sself;`Snterm
                                                       ((Gram.obj (
-                                                         (infixop3 :'infixop3
-                                                           Gram.t  ) )));`Sself]
-                                                      ),(
+                                                         (infixop3
+                                                           :'infixop3 Gram.t 
+                                                           ) )));`Sself] ),(
                                                       (Gram.mk_action (
                                                         (fun ((e2 : 'expr))
                                                           ->
@@ -5373,7 +5400,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((e1 : 'expr))
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (Ast.ExApp
@@ -5399,9 +5426,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5423,7 +5450,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((e1 : 'expr))
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                ->
                                                                (Ast.ExApp
@@ -5453,9 +5480,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5477,7 +5504,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((e1 : 'expr))
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                ->
                                                                (Ast.ExApp
@@ -5521,9 +5548,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5548,9 +5575,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5580,9 +5607,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5612,9 +5639,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,(
                                                                     Ast.ExApp
@@ -5632,20 +5659,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((e : 'expr)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         ((Expr.mkumin _loc "-." e) :'expr )))) )) ));
               (( [`Skeyword ("-");`Sself] ),(
                (Gram.mk_action (
                  (fun ((e : 'expr)) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Expr.mkumin _loc "-" e) :'expr )))) )) ))] ));
              (( Some ("apply") ),( Some (`LA) ),(
               [(( [`Skeyword ("lazy");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((e : 'expr)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.ExLaz ((_loc,e)) :'expr )))) )) ));(( [`Skeyword
                                                                  ("new");`Snterm
                                                                  ((Gram.obj (
@@ -5662,9 +5689,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExNew
                                                                     ((_loc,i))
                                                                     :'expr ))))
@@ -5673,7 +5700,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun ((e : 'expr)) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Expr.mkassert _loc e) :'expr )))) )) ));((
                                                                   [`Sself;`Sself]
                                                                   ),(
@@ -5688,9 +5715,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExApp
                                                                     ((_loc,e1,e2))
                                                                     :'expr ))))
@@ -5701,7 +5728,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((i : 'a_LIDENT)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.ExOlb ((_loc,i,( Ast.ExNil (_loc) ))) :'expr ))))
                   )) ));(( [`Skeyword ("?");`Snterm
                          ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Skeyword
@@ -5711,7 +5738,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (fun (_) ->
                                (fun ((i : 'a_LIDENT)) ->
                                  (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
+                                   (fun ((_loc : FanLoc.t )) ->
                                      (Ast.ExOlb ((_loc,i,e)) :'expr )))))) ))
                          ));(( [`Stoken
                              (((
@@ -5722,7 +5749,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (Gram.mk_action (
                                (fun ((e : 'expr)) ->
                                  (fun (__camlp4_0) ->
-                                   (fun ((_loc :  FanLoc.t )) -> begin match
+                                   (fun ((_loc : FanLoc.t )) -> begin match
                                      __camlp4_0 with
                                      | (`OPTLABEL i) ->
                                          (Ast.ExOlb ((_loc,i,e)) :'expr )
@@ -5734,16 +5761,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun ((e : 'expr)) ->
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LABEL i) ->   (Ast.ExLab ((_loc,i,e)) :'expr )
                        | _ ->   assert false end))) )) ));(( [`Skeyword
                                                            ("~");`Snterm
                                                            ((Gram.obj (
                                                               (a_LIDENT
                                                                 :'a_LIDENT
-                                                                Gram.t  ) )))]
-                                                           ),(
+                                                                   Gram.t  )
+                                                              )))] ),(
                                                            (Gram.mk_action (
                                                              (fun
                                                                ((i :
@@ -5751,9 +5777,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.ExLab
                                                                     ((_loc,i,(
                                                                     Ast.ExNil
@@ -5786,9 +5812,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExLab
                                                                     ((_loc,i,e))
                                                                     :'expr ))))))
@@ -5800,14 +5826,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((lab : 'label)) ->
                     (fun (_) ->
                       (fun ((e : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExSnd ((_loc,e,lab)) :'expr ))))) )) ));
               (( [`Sself;`Skeyword (".");`Sself] ),(
                (Gram.mk_action (
                  (fun ((e2 : 'expr)) ->
                    (fun (_) ->
                      (fun ((e1 : 'expr)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.ExAcc ((_loc,e1,e2)) :'expr ))))) )) ));
               (( [`Sself;`Skeyword (".");`Skeyword ("{");`Snterm
                ((Gram.obj ( (comma_expr :'comma_expr Gram.t  ) )));`Skeyword
@@ -5818,7 +5844,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun (_) ->
                          (fun ((e1 : 'expr)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              ((Expr.bigarray_get _loc e1 e2) :'expr )))))))
                  )) ));(( [`Sself;`Skeyword (".");`Skeyword
                         ("[");`Sself;`Skeyword ("]")] ),(
@@ -5828,7 +5854,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                               (fun (_) ->
                                 (fun (_) ->
                                   (fun ((e1 : 'expr)) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.ExSte ((_loc,e1,e2)) :'expr )))))))
                           )) ));(( [`Sself;`Skeyword (".");`Skeyword
                                  ("(");`Sself;`Skeyword (")")] ),(
@@ -5838,7 +5864,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                        (fun (_) ->
                                          (fun (_) ->
                                            (fun ((e1 : 'expr)) ->
-                                             (fun ((_loc :  FanLoc.t )) ->
+                                             (fun ((_loc : FanLoc.t )) ->
                                                (Ast.ExAre ((_loc,e1,e2))
                                                  :'expr ))))))) )) ))] ));
              (( Some ("~-") ),( Some (`NA) ),(
@@ -5847,7 +5873,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((e : 'expr)) ->
                     (fun ((f : 'prefixop)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.ExApp ((_loc,f,e)) :'expr )))) )) ));((
                                                                    [`Skeyword
                                                                    ("!");`Sself]
@@ -5861,9 +5887,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExAcc
                                                                     ((_loc,e,(
                                                                     Ast.ExId
@@ -5886,7 +5912,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((me : 'module_expr)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.ExPkg
                                    ((_loc,( Ast.MeTyc ((_loc,me,pt)) )))
                                   :'expr )))))))) )) ));(( [`Skeyword
@@ -5895,7 +5921,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ((Gram.obj (
                                                             (module_expr
                                                               :'module_expr
-                                                              Gram.t  ) )));`Skeyword
+                                                                 Gram.t  ) )));`Skeyword
                                                          (")")] ),(
                                                          (Gram.mk_action (
                                                            (fun (_) ->
@@ -5906,9 +5932,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                (fun (_) ->
                                                                  (fun (_) ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExPkg
                                                                     ((_loc,me))
                                                                     :'expr ))))))
@@ -5924,9 +5950,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdUid
@@ -5941,13 +5967,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun (_) ->
                    (fun ((seq : 'sequence)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((Expr.mksequence _loc seq) :'expr ))))) )) ));
               (( [`Skeyword ("(");`Sself;`Skeyword (")")] ),(
                (Gram.mk_action (
                  (fun (_) ->
                    (fun ((e : 'expr)) ->
-                     (fun (_) -> (fun ((_loc :  FanLoc.t )) -> (e :'expr )))))
+                     (fun (_) -> (fun ((_loc : FanLoc.t )) -> (e :'expr )))))
                  )) ));(( [`Skeyword ("(");`Sself;`Skeyword (":>");`Snterm
                         ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )));`Skeyword
                         (")")] ),(
@@ -5957,20 +5983,22 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                               (fun (_) ->
                                 (fun ((e : 'expr)) ->
                                   (fun (_) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.ExCoe
                                          ((_loc,e,( Ast.TyNil (_loc) ),t))
                                         :'expr ))))))) )) ));(( [`Skeyword
                                                               ("(");`Sself;`Skeyword
                                                               (":");`Snterm
                                                               ((Gram.obj (
-                                                                 (ctyp :'ctyp
-                                                                   Gram.t  )
+                                                                 (ctyp
+                                                                   :'ctyp
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               (":>");`Snterm
                                                               ((Gram.obj (
-                                                                 (ctyp :'ctyp
-                                                                   Gram.t  )
+                                                                 (ctyp
+                                                                   :'ctyp
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               (")")] ),(
                                                               (Gram.mk_action
@@ -5996,9 +6024,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExCoe
                                                                     ((_loc,e,t,t2))
                                                                     :'expr )))))))))
@@ -6009,7 +6037,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun ((e : 'expr)) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((Expr.mksequence _loc e) :'expr )))))) )) ));
               (( [`Skeyword ("(");`Sself;`Skeyword (";");`Snterm
                ((Gram.obj ( (sequence :'sequence Gram.t  ) )));`Skeyword
@@ -6020,7 +6048,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((e : 'expr)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              ((Expr.mksequence _loc (
                                 Ast.ExSem ((_loc,e,seq)) )) :'expr ))))))) ))
                ));(( [`Skeyword ("(");`Sself;`Skeyword (",");`Snterm
@@ -6032,15 +6060,16 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun (_) ->
                            (fun ((e : 'expr)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (Ast.ExTup
                                     ((_loc,( Ast.ExCom ((_loc,e,el)) )))
                                    :'expr ))))))) )) ));(( [`Skeyword
                                                          ("(");`Sself;`Skeyword
                                                          (":");`Snterm
                                                          ((Gram.obj (
-                                                            (ctyp :'ctyp
-                                                              Gram.t  ) )));`Skeyword
+                                                            (ctyp
+                                                              :'ctyp Gram.t 
+                                                              ) )));`Skeyword
                                                          (")")] ),(
                                                          (Gram.mk_action (
                                                            (fun (_) ->
@@ -6055,9 +6084,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExTyc
                                                                     ((_loc,e,t))
                                                                     :'expr )))))))
@@ -6072,9 +6101,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdUid
@@ -6089,7 +6118,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (fun (_) ->
                    (fun ((fel : 'field_expr_list)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.ExOvr ((_loc,fel)) :'expr ))))) )) ));((
                                                                     [`Skeyword
                                                                     ("{<");`Skeyword
@@ -6102,9 +6131,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExOvr
                                                                     ((_loc,(
                                                                     Ast.RbNil
@@ -6123,7 +6152,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun ((e : 'expr)) ->
                            (fun (_) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (Ast.ExRec ((_loc,el,e)) :'expr ))))))))) ))
                ));(( [`Skeyword ("{");`Snterm
                    ((Gram.obj ( (label_expr_list :'label_expr_list Gram.t  )
@@ -6132,14 +6161,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((el : 'label_expr_list)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.ExRec ((_loc,el,( Ast.ExNil (_loc) )))
                                :'expr ))))) )) ));(( [`Skeyword
                                                    ("[|");`Snterm
                                                    ((Gram.obj (
-                                                      (sem_expr :'sem_expr
-                                                        Gram.t  ) )));`Skeyword
-                                                   ("|]")] ),(
+                                                      (sem_expr
+                                                        :'sem_expr Gram.t  )
+                                                      )));`Skeyword ("|]")]
+                                                   ),(
                                                    (Gram.mk_action (
                                                      (fun (_) ->
                                                        (fun
@@ -6147,7 +6177,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ->
                                                          (fun (_) ->
                                                            (fun
-                                                             ((_loc : 
+                                                             ((_loc :
                                                                 FanLoc.t ))
                                                              ->
                                                              (Ast.ExArr
@@ -6161,9 +6191,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExArr
                                                                     ((_loc,(
                                                                     Ast.ExNil
@@ -6192,9 +6222,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((mk_list
                                                                     (
                                                                     Ast.ExId
@@ -6213,7 +6243,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((mk_list : 'sem_expr_for_list)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              ((mk_list last) :'expr ))))))) )) ));((
                                                                    [`Skeyword
                                                                    ("[");`Skeyword
@@ -6225,9 +6255,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdUid
@@ -6240,7 +6270,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun ((s : 'a_ident)) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExVrn ((_loc,s)) :'expr )))) )) ));(( [`Stry
                                                                 (`Snterm
                                                                 ((Gram.obj (
@@ -6256,24 +6286,24 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'val_longident))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExId
                                                                     ((_loc,i))
                                                                     :'expr )))
                                                                   )) ));
               (( [`Stry (`Snterm
                ((Gram.obj (
-                  (module_longident_dot_lparen :'module_longident_dot_lparen
-                    Gram.t  ) ))));`Snterm
+                  (module_longident_dot_lparen
+                    :'module_longident_dot_lparen Gram.t  ) ))));`Snterm
                ((Gram.obj ( (sequence :'sequence Gram.t  ) )));`Skeyword
                (")")] ),(
                (Gram.mk_action (
                  (fun (_) ->
                    (fun ((e : 'sequence)) ->
                      (fun ((i : 'module_longident_dot_lparen)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.ExOpI ((_loc,i,e)) :'expr ))))) )) ));((
                                                                     [`Snterm
                                                                     ((Gram.obj
@@ -6289,9 +6319,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_CHAR))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExChr
                                                                     ((_loc,s))
                                                                     :'expr )))
@@ -6300,12 +6330,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                ),(
                (Gram.mk_action (
                  (fun ((s : 'a_STRING)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExStr ((_loc,s)) :'expr ))) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (a_FLOAT
                                                                   :'a_FLOAT
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -6314,9 +6344,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_FLOAT))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.ExFlo
                                                                     ((_loc,s))
                                                                     :'expr )))
@@ -6325,7 +6355,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                ((Gram.obj ( (a_NATIVEINT :'a_NATIVEINT Gram.t  ) )))] ),(
                (Gram.mk_action (
                  (fun ((s : 'a_NATIVEINT)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExNativeInt ((_loc,s)) :'expr ))) )) ));(( [`Snterm
                                                                    ((Gram.obj
                                                                     (
@@ -6340,9 +6370,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_INT64))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExInt64
                                                                     ((_loc,s))
                                                                     :'expr )))
@@ -6350,11 +6380,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
               (( [`Snterm ((Gram.obj ( (a_INT32 :'a_INT32 Gram.t  ) )))] ),(
                (Gram.mk_action (
                  (fun ((s : 'a_INT32)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExInt32 ((_loc,s)) :'expr ))) )) ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (a_INT
-                                                                    :'a_INT
+                                                                    :
+                                                                    'a_INT
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -6364,9 +6395,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_INT))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExInt
                                                                     ((_loc,s))
                                                                     :'expr )))
@@ -6378,7 +6409,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | (`ANTIQUOT (("seq" as n),s)) ->
                          (Ast.ExSeq
                             ((_loc,(
@@ -6397,7 +6428,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           (fun (__camlp4_0)
                                                             ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               -> begin match
                                                               __camlp4_0 with
@@ -6413,7 +6444,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     ~c:"expr"
                                                                     n s) )))
                                                                     )))
-                                                                    :'expr )
+                                                                    :
+                                                                    'expr )
                                                               | _ ->
                                                                   assert
                                                                   false end))
@@ -6435,10 +6467,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -6476,10 +6507,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -6504,7 +6534,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | (`QUOTATION x) ->
                          ((Quotation.expand _loc x DynAst.expr_tag) :'expr )
                      | _ ->   assert false end)) )) ))] ))] )))) () ) ));
@@ -6515,15 +6545,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("done")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExId ((_loc,( Ast.IdUid ((_loc,"()")) )))
                          :'do_sequence ))) )) ));(( [`Stry
                                                   ((Gram.srules do_sequence (
                                                      [(( [`Snterm
                                                        ((Gram.obj (
                                                           (sequence
-                                                            :'sequence Gram.t
-                                                             ) )));`Skeyword
+                                                            :'sequence Gram.t 
+                                                            ) )));`Skeyword
                                                        ("done")] ),(
                                                        (Gram.mk_action (
                                                          (fun (_) ->
@@ -6532,7 +6562,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 'sequence))
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                ->
                                                                (seq :'e__15 ))))
@@ -6540,7 +6570,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                   (Gram.mk_action (
                                                     (fun ((seq : 'e__15)) ->
                                                       (fun
-                                                        ((_loc :  FanLoc.t ))
+                                                        ((_loc : FanLoc.t ))
                                                         ->
                                                         (seq :'do_sequence )))
                                                     )) ));(( [`Stry
@@ -6555,9 +6585,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (()
                                                                     :'e__14 ))))
                                                                   )) ))] )))]
@@ -6565,9 +6595,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (Gram.mk_action (
                                                              (fun (_) ->
                                                                (fun
-                                                                 ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                 ((_loc :
+                                                                    FanLoc.t ))
+                                                                 ->
                                                                  (Ast.ExId
                                                                     (
                                                                     (_loc,(
@@ -6585,12 +6615,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun (_) ->
                          (fun ((seq : 'sequence)) ->
                            (fun (_) ->
-                             (fun ((_loc :  FanLoc.t )) -> (seq :'e__13 )))))
+                             (fun ((_loc : FanLoc.t )) -> (seq :'e__13 )))))
                        )) ))] )))] ),(
                 (Gram.mk_action (
                   (fun ((seq : 'e__13)) ->
-                    (fun ((_loc :  FanLoc.t )) -> (seq :'do_sequence ))) ))
-                ))] ))] )))) () ) ));
+                    (fun ((_loc : FanLoc.t )) -> (seq :'do_sequence ))) )) ))]
+               ))] )))) () ) ));
       (Gram.extend ( (infixop5 :'infixop5 Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -6600,17 +6630,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     [(( [`Skeyword ("&&")] ),(
                       (Gram.mk_action (
                         (fun (x) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             ((Gram.string_of_token x) :'e__16 ))) )) ));
                     (( [`Skeyword ("&")] ),(
                      (Gram.mk_action (
                        (fun (x) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((Gram.string_of_token x) :'e__16 ))) )) ))] ))]
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'e__16)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) ))) :'infixop5
                          ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (infixop6 :'infixop6 Gram.t  ) ) (
@@ -6622,17 +6652,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     [(( [`Skeyword ("||")] ),(
                       (Gram.mk_action (
                         (fun (x) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             ((Gram.string_of_token x) :'e__17 ))) )) ));
                     (( [`Skeyword ("or")] ),(
                      (Gram.mk_action (
                        (fun (x) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((Gram.string_of_token x) :'e__17 ))) )) ))] ))]
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'e__17)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) ))) :'infixop6
                          ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (sem_expr_for_list :'sem_expr_for_list Gram.t  ) ) (
@@ -6642,7 +6672,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((fun (acc) ->
                           Ast.ExApp
                             ((_loc,(
@@ -6656,7 +6686,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((e : 'expr)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         ((fun (acc) ->
                            Ast.ExApp
                              ((_loc,(
@@ -6672,7 +6702,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((el : 'sem_expr_for_list)) ->
                         (fun (_) ->
                           (fun ((e : 'expr)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               ((fun (acc) ->
                                  Ast.ExApp
                                    ((_loc,(
@@ -6691,7 +6721,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((( (Gram.obj ( (expr :'expr Gram.t  ) )) ),"top"))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (e :'comma_expr ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (e :'comma_expr ))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -6700,7 +6730,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.ExAnt ((_loc,( (mk_anti ~c:"expr," n s) )))
                             :'comma_expr )
@@ -6717,9 +6747,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'comma_expr))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.ExCom
                                                                     ((_loc,e1,e2))
                                                                     :'comma_expr
@@ -6731,7 +6761,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (() :'dummy )) )) ))] ))] ))))
+                   (fun ((_loc : FanLoc.t )) -> (() :'dummy )) )) ))] ))] ))))
           () ) ));
       (Gram.extend ( (sequence' :'sequence' Gram.t  ) ) (
         (((fun (() ) ->
@@ -6742,17 +6772,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((el : 'sequence)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((fun (e) -> Ast.ExSem ((_loc,e,el))) :'sequence' ))))
                    )) ));(( [`Skeyword (";")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 ((fun (e) -> e) :'sequence' ))) )) ));
                ([] ,(
                 (Gram.mk_action (
-                  (fun ((_loc :  FanLoc.t )) ->
-                    ((fun (e) -> e) :'sequence' )) )) ))] ))] )))) () ) ));
+                  (fun ((_loc : FanLoc.t )) -> ((fun (e) -> e) :'sequence' ))
+                  )) ))] ))] )))) () ) ));
       (Gram.extend ( (sequence :'sequence Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -6762,41 +6792,38 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((k : 'sequence')) ->
                      (fun ((e : 'expr)) ->
-                       (fun ((_loc :  FanLoc.t )) -> ((k e) :'sequence ))))
-                   )) ));(( [`Stoken
-                          (((
-                            (function
-                            | (`ANTIQUOT ("list",_)) ->   true
-                            | _ ->   false)
-                            ),(`Normal,"(`ANTIQUOT (\"list\",_))")))] ),(
-                          (Gram.mk_action (
-                            (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
-                                __camlp4_0 with
-                                | (`ANTIQUOT (("list" as n),s)) ->
-                                    (Ast.ExAnt
-                                       ((_loc,( (mk_anti ~c:"expr;" n s) )))
-                                      :'sequence )
-                                | _ ->   assert false end)) )) ));((
-                                                                   [`Skeyword
-                                                                   ("let");`Skeyword
-                                                                   ("open");`Snterm
-                                                                   ((Gram.obj
-                                                                    (
-                                                                    (module_longident
-                                                                    :'module_longident
+                       (fun ((_loc : FanLoc.t )) -> ((k e) :'sequence )))) ))
+                 ));(( [`Stoken
+                     (((
+                       (function
+                       | (`ANTIQUOT ("list",_)) ->   true
+                       | _ ->   false)
+                       ),(`Normal,"(`ANTIQUOT (\"list\",_))")))] ),(
+                     (Gram.mk_action (
+                       (fun (__camlp4_0) ->
+                         (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
+                           with
+                           | (`ANTIQUOT (("list" as n),s)) ->
+                               (Ast.ExAnt
+                                  ((_loc,( (mk_anti ~c:"expr;" n s) )))
+                                 :'sequence )
+                           | _ ->   assert false end)) )) ));(( [`Skeyword
+                                                              ("let");`Skeyword
+                                                              ("open");`Snterm
+                                                              ((Gram.obj (
+                                                                 (module_longident
+                                                                   :'module_longident
                                                                     Gram.t  )
-                                                                    )));`Skeyword
-                                                                   ("in");`Sself]
-                                                                   ),(
-                                                                   (Gram.mk_action
-                                                                    (
-                                                                    (fun
-                                                                    ((e :
+                                                                 )));`Skeyword
+                                                              ("in");`Sself]
+                                                              ),(
+                                                              (Gram.mk_action
+                                                                (
+                                                                (fun
+                                                                  ((e :
                                                                     'sequence))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
+                                                                  ->
+                                                                  (fun (_) ->
                                                                     (fun
                                                                     ((i :
                                                                     'module_longident))
@@ -6806,14 +6833,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExOpI
                                                                     ((_loc,i,e))
                                                                     :'sequence
                                                                     )))))))
-                                                                    )) ));
+                                                                )) ));
                (( [`Skeyword ("let");`Skeyword ("module");`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Snterm
                 ((Gram.obj ( (module_binding0 :'module_binding0 Gram.t  ) )));`Skeyword
@@ -6825,7 +6852,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((m : 'a_UIDENT)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.ExLmd
                                    ((_loc,m,mb,( (Expr.mksequence _loc el) )))
                                   :'sequence )))))))) )) ));(( [`Skeyword
@@ -6834,22 +6861,23 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                              ((Gram.obj (
                                                                 (a_UIDENT
                                                                   :'a_UIDENT
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
                                                                 (module_binding0
                                                                   :'module_binding0
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )));`Skeyword
                                                              ("in");`Snterm
                                                              ((Gram.obj (
-                                                                (expr :'expr
-                                                                  Gram.t  )
+                                                                (expr
+                                                                  :'expr
+                                                                    Gram.t  )
                                                                 )));`Snterm
                                                              ((Gram.obj (
                                                                 (sequence'
                                                                   :'sequence'
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -6876,9 +6904,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((k (
                                                                     Ast.ExLmd
                                                                     ((_loc,m,mb,e))
@@ -6896,7 +6924,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((bi : 'binding)) ->
                         (fun ((rf : 'opt_rec)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.ExLet
                                  ((_loc,rf,bi,( (Expr.mksequence _loc el) )))
                                 :'sequence ))))))) )) ));(( [`Skeyword
@@ -6904,20 +6932,23 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           ((Gram.obj (
                                                              (opt_rec
                                                                :'opt_rec
-                                                               Gram.t  ) )));`Snterm
+                                                                  Gram.t  )
+                                                             )));`Snterm
                                                           ((Gram.obj (
                                                              (binding
                                                                :'binding
-                                                               Gram.t  ) )));`Skeyword
+                                                                  Gram.t  )
+                                                             )));`Skeyword
                                                           ("in");`Snterm
                                                           ((Gram.obj (
-                                                             (expr :'expr
-                                                               Gram.t  ) )));`Snterm
+                                                             (expr
+                                                               :'expr Gram.t 
+                                                               ) )));`Snterm
                                                           ((Gram.obj (
                                                              (sequence'
                                                                :'sequence'
-                                                               Gram.t  ) )))]
-                                                          ),(
+                                                                  Gram.t  )
+                                                             )))] ),(
                                                           (Gram.mk_action (
                                                             (fun
                                                               ((k :
@@ -6939,9 +6970,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((k (
                                                                     Ast.ExLet
                                                                     ((_loc,rf,bi,e))
@@ -6958,13 +6989,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (let_binding :'let_binding Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((b : 'let_binding)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (b :'binding ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (b :'binding ))) )) ));
                (( [`Sself;`Skeyword ("and");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((b2 : 'binding)) ->
                     (fun (_) ->
                       (fun ((b1 : 'binding)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.BiAnd ((_loc,b1,b2)) :'binding ))))) )) ));
                (( [`Stoken
                 (((
@@ -6974,7 +7005,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   ),(`Normal,"(`ANTIQUOT ((\"\"|\"anti\"),_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"anti") as n),s)) ->
                           (Ast.BiAnt ((_loc,( (mk_anti ~c:"binding" n s) )))
                             :'binding )
@@ -6988,9 +7019,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            ),(`Normal,"(`ANTIQUOT ((\"\"|\"anti\"),_))")));`Skeyword
                                                          ("=");`Snterm
                                                          ((Gram.obj (
-                                                            (expr :'expr
-                                                              Gram.t  ) )))]
-                                                         ),(
+                                                            (expr
+                                                              :'expr Gram.t 
+                                                              ) )))] ),(
                                                          (Gram.mk_action (
                                                            (fun ((e : 'expr))
                                                              ->
@@ -6999,10 +7030,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  (__camlp4_0)
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -7039,10 +7069,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  (__camlp4_0)
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -7072,7 +7101,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((e : 'fun_binding)) ->
                      (fun ((p : 'ipatt)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.BiEq ((_loc,p,e)) :'let_binding )))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (fun_binding :'fun_binding Gram.t  ) ) (
@@ -7084,71 +7113,56 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((bi : 'cvalue_binding)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (bi :'fun_binding ))) ))
-                 ));(( [`Stry (`Snterm
-                     ((Gram.obj ( (labeled_ipatt :'labeled_ipatt Gram.t  ) ))));`Sself]
-                     ),(
-                     (Gram.mk_action (
-                       (fun ((e : 'fun_binding)) ->
-                         (fun ((p : 'labeled_ipatt)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
-                             (Ast.ExFun
-                                ((_loc,(
-                                  Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e))
-                                  ))) :'fun_binding )))) )) ));(( [`Stry
-                                                                ((Gram.srules
-                                                                   fun_binding
-                                                                   (
-                                                                   [((
-                                                                    [`Skeyword
-                                                                    ("(");`Skeyword
-                                                                    ("type")]
-                                                                    ),(
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (()
-                                                                    :'e__18 ))))
-                                                                    )) ))] )));`Snterm
-                                                                ((Gram.obj (
-                                                                   (a_LIDENT
-                                                                    :'a_LIDENT
-                                                                    Gram.t  )
-                                                                   )));`Skeyword
-                                                                (")");`Sself]
-                                                                ),(
-                                                                (Gram.mk_action
-                                                                  (
-                                                                  (fun
-                                                                    (
-                                                                    (e :
-                                                                    'fun_binding))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((i :
-                                                                    'a_LIDENT))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.ExFUN
-                                                                    ((_loc,i,e))
-                                                                    :'fun_binding
-                                                                    )))))) ))
-                                                                ))] ))] ))))
-          () ) ));
+                     (fun ((_loc : FanLoc.t )) -> (bi :'fun_binding ))) )) ));
+               (( [`Stry (`Snterm
+                ((Gram.obj ( (labeled_ipatt :'labeled_ipatt Gram.t  ) ))));`Sself]
+                ),(
+                (Gram.mk_action (
+                  (fun ((e : 'fun_binding)) ->
+                    (fun ((p : 'labeled_ipatt)) ->
+                      (fun ((_loc : FanLoc.t )) ->
+                        (Ast.ExFun
+                           ((_loc,(
+                             Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e)) )))
+                          :'fun_binding )))) )) ));(( [`Stry
+                                                    ((Gram.srules fun_binding
+                                                       (
+                                                       [(( [`Skeyword
+                                                         ("(");`Skeyword
+                                                         ("type")] ),(
+                                                         (Gram.mk_action (
+                                                           (fun (_) ->
+                                                             (fun (_) ->
+                                                               (fun
+                                                                 ((_loc :
+                                                                    FanLoc.t ))
+                                                                 ->
+                                                                 (() :
+                                                                   'e__18 ))))
+                                                           )) ))] )));`Snterm
+                                                    ((Gram.obj (
+                                                       (a_LIDENT
+                                                         :'a_LIDENT Gram.t  )
+                                                       )));`Skeyword
+                                                    (")");`Sself] ),(
+                                                    (Gram.mk_action (
+                                                      (fun
+                                                        ((e : 'fun_binding))
+                                                        ->
+                                                        (fun (_) ->
+                                                          (fun
+                                                            ((i : 'a_LIDENT))
+                                                            ->
+                                                            (fun (_) ->
+                                                              (fun
+                                                                ((_loc :
+                                                                   FanLoc.t ))
+                                                                ->
+                                                                (Ast.ExFUN
+                                                                   ((_loc,i,e))
+                                                                  :'fun_binding
+                                                                  )))))) ))
+                                                    ))] ))] )))) () ) ));
       (Gram.extend ( (match_case :'match_case Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -7160,7 +7174,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((e : 'expr)) ->
                      (fun (_) ->
                        (fun ((p : 'ipatt)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e))
                              :'match_case ))))) )) ));(( [`Skeyword
                                                        ("[");`Slist0sep
@@ -7168,7 +7182,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ((Gram.obj (
                                                             (match_case0
                                                               :'match_case0
-                                                              Gram.t  ) ))),`Skeyword
+                                                                 Gram.t  ) ))),`Skeyword
                                                          ("|")));`Skeyword
                                                        ("]")] ),(
                                                        (Gram.mk_action (
@@ -7176,12 +7190,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun
                                                              ((l :
                                                                 'match_case0
-                                                                list )) ->
+                                                                  list )) ->
                                                              (fun (_) ->
                                                                (fun
-                                                                 ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                 ((_loc :
+                                                                    FanLoc.t ))
+                                                                 ->
                                                                  ((Ast.mcOr_of_list
                                                                     l)
                                                                    :'match_case
@@ -7201,7 +7215,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((w : 'opt_when_expr)) ->
                          (fun ((p : 'patt_as_patt_opt)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.McArr ((_loc,p,w,e)) :'match_case0 ))))))
                    )) ));(( [`Stoken
                           (((
@@ -7219,7 +7233,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                 (fun ((w : 'expr)) ->
                                   (fun (_) ->
                                     (fun (__camlp4_0) ->
-                                      (fun ((_loc :  FanLoc.t )) -> begin
+                                      (fun ((_loc : FanLoc.t )) -> begin
                                         match __camlp4_0 with
                                         | (`ANTIQUOT (((""|"anti") as n),s))
                                           ->
@@ -7242,7 +7256,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((e : 'expr)) ->
                     (fun (_) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (((""|"anti") as n),s)) ->
                               (Ast.McArr
@@ -7267,10 +7281,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (__camlp4_0)
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -7307,10 +7320,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -7337,7 +7349,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExNil (_loc) :'opt_when_expr )) )) ));(( [`Skeyword
                                                                  ("when");`Snterm
                                                                  ((Gram.obj (
@@ -7354,9 +7366,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (w
                                                                     :'opt_when_expr
                                                                     )))) ))
@@ -7369,7 +7381,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'patt_as_patt_opt )))
+                     (fun ((_loc : FanLoc.t )) -> (p :'patt_as_patt_opt )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
                           ("as");`Snterm
@@ -7378,7 +7390,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                             (fun ((p2 : 'patt)) ->
                               (fun (_) ->
                                 (fun ((p1 : 'patt)) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
+                                  (fun ((_loc : FanLoc.t )) ->
                                     (Ast.PaAli ((_loc,p1,p2))
                                       :'patt_as_patt_opt ))))) )) ))] ))] ))))
           () ) ));
@@ -7390,14 +7402,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (label_expr :'label_expr Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((b1 : 'label_expr)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (b1 :'label_expr_list )))
+                     (fun ((_loc : FanLoc.t )) -> (b1 :'label_expr_list )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (label_expr :'label_expr Gram.t  ) )));`Skeyword
                           (";")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
                               (fun ((b1 : 'label_expr)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (b1 :'label_expr_list )))) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -7422,9 +7434,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.RbSem
                                                                     ((_loc,b1,b2))
                                                                     :'label_expr_list
@@ -7440,7 +7452,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'label_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.RbEq
                           ((_loc,i,(
                             Ast.ExId
@@ -7450,11 +7462,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         ((Gram.obj (
                                                            (label_longident
                                                              :'label_longident
-                                                             Gram.t  ) )));`Snterm
+                                                                Gram.t  ) )));`Snterm
                                                         ((Gram.obj (
                                                            (fun_binding
                                                              :'fun_binding
-                                                             Gram.t  ) )))]
+                                                                Gram.t  ) )))]
                                                         ),(
                                                         (Gram.mk_action (
                                                           (fun
@@ -7466,7 +7478,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  'label_longident))
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (Ast.RbEq
@@ -7481,7 +7493,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.RbAnt
                              ((_loc,( (mk_anti ~c:"rec_binding" n s) )))
@@ -7496,9 +7508,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            ),(`Normal,"(`ANTIQUOT ((\"\"|\"anti\"),_))")));`Skeyword
                                                          ("=");`Snterm
                                                          ((Gram.obj (
-                                                            (expr :'expr
-                                                              Gram.t  ) )))]
-                                                         ),(
+                                                            (expr
+                                                              :'expr Gram.t 
+                                                              ) )))] ),(
                                                          (Gram.mk_action (
                                                            (fun ((e : 'expr))
                                                              ->
@@ -7507,10 +7519,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  (__camlp4_0)
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -7547,10 +7558,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  (__camlp4_0)
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -7587,10 +7597,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -7621,7 +7630,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (((w,e) : 'fun_def_cont)) ->
                      (fun ((p : 'labeled_ipatt)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.ExFun ((_loc,( Ast.McArr ((_loc,p,w,e)) )))
                            :'fun_def )))) )) ));(( [`Stry
                                                  ((Gram.srules fun_def (
@@ -7632,19 +7641,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         (fun (_) ->
                                                           (fun (_) ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               ->
                                                               (() :'e__19 ))))
                                                         )) ))] )));`Snterm
                                                  ((Gram.obj (
-                                                    (a_LIDENT :'a_LIDENT
-                                                      Gram.t  ) )));`Skeyword
+                                                    (a_LIDENT
+                                                      :'a_LIDENT Gram.t  ) )));`Skeyword
                                                  (")");`Snterm
                                                  ((Gram.obj (
                                                     (fun_def_cont_no_when
                                                       :'fun_def_cont_no_when
-                                                      Gram.t  ) )))] ),(
+                                                         Gram.t  ) )))] ),(
                                                  (Gram.mk_action (
                                                    (fun
                                                      ((e :
@@ -7655,7 +7664,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ->
                                                          (fun (_) ->
                                                            (fun
-                                                             ((_loc : 
+                                                             ((_loc :
                                                                 FanLoc.t ))
                                                              ->
                                                              (Ast.ExFUN
@@ -7671,7 +7680,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((( Ast.ExNil (_loc) ),e) :'fun_def_cont )))) )) ));
                (( [`Skeyword ("when");`Snterm
                 ((Gram.obj ( (expr :'expr Gram.t  ) )));`Skeyword
@@ -7681,7 +7690,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((w : 'expr)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             ((w,e) :'fun_def_cont )))))) )) ));(( [`Stry
                                                                 (`Snterm
                                                                 ((Gram.obj (
@@ -7702,9 +7711,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'labeled_ipatt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     Ast.ExNil
                                                                     (_loc)
@@ -7733,9 +7742,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (()
                                                                     :'e__20 ))))
                                                                     )) ))] )));`Snterm
@@ -7769,9 +7778,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     Ast.ExNil
                                                                     (_loc)
@@ -7793,17 +7802,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (e :'fun_def_cont_no_when )))) )) ));(( [`Stry
                                                                (`Snterm
                                                                ((Gram.obj (
                                                                   (labeled_ipatt
-                                                                    :'labeled_ipatt
+                                                                    :
+                                                                    'labeled_ipatt
                                                                     Gram.t  )
                                                                   ))));`Snterm
                                                                ((Gram.obj (
                                                                   (fun_def_cont
-                                                                    :'fun_def_cont
+                                                                    :
+                                                                    'fun_def_cont
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -7817,9 +7828,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'labeled_ipatt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExFun
                                                                     ((_loc,(
                                                                     Ast.McArr
@@ -7843,9 +7854,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (()
                                                                     :'e__21 ))))
                                                                     )) ))] )));`Snterm
@@ -7872,9 +7883,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExFUN
                                                                     ((_loc,i,e))
                                                                     :'fun_def_cont_no_when
@@ -7890,7 +7901,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((p2 : 'patt)) ->
                      (fun (_) ->
                        (fun ((p1 : 'patt)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.PaOrp ((_loc,p1,p2)) :'patt ))))) )) ))] ));
              (( Some ("..") ),( Some (`NA) ),(
               [(( [`Sself;`Skeyword ("..");`Sself] ),(
@@ -7898,14 +7909,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((p2 : 'patt)) ->
                     (fun (_) ->
                       (fun ((p1 : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaRng ((_loc,p1,p2)) :'patt ))))) )) ))] ));
              (( Some ("apply") ),( Some (`LA) ),(
               [(( [`Skeyword ("lazy");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((p : 'patt)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.PaLaz ((_loc,p)) :'patt )))) )) ));((
                                                                  [`Sself;`Sself]
                                                                  ),(
@@ -7920,9 +7931,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'patt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaApp
                                                                     ((_loc,p1,p2))
                                                                     :'patt ))))
@@ -7939,7 +7950,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((p : 'patt_tcon)) ->
                           (fun (_) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.PaOlbi ((_loc,"",p,e)) :'patt ))))))))
                   )) ));(( [`Skeyword ("?");`Skeyword ("(");`Snterm
                          ((Gram.obj ( (patt_tcon :'patt_tcon Gram.t  ) )));`Skeyword
@@ -7949,7 +7960,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (fun ((p : 'patt_tcon)) ->
                                (fun (_) ->
                                  (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
+                                   (fun ((_loc : FanLoc.t )) ->
                                      (Ast.PaOlb ((_loc,"",p)) :'patt ))))))
                            )) ));(( [`Skeyword ("?");`Stoken
                                   (((
@@ -7961,7 +7972,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                   (Gram.mk_action (
                                     (fun (__camlp4_0) ->
                                       (fun (_) ->
-                                        (fun ((_loc :  FanLoc.t )) -> begin
+                                        (fun ((_loc : FanLoc.t )) -> begin
                                           match __camlp4_0 with
                                           | (`ANTIQUOT (((""|"lid") as n),i))
                                             ->
@@ -7977,11 +7988,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LIDENT i) ->
-                           (Ast.PaOlb ((_loc,i,( Ast.PaNil (_loc) ))) :'patt
-                             )
+                           (Ast.PaOlb ((_loc,i,( Ast.PaNil (_loc) ))) :
+                             'patt )
                        | _ ->   assert false end))) )) ));(( [`Skeyword
                                                            ("?");`Stoken
                                                            (((
@@ -7996,11 +8006,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            ((Gram.obj (
                                                               (patt_tcon
                                                                 :'patt_tcon
-                                                                Gram.t  ) )));`Snterm
+                                                                   Gram.t  )
+                                                              )));`Snterm
                                                            ((Gram.obj (
                                                               (eq_expr
                                                                 :'eq_expr
-                                                                Gram.t  ) )));`Skeyword
+                                                                   Gram.t  )
+                                                              )));`Skeyword
                                                            (")")] ),(
                                                            (Gram.mk_action (
                                                              (fun (_) ->
@@ -8022,10 +8034,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -8088,10 +8099,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -8112,11 +8122,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LIDENT i) ->
-                           (Ast.PaLab ((_loc,i,( Ast.PaNil (_loc) ))) :'patt
-                             )
+                           (Ast.PaLab ((_loc,i,( Ast.PaNil (_loc) ))) :
+                             'patt )
                        | _ ->   assert false end))) )) ));(( [`Skeyword
                                                            ("~");`Stoken
                                                            (((
@@ -8133,10 +8142,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   begin
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   -> begin
                                                                    match
                                                                    __camlp4_0
                                                                    with
@@ -8182,10 +8190,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -8210,16 +8217,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun ((p : 'patt)) ->
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LABEL i) ->   (Ast.PaLab ((_loc,i,p)) :'patt )
                        | _ ->   assert false end))) )) ));(( [`Skeyword
                                                            ("#");`Snterm
                                                            ((Gram.obj (
                                                               (type_longident
                                                                 :'type_longident
-                                                                Gram.t  ) )))]
-                                                           ),(
+                                                                   Gram.t  )
+                                                              )))] ),(
                                                            (Gram.mk_action (
                                                              (fun
                                                                ((i :
@@ -8227,9 +8233,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.PaTyp
                                                                     ((_loc,i))
                                                                     :'patt ))))
@@ -8252,9 +8258,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaVrn
                                                                     ((_loc,s))
                                                                     :'patt ))))
@@ -8265,7 +8271,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                      | (`QUOTATION x) ->
                          ((Quotation.expand _loc x DynAst.patt_tag) :'patt )
                      | _ ->   assert false end)) )) ));(( [`Skeyword ("_")]
@@ -8273,7 +8279,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         (Gram.mk_action (
                                                           (fun (_) ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               ->
                                                               (Ast.PaAny
@@ -8285,7 +8291,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             ((Gram.obj (
                                                                (comma_patt
                                                                  :'comma_patt
-                                                                 Gram.t  ) )));`Skeyword
+                                                                    Gram.t  )
+                                                               )));`Skeyword
                                                             (")")] ),(
                                                             (Gram.mk_action (
                                                               (fun (_) ->
@@ -8301,9 +8308,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaTup
                                                                     ((_loc,(
                                                                     Ast.PaCom
@@ -8333,9 +8340,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaAli
                                                                     ((_loc,p,p2))
                                                                     :'patt )))))))
@@ -8348,13 +8355,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((p : 'patt)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.PaTyc ((_loc,p,t)) :'patt ))))))) )) ));
               (( [`Skeyword ("(");`Sself;`Skeyword (")")] ),(
                (Gram.mk_action (
                  (fun (_) ->
                    (fun ((p : 'patt)) ->
-                     (fun (_) -> (fun ((_loc :  FanLoc.t )) -> (p :'patt )))))
+                     (fun (_) -> (fun ((_loc : FanLoc.t )) -> (p :'patt )))))
                  )) ));(( [`Skeyword ("(");`Skeyword ("module");`Snterm
                         ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
                         (":");`Snterm
@@ -8367,421 +8374,397 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                 (fun ((m : 'a_UIDENT)) ->
                                   (fun (_) ->
                                     (fun (_) ->
-                                      (fun ((_loc :  FanLoc.t )) ->
+                                      (fun ((_loc : FanLoc.t )) ->
                                         (Ast.PaTyc
                                            ((_loc,( Ast.PaMod ((_loc,m)) ),(
-                                             Ast.TyPkg ((_loc,pt)) ))) :'patt
-                                          )))))))) )) ));(( [`Skeyword
-                                                          ("(");`Skeyword
-                                                          ("module");`Snterm
-                                                          ((Gram.obj (
-                                                             (a_UIDENT
-                                                               :'a_UIDENT
-                                                               Gram.t  ) )));`Skeyword
-                                                          (")")] ),(
-                                                          (Gram.mk_action (
-                                                            (fun (_) ->
-                                                              (fun
-                                                                ((m :
-                                                                   'a_UIDENT))
-                                                                ->
-                                                                (fun (_) ->
+                                             Ast.TyPkg ((_loc,pt)) ))) :
+                                          'patt )))))))) )) ));(( [`Skeyword
+                                                                ("(");`Skeyword
+                                                                ("module");`Snterm
+                                                                ((Gram.obj (
+                                                                   (a_UIDENT
+                                                                    :'a_UIDENT
+                                                                    Gram.t  )
+                                                                   )));`Skeyword
+                                                                (")")] ),(
+                                                                (Gram.mk_action
+                                                                  (
                                                                   (fun (_) ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((m :
+                                                                    'a_UIDENT))
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaMod
                                                                     ((_loc,m))
                                                                     :'patt ))))))
-                                                            )) ));((
-                                                                   [`Skeyword
-                                                                   ("(");`Skeyword
-                                                                   (")")] ),(
-                                                                   (Gram.mk_action
-                                                                    (
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.PaId
-                                                                    ((_loc,(
-                                                                    Ast.IdUid
-                                                                    ((_loc,"()"))
-                                                                    )))
-                                                                    :'patt ))))
-                                                                    )) ));
-              (( [`Skeyword ("{");`Snterm
-               ((Gram.obj ( (label_patt_list :'label_patt_list Gram.t  ) )));`Skeyword
-               ("}")] ),(
+                                                                  )) ));
+              (( [`Skeyword ("(");`Skeyword (")")] ),(
                (Gram.mk_action (
                  (fun (_) ->
-                   (fun ((pl : 'label_patt_list)) ->
+                   (fun (_) ->
+                     (fun ((_loc : FanLoc.t )) ->
+                       (Ast.PaId ((_loc,( Ast.IdUid ((_loc,"()")) ))) :
+                         'patt )))) )) ));(( [`Skeyword ("{");`Snterm
+                                           ((Gram.obj (
+                                              (label_patt_list
+                                                :'label_patt_list Gram.t  )
+                                              )));`Skeyword ("}")] ),(
+                                           (Gram.mk_action (
+                                             (fun (_) ->
+                                               (fun ((pl : 'label_patt_list))
+                                                 ->
+                                                 (fun (_) ->
+                                                   (fun ((_loc : FanLoc.t ))
+                                                     ->
+                                                     (Ast.PaRec ((_loc,pl))
+                                                       :'patt ))))) )) ));
+              (( [`Skeyword ("[|");`Snterm
+               ((Gram.obj ( (sem_patt :'sem_patt Gram.t  ) )));`Skeyword
+               ("|]")] ),(
+               (Gram.mk_action (
+                 (fun (_) ->
+                   (fun ((pl : 'sem_patt)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
-                         (Ast.PaRec ((_loc,pl)) :'patt ))))) )) ));((
+                       (fun ((_loc : FanLoc.t )) ->
+                         (Ast.PaArr ((_loc,pl)) :'patt ))))) )) ));((
                                                                     [`Skeyword
-                                                                    ("[|");`Snterm
-                                                                    (
-                                                                    (Gram.obj
-                                                                    (
-                                                                    (sem_patt
-                                                                    :'sem_patt
-                                                                    Gram.t  )
-                                                                    )));`Skeyword
+                                                                    ("[|");`Skeyword
                                                                     ("|]")]
                                                                     ),(
                                                                     (Gram.mk_action
                                                                     (
                                                                     (fun (_)
                                                                     ->
-                                                                    (fun
-                                                                    ((pl :
-                                                                    'sem_patt))
-                                                                    ->
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaArr
-                                                                    ((_loc,pl))
-                                                                    :'patt )))))
+                                                                    ((_loc,(
+                                                                    Ast.PaNil
+                                                                    (_loc) )))
+                                                                    :'patt ))))
                                                                     )) ));
-              (( [`Skeyword ("[|");`Skeyword ("|]")] ),(
+              (( [`Skeyword ("[");`Snterm
+               ((Gram.obj ( (sem_patt_for_list :'sem_patt_for_list Gram.t  )
+                  )));`Skeyword ("]")] ),(
                (Gram.mk_action (
                  (fun (_) ->
-                   (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
-                       (Ast.PaArr ((_loc,( Ast.PaNil (_loc) ))) :'patt ))))
-                 )) ));(( [`Skeyword ("[");`Snterm
-                        ((Gram.obj (
-                           (sem_patt_for_list :'sem_patt_for_list Gram.t  )
-                           )));`Skeyword ("]")] ),(
-                        (Gram.mk_action (
-                          (fun (_) ->
-                            (fun ((mk_list : 'sem_patt_for_list)) ->
-                              (fun (_) ->
-                                (fun ((_loc :  FanLoc.t )) ->
-                                  ((mk_list (
-                                     Ast.PaId
-                                       ((_loc,( Ast.IdUid ((_loc,"[]")) )))
-                                     )) :'patt ))))) )) ));(( [`Skeyword
-                                                            ("[");`Snterm
-                                                            ((Gram.obj (
-                                                               (sem_patt_for_list
-                                                                 :'sem_patt_for_list
-                                                                 Gram.t  ) )));`Skeyword
-                                                            ("::");`Sself;`Skeyword
-                                                            ("]")] ),(
-                                                            (Gram.mk_action (
-                                                              (fun (_) ->
-                                                                (fun
-                                                                  ((last :
-                                                                    'patt))
-                                                                  ->
-                                                                  (fun (_) ->
-                                                                    (fun
-                                                                    ((mk_list
-                                                                    :
-                                                                    'sem_patt_for_list))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    ((mk_list
-                                                                    last)
-                                                                    :'patt )))))))
-                                                              )) ));((
-                                                                    [`Skeyword
-                                                                    ("[");`Skeyword
-                                                                    ("]")]
-                                                                    ),(
-                                                                    (Gram.mk_action
-                                                                    (
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.PaId
-                                                                    ((_loc,(
+                   (fun ((mk_list : 'sem_patt_for_list)) ->
+                     (fun (_) ->
+                       (fun ((_loc : FanLoc.t )) ->
+                         ((mk_list (
+                            Ast.PaId ((_loc,( Ast.IdUid ((_loc,"[]")) ))) ))
+                           :'patt ))))) )) ));(( [`Skeyword ("[");`Snterm
+                                               ((Gram.obj (
+                                                  (sem_patt_for_list
+                                                    :'sem_patt_for_list
+                                                       Gram.t  ) )));`Skeyword
+                                               ("::");`Sself;`Skeyword ("]")]
+                                               ),(
+                                               (Gram.mk_action (
+                                                 (fun (_) ->
+                                                   (fun ((last : 'patt)) ->
+                                                     (fun (_) ->
+                                                       (fun
+                                                         ((mk_list :
+                                                            'sem_patt_for_list))
+                                                         ->
+                                                         (fun (_) ->
+                                                           (fun
+                                                             ((_loc :
+                                                                FanLoc.t ))
+                                                             ->
+                                                             ((mk_list last)
+                                                               :'patt )))))))
+                                                 )) ));(( [`Skeyword
+                                                        ("[");`Skeyword
+                                                        ("]")] ),(
+                                                        (Gram.mk_action (
+                                                          (fun (_) ->
+                                                            (fun (_) ->
+                                                              (fun
+                                                                ((_loc :
+                                                                   FanLoc.t ))
+                                                                ->
+                                                                (Ast.PaId
+                                                                   ((_loc,(
                                                                     Ast.IdUid
                                                                     ((_loc,"[]"))
                                                                     )))
+                                                                  :'patt ))))
+                                                          )) ));(( [`Skeyword
+                                                                 ("-");`Snterm
+                                                                 ((Gram.obj (
+                                                                    (a_FLOAT
+                                                                    :'a_FLOAT
+                                                                    Gram.t  )
+                                                                    )))] ),(
+                                                                 (Gram.mk_action
+                                                                   (
+                                                                   (fun
+                                                                    ((s :
+                                                                    'a_FLOAT))
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (Ast.PaFlo
+                                                                    ((_loc,(
+                                                                    (neg_string
+                                                                    s) )))
                                                                     :'patt ))))
-                                                                    )) ));
+                                                                   )) ));
               (( [`Skeyword ("-");`Snterm
-               ((Gram.obj ( (a_FLOAT :'a_FLOAT Gram.t  ) )))] ),(
+               ((Gram.obj ( (a_NATIVEINT :'a_NATIVEINT Gram.t  ) )))] ),(
                (Gram.mk_action (
-                 (fun ((s : 'a_FLOAT)) ->
+                 (fun ((s : 'a_NATIVEINT)) ->
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
-                       (Ast.PaFlo ((_loc,( (neg_string s) ))) :'patt )))) ))
-               ));(( [`Skeyword ("-");`Snterm
-                   ((Gram.obj ( (a_NATIVEINT :'a_NATIVEINT Gram.t  ) )))] ),(
-                   (Gram.mk_action (
-                     (fun ((s : 'a_NATIVEINT)) ->
-                       (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
-                           (Ast.PaNativeInt ((_loc,( (neg_string s) )))
-                             :'patt )))) )) ));(( [`Skeyword ("-");`Snterm
-                                                ((Gram.obj (
-                                                   (a_INT64 :'a_INT64 Gram.t 
-                                                     ) )))] ),(
-                                                (Gram.mk_action (
-                                                  (fun ((s : 'a_INT64)) ->
-                                                    (fun (_) ->
-                                                      (fun
-                                                        ((_loc :  FanLoc.t ))
-                                                        ->
-                                                        (Ast.PaInt64
-                                                           ((_loc,(
-                                                             (neg_string s)
-                                                             ))) :'patt ))))
-                                                  )) ));(( [`Skeyword
+                     (fun ((_loc : FanLoc.t )) ->
+                       (Ast.PaNativeInt ((_loc,( (neg_string s) ))) :'patt ))))
+                 )) ));(( [`Skeyword ("-");`Snterm
+                        ((Gram.obj ( (a_INT64 :'a_INT64 Gram.t  ) )))] ),(
+                        (Gram.mk_action (
+                          (fun ((s : 'a_INT64)) ->
+                            (fun (_) ->
+                              (fun ((_loc : FanLoc.t )) ->
+                                (Ast.PaInt64 ((_loc,( (neg_string s) )))
+                                  :'patt )))) )) ));(( [`Skeyword
+                                                     ("-");`Snterm
+                                                     ((Gram.obj (
+                                                        (a_INT32
+                                                          :'a_INT32 Gram.t  )
+                                                        )))] ),(
+                                                     (Gram.mk_action (
+                                                       (fun ((s : 'a_INT32))
+                                                         ->
+                                                         (fun (_) ->
+                                                           (fun
+                                                             ((_loc :
+                                                                FanLoc.t ))
+                                                             ->
+                                                             (Ast.PaInt32
+                                                                ((_loc,(
+                                                                  (neg_string
+                                                                    s) )))
+                                                               :'patt )))) ))
+                                                     ));(( [`Skeyword
                                                          ("-");`Snterm
                                                          ((Gram.obj (
-                                                            (a_INT32
-                                                              :'a_INT32
-                                                              Gram.t  ) )))]
-                                                         ),(
+                                                            (a_INT
+                                                              :'a_INT Gram.t 
+                                                              ) )))] ),(
                                                          (Gram.mk_action (
                                                            (fun
-                                                             ((s : 'a_INT32))
+                                                             ((s : 'a_INT))
                                                              ->
                                                              (fun (_) ->
                                                                (fun
-                                                                 ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                 (Ast.PaInt32
+                                                                 ((_loc :
+                                                                    FanLoc.t ))
+                                                                 ->
+                                                                 (Ast.PaInt
                                                                     (
                                                                     (_loc,(
                                                                     (neg_string
                                                                     s) )))
                                                                    :'patt ))))
-                                                           )) ));((
-                                                                  [`Skeyword
-                                                                  ("-");`Snterm
+                                                           )) ));(( [`Snterm
                                                                   ((Gram.obj
                                                                     (
-                                                                    (a_INT
-                                                                    :'a_INT
+                                                                    (a_CHAR
+                                                                    :'a_CHAR
                                                                     Gram.t  )
                                                                     )))] ),(
                                                                   (Gram.mk_action
                                                                     (
                                                                     (fun
                                                                     ((s :
-                                                                    'a_INT))
-                                                                    ->
-                                                                    (fun (_)
+                                                                    'a_CHAR))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.PaInt
-                                                                    ((_loc,(
-                                                                    (neg_string
-                                                                    s) )))
-                                                                    :'patt ))))
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (Ast.PaChr
+                                                                    ((_loc,s))
+                                                                    :'patt )))
                                                                     )) ));
-              (( [`Snterm ((Gram.obj ( (a_CHAR :'a_CHAR Gram.t  ) )))] ),(
+              (( [`Snterm ((Gram.obj ( (a_STRING :'a_STRING Gram.t  ) )))]
+               ),(
                (Gram.mk_action (
-                 (fun ((s : 'a_CHAR)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
-                     (Ast.PaChr ((_loc,s)) :'patt ))) )) ));(( [`Snterm
+                 (fun ((s : 'a_STRING)) ->
+                   (fun ((_loc : FanLoc.t )) ->
+                     (Ast.PaStr ((_loc,s)) :'patt ))) )) ));(( [`Snterm
                                                              ((Gram.obj (
-                                                                (a_STRING
-                                                                  :'a_STRING
-                                                                  Gram.t  )
+                                                                (a_FLOAT
+                                                                  :'a_FLOAT
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
                                                                (fun
                                                                  ((s :
-                                                                    'a_STRING))
+                                                                    'a_FLOAT))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   (Ast.PaStr
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
+                                                                   (Ast.PaFlo
                                                                     ((_loc,s))
                                                                     :'patt )))
                                                                )) ));
-              (( [`Snterm ((Gram.obj ( (a_FLOAT :'a_FLOAT Gram.t  ) )))] ),(
+              (( [`Snterm
+               ((Gram.obj ( (a_NATIVEINT :'a_NATIVEINT Gram.t  ) )))] ),(
                (Gram.mk_action (
-                 (fun ((s : 'a_FLOAT)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
-                     (Ast.PaFlo ((_loc,s)) :'patt ))) )) ));(( [`Snterm
-                                                             ((Gram.obj (
-                                                                (a_NATIVEINT
-                                                                  :'a_NATIVEINT
-                                                                  Gram.t  )
-                                                                )))] ),(
-                                                             (Gram.mk_action
-                                                               (
-                                                               (fun
-                                                                 ((s :
-                                                                    'a_NATIVEINT))
-                                                                 ->
-                                                                 (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   (Ast.PaNativeInt
+                 (fun ((s : 'a_NATIVEINT)) ->
+                   (fun ((_loc : FanLoc.t )) ->
+                     (Ast.PaNativeInt ((_loc,s)) :'patt ))) )) ));(( [`Snterm
+                                                                   ((Gram.obj
+                                                                    (
+                                                                    (a_INT64
+                                                                    :'a_INT64
+                                                                    Gram.t  )
+                                                                    )))] ),(
+                                                                   (Gram.mk_action
+                                                                    (
+                                                                    (fun
+                                                                    ((s :
+                                                                    'a_INT64))
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (Ast.PaInt64
                                                                     ((_loc,s))
                                                                     :'patt )))
-                                                               )) ));
-              (( [`Snterm ((Gram.obj ( (a_INT64 :'a_INT64 Gram.t  ) )))] ),(
+                                                                    )) ));
+              (( [`Snterm ((Gram.obj ( (a_INT32 :'a_INT32 Gram.t  ) )))] ),(
                (Gram.mk_action (
-                 (fun ((s : 'a_INT64)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
-                     (Ast.PaInt64 ((_loc,s)) :'patt ))) )) ));(( [`Snterm
+                 (fun ((s : 'a_INT32)) ->
+                   (fun ((_loc : FanLoc.t )) ->
+                     (Ast.PaInt32 ((_loc,s)) :'patt ))) )) ));(( [`Snterm
                                                                ((Gram.obj (
-                                                                  (a_INT32
-                                                                    :'a_INT32
+                                                                  (a_INT
+                                                                    :
+                                                                    'a_INT
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
                                                                  (
                                                                  (fun
                                                                    ((s :
-                                                                    'a_INT32))
+                                                                    'a_INT))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.PaInt32
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (Ast.PaInt
                                                                     ((_loc,s))
                                                                     :'patt )))
                                                                  )) ));
-              (( [`Snterm ((Gram.obj ( (a_INT :'a_INT Gram.t  ) )))] ),(
+              (( [`Snterm ((Gram.obj ( (ident :'ident Gram.t  ) )))] ),(
                (Gram.mk_action (
-                 (fun ((s : 'a_INT)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
-                     (Ast.PaInt ((_loc,s)) :'patt ))) )) ));(( [`Snterm
-                                                             ((Gram.obj (
-                                                                (ident
-                                                                  :'ident
-                                                                  Gram.t  )
-                                                                )))] ),(
-                                                             (Gram.mk_action
-                                                               (
-                                                               (fun
-                                                                 ((i :
-                                                                    'ident))
-                                                                 ->
-                                                                 (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                   (Ast.PaId
-                                                                    ((_loc,i))
-                                                                    :'patt )))
-                                                               )) ));
+                 (fun ((i : 'ident)) ->
+                   (fun ((_loc : FanLoc.t )) ->
+                     (Ast.PaId ((_loc,i)) :'patt ))) )) ));(( [`Stoken
+                                                            (((
+                                                              (function
+                                                              | (`ANTIQUOT
+                                                                  ("`bool",_))
+                                                                ->   true
+                                                              | _ ->   false)
+                                                              ),(`Normal,"(`ANTIQUOT (\"`bool\",_))")))]
+                                                            ),(
+                                                            (Gram.mk_action (
+                                                              (fun
+                                                                (__camlp4_0)
+                                                                ->
+                                                                (fun
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
+                                                                  __camlp4_0
+                                                                  with
+                                                                  | (`ANTIQUOT
+                                                                    (("`bool"
+                                                                    as n),s))
+                                                                    ->
+                                                                      (Ast.PaId
+                                                                    ((_loc,(
+                                                                    Ast.IdAnt
+                                                                    ((_loc,(
+                                                                    (mk_anti
+                                                                    n s) )))
+                                                                    )))
+                                                                    :'patt )
+                                                                  | _ ->
+                                                                      assert
+                                                                    false
+                                                                  end)) )) ));
               (( [`Stoken
-               (((
-                 (function
-                 | (`ANTIQUOT ("`bool",_)) ->   true
-                 | _ ->   false) ),(`Normal,"(`ANTIQUOT (\"`bool\",_))")))]
+               ((( (function
+                   | (`ANTIQUOT ("tup",_)) ->   true
+                   | _ ->   false) ),(`Normal,"(`ANTIQUOT (\"tup\",_))")))]
                ),(
                (Gram.mk_action (
                  (fun (__camlp4_0) ->
-                   (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
-                     | (`ANTIQUOT (("`bool" as n),s)) ->
-                         (Ast.PaId
-                            ((_loc,( Ast.IdAnt ((_loc,( (mk_anti n s) ))) )))
-                           :'patt )
+                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
+                     | (`ANTIQUOT (("tup" as n),s)) ->
+                         (Ast.PaTup
+                            ((_loc,(
+                              Ast.PaAnt ((_loc,( (mk_anti ~c:"patt" n s) )))
+                              ))) :'patt )
                      | _ ->   assert false end)) )) ));(( [`Stoken
                                                         (((
                                                           (function
                                                           | (`ANTIQUOT
-                                                              ("tup",_))
+                                                              ((""|"pat"|"anti"),_))
                                                             ->   true
                                                           | _ ->   false)
-                                                          ),(`Normal,"(`ANTIQUOT (\"tup\",_))")))]
+                                                          ),(`Normal,"(`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_))")))]
                                                         ),(
                                                         (Gram.mk_action (
                                                           (fun (__camlp4_0)
                                                             ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               -> begin match
                                                               __camlp4_0 with
                                                               | (`ANTIQUOT
-                                                                  (("tup" as
-                                                                    n),s))
+                                                                  (((""|"pat"|"anti")
+                                                                    as n),s))
                                                                 ->
-                                                                  (Ast.PaTup
-                                                                    ((_loc,(
-                                                                    Ast.PaAnt
+                                                                  (Ast.PaAnt
                                                                     ((_loc,(
                                                                     (mk_anti
                                                                     ~c:"patt"
                                                                     n s) )))
-                                                                    )))
-                                                                    :'patt )
+                                                                    :
+                                                                    'patt )
                                                               | _ ->
                                                                   assert
                                                                   false end))
-                                                          )) ));(( [`Stoken
-                                                                 (((
-                                                                   (function
-                                                                   | (`ANTIQUOT
-                                                                    ((""|"pat"|"anti"),_))
-                                                                    -> 
-                                                                      true
-                                                                   | _ ->
-                                                                      false)
-                                                                   ),
-                                                                   (`Normal,"(`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_))")))]
-                                                                 ),(
-                                                                 (Gram.mk_action
-                                                                   (
-                                                                   (fun
-                                                                    (__camlp4_0)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
-                                                                    match
-                                                                    __camlp4_0
-                                                                    with
-                                                                    | (`ANTIQUOT
-                                                                    (((""|"pat"|"anti")
-                                                                    as n),s))
-                                                                    ->
-                                                                      (Ast.PaAnt
-                                                                    ((_loc,(
-                                                                    (mk_anti
-                                                                    ~c:"patt"
-                                                                    n s) )))
-                                                                    :'patt )
-                                                                    | _ ->
-                                                                      assert
-                                                                    false
-                                                                    end)) ))
-                                                                 ))] ))] ))))
-          () ) ));
+                                                          )) ))] ))] )))) ()
+          ) ));
       (Gram.extend ( (comma_patt :'comma_patt Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -8789,7 +8772,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'comma_patt ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'comma_patt ))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -8798,7 +8781,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.PaAnt ((_loc,( (mk_anti ~c:"patt," n s) )))
                             :'comma_patt )
@@ -8815,9 +8798,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'comma_patt))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.PaCom
                                                                     ((_loc,p1,p2))
                                                                     :'comma_patt
@@ -8830,13 +8813,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'sem_patt ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'sem_patt ))) )) ));
                (( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
                 (";")] ),(
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((p : 'patt)) ->
-                      (fun ((_loc :  FanLoc.t )) -> (p :'sem_patt )))) )) ));
+                      (fun ((_loc : FanLoc.t )) -> (p :'sem_patt )))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -8845,14 +8828,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.PaAnt ((_loc,( (mk_anti ~c:"patt;" n s) )))
                             :'sem_patt )
                       | _ ->   assert false end)) )) ));(( [`Snterm
                                                          ((Gram.obj (
-                                                            (patt :'patt
-                                                              Gram.t  ) )));`Skeyword
+                                                            (patt
+                                                              :'patt Gram.t 
+                                                              ) )));`Skeyword
                                                          (";");`Sself] ),(
                                                          (Gram.mk_action (
                                                            (fun
@@ -8865,9 +8849,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'patt))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.PaSem
                                                                     ((_loc,p1,p2))
                                                                     :'sem_patt
@@ -8880,7 +8864,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((fun (acc) ->
                           Ast.PaApp
                             ((_loc,(
@@ -8894,7 +8878,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((p : 'patt)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         ((fun (acc) ->
                            Ast.PaApp
                              ((_loc,(
@@ -8910,7 +8894,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((pl : 'sem_patt_for_list)) ->
                         (fun (_) ->
                           (fun ((p : 'patt)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               ((fun (acc) ->
                                  Ast.PaApp
                                    ((_loc,(
@@ -8929,14 +8913,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (label_patt :'label_patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p1 : 'label_patt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p1 :'label_patt_list )))
+                     (fun ((_loc : FanLoc.t )) -> (p1 :'label_patt_list )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (label_patt :'label_patt Gram.t  ) )));`Skeyword
                           (";")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
                               (fun ((p1 : 'label_patt)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (p1 :'label_patt_list )))) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -8963,9 +8947,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_patt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaSem
                                                                     ((_loc,p1,(
                                                                     Ast.PaAny
@@ -8980,13 +8964,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun (_) ->
                       (fun ((p1 : 'label_patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaSem ((_loc,p1,( Ast.PaAny (_loc) )))
                             :'label_patt_list ))))) )) ));(( [`Snterm
                                                            ((Gram.obj (
                                                               (label_patt
                                                                 :'label_patt
-                                                                Gram.t  ) )));`Skeyword
+                                                                   Gram.t  )
+                                                              )));`Skeyword
                                                            (";");`Sself] ),(
                                                            (Gram.mk_action (
                                                              (fun
@@ -8999,9 +8984,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_patt))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaSem
                                                                     ((_loc,p1,p2))
                                                                     :'label_patt_list
@@ -9017,7 +9002,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'label_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.PaEq
                           ((_loc,i,(
                             Ast.PaId
@@ -9027,12 +9012,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         ((Gram.obj (
                                                            (label_longident
                                                              :'label_longident
-                                                             Gram.t  ) )));`Skeyword
+                                                                Gram.t  ) )));`Skeyword
                                                         ("=");`Snterm
                                                         ((Gram.obj (
-                                                           (patt :'patt
-                                                             Gram.t  ) )))]
-                                                        ),(
+                                                           (patt
+                                                             :'patt Gram.t  )
+                                                           )))] ),(
                                                         (Gram.mk_action (
                                                           (fun ((p : 'patt))
                                                             ->
@@ -9042,12 +9027,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    'label_longident))
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  ->
                                                                   (Ast.PaEq
                                                                     ((_loc,i,p))
-                                                                    :'label_patt
+                                                                    :
+                                                                    'label_patt
                                                                     ))))) ))
                                                         ));(( [`Stoken
                                                             (((
@@ -9063,10 +9049,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (__camlp4_0)
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`ANTIQUOT
@@ -9090,7 +9076,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.patt_tag)
                             :'label_patt )
@@ -9107,7 +9093,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -9135,28 +9121,29 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("_")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.PaAny (_loc) :'ipatt ))) )) ));(( [`Snterm
                                                             ((Gram.obj (
                                                                (a_LIDENT
                                                                  :'a_LIDENT
-                                                                 Gram.t  ) )))]
-                                                            ),(
+                                                                    Gram.t  )
+                                                               )))] ),(
                                                             (Gram.mk_action (
                                                               (fun
                                                                 ((s :
                                                                    'a_LIDENT))
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  ->
                                                                   (Ast.PaId
                                                                     ((_loc,(
                                                                     Ast.IdLid
                                                                     ((_loc,s))
                                                                     )))
-                                                                    :'ipatt )))
+                                                                    :
+                                                                    'ipatt )))
                                                               )) ));((
                                                                     [`Skeyword
                                                                     ("(");`Sself;`Skeyword
@@ -9186,9 +9173,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaTup
                                                                     ((_loc,(
                                                                     Ast.PaCom
@@ -9204,7 +9191,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((p : 'ipatt)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.PaAli ((_loc,p,p2)) :'ipatt ))))))) )) ));
                (( [`Skeyword ("(");`Sself;`Skeyword (":");`Snterm
                 ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )));`Skeyword (")")] ),(
@@ -9214,150 +9201,174 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((p : 'ipatt)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.PaTyc ((_loc,p,t)) :'ipatt ))))))) )) ));
                (( [`Skeyword ("(");`Sself;`Skeyword (")")] ),(
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((p : 'ipatt)) ->
-                      (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) -> (p :'ipatt ))))) )) ));
-               (( [`Skeyword ("(");`Skeyword ("module");`Snterm
-                ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
-                (":");`Snterm
-                ((Gram.obj ( (package_type :'package_type Gram.t  ) )));`Skeyword
-                (")")] ),(
-                (Gram.mk_action (
-                  (fun (_) ->
-                    (fun ((pt : 'package_type)) ->
-                      (fun (_) ->
-                        (fun ((m : 'a_UIDENT)) ->
-                          (fun (_) ->
-                            (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
-                                (Ast.PaTyc
-                                   ((_loc,( Ast.PaMod ((_loc,m)) ),(
-                                     Ast.TyPkg ((_loc,pt)) ))) :'ipatt ))))))))
+                      (fun (_) -> (fun ((_loc : FanLoc.t )) -> (p :'ipatt )))))
                   )) ));(( [`Skeyword ("(");`Skeyword ("module");`Snterm
                          ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
-                         (")")] ),(
+                         (":");`Snterm
+                         ((Gram.obj ( (package_type :'package_type Gram.t  )
+                            )));`Skeyword (")")] ),(
                          (Gram.mk_action (
                            (fun (_) ->
-                             (fun ((m : 'a_UIDENT)) ->
+                             (fun ((pt : 'package_type)) ->
                                (fun (_) ->
-                                 (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
-                                     (Ast.PaMod ((_loc,m)) :'ipatt )))))) ))
-                         ));(( [`Skeyword ("(");`Skeyword (")")] ),(
-                             (Gram.mk_action (
-                               (fun (_) ->
-                                 (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
-                                     (Ast.PaId
-                                        ((_loc,( Ast.IdUid ((_loc,"()")) )))
-                                       :'ipatt )))) )) ));(( [`Stoken
-                                                           (((
-                                                             (function
-                                                             | (`QUOTATION _)
-                                                               ->   true
-                                                             | _ ->   false)
-                                                             ),(`Normal,"(`QUOTATION _)")))]
-                                                           ),(
-                                                           (Gram.mk_action (
-                                                             (fun
-                                                               (__camlp4_0)
-                                                               ->
-                                                               (fun
-                                                                 ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                 begin match
-                                                                 __camlp4_0
-                                                                 with
-                                                                 | (`QUOTATION
-                                                                    x)
-                                                                   ->
-                                                                     ((Quotation.expand
-                                                                    _loc x
-                                                                    DynAst.patt_tag)
-                                                                    :'ipatt )
-                                                                 | _ ->
-                                                                     assert
-                                                                    false
-                                                                 end)) )) ));
-               (( [`Stoken
-                ((( (function
-                    | (`ANTIQUOT ("tup",_)) ->   true
-                    | _ ->   false) ),(`Normal,"(`ANTIQUOT (\"tup\",_))")))]
-                ),(
+                                 (fun ((m : 'a_UIDENT)) ->
+                                   (fun (_) ->
+                                     (fun (_) ->
+                                       (fun ((_loc : FanLoc.t )) ->
+                                         (Ast.PaTyc
+                                            ((_loc,( Ast.PaMod ((_loc,m)) ),(
+                                              Ast.TyPkg ((_loc,pt)) )))
+                                           :'ipatt )))))))) )) ));((
+                                                                   [`Skeyword
+                                                                   ("(");`Skeyword
+                                                                   ("module");`Snterm
+                                                                   ((Gram.obj
+                                                                    (
+                                                                    (a_UIDENT
+                                                                    :'a_UIDENT
+                                                                    Gram.t  )
+                                                                    )));`Skeyword
+                                                                   (")")] ),(
+                                                                   (Gram.mk_action
+                                                                    (
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((m :
+                                                                    'a_UIDENT))
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun (_)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (Ast.PaMod
+                                                                    ((_loc,m))
+                                                                    :'ipatt ))))))
+                                                                    )) ));
+               (( [`Skeyword ("(");`Skeyword (")")] ),(
                 (Gram.mk_action (
-                  (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
-                      | (`ANTIQUOT (("tup" as n),s)) ->
-                          (Ast.PaTup
-                             ((_loc,(
-                               Ast.PaAnt ((_loc,( (mk_anti ~c:"patt" n s) )))
-                               ))) :'ipatt )
-                      | _ ->   assert false end)) )) ));(( [`Stoken
-                                                         (((
-                                                           (function
-                                                           | (`ANTIQUOT
-                                                               ((""|"pat"|"anti"),_))
-                                                             ->   true
-                                                           | _ ->   false)
-                                                           ),(`Normal,"(`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_))")))]
-                                                         ),(
-                                                         (Gram.mk_action (
-                                                           (fun (__camlp4_0)
-                                                             ->
-                                                             (fun
-                                                               ((_loc : 
-                                                                  FanLoc.t ))
-                                                               -> begin match
-                                                               __camlp4_0
-                                                               with
-                                                               | (`ANTIQUOT
-                                                                   (((""|"pat"|"anti")
+                  (fun (_) ->
+                    (fun (_) ->
+                      (fun ((_loc : FanLoc.t )) ->
+                        (Ast.PaId ((_loc,( Ast.IdUid ((_loc,"()")) )))
+                          :'ipatt )))) )) ));(( [`Stoken
+                                              (((
+                                                (function
+                                                | (`QUOTATION _) ->   true
+                                                | _ ->   false)
+                                                ),(`Normal,"(`QUOTATION _)")))]
+                                              ),(
+                                              (Gram.mk_action (
+                                                (fun (__camlp4_0) ->
+                                                  (fun ((_loc : FanLoc.t ))
+                                                    -> begin match __camlp4_0
+                                                    with
+                                                    | (`QUOTATION x) ->
+                                                        ((Quotation.expand
+                                                           _loc x
+                                                           DynAst.patt_tag)
+                                                          :'ipatt )
+                                                    | _ ->   assert false
+                                                    end)) )) ));(( [`Stoken
+                                                                 (((
+                                                                   (function
+                                                                   | (`ANTIQUOT
+                                                                    ("tup",_))
+                                                                    -> 
+                                                                      true
+                                                                   | _ ->
+                                                                      false)
+                                                                   ),
+                                                                   (`Normal,"(`ANTIQUOT (\"tup\",_))")))]
+                                                                 ),(
+                                                                 (Gram.mk_action
+                                                                   (
+                                                                   (fun
+                                                                    (__camlp4_0)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
+                                                                    match
+                                                                    __camlp4_0
+                                                                    with
+                                                                    | (`ANTIQUOT
+                                                                    (("tup"
                                                                     as n),s))
-                                                                 ->
-                                                                   (Ast.PaAnt
+                                                                    ->
+                                                                      (Ast.PaTup
+                                                                    ((_loc,(
+                                                                    Ast.PaAnt
+                                                                    ((_loc,(
+                                                                    (mk_anti
+                                                                    ~c:"patt"
+                                                                    n s) )))
+                                                                    )))
+                                                                    :'ipatt )
+                                                                    | _ ->
+                                                                      assert
+                                                                    false
+                                                                    end)) ))
+                                                                 ));((
+                                                                    [`Stoken
+                                                                    (((
+                                                                    (function
+                                                                    | (`ANTIQUOT
+                                                                    ((""|"pat"|"anti"),_))
+                                                                    -> 
+                                                                      true
+                                                                    | _ ->
+                                                                      false)
+                                                                    ),(`Normal,"(`ANTIQUOT ((\"\"|\"pat\"|\"anti\"),_))")))]
+                                                                    ),(
+                                                                    (Gram.mk_action
+                                                                    (
+                                                                    (fun
+                                                                    (__camlp4_0)
+                                                                    ->
+                                                                    (fun
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
+                                                                    match
+                                                                    __camlp4_0
+                                                                    with
+                                                                    | (`ANTIQUOT
+                                                                    (((""|"pat"|"anti")
+                                                                    as n),s))
+                                                                    ->
+                                                                      (Ast.PaAnt
                                                                     ((_loc,(
                                                                     (mk_anti
                                                                     ~c:"patt"
                                                                     n s) )))
                                                                     :'ipatt )
-                                                               | _ ->
-                                                                   assert
-                                                                   false end))
-                                                           )) ));((
-                                                                  [`Skeyword
-                                                                  ("{");`Snterm
-                                                                  ((Gram.obj
-                                                                    (
-                                                                    (label_ipatt_list
-                                                                    :'label_ipatt_list
-                                                                    Gram.t  )
-                                                                    )));`Skeyword
-                                                                  ("}")] ),(
-                                                                  (Gram.mk_action
-                                                                    (
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((pl :
-                                                                    'label_ipatt_list))
-                                                                    ->
-                                                                    (fun (_)
-                                                                    ->
-                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.PaRec
-                                                                    ((_loc,pl))
-                                                                    :'ipatt )))))
-                                                                    )) ))] ))]
-             )))) () ) ));
+                                                                    | _ ->
+                                                                      assert
+                                                                    false
+                                                                    end)) ))
+                                                                    ));
+               (( [`Skeyword ("{");`Snterm
+                ((Gram.obj ( (label_ipatt_list :'label_ipatt_list Gram.t  )
+                   )));`Skeyword ("}")] ),(
+                (Gram.mk_action (
+                  (fun (_) ->
+                    (fun ((pl : 'label_ipatt_list)) ->
+                      (fun (_) ->
+                        (fun ((_loc : FanLoc.t )) ->
+                          (Ast.PaRec ((_loc,pl)) :'ipatt ))))) )) ))] ))] ))))
+          () ) ));
       (Gram.extend ( (labeled_ipatt :'labeled_ipatt Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -9365,7 +9376,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ipatt :'ipatt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'ipatt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'labeled_ipatt ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (p :'labeled_ipatt ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (comma_ipatt :'comma_ipatt Gram.t  ) ) (
         (((fun (() ) ->
@@ -9374,7 +9385,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ipatt :'ipatt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'ipatt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'comma_ipatt ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'comma_ipatt ))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -9383,7 +9394,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.PaAnt ((_loc,( (mk_anti ~c:"patt," n s) )))
                             :'comma_ipatt )
@@ -9400,9 +9411,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'comma_ipatt))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.PaCom
                                                                     ((_loc,p1,p2))
                                                                     :'comma_ipatt
@@ -9416,14 +9427,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (label_ipatt :'label_ipatt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p1 : 'label_ipatt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p1 :'label_ipatt_list )))
+                     (fun ((_loc : FanLoc.t )) -> (p1 :'label_ipatt_list )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (label_ipatt :'label_ipatt Gram.t  )
                              )));`Skeyword (";")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
                               (fun ((p1 : 'label_ipatt)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (p1 :'label_ipatt_list )))) )) ));((
                                                                     [`Snterm
                                                                     ((Gram.obj
@@ -9449,9 +9460,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_ipatt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaSem
                                                                     ((_loc,p1,(
                                                                     Ast.PaAny
@@ -9466,13 +9477,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun (_) ->
                       (fun ((p1 : 'label_ipatt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaSem ((_loc,p1,( Ast.PaAny (_loc) )))
                             :'label_ipatt_list ))))) )) ));(( [`Snterm
                                                             ((Gram.obj (
                                                                (label_ipatt
                                                                  :'label_ipatt
-                                                                 Gram.t  ) )));`Skeyword
+                                                                    Gram.t  )
+                                                               )));`Skeyword
                                                             (";");`Sself] ),(
                                                             (Gram.mk_action (
                                                               (fun
@@ -9486,9 +9498,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_ipatt))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaSem
                                                                     ((_loc,p1,p2))
                                                                     :'label_ipatt_list
@@ -9506,7 +9518,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((p : 'ipatt)) ->
                      (fun (_) ->
                        (fun ((i : 'label_longident)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.PaEq ((_loc,i,p)) :'label_ipatt ))))) )) ));
                (( [`Stoken
                 ((( (function
@@ -9514,7 +9526,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.patt_tag)
                             :'label_ipatt )
@@ -9531,7 +9543,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -9568,10 +9580,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -9598,8 +9609,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,( Some (`LA) ),(
                [(( [`Snterm
                  ((Gram.obj (
-                    (type_ident_and_parameters :'type_ident_and_parameters
-                      Gram.t  ) )));`Snterm
+                    (type_ident_and_parameters
+                      :'type_ident_and_parameters Gram.t  ) )));`Snterm
                  ((Gram.obj ( (opt_eq_ctyp :'opt_eq_ctyp Gram.t  ) )));`Slist0
                  (`Snterm ((Gram.obj ( (constrain :'constrain Gram.t  ) ))))]
                  ),(
@@ -9607,7 +9618,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((cl : 'constrain list )) ->
                      (fun ((tk : 'opt_eq_ctyp)) ->
                        (fun (((n,tpl) : 'type_ident_and_parameters)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.TyDcl ((_loc,n,tpl,tk,cl)) :'type_declaration
                              ))))) )) ));(( [`Sself;`Skeyword ("and");`Sself]
                                           ),(
@@ -9618,7 +9629,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                 (fun
                                                   ((t1 : 'type_declaration))
                                                   ->
-                                                  (fun ((_loc :  FanLoc.t ))
+                                                  (fun ((_loc : FanLoc.t ))
                                                     ->
                                                     (Ast.TyAnd ((_loc,t1,t2))
                                                       :'type_declaration )))))
@@ -9633,7 +9644,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                    (Gram.mk_action (
                                                      (fun (__camlp4_0) ->
                                                        (fun
-                                                         ((_loc :  FanLoc.t ))
+                                                         ((_loc : FanLoc.t ))
                                                          -> begin match
                                                          __camlp4_0 with
                                                          | (`QUOTATION x) ->
@@ -9653,7 +9664,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctypand" n s) )))
                             :'type_declaration )
@@ -9670,7 +9681,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -9703,7 +9714,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((t1 : 'ctyp)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              ((t1,t2) :'constrain )))))) )) ))] ))] )))) () )
         ));
       (Gram.extend ( (opt_eq_ctyp :'opt_eq_ctyp Gram.t  ) ) (
@@ -9712,12 +9723,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.TyNil (_loc) :'opt_eq_ctyp )) )) ));(( [`Skeyword
                                                                ("=");`Snterm
                                                                ((Gram.obj (
                                                                   (type_kind
-                                                                    :'type_kind
+                                                                    :
+                                                                    'type_kind
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -9729,9 +9741,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (tk
                                                                     :'opt_eq_ctyp
                                                                     )))) ))
@@ -9744,7 +9756,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'type_kind ))) )) ))]
+                     (fun ((_loc : FanLoc.t )) -> (t :'type_kind ))) )) ))]
                ))] )))) () ) ));
       (Gram.extend (
         (type_ident_and_parameters :'type_ident_and_parameters Gram.t  ) ) (
@@ -9755,17 +9767,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Slist0
                  (`Snterm
                  ((Gram.obj (
-                    (optional_type_parameter :'optional_type_parameter Gram.t
-                       ) ))))] ),(
+                    (optional_type_parameter
+                      :'optional_type_parameter Gram.t  ) ))))] ),(
                  (Gram.mk_action (
                    (fun ((tpl : 'optional_type_parameter list )) ->
                      (fun ((i : 'a_LIDENT)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((i,tpl) :'type_ident_and_parameters )))) )) ))] ))]
              )))) () ) ));
       (Gram.extend (
-        (type_longident_and_parameters :'type_longident_and_parameters Gram.t
-           ) ) (
+        (type_longident_and_parameters
+          :'type_longident_and_parameters Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
@@ -9776,7 +9788,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((tpl : 'type_parameters)) ->
                      (fun ((i : 'type_longident)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((tpl ( Ast.TyId ((_loc,i)) ))
                            :'type_longident_and_parameters )))) )) ))] ))] ))))
           () ) ));
@@ -9786,7 +9798,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      ((fun (t) -> t) :'type_parameters )) )) ));(( [`Snterm
                                                                  ((Gram.obj (
                                                                     (type_parameter
@@ -9800,9 +9812,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'type_parameter))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((fun
                                                                     (acc) ->
                                                                     Ast.TyApp
@@ -9815,7 +9827,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((t2 : 'type_parameters)) ->
                     (fun ((t1 : 'type_parameter)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         ((fun (acc) -> (t2 ( Ast.TyApp ((_loc,acc,t1)) )))
                           :'type_parameters )))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (type_parameter :'type_parameter Gram.t  ) ) (
@@ -9828,7 +9840,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((i : 'a_ident)) ->
                      (fun (_) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.TyQuM ((_loc,i)) :'type_parameter ))))) )) ));
                (( [`Skeyword ("+");`Skeyword ("'");`Snterm
                 ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )))] ),(
@@ -9836,14 +9848,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((i : 'a_ident)) ->
                     (fun (_) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyQuP ((_loc,i)) :'type_parameter ))))) )) ));
                (( [`Skeyword ("'");`Snterm
                 ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((i : 'a_ident)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyQuo ((_loc,i)) :'type_parameter )))) )) ));
                (( [`Stoken
                 ((( (function
@@ -9851,7 +9863,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.ctyp_tag)
                             :'type_parameter )
@@ -9868,7 +9880,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -9896,19 +9908,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("_")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyAny (_loc) :'optional_type_parameter ))) )) ));
                (( [`Skeyword ("-");`Skeyword ("_")] ),(
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyAnM (_loc) :'optional_type_parameter )))) ))
                 ));(( [`Skeyword ("+");`Skeyword ("_")] ),(
                     (Gram.mk_action (
                       (fun (_) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.TyAnP (_loc) :'optional_type_parameter ))))
                       )) ));(( [`Skeyword ("-");`Skeyword ("'");`Snterm
                              ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )))]
@@ -9917,7 +9929,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                (fun ((i : 'a_ident)) ->
                                  (fun (_) ->
                                    (fun (_) ->
-                                     (fun ((_loc :  FanLoc.t )) ->
+                                     (fun ((_loc : FanLoc.t )) ->
                                        (Ast.TyQuM ((_loc,i))
                                          :'optional_type_parameter ))))) ))
                              ));(( [`Skeyword ("+");`Skeyword ("'");`Snterm
@@ -9927,7 +9939,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                    (fun ((i : 'a_ident)) ->
                                      (fun (_) ->
                                        (fun (_) ->
-                                         (fun ((_loc :  FanLoc.t )) ->
+                                         (fun ((_loc : FanLoc.t )) ->
                                            (Ast.TyQuP ((_loc,i))
                                              :'optional_type_parameter )))))
                                    )) ));(( [`Skeyword ("'");`Snterm
@@ -9937,7 +9949,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                           (Gram.mk_action (
                                             (fun ((i : 'a_ident)) ->
                                               (fun (_) ->
-                                                (fun ((_loc :  FanLoc.t )) ->
+                                                (fun ((_loc : FanLoc.t )) ->
                                                   (Ast.TyQuo ((_loc,i))
                                                     :'optional_type_parameter
                                                     )))) )) ));(( [`Stoken
@@ -9956,10 +9968,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -9994,10 +10005,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -10026,7 +10036,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((t2 : 'ctyp)) ->
                      (fun (_) ->
                        (fun ((t1 : 'ctyp)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.TyMan ((_loc,t1,t2)) :'ctyp ))))) )) ))] ));
              (( Some ("private") ),( Some (`NA) ),(
               [(( [`Skeyword ("private");`Snterml
@@ -10034,7 +10044,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((t : 'ctyp)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyPrv ((_loc,t)) :'ctyp )))) )) ))] ));((
                                                                     Some
                                                                     ("alias")
@@ -10058,9 +10068,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'ctyp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyAli
                                                                     ((_loc,t1,t2))
                                                                     :'ctyp )))))
@@ -10074,7 +10084,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((t1 : 'typevars)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.TyPol ((_loc,t1,t2)) :'ctyp )))))) )) ))] ));
              (( Some ("arrow") ),( Some (`RA) ),(
               [(( [`Sself;`Skeyword ("->");`Sself] ),(
@@ -10082,7 +10092,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((t2 : 'ctyp)) ->
                     (fun (_) ->
                       (fun ((t1 : 'ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyArr ((_loc,t1,t2)) :'ctyp ))))) )) ))] ));
              (( Some ("label") ),( Some (`NA) ),(
               [(( [`Snterm
@@ -10091,7 +10101,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((t : 'ctyp)) ->
                     (fun ((i : 'a_OPTLABEL)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyOlb ((_loc,i,t)) :'ctyp )))) )) ));((
                                                                    [`Skeyword
                                                                    ("?");`Snterm
@@ -10118,9 +10128,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOlb
                                                                     ((_loc,i,t))
                                                                     :'ctyp ))))))
@@ -10130,7 +10140,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (Gram.mk_action (
                  (fun ((t : 'ctyp)) ->
                    (fun ((i : 'a_LABEL)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyLab ((_loc,i,t)) :'ctyp )))) )) ));((
                                                                   [`Skeyword
                                                                   ("~");`Snterm
@@ -10157,9 +10167,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyLab
                                                                     ((_loc,i,t))
                                                                     :'ctyp ))))))
@@ -10169,7 +10179,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((t2 : 'ctyp)) ->
                     (fun ((t1 : 'ctyp)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (let t = Ast.TyApp ((_loc,t1,t2)) in begin try
                            Ast.TyId ((_loc,( (Ast.ident_of_ctyp t) )))
                            with
@@ -10186,7 +10196,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((t1 : 'ctyp))
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (begin try
@@ -10206,7 +10216,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (raise (
                                                                     Stream.Error
                                                                     (s) ))
-                                                                end :'ctyp )))))
+                                                                end :
+                                                                  'ctyp )))))
                                                         )) ))] ));((
                                                                    Some
                                                                     ("simple")
@@ -10236,9 +10247,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyPkg
                                                                     ((_loc,p))
                                                                     :'ctyp ))))))
@@ -10266,12 +10277,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (t :'ctyp
-                                                                    ))))) ))
-                                                                    ));
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (t :
+                                                                    'ctyp )))))
+                                                                    )) ));
                                                                    ((
                                                                     [`Skeyword
                                                                     ("#");`Snterm
@@ -10291,9 +10302,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyCls
                                                                     ((_loc,i))
                                                                     :'ctyp ))))
@@ -10321,9 +10332,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyRec
                                                                     ((_loc,t))
                                                                     :'ctyp )))))
@@ -10365,9 +10376,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnInfSup
                                                                     ((_loc,rfl,ntl))
                                                                     :'ctyp )))))))
@@ -10395,9 +10406,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnInf
                                                                     ((_loc,rfl))
                                                                     :'ctyp )))))
@@ -10442,9 +10453,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnInfSup
                                                                     ((_loc,rfl,ntl))
                                                                     :'ctyp ))))))))
@@ -10475,9 +10486,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnInf
                                                                     ((_loc,rfl))
                                                                     :'ctyp ))))))
@@ -10508,9 +10519,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnSup
                                                                     ((_loc,rfl))
                                                                     :'ctyp ))))))
@@ -10530,9 +10541,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnSup
                                                                     ((_loc,(
                                                                     Ast.TyNil
@@ -10565,9 +10576,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrnEq
                                                                     ((_loc,rfl))
                                                                     :'ctyp ))))))
@@ -10595,9 +10606,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TySum
                                                                     ((_loc,t))
                                                                     :'ctyp )))))
@@ -10614,9 +10625,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TySum
                                                                     ((_loc,(
                                                                     Ast.TyNil
@@ -10639,12 +10650,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (t :'ctyp
-                                                                    ))))) ))
-                                                                    ));
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
+                                                                    (t :
+                                                                    'ctyp )))))
+                                                                    )) ));
                                                                    ((
                                                                     [`Skeyword
                                                                     ("(");`Sself;`Skeyword
@@ -10675,9 +10686,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyTup
                                                                     ((_loc,(
                                                                     Ast.TySta
@@ -10701,9 +10712,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyId
                                                                     ((_loc,(
                                                                     Ast.IdUid
@@ -10727,9 +10738,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_LIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyId
                                                                     ((_loc,(
                                                                     Ast.IdLid
@@ -10756,10 +10767,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -10794,10 +10804,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -10838,10 +10847,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -10883,10 +10891,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -10914,9 +10921,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyAny
                                                                     (_loc)
                                                                     :'ctyp )))
@@ -10940,9 +10947,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyQuo
                                                                     ((_loc,i))
                                                                     :'ctyp ))))
@@ -10955,13 +10962,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'star_ctyp ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (t :'star_ctyp ))) )) ));
                (( [`Sself;`Skeyword ("*");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((t2 : 'star_ctyp)) ->
                     (fun (_) ->
                       (fun ((t1 : 'star_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TySta ((_loc,t1,t2)) :'star_ctyp ))))) )) ));
                (( [`Stoken
                 (((
@@ -10971,7 +10978,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp*" n s) )))
                             :'star_ctyp )
@@ -10988,7 +10995,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -11018,18 +11025,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((s : 'a_UIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyId ((_loc,( Ast.IdUid ((_loc,s)) )))
                          :'constructor_declarations ))) )) ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (a_UIDENT
-                                                                    :'a_UIDENT
+                                                                    :
+                                                                    'a_UIDENT
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                (":");`Snterm
                                                                ((Gram.obj (
                                                                   (ctyp
-                                                                    :'ctyp
+                                                                    :
+                                                                    'ctyp
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -11045,9 +11054,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (let 
                                                                     (tl,rt) =
                                                                     (Ctyp.to_generalized
@@ -11093,9 +11102,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOf
                                                                     ((_loc,(
                                                                     Ast.TyId
@@ -11111,7 +11120,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((t2 : 'constructor_declarations)) ->
                     (fun (_) ->
                       (fun ((t1 : 'constructor_declarations)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyOr ((_loc,t1,t2)) :'constructor_declarations
                             ))))) )) ));(( [`Stoken
                                          (((
@@ -11122,7 +11131,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                          ),(
                                          (Gram.mk_action (
                                            (fun (__camlp4_0) ->
-                                             (fun ((_loc :  FanLoc.t )) ->
+                                             (fun ((_loc : FanLoc.t )) ->
                                                begin match __camlp4_0 with
                                                | (`QUOTATION x) ->
                                                    ((Quotation.expand _loc x
@@ -11140,8 +11149,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                              ),(
                                              (Gram.mk_action (
                                                (fun (__camlp4_0) ->
-                                                 (fun ((_loc :  FanLoc.t ))
-                                                   -> begin match __camlp4_0
+                                                 (fun ((_loc : FanLoc.t )) ->
+                                                   begin match __camlp4_0
                                                    with
                                                    | (`ANTIQUOT
                                                        (("list" as n),s))
@@ -11166,7 +11175,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                       (Gram.mk_action (
                                                         (fun (__camlp4_0) ->
                                                           (fun
-                                                            ((_loc : 
+                                                            ((_loc :
                                                                FanLoc.t )) ->
                                                             begin match
                                                             __camlp4_0 with
@@ -11194,19 +11203,19 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((s : 'a_UIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyId ((_loc,( Ast.IdUid ((_loc,s)) )))
                          :'constructor_declaration ))) )) ));(( [`Snterm
                                                               ((Gram.obj (
                                                                  (a_UIDENT
                                                                    :'a_UIDENT
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               ("of");`Snterm
                                                               ((Gram.obj (
                                                                  (constructor_arg_list
                                                                    :'constructor_arg_list
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -11220,9 +11229,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOf
                                                                     ((_loc,(
                                                                     Ast.TyId
@@ -11249,10 +11258,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -11276,7 +11284,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   ),(`Normal,"(`ANTIQUOT ((\"\"|\"typ\"),_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"typ") as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp" n s) )))
                             :'constructor_declaration )
@@ -11289,7 +11297,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (t :'constructor_arg_list ))) )) ));((
                                                             [`Sself;`Skeyword
                                                             ("and");`Sself]
@@ -11306,9 +11314,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'constructor_arg_list))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyAnd
                                                                     ((_loc,t1,t2))
                                                                     :'constructor_arg_list
@@ -11330,10 +11338,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -11364,11 +11371,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (label_declaration :'label_declaration Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t1 : 'label_declaration)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (t1 :'label_declaration_list ))) )) ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (label_declaration
-                                                                    :'label_declaration
+                                                                    :
+                                                                    'label_declaration
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                (";")] ),(
@@ -11380,9 +11388,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_declaration))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (t1
                                                                     :'label_declaration_list
                                                                     )))) ))
@@ -11408,9 +11416,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_declaration))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TySem
                                                                     ((_loc,t1,t2))
                                                                     :'label_declaration_list
@@ -11430,7 +11438,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun (_) ->
                          (fun ((s : 'a_LIDENT)) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.TyCol
                                 ((_loc,(
                                   Ast.TyId ((_loc,( Ast.IdLid ((_loc,s)) )))
@@ -11460,9 +11468,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_LIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyCol
                                                                     ((_loc,(
                                                                     Ast.TyId
@@ -11489,10 +11497,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -11516,7 +11523,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp;" n s) )))
                             :'label_declaration )
@@ -11533,7 +11540,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -11562,12 +11569,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_UIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (i :'a_ident ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (i :'a_ident ))) )) ));
                (( [`Snterm ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )))]
                 ),(
                 (Gram.mk_action (
                   (fun ((i : 'a_LIDENT)) ->
-                    (fun ((_loc :  FanLoc.t )) -> (i :'a_ident ))) )) ))] ))]
+                    (fun ((_loc : FanLoc.t )) -> (i :'a_ident ))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (ident :'ident Gram.t  ) ) (
         (((fun (() ) ->
@@ -11580,7 +11587,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((j : 'ident)) ->
                      (fun (_) ->
                        (fun ((i : 'a_UIDENT)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.IdAcc ((_loc,( Ast.IdUid ((_loc,i)) ),j))
                              :'ident ))))) )) ));(( [`Stoken
                                                   (((
@@ -11596,7 +11603,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                       (fun (_) ->
                                                         (fun (__camlp4_0) ->
                                                           (fun
-                                                            ((_loc : 
+                                                            ((_loc :
                                                                FanLoc.t )) ->
                                                             begin match
                                                             __camlp4_0 with
@@ -11620,11 +11627,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun ((i : 'a_LIDENT)) ->
-                    (fun ((_loc :  FanLoc.t )) ->
+                    (fun ((_loc : FanLoc.t )) ->
                       (Ast.IdLid ((_loc,i)) :'ident ))) )) ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (a_UIDENT
-                                                                    :'a_UIDENT
+                                                                    :
+                                                                    'a_UIDENT
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -11634,9 +11642,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.IdUid
                                                                     ((_loc,i))
                                                                     :'ident )))
@@ -11650,7 +11658,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"id"|"anti"|"list") as n),s)) ->
                           (Ast.IdAnt ((_loc,( (mk_anti ~c:"ident" n s) )))
                             :'ident )
@@ -11663,7 +11671,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_UIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.IdUid ((_loc,i)) :'module_longident ))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
@@ -11672,7 +11680,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((l : 'module_longident)) ->
                     (fun (_) ->
                       (fun ((m : 'a_UIDENT)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.IdAcc ((_loc,( Ast.IdUid ((_loc,m)) ),l))
                             :'module_longident ))))) )) ));(( [`Stoken
                                                             (((
@@ -11688,10 +11696,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (__camlp4_0)
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`ANTIQUOT
@@ -11719,7 +11727,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((j : 'module_longident_with_app)) ->
                      (fun ((i : 'module_longident_with_app)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.IdApp ((_loc,i,j)) :'module_longident_with_app
                            )))) )) ))] ));(( Some (".") ),None ,(
                                            [(( [`Sself;`Skeyword
@@ -11735,7 +11743,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                         'module_longident_with_app))
                                                      ->
                                                      (fun
-                                                       ((_loc :  FanLoc.t ))
+                                                       ((_loc : FanLoc.t ))
                                                        ->
                                                        (Ast.IdAcc
                                                           ((_loc,i,j))
@@ -11747,13 +11755,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun ((i : 'module_longident_with_app)) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (i :'module_longident_with_app ))))) )) ));
               (( [`Snterm ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )))]
                ),(
                (Gram.mk_action (
                  (fun ((i : 'a_UIDENT)) ->
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.IdUid ((_loc,i)) :'module_longident_with_app ))) ))
                ));(( [`Stoken
                    (((
@@ -11764,7 +11772,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    ),(
                    (Gram.mk_action (
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`ANTIQUOT (((""|"id"|"anti"|"list") as n),s)) ->
                              (Ast.IdAnt ((_loc,( (mk_anti ~c:"ident" n s) )))
@@ -11783,7 +11791,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun (_) ->
                      (fun (_) ->
                        (fun ((i : 'a_UIDENT)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.IdUid ((_loc,i))
                              :'module_longident_dot_lparen ))))) )) ));
                (( [`Snterm
@@ -11793,7 +11801,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((l : 'module_longident_dot_lparen)) ->
                     (fun (_) ->
                       (fun ((m : 'a_UIDENT)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.IdAcc ((_loc,( Ast.IdUid ((_loc,m)) ),l))
                             :'module_longident_dot_lparen ))))) )) ));
                (( [`Stoken
@@ -11807,7 +11815,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun (_) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (((""|"id"|"anti"|"list") as n),s)) ->
                               (Ast.IdAnt
@@ -11823,7 +11831,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((j : 'type_longident)) ->
                      (fun ((i : 'type_longident)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.IdApp ((_loc,i,j)) :'type_longident )))) )) ))]
                ));(( Some (".") ),None ,(
                    [(( [`Sself;`Skeyword (".");`Sself] ),(
@@ -11831,7 +11839,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun ((j : 'type_longident)) ->
                          (fun (_) ->
                            (fun ((i : 'type_longident)) ->
-                             (fun ((_loc :  FanLoc.t )) ->
+                             (fun ((_loc : FanLoc.t )) ->
                                (Ast.IdAcc ((_loc,i,j)) :'type_longident )))))
                        )) ))] ));(( Some ("simple") ),None ,(
                                   [(( [`Skeyword ("(");`Sself;`Skeyword
@@ -11840,14 +11848,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                       (fun (_) ->
                                         (fun ((i : 'type_longident)) ->
                                           (fun (_) ->
-                                            (fun ((_loc :  FanLoc.t )) ->
+                                            (fun ((_loc : FanLoc.t )) ->
                                               (i :'type_longident ))))) )) ));
                                   (( [`Snterm
                                    ((Gram.obj (
                                       (a_UIDENT :'a_UIDENT Gram.t  ) )))] ),(
                                    (Gram.mk_action (
                                      (fun ((i : 'a_UIDENT)) ->
-                                       (fun ((_loc :  FanLoc.t )) ->
+                                       (fun ((_loc : FanLoc.t )) ->
                                          (Ast.IdUid ((_loc,i))
                                            :'type_longident ))) )) ));
                                   (( [`Snterm
@@ -11855,7 +11863,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                       (a_LIDENT :'a_LIDENT Gram.t  ) )))] ),(
                                    (Gram.mk_action (
                                      (fun ((i : 'a_LIDENT)) ->
-                                       (fun ((_loc :  FanLoc.t )) ->
+                                       (fun ((_loc : FanLoc.t )) ->
                                          (Ast.IdLid ((_loc,i))
                                            :'type_longident ))) )) ));
                                   (( [`Stoken
@@ -11869,7 +11877,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                    ),(
                                    (Gram.mk_action (
                                      (fun (__camlp4_0) ->
-                                       (fun ((_loc :  FanLoc.t )) -> begin
+                                       (fun ((_loc : FanLoc.t )) -> begin
                                          match __camlp4_0 with
                                          | (`ANTIQUOT
                                              (((""|"id"|"anti"|"list") as n),s))
@@ -11888,7 +11896,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_LIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.IdLid ((_loc,i)) :'label_longident ))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
@@ -11897,7 +11905,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((l : 'label_longident)) ->
                     (fun (_) ->
                       (fun ((m : 'a_UIDENT)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.IdAcc ((_loc,( Ast.IdUid ((_loc,m)) ),l))
                             :'label_longident ))))) )) ));(( [`Stoken
                                                            (((
@@ -11913,10 +11921,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                (__camlp4_0)
                                                                ->
                                                                (fun
-                                                                 ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                 begin match
+                                                                 ((_loc :
+                                                                    FanLoc.t ))
+                                                                 -> begin
+                                                                 match
                                                                  __camlp4_0
                                                                  with
                                                                  | (`ANTIQUOT
@@ -11945,7 +11953,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'type_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (x :'class_type_longident ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (val_longident :'val_longident Gram.t  ) ) (
         (((fun (() ) ->
@@ -11954,7 +11962,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ident :'ident Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'ident)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'val_longident ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (x :'val_longident ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (class_longident :'class_longident Gram.t  ) ) (
         (((fun (() ) ->
@@ -11965,22 +11973,22 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'label_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'class_longident )))
-                   )) ))] ))] )))) () ) ));
+                     (fun ((_loc : FanLoc.t )) -> (x :'class_longident ))) ))
+                 ))] ))] )))) () ) ));
       (Gram.extend ( (class_declaration :'class_declaration Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,( Some (`LA) ),(
                [(( [`Snterm
                  ((Gram.obj (
-                    (class_info_for_class_expr :'class_info_for_class_expr
-                      Gram.t  ) )));`Snterm
+                    (class_info_for_class_expr
+                      :'class_info_for_class_expr Gram.t  ) )));`Snterm
                  ((Gram.obj (
                     (class_fun_binding :'class_fun_binding Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((ce : 'class_fun_binding)) ->
                      (fun ((ci : 'class_info_for_class_expr)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.CeEq ((_loc,ci,ce)) :'class_declaration )))) ))
                  ));(( [`Stoken
                      ((( (function
@@ -11988,7 +11996,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                      (Gram.mk_action (
                        (fun (__camlp4_0) ->
-                         (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                         (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                            with
                            | (`QUOTATION x) ->
                                ((Quotation.expand _loc x
@@ -12012,10 +12020,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -12051,9 +12058,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_declaration))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeAnd
                                                                     ((_loc,c1,c2))
                                                                     :'class_declaration
@@ -12070,7 +12077,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((cfb : 'class_fun_binding)) ->
                      (fun ((p : 'labeled_ipatt)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.CeFun ((_loc,p,cfb)) :'class_fun_binding ))))
                    )) ));(( [`Skeyword (":");`Snterm
                           ((Gram.obj (
@@ -12083,7 +12090,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                               (fun (_) ->
                                 (fun ((ct : 'class_type_plus)) ->
                                   (fun (_) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.CeTyc ((_loc,ce,ct))
                                         :'class_fun_binding )))))) )) ));
                (( [`Skeyword ("=");`Snterm
@@ -12091,8 +12098,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((ce : 'class_expr)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
-                        (ce :'class_fun_binding )))) )) ))] ))] )))) () ) ));
+                      (fun ((_loc : FanLoc.t )) -> (ce :'class_fun_binding ))))
+                  )) ))] ))] )))) () ) ));
       (Gram.extend (
         (class_info_for_class_type :'class_info_for_class_type Gram.t  ) ) (
         (((fun (() ) ->
@@ -12106,7 +12113,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (((i,ot) : 'class_name_and_param)) ->
                      (fun ((mv : 'opt_virtual)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.CtCon ((_loc,mv,( Ast.IdLid ((_loc,i)) ),ot))
                            :'class_info_for_class_type )))) )) ))] ))] ))))
           () ) ));
@@ -12123,7 +12130,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (((i,ot) : 'class_name_and_param)) ->
                      (fun ((mv : 'opt_virtual)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.CeCon ((_loc,mv,( Ast.IdLid ((_loc,i)) ),ot))
                            :'class_info_for_class_expr )))) )) ))] ))] ))))
           () ) ));
@@ -12136,20 +12143,21 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_LIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((i,( Ast.TyNil (_loc) )) :'class_name_and_param )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Skeyword
                           ("[");`Snterm
                           ((Gram.obj (
-                             (comma_type_parameter :'comma_type_parameter
-                               Gram.t  ) )));`Skeyword ("]")] ),(
+                             (comma_type_parameter
+                               :'comma_type_parameter Gram.t  ) )));`Skeyword
+                          ("]")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
                               (fun ((x : 'comma_type_parameter)) ->
                                 (fun (_) ->
                                   (fun ((i : 'a_LIDENT)) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       ((i,x) :'class_name_and_param )))))) ))
                           ))] ))] )))) () ) ));
       (Gram.extend ( (comma_type_parameter :'comma_type_parameter Gram.t  ) )
@@ -12162,7 +12170,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((t : 'type_parameter)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (t :'comma_type_parameter ))) )) ));(( [`Stoken
                                                             (((
                                                               (function
@@ -12177,10 +12185,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (__camlp4_0)
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`ANTIQUOT
@@ -12203,7 +12211,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((t2 : 'comma_type_parameter)) ->
                     (fun (_) ->
                       (fun ((t1 : 'comma_type_parameter)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyCom ((_loc,t1,t2)) :'comma_type_parameter )))))
                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (opt_comma_ctyp :'opt_comma_ctyp Gram.t  ) ) (
@@ -12212,7 +12220,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.TyNil (_loc) :'opt_comma_ctyp )) )) ));((
                                                                   [`Skeyword
                                                                   ("[");`Snterm
@@ -12234,9 +12242,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'opt_comma_ctyp
                                                                     ))))) ))
@@ -12249,7 +12257,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'comma_ctyp ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (t :'comma_ctyp ))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -12258,7 +12266,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp," n s) )))
                             :'comma_ctyp )
@@ -12275,9 +12283,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'comma_ctyp))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.TyCom
                                                                     ((_loc,t1,t2))
                                                                     :'comma_ctyp
@@ -12292,7 +12300,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((ce : 'class_expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) -> (ce :'class_fun_def ))))
+                       (fun ((_loc : FanLoc.t )) -> (ce :'class_fun_def ))))
                    )) ));(( [`Snterm
                           ((Gram.obj (
                              (labeled_ipatt :'labeled_ipatt Gram.t  ) )));`Sself]
@@ -12300,7 +12308,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           (Gram.mk_action (
                             (fun ((ce : 'class_fun_def)) ->
                               (fun ((p : 'labeled_ipatt)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (Ast.CeFun ((_loc,p,ce)) :'class_fun_def ))))
                             )) ))] ))] )))) () ) ));
       (Gram.extend ( (class_expr :'class_expr Gram.t  ) ) (
@@ -12317,7 +12325,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (fun ((bi : 'binding)) ->
                          (fun ((rf : 'opt_rec)) ->
                            (fun (_) ->
-                             (fun ((_loc :  FanLoc.t )) ->
+                             (fun ((_loc : FanLoc.t )) ->
                                (Ast.CeLet ((_loc,rf,bi,ce)) :'class_expr )))))))
                    )) ));(( [`Skeyword ("fun");`Snterm
                           ((Gram.obj (
@@ -12329,7 +12337,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                             (fun ((ce : 'class_fun_def)) ->
                               (fun ((p : 'labeled_ipatt)) ->
                                 (fun (_) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
+                                  (fun ((_loc : FanLoc.t )) ->
                                     (Ast.CeFun ((_loc,p,ce)) :'class_expr )))))
                             )) ))] ));(( Some ("apply") ),( Some (`NA) ),(
                                        [(( [`Sself;`Snterml
@@ -12339,7 +12347,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                          (Gram.mk_action (
                                            (fun ((e : 'expr)) ->
                                              (fun ((ce : 'class_expr)) ->
-                                               (fun ((_loc :  FanLoc.t )) ->
+                                               (fun ((_loc : FanLoc.t )) ->
                                                  (Ast.CeApp ((_loc,ce,e))
                                                    :'class_expr )))) )) ))]
                                        ));(( Some ("simple") ),None ,(
@@ -12351,7 +12359,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                  (fun ((ce : 'class_expr)) ->
                                                    (fun (_) ->
                                                      (fun
-                                                       ((_loc :  FanLoc.t ))
+                                                       ((_loc : FanLoc.t ))
                                                        -> (ce :'class_expr )))))
                                                )) ));(( [`Skeyword
                                                       ("(");`Sself;`Skeyword
@@ -12359,7 +12367,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                       ((Gram.obj (
                                                          (class_type
                                                            :'class_type
-                                                           Gram.t  ) )));`Skeyword
+                                                              Gram.t  ) )));`Skeyword
                                                       (")")] ),(
                                                       (Gram.mk_action (
                                                         (fun (_) ->
@@ -12375,9 +12383,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeTyc
                                                                     ((_loc,ce,ct))
                                                                     :'class_expr
@@ -12386,12 +12394,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ("object");`Snterm
                                                                ((Gram.obj (
                                                                   (opt_class_self_patt
-                                                                    :'opt_class_self_patt
+                                                                    :
+                                                                    'opt_class_self_patt
                                                                     Gram.t  )
                                                                   )));`Snterm
                                                                ((Gram.obj (
                                                                   (class_structure
-                                                                    :'class_structure
+                                                                    :
+                                                                    'class_structure
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                ("end")] ),(
@@ -12409,9 +12419,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeStr
                                                                     ((_loc,csp,cst))
                                                                     :'class_expr
@@ -12430,9 +12440,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_longident_and_param))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (ce
                                                                     :'class_expr
                                                                     ))) )) ));
@@ -12445,7 +12455,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                             ),(
                                             (Gram.mk_action (
                                               (fun (__camlp4_0) ->
-                                                (fun ((_loc :  FanLoc.t )) ->
+                                                (fun ((_loc : FanLoc.t )) ->
                                                   begin match __camlp4_0 with
                                                   | (`QUOTATION x) ->
                                                       ((Quotation.expand _loc
@@ -12465,10 +12475,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                      (Gram.mk_action (
                                                        (fun (__camlp4_0) ->
                                                          (fun
-                                                           ((_loc :  FanLoc.t
-                                                              )) -> begin
-                                                           match __camlp4_0
-                                                           with
+                                                           ((_loc :
+                                                              FanLoc.t )) ->
+                                                           begin match
+                                                           __camlp4_0 with
                                                            | (`ANTIQUOT
                                                                (((""|"cexp"|"anti")
                                                                   as n),s))
@@ -12494,7 +12504,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((ci : 'class_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.CeCon ((_loc,Ast.ViNil ,ci,( Ast.TyNil (_loc) )))
                          :'class_longident_and_param ))) )) ));(( [`Snterm
                                                                 ((Gram.obj (
@@ -12523,9 +12533,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_longident))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeCon
                                                                     ((_loc,Ast.ViNil
                                                                     ,ci,t))
@@ -12546,11 +12556,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((cst : 'class_str_item)) ->
-                            (fun ((_loc :  FanLoc.t )) -> (cst :'e__22 ))))
-                        )) ))] )))] ),(
+                            (fun ((_loc : FanLoc.t )) -> (cst :'e__22 )))) ))
+                      ))] )))] ),(
                  (Gram.mk_action (
                    (fun ((l : 'e__22 list )) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Ast.crSem_of_list l) :'class_structure ))) )) ));
                (( [`Stoken
                 (((
@@ -12563,7 +12573,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((cst : 'class_structure)) ->
                     (fun (_) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (((""|"cst"|"anti"|"list") as n),s))
                             ->
@@ -12590,10 +12600,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (__camlp4_0)
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -12620,7 +12629,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.PaNil (_loc) :'opt_class_self_patt )) )) ));
                (( [`Skeyword ("(");`Snterm
                 ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
@@ -12632,7 +12641,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((p : 'patt)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.PaTyc ((_loc,p,t)) :'opt_class_self_patt )))))))
                   )) ));(( [`Skeyword ("(");`Snterm
                          ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
@@ -12641,7 +12650,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                            (fun (_) ->
                              (fun ((p : 'patt)) ->
                                (fun (_) ->
-                                 (fun ((_loc :  FanLoc.t )) ->
+                                 (fun ((_loc : FanLoc.t )) ->
                                    (p :'opt_class_self_patt ))))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (class_str_item :'class_str_item Gram.t  ) ) (
@@ -12653,7 +12662,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((se : 'expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.CrIni ((_loc,se)) :'class_str_item )))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (type_constraint :'type_constraint Gram.t  ) )));`Snterm
@@ -12664,12 +12673,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((t1 : 'ctyp)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.CrCtr ((_loc,t1,t2)) :'class_str_item ))))))
                   )) ));(( [`Snterm
                          ((Gram.obj (
-                            (method_opt_override :'method_opt_override Gram.t
-                               ) )));`Snterm
+                            (method_opt_override
+                              :'method_opt_override Gram.t  ) )));`Snterm
                          ((Gram.obj ( (opt_private :'opt_private Gram.t  ) )));`Skeyword
                          ("virtual");`Snterm
                          ((Gram.obj ( (label :'label Gram.t  ) )));`Skeyword
@@ -12683,7 +12692,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                  (fun (_) ->
                                    (fun ((pf : 'opt_private)) ->
                                      (fun ((o : 'method_opt_override)) ->
-                                       (fun ((_loc :  FanLoc.t )) ->
+                                       (fun ((_loc : FanLoc.t )) ->
                                          (if (o <> Ast.OvNil ) then begin
                                             (raise (
                                               Stream.Error
@@ -12705,7 +12714,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((l : 'label)) ->
                         (fun ((pf : 'opt_private)) ->
                           (fun ((o : 'method_opt_override)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.CrMth ((_loc,l,o,pf,e,topt))
                                 :'class_str_item ))))))) )) ));(( [`Snterm
                                                                 ((Gram.obj (
@@ -12754,9 +12763,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'method_opt_override))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (if
                                                                      (o <>
                                                                     Ast.OvNil
@@ -12788,7 +12797,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((mf : 'opt_mutable)) ->
                           (fun (_) ->
                             (fun ((o : 'value_val_opt_override)) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (if (o <> Ast.OvNil ) then begin
                                    (raise (
                                      Stream.Error
@@ -12813,7 +12822,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun (_) ->
                           (fun ((mf : 'opt_mutable)) ->
                             (fun ((o : 'value_val_opt_override)) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (if (o <> Ast.OvNil ) then begin
                                    (raise (
                                      Stream.Error
@@ -12835,7 +12844,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun ((lab : 'label)) ->
                       (fun ((mf : 'opt_mutable)) ->
                         (fun ((o : 'value_val_opt_override)) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.CrVal ((_loc,lab,o,mf,e)) :'class_str_item ))))))
                   )) ));(( [`Skeyword ("inherit");`Snterm
                          ((Gram.obj ( (opt_override :'opt_override Gram.t  )
@@ -12848,7 +12857,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                              (fun ((ce : 'class_expr)) ->
                                (fun ((o : 'opt_override)) ->
                                  (fun (_) ->
-                                   (fun ((_loc :  FanLoc.t )) ->
+                                   (fun ((_loc : FanLoc.t )) ->
                                      (Ast.CrInh ((_loc,o,ce,pb))
                                        :'class_str_item )))))) )) ));
                (( [`Stoken
@@ -12857,7 +12866,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x
                              DynAst.class_str_item_tag) :'class_str_item )
@@ -12874,7 +12883,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -12902,7 +12911,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("method")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.OvNil :'method_opt_override ))) )) ));((
                                                                    [`Skeyword
                                                                    ("method");`Stoken
@@ -12925,10 +12934,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -12950,7 +12958,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.OvOverride :'method_opt_override )))) )) ))] ))]
              )))) () ) ));
       (Gram.extend (
@@ -12961,7 +12969,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("val")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.OvNil :'value_val_opt_override ))) )) ));
                (( [`Skeyword ("val");`Stoken
                 (((
@@ -12973,7 +12981,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                      (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                         with
                         | (`ANTIQUOT ((("!"|"override"|"anti") as n),s)) ->
                             (Ast.OvAnt ((mk_anti n s))
@@ -12986,9 +12994,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.OvOverride
                                                                     :'value_val_opt_override
                                                                     )))) ))
@@ -13000,27 +13008,27 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> ("" :'opt_as_lident )) )) ));
+                   (fun ((_loc : FanLoc.t )) -> ("" :'opt_as_lident )) )) ));
                (( [`Skeyword ("as");`Snterm
                 ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((i : 'a_LIDENT)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) -> (i :'opt_as_lident ))))
-                  )) ))] ))] )))) () ) ));
+                      (fun ((_loc : FanLoc.t )) -> (i :'opt_as_lident )))) ))
+                ))] ))] )))) () ) ));
       (Gram.extend ( (opt_polyt :'opt_polyt Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.TyNil (_loc) :'opt_polyt )) )) ));(( [`Skeyword
                                                              (":");`Snterm
                                                              ((Gram.obj (
                                                                 (poly_type
                                                                   :'poly_type
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -13030,9 +13038,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  ->
                                                                  (fun (_) ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (t
                                                                     :'opt_polyt
                                                                     )))) ))
@@ -13050,24 +13058,26 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((t : 'ctyp)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.ExCoe ((_loc,e,( Ast.TyNil (_loc) ),t))
                                :'cvalue_binding )))))) )) ));(( [`Skeyword
                                                               (":");`Snterm
                                                               ((Gram.obj (
                                                                  (poly_type
                                                                    :'poly_type
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               (":>");`Snterm
                                                               ((Gram.obj (
-                                                                 (ctyp :'ctyp
-                                                                   Gram.t  )
+                                                                 (ctyp
+                                                                   :'ctyp
+                                                                    Gram.t  )
                                                                  )));`Skeyword
                                                               ("=");`Snterm
                                                               ((Gram.obj (
-                                                                 (expr :'expr
-                                                                   Gram.t  )
+                                                                 (expr
+                                                                   :'expr
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -13089,9 +13099,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (begin
                                                                     match t
                                                                     with
@@ -13118,7 +13128,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((t : 'poly_type)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.ExTyc ((_loc,e,t)) :'cvalue_binding ))))))
                   )) ));(( [`Skeyword (":");`Skeyword ("type");`Snterm
                          ((Gram.obj (
@@ -13135,7 +13145,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                    (fun ((t1 : 'unquoted_typevars)) ->
                                      (fun (_) ->
                                        (fun (_) ->
-                                         (fun ((_loc :  FanLoc.t )) ->
+                                         (fun ((_loc : FanLoc.t )) ->
                                            (let u =
                                               Ast.TyPol ((_loc,t1,t2)) in
                                             Ast.ExTyc ((_loc,e,u))
@@ -13145,7 +13155,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((e : 'expr)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) -> (e :'cvalue_binding ))))
+                      (fun ((_loc : FanLoc.t )) -> (e :'cvalue_binding ))))
                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (label :'label Gram.t  ) ) (
         (((fun (() ) ->
@@ -13155,7 +13165,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_LIDENT)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (i :'label ))) )) ))] ))]
+                     (fun ((_loc : FanLoc.t )) -> (i :'label ))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (class_type :'class_type Gram.t  ) ) (
         (((fun (() ) ->
@@ -13171,7 +13181,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun ((csg : 'class_signature)) ->
                        (fun ((cst : 'opt_class_self_type)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.CtSig ((_loc,cst,csg)) :'class_type ))))))
                    )) ));(( [`Snterm
                           ((Gram.obj (
@@ -13180,7 +13190,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun ((ct : 'class_type_longident_and_param)) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (ct :'class_type ))) )) ));(( [`Stoken
                                                             (((
                                                               (function
@@ -13195,10 +13205,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (__camlp4_0)
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`QUOTATION
@@ -13221,15 +13231,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"ctyp"|"anti") as n),s)) ->
                           (Ast.CtAnt
                              ((_loc,( (mk_anti ~c:"class_type" n s) )))
                             :'class_type )
                       | _ ->   assert false end)) )) ))] ))] )))) () ) ));
       (Gram.extend (
-        (class_type_longident_and_param :'class_type_longident_and_param
-          Gram.t  ) ) (
+        (class_type_longident_and_param
+          :'class_type_longident_and_param Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
@@ -13239,7 +13249,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'class_type_longident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.CtCon ((_loc,Ast.ViNil ,i,( Ast.TyNil (_loc) )))
                          :'class_type_longident_and_param ))) )) ));((
                                                                     [`Snterm
@@ -13273,9 +13283,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_type_longident))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CtCon
                                                                     ((_loc,Ast.ViNil
                                                                     ,i,t))
@@ -13291,7 +13301,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (class_type :'class_type Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((ct : 'class_type)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (ct :'class_type_plus )))
+                     (fun ((_loc : FanLoc.t )) -> (ct :'class_type_plus )))
                    )) ));(( [`Skeyword ("[");`Snterm
                           ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )));`Skeyword
                           ("]");`Skeyword ("->");`Sself] ),(
@@ -13301,7 +13311,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                 (fun (_) ->
                                   (fun ((t : 'ctyp)) ->
                                     (fun (_) ->
-                                      (fun ((_loc :  FanLoc.t )) ->
+                                      (fun ((_loc : FanLoc.t )) ->
                                         (Ast.CtFun ((_loc,t,ct))
                                           :'class_type_plus ))))))) )) ))] ))]
              )))) () ) ));
@@ -13311,7 +13321,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.TyNil (_loc) :'opt_class_self_type )) )) ));
                (( [`Skeyword ("(");`Snterm
                 ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )));`Skeyword (")")] ),(
@@ -13319,7 +13329,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun (_) ->
                     (fun ((t : 'ctyp)) ->
                       (fun (_) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (t :'opt_class_self_type ))))) )) ))] ))] )))) () )
         ));
       (Gram.extend ( (class_signature :'class_signature Gram.t  ) ) (
@@ -13335,11 +13345,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((csg : 'class_sig_item)) ->
-                            (fun ((_loc :  FanLoc.t )) -> (csg :'e__23 ))))
-                        )) ))] )))] ),(
+                            (fun ((_loc : FanLoc.t )) -> (csg :'e__23 )))) ))
+                      ))] )))] ),(
                  (Gram.mk_action (
                    (fun ((l : 'e__23 list )) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Ast.cgSem_of_list l) :'class_signature ))) )) ));
                (( [`Stoken
                 (((
@@ -13352,7 +13362,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((csg : 'class_signature)) ->
                     (fun (_) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (((""|"csg"|"anti"|"list") as n),s))
                             ->
@@ -13379,10 +13389,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (__camlp4_0)
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -13416,7 +13425,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      (fun (_) ->
                        (fun ((t1 : 'ctyp)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) ->
+                           (fun ((_loc : FanLoc.t )) ->
                              (Ast.CgCtr ((_loc,t1,t2)) :'class_sig_item ))))))
                    )) ));(( [`Skeyword ("method");`Snterm
                           ((Gram.obj ( (opt_private :'opt_private Gram.t  )
@@ -13432,7 +13441,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                   (fun (_) ->
                                     (fun ((pf : 'opt_private)) ->
                                       (fun (_) ->
-                                        (fun ((_loc :  FanLoc.t )) ->
+                                        (fun ((_loc : FanLoc.t )) ->
                                           (Ast.CgVir ((_loc,l,pf,t))
                                             :'class_sig_item )))))))) )) ));
                (( [`Skeyword ("method");`Snterm
@@ -13446,7 +13455,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((l : 'label)) ->
                         (fun ((pf : 'opt_private)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.CgMth ((_loc,l,pf,t)) :'class_sig_item )))))))
                   )) ));(( [`Skeyword ("method");`Skeyword
                          ("virtual");`Snterm
@@ -13462,7 +13471,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                  (fun ((pf : 'opt_private)) ->
                                    (fun (_) ->
                                      (fun (_) ->
-                                       (fun ((_loc :  FanLoc.t )) ->
+                                       (fun ((_loc : FanLoc.t )) ->
                                          (Ast.CgVir ((_loc,l,pf,t))
                                            :'class_sig_item )))))))) )) ));
                (( [`Skeyword ("val");`Snterm
@@ -13477,7 +13486,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                         (fun ((mv : 'opt_virtual)) ->
                           (fun ((mf : 'opt_mutable)) ->
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (Ast.CgVal ((_loc,l,mf,mv,t))
                                   :'class_sig_item )))))))) )) ));((
                                                                    [`Skeyword
@@ -13497,9 +13506,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CgInh
                                                                     ((_loc,cs))
                                                                     :'class_sig_item
@@ -13511,7 +13520,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x
                              DynAst.class_sig_item_tag) :'class_sig_item )
@@ -13528,7 +13537,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -13556,11 +13565,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Skeyword ("constraint")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> (() :'type_constraint )))
+                     (fun ((_loc : FanLoc.t )) -> (() :'type_constraint )))
                    )) ));(( [`Skeyword ("type")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
-                              (fun ((_loc :  FanLoc.t )) ->
+                              (fun ((_loc : FanLoc.t )) ->
                                 (() :'type_constraint ))) )) ))] ))] )))) ()
           ) ));
       (Gram.extend ( (class_description :'class_description Gram.t  ) ) (
@@ -13569,15 +13578,16 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [(( [`Snterm
                  ((Gram.obj (
-                    (class_info_for_class_type :'class_info_for_class_type
-                      Gram.t  ) )));`Skeyword (":");`Snterm
+                    (class_info_for_class_type
+                      :'class_info_for_class_type Gram.t  ) )));`Skeyword
+                 (":");`Snterm
                  ((Gram.obj ( (class_type_plus :'class_type_plus Gram.t  ) )))]
                  ),(
                  (Gram.mk_action (
                    (fun ((ct : 'class_type_plus)) ->
                      (fun (_) ->
                        (fun ((ci : 'class_info_for_class_type)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.CtCol ((_loc,ci,ct)) :'class_description )))))
                    )) ));(( [`Stoken
                           (((
@@ -13587,7 +13597,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`QUOTATION x) ->
                                     ((Quotation.expand _loc x
@@ -13611,10 +13621,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -13639,7 +13648,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((cd2 : 'class_description)) ->
                     (fun (_) ->
                       (fun ((cd1 : 'class_description)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.CtAnd ((_loc,cd1,cd2)) :'class_description )))))
                   )) ))] ))] )))) () ) ));
       (Gram.extend (
@@ -13649,14 +13658,15 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,( Some (`LA) ),(
                [(( [`Snterm
                  ((Gram.obj (
-                    (class_info_for_class_type :'class_info_for_class_type
-                      Gram.t  ) )));`Skeyword ("=");`Snterm
+                    (class_info_for_class_type
+                      :'class_info_for_class_type Gram.t  ) )));`Skeyword
+                 ("=");`Snterm
                  ((Gram.obj ( (class_type :'class_type Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((ct : 'class_type)) ->
                      (fun (_) ->
                        (fun ((ci : 'class_info_for_class_type)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.CtEq ((_loc,ci,ct)) :'class_type_declaration
                              ))))) )) ));(( [`Stoken
                                           (((
@@ -13667,7 +13677,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                           ),(
                                           (Gram.mk_action (
                                             (fun (__camlp4_0) ->
-                                              (fun ((_loc :  FanLoc.t )) ->
+                                              (fun ((_loc : FanLoc.t )) ->
                                                 begin match __camlp4_0 with
                                                 | (`QUOTATION x) ->
                                                     ((Quotation.expand _loc x
@@ -13687,7 +13697,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                    (Gram.mk_action (
                                                      (fun (__camlp4_0) ->
                                                        (fun
-                                                         ((_loc :  FanLoc.t ))
+                                                         ((_loc : FanLoc.t ))
                                                          -> begin match
                                                          __camlp4_0 with
                                                          | (`ANTIQUOT
@@ -13709,7 +13719,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((cd2 : 'class_type_declaration)) ->
                     (fun (_) ->
                       (fun ((cd1 : 'class_type_declaration)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.CtAnd ((_loc,cd1,cd2))
                             :'class_type_declaration ))))) )) ))] ))] )))) ()
           ) ));
@@ -13721,14 +13731,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (field_expr :'field_expr Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((b1 : 'field_expr)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (b1 :'field_expr_list )))
+                     (fun ((_loc : FanLoc.t )) -> (b1 :'field_expr_list )))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (field_expr :'field_expr Gram.t  ) )));`Skeyword
                           (";")] ),(
                           (Gram.mk_action (
                             (fun (_) ->
                               (fun ((b1 : 'field_expr)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (b1 :'field_expr_list )))) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -13753,9 +13763,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'field_expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.RbSem
                                                                     ((_loc,b1,b2))
                                                                     :'field_expr_list
@@ -13774,7 +13784,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((e : 'expr)) ->
                      (fun (_) ->
                        (fun ((l : 'label)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.RbEq ((_loc,( Ast.IdLid ((_loc,l)) ),e))
                              :'field_expr ))))) )) ));(( [`Stoken
                                                        (((
@@ -13788,7 +13798,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                        (Gram.mk_action (
                                                          (fun (__camlp4_0) ->
                                                            (fun
-                                                             ((_loc : 
+                                                             ((_loc :
                                                                 FanLoc.t ))
                                                              -> begin match
                                                              __camlp4_0 with
@@ -13815,7 +13825,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   ),(`Normal,"(`ANTIQUOT ((\"\"|\"bi\"|\"anti\"),_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"bi"|"anti") as n),s)) ->
                           (Ast.RbAnt
                              ((_loc,( (mk_anti ~c:"rec_binding" n s) )))
@@ -13831,7 +13841,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((v : 'opt_dot_dot)) ->
                      (fun ((m : 'meth_decl)) ->
-                       (fun ((_loc :  FanLoc.t )) -> ((m,v) :'meth_list ))))
+                       (fun ((_loc : FanLoc.t )) -> ((m,v) :'meth_list ))))
                    )) ));(( [`Snterm
                           ((Gram.obj ( (meth_decl :'meth_decl Gram.t  ) )));`Skeyword
                           (";");`Snterm
@@ -13841,7 +13851,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                             (fun ((v : 'opt_dot_dot)) ->
                               (fun (_) ->
                                 (fun ((m : 'meth_decl)) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
+                                  (fun ((_loc : FanLoc.t )) ->
                                     ((m,v) :'meth_list ))))) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -13867,9 +13877,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'meth_decl))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     Ast.TySem
                                                                     ((_loc,m,ml))
@@ -13890,7 +13900,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    (fun ((t : 'poly_type)) ->
                      (fun (_) ->
                        (fun ((lab : 'a_LIDENT)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (Ast.TyCol
                               ((_loc,(
                                 Ast.TyId ((_loc,( Ast.IdLid ((_loc,lab)) )))
@@ -13911,10 +13921,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (__camlp4_0)
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -13947,10 +13956,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -13978,7 +13986,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   ),(`Normal,"(`ANTIQUOT ((\"\"|\"typ\"),_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"typ") as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp" n s) )))
                             :'meth_decl )
@@ -13991,19 +13999,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_dot_dot :'opt_dot_dot Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((v : 'opt_dot_dot)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyObj ((_loc,( Ast.TyNil (_loc) ),v))
                          :'opt_meth_list ))) )) ));(( [`Snterm
                                                     ((Gram.obj (
-                                                       (meth_list :'meth_list
-                                                         Gram.t  ) )))] ),(
+                                                       (meth_list
+                                                         :'meth_list Gram.t 
+                                                         ) )))] ),(
                                                     (Gram.mk_action (
                                                       (fun
                                                         (((ml,v) :
                                                            'meth_list)) ->
                                                         (fun
-                                                          ((_loc :  FanLoc.t
-                                                             )) ->
+                                                          ((_loc : FanLoc.t ))
+                                                          ->
                                                           (Ast.TyObj
                                                              ((_loc,ml,v))
                                                             :'opt_meth_list )))
@@ -14015,7 +14024,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'poly_type ))) )) ))]
+                     (fun ((_loc : FanLoc.t )) -> (t :'poly_type ))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (package_type :'package_type Gram.t  ) ) (
         (((fun (() ) ->
@@ -14025,8 +14034,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (module_type :'module_type Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'module_type)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'package_type ))) ))
-                 ))] ))] )))) () ) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'package_type ))) )) ))]
+               ))] )))) () ) ));
       (Gram.extend ( (typevars :'typevars Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -14036,7 +14045,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((i : 'a_ident)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.TyQuo ((_loc,i)) :'typevars )))) )) ));
                (( [`Stoken
                 ((( (function
@@ -14044,7 +14053,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`QUOTATION _)")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`QUOTATION x) ->
                           ((Quotation.expand _loc x DynAst.ctyp_tag)
                             :'typevars )
@@ -14061,7 +14070,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -14094,9 +14103,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'typevars))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyApp
                                                                     ((_loc,t1,t2))
                                                                     :'typevars
@@ -14111,7 +14120,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((i : 'a_ident)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.TyId ((_loc,( Ast.IdLid ((_loc,i)) )))
                          :'unquoted_typevars ))) )) ));(( [`Stoken
                                                         (((
@@ -14125,7 +14134,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           (fun (__camlp4_0)
                                                             ->
                                                             (fun
-                                                              ((_loc : 
+                                                              ((_loc :
                                                                  FanLoc.t ))
                                                               -> begin match
                                                               __camlp4_0 with
@@ -14135,7 +14144,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ((Quotation.expand
                                                                     _loc x
                                                                     DynAst.ctyp_tag)
-                                                                    :'unquoted_typevars
+                                                                    :
+                                                                    'unquoted_typevars
                                                                     )
                                                               | _ ->
                                                                   assert
@@ -14158,10 +14168,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -14194,9 +14203,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'unquoted_typevars))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyApp
                                                                     ((_loc,t1,t2))
                                                                     :'unquoted_typevars
@@ -14210,7 +14219,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'row_field ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (t :'row_field ))) )) ));
                (( [`Skeyword ("`");`Snterm
                 ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )));`Skeyword
                 ("of");`Snterm
@@ -14220,19 +14229,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun ((i : 'a_ident)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.TyOf ((_loc,( Ast.TyVrn ((_loc,i)) ),t))
                               :'row_field )))))) )) ));(( [`Skeyword
                                                         ("`");`Snterm
                                                         ((Gram.obj (
-                                                           (a_ident :'a_ident
-                                                             Gram.t  ) )));`Skeyword
+                                                           (a_ident
+                                                             :'a_ident Gram.t 
+                                                             ) )));`Skeyword
                                                         ("of");`Skeyword
                                                         ("&");`Snterm
                                                         ((Gram.obj (
                                                            (amp_ctyp
                                                              :'amp_ctyp
-                                                             Gram.t  ) )))]
+                                                                Gram.t  ) )))]
                                                         ),(
                                                         (Gram.mk_action (
                                                           (fun
@@ -14246,9 +14256,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun (_) ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOfAmp
                                                                     ((_loc,(
                                                                     Ast.TyVrn
@@ -14272,9 +14282,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyVrn
                                                                     ((_loc,i))
                                                                     :'row_field
@@ -14296,9 +14306,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'row_field))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOr
                                                                     ((_loc,t1,t2))
                                                                     :'row_field
@@ -14312,7 +14322,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp|" n s) )))
                             :'row_field )
@@ -14329,7 +14339,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -14357,7 +14367,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((t : 'ctyp)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (t :'amp_ctyp ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (t :'amp_ctyp ))) )) ));
                (( [`Stoken
                 (((
                   (function
@@ -14366,7 +14376,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("list" as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp&" n s) )))
                             :'amp_ctyp )
@@ -14383,9 +14393,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'amp_ctyp))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.TyAmp
                                                                     ((_loc,t1,t2))
                                                                     :'amp_ctyp
@@ -14400,13 +14410,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((i : 'a_ident)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.TyVrn ((_loc,i)) :'name_tags )))) )) ));
                (( [`Sself;`Sself] ),(
                 (Gram.mk_action (
                   (fun ((t2 : 'name_tags)) ->
                     (fun ((t1 : 'name_tags)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyApp ((_loc,t1,t2)) :'name_tags )))) )) ));
                (( [`Stoken
                 (((
@@ -14416,7 +14426,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   ),(`Normal,"(`ANTIQUOT ((\"\"|\"typ\"),_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"typ") as n),s)) ->
                           (Ast.TyAnt ((_loc,( (mk_anti ~c:"ctyp" n s) )))
                             :'name_tags )
@@ -14427,7 +14437,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      ((fun (i) -> (fun (p) -> Ast.PaOlb ((_loc,i,p))))
                        :'eq_expr )) )) ));(( [`Skeyword ("=");`Snterm
                                            ((Gram.obj (
@@ -14435,8 +14445,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                            (Gram.mk_action (
                                              (fun ((e : 'expr)) ->
                                                (fun (_) ->
-                                                 (fun ((_loc :  FanLoc.t ))
-                                                   ->
+                                                 (fun ((_loc : FanLoc.t )) ->
                                                    ((fun (i) ->
                                                       (fun (p) ->
                                                         Ast.PaOlbi
@@ -14450,14 +14459,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'patt_tcon ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'patt_tcon ))) )) ));
                (( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
                 (":");`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((t : 'ctyp)) ->
                     (fun (_) ->
                       (fun ((p : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaTyc ((_loc,p,t)) :'patt_tcon ))))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (ipatt :'ipatt Gram.t  ) ) (
@@ -14475,7 +14484,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                          (fun ((p : 'ipatt_tcon)) ->
                            (fun (_) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  (Ast.PaOlbi ((_loc,"",p,e)) :'ipatt ))))))))
                    )) ));(( [`Skeyword ("?");`Skeyword ("(");`Snterm
                           ((Gram.obj ( (ipatt_tcon :'ipatt_tcon Gram.t  ) )));`Skeyword
@@ -14485,7 +14494,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                               (fun ((p : 'ipatt_tcon)) ->
                                 (fun (_) ->
                                   (fun (_) ->
-                                    (fun ((_loc :  FanLoc.t )) ->
+                                    (fun ((_loc : FanLoc.t )) ->
                                       (Ast.PaOlb ((_loc,"",p)) :'ipatt ))))))
                             )) ));(( [`Skeyword ("?");`Stoken
                                    (((
@@ -14497,7 +14506,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                    (Gram.mk_action (
                                      (fun (__camlp4_0) ->
                                        (fun (_) ->
-                                         (fun ((_loc :  FanLoc.t )) -> begin
+                                         (fun ((_loc : FanLoc.t )) -> begin
                                            match __camlp4_0 with
                                            | (`ANTIQUOT
                                                (((""|"lid") as n),i))
@@ -14514,7 +14523,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                      (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                         with
                         | (`LIDENT i) ->
                             (Ast.PaOlb ((_loc,i,( Ast.PaNil (_loc) )))
@@ -14533,11 +14542,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             ((Gram.obj (
                                                                (ipatt_tcon
                                                                  :'ipatt_tcon
-                                                                 Gram.t  ) )));`Snterm
+                                                                    Gram.t  )
+                                                               )));`Snterm
                                                             ((Gram.obj (
                                                                (eq_expr
                                                                  :'eq_expr
-                                                                 Gram.t  ) )));`Skeyword
+                                                                    Gram.t  )
+                                                               )));`Skeyword
                                                             (")")] ),(
                                                             (Gram.mk_action (
                                                               (fun (_) ->
@@ -14560,10 +14571,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -14622,10 +14632,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -14646,7 +14655,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                      (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                         with
                         | (`LIDENT i) ->
                             (Ast.PaLab ((_loc,i,( Ast.PaNil (_loc) )))
@@ -14668,10 +14677,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -14718,10 +14726,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -14746,7 +14753,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 (Gram.mk_action (
                   (fun ((p : 'ipatt)) ->
                     (fun (__camlp4_0) ->
-                      (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                      (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                         with
                         | (`LABEL i) ->   (Ast.PaLab ((_loc,i,p)) :'ipatt )
                         | _ ->   assert false end))) )) ))] ))] )))) () ) ));
@@ -14757,7 +14764,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                [(( [`Snterm ((Gram.obj ( (ipatt :'ipatt Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((p : 'ipatt)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (p :'ipatt_tcon ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (p :'ipatt_tcon ))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (ipatt :'ipatt Gram.t  ) )));`Skeyword
                 (":");`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
@@ -14765,7 +14772,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((t : 'ctyp)) ->
                     (fun (_) ->
                       (fun ((p : 'ipatt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaTyc ((_loc,p,t)) :'ipatt_tcon ))))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (direction_flag :'direction_flag Gram.t  ) ) (
@@ -14780,8 +14787,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    ),(`Normal,"(`ANTIQUOT ((\"to\"|\"anti\"),_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`ANTIQUOT ((("to"|"anti") as n),s)) ->
                            (Ast.DiAnt ((mk_anti n s)) :'direction_flag )
                        | _ ->   assert false end)) )) ));(( [`Skeyword
@@ -14789,7 +14795,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                           (Gram.mk_action (
                                                             (fun (_) ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (Ast.DiDownto
@@ -14798,7 +14804,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                (( [`Skeyword ("to")] ),(
                 (Gram.mk_action (
                   (fun (_) ->
-                    (fun ((_loc :  FanLoc.t )) ->
+                    (fun ((_loc : FanLoc.t )) ->
                       (Ast.DiTo :'direction_flag ))) )) ))] ))] )))) () ) ));
       (Gram.extend ( (opt_private :'opt_private Gram.t  ) ) (
         (((fun (() ) ->
@@ -14806,7 +14812,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.PrNil :'opt_private ))
+                   (fun ((_loc : FanLoc.t )) -> (Ast.PrNil :'opt_private ))
                    )) ));(( [`Stoken
                           (((
                             (function
@@ -14816,7 +14822,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`ANTIQUOT ((("private"|"anti") as n),s))
                                   ->
@@ -14831,9 +14837,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PrPrivate
                                                                     :'opt_private
                                                                     ))) )) ))]
@@ -14844,7 +14850,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.MuNil :'opt_mutable ))
+                   (fun ((_loc : FanLoc.t )) -> (Ast.MuNil :'opt_mutable ))
                    )) ));(( [`Stoken
                           (((
                             (function
@@ -14854,7 +14860,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`ANTIQUOT ((("mutable"|"anti") as n),s))
                                   ->
@@ -14869,9 +14875,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MuMutable
                                                                     :'opt_mutable
                                                                     ))) )) ))]
@@ -14882,7 +14888,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.ViNil :'opt_virtual ))
+                   (fun ((_loc : FanLoc.t )) -> (Ast.ViNil :'opt_virtual ))
                    )) ));(( [`Stoken
                           (((
                             (function
@@ -14892,7 +14898,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`ANTIQUOT ((("virtual"|"anti") as n),s))
                                   ->
@@ -14907,9 +14913,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ViVirtual
                                                                     :'opt_virtual
                                                                     ))) )) ))]
@@ -14920,7 +14926,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.RvNil :'opt_dot_dot ))
+                   (fun ((_loc : FanLoc.t )) -> (Ast.RvNil :'opt_dot_dot ))
                    )) ));(( [`Stoken
                           (((
                             (function
@@ -14930,7 +14936,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`ANTIQUOT (((".."|"anti") as n),s)) ->
                                     (Ast.RvAnt ((mk_anti n s)) :'opt_dot_dot
@@ -14944,9 +14950,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.RvRowVar
                                                                     :'opt_dot_dot
                                                                     ))) )) ))]
@@ -14957,41 +14963,37 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.ReNil :'opt_rec )) ))
-                 ));(( [`Stoken
-                     (((
-                       (function
-                       | (`ANTIQUOT (("rec"|"anti"),_)) ->   true
-                       | _ ->   false)
-                       ),(`Normal,"(`ANTIQUOT ((\"rec\"|\"anti\"),_))")))]
-                     ),(
-                     (Gram.mk_action (
-                       (fun (__camlp4_0) ->
-                         (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                           with
-                           | (`ANTIQUOT ((("rec"|"anti") as n),s)) ->
-                               (Ast.ReAnt ((mk_anti n s)) :'opt_rec )
-                           | _ ->   assert false end)) )) ));(( [`Skeyword
-                                                              ("rec")] ),(
-                                                              (Gram.mk_action
-                                                                (
-                                                                (fun (_) ->
-                                                                  (fun
-                                                                    (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (Ast.ReRecursive
-                                                                    :'opt_rec
-                                                                    ))) )) ))]
-               ))] )))) () ) ));
+                   (fun ((_loc : FanLoc.t )) -> (Ast.ReNil :'opt_rec )) )) ));
+               (( [`Stoken
+                (((
+                  (function
+                  | (`ANTIQUOT (("rec"|"anti"),_)) ->   true
+                  | _ ->   false)
+                  ),(`Normal,"(`ANTIQUOT ((\"rec\"|\"anti\"),_))")))] ),(
+                (Gram.mk_action (
+                  (fun (__camlp4_0) ->
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
+                      | (`ANTIQUOT ((("rec"|"anti") as n),s)) ->
+                          (Ast.ReAnt ((mk_anti n s)) :'opt_rec )
+                      | _ ->   assert false end)) )) ));(( [`Skeyword
+                                                         ("rec")] ),(
+                                                         (Gram.mk_action (
+                                                           (fun (_) ->
+                                                             (fun
+                                                               ((_loc :
+                                                                  FanLoc.t ))
+                                                               ->
+                                                               (Ast.ReRecursive
+                                                                 :'opt_rec )))
+                                                           )) ))] ))] )))) ()
+          ) ));
       (Gram.extend ( (opt_override :'opt_override Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> (Ast.OvNil :'opt_override ))
+                   (fun ((_loc : FanLoc.t )) -> (Ast.OvNil :'opt_override ))
                    )) ));(( [`Stoken
                           (((
                             (function
@@ -15002,7 +15004,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                           ),(
                           (Gram.mk_action (
                             (fun (__camlp4_0) ->
-                              (fun ((_loc :  FanLoc.t )) -> begin match
+                              (fun ((_loc : FanLoc.t )) -> begin match
                                 __camlp4_0 with
                                 | (`ANTIQUOT
                                     ((("!"|"override"|"anti") as n),s))
@@ -15017,9 +15019,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.OvOverride
                                                                     :'opt_override
                                                                     ))) )) ))]
@@ -15030,22 +15032,24 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExNil (_loc) :'opt_expr )) )) ));(( [`Snterm
                                                             ((Gram.obj (
-                                                               (expr :'expr
-                                                                 Gram.t  ) )))]
-                                                            ),(
+                                                               (expr
+                                                                 :'expr
+                                                                    Gram.t  )
+                                                               )))] ),(
                                                             (Gram.mk_action (
                                                               (fun
                                                                 ((e : 'expr))
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  ->
                                                                   (e
-                                                                    :'opt_expr
+                                                                    :
+                                                                    'opt_expr
                                                                     ))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (interf :'interf Gram.t  ) ) (
@@ -15058,17 +15062,18 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | `EOI ->   (([] ,None ) :'interf )
                        | _ ->   assert false end)) )) ));(( [`Snterm
                                                           ((Gram.obj (
                                                              (sig_item
                                                                :'sig_item
-                                                               Gram.t  ) )));`Snterm
+                                                                  Gram.t  )
+                                                             )));`Snterm
                                                           ((Gram.obj (
-                                                             (semi :'semi
-                                                               Gram.t  ) )));`Sself]
+                                                             (semi
+                                                               :'semi Gram.t 
+                                                               ) )));`Sself]
                                                           ),(
                                                           (Gram.mk_action (
                                                             (fun
@@ -15082,9 +15087,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     si::sil
                                                                     ),stopped)
@@ -15095,16 +15100,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((Gram.obj (
                                                                  (a_LIDENT
                                                                    :'a_LIDENT
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
                                                                  (opt_expr
                                                                    :'opt_expr
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
-                                                                 (semi :'semi
-                                                                   Gram.t  )
+                                                                 (semi
+                                                                   :'semi
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -15121,9 +15127,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     [Ast.SgDir
                                                                     ((_loc,n,dp))]
@@ -15146,11 +15152,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((sg : 'sig_item)) ->
-                            (fun ((_loc :  FanLoc.t )) -> (sg :'e__24 )))) ))
+                            (fun ((_loc : FanLoc.t )) -> (sg :'e__24 )))) ))
                       ))] )))] ),(
                  (Gram.mk_action (
                    (fun ((l : 'e__24 list )) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Ast.sgSem_of_list l) :'sig_items ))) )) ));((
                                                                     [`Stoken
                                                                     (((
@@ -15181,10 +15187,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -15217,7 +15222,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"sigi"|"anti"|"list") as n),s)) ->
                           (Ast.SgAnt ((_loc,( (mk_anti n ~c:"sig_item" s) )))
                             :'sig_items )
@@ -15232,17 +15237,18 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | `EOI ->   (([] ,None ) :'implem )
                        | _ ->   assert false end)) )) ));(( [`Snterm
                                                           ((Gram.obj (
                                                              (str_item
                                                                :'str_item
-                                                               Gram.t  ) )));`Snterm
+                                                                  Gram.t  )
+                                                             )));`Snterm
                                                           ((Gram.obj (
-                                                             (semi :'semi
-                                                               Gram.t  ) )));`Sself]
+                                                             (semi
+                                                               :'semi Gram.t 
+                                                               ) )));`Sself]
                                                           ),(
                                                           (Gram.mk_action (
                                                             (fun
@@ -15256,9 +15262,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     si::sil
                                                                     ),stopped)
@@ -15269,16 +15275,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((Gram.obj (
                                                                  (a_LIDENT
                                                                    :'a_LIDENT
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
                                                                  (opt_expr
                                                                    :'opt_expr
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
-                                                                 (semi :'semi
-                                                                   Gram.t  )
+                                                                 (semi
+                                                                   :'semi
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -15295,9 +15302,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     [Ast.StDir
                                                                     ((_loc,n,dp))]
@@ -15320,11 +15327,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Gram.mk_action (
                         (fun (_) ->
                           (fun ((st : 'str_item)) ->
-                            (fun ((_loc :  FanLoc.t )) -> (st :'e__25 )))) ))
+                            (fun ((_loc : FanLoc.t )) -> (st :'e__25 )))) ))
                       ))] )))] ),(
                  (Gram.mk_action (
                    (fun ((l : 'e__25 list )) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ((Ast.stSem_of_list l) :'str_items ))) )) ));((
                                                                     [`Stoken
                                                                     (((
@@ -15355,10 +15362,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -15391,7 +15397,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                 ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (((""|"stri"|"anti"|"list") as n),s)) ->
                           (Ast.StAnt ((_loc,( (mk_anti n ~c:"str_item" s) )))
                             :'str_items )
@@ -15406,20 +15412,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | `EOI ->   (None :'top_phrase )
                        | _ ->   assert false end)) )) ));(( [`Snterm
                                                           ((Gram.obj (
-                                                             (phrase :'phrase
-                                                               Gram.t  ) )))]
-                                                          ),(
+                                                             (phrase
+                                                               :'phrase
+                                                                  Gram.t  )
+                                                             )))] ),(
                                                           (Gram.mk_action (
                                                             (fun
                                                               ((ph : 'phrase))
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 ->
                                                                 (Some (ph)
@@ -15436,17 +15442,18 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"`EOI")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | `EOI ->   (([] ,None ) :'use_file )
                        | _ ->   assert false end)) )) ));(( [`Snterm
                                                           ((Gram.obj (
                                                              (str_item
                                                                :'str_item
-                                                               Gram.t  ) )));`Snterm
+                                                                  Gram.t  )
+                                                             )));`Snterm
                                                           ((Gram.obj (
-                                                             (semi :'semi
-                                                               Gram.t  ) )));`Sself]
+                                                             (semi
+                                                               :'semi Gram.t 
+                                                               ) )));`Sself]
                                                           ),(
                                                           (Gram.mk_action (
                                                             (fun
@@ -15460,9 +15467,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     si::sil
                                                                     ),stopped)
@@ -15473,16 +15480,17 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                               ((Gram.obj (
                                                                  (a_LIDENT
                                                                    :'a_LIDENT
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
                                                                  (opt_expr
                                                                    :'opt_expr
-                                                                   Gram.t  )
+                                                                    Gram.t  )
                                                                  )));`Snterm
                                                               ((Gram.obj (
-                                                                 (semi :'semi
-                                                                   Gram.t  )
+                                                                 (semi
+                                                                   :'semi
+                                                                    Gram.t  )
                                                                  )))] ),(
                                                               (Gram.mk_action
                                                                 (
@@ -15499,9 +15507,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (((
                                                                     [Ast.StDir
                                                                     ((_loc,n,dp))]
@@ -15522,7 +15530,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (_) ->
                      (fun ((st : 'str_item)) ->
-                       (fun ((_loc :  FanLoc.t )) -> (st :'phrase )))) )) ));
+                       (fun ((_loc : FanLoc.t )) -> (st :'phrase )))) )) ));
                (( [`Skeyword ("#");`Snterm
                 ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )));`Snterm
                 ((Gram.obj ( (opt_expr :'opt_expr Gram.t  ) )));`Skeyword
@@ -15532,7 +15540,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun ((dp : 'opt_expr)) ->
                       (fun ((n : 'a_LIDENT)) ->
                         (fun (_) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.StDir ((_loc,n,dp)) :'phrase )))))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (a_INT :'a_INT Gram.t  ) ) (
@@ -15545,8 +15553,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`INT (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`INT (_,s)) ->   (s :'a_INT )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15561,7 +15568,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15589,8 +15596,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`INT32 (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`INT32 (_,s)) ->   (s :'a_INT32 )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15605,7 +15611,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15634,8 +15640,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`INT64 (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`INT64 (_,s)) ->   (s :'a_INT64 )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15650,7 +15655,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15679,8 +15684,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`NATIVEINT (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`NATIVEINT (_,s)) ->   (s :'a_NATIVEINT )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15695,7 +15699,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15724,8 +15728,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`FLOAT (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`FLOAT (_,s)) ->   (s :'a_FLOAT )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15740,7 +15743,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15769,8 +15772,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`CHAR (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`CHAR (_,s)) ->   (s :'a_CHAR )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15785,7 +15787,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15814,8 +15816,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`UIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`UIDENT s) ->   (s :'a_UIDENT )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15830,7 +15831,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15859,8 +15860,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`LIDENT _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LIDENT s) ->   (s :'a_LIDENT )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -15875,7 +15875,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -15904,8 +15904,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`LABEL _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`LABEL s) ->   (s :'a_LABEL )
                        | _ ->   assert false end)) )) ));(( [`Skeyword
                                                           ("~");`Stoken
@@ -15925,10 +15924,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -15955,8 +15953,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`OPTLABEL _)")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`OPTLABEL s) ->   (s :'a_OPTLABEL )
                        | _ ->   assert false end)) )) ));(( [`Skeyword
                                                           ("?");`Stoken
@@ -15976,10 +15973,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (fun (_) ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -16006,8 +16002,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`STRING (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`STRING (_,s)) ->   (s :'a_STRING )
                        | _ ->   assert false end)) )) ));(( [`Stoken
                                                           (((
@@ -16022,7 +16017,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                             (fun (__camlp4_0)
                                                               ->
                                                               (fun
-                                                                ((_loc : 
+                                                                ((_loc :
                                                                    FanLoc.t ))
                                                                 -> begin
                                                                 match
@@ -16051,8 +16046,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                      | _ ->   false) ),(`Normal,"(`STRING (_,_))")))] ),(
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
-                     (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
-                       with
+                     (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                        | (`STRING (_,x)) ->
                            (Ast.LCons ((x,Ast.LNil )) :'string_list )
                        | _ ->   assert false end)) )) ));(( [`Stoken
@@ -16072,10 +16066,10 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                 (__camlp4_0)
                                                                 ->
                                                                 (fun
-                                                                  ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                  begin match
+                                                                  ((_loc :
+                                                                    FanLoc.t ))
+                                                                  -> begin
+                                                                  match
                                                                   __camlp4_0
                                                                   with
                                                                   | (`STRING
@@ -16106,10 +16100,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                   ->
                                                                   (fun
                                                                     (
-                                                                    (_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    (_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -16134,19 +16127,20 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [(( [`Skeyword (";")] ),(
                  (Gram.mk_action (
-                   (fun (_) -> (fun ((_loc :  FanLoc.t )) -> (() :'semi )))
-                   )) ))] ))] )))) () ) ));
+                   (fun (_) -> (fun ((_loc : FanLoc.t )) -> (() :'semi ))) ))
+                 ))] ))] )))) () ) ));
       (Gram.extend ( (expr_quot :'expr_quot Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.ExNil (_loc) :'expr_quot )) )) ));(( [`Snterm
                                                              ((Gram.obj (
-                                                                (expr :'expr
-                                                                  Gram.t  )
+                                                                (expr
+                                                                  :'expr
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -16154,9 +16148,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  ((e : 'expr))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (e
                                                                     :'expr_quot
                                                                     ))) )) ));
@@ -16167,7 +16161,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((e2 : 'sem_expr)) ->
                     (fun (_) ->
                       (fun ((e1 : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExSem ((_loc,e1,e2)) :'expr_quot ))))) )) ));
                (( [`Snterm ((Gram.obj ( (expr :'expr Gram.t  ) )));`Skeyword
                 (",");`Snterm
@@ -16176,7 +16170,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((e2 : 'comma_expr)) ->
                     (fun (_) ->
                       (fun ((e1 : 'expr)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.ExCom ((_loc,e1,e2)) :'expr_quot ))))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (patt_quot :'patt_quot Gram.t  ) ) (
@@ -16185,11 +16179,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.PaNil (_loc) :'patt_quot )) )) ));(( [`Snterm
                                                              ((Gram.obj (
-                                                                (patt :'patt
-                                                                  Gram.t  )
+                                                                (patt
+                                                                  :'patt
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -16197,9 +16192,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                  ((x : 'patt))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (x
                                                                     :'patt_quot
                                                                     ))) )) ));
@@ -16209,7 +16204,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'patt)) ->
                     (fun (_) ->
                       (fun ((x : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (let i = begin match x with
                              | Ast.PaAnt(loc,s) ->   Ast.IdAnt ((loc,s))
                              | p ->   (Ast.ident_of_patt p) end in
@@ -16221,7 +16216,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'sem_patt)) ->
                     (fun (_) ->
                       (fun ((x : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaSem ((_loc,x,y)) :'patt_quot ))))) )) ));
                (( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
                 (",");`Snterm
@@ -16230,7 +16225,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'comma_patt)) ->
                     (fun (_) ->
                       (fun ((x : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.PaCom ((_loc,x,y)) :'patt_quot ))))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (ctyp_quot :'ctyp_quot Gram.t  ) ) (
@@ -16239,12 +16234,12 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.TyNil (_loc) :'ctyp_quot )) )) ));(( [`Snterm
                                                              ((Gram.obj (
                                                                 (more_ctyp
                                                                   :'more_ctyp
-                                                                  Gram.t  )
+                                                                    Gram.t  )
                                                                 )))] ),(
                                                              (Gram.mk_action
                                                                (
@@ -16253,9 +16248,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'more_ctyp))
                                                                  ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (x
                                                                     :'ctyp_quot
                                                                     ))) )) ));
@@ -16269,7 +16264,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'constructor_arg_list)) ->
                     (fun (_) ->
                       (fun ((x : 'more_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyAnd ((_loc,x,y)) :'ctyp_quot ))))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (more_ctyp :'more_ctyp Gram.t  ) )));`Skeyword
@@ -16279,7 +16274,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'amp_ctyp)) ->
                     (fun (_) ->
                       (fun ((x : 'more_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyAmp ((_loc,x,y)) :'ctyp_quot ))))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (more_ctyp :'more_ctyp Gram.t  ) )));`Skeyword
@@ -16289,7 +16284,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'star_ctyp)) ->
                     (fun (_) ->
                       (fun ((x : 'more_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TySta ((_loc,x,y)) :'ctyp_quot ))))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (more_ctyp :'more_ctyp Gram.t  ) )));`Skeyword
@@ -16305,20 +16300,21 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((y : 'more_ctyp)) ->
                         (fun (_) ->
                           (fun ((x : 'more_ctyp)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.TySem
                                  ((_loc,( Ast.TyCol ((_loc,x,y)) ),z))
                                 :'ctyp_quot ))))))) )) ));(( [`Snterm
                                                            ((Gram.obj (
                                                               (more_ctyp
                                                                 :'more_ctyp
-                                                                Gram.t  ) )));`Skeyword
+                                                                   Gram.t  )
+                                                              )));`Skeyword
                                                            (":");`Snterm
                                                            ((Gram.obj (
                                                               (more_ctyp
                                                                 :'more_ctyp
-                                                                Gram.t  ) )))]
-                                                           ),(
+                                                                   Gram.t  )
+                                                              )))] ),(
                                                            (Gram.mk_action (
                                                              (fun
                                                                ((y :
@@ -16330,9 +16326,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'more_ctyp))
                                                                    ->
                                                                    (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyCol
                                                                     ((_loc,x,y))
                                                                     :'ctyp_quot
@@ -16340,20 +16336,23 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (more_ctyp
-                                                                    :'more_ctyp
+                                                                    :
+                                                                    'more_ctyp
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                ("of");`Skeyword
                                                                ("&");`Snterm
                                                                ((Gram.obj (
                                                                   (amp_ctyp
-                                                                    :'amp_ctyp
+                                                                    :
+                                                                    'amp_ctyp
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                ("|");`Snterm
                                                                ((Gram.obj (
                                                                   (row_field
-                                                                    :'row_field
+                                                                    :
+                                                                    'row_field
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -16377,9 +16376,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'more_ctyp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOr
                                                                     ((_loc,(
                                                                     Ast.TyOfAmp
@@ -16397,7 +16396,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     (fun (_) ->
                       (fun (_) ->
                         (fun ((x : 'more_ctyp)) ->
-                          (fun ((_loc :  FanLoc.t )) ->
+                          (fun ((_loc : FanLoc.t )) ->
                             (Ast.TyOfAmp ((_loc,x,y)) :'ctyp_quot )))))) ))
                 ));(( [`Snterm
                     ((Gram.obj ( (more_ctyp :'more_ctyp Gram.t  ) )));`Skeyword
@@ -16406,27 +16405,29 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                        (constructor_arg_list :'constructor_arg_list Gram.t  )
                        )));`Skeyword ("|");`Snterm
                     ((Gram.obj (
-                       (constructor_declarations :'constructor_declarations
-                         Gram.t  ) )))] ),(
+                       (constructor_declarations
+                         :'constructor_declarations Gram.t  ) )))] ),(
                     (Gram.mk_action (
                       (fun ((z : 'constructor_declarations)) ->
                         (fun (_) ->
                           (fun ((y : 'constructor_arg_list)) ->
                             (fun (_) ->
                               (fun ((x : 'more_ctyp)) ->
-                                (fun ((_loc :  FanLoc.t )) ->
+                                (fun ((_loc : FanLoc.t )) ->
                                   (Ast.TyOr
                                      ((_loc,( Ast.TyOf ((_loc,x,y)) ),z))
                                     :'ctyp_quot ))))))) )) ));(( [`Snterm
                                                                ((Gram.obj (
                                                                   (more_ctyp
-                                                                    :'more_ctyp
+                                                                    :
+                                                                    'more_ctyp
                                                                     Gram.t  )
                                                                   )));`Skeyword
                                                                ("of");`Snterm
                                                                ((Gram.obj (
                                                                   (constructor_arg_list
-                                                                    :'constructor_arg_list
+                                                                    :
+                                                                    'constructor_arg_list
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -16442,9 +16443,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'more_ctyp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOf
                                                                     ((_loc,x,y))
                                                                     :'ctyp_quot
@@ -16476,9 +16477,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'more_ctyp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.TyOr
                                                                     ((_loc,x,y))
                                                                     :'ctyp_quot
@@ -16494,7 +16495,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'label_declaration_list)) ->
                     (fun (_) ->
                       (fun ((x : 'more_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TySem ((_loc,x,y)) :'ctyp_quot ))))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (more_ctyp :'more_ctyp Gram.t  ) )));`Skeyword
@@ -16504,7 +16505,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((y : 'comma_ctyp)) ->
                     (fun (_) ->
                       (fun ((x : 'more_ctyp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.TyCom ((_loc,x,y)) :'ctyp_quot ))))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (more_ctyp :'more_ctyp Gram.t  ) ) (
@@ -16516,23 +16517,23 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'type_parameter)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'more_ctyp ))) )) ));
+                     (fun ((_loc : FanLoc.t )) -> (x :'more_ctyp ))) )) ));
                (( [`Snterm ((Gram.obj ( (ctyp :'ctyp Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((x : 'ctyp)) ->
-                    (fun ((_loc :  FanLoc.t )) -> (x :'more_ctyp ))) )) ));
+                    (fun ((_loc : FanLoc.t )) -> (x :'more_ctyp ))) )) ));
                (( [`Skeyword ("`");`Snterm
                 ((Gram.obj ( (a_ident :'a_ident Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((x : 'a_ident)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyVrn ((_loc,x)) :'more_ctyp )))) )) ));
                (( [`Skeyword ("mutable");`Sself] ),(
                 (Gram.mk_action (
                   (fun ((x : 'more_ctyp)) ->
                     (fun (_) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (Ast.TyMut ((_loc,x)) :'more_ctyp )))) )) ))] ))] ))))
           () ) ));
       (Gram.extend ( (str_item_quot :'str_item_quot Gram.t  ) ) (
@@ -16541,7 +16542,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.StNil (_loc) :'str_item_quot )) )) ));(( [`Snterm
                                                                  ((Gram.obj (
                                                                     (str_item
@@ -16555,9 +16556,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'str_item))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (st
                                                                     :'str_item_quot
                                                                     ))) )) ));
@@ -16568,7 +16569,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((st2 : 'str_item_quot)) ->
                     (fun (_) ->
                       (fun ((st1 : 'str_item)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (begin match st2 with
                             | Ast.StNil(_) ->   st1
                             | _ ->   Ast.StSem ((_loc,st1,st2)) end
@@ -16577,11 +16578,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ((Gram.obj (
                                                             (a_LIDENT
                                                               :'a_LIDENT
-                                                              Gram.t  ) )));`Snterm
+                                                                 Gram.t  ) )));`Snterm
                                                          ((Gram.obj (
                                                             (opt_expr
                                                               :'opt_expr
-                                                              Gram.t  ) )))]
+                                                                 Gram.t  ) )))]
                                                          ),(
                                                          (Gram.mk_action (
                                                            (fun
@@ -16594,9 +16595,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.StDir
                                                                     ((_loc,n,dp))
                                                                     :'str_item_quot
@@ -16608,7 +16609,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.SgNil (_loc) :'sig_item_quot )) )) ));(( [`Snterm
                                                                  ((Gram.obj (
                                                                     (sig_item
@@ -16622,9 +16623,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'sig_item))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (sg
                                                                     :'sig_item_quot
                                                                     ))) )) ));
@@ -16635,7 +16636,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((sg2 : 'sig_item_quot)) ->
                     (fun (_) ->
                       (fun ((sg1 : 'sig_item)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (begin match sg2 with
                             | Ast.SgNil(_) ->   sg1
                             | _ ->   Ast.SgSem ((_loc,sg1,sg2)) end
@@ -16644,11 +16645,11 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                          ((Gram.obj (
                                                             (a_LIDENT
                                                               :'a_LIDENT
-                                                              Gram.t  ) )));`Snterm
+                                                                 Gram.t  ) )));`Snterm
                                                          ((Gram.obj (
                                                             (opt_expr
                                                               :'opt_expr
-                                                              Gram.t  ) )))]
+                                                                 Gram.t  ) )))]
                                                          ),(
                                                          (Gram.mk_action (
                                                            (fun
@@ -16661,9 +16662,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ->
                                                                (fun (_) ->
                                                                  (fun
-                                                                   ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                   ((_loc :
+                                                                    FanLoc.t ))
+                                                                   ->
                                                                    (Ast.SgDir
                                                                     ((_loc,n,dp))
                                                                     :'sig_item_quot
@@ -16675,7 +16676,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.MtNil (_loc) :'module_type_quot )) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -16692,9 +16693,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_type))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'module_type_quot
                                                                     ))) )) ))]
@@ -16705,7 +16706,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.MeNil (_loc) :'module_expr_quot )) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -16722,9 +16723,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'module_expr_quot
                                                                     ))) )) ))]
@@ -16735,7 +16736,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.McNil (_loc) :'match_case_quot )) )) ));((
                                                                    [`Slist0sep
                                                                    ((`Snterm
@@ -16755,9 +16756,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     list ))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ((Ast.mcOr_of_list
                                                                     x)
                                                                     :'match_case_quot
@@ -16769,7 +16770,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.BiNil (_loc) :'binding_quot )) )) ));(( [`Snterm
                                                                 ((Gram.obj (
                                                                    (binding
@@ -16784,9 +16785,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'binding))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'binding_quot
                                                                     ))) )) ))]
@@ -16797,7 +16798,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.RbNil (_loc) :'rec_binding_quot )) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -16814,9 +16815,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'label_expr_list))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'rec_binding_quot
                                                                     ))) )) ))]
@@ -16827,7 +16828,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.MbNil (_loc) :'module_binding_quot )) )) ));
                (( [`Snterm
                 ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )));`Skeyword
@@ -16841,7 +16842,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((mt : 'module_type)) ->
                         (fun (_) ->
                           (fun ((m : 'a_UIDENT)) ->
-                            (fun ((_loc :  FanLoc.t )) ->
+                            (fun ((_loc : FanLoc.t )) ->
                               (Ast.MbColEq ((_loc,m,mt,me))
                                 :'module_binding_quot ))))))) )) ));((
                                                                     [`Snterm
@@ -16871,9 +16872,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'a_UIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MbCol
                                                                     ((_loc,m,mt))
                                                                     :'module_binding_quot
@@ -16893,7 +16894,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun ((mt : 'module_type)) ->
                         (fun (_) ->
                           (fun (__camlp4_0) ->
-                            (fun ((_loc :  FanLoc.t )) -> begin match
+                            (fun ((_loc : FanLoc.t )) -> begin match
                               __camlp4_0 with
                               | (`ANTIQUOT (("" as n),m)) ->
                                   (Ast.MbColEq
@@ -16929,10 +16930,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (__camlp4_0)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    begin
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    -> begin
                                                                     match
                                                                     __camlp4_0
                                                                     with
@@ -16957,7 +16957,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     | _ ->   false) ),(`Normal,"(`ANTIQUOT (\"\",_))")))] ),(
                 (Gram.mk_action (
                   (fun (__camlp4_0) ->
-                    (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0 with
+                    (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
                       | (`ANTIQUOT (("" as n),s)) ->
                           (Ast.MbAnt
                              ((_loc,( (mk_anti ~c:"module_binding" n s) )))
@@ -16975,7 +16975,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                            (fun (__camlp4_0)
                                                              ->
                                                              (fun
-                                                               ((_loc : 
+                                                               ((_loc :
                                                                   FanLoc.t ))
                                                                -> begin match
                                                                __camlp4_0
@@ -17011,9 +17011,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'module_binding_quot))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.MbAnd
                                                                     ((_loc,b1,b2))
                                                                     :'module_binding_quot
@@ -17028,7 +17028,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun ((j : 'ident_quot)) ->
                      (fun ((i : 'ident_quot)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.IdApp ((_loc,i,j)) :'ident_quot )))) )) ))] ));
              (( Some (".") ),None ,(
               [(( [`Sself;`Skeyword (".");`Sself] ),(
@@ -17036,7 +17036,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((j : 'ident_quot)) ->
                     (fun (_) ->
                       (fun ((i : 'ident_quot)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.IdAcc ((_loc,i,j)) :'ident_quot ))))) )) ))]
               ));(( Some ("simple") ),None ,(
                   [(( [`Skeyword ("(");`Sself;`Skeyword (")")] ),(
@@ -17044,7 +17044,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (fun (_) ->
                         (fun ((i : 'ident_quot)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) -> (i :'ident_quot )))))
+                            (fun ((_loc : FanLoc.t )) -> (i :'ident_quot )))))
                       )) ));(( [`Stoken
                              (((
                                (function
@@ -17057,8 +17057,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                (fun ((i : 'ident_quot)) ->
                                  (fun (_) ->
                                    (fun (__camlp4_0) ->
-                                     (fun ((_loc :  FanLoc.t )) -> begin
-                                       match __camlp4_0 with
+                                     (fun ((_loc : FanLoc.t )) -> begin match
+                                       __camlp4_0 with
                                        | (`ANTIQUOT
                                            (((""|"id"|"anti"|"list") as n),s))
                                          ->
@@ -17073,13 +17073,13 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    ((Gram.obj ( (a_LIDENT :'a_LIDENT Gram.t  ) )))] ),(
                    (Gram.mk_action (
                      (fun ((i : 'a_LIDENT)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.IdLid ((_loc,i)) :'ident_quot ))) )) ));
                   (( [`Snterm
                    ((Gram.obj ( (a_UIDENT :'a_UIDENT Gram.t  ) )))] ),(
                    (Gram.mk_action (
                      (fun ((i : 'a_UIDENT)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (Ast.IdUid ((_loc,i)) :'ident_quot ))) )) ));
                   (( [`Stoken
                    (((
@@ -17090,7 +17090,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                    ),(
                    (Gram.mk_action (
                      (fun (__camlp4_0) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | (`ANTIQUOT (((""|"id"|"anti"|"list") as n),s)) ->
                              (Ast.IdAnt ((_loc,( (mk_anti ~c:"ident" n s) )))
@@ -17102,7 +17102,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.CeNil (_loc) :'class_expr_quot )) )) ));(( [`Snterm
                                                                    ((Gram.obj
                                                                     (
@@ -17117,9 +17117,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_expr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'class_expr_quot
                                                                     ))) )) ));
@@ -17135,7 +17135,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((ot : 'opt_comma_ctyp)) ->
                     (fun ((i : 'ident)) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (("virtual" as n),s)) ->
                               (let anti =
@@ -17146,7 +17146,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ("virtual");`Snterm
                                                                ((Gram.obj (
                                                                   (class_name_and_param
-                                                                    :'class_name_and_param
+                                                                    :
+                                                                    'class_name_and_param
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -17158,9 +17159,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeCon
                                                                     ((_loc,Ast.ViVirtual
                                                                     ,(
@@ -17186,9 +17187,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_expr_quot))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CeEq
                                                                     ((_loc,ce1,ce2))
                                                                     :'class_expr_quot
@@ -17199,7 +17200,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((ce2 : 'class_expr_quot)) ->
                     (fun (_) ->
                       (fun ((ce1 : 'class_expr_quot)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.CeAnd ((_loc,ce1,ce2)) :'class_expr_quot )))))
                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (class_type_quot :'class_type_quot Gram.t  ) ) (
@@ -17208,7 +17209,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.CtNil (_loc) :'class_type_quot )) )) ));(( [`Snterm
                                                                    ((Gram.obj
                                                                     (
@@ -17223,9 +17224,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_type_plus))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'class_type_quot
                                                                     ))) )) ));
@@ -17241,7 +17242,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((ot : 'opt_comma_ctyp)) ->
                     (fun ((i : 'ident)) ->
                       (fun (__camlp4_0) ->
-                        (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                        (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                           with
                           | (`ANTIQUOT (("virtual" as n),s)) ->
                               (let anti =
@@ -17252,7 +17253,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                ("virtual");`Snterm
                                                                ((Gram.obj (
                                                                   (class_name_and_param
-                                                                    :'class_name_and_param
+                                                                    :
+                                                                    'class_name_and_param
                                                                     Gram.t  )
                                                                   )))] ),(
                                                                (Gram.mk_action
@@ -17264,9 +17266,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                    (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CtCon
                                                                     ((_loc,Ast.ViVirtual
                                                                     ,(
@@ -17292,9 +17294,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'class_type_quot))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.CtCol
                                                                     ((_loc,ct1,ct2))
                                                                     :'class_type_quot
@@ -17305,14 +17307,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                   (fun ((ct2 : 'class_type_quot)) ->
                     (fun (_) ->
                       (fun ((ct1 : 'class_type_quot)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (Ast.CtEq ((_loc,ct1,ct2)) :'class_type_quot )))))
                   )) ));(( [`Sself;`Skeyword ("and");`Sself] ),(
                          (Gram.mk_action (
                            (fun ((ct2 : 'class_type_quot)) ->
                              (fun (_) ->
                                (fun ((ct1 : 'class_type_quot)) ->
-                                 (fun ((_loc :  FanLoc.t )) ->
+                                 (fun ((_loc : FanLoc.t )) ->
                                    (Ast.CtAnd ((_loc,ct1,ct2))
                                      :'class_type_quot ))))) )) ))] ))] ))))
           () ) ));
@@ -17322,14 +17324,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.CrNil (_loc) :'class_str_item_quot )) )) ));
                (( [`Snterm
                 ((Gram.obj ( (class_str_item :'class_str_item Gram.t  ) )))]
                 ),(
                 (Gram.mk_action (
                   (fun ((x : 'class_str_item)) ->
-                    (fun ((_loc :  FanLoc.t )) -> (x :'class_str_item_quot )))
+                    (fun ((_loc : FanLoc.t )) -> (x :'class_str_item_quot )))
                   )) ));(( [`Snterm
                          ((Gram.obj (
                             (class_str_item :'class_str_item Gram.t  ) )));`Snterm
@@ -17338,7 +17340,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                            (fun ((x2 : 'class_str_item_quot)) ->
                              (fun (_) ->
                                (fun ((x1 : 'class_str_item)) ->
-                                 (fun ((_loc :  FanLoc.t )) ->
+                                 (fun ((_loc : FanLoc.t )) ->
                                    (begin match x2 with
                                      | Ast.CrNil(_) ->   x1
                                      | _ ->   Ast.CrSem ((_loc,x1,x2)) end
@@ -17350,14 +17352,14 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.CgNil (_loc) :'class_sig_item_quot )) )) ));
                (( [`Snterm
                 ((Gram.obj ( (class_sig_item :'class_sig_item Gram.t  ) )))]
                 ),(
                 (Gram.mk_action (
                   (fun ((x : 'class_sig_item)) ->
-                    (fun ((_loc :  FanLoc.t )) -> (x :'class_sig_item_quot )))
+                    (fun ((_loc : FanLoc.t )) -> (x :'class_sig_item_quot )))
                   )) ));(( [`Snterm
                          ((Gram.obj (
                             (class_sig_item :'class_sig_item Gram.t  ) )));`Snterm
@@ -17366,7 +17368,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                            (fun ((x2 : 'class_sig_item_quot)) ->
                              (fun (_) ->
                                (fun ((x1 : 'class_sig_item)) ->
-                                 (fun ((_loc :  FanLoc.t )) ->
+                                 (fun ((_loc : FanLoc.t )) ->
                                    (begin match x2 with
                                      | Ast.CgNil(_) ->   x1
                                      | _ ->   Ast.CgSem ((_loc,x1,x2)) end
@@ -17378,7 +17380,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) ->
+                   (fun ((_loc : FanLoc.t )) ->
                      (Ast.WcNil (_loc) :'with_constr_quot )) )) ));((
                                                                     [`Snterm
                                                                     (
@@ -17395,9 +17397,9 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     'with_constr))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (x
                                                                     :'with_constr_quot
                                                                     ))) )) ))]
@@ -17410,7 +17412,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_rec)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'rec_flag_quot ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (x :'rec_flag_quot ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (direction_flag_quot :'direction_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -17421,8 +17423,8 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ),(
                  (Gram.mk_action (
                    (fun ((x : 'direction_flag)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
-                       (x :'direction_flag_quot ))) )) ))] ))] )))) () ) ));
+                     (fun ((_loc : FanLoc.t )) -> (x :'direction_flag_quot )))
+                   )) ))] ))] )))) () ) ));
       (Gram.extend ( (mutable_flag_quot :'mutable_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -17431,7 +17433,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_mutable :'opt_mutable Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_mutable)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'mutable_flag_quot )))
+                     (fun ((_loc : FanLoc.t )) -> (x :'mutable_flag_quot )))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (private_flag_quot :'private_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -17441,7 +17443,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_private :'opt_private Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_private)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'private_flag_quot )))
+                     (fun ((_loc : FanLoc.t )) -> (x :'private_flag_quot )))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (virtual_flag_quot :'virtual_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -17451,7 +17453,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_virtual :'opt_virtual Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_virtual)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'virtual_flag_quot )))
+                     (fun ((_loc : FanLoc.t )) -> (x :'virtual_flag_quot )))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (row_var_flag_quot :'row_var_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -17461,7 +17463,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_dot_dot :'opt_dot_dot Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_dot_dot)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'row_var_flag_quot )))
+                     (fun ((_loc : FanLoc.t )) -> (x :'row_var_flag_quot )))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (override_flag_quot :'override_flag_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -17471,7 +17473,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  ((Gram.obj ( (opt_override :'opt_override Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((x : 'opt_override)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (x :'override_flag_quot )))
+                     (fun ((_loc : FanLoc.t )) -> (x :'override_flag_quot )))
                    )) ))] ))] )))) () ) ));
       (Gram.extend ( (patt_eoi :'patt_eoi Gram.t  ) ) (
         (((fun (() ) ->
@@ -17484,7 +17486,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
                      (fun ((x : 'patt)) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | `EOI ->   (x :'patt_eoi )
                          | _ ->   assert false end))) )) ))] ))] )))) () ) ));
@@ -17499,7 +17501,7 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                  (Gram.mk_action (
                    (fun (__camlp4_0) ->
                      (fun ((x : 'expr)) ->
-                       (fun ((_loc :  FanLoc.t )) -> begin match __camlp4_0
+                       (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0
                          with
                          | `EOI ->   (x :'expr_eoi )
                          | _ ->   assert false end))) )) ))] ))] )))) () ) ))
@@ -17514,13 +17516,12 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
   struct
   include Syntax module Ast = Camlp4Ast
   type spat_comp =  
-    | SpTrm of  FanLoc.t * Ast.patt * Ast.expr  option 
-    | SpNtr of  FanLoc.t * Ast.patt * Ast.expr 
-    | SpStr of  FanLoc.t * Ast.patt  
+    | SpTrm of FanLoc.t *Ast.patt *Ast.expr  option 
+    | SpNtr of FanLoc.t *Ast.patt *Ast.expr 
+    | SpStr of FanLoc.t *Ast.patt  
   type sexp_comp =  
-    | SeTrm of  FanLoc.t * Ast.expr 
-    | SeNtr of  FanLoc.t * Ast.expr  
-  let stream_expr = (Gram.mk "stream_expr")
+    | SeTrm of FanLoc.t *Ast.expr 
+    | SeNtr of FanLoc.t *Ast.expr   let stream_expr = (Gram.mk "stream_expr")
   let stream_begin = (Gram.mk "stream_begin")
   let stream_end = (Gram.mk "stream_end")
   let stream_quot = (Gram.mk "stream_quot")
@@ -18114,14 +18115,14 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
       stream_expr_comp =
       ((grammar_entry_create "stream_expr_comp") :'stream_expr_comp Gram.t  )
       and stream_expr_comp_list =
-      ((grammar_entry_create "stream_expr_comp_list") :'stream_expr_comp_list
-        Gram.t  )
+      ((grammar_entry_create "stream_expr_comp_list")
+        :'stream_expr_comp_list Gram.t  )
       and stream_patt_comp_err_list =
       ((grammar_entry_create "stream_patt_comp_err_list")
         :'stream_patt_comp_err_list Gram.t  )
       and stream_patt_comp_err =
-      ((grammar_entry_create "stream_patt_comp_err") :'stream_patt_comp_err
-        Gram.t  )
+      ((grammar_entry_create "stream_patt_comp_err")
+        :'stream_patt_comp_err Gram.t  )
       and stream_patt_comp =
       ((grammar_entry_create "stream_patt_comp") :'stream_patt_comp Gram.t  )
       and stream_patt =
@@ -18144,7 +18145,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                          (fun (_) ->
                            (fun ((e : 'sequence)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  ((cparser_match _loc e po pcl) :'expr ))))))))
                    )) ));(( [`Skeyword ("parser");`Sopt (`Snterm
                           ((Gram.obj ( (parser_ipatt :'parser_ipatt Gram.t  )
@@ -18156,7 +18157,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                             (fun ((pcl : 'parser_case_list)) ->
                               (fun ((po : 'parser_ipatt option )) ->
                                 (fun (_) ->
-                                  (fun ((_loc :  FanLoc.t )) ->
+                                  (fun ((_loc : FanLoc.t )) ->
                                     ((cparser _loc po pcl) :'expr ))))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (parser_ipatt :'parser_ipatt Gram.t  ) ) (
@@ -18166,7 +18167,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                [(( [`Skeyword ("_")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        (Ast.PaAny (_loc) :'parser_ipatt ))) )) ));(( [`Snterm
                                                                    ((Gram.obj
                                                                     (
@@ -18181,9 +18182,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                                                                     'a_LIDENT))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.PaId
                                                                     ((_loc,(
                                                                     Ast.IdLid
@@ -18200,34 +18201,18 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                  ((Gram.obj ( (parser_case :'parser_case Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((pc : 'parser_case)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
-                       ([pc] :'parser_case_list ))) )) ));(( [`Skeyword
-                                                           ("[");`Slist0sep
-                                                           ((`Snterm
-                                                             ((Gram.obj (
-                                                                (parser_case
-                                                                  :'parser_case
-                                                                  Gram.t  )
-                                                                ))),`Skeyword
-                                                             ("|")));`Skeyword
-                                                           ("]")] ),(
-                                                           (Gram.mk_action (
-                                                             (fun (_) ->
-                                                               (fun
-                                                                 ((pcl :
-                                                                    'parser_case
-                                                                    list ))
-                                                                 ->
-                                                                 (fun (_) ->
-                                                                   (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
-                                                                    (pcl
-                                                                    :'parser_case_list
-                                                                    ))))) ))
-                                                           ))] ))] )))) () )
-        ));
+                     (fun ((_loc : FanLoc.t )) -> ([pc] :'parser_case_list )))
+                   )) ));(( [`Skeyword ("[");`Slist0sep
+                          ((`Snterm
+                            ((Gram.obj ( (parser_case :'parser_case Gram.t  )
+                               ))),`Skeyword ("|")));`Skeyword ("]")] ),(
+                          (Gram.mk_action (
+                            (fun (_) ->
+                              (fun ((pcl : 'parser_case list )) ->
+                                (fun (_) ->
+                                  (fun ((_loc : FanLoc.t )) ->
+                                    (pcl :'parser_case_list ))))) )) ))] ))]
+             )))) () ) ));
       (Gram.extend ( (parser_case :'parser_case Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -18246,7 +18231,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                          (fun (_) ->
                            (fun ((sp : 'stream_patt)) ->
                              (fun (_) ->
-                               (fun ((_loc :  FanLoc.t )) ->
+                               (fun ((_loc : FanLoc.t )) ->
                                  ((sp,po,e) :'parser_case )))))))) )) ))] ))]
              )))) () ) ));
       (Gram.extend ( (stream_begin :'stream_begin Gram.t  ) ) (
@@ -18256,7 +18241,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                [(( [`Skeyword ("[<")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> (() :'stream_begin ))) ))
+                     (fun ((_loc : FanLoc.t )) -> (() :'stream_begin ))) ))
                  ))] ))] )))) () ) ));
       (Gram.extend ( (stream_end :'stream_end Gram.t  ) ) (
         (((fun (() ) ->
@@ -18265,7 +18250,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                [(( [`Skeyword (">]")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> (() :'stream_end ))) )) ))]
+                     (fun ((_loc : FanLoc.t )) -> (() :'stream_end ))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (stream_quot :'stream_quot Gram.t  ) ) (
         (((fun (() ) ->
@@ -18274,8 +18259,8 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                [(( [`Skeyword ("'")] ),(
                  (Gram.mk_action (
                    (fun (_) ->
-                     (fun ((_loc :  FanLoc.t )) -> (() :'stream_quot ))) ))
-                 ))] ))] )))) () ) ));
+                     (fun ((_loc : FanLoc.t )) -> (() :'stream_quot ))) )) ))]
+               ))] )))) () ) ));
       (Gram.extend ( (stream_expr :'stream_expr Gram.t  ) ) (
         (((fun (() ) ->
             (None ,(
@@ -18283,7 +18268,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                [(( [`Snterm ((Gram.obj ( (expr :'expr Gram.t  ) )))] ),(
                  (Gram.mk_action (
                    (fun ((e : 'expr)) ->
-                     (fun ((_loc :  FanLoc.t )) -> (e :'stream_expr ))) )) ))]
+                     (fun ((_loc : FanLoc.t )) -> (e :'stream_expr ))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (stream_patt :'stream_patt Gram.t  ) ) (
         (((fun (() ) ->
@@ -18291,25 +18276,25 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
              [(None ,None ,(
                [([] ,(
                  (Gram.mk_action (
-                   (fun ((_loc :  FanLoc.t )) -> ([] :'stream_patt )) )) ));
+                   (fun ((_loc : FanLoc.t )) -> ([] :'stream_patt )) )) ));
                (( [`Snterm
                 ((Gram.obj ( (stream_patt_comp :'stream_patt_comp Gram.t  )
                    )));`Skeyword (";");`Snterm
                 ((Gram.obj (
-                   (stream_patt_comp_err_list :'stream_patt_comp_err_list
-                     Gram.t  ) )))] ),(
+                   (stream_patt_comp_err_list
+                     :'stream_patt_comp_err_list Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((sp : 'stream_patt_comp_err_list)) ->
                     (fun (_) ->
                       (fun ((spc : 'stream_patt_comp)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           ((spc,None )::sp :'stream_patt ))))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (stream_patt_comp :'stream_patt_comp Gram.t  )
                    )))] ),(
                 (Gram.mk_action (
                   (fun ((spc : 'stream_patt_comp)) ->
-                    (fun ((_loc :  FanLoc.t )) ->
+                    (fun ((_loc : FanLoc.t )) ->
                       ([(spc,None )] :'stream_patt ))) )) ))] ))] )))) () )
         ));
       (Gram.extend ( (stream_patt_comp :'stream_patt_comp Gram.t  ) ) (
@@ -18322,7 +18307,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                  (Gram.mk_action (
                    (fun ((p : 'patt)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (SpStr ((_loc,p)) :'stream_patt_comp )))) )) ));
                (( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )));`Skeyword
                 ("=");`Snterm
@@ -18331,7 +18316,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                   (fun ((e : 'stream_expr)) ->
                     (fun (_) ->
                       (fun ((p : 'patt)) ->
-                        (fun ((_loc :  FanLoc.t )) ->
+                        (fun ((_loc : FanLoc.t )) ->
                           (SpNtr ((_loc,p,e)) :'stream_patt_comp ))))) )) ));
                (( [`Snterm ((Gram.obj ( (patt :'patt Gram.t  ) )));`Sopt
                 ((Gram.srules stream_patt_comp (
@@ -18341,12 +18326,12 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                      (Gram.mk_action (
                        (fun ((e : 'stream_expr)) ->
                          (fun (_) ->
-                           (fun ((_loc :  FanLoc.t )) -> (e :'e__26 )))) ))
-                     ))] )))] ),(
+                           (fun ((_loc : FanLoc.t )) -> (e :'e__26 )))) )) ))]
+                   )))] ),(
                 (Gram.mk_action (
                   (fun ((eo : 'e__26 option )) ->
                     (fun ((p : 'patt)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         (SpTrm ((_loc,p,eo)) :'stream_patt_comp )))) )) ))]
                ))] )))) () ) ));
       (Gram.extend ( (stream_patt_comp_err :'stream_patt_comp_err Gram.t  ) )
@@ -18364,12 +18349,12 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                       (Gram.mk_action (
                         (fun ((e : 'stream_expr)) ->
                           (fun (_) ->
-                            (fun ((_loc :  FanLoc.t )) -> (e :'e__27 )))) ))
+                            (fun ((_loc : FanLoc.t )) -> (e :'e__27 )))) ))
                       ))] )))] ),(
                  (Gram.mk_action (
                    (fun ((eo : 'e__27 option )) ->
                      (fun ((spc : 'stream_patt_comp)) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          ((spc,eo) :'stream_patt_comp_err )))) )) ))] ))] ))))
           () ) ));
       (Gram.extend (
@@ -18385,7 +18370,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                    (fun ((sp : 'stream_patt_comp_err_list)) ->
                      (fun (_) ->
                        (fun ((spc : 'stream_patt_comp_err)) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            (spc::sp :'stream_patt_comp_err_list ))))) )) ));
                (( [`Snterm
                 ((Gram.obj (
@@ -18394,7 +18379,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                 (Gram.mk_action (
                   (fun (_) ->
                     (fun ((spc : 'stream_patt_comp_err)) ->
-                      (fun ((_loc :  FanLoc.t )) ->
+                      (fun ((_loc : FanLoc.t )) ->
                         ([spc] :'stream_patt_comp_err_list )))) )) ));
                (( [`Snterm
                 ((Gram.obj (
@@ -18402,7 +18387,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                 ),(
                 (Gram.mk_action (
                   (fun ((spc : 'stream_patt_comp_err)) ->
-                    (fun ((_loc :  FanLoc.t )) ->
+                    (fun ((_loc : FanLoc.t )) ->
                       ([spc] :'stream_patt_comp_err_list ))) )) ))] ))] ))))
           () ) ));
       (Gram.extend ( (expr :'expr Gram.t  ) ) (
@@ -18419,7 +18404,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                    (fun (_) ->
                      (fun ((sel : 'stream_expr_comp_list)) ->
                        (fun (_) ->
-                         (fun ((_loc :  FanLoc.t )) ->
+                         (fun ((_loc : FanLoc.t )) ->
                            ((cstream _loc sel) :'expr ))))) )) ));(( [`Snterm
                                                                    ((Gram.obj
                                                                     (
@@ -18440,9 +18425,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                                                                     (fun (_)
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (Ast.ExId
                                                                     ((_loc,(
                                                                     Ast.IdAcc
@@ -18466,7 +18451,7 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                     )))] ),(
                  (Gram.mk_action (
                    (fun ((se : 'stream_expr_comp)) ->
-                     (fun ((_loc :  FanLoc.t )) ->
+                     (fun ((_loc : FanLoc.t )) ->
                        ([se] :'stream_expr_comp_list ))) )) ));(( [`Snterm
                                                                 ((Gram.obj (
                                                                    (stream_expr_comp
@@ -18482,9 +18467,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                                                                     'stream_expr_comp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     ([se]
                                                                     :'stream_expr_comp_list
                                                                     )))) ))
@@ -18512,9 +18497,9 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                                                                     'stream_expr_comp))
                                                                     ->
                                                                     (fun
-                                                                    ((_loc : 
-                                                                    FanLoc.t
-                                                                    )) ->
+                                                                    ((_loc :
+                                                                    FanLoc.t ))
+                                                                    ->
                                                                     (se::sel
                                                                     :'stream_expr_comp_list
                                                                     ))))) ))
@@ -18530,13 +18515,13 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
                  (Gram.mk_action (
                    (fun ((e : 'stream_expr)) ->
                      (fun (_) ->
-                       (fun ((_loc :  FanLoc.t )) ->
+                       (fun ((_loc : FanLoc.t )) ->
                          (SeNtr ((_loc,e)) :'stream_expr_comp )))) )) ));
                (( [`Snterm
                 ((Gram.obj ( (stream_expr :'stream_expr Gram.t  ) )))] ),(
                 (Gram.mk_action (
                   (fun ((e : 'stream_expr)) ->
-                    (fun ((_loc :  FanLoc.t )) ->
+                    (fun ((_loc : FanLoc.t )) ->
                       (SeTrm ((_loc,e)) :'stream_expr_comp ))) )) ))] ))] ))))
           () ) ))
       end

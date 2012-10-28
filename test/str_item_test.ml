@@ -110,4 +110,7 @@ let v =
         | (`Snterml (e,l)) ->   (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
         | ((`Snterm _|`Snext|`Sself|(`Stree _)|(`Stoken _)|(`Skeyword _)) as s) ->
             (self#symbol1 ppf s)))
-        
+
+let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 
+let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 | B -> 2 | C -> 3
+let short_match x = match x with Some x-> x | Nnoe -> 0 | A -> 1 | B -> 2 | C -> 3 | D -> 4 | E -> 5

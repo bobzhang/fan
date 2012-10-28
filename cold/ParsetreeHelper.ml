@@ -34,7 +34,7 @@ let array_function_no_loc (str) (name) =
     end ))
 let array_function (loc) (str) (name) =
   (with_loc ( (array_function_no_loc str name) ) loc)
-let mkli (sloc) (s) ((list :  string  list )) =
+let mkli (sloc) (s) ((list : string  list )) =
   let aux =
     (function
     | []  ->   (lident s)

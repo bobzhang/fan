@@ -2,11 +2,11 @@ open Format
 open LibUtil
 open FanSig
 type error =  
-  | Illegal_token of  string 
-  | Keyword_as_label of  string 
-  | Illegal_token_pattern of ( string * string )
-  | Illegal_constructor of  string  
-exception TokenError of  error 
+  | Illegal_token of string 
+  | Keyword_as_label of string 
+  | Illegal_token_pattern of (string *string )
+  | Illegal_constructor of string  
+exception TokenError of error 
 let print_basic_error (ppf) =
   (function
   | Illegal_token(s) ->   (fprintf ppf "Illegal token (%s)" s)

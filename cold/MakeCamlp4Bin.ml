@@ -5,7 +5,7 @@ open LibUtil
 module Camlp4Bin(PreCast:Sig.PRECAST) =
   struct
   let printers =
-    ((Hashtbl.create 30) :( string ,(module Sig.PRECAST_PLUGIN)) Hashtbl.t  )
+    ((Hashtbl.create 30) :(string ,(module Sig.PRECAST_PLUGIN)) Hashtbl.t  )
   let rcall_callback = (ref ( (fun (() ) -> ()) ))
   let loaded_modules = (ref SSet.empty)
   let add_to_loaded_modules (name) =
@@ -232,11 +232,11 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     (eprintf
       "camlp4 warning: option -noassert is obsolete\nYou should give the -noassert option to the ocaml compiler instead.@.")
   type file_kind =  
-    | Intf of  string 
-    | Impl of  string 
-    | Str of  string 
-    | ModuleImpl of  string 
-    | IncludeDir of  string   let search_stdlib = (ref true )
+    | Intf of string 
+    | Impl of string 
+    | Str of string 
+    | ModuleImpl of string 
+    | IncludeDir of string   let search_stdlib = (ref true )
   let print_loaded_modules = (ref false )
   let (task,do_task) =
     let t = (ref None ) in

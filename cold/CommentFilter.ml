@@ -1,4 +1,4 @@
-type t = (( string * FanLoc.t ) Stream.t *( string * FanLoc.t ) Queue.t ) 
+type t = ((string *FanLoc.t ) Stream.t *(string *FanLoc.t ) Queue.t ) 
 let mk (() ) =
   let q = (Queue.create () ) in
   let f (_) = begin try Some ((Queue.take q))

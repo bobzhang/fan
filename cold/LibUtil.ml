@@ -14,13 +14,13 @@ module MapMake(S:Map.OrderedType) = struct
 module SSet = Set.Make(String)
 module SMap = MapMake(String)
 module IMap = Set.Make(struct
-  type t =  int   let compare = Pervasives.compare
+  type t = int   let compare = Pervasives.compare
   end)
 module ISet = Set.Make(struct
-  type t =  int   let compare = Pervasives.compare
+  type t = int   let compare = Pervasives.compare
   end)
 module Hashset = struct
-  type 'a t = ('a, unit ) Hashtbl.t   let create = Hashtbl.create
+  type 'a t = ('a,unit ) Hashtbl.t   let create = Hashtbl.create
   let add (set) (x) = (Hashtbl.replace set x () ) let remove = Hashtbl.remove
   let mem = Hashtbl.mem
   let iter (f) = (Hashtbl.iter ( (fun (v) -> (fun (() ) -> (f v))) ))
@@ -36,17 +36,16 @@ module Hashset = struct
   end
 let mk_set (type s) ~cmp  =
   let module M = struct
-    type t =  s   let compare = cmp
-    end in ((module Set.Make(M)) :(module Set.S with type elt =  s ) )
+    type t = s   let compare = cmp
+    end in ((module Set.Make(M)) :(module Set.S with type elt = s ) )
 let mk_map (type s) ~cmp  =
   let module M = struct
-    type t =  s   let compare = cmp
-    end in ((module Map.Make(M)) :(module Map.S with type key =  s ) )
+    type t = s   let compare = cmp
+    end in ((module Map.Make(M)) :(module Map.S with type key = s ) )
 let mk_hashtbl (type s) ~eq  ~hash  =
   let module M = struct
-    type t =  s   let equal = eq let hash = hash
-    end in
-    ((module Hashtbl.Make(M)) :(module Hashtbl.S with type key =  s ) )
+    type t = s   let equal = eq let hash = hash
+    end in ((module Hashtbl.Make(M)) :(module Hashtbl.S with type key = s ) )
 let (|>) (x) (f) = (f x)
 let (<|) (f) (x) = (f x)
 let (|-) (f) (g) (x) = (g ( (f x) ))
@@ -71,10 +70,10 @@ let zfold_left ?(start=0)  ~until  ~acc  (f) =
     for x = start to  until do (v := ( (f ( v.contents ) x) )) done;
     v.contents
     end
-type 'a cont = ('a ->  exn )  
-let callcc (type u) ((f : ( u  cont  ->  u ) )) =
+type 'a cont = 'a -> exn  
+let callcc (type u) ((f : u  cont  -> u )) =
   let module M = struct
-    exception Return of  u 
+    exception Return of u 
     end in begin try
     (f ( (fun (x) -> (raise ( M.Return (x) ))) ))
     with
@@ -142,9 +141,9 @@ module Stream = struct
     | _ ->   Stream.sempty end
   end
 module ErrorMonad = struct
-  type log =  string   type 'a result =  
-                         | Left of 'a
-                         | Right of  log   let return (x) = Left (x)
+  type log = string   type 'a result =  
+                        | Left of 'a
+                        | Right of log   let return (x) = Left (x)
   let fail (x) = Right (x)
   let (>>=) (ma) (f) = begin match ma with
     | Left(v) ->   (f v)

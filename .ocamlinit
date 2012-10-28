@@ -39,6 +39,7 @@ let implementation_of_string =
 
 let tg_dp () =
   Clflags.dump_parsetree := not !Clflags.dump_parsetree ;;
-
+let pp =fprintf
+let std = std_formatter;;
 (* consult Topdirs for more utlities *)
 (* #use "test/test_fan.ml";; *)

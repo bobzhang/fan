@@ -174,8 +174,8 @@ let make_ctyp_expr (styp) (tvar) (expr) = begin match (make_ctyp styp tvar)
   | Some(t) ->
       let _loc = (Camlp4Ast.loc_of_expr expr) in Ast.ExTyc ((_loc,expr,t))
   end
-let text_of_action (_loc) (psl) ((rtvar :  string ))
-  ((act :  Ast.expr  option )) ((tvar :  string )) =
+let text_of_action (_loc) (psl) ((rtvar : string ))
+  ((act : Ast.expr  option )) ((tvar : string )) =
   let locid =
     Ast.PaId ((_loc,( Ast.IdLid ((_loc,( FanLoc.name.contents ))) ))) in
   let act = begin match act with
