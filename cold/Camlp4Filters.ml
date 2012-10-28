@@ -6,14 +6,12 @@ module MakeAstLifter(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   module MetaLoc =
     struct
-    let meta_loc_patt (_loc) (_) =
-      Ast.PaId ((_loc,( Ast.IdLid ((_loc,"loc")) )))
-    let meta_loc_expr (_loc) (_) =
-      Ast.ExId ((_loc,( Ast.IdLid ((_loc,"loc")) )))
+    let meta_loc_patt _loc _ = Ast.PaId ((_loc,( Ast.IdLid ((_loc,"loc")) )))
+    let meta_loc_expr _loc _ = Ast.ExId ((_loc,( Ast.IdLid ((_loc,"loc")) )))
     end module MetaAst = Ast.Meta.Make(MetaLoc)
   let _=
     (Syn.AstFilters.register_str_item_filter (
-      (fun (ast) ->
+      (fun ast ->
         let _loc = (Ast.loc_of_str_item ast) in
         Ast.StExp
           ((_loc,(
@@ -34,7 +32,7 @@ module IdExceptionTracer = struct
 module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
   struct
   module Ast = Camlp4Ast
-  let add_debug_expr (e) =
+  let add_debug_expr e =
     let _loc = (Ast.loc_of_expr e) in
     let msg =
       ("camlp4-debug: exc: %s at " ^ ( (( (FanLoc.to_string _loc) ) ^ "@.")
@@ -114,9 +112,9 @@ module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
                         ))) ))) ))) ))) )))
   let rec map_match_case =
     (function
-    | Ast.McOr(_loc,m1,m2) ->
+    | Ast.McOr (_loc,m1,m2) ->
         Ast.McOr ((_loc,( (map_match_case m1) ),( (map_match_case m2) )))
-    | Ast.McArr(_loc,p,w,e) ->
+    | Ast.McArr (_loc,p,w,e) ->
         Ast.McArr ((_loc,p,w,( (add_debug_expr e) )))
     | m ->   m)
   let filter =
@@ -124,11 +122,11 @@ module MakeExceptionTracer(Syn:Sig.Camlp4Syntax) =
     inherit  Ast.map as super
     method! expr =
       (function
-      | Ast.ExFun(_loc,m) ->   Ast.ExFun ((_loc,( (map_match_case m) )))
+      | Ast.ExFun (_loc,m) ->   Ast.ExFun ((_loc,( (map_match_case m) )))
       | x ->   (super#expr x))
     method! str_item =
       (function
-      | (Ast.StMod(_,"Debug",_) as st) ->   st
+      | Ast.StMod (_,"Debug",_) as st ->   st
       | st ->   (super#str_item st))
     end
   let _= (Syn.AstFilters.register_str_item_filter ( filter#str_item ))
@@ -138,7 +136,7 @@ module IdFoldGenerator = struct
   end
 module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast let _loc = FanLoc.ghost let sf = Printf.sprintf
-  let xik (i) (k) =
+  let xik i k =
     let i =
       if (i < 0) then begin
         assert false
@@ -160,47 +158,47 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
         end
       end in
     (sf "_x%s%s" i k)
-  let exik (i) (k) = Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (xik i k) ))) )))
-  let pxik (i) (k) = Ast.PaId ((_loc,( Ast.IdLid ((_loc,( (xik i k) ))) )))
-  let elidk (y) (k) =
+  let exik i k = Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (xik i k) ))) )))
+  let pxik i k = Ast.PaId ((_loc,( Ast.IdLid ((_loc,( (xik i k) ))) )))
+  let elidk y k =
     Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (sf "%s_%d" y k) ))) )))
-  let plidk (y) (k) =
+  let plidk y k =
     Ast.PaId ((_loc,( Ast.IdLid ((_loc,( (sf "%s_%d" y k) ))) )))
-  let xs (s) = ("_x_" ^ s) let xsk = (sf "_x_%s_%d")
-  let exsk (s) (k) = Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (xsk s k) ))) )))
-  let rec apply_expr (accu) =
+  let xs s = ("_x_" ^ s) let xsk = (sf "_x_%s_%d")
+  let exsk s k = Ast.ExId ((_loc,( Ast.IdLid ((_loc,( (xsk s k) ))) )))
+  let rec apply_expr accu =
     (function
     | []  ->   accu
     | x::xs ->
         let _loc = (Ast.loc_of_expr x) in
         (apply_expr ( Ast.ExApp ((_loc,accu,x)) ) xs))
-  let rec apply_patt (accu) =
+  let rec apply_patt accu =
     (function
     | []  ->   accu
     | x::xs ->
         let _loc = (Ast.loc_of_patt x) in
         (apply_patt ( Ast.PaApp ((_loc,accu,x)) ) xs))
-  let rec apply_ctyp (accu) =
+  let rec apply_ctyp accu =
     (function
     | []  ->   accu
     | x::xs ->
         let _loc = (Ast.loc_of_ctyp x) in
         (apply_ctyp ( Ast.TyApp ((_loc,accu,x)) ) xs))
-  let opt_map (f) = (function
-                    | Some(x) ->   Some ((f x))
-                    | None  ->   None)
-  let list_init (f) (n) =
-    let rec self (m) =
+  let opt_map f = (function
+                  | Some x ->   Some ((f x))
+                  | None  ->   None)
+  let list_init f n =
+    let rec self m =
       if (m = n) then begin
         []
       end else begin
         (f m)::(self ( (succ m) ))
       end in
     (self 0)
-  let rec lid_of_ident (sep) =
+  let rec lid_of_ident sep =
     (function
-    | (Ast.IdLid(_,s)|Ast.IdUid(_,s)) ->   s
-    | Ast.IdAcc(_,i1,i2) ->
+    | Ast.IdLid (_,s)|Ast.IdUid (_,s) ->   s
+    | Ast.IdAcc (_,i1,i2) ->
         (( (lid_of_ident sep i1) ) ^ ( (sep ^ ( (lid_of_ident sep i2) )) ))
     | _ ->   assert false)
   type type_decl = (string *Ast.ident *Ast.ctyp  list *Ast.ctyp *bool ) 
@@ -210,7 +208,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
       let abstr =
         ["string";"int";"float";"int32";"int64";"nativeint";"char"] in
       (List.fold_right (
-        (fun (name) ->
+        (fun name ->
           (SMap.add name
             (name,( Ast.IdLid ((_loc,name)) ),[] ,( Ast.TyNil (_loc) ),false
              ))) ) abstr tyMap) in
@@ -258,10 +256,9 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                ((_loc,( Ast.TyId ((_loc,( Ast.IdLid ((_loc,"contents")) )))
                  ),( Ast.TyQuo ((_loc,"a")) ))) ))) ),false )] in
       (List.fold_right (
-        (fun (((name,_,_,_,_) as decl)) -> (SMap.add name decl)) ) concr
-        tyMap) in
+        (fun ((name,_,_,_,_) as decl) -> (SMap.add name decl)) ) concr tyMap) in
     tyMap let used_builtins = (ref SMap.empty)
-  let store_if_builtin_type (id) =
+  let store_if_builtin_type id =
     if (SMap.mem id builtin_types) then begin
       (used_builtins := (
         (SMap.add id ( (SMap.find id builtin_types) ) (
@@ -280,14 +277,14 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
   module Gen(X:sig val size : int  val mode : mode  end) =
     struct
     let size = X.size let mode = X.mode
-    let tuplify_expr (f) =
+    let tuplify_expr f =
       if (size <= 0) then begin
         assert false
       end else begin
         if (size = 1) then begin
           (f 1)
         end else begin
-          let rec loop (k) =
+          let rec loop k =
             if (k = 2) then begin
               (f 2)
             end else begin
@@ -296,14 +293,14 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
           Ast.ExTup ((_loc,( Ast.ExCom ((_loc,( (f 1) ),( (loop size) ))) )))
         end
       end
-    let tuplify_patt (f) =
+    let tuplify_patt f =
       if (size <= 0) then begin
         assert false
       end else begin
         if (size = 1) then begin
           (f 1)
         end else begin
-          let rec loop (k) =
+          let rec loop k =
             if (k = 2) then begin
               (f 2)
             end else begin
@@ -311,15 +308,15 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
             end in
           Ast.PaTup ((_loc,( Ast.PaCom ((_loc,( (f 1) ),( (loop size) ))) )))
         end
-      end let xiks (i) = (tuplify_expr ( (exik i) ))
-    let tuplify_type (typ) =
+      end let xiks i = (tuplify_expr ( (exik i) ))
+    let tuplify_type typ =
       if (size <= 0) then begin
         assert false
       end else begin
         if (size = 1) then begin
           typ
         end else begin
-          let rec loop (k) =
+          let rec loop k =
             if (k = 2) then begin
               typ
             end else begin
@@ -328,17 +325,17 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
           Ast.TyTup ((_loc,( Ast.TySta ((_loc,typ,( (loop size) ))) )))
         end
       end
-    let tuplify_tycon (tycon) =
+    let tuplify_tycon tycon =
       (tuplify_type ( Ast.TyId ((_loc,( Ast.IdLid ((_loc,tycon)) ))) ))
     let rec patt_of_expr =
       (function
-      | Ast.ExNil(_) ->   Ast.PaNil (_loc)
-      | Ast.ExId(_,i) ->   Ast.PaId ((_loc,i))
-      | Ast.ExCom(_,e1,e2) ->
+      | Ast.ExNil _ ->   Ast.PaNil (_loc)
+      | Ast.ExId (_,i) ->   Ast.PaId ((_loc,i))
+      | Ast.ExCom (_,e1,e2) ->
           Ast.PaCom ((_loc,( (patt_of_expr e1) ),( (patt_of_expr e2) )))
-      | Ast.ExTup(_,e) ->   Ast.PaTup ((_loc,( (patt_of_expr e) )))
+      | Ast.ExTup (_,e) ->   Ast.PaTup ((_loc,( (patt_of_expr e) )))
       | _ ->   assert false)
-    let bind (p) (e1) (e2) = begin match mode with
+    let bind p e1 e2 = begin match mode with
       | Fold_map  ->
           Ast.ExLet
             ((_loc,Ast.ReNil ,(
@@ -356,7 +353,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               Ast.BiEq
                 ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ),e1))
               ),e2)) end
-    let return (e) = begin match mode with
+    let return e = begin match mode with
       | Fold_map  ->
           Ast.ExTup
             ((_loc,(
@@ -365,10 +362,10 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               )))
       | Map  ->   e
       | Fold  ->   Ast.ExId ((_loc,( Ast.IdLid ((_loc,"o")) ))) end
-    let rec opt_bind (opt_patt) (e1) (mk_e2) = begin match e1 with
-      | (Ast.ExId(_,_)|Ast.ExSnd(_,Ast.ExId(_,Ast.IdLid(_,_)),_)) ->
+    let rec opt_bind opt_patt e1 mk_e2 = begin match e1 with
+      | Ast.ExId (_,_)|Ast.ExSnd (_,Ast.ExId (_,Ast.IdLid (_,_)),_) ->
           (mk_e2 e1)
-      | Ast.ExLet(_,Ast.ReNil ,Ast.BiEq(_,p1,e1),e2) ->
+      | Ast.ExLet (_,Ast.ReNil ,Ast.BiEq (_,p1,e1),e2) ->
           Ast.ExLet
             ((_loc,Ast.ReNil ,( Ast.BiEq ((_loc,p1,e1)) ),(
               (opt_bind None  e2 mk_e2) )))
@@ -376,7 +373,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
           let e2 =
             (mk_e2 ( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"o")) ))) )) in
           begin match opt_patt with
-            | Some(patt) ->   (bind patt e1 e2)
+            | Some patt ->   (bind patt e1 e2)
             | None  ->
                 Ast.ExApp
                   ((_loc,(
@@ -387,35 +384,34 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                             Ast.PaId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ),(
                             Ast.ExNil (_loc) ),e1)) ))) ),e2))
             end end
-    let chain_tuple (mkp) (mke) (expr_of_ty) (ts) =
+    let chain_tuple mkp mke expr_of_ty ts =
       let exiks =
-        (list_init ( (fun (i) -> (tuplify_expr ( (exik i) ))) ) (
+        (list_init ( (fun i -> (tuplify_expr ( (exik i) ))) ) (
           (List.length ts) )) in
       let exi1s =
-        (list_init ( (fun (i) -> (exik i 1)) ) ( (List.length ts) )) in
+        (list_init ( (fun i -> (exik i 1)) ) ( (List.length ts) )) in
       let pxi1s =
-        (list_init ( (fun (i) -> (pxik i 1)) ) ( (List.length ts) )) in
-      let ps (k) =
-        (mkp ( (list_init ( (fun (i) -> (pxik i k)) ) ( (List.length ts) ))
-          )) in
+        (list_init ( (fun i -> (pxik i 1)) ) ( (List.length ts) )) in
+      let ps k =
+        (mkp ( (list_init ( (fun i -> (pxik i k)) ) ( (List.length ts) )) )) in
       let p = (tuplify_patt ps) in
       let e1 = (mke exi1s) in
       let es =
-        (List.map2 ( (fun (x) -> (expr_of_ty ( Some (x) ))) ) exiks ts) in
+        (List.map2 ( (fun x -> (expr_of_ty ( Some (x) ))) ) exiks ts) in
       let e =
         (List.fold_right2 (
-          (fun (pxi1) -> (fun (e) -> (fun (acc) -> (bind pxi1 e acc)))) )
-          pxi1s es ( (return e1) )) in
+          (fun pxi1 -> (fun e -> (fun acc -> (bind pxi1 e acc)))) ) pxi1s es
+          ( (return e1) )) in
       Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),e))
-    let mk_tuple (expr_of_ty) (t) =
+    let mk_tuple expr_of_ty t =
       let mc =
         (chain_tuple (
-          (fun (ps) -> Ast.PaTup ((_loc,( (Ast.paCom_of_list ps) )))) ) (
-          (fun (es) -> Ast.ExTup ((_loc,( (Ast.exCom_of_list es) )))) )
+          (fun ps -> Ast.PaTup ((_loc,( (Ast.paCom_of_list ps) )))) ) (
+          (fun es -> Ast.ExTup ((_loc,( (Ast.exCom_of_list es) )))) )
           expr_of_ty ( (Ast.list_of_ctyp t [] ) )) in
       Ast.ExFun ((_loc,mc))
     let default_match_case =
-      let mk (k) =
+      let mk k =
         if (k = 1) then begin
           Ast.PaId ((_loc,( Ast.IdLid ((_loc,"x")) )))
         end else begin
@@ -440,29 +436,29 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               ((_loc,( (tuplify_patt mk) ),( Ast.ExNil (_loc) ),(
                 Ast.ExId ((_loc,( Ast.IdLid ((_loc,"x")) ))) )))
         end let default_expr = Ast.ExFun ((_loc,default_match_case))
-    let mkfuno (e) = begin match e with
-      | Ast.ExApp(_,e,Ast.ExId(_,Ast.IdLid(_,"o"))) ->   e
+    let mkfuno e = begin match e with
+      | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdLid (_,"o"))) ->   e
       | _ ->
           Ast.ExFun
             ((_loc,(
               Ast.McArr
                 ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ),(
                   Ast.ExNil (_loc) ),e)) ))) end
-    let is_unknown (t) =
-      let rec loop (t) = begin match t with
-        | Ast.TyId(_,Ast.IdLid(_,_)) ->   false
-        | Ast.TyId(_,_) ->   true
-        | Ast.TyApp(_,t,_) ->   (loop t)
+    let is_unknown t =
+      let rec loop t = begin match t with
+        | Ast.TyId (_,Ast.IdLid (_,_)) ->   false
+        | Ast.TyId (_,_) ->   true
+        | Ast.TyApp (_,t,_) ->   (loop t)
         | _ ->   false end in
       begin match t with
-        | Ast.TyId(_,Ast.IdUid(_,_)) ->   false
+        | Ast.TyId (_,Ast.IdUid (_,_)) ->   false
         | t ->   (loop t) end
-    let contains_unknown (t) = begin try
+    let contains_unknown t = begin try
       let (_ : < .. >) =
         ((object
            inherit  Ast.fold as super
            method! ctyp =
-             (fun (t) ->
+             (fun t ->
                if (is_unknown t) then begin
                  (raise Exit )
                end else begin
@@ -472,32 +468,32 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
       false
       with
       | Exit  ->   true end
-    let opt_bind' (ox) (e1) (mk_e2) =
+    let opt_bind' ox e1 mk_e2 =
       let mk_e2 = begin match ox with
-        | Some(x) ->   (fun (e1) -> Ast.ExApp ((_loc,( (mk_e2 e1) ),x)))
+        | Some x ->   (fun e1 -> Ast.ExApp ((_loc,( (mk_e2 e1) ),x)))
         | _ ->   mk_e2 end in
       (opt_bind ( (opt_map patt_of_expr ox) ) e1 mk_e2)
-    let opt_app (e) (ox) = begin match ox with
-      | Some(x) ->   Ast.ExApp ((_loc,e,x))
+    let opt_app e ox = begin match ox with
+      | Some x ->   Ast.ExApp ((_loc,e,x))
       | _ ->   e end
-    let rec expr_of_ty (x) (ty) =
-      let rec self ?(arity=0)  (ox) =
+    let rec expr_of_ty x ty =
+      let rec self ?(arity=0)  ox =
         (function
         | t when (is_unknown t) ->
             (self ox ( Ast.TyId ((_loc,( Ast.IdLid ((_loc,"unknown")) ))) ))
-        | Ast.TyId(_,Ast.IdLid(_,id)) ->
-            let ()  = (store_if_builtin_type id) in
+        | Ast.TyId (_,Ast.IdLid (_,id)) ->
+            let (() ) = (store_if_builtin_type id) in
             (opt_bind' ox ( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ) (
-              (fun (e1) -> Ast.ExSnd ((_loc,e1,id))) ))
-        | Ast.TyApp(_loc,t1,t2) ->
+              (fun e1 -> Ast.ExSnd ((_loc,e1,id))) ))
+        | Ast.TyApp (_loc,t1,t2) ->
             let e =
               (opt_bind None  ( (self ~arity:( (arity + 1) ) None  t1) ) (
-                (fun (e1) ->
+                (fun e1 ->
                   Ast.ExApp ((_loc,e1,( (mkfuno ( (self None  t2) )) )))) )) in
             (opt_app e ox)
-        | Ast.TyTup(_,t) ->
+        | Ast.TyTup (_,t) ->
             (opt_app ( (mk_tuple ( (self ~arity:0) ) t) ) ox)
-        | Ast.TyQuo(_,s) ->
+        | Ast.TyQuo (_,s) ->
             (opt_app (
               Ast.ExApp
                 ((_loc,(
@@ -505,23 +501,23 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                   ),( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ))) ) ox)
         | _ ->
             (self ox ( Ast.TyId ((_loc,( Ast.IdLid ((_loc,"unknown")) ))) ))) in
-      (self x ty) and expr_of_ty' (e) (t) = (expr_of_ty ( Some (e) ) t) and
-      out_constr_patt (s) = Ast.PaId ((_loc,( Ast.IdUid ((_loc,s)) ))) and
-      out_constr_expr (s) = Ast.ExId ((_loc,( Ast.IdUid ((_loc,s)) ))) and
-      match_case_of_constructor (s) (t) =
+      (self x ty) and expr_of_ty' e t = (expr_of_ty ( Some (e) ) t) and
+      out_constr_patt s = Ast.PaId ((_loc,( Ast.IdUid ((_loc,s)) ))) and
+      out_constr_expr s = Ast.ExId ((_loc,( Ast.IdUid ((_loc,s)) ))) and
+      match_case_of_constructor s t =
       (chain_tuple ( (apply_patt ( (out_constr_patt s) )) ) (
         (apply_expr ( (out_constr_expr s) )) ) expr_of_ty (
         (Ast.list_of_ctyp t [] ) )) and match_case_of_sum_type =
       (function
-      | Ast.TyOr(_,t1,t2) ->
+      | Ast.TyOr (_,t1,t2) ->
           Ast.McOr
             ((_loc,( (match_case_of_sum_type t1) ),(
               (match_case_of_sum_type t2) )))
-      | Ast.TyOf(_,Ast.TyId(_,Ast.IdUid(_,s)),t) ->
+      | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,s)),t) ->
           (match_case_of_constructor s t)
-      | Ast.TyId(_,Ast.IdUid(_,s)) ->
+      | Ast.TyId (_,Ast.IdUid (_,s)) ->
           (match_case_of_constructor s ( Ast.TyNil (_loc) ))
-      | _ ->   assert false) and match_case_of_poly_constructor (s) (ts) =
+      | _ ->   assert false) and match_case_of_poly_constructor s ts =
       (chain_tuple (
         (function
         | []  ->   Ast.PaVrn ((_loc,s))
@@ -539,50 +535,50 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                 Ast.ExTup ((_loc,( (Ast.exCom_of_list es) ))) )))) )
         expr_of_ty ts) and match_case_of_poly_sum_type =
       (function
-      | Ast.TyOr(_,t1,t2) ->
+      | Ast.TyOr (_,t1,t2) ->
           Ast.McOr
             ((_loc,( (match_case_of_poly_sum_type t1) ),(
               (match_case_of_poly_sum_type t2) )))
-      | Ast.TyOf(_,Ast.TyVrn(_,i),Ast.TyTup(_,t)) ->
+      | Ast.TyOf (_,Ast.TyVrn (_,i),Ast.TyTup (_,t)) ->
           (match_case_of_poly_constructor i ( (Ast.list_of_ctyp t [] ) ))
-      | Ast.TyOf(_,Ast.TyVrn(_,i),t) ->
+      | Ast.TyOf (_,Ast.TyVrn (_,i),t) ->
           (match_case_of_poly_constructor i ( [t] ))
-      | Ast.TyVrn(_,i) ->   (match_case_of_poly_constructor i [] )
-      | _ ->   assert false) and record_patt_of_type (k) =
+      | Ast.TyVrn (_,i) ->   (match_case_of_poly_constructor i [] )
+      | _ ->   assert false) and record_patt_of_type k =
       (function
-      | Ast.TyCol(_,Ast.TyId(_,Ast.IdLid(_,s)),_) ->
+      | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),_) ->
           Ast.PaEq
             ((_loc,( Ast.IdLid ((_loc,s)) ),(
               Ast.PaId ((_loc,( Ast.IdLid ((_loc,( (xsk s k) ))) ))) )))
-      | Ast.TySem(_,t1,t2) ->
+      | Ast.TySem (_,t1,t2) ->
           Ast.PaSem
             ((_loc,( (record_patt_of_type k t1) ),(
               (record_patt_of_type k t2) )))
-      | _ ->   assert false) and type_list_of_record_type (t)
-      (((acc1,acc2) as acc)) = begin match t with
-      | Ast.TyNil(_) ->   acc
-      | (Ast.TyCol(_,Ast.TyId(_,Ast.IdLid(_,s)),Ast.TyMut(_,t))|Ast.TyCol
-        (_,Ast.TyId(_,Ast.IdLid(_,s)),t)) ->   (( s::acc1 ),( t::acc2 ))
-      | Ast.TySem(_,t1,t2) ->
+      | _ ->   assert false) and type_list_of_record_type t
+      ((acc1,acc2) as acc) = begin match t with
+      | Ast.TyNil _ ->   acc
+      | Ast.TyCol (_,Ast.TyId (_,Ast.IdLid (_,s)),Ast.TyMut (_,t))|Ast.TyCol
+        (_,Ast.TyId (_,Ast.IdLid (_,s)),t) ->   (( s::acc1 ),( t::acc2 ))
+      | Ast.TySem (_,t1,t2) ->
           (type_list_of_record_type t1 ( (type_list_of_record_type t2 acc) ))
-      | _ ->   assert false end and expr_of_record_type (t) =
+      | _ ->   assert false end and expr_of_record_type t =
       let (ls,ts) = (type_list_of_record_type t ([] ,[] )) in
-      let mkp (ps) =
+      let mkp ps =
         Ast.PaRec
           ((_loc,(
             (Ast.paSem_of_list (
               (List.map2 (
-                (fun (l) ->
-                  (fun (p) -> Ast.PaEq ((_loc,( Ast.IdLid ((_loc,l)) ),p))))
-                ) ls ps) )) ))) in
-      let mke (es) =
+                (fun l ->
+                  (fun p -> Ast.PaEq ((_loc,( Ast.IdLid ((_loc,l)) ),p)))) )
+                ls ps) )) ))) in
+      let mke es =
         Ast.ExRec
           ((_loc,(
             (Ast.rbSem_of_list (
               (List.map2 (
-                (fun (l) ->
-                  (fun (e) -> Ast.RbEq ((_loc,( Ast.IdLid ((_loc,l)) ),e))))
-                ) ls es) )) ),( Ast.ExNil (_loc) ))) in
+                (fun l ->
+                  (fun e -> Ast.RbEq ((_loc,( Ast.IdLid ((_loc,l)) ),e)))) )
+                ls es) )) ),( Ast.ExNil (_loc) ))) in
       (chain_tuple mkp mke expr_of_ty ts) and failure_match_case =
       Ast.McArr
         ((_loc,( (tuplify_patt ( (pxik 0) )) ),( Ast.ExNil (_loc) ),(
@@ -591,29 +587,29 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               Ast.ExSnd
                 ((_loc,( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"o")) ))) ),(
                   (sf "%s%d_failure" ( (string_of_mode mode) ) size) ))) ),(
-              (tuplify_expr ( (exik 0) )) ))) ))) and complete_match_case
-      (mk) (t) = begin match t with
-      | Ast.TyOr(_,_,_) when (size > 1) ->
+              (tuplify_expr ( (exik 0) )) ))) ))) and complete_match_case mk
+      t = begin match t with
+      | Ast.TyOr (_,_,_) when (size > 1) ->
           Ast.McOr ((_loc,( (mk t) ),failure_match_case))
-      | _ ->   (mk t) end and fun_of_ctyp (tyid) =
+      | _ ->   (mk t) end and fun_of_ctyp tyid =
       (function
-      | Ast.TySum(_,t) ->
+      | Ast.TySum (_,t) ->
           Ast.ExFun
             ((_loc,( (complete_match_case match_case_of_sum_type t) )))
-      | Ast.TyRec(_,t) ->   Ast.ExFun ((_loc,( (expr_of_record_type t) )))
-      | Ast.TyTup(_,t) ->   (mk_tuple expr_of_ty t)
-      | Ast.TyId(_,Ast.IdLid(_,i)) when (i = tyid) ->   default_expr
-      | ((Ast.TyApp(_,_,_)|Ast.TyArr(_,_,_)|Ast.TyQuo(_,_)|Ast.TyId(_,_)) as
-          t)
+      | Ast.TyRec (_,t) ->   Ast.ExFun ((_loc,( (expr_of_record_type t) )))
+      | Ast.TyTup (_,t) ->   (mk_tuple expr_of_ty t)
+      | Ast.TyId (_,Ast.IdLid (_,i)) when (i = tyid) ->   default_expr
+      | Ast.TyApp (_,_,_)|Ast.TyArr (_,_,_)|Ast.TyQuo (_,_)|Ast.TyId 
+          (_,_) as t
         ->   (expr_of_ty None  t)
-      | Ast.TyNil(_) ->
+      | Ast.TyNil _ ->
           (expr_of_ty None  (
             Ast.TyId ((_loc,( Ast.IdLid ((_loc,"unknown")) ))) ))
-      | (Ast.TyVrnEq(_,t)|Ast.TyVrnInf(_,t)|Ast.TyPrv(_,Ast.TyVrnInf(_,t)))
+      | Ast.TyVrnEq (_,t)|Ast.TyVrnInf (_,t)|Ast.TyPrv (_,Ast.TyVrnInf (_,t))
         ->
           Ast.ExFun
             ((_loc,( (complete_match_case match_case_of_poly_sum_type t) )))
-      | (Ast.TyVrnSup(_,t)|Ast.TyPrv(_,Ast.TyVrnSup(_,t))) ->
+      | Ast.TyVrnSup (_,t)|Ast.TyPrv (_,Ast.TyVrnSup (_,t)) ->
           if (size > 1) then begin
             Ast.ExFun
               ((_loc,( (complete_match_case match_case_of_poly_sum_type t) )))
@@ -624,12 +620,11 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                   ((_loc,( (match_case_of_poly_sum_type t)
                     ),default_match_case)) )))
           end
-      | _ ->   assert false) and string_of_type_param (t) = begin match t
-      with
-      | (Ast.TyQuo(_,s)|Ast.TyQuP(_,s)|Ast.TyQuM(_,s)) ->   s
-      | _ ->   assert false end and method_of_type_decl (_)
-      (((id1,_,params,ctyp,priv) as type_decl)) (acc) =
-      let rec lambda (acc) =
+      | _ ->   assert false) and string_of_type_param t = begin match t with
+      | Ast.TyQuo (_,s)|Ast.TyQuP (_,s)|Ast.TyQuM (_,s) ->   s
+      | _ ->   assert false end and method_of_type_decl _
+      ((id1,_,params,ctyp,priv) as type_decl) acc =
+      let rec lambda acc =
         (function
         | []  ->   acc
         | x::xs ->
@@ -652,22 +647,22 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
         end in
       Ast.CrSem
         ((_loc,( Ast.CrMth ((_loc,id1,Ast.OvNil ,priv,funs,ty)) ),acc)) and
-      ctyp_name_of_name_params (name) (params) =
+      ctyp_name_of_name_params name params =
       (apply_ctyp ( Ast.TyId ((_loc,name)) ) params) and
-      method_type_of_type_decl ((_,name,params,ctyp,_)) =
+      method_type_of_type_decl (_,name,params,ctyp,_) =
       let t = (ctyp_name_of_name_params name params) in
       if (( (mode = Map ) ) && ( (not ( (contains_unknown ctyp) )) )) then begin
         let out_params =
           (List.map (
             (function
-            | Ast.TyQuo(_,i) ->   Ast.TyQuo ((_loc,( (i ^ "_out") )))
+            | Ast.TyQuo (_,i) ->   Ast.TyQuo ((_loc,( (i ^ "_out") )))
             | _ ->   assert false) ) params) in
         let t_out = (ctyp_name_of_name_params name out_params) in
         (method_type_of_type t t_out params out_params)
       end else begin
         (method_type_of_type t t params [] )
-      end and method_type_of_type (t_in) (t_out) (params_in) (params_out) =
-      let rt (t) = begin match mode with
+      end and method_type_of_type t_in t_out params_in params_out =
+      let rt t = begin match mode with
         | Fold_map  ->
             Ast.TyTup
               ((_loc,(
@@ -705,36 +700,36 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
               (Printf.sprintf
                 "Camlp4FoldGenerator: FIXME not implemented for types with %d parameters"
                 i) ))
-        end and class_sig_item_of_type_decl (_)
-      (((name,_,_,t,_) as type_decl)) (acc) =
+        end and class_sig_item_of_type_decl _ ((name,_,_,t,_) as type_decl)
+      acc =
       let (_ : < .. >) =
         ((object(self)
            inherit  Ast.fold as super
            method! ctyp =
              (function
-             | Ast.TyId(_,Ast.IdLid(_,id)) ->
-                 let ()  = (store_if_builtin_type id) in self
+             | Ast.TyId (_,Ast.IdLid (_,id)) ->
+                 let (() ) = (store_if_builtin_type id) in self
              | t ->   (super#ctyp t))
            end)#ctyp t) in
       Ast.CgSem
         ((_loc,(
           Ast.CgMth
             ((_loc,name,Ast.PrNil ,( (method_type_of_type_decl type_decl) )))
-          ),acc)) and generate_structure (tyMap) =
+          ),acc)) and generate_structure tyMap =
       (SMap.fold method_of_type_decl ( used_builtins.contents ) (
         (SMap.fold method_of_type_decl tyMap ( Ast.CrNil (_loc) )) )) and
-      generate_signature (tyMap) =
+      generate_signature tyMap =
       (SMap.fold class_sig_item_of_type_decl ( used_builtins.contents ) (
         (SMap.fold class_sig_item_of_type_decl tyMap ( Ast.CgNil (_loc) )) ))
     end
-  let rec tyMap_of_type_decls (t) (acc) = begin match t with
-    | Ast.TyNil(_) ->   acc
-    | Ast.TyAnd(_,t1,t2) ->
+  let rec tyMap_of_type_decls t acc = begin match t with
+    | Ast.TyNil _ ->   acc
+    | Ast.TyAnd (_,t1,t2) ->
         (tyMap_of_type_decls t1 ( (tyMap_of_type_decls t2 acc) ))
-    | Ast.TyDcl(_,name,tl,tk,_) ->
+    | Ast.TyDcl (_,name,tl,tk,_) ->
         (SMap.add name (name,( Ast.IdLid ((_loc,name)) ),tl,tk,false ) acc)
     | _ ->   assert false end
-  let generate_class_implem (mode) (c) (tydcl) (n) =
+  let generate_class_implem mode c tydcl n =
     let tyMap = (tyMap_of_type_decls tydcl SMap.empty) in
     let module M = Gen(struct
       let size = n let mode = mode
@@ -793,7 +788,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                   Ast.CrSem
                     ((_loc,generated,( Ast.CrSem ((_loc,failure,unknown)) )))
                   ))) ))) )))
-  let generate_class_interf (mode) (c) (tydcl) (n) =
+  let generate_class_interf mode c tydcl n =
     let tyMap = (tyMap_of_type_decls tydcl SMap.empty) in
     let module M = Gen(struct
       let size = n let mode = mode
@@ -835,87 +830,96 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
                   ))) ))) )))
   let processor =
     let last = (ref ( Ast.TyNil (_loc) )) in
-    let generate_class' (generator) (default) (c) (s) (n) = begin match s
-      with
+    let generate_class' generator default c s n = begin match s with
       | "Fold" ->   (generator Fold  c ( last.contents ) n)
       | "Map" ->   (generator Map  c ( last.contents ) n)
       | "FoldMap" ->   (generator Fold_map  c ( last.contents ) n)
       | _ ->   default end in
-    let generate_class_from_module_name (generator) (c) (default) (m) = begin
-      try
+    let generate_class_from_module_name generator c default m = begin try
       (Scanf.sscanf m "Camlp4%[^G]Generator" (
-        (fun (m') -> begin try
+        (fun m' -> begin try
           (Scanf.sscanf m' "%[^0-9]%d" (
             (generate_class' generator default c) ))
           with
-          | (End_of_file |Scanf.Scan_failure(_)) ->
+          | End_of_file |Scanf.Scan_failure _ ->
             (generate_class' generator default c m' 1) end) ))
       with
-      | (End_of_file |Scanf.Scan_failure(_)) ->   default
+      | End_of_file |Scanf.Scan_failure _ ->   default
     end in
     object(self)
       inherit  Ast.map as super
       method! str_item =
-        (fun (st) -> begin match st with
-          | Ast.StTyp(_,t) ->   begin
-                                (last := t);
-                                st
-                                end
-          | Ast.StCls(_loc,Ast.CeEq(_,Ast.CeCon(_,Ast.ViNil
-                                                ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CeCon
-                                    (_,Ast.ViNil
-                                     ,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdAcc
-                                                (_,Ast.IdUid(_,"GenerateFold"),Ast.IdLid
-                                                 (_,"generated"))),Ast.TyNil(_))))
+        (fun st -> begin match st with
+          | Ast.StTyp (_,t) ->   begin
+                                 (last := t);
+                                 st
+                                 end
+          | Ast.StCls
+            (_loc,Ast.CeEq
+             (_,Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdAcc
+                (_,Ast.IdUid (_,"GenerateFold"),Ast.IdLid (_,"generated"))),Ast.TyNil
+               _)))
             ->   (generate_class_implem Fold  c ( last.contents ) 1)
-          | Ast.StCls(_loc,Ast.CeEq(_,Ast.CeCon(_,Ast.ViNil
-                                                ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CeCon
-                                    (_,Ast.ViNil
-                                     ,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdAcc
-                                                (_,Ast.IdUid(_,"GenerateMap"),Ast.IdLid
-                                                 (_,"generated"))),Ast.TyNil(_))))
+          | Ast.StCls
+            (_loc,Ast.CeEq
+             (_,Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdAcc
+                (_,Ast.IdUid (_,"GenerateMap"),Ast.IdLid (_,"generated"))),Ast.TyNil
+               _)))
             ->   (generate_class_implem Map  c ( last.contents ) 1)
-          | Ast.StCls(_loc,Ast.CeEq(_,Ast.CeCon(_,Ast.ViNil
-                                                ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CeCon
-                                    (_,Ast.ViNil
-                                     ,Ast.IdAcc(_,Ast.IdUid(_,m),Ast.IdLid
-                                                (_,"generated")),Ast.TyNil(_))))
+          | Ast.StCls
+            (_loc,Ast.CeEq
+             (_,Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CeCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
             ->
               (generate_class_from_module_name generate_class_implem c st m)
-          | Ast.StSem(_,st1,st2) ->
+          | Ast.StSem (_,st1,st2) ->
               let st1 = (self#str_item st1) in
               Ast.StSem ((_loc,st1,( (self#str_item st2) )))
           | st ->   (super#str_item st) end)
       method! sig_item =
-        (fun (sg) -> begin match sg with
-          | Ast.SgTyp(_,t) ->   begin
-                                (last := t);
-                                sg
-                                end
-          | Ast.SgCls(_loc,Ast.CtCol(_,Ast.CtCon(_,Ast.ViNil
-                                                 ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CtCon
-                                     (_,Ast.ViNil
-                                      ,Ast.IdAcc(_,Ast.IdAcc(_,Ast.IdUid
-                                                             (_,"Camlp4Filters"),Ast.IdUid
-                                                             (_,"GenerateFold")),Ast.IdLid
-                                                 (_,"generated")),Ast.TyNil(_))))
+        (fun sg -> begin match sg with
+          | Ast.SgTyp (_,t) ->   begin
+                                 (last := t);
+                                 sg
+                                 end
+          | Ast.SgCls
+            (_loc,Ast.CtCol
+             (_,Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdAcc
+                (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid
+                 (_,"GenerateFold")),Ast.IdLid
+                (_,"generated")),Ast.TyNil
+               _)))
             ->   (generate_class_interf Fold  c ( last.contents ) 1)
-          | Ast.SgCls(_loc,Ast.CtCol(_,Ast.CtCon(_,Ast.ViNil
-                                                 ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CtCon
-                                     (_,Ast.ViNil
-                                      ,Ast.IdAcc(_,Ast.IdAcc(_,Ast.IdUid
-                                                             (_,"Camlp4Filters"),Ast.IdUid
-                                                             (_,"GenerateMap")),Ast.IdLid
-                                                 (_,"generated")),Ast.TyNil(_))))
+          | Ast.SgCls
+            (_loc,Ast.CtCol
+             (_,Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdAcc
+                (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid (_,"GenerateMap")),Ast.IdLid
+                (_,"generated")),Ast.TyNil
+               _)))
             ->   (generate_class_interf Map  c ( last.contents ) 1)
-          | Ast.SgCls(_loc,Ast.CtCol(_,Ast.CtCon(_,Ast.ViNil
-                                                 ,Ast.IdLid(_,c),Ast.TyNil(_)),Ast.CtCon
-                                     (_,Ast.ViNil
-                                      ,Ast.IdAcc(_,Ast.IdUid(_,m),Ast.IdLid
-                                                 (_,"generated")),Ast.TyNil(_))))
+          | Ast.SgCls
+            (_loc,Ast.CtCol
+             (_,Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdLid (_,c),Ast.TyNil _),Ast.CtCon
+              (_,Ast.ViNil ,Ast.IdAcc
+               (_,Ast.IdUid (_,m),Ast.IdLid (_,"generated")),Ast.TyNil _)))
             ->
               (generate_class_from_module_name generate_class_interf c sg m)
-          | Ast.SgSem(_,sg1,sg2) ->
+          | Ast.SgSem (_,sg1,sg2) ->
               let sg1 = (self#sig_item sg1) in
               Ast.SgSem ((_loc,sg1,( (self#sig_item sg2) )))
           | sg ->   (super#sig_item sg) end)
@@ -931,44 +935,45 @@ module MakeLocationStripper(Syn:Sig.Camlp4Syntax) =
   module Ast = Camlp4Ast
   let _=
     (Syn.AstFilters.register_str_item_filter (
-      (Ast.map_loc ( (fun (_) -> FanLoc.ghost) ))#str_item ))
+      (Ast.map_loc ( (fun _ -> FanLoc.ghost) ))#str_item ))
   end
 module IdProfiler = struct
   let name = "Camlp4Profiler" let version = Sys.ocaml_version
   end
 module MakeProfiler(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
-  let decorate_binding (decorate_fun) =
+  let decorate_binding decorate_fun =
     (object
       inherit  Ast.map as super
       method! binding =
         (function
-        | Ast.BiEq(_loc,Ast.PaId(_,Ast.IdLid(_,id)),(Ast.ExFun(_,_) as e)) ->
+        | Ast.BiEq
+          (_loc,Ast.PaId (_,Ast.IdLid (_,id)),(Ast.ExFun (_,_) as e)) ->
             Ast.BiEq
               ((_loc,( Ast.PaId ((_loc,( Ast.IdLid ((_loc,id)) ))) ),(
                 (decorate_fun id e) )))
         | b ->   (super#binding b))
       end)#binding
-  let decorate (decorate_fun) =
+  let decorate decorate_fun =
     object(o)
     inherit  Ast.map as super
     method! str_item =
       (function
-      | Ast.StVal(_loc,r,b) ->
+      | Ast.StVal (_loc,r,b) ->
           Ast.StVal ((_loc,r,( (decorate_binding decorate_fun b) )))
       | st ->   (super#str_item st))
     method! expr =
       (function
-      | Ast.ExLet(_loc,r,b,e) ->
+      | Ast.ExLet (_loc,r,b,e) ->
           Ast.ExLet
             ((_loc,r,( (decorate_binding decorate_fun b) ),( (o#expr e) )))
-      | (Ast.ExFun(_loc,_) as e) ->   (decorate_fun "<fun>" e)
+      | Ast.ExFun (_loc,_) as e ->   (decorate_fun "<fun>" e)
       | e ->   (super#expr e))
     end
-  let decorate_this_expr (e) (id) =
+  let decorate_this_expr e id =
     let buf = (Buffer.create 42) in
     let _loc = (Ast.loc_of_expr e) in
-    let ()  = (Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc) in
+    let (() ) = (Format.bprintf buf "%s @@ %a@?" id FanLoc.dump _loc) in
     let s = (Buffer.contents buf) in
     Ast.ExLet
       ((_loc,Ast.ReNil ,(
@@ -983,17 +988,17 @@ module MakeProfiler(Syn:Sig.Camlp4Syntax) = struct
                         Ast.IdLid ((_loc,"count")) ))) ))) ),(
                 Ast.ExStr ((_loc,( (Ast.safe_string_escaped s) ))) ))) )))
         ),e))
-  let rec decorate_fun (id) =
+  let rec decorate_fun id =
     let decorate = (decorate decorate_fun) in
     let decorate_expr = decorate#expr in
     let decorate_match_case = decorate#match_case in
     (function
-    | Ast.ExFun(_loc,Ast.McArr(_,p,Ast.ExNil(_),e)) ->
+    | Ast.ExFun (_loc,Ast.McArr (_,p,Ast.ExNil _,e)) ->
         Ast.ExFun
           ((_loc,(
             Ast.McArr ((_loc,p,( Ast.ExNil (_loc) ),( (decorate_fun id e) )))
             )))
-    | Ast.ExFun(_loc,m) ->
+    | Ast.ExFun (_loc,m) ->
         (decorate_this_expr ( Ast.ExFun ((_loc,( (decorate_match_case m) )))
           ) id)
     | e ->   (decorate_this_expr ( (decorate_expr e) ) id))
@@ -1010,7 +1015,7 @@ module MakeTrashRemover(Syn:Sig.Camlp4Syntax) = struct
     (Syn.AstFilters.register_str_item_filter (
       (Ast.map_str_item (
         (function
-        | Ast.StMod(_loc,"Camlp4Trash",_) ->   Ast.StNil (_loc)
+        | Ast.StMod (_loc,"Camlp4Trash",_) ->   Ast.StNil (_loc)
         | st ->   st) ))#str_item ))
   end
 module IdMetaGenerator = struct
@@ -1032,58 +1037,55 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
     flo: Ast.expr ;
     chr: Ast.expr ;
     ant: Ast.ident }  let _loc = FanLoc.ghost
-  let x (i) = Ast.IdLid ((_loc,( ("x" ^ ( (string_of_int i) )) )))
-  let meta_ (s) = Ast.IdLid ((_loc,( ("meta_" ^ s) )))
-  let mf_ (s) = ("mf_" ^ s)
+  let x i = Ast.IdLid ((_loc,( ("x" ^ ( (string_of_int i) )) )))
+  let meta_ s = Ast.IdLid ((_loc,( ("meta_" ^ s) ))) let mf_ s = ("mf_" ^ s)
   let rec string_of_ident =
     (function
-    | Ast.IdLid(_,s) ->   s
-    | Ast.IdUid(_,s) ->   s
-    | Ast.IdAcc(_,i1,i2) ->
+    | Ast.IdLid (_,s) ->   s
+    | Ast.IdUid (_,s) ->   s
+    | Ast.IdAcc (_,i1,i2) ->
         ("acc_" ^ (
           (( (string_of_ident i1) ) ^ ( ("_" ^ ( (string_of_ident i2) )) ))
           ))
-    | Ast.IdApp(_,i1,i2) ->
+    | Ast.IdApp (_,i1,i2) ->
         ("app_" ^ (
           (( (string_of_ident i1) ) ^ ( ("_" ^ ( (string_of_ident i2) )) ))
           ))
-    | Ast.IdAnt(_,_) ->   assert false)
-  let fold_args (ty) (f) (init) =
+    | Ast.IdAnt (_,_) ->   assert false)
+  let fold_args ty f init =
     let (_,res) =
       (List.fold_left (
-        (fun ((i,acc)) -> (fun (ty) -> (( (succ i) ),( (f ty i acc) )))) )
+        (fun (i,acc) -> (fun ty -> (( (succ i) ),( (f ty i acc) )))) )
         (0,init) ty) in
     res
-  let fold_data_ctors (ty) (f) (init) =
-    let rec loop (acc) (t) = begin match t with
-      | Ast.TyOf(_,Ast.TyId(_,Ast.IdUid(_,cons)),ty) ->
+  let fold_data_ctors ty f init =
+    let rec loop acc t = begin match t with
+      | Ast.TyOf (_,Ast.TyId (_,Ast.IdUid (_,cons)),ty) ->
           (f cons ( (Ast.list_of_ctyp ty [] ) ) acc)
-      | Ast.TyId(_,Ast.IdUid(_,cons)) ->   (f cons []  acc)
-      | Ast.TyOr(_,t1,t2) ->   (loop ( (loop acc t1) ) t2)
-      | Ast.TyNil(_) ->   acc
+      | Ast.TyId (_,Ast.IdUid (_,cons)) ->   (f cons []  acc)
+      | Ast.TyOr (_,t1,t2) ->   (loop ( (loop acc t1) ) t2)
+      | Ast.TyNil _ ->   acc
       | _ ->   assert false end in
     (loop init ty)
-  let fold_type_decls (m) (f) (init) = (SMap.fold f ( m.type_decls ) init)
-  let patt_of_data_ctor_decl (cons) (tyargs) =
+  let fold_type_decls m f init = (SMap.fold f ( m.type_decls ) init)
+  let patt_of_data_ctor_decl cons tyargs =
     (fold_args tyargs (
-      (fun (_) ->
-        (fun (i) ->
-          (fun (acc) ->
-            Ast.PaApp ((_loc,acc,( Ast.PaId ((_loc,( (x i) ))) )))))) ) (
-      Ast.PaId ((_loc,cons)) ))
-  let expr_of_data_ctor_decl (cons) (tyargs) =
+      (fun _ ->
+        (fun i ->
+          (fun acc -> Ast.PaApp ((_loc,acc,( Ast.PaId ((_loc,( (x i) ))) ))))))
+      ) ( Ast.PaId ((_loc,cons)) ))
+  let expr_of_data_ctor_decl cons tyargs =
     (fold_args tyargs (
-      (fun (_) ->
-        (fun (i) ->
-          (fun (acc) ->
-            Ast.ExApp ((_loc,acc,( Ast.ExId ((_loc,( (x i) ))) )))))) ) (
-      Ast.ExId ((_loc,cons)) ))
-  let is_antiquot_data_ctor (s) =
+      (fun _ ->
+        (fun i ->
+          (fun acc -> Ast.ExApp ((_loc,acc,( Ast.ExId ((_loc,( (x i) ))) ))))))
+      ) ( Ast.ExId ((_loc,cons)) ))
+  let is_antiquot_data_ctor s =
     let ls = (String.length s) in
     (( (ls > 3) ) && ( (( (String.sub s ( (ls - 3) ) 3) ) = "Ant") ))
-  let rec meta_ident (m) =
+  let rec meta_ident m =
     (function
-    | Ast.IdAcc(_,i1,i2) ->
+    | Ast.IdAcc (_,i1,i2) ->
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
@@ -1097,7 +1099,7 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                             Ast.IdUid ((_loc,"IdAcc")) ))) ))) ),(
                     Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) ))) ),(
                 (meta_ident m i1) ))) ),( (meta_ident m i2) )))
-    | Ast.IdApp(_,i1,i2) ->
+    | Ast.IdApp (_,i1,i2) ->
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
@@ -1111,8 +1113,8 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                             Ast.IdUid ((_loc,"IdApp")) ))) ))) ),(
                     Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) ))) ),(
                 (meta_ident m i1) ))) ),( (meta_ident m i2) )))
-    | Ast.IdAnt(_,s) ->   Ast.ExAnt ((_loc,s))
-    | Ast.IdLid(_,s) ->
+    | Ast.IdAnt (_,s) ->   Ast.ExAnt ((_loc,s))
+    | Ast.IdLid (_,s) ->
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
@@ -1124,7 +1126,7 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                         Ast.IdUid ((_loc,"IdLid")) ))) ))) ),(
                 Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) ))) ),(
             Ast.ExStr ((_loc,s)) )))
-    | Ast.IdUid(_,s) ->
+    | Ast.IdUid (_,s) ->
         Ast.ExApp
           ((_loc,(
             Ast.ExApp
@@ -1136,7 +1138,7 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                         Ast.IdUid ((_loc,"IdUid")) ))) ))) ),(
                 Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) ))) ),(
             Ast.ExStr ((_loc,s)) ))))
-  let m_app (m) (x) (y) =
+  let m_app m x y =
     Ast.ExApp
       ((_loc,(
         Ast.ExApp
@@ -1145,13 +1147,13 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
               ((_loc,( m.app ),(
                 Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) ))) ))) ),x))
         ),y))
-  let m_id (m) (i) =
+  let m_id m i =
     Ast.ExApp
       ((_loc,(
         Ast.ExApp
           ((_loc,( m.id ),( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"_loc")) )))
             ))) ),i))
-  let m_uid (m) (s) = (m_id m ( (meta_ident m ( Ast.IdUid ((_loc,s)) )) ))
+  let m_uid m s = (m_id m ( (meta_ident m ( Ast.IdUid ((_loc,s)) )) ))
   let failure =
     Ast.ExApp
       ((_loc,( Ast.ExId ((_loc,( Ast.IdLid ((_loc,"raise")) ))) ),(
@@ -1160,19 +1162,19 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
             Ast.ExStr
               ((_loc,"MetaGenerator: cannot handle that kind of types")) )))
         )))
-  let mk_meta (m) =
-    let m_name_uid (x) =
+  let mk_meta m =
+    let m_name_uid x =
       Ast.IdAcc ((_loc,( m.name ),( Ast.IdUid ((_loc,x)) ))) in
     (fold_type_decls m (
-      (fun (tyname) ->
-        (fun (tydcl) ->
-          (fun (binding_acc) -> begin match tydcl with
-            | Ast.TyDcl(_,_,tyvars,Ast.TySum(_,ty),_) ->
+      (fun tyname ->
+        (fun tydcl ->
+          (fun binding_acc -> begin match tydcl with
+            | Ast.TyDcl (_,_,tyvars,Ast.TySum (_,ty),_) ->
                 let match_case =
                   (fold_data_ctors ty (
-                    (fun (cons) ->
-                      (fun (tyargs) ->
-                        (fun (acc) ->
+                    (fun cons ->
+                      (fun tyargs ->
+                        (fun acc ->
                           let m_name_cons = (m_name_uid cons) in
                           let init =
                             (m_id m ( (meta_ident m m_name_cons) )) in
@@ -1198,18 +1200,18 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                 (expr_of_data_ctor_decl ( m.ant ) tyargs)
                               end else begin
                                 (fold_args tyargs (
-                                  (fun (ty) ->
-                                    (fun (i) ->
-                                      (fun (acc) ->
-                                        let rec fcall_of_ctyp (ty) = begin
+                                  (fun ty ->
+                                    (fun i ->
+                                      (fun acc ->
+                                        let rec fcall_of_ctyp ty = begin
                                           match ty with
-                                          | Ast.TyId(_,id) ->
+                                          | Ast.TyId (_,id) ->
                                               Ast.ExId
                                                 ((_loc,(
                                                   (meta_ (
                                                     (string_of_ident id) ))
                                                   )))
-                                          | Ast.TyTup(_,Ast.TySta(_,t1,t2))
+                                          | Ast.TyTup (_,Ast.TySta (_,t1,t2))
                                             ->
                                               Ast.ExFun
                                                 ((_loc,(
@@ -1306,11 +1308,11 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     ))) )))
                                                                     ))) )))
                                                               ))) ))) ))) )))
-                                          | Ast.TyApp(_,t1,t2) ->
+                                          | Ast.TyApp (_,t1,t2) ->
                                               Ast.ExApp
                                                 ((_loc,( (fcall_of_ctyp t1)
                                                   ),( (fcall_of_ctyp t2) )))
-                                          | Ast.TyQuo(_,s) ->
+                                          | Ast.TyQuo (_,s) ->
                                               Ast.ExId
                                                 ((_loc,(
                                                   Ast.IdLid
@@ -1337,9 +1339,9 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                               ),acc))))) ) ( Ast.McNil (_loc) )) in
                 let funct =
                   (List.fold_right (
-                    (fun (tyvar) ->
-                      (fun (acc) -> begin match tyvar with
-                        | (Ast.TyQuP(_,s)|Ast.TyQuM(_,s)|Ast.TyQuo(_,s)) ->
+                    (fun tyvar ->
+                      (fun acc -> begin match tyvar with
+                        | Ast.TyQuP (_,s)|Ast.TyQuM (_,s)|Ast.TyQuo (_,s) ->
                             Ast.ExFun
                               ((_loc,(
                                 Ast.McArr
@@ -1362,7 +1364,7 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                         Ast.PaId
                           ((_loc,( Ast.IdLid ((_loc,( ("meta_" ^ tyname) )))
                             ))) ),funct)) )))
-            | Ast.TyDcl(_,_,_,_,_) ->   binding_acc
+            | Ast.TyDcl (_,_,_,_,_) ->   binding_acc
             | _ ->   assert false end))) ) ( Ast.BiNil (_loc) ))
   let find_type_decls =
     object
@@ -1371,16 +1373,16 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
     method get = accu
     method! ctyp =
       (function
-      | (Ast.TyDcl(_,name,_,_,_) as t) ->   {<accu = (SMap.add name t accu)>}
+      | Ast.TyDcl (_,name,_,_,_) as t ->   {<accu = (SMap.add name t accu)>}
       | t ->   (super#ctyp t))
     end
-  let filter (st) =
+  let filter st =
     let type_decls = lazy ( (find_type_decls#str_item st)#get ) in
     ((object
        inherit  Ast.map as super
        method! module_expr =
-         (fun (me) ->
-           let mk_meta_module (m) =
+         (fun me ->
+           let mk_meta_module m =
              let bi = (mk_meta m) in
              Ast.MeStr
                ((_loc,(
@@ -1759,9 +1761,12 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                            ((_loc,Ast.ReRecursive ,bi)) )))
                                      ))) ))) ))) ))) ))) ))) in
            begin match (super#module_expr me) with
-             | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
-                                                (_,"MetaGeneratorExpr"))),Ast.MeId
-                         (_,i))
+             | Ast.MeApp
+               (_,Ast.MeId
+                (_,Ast.IdAcc
+                 (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid
+                  (_,"MetaGeneratorExpr"))),Ast.MeId
+                (_,i))
                ->
                  (mk_meta_module
                    {name = i;type_decls = ( (Lazy.force type_decls) );
@@ -1843,9 +1848,12 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                                                                     Ast.IdUid
                                                                     ((_loc,"ExAnt"))
                                                                     ))) )})
-             | Ast.MeApp(_,Ast.MeId(_,Ast.IdAcc(_,Ast.IdUid(_,"Camlp4Filters"),Ast.IdUid
-                                                (_,"MetaGeneratorPatt"))),Ast.MeId
-                         (_,i))
+             | Ast.MeApp
+               (_,Ast.MeId
+                (_,Ast.IdAcc
+                 (_,Ast.IdUid (_,"Camlp4Filters"),Ast.IdUid
+                  (_,"MetaGeneratorPatt"))),Ast.MeId
+                (_,i))
                ->
                  (mk_meta_module
                    {name = i;type_decls = ( (Lazy.force type_decls) );
@@ -1931,17 +1939,17 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
        end)#str_item st)
   let _= (Syn.AstFilters.register_str_item_filter filter)
   end
-let f_lift (((module P)  : (module Sig.PRECAST))) =
+let f_lift ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdAstLifter) (module MakeAstLifter))
-let f_exn (((module P)  : (module Sig.PRECAST))) =
+let f_exn ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdExceptionTracer) (module MakeExceptionTracer))
-let f_prof (((module P)  : (module Sig.PRECAST))) =
+let f_prof ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdProfiler) (module MakeProfiler))
-let f_fold (((module P)  : (module Sig.PRECAST))) =
+let f_fold ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdFoldGenerator) (module MakeFoldGenerator))
-let f_striploc (((module P)  : (module Sig.PRECAST))) =
+let f_striploc ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdLocationStripper) (module MakeLocationStripper))
-let f_trash (((module P)  : (module Sig.PRECAST))) =
+let f_trash ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdTrashRemover) (module MakeTrashRemover))
-let f_meta (((module P)  : (module Sig.PRECAST))) =
+let f_meta ((module P)  : (module Sig.PRECAST)) =
   (P.syntax_plugin (module IdMetaGenerator) (module MakeMetaGenerator))

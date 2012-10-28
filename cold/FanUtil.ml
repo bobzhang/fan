@@ -3,33 +3,33 @@ open LibUtil
 let normal_handler =
   (function
   | Out_of_memory  ->   Some ("Out of memory")
-  | Assert_failure(file,line,char) ->
+  | Assert_failure (file,line,char) ->
       Some
         ((sprintf "Assertion failed, file %S, line %d, char %d" file line
            char))
-  | Match_failure(file,line,char) ->
+  | Match_failure (file,line,char) ->
       Some
         ((sprintf "Pattern matching failed, file %S, line %d, char %d" file
            line char))
-  | Failure(str) ->   Some ((sprintf "Failure: %S" str))
-  | Invalid_argument(str) ->   Some ((sprintf "Invalid argument: %S" str))
-  | Sys_error(str) ->   Some ((sprintf "I/O error: %S" str))
+  | Failure str ->   Some ((sprintf "Failure: %S" str))
+  | Invalid_argument str ->   Some ((sprintf "Invalid argument: %S" str))
+  | Sys_error str ->   Some ((sprintf "I/O error: %S" str))
   | Stream.Failure  ->   Some ((sprintf "Parse failure"))
-  | Stream.Error(str) ->   Some ((sprintf "Parse error: %s" str))
+  | Stream.Error str ->   Some ((sprintf "Parse error: %s" str))
   | _ ->   None)
 let _= (Printexc.register_printer normal_handler)
-let valid_float_lexeme (s) =
+let valid_float_lexeme s =
   let l = (String.length s) in
-  let rec loop (i) =
+  let rec loop i =
     if (i >= l) then begin
       (s ^ ".")
     end else begin
       begin match s.[i] with
-      | ('0'|('1'..'9')|'-') ->   (loop ( (i + 1) ))
+      | '0'|'1'..'9'|'-' ->   (loop ( (i + 1) ))
       | _ ->   s end
     end in
   (loop 0)
-let float_repres (f) = begin match (classify_float f) with
+let float_repres f = begin match (classify_float f) with
   | FP_nan  ->   "nan"
   | FP_infinite  ->
       if (f < 0.0) then begin
@@ -51,17 +51,17 @@ let float_repres (f) = begin match (classify_float f) with
           end
         end in
       (valid_float_lexeme float_val) end
-let cvt_int_literal (s) = ((~-) ( (int_of_string ( ("-" ^ s) )) ))
-let cvt_int32_literal (s) = (Int32.neg ( (Int32.of_string ( ("-" ^ s) )) ))
-let cvt_int64_literal (s) = (Int64.neg ( (Int64.of_string ( ("-" ^ s) )) ))
-let cvt_nativeint_literal (s) =
+let cvt_int_literal s = ((~-) ( (int_of_string ( ("-" ^ s) )) ))
+let cvt_int32_literal s = (Int32.neg ( (Int32.of_string ( ("-" ^ s) )) ))
+let cvt_int64_literal s = (Int64.neg ( (Int64.of_string ( ("-" ^ s) )) ))
+let cvt_nativeint_literal s =
   (Nativeint.neg ( (Nativeint.of_string ( ("-" ^ s) )) ))
-let mk_anti ?(c="")  (n) (s) = ("\\$" ^ ( (n ^ ( (c ^ ( (":" ^ s) )) )) ))
-let append_eLem (el) (e) = (el @ ( [e] ))
-let is_antiquot (s) =
+let mk_anti ?(c="")  n s = ("\\$" ^ ( (n ^ ( (c ^ ( (":" ^ s) )) )) ))
+let append_eLem el e = (el @ ( [e] ))
+let is_antiquot s =
   let len = (String.length s) in
   (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) ))
-let view_antiquot (s) =
+let view_antiquot s =
   let len = (String.length s) in
   if (( (len > 2) ) && ( (( (( s.[0] ) = '\\') ) && ( (( s.[1] ) = '$') )) )) then begin
     begin try
@@ -87,15 +87,15 @@ let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
   end else begin
     default
   end
-let neg_string (n) =
+let neg_string n =
   let len = (String.length n) in
   if (( (len > 0) ) && ( (( n.[0] ) = '-') )) then begin
     (String.sub n 1 ( (len - 1) ))
   end else begin
     ("-" ^ n)
   end
-let stream_peek_nth (n) (strm) =
-  let rec loop (i) =
+let stream_peek_nth n strm =
+  let rec loop i =
     (function
     | x::xs ->
         if (i = 1) then begin
@@ -105,8 +105,8 @@ let stream_peek_nth (n) (strm) =
         end
     | []  ->   None) in
   (loop n ( (Stream.npeek n strm) ))
-let njunk (n) (strm) = for _i = 1 to  n do (Stream.junk strm) done
-let rec list_remove (x) =
+let njunk n strm = for _i = 1 to  n do (Stream.junk strm) done
+let rec list_remove x =
   (function
   | (y,_)::l when (y = x) ->   l
   | d::l ->   d::(list_remove x l)
@@ -114,7 +114,7 @@ let rec list_remove (x) =
 let symbolchar =
   let list =
     ['$';'!';'%';'&';'*';'+';'-';'.';'/';':';'<';'=';'>';'?';'@';'^';'|';'~';'\\'] in
-  let rec loop (s) (i) =
+  let rec loop s i =
     if (i == ( (String.length s) )) then begin
       true
     end else begin
@@ -125,9 +125,9 @@ let symbolchar =
       end
     end in
   loop
-let stopped_at (_loc) = Some ((FanLoc.move_line 1 _loc))
-let with_open_out_file (x) (f) = begin match x with
-  | Some(file) ->
+let stopped_at _loc = Some ((FanLoc.move_line 1 _loc))
+let with_open_out_file x f = begin match x with
+  | Some file ->
       let oc = (open_out_bin file) in
       begin
         (f oc);
@@ -140,12 +140,12 @@ let with_open_out_file (x) (f) = begin match x with
       (f stdout);
       (flush stdout)
       end end
-let dump_ast (magic) (ast) (oc) =
+let dump_ast magic ast oc =
   begin
   (output_string oc magic);
   (output_value oc ast)
   end
-let dump_pt (magic) (fname) (pt) (oc) =
+let dump_pt magic fname pt oc =
   begin
   (output_string oc magic);
   (output_value oc (
@@ -156,20 +156,20 @@ let dump_pt (magic) (fname) (pt) (oc) =
     end ));
   (output_value oc pt)
   end
-let char_of_char_token (loc) (s) = begin try
+let char_of_char_token loc s = begin try
   (TokenEval.char s)
   with
-  | (Failure(_) as exn) ->   (FanLoc.raise loc exn) end
-let string_of_string_token (loc) (s) = begin try
+  | Failure _ as exn ->   (FanLoc.raise loc exn) end
+let string_of_string_token loc s = begin try
   (TokenEval.string s)
   with
-  | (Failure(_) as exn) ->   (FanLoc.raise loc exn) end
-let remove_underscores (s) =
+  | Failure _ as exn ->   (FanLoc.raise loc exn) end
+let remove_underscores s =
   let l = (String.length s) in
   let buf = (Buffer.create l) in
-  let ()  =
+  let (() ) =
     (String.iter (
-      (fun (ch) ->
+      (fun ch ->
         if (ch <> '_') then begin
           (ignore ( (Buffer.add_char buf ch) ))
         end else begin
@@ -185,9 +185,9 @@ module Options :
   val parse : (string  -> unit ) -> string  array  -> string  list  end =
   struct
   type spec_list = (string *Arg.spec *string ) list   open Format
-  let rec action_arg (s) (sl) =
+  let rec action_arg s sl =
     (function
-    | Arg.Unit(f) ->
+    | Arg.Unit f ->
         if (s = "") then begin
           begin
           (f () );
@@ -196,7 +196,7 @@ module Options :
         end else begin
           None
         end
-    | Arg.Bool(f) ->
+    | Arg.Bool f ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->
@@ -206,7 +206,7 @@ module Options :
                 Some (sl)
                 end
               with
-              | Invalid_argument("bool_of_string") ->   None
+              | Invalid_argument "bool_of_string" ->   None
             end
           | []  ->   None end
         end else begin
@@ -216,10 +216,10 @@ module Options :
             Some (sl)
             end
           with
-          | Invalid_argument("bool_of_string") ->   None
+          | Invalid_argument "bool_of_string" ->   None
         end
         end
-    | Arg.Set(r) ->
+    | Arg.Set r ->
         if (s = "") then begin
           begin
           (r := true );
@@ -228,7 +228,7 @@ module Options :
         end else begin
           None
         end
-    | Arg.Clear(r) ->
+    | Arg.Clear r ->
         if (s = "") then begin
           begin
           (r := false );
@@ -237,11 +237,11 @@ module Options :
         end else begin
           None
         end
-    | Arg.Rest(f) ->   begin
-                       (List.iter f ( s::sl ));
-                       Some ([])
-                       end
-    | Arg.String(f) ->
+    | Arg.Rest f ->   begin
+                      (List.iter f ( s::sl ));
+                      Some ([])
+                      end
+    | Arg.String f ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->   begin
@@ -255,7 +255,7 @@ module Options :
           Some (sl)
           end
         end
-    | Arg.Set_string(r) ->
+    | Arg.Set_string r ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->   begin
@@ -269,7 +269,7 @@ module Options :
           Some (sl)
           end
         end
-    | Arg.Int(f) ->
+    | Arg.Int f ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->
@@ -279,20 +279,19 @@ module Options :
                 Some (sl)
                 end
               with
-              | Failure("int_of_string") ->   None
+              | Failure "int_of_string" ->   None
             end
           | []  ->   None end
         end else begin
-          begin try
-          begin
-            (f ( (int_of_string s) ));
-            Some (sl)
-            end
+          begin try begin
+                      (f ( (int_of_string s) ));
+                      Some (sl)
+                      end
           with
-          | Failure("int_of_string") ->   None
+          | Failure "int_of_string" ->   None
         end
         end
-    | Arg.Set_int(r) ->
+    | Arg.Set_int r ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->
@@ -302,7 +301,7 @@ module Options :
                 Some (sl)
                 end
               with
-              | Failure("int_of_string") ->   None
+              | Failure "int_of_string" ->   None
             end
           | []  ->   None end
         end else begin
@@ -312,10 +311,10 @@ module Options :
             Some (sl)
             end
           with
-          | Failure("int_of_string") ->   None
+          | Failure "int_of_string" ->   None
         end
         end
-    | Arg.Float(f) ->
+    | Arg.Float f ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->   begin
@@ -329,7 +328,7 @@ module Options :
           Some (sl)
           end
         end
-    | Arg.Set_float(r) ->
+    | Arg.Set_float r ->
         if (s = "") then begin
           begin match sl with
           | s::sl ->   begin
@@ -343,17 +342,17 @@ module Options :
           Some (sl)
           end
         end
-    | Arg.Tuple(specs) ->
-        let rec action_args (s) (sl) =
+    | Arg.Tuple specs ->
+        let rec action_args s sl =
           (function
           | []  ->   Some (sl)
           | spec::spec_list ->
               begin match (action_arg s sl spec) with
               | None  ->   (action_args "" []  spec_list)
-              | Some(s::sl) ->   (action_args s sl spec_list)
-              | Some(sl) ->   (action_args "" sl spec_list) end) in
+              | Some (s::sl) ->   (action_args s sl spec_list)
+              | Some sl ->   (action_args "" sl spec_list) end) in
         (action_args s sl specs)
-    | Arg.Symbol(syms,f) ->
+    | Arg.Symbol (syms,f) ->
         begin match if (s = "") then begin
                       sl
                     end else begin
@@ -365,8 +364,8 @@ module Options :
                                             Some (sl)
                                             end
         | _ ->   None end)
-  let common_start (s1) (s2) =
-    let rec loop (i) =
+  let common_start s1 s2 =
+    let rec loop i =
       if
           (( (i == ( (String.length s1) )) ) || (
             (i == ( (String.length s2) )) ))
@@ -380,28 +379,28 @@ module Options :
         end
       end in
     (loop 0)
-  let parse_arg (fold) (s) (sl) =
+  let parse_arg fold s sl =
     (fold (
-      (fun ((name,action,_)) ->
-        (fun (acu) ->
+      (fun (name,action,_) ->
+        (fun acu ->
           let i = (common_start s name) in
           if (i == ( (String.length name) )) then begin
             begin try
             (action_arg ( (String.sub s i ( (( (String.length s) ) - i) )) )
               sl action)
             with
-            | Arg.Bad(_) ->   acu
+            | Arg.Bad _ ->   acu
           end
           end else begin
             acu
           end)) ) None )
-  let rec parse_aux (fold) (anon_fun) =
+  let rec parse_aux fold anon_fun =
     (function
     | []  ->   []
     | s::sl ->
         if (( (( (String.length s) ) > 1) ) && ( (( s.[0] ) = '-') )) then begin
           begin match (parse_arg fold s sl) with
-          | Some(sl) ->   (parse_aux fold anon_fun sl)
+          | Some sl ->   (parse_aux fold anon_fun sl)
           | None  ->   s::(parse_aux fold anon_fun sl) end
         end else begin
           begin
@@ -409,9 +408,9 @@ module Options :
           (parse_aux fold anon_fun sl)
           end
         end)
-  let align_doc (key) (s) =
+  let align_doc key s =
     let s =
-      let rec loop (i) =
+      let rec loop i =
         if (i = ( (String.length s) )) then begin
           ""
         end else begin
@@ -425,7 +424,7 @@ module Options :
     let (p,s) =
       if (( (String.length s) ) > 0) then begin
         if (( s.[0] ) = '<') then begin
-          let rec loop (i) =
+          let rec loop i =
             if (i = ( (String.length s) )) then begin
               ("",s)
             end else begin
@@ -433,7 +432,7 @@ module Options :
                 (loop ( (i + 1) ))
               end else begin
                 let p = (String.sub s 0 ( (i + 1) )) in
-                let rec loop (i) =
+                let rec loop i =
                   if (i >= ( (String.length s) )) then begin
                     (p,"")
                   end else begin
@@ -459,22 +458,22 @@ module Options :
         (max 1 ( (( (16 - ( (String.length key) )) ) - ( (String.length p) ))
           )) ) ' ') in
     (p ^ ( (tab ^ s) ))
-  let make_symlist (l) = begin match l with
+  let make_symlist l = begin match l with
     | []  ->   "<none>"
     | h::t ->
         ((
-          (List.fold_left ( (fun (x) -> (fun (y) -> (x ^ ( ("|" ^ y) )))) ) (
+          (List.fold_left ( (fun x -> (fun y -> (x ^ ( ("|" ^ y) )))) ) (
             ("{" ^ h) ) t) ) ^ "}") end
-  let print_usage_list (l) =
+  let print_usage_list l =
     (List.iter (
-      (fun ((key,spec,doc)) -> begin match spec with
-        | Arg.Symbol(symbs,_) ->
+      (fun (key,spec,doc) -> begin match spec with
+        | Arg.Symbol (symbs,_) ->
             let s = (make_symlist symbs) in
             let synt = (key ^ ( (" " ^ s) )) in
             (eprintf "  %s %s\n" synt ( (align_doc synt doc) ))
         | _ ->   (eprintf "  %s %s\n" key ( (align_doc key doc) )) end) ) l)
-  let remaining_args (argv) =
-    let rec loop (l) (i) =
+  let remaining_args argv =
+    let rec loop l i =
       if (i == ( (Array.length argv) )) then begin
         l
       end else begin
@@ -482,17 +481,17 @@ module Options :
       end in
     (List.rev ( (loop []  ( (( Arg.current.contents ) + 1) )) ))
   let init_spec_list = (ref [] ) let ext_spec_list = (ref [] )
-  let init (spec_list) = (init_spec_list := spec_list)
-  let add (name) (spec) (descr) =
+  let init spec_list = (init_spec_list := spec_list)
+  let add name spec descr =
     (ext_spec_list := ( (name,spec,descr)::ext_spec_list.contents ))
-  let fold (f) (init) =
+  let fold f init =
     let spec_list =
       (( init_spec_list.contents ) @ ( ext_spec_list.contents )) in
     let specs =
-      (Sort.list ( (fun ((k1,_,_)) -> (fun ((k2,_,_)) -> (k1 >= k2))) )
+      (Sort.list ( (fun (k1,_,_) -> (fun (k2,_,_) -> (k1 >= k2))) )
         spec_list) in
     (List.fold_right f specs init)
-  let parse (anon_fun) (argv) =
+  let parse anon_fun argv =
     let remaining_args = (remaining_args argv) in
     (parse_aux fold anon_fun remaining_args)
   let ext_spec_list (() ) = ext_spec_list.contents

@@ -1,9 +1,9 @@
 module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   module Ast = Camlp4Ast type warning = FanLoc.t  -> string  -> unit  
-  let default_warning (loc) (txt) =
+  let default_warning loc txt =
     (Format.eprintf "<W> %a: %s@." FanLoc.print loc txt)
   let current_warning = (ref default_warning)
-  let print_warning (loc) (txt) = ((current_warning.contents) loc txt)
+  let print_warning loc txt = ((current_warning.contents) loc txt)
   let a_CHAR = (Gram.mk "a_CHAR") let a_FLOAT = (Gram.mk "a_FLOAT")
   let a_INT = (Gram.mk "a_INT") let a_INT32 = (Gram.mk "a_INT32")
   let a_INT64 = (Gram.mk "a_INT64") let a_LABEL = (Gram.mk "a_LABEL")
@@ -164,41 +164,41 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
                    | `EOI ->   true
                    | _ ->   false) ),(`Normal,"`EOI")))] ),(
                (Gram.mk_action (
-                 (fun (__camlp4_0) ->
-                   (fun ((_loc : FanLoc.t )) -> begin match __camlp4_0 with
+                 (fun __camlp4_0 ->
+                   (fun (_loc : FanLoc.t ) -> begin match __camlp4_0 with
                      | `EOI ->   (None :'top_phrase )
                      | _ ->   assert false end)) )) ))] ))] )))) () ) ))
   module AntiquotSyntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = (Gram.eoi_entry expr)
     let antiquot_patt = (Gram.eoi_entry patt)
-    let parse_expr (loc) (str) = (Gram.parse_string antiquot_expr loc str)
-    let parse_patt (loc) (str) = (Gram.parse_string antiquot_patt loc str)
+    let parse_expr loc str = (Gram.parse_string antiquot_expr loc str)
+    let parse_patt loc str = (Gram.parse_string antiquot_patt loc str)
     end module Quotation = Quotation.Make(AntiquotSyntax)
-  let wrap (directive_handler) (pa) (init_loc) (cs) =
-    let rec loop (loc) =
+  let wrap directive_handler pa init_loc cs =
+    let rec loop loc =
       let (pl,stopped_at_directive) = (pa loc cs) in begin match
         stopped_at_directive with
-        | Some(new_loc) ->
+        | Some new_loc ->
             let pl = begin match (List.rev pl) with
               | []  ->   assert false
               | x::xs ->
                   begin match (directive_handler x) with
                   | None  ->   xs
-                  | Some(x) ->   x::xs end
+                  | Some x ->   x::xs end
               end in
             (( (List.rev pl) ) @ ( (loop new_loc) ))
         | None  ->   pl end in
     (loop init_loc)
-  let parse_implem ?(directive_handler=(fun (_) -> None))  (_loc) (cs) =
+  let parse_implem ?(directive_handler=(fun _ -> None))  _loc cs =
     let l = (wrap directive_handler ( (Gram.parse implem) ) _loc cs) in
     (Ast.stSem_of_list l)
-  let parse_interf ?(directive_handler=(fun (_) -> None))  (_loc) (cs) =
+  let parse_interf ?(directive_handler=(fun _ -> None))  _loc cs =
     let l = (wrap directive_handler ( (Gram.parse interf) ) _loc cs) in
     (Ast.sgSem_of_list l)
-  let print_interf ?input_file:(_)  ?output_file:(_)  (_) =
+  let print_interf ?input_file:_  ?output_file:_  _ =
     (failwith "No interface printer")
-  let print_implem ?input_file:(_)  ?output_file:(_)  (_) =
+  let print_implem ?input_file:_  ?output_file:_  _ =
     (failwith "No implementation printer")
   module AstFilters = AstFilters.Make(struct
     

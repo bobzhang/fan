@@ -1,32 +1,32 @@
 open Structure
 open Format
-let is_before (s1) (s2) = begin match (s1,s2) with
-  | (((`Skeyword _)|(`Stoken _)),((`Skeyword _)|(`Stoken _))) ->   false
-  | (((`Skeyword _)|(`Stoken _)),_) ->   true
+let is_before s1 s2 = begin match (s1,s2) with
+  | ((`Skeyword _|`Stoken _),(`Skeyword _|`Stoken _)) ->   false
+  | ((`Skeyword _|`Stoken _),_) ->   true
   | _ ->   false end
 let rec derive_eps =
   (function
-  | ((`Slist0 _)|(`Slist0sep (_,_))|(`Sopt _)) ->   true
-  | (`Stry s) ->   (derive_eps s)
-  | (`Stree t) ->   (tree_derive_eps t)
-  | ((`Slist1 _)|(`Slist1sep (_,_))|(`Stoken _)|(`Skeyword _)) ->   false
-  | ((`Smeta (_,_,_))|(`Snterm _)|(`Snterml (_,_))|`Snext|`Sself) ->   false)
-  and tree_derive_eps =
+  | `Slist0 _|`Slist0sep (_,_)|`Sopt _ ->   true
+  | `Stry s ->   (derive_eps s)
+  | `Stree t ->   (tree_derive_eps t)
+  | `Slist1 _|`Slist1sep (_,_)|`Stoken _|`Skeyword _ ->   false
+  | `Smeta (_,_,_)|`Snterm _|`Snterml (_,_)|`Snext|`Sself ->   false) and
+  tree_derive_eps =
   (function
-  | LocAct(_,_) ->   true
-  | Node({node = s;brother = bro;son = son}) ->
+  | LocAct (_,_) ->   true
+  | Node {node = s;brother = bro;son = son} ->
       (( (( (derive_eps s) ) && ( (tree_derive_eps son) )) ) || (
         (tree_derive_eps bro) ))
   | DeadEnd  ->   false)
-let empty_lev (lname) (assoc) =
-  let assoc = begin match assoc with | Some(a) ->   a
+let empty_lev lname assoc =
+  let assoc = begin match assoc with | Some a ->   a
                                      | None  ->   `LA
     end in
   {assoc = assoc;lname = lname;lsuffix = DeadEnd ;lprefix = DeadEnd }
-let change_lev (entry) (lev) (n) (lname) (assoc) =
+let change_lev entry lev n lname assoc =
   let a = begin match assoc with
     | None  ->   lev.assoc
-    | Some(a) ->
+    | Some a ->
         begin
         if
             (( (a <> ( lev.assoc )) ) && (
@@ -47,7 +47,7 @@ let change_lev (entry) (lev) (n) (lname) (assoc) =
     match
     lname
     with
-    | Some(n) ->
+    | Some n ->
         if
             (( (lname <> ( lev.lname )) ) && (
               ((entry.egram).warning_verbose).contents ))
@@ -65,14 +65,14 @@ let change_lev (entry) (lev) (n) (lname) (assoc) =
                                                                  lev.lprefix
                                                                  )}
     end
-let change_to_self (entry) =
+let change_to_self entry =
   (function
-  | (`Snterm e) when (e == entry) ->   `Sself
+  | `Snterm e when (e == entry) ->   `Sself
   | x ->   x)
-let get_level (entry) (position) (levs) = begin match position with
-  | Some(`First) ->   ([] ,empty_lev,levs)
-  | Some(`Last) ->   (levs,empty_lev,[] )
-  | Some((`Level n)) ->
+let get_level entry position levs = begin match position with
+  | Some `First ->   ([] ,empty_lev,levs)
+  | Some `Last ->   (levs,empty_lev,[] )
+  | Some (`Level n) ->
       let rec get =
         (function
         | []  ->
@@ -90,7 +90,7 @@ let get_level (entry) (position) (levs) = begin match position with
               (( lev::levs1 ),rlev,levs2)
             end) in
       (get levs)
-  | Some((`Before n)) ->
+  | Some (`Before n) ->
       let rec get =
         (function
         | []  ->
@@ -108,7 +108,7 @@ let get_level (entry) (position) (levs) = begin match position with
               (( lev::levs1 ),rlev,levs2)
             end) in
       (get levs)
-  | Some((`After n)) ->
+  | Some (`After n) ->
       let rec get =
         (function
         | []  ->
@@ -130,9 +130,9 @@ let get_level (entry) (position) (levs) = begin match position with
       begin match levs with
       | lev::levs ->   ([] ,( (change_lev entry lev "<top>") ),levs)
       | []  ->   ([] ,empty_lev,[] ) end end
-let rec check_gram (entry) =
+let rec check_gram entry =
   (function
-  | (`Snterm e) ->
+  | `Snterm e ->
       if (( e.egram ) != ( entry.egram )) then begin
         begin
         (eprintf
@@ -144,7 +144,7 @@ let rec check_gram (entry) =
       end else begin
         ()
       end
-  | (`Snterml (e,_)) ->
+  | `Snterml (e,_) ->
       if (( e.egram ) != ( entry.egram )) then begin
         begin
         (eprintf
@@ -156,66 +156,64 @@ let rec check_gram (entry) =
       end else begin
         ()
       end
-  | (`Smeta (_,sl,_)) ->   (List.iter ( (check_gram entry) ) sl)
-  | (`Slist0sep (s,t)) ->   begin
-                            (check_gram entry t);
-                            (check_gram entry s)
-                            end
-  | (`Slist1sep (s,t)) ->   begin
-                            (check_gram entry t);
-                            (check_gram entry s)
-                            end
-  | ((`Slist0 s)|(`Slist1 s)|(`Sopt s)|(`Stry s)) ->   (check_gram entry s)
-  | (`Stree t) ->   (tree_check_gram entry t)
-  | (`Snext|`Sself|(`Stoken _)|(`Skeyword _)) ->   ()) and tree_check_gram
-  (entry) =
+  | `Smeta (_,sl,_) ->   (List.iter ( (check_gram entry) ) sl)
+  | `Slist0sep (s,t) ->   begin
+                          (check_gram entry t);
+                          (check_gram entry s)
+                          end
+  | `Slist1sep (s,t) ->   begin
+                          (check_gram entry t);
+                          (check_gram entry s)
+                          end
+  | `Slist0 s|`Slist1 s|`Sopt s|`Stry s ->   (check_gram entry s)
+  | `Stree t ->   (tree_check_gram entry t)
+  | `Snext|`Sself|`Stoken _|`Skeyword _ ->   ()) and tree_check_gram entry =
   (function
-  | Node({node = n;brother = bro;son = son}) ->
+  | Node {node = n;brother = bro;son = son} ->
       begin
       (check_gram entry n);
       (tree_check_gram entry bro);
       (tree_check_gram entry son)
       end
-  | (LocAct(_,_)|DeadEnd ) ->   ())
+  | LocAct (_,_)|DeadEnd  ->   ())
 let get_initial =
   (function
   | `Sself::symbols ->   (true ,symbols)
   | symbols ->   (false ,symbols))
-let insert_tokens (gram) (symbols) =
+let insert_tokens gram symbols =
   let rec insert =
     (function
-    | (`Smeta (_,sl,_)) ->   (List.iter insert sl)
-    | ((`Slist0 s)|(`Slist1 s)|(`Sopt s)|(`Stry s)) ->   (insert s)
-    | (`Slist0sep (s,t)) ->   begin
-                              (insert s);
-                              (insert t)
-                              end
-    | (`Slist1sep (s,t)) ->   begin
-                              (insert s);
-                              (insert t)
-                              end
-    | (`Stree t) ->   (tinsert t)
-    | (`Skeyword kwd) ->   (using gram kwd)
-    | ((`Snterm _)|(`Snterml (_,_))|`Snext|`Sself|(`Stoken _)) ->   ()) and
-    tinsert =
+    | `Smeta (_,sl,_) ->   (List.iter insert sl)
+    | `Slist0 s|`Slist1 s|`Sopt s|`Stry s ->   (insert s)
+    | `Slist0sep (s,t) ->   begin
+                            (insert s);
+                            (insert t)
+                            end
+    | `Slist1sep (s,t) ->   begin
+                            (insert s);
+                            (insert t)
+                            end
+    | `Stree t ->   (tinsert t)
+    | `Skeyword kwd ->   (using gram kwd)
+    | `Snterm _|`Snterml (_,_)|`Snext|`Sself|`Stoken _ ->   ()) and tinsert =
     (function
-    | Node({node = s;brother = bro;son = son}) ->
+    | Node {node = s;brother = bro;son = son} ->
         begin
         (insert s);
         (tinsert bro);
         (tinsert son)
         end
-    | (LocAct(_,_)|DeadEnd ) ->   ()) in
+    | LocAct (_,_)|DeadEnd  ->   ()) in
   (List.iter insert symbols)
-let insert_tree (entry) (gsymbols) (action) (tree) =
-  let rec insert (symbols) (tree) = begin match symbols with
+let insert_tree entry gsymbols action tree =
+  let rec insert symbols tree = begin match symbols with
     | s::sl ->   (insert_in_tree s sl tree)
     | []  ->
         begin match tree with
-        | Node({node = s;son = son;brother = bro}) ->
+        | Node {node = s;son = son;brother = bro} ->
             Node ({node = s;son = son;brother = ( (insert []  bro) )})
-        | LocAct(old_action,action_list) ->
-            let ()  =
+        | LocAct (old_action,action_list) ->
+            let (() ) =
               if ((entry.egram).warning_verbose).contents then begin
                 (eprintf
                   "<W> Grammar extension: in [%s] some rule has been masked@."
@@ -225,13 +223,13 @@ let insert_tree (entry) (gsymbols) (action) (tree) =
               end in
             LocAct ((action,( old_action::action_list )))
         | DeadEnd  ->   LocAct ((action,[] )) end
-    end and insert_in_tree (s) (sl) (tree) = begin match
-    (try_insert s sl tree) with
-    | Some(t) ->   t
+    end and insert_in_tree s sl tree = begin match (try_insert s sl tree)
+    with
+    | Some t ->   t
     | None  ->
         Node ({node = s;son = ( (insert sl DeadEnd ) );brother = tree})
-    end and try_insert (s) (sl) (tree) = begin match tree with
-    | Node({node = s1;son = son;brother = bro}) ->
+    end and try_insert s sl tree = begin match tree with
+    | Node {node = s1;son = son;brother = bro} ->
         if (Tools.eq_symbol s s1) then begin
           let t =
             Node ({node = s1;son = ( (insert sl son) );brother = bro}) in
@@ -242,7 +240,7 @@ let insert_tree (entry) (gsymbols) (action) (tree) =
                 (( (derive_eps s) ) && ( (not ( (derive_eps s1) )) )) ))
               then begin
             let bro = begin match (try_insert s sl bro) with
-              | Some(bro) ->   bro
+              | Some bro ->   bro
               | None  ->
                   Node
                     ({node = s;son = ( (insert sl DeadEnd ) );brother = bro})
@@ -250,15 +248,15 @@ let insert_tree (entry) (gsymbols) (action) (tree) =
             let t = Node ({node = s1;son = son;brother = bro}) in Some (t)
           end else begin
             begin match (try_insert s sl bro) with
-            | Some(bro) ->
+            | Some bro ->
                 let t = Node ({node = s1;son = son;brother = bro}) in
                 Some (t)
             | None  ->   None end
           end
         end
-    | (LocAct(_,_)|DeadEnd ) ->   None end in
+    | LocAct (_,_)|DeadEnd  ->   None end in
   (insert gsymbols tree)
-let insert_level (entry) (e1) (symbols) (action) (slev) = begin match e1 with
+let insert_level entry e1 symbols action slev = begin match e1 with
   | true  ->
       {assoc = ( slev.assoc );lname = ( slev.lname );lsuffix = (
                                                        (insert_tree entry
@@ -272,10 +270,10 @@ let insert_level (entry) (e1) (symbols) (action) (slev) = begin match e1 with
                                                              symbols action (
                                                              slev.lprefix ))
                                                            )} end
-let levels_of_rules (entry) (position) (rules) =
+let levels_of_rules entry position rules =
   let elev = begin match entry.edesc with
-    | Dlevels(elev) ->   elev
-    | Dparser(_) ->
+    | Dlevels elev ->   elev
+    | Dparser _ ->
         begin
         (eprintf "Error: entry not extensible: \"%s\"\n" ( entry.ename ));
         (flush Pervasives.stderr);
@@ -288,39 +286,39 @@ let levels_of_rules (entry) (position) (rules) =
     let (levs1,make_lev,levs2) = (get_level entry position elev) in
     let (levs,_) =
       (List.fold_left (
-        (fun ((levs,make_lev)) ->
-          (fun ((lname,assoc,level)) ->
+        (fun (levs,make_lev) ->
+          (fun (lname,assoc,level) ->
             let lev = (make_lev lname assoc) in
             let lev =
               (List.fold_left (
-                (fun (lev) ->
-                  (fun ((symbols,action)) ->
+                (fun lev ->
+                  (fun (symbols,action) ->
                     let symbols =
                       (List.map ( (change_to_self entry) ) symbols) in
-                    let ()  = (List.iter ( (check_gram entry) ) symbols) in
+                    let (() ) = (List.iter ( (check_gram entry) ) symbols) in
                     let (e1,symbols) = (get_initial symbols) in
-                    let ()  = (insert_tokens ( entry.egram ) symbols) in
+                    let (() ) = (insert_tokens ( entry.egram ) symbols) in
                     (insert_level entry e1 symbols action lev))) ) lev level) in
             (( lev::levs ),empty_lev))) ) ([] ,make_lev) rules) in
     (levs1 @ ( (( (List.rev levs) ) @ levs2) ))
   end
-let extend (entry) ((position,rules)) =
+let extend entry (position,rules) =
   let elev = (levels_of_rules entry position rules) in
   begin
     entry.edesc <- Dlevels (elev);
     entry.estart <-
-      (fun (lev) ->
-        (fun (strm) ->
+      (fun lev ->
+        (fun strm ->
           let f = (Parser.start_parser_of_entry entry) in
           begin
             entry.estart <- f;
             (f lev strm)
             end));
     entry.econtinue <-
-      (fun (lev) ->
-        (fun (bp) ->
-          (fun (a) ->
-            (fun (strm) ->
+      (fun lev ->
+        (fun bp ->
+          (fun a ->
+            (fun strm ->
               let f = (Parser.continue_parser_of_entry entry) in
               begin
                 entry.econtinue <- f;

@@ -8,10 +8,9 @@ module type S =
 module Make(U:sig  end) : S = struct
   type t = string  Queue.t  
   let instance = (ref ( (fun (() ) -> (failwith "empty in dynloader")) ))
-  exception Error of string *string 
-  let include_dir (x) (y) = (Queue.add y x)
-  let fold_load_path (x) (f) (acc) =
-    (Queue.fold ( (fun (x) -> (fun (y) -> (f y x))) ) acc x)
+  exception Error of string *string  let include_dir x y = (Queue.add y x)
+  let fold_load_path x f acc =
+    (Queue.fold ( (fun x -> (fun y -> (f y x))) ) acc x)
   let mk ?(ocaml_stdlib=true)  ?(camlp4_stdlib=true)  (() ) =
     let q = (Queue.create () ) in
     begin
@@ -36,7 +35,7 @@ module Make(U:sig  end) : S = struct
       (include_dir q ".");
       q
       end
-  let find_in_path (x) (name) =
+  let find_in_path x name =
     if (not ( (Filename.is_implicit name) )) then begin
       if (Sys.file_exists name) then begin
         name
@@ -46,7 +45,7 @@ module Make(U:sig  end) : S = struct
     end else begin
       let res =
         (fold_load_path x (
-          (fun (dir) ->
+          (fun dir ->
             (function
             | None  ->
                 let fullname = (Filename.concat dir name) in
@@ -57,13 +56,13 @@ module Make(U:sig  end) : S = struct
                 end
             | x ->   x)) ) None ) in
       begin match res with | None  ->   (raise Not_found )
-                           | Some(x) ->   x
+                           | Some x ->   x
         end
     end
   let load =
     let _initialized = (ref false ) in
-    (fun (_path) ->
-      (fun (file) ->
+    (fun _path ->
+      (fun file ->
         begin
         if (not ( _initialized.contents )) then begin
           begin try
@@ -73,7 +72,7 @@ module Make(U:sig  end) : S = struct
             (_initialized := true )
             end
           with
-          | Dynlink.Error(e) ->
+          | Dynlink.Error e ->
             (raise (
               Error
                 (("Camlp4's dynamic loader initialization",(
@@ -88,7 +87,7 @@ module Make(U:sig  end) : S = struct
             (raise ( Error ((file,"file not found in path")) ))
         end in begin try (Dynlink.loadfile fname)
           with
-          | Dynlink.Error(e) ->
+          | Dynlink.Error e ->
             (raise ( Error ((fname,( (Dynlink.error_message e) ))) ))
         end
         end)) let is_native = Dynlink.is_native

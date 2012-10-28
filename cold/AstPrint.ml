@@ -286,18 +286,8 @@ class printer  ()= object(self:'self)
             (self#list aux  ~sep:"@ and@ ")  cstrs)
       | _ -> self#paren true self#core_type ppf x
    (********************pattern********************)
+   (* be cautious when use [pattern], [pattern1] is preferred *)         
    method pattern ppf x =
-     let rec pattern_list_helper ppf  =
-       function
-         | {ppat_desc =
-            Ppat_construct
-              ({ txt = Lident("::") ;_},
-               Some ({ppat_desc = Ppat_tuple([pat1; pat2]);_}),
-               _);_} ->
-                 pp ppf "%a::%a"
-                   self#pattern  pat1
-                   pattern_list_helper pat2
-         | p -> self#pattern ppf p in
      let rec pattern_or_helper  cur = function
        |{ppat_desc = Ppat_constant (Const_char a);_}
         -> 
@@ -315,66 +305,74 @@ class printer  ()= object(self:'self)
            list_of_pattern  (p2::acc) p1
        | x -> x::acc in
      match x.ppat_desc with
-     | Ppat_construct (({txt;_} as li), po, _) -> (* FIXME The third field always false *)
+     | Ppat_alias (p, s) -> pp ppf "@[<2>%a@;as@;%s@]"  self#pattern p  s.txt (* RA*)
+     | Ppat_or (p1, p2) -> (* *)
+         (match p1 with
+         | {ppat_desc=Ppat_constant (Const_char a);_} -> begin 
+             match pattern_or_helper a p2 with
+             |Some b -> pp ppf "@[<2>%C..%C@]" a b 
+             |None ->
+                 self#list  ~sep:"|" self#pattern ppf (list_of_pattern [] x) end
+         | _ ->
+             self#list ~sep:"|" self#pattern ppf (list_of_pattern [] x) 
+         )
+     | _ -> self#pattern1 ppf x
+  method pattern1 (ppf:Format.formatter) (x:pattern) :unit =
+    let rec pattern_list_helper ppf  =  function
+         | {ppat_desc =
+            Ppat_construct
+              ({ txt = Lident("::") ;_},
+               Some ({ppat_desc = Ppat_tuple([pat1; pat2]);_}),
+               _);_} ->
+                 pp ppf "%a::%a"  self#pattern1  pat1  pattern_list_helper pat2
+         | p -> self#pattern1 ppf p in
+    match x.ppat_desc with 
+    | Ppat_variant (l, Some p) ->  pp ppf "@[<2>`%s@;%a@]" l self#pattern1 p (*RA*)
+    | Ppat_construct (({txt;_} as li), po, _) -> (* FIXME The third field always false *)
          if txt = Lident "::" then
            pp ppf "%a" pattern_list_helper x
          else
            (match po with
            |Some x ->
-              pp ppf "%a%a"
-                self#longident_loc li
-                self#pattern_in_parens x
-           | None -> pp ppf "%a@ "self#longident_loc li )
+              pp ppf "%a@;%a"  self#longident_loc li self#simple_pattern x
+           | None -> pp ppf "%a@;"self#longident_loc li )
+    | _ -> self#simple_pattern ppf x 
+  method simple_pattern (ppf:Format.formatter) (x:pattern) :unit = 
+      match x.ppat_desc with 
      | Ppat_any -> pp ppf "_";           
      | Ppat_var ({txt = txt;_}) ->
         if (is_infix (fixity_of_string txt)) || List.mem txt.[0] prefix_symbols then
           if txt.[0]='*' then
-            pp ppf "(@ %s@ )@ " txt
+            pp ppf "(@;%s@;)@ " txt
           else
             pp ppf "(%s)" txt 
         else
-          pp ppf "%s" txt;
-     | Ppat_alias (p, s) -> pp ppf "@[<hov2>(%a@ as@ %s)@]"  self#pattern p  s.txt
-     | Ppat_constant (c) -> pp ppf "%a" self#constant c;
-     | Ppat_tuple (l) ->                      
-         pp ppf "@[<hov1>(%a)@]"
-           (self#list  ~sep:"," self#pattern)  l;
-     | Ppat_variant (l, po) ->
-         (match po with
-         | None ->
-             pp ppf "`%s" l;
-         | Some (p) ->
-             pp ppf "@[<hov2>(`%s@ %a)@]" l self#pattern p)
-     | Ppat_record (l, closed) ->
-         let longident_x_pattern ppf (li, p) =
-           pp ppf "@[<hov2>%a@ =@ %a@]" self#longident_loc li self#pattern p in
-         (match closed with
-         |Closed -> 
-             pp ppf "@[<hov2>{%a}@]"
-               (self#list longident_x_pattern ~sep:";") l
-         | _ -> 
-             pp ppf "@[<hov2>{%a;_}@]"
-               (self#list longident_x_pattern ~sep:";") l)
+          pp ppf "%s" txt
      | Ppat_array l ->
-         pp ppf "@[<hov2>[|%a|]@]"  (self#list self#pattern ~sep:";") l 
-     | Ppat_or (p1, p2) -> (* *)
-         (match p1 with
-         | {ppat_desc=Ppat_constant (Const_char a);_} -> begin 
-             match pattern_or_helper a p2 with
-             |Some b -> pp ppf "@[<hov2>(%C..%C)@]" a b 
-             |None ->
-                 self#list ~first:"(" ~last:")" ~sep:"|" self#pattern ppf (list_of_pattern [] x) end
-         | _ ->
-             self#list ~first:"(" ~last:")" ~sep:"|" self#pattern ppf (list_of_pattern [] x) 
-         )
-     | Ppat_constraint (p, ct) ->
-         pp ppf "@[<hov2>(%a@ :@ %a)@]" self#pattern p self#core_type ct 
-     | Ppat_type li ->
-         pp ppf "#%a" self#longident_loc li 
-     | Ppat_lazy p ->
-         pp ppf "@[<hov2>(lazy@ %a)@]" self#pattern p 
+         pp ppf "@[<2>[|%a|]@]"  (self#list self#pattern1 ~sep:";") l
      | Ppat_unpack (s) ->
          pp ppf "(module@ %s)@ " s.txt
+     | Ppat_type li ->
+         pp ppf "#%a" self#longident_loc li
+     | Ppat_record (l, closed) ->
+         let longident_x_pattern ppf (li, p) =
+           pp ppf "@[<2>%a@;=@;%a@]" self#longident_loc li self#pattern1 p in (* FIXME desugar the syntax sugar*)
+         (match closed with
+         |Closed -> 
+             pp ppf "@[<2>{%a}@]"
+               (self#list longident_x_pattern ~sep:";") l
+         | _ -> 
+             pp ppf "@[<2>{%a;_}@]"
+               (self#list longident_x_pattern ~sep:";") l)
+     | Ppat_tuple l -> pp ppf "@[<1>(%a)@]" (self#list  ~sep:"," self#pattern1)  l (* level1*)
+     | Ppat_constant (c) -> pp ppf "%a" self#constant c
+     | Ppat_variant (l,None) ->  pp ppf "`%s" l
+     | Ppat_constraint (p, ct) ->
+         pp ppf "@[<2>(%a@;:@;%a)@]" self#pattern1 p self#core_type ct
+     | Ppat_lazy p ->
+         pp ppf "@[<2>(lazy@;%a)@]" self#pattern1 p 
+     | _ -> self#paren true self#pattern ppf x 
+
   method simple_expr ppf x =
     match x.pexp_desc with
     | Pexp_construct (li, None, _) ->
@@ -414,7 +412,7 @@ class printer  ()= object(self:'self)
         pp ppf "(@ %a@ )" self#expression x 
   method label_exp ppf (l,opt,p) =
     if l = "" then
-      pp ppf "(%a)@ " self#pattern p (*single case pattern parens needed here *)
+      pp ppf "%a@ " self#simple_pattern p (*single case pattern parens needed here *)
     else
       if l.[0] = '?' then 
         let len = String.length l - 1 in 
@@ -422,17 +420,17 @@ class printer  ()= object(self:'self)
           match p.ppat_desc with
           | Ppat_var {txt;_} when txt = rest ->
               (match opt with
-              |Some o -> pp ppf "?(%s=%a)@ " rest  self#expression o
+              |Some o -> pp ppf "?(%s=%a)@;" rest  self#expression o
               | None -> pp ppf "?%s@ " rest)
           | _ -> (match opt with
-            | Some o -> pp ppf "%s:(%a=%a)@ " l self#pattern p self#expression o
-            | None -> pp ppf "%s:(%a)@ " l self#pattern p  )
+            | Some o -> pp ppf "%s:(%a=%a)@;" l self#pattern1 p self#expression o
+            | None -> pp ppf "%s:%a@;" l self#simple_pattern p  )
         end
       else
         (match p.ppat_desc with
         | Ppat_var {txt;_} when txt = l ->
-            pp ppf "~%s@ " l 
-        | _ ->  pp ppf "~%s:(%a)@ " l self#pattern p )
+            pp ppf "~%s@;" l 
+        | _ ->  pp ppf "~%s:%a@;" l self#simple_pattern p )
   method sugar_expr ppf e =
     match e.pexp_desc with 
     | Pexp_apply
@@ -473,8 +471,8 @@ class printer  ()= object(self:'self)
         | [(p',e')] ->
             (match e'.pexp_desc with
             | Pexp_when(e1,e2) ->
-                pp ppf "@[<hov2>(fun@ %a@ when@ %a@ ->@ %a)@]"
-                  self#pattern p' self#expression e1 self#expression e2 
+                pp ppf "@[<hov2>(fun@;%a@;when@;%a@;->@;%a)@]"
+                  self#simple_pattern p' self#expression e1 self#expression e2 
             | _ -> 
                 pp ppf "@[<hov2>(fun@ %a->@ %a)@]" (* FIXME IMPROVE later *)
                   self#label_exp (p,eo,p') self#expression e')
@@ -700,7 +698,7 @@ class printer  ()= object(self:'self)
     pp ppf "object%a%a@\nend"
       (fun ppf p -> match p.ppat_desc with
       | Ppat_any -> pp ppf "@\n";
-      | _ -> pp ppf "%a@\n"  self#pattern_in_parens  p ) p
+      | _ -> pp ppf "(%a)@\n"  self#pattern1  p ) p (* FIXME maybe duplicated parens here*)
       (self#list ~first:"@[<v0>" ~last:"@]" self#class_field  ~sep:"@;") l 
   method class_field ppf x =
     match x.pcf_desc with
@@ -859,7 +857,7 @@ class printer  ()= object(self:'self)
               match e'.pexp_desc with
               | Pexp_when _  -> pp ppf "=@ %a" self#expression e
               | _ -> 
-                  pp ppf "(%a)@ %a" self#pattern p pp_print_pexp_function e'
+                  pp ppf "%a@ %a" self#simple_pattern p pp_print_pexp_function e'
             else
               pp ppf "%a@ %a" self#label_exp (label,eo,p) pp_print_pexp_function e'
         | Pexp_newtype (str,e') ->
@@ -867,8 +865,8 @@ class printer  ()= object(self:'self)
         | _ -> pp ppf "=@;%a" self#expression e end in 
       begin match e.pexp_desc with
       | Pexp_when (e1,e2) ->
-          pp ppf "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]" self#pattern p self#expression e1 self#expression e2 
-      | _ -> pp ppf "%a@ %a" self#pattern p pp_print_pexp_function e end in 
+          pp ppf "=@[<hov2>fun@ %a@ when@ %a@ ->@ %a@]" self#simple_pattern p self#expression e1 self#expression e2 
+      | _ -> pp ppf "%a@ %a" self#simple_pattern p pp_print_pexp_function e end in 
     begin match l with
     | [] -> ()
     | [x] -> pattern_x_expression_def ppf x 
@@ -1078,19 +1076,6 @@ class printer  ()= object(self:'self)
    else begin
    pp ppf "(%a)" self#expression e
    end 
-   method pattern_in_parens ppf p =
-   let already_has_parens =
-   match p.ppat_desc with
-   | Ppat_alias (_,_) -> true
-   | Ppat_tuple (_) -> true
-   | Ppat_or (_,_) -> true
-   | Ppat_constraint (_,_) -> true
-   | _ -> false in
-   if already_has_parens then
-   self#pattern ppf p
-   else begin
-   pp ppf "(%a)" self#pattern p 
-   end
    method directive_argument ppf x =
    (match x with
    | Pdir_none -> ()

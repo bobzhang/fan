@@ -2,22 +2,22 @@ module P = MakePreCast.Make(struct
   
   end)
 open P
-let wrap (parse_fun) (lb) =
-  let ()  = (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) )) in
+let wrap parse_fun lb =
+  let (() ) = (iter_and_take_callbacks ( (fun (_,f) -> (f () )) )) in
   let not_filtered_token_stream = (FanLexer.from_lexbuf lb) in
   let token_stream = (Gram.filter not_filtered_token_stream) in begin try
     let (__strm : _ Stream.t ) = token_stream in begin match
       (Stream.peek __strm) with
-      | Some(`EOI,_) ->   begin
-                          (Stream.junk __strm);
-                          (raise End_of_file )
-                          end
+      | Some (`EOI,_) ->   begin
+                           (Stream.junk __strm);
+                           (raise End_of_file )
+                           end
       | _ ->   (parse_fun token_stream) end
     with
-    | ((End_of_file |Sys.Break
-        |FanLoc.Exc_located(_,(End_of_file |Sys.Break ))) as x)
+    | End_of_file |Sys.Break |FanLoc.Exc_located
+        (_,(End_of_file |Sys.Break )) as x
       ->   (raise x)
-    | FanLoc.Exc_located(loc,y) ->
+    | FanLoc.Exc_located (loc,y) ->
         begin
         (Format.eprintf "@[<0>%a%s@]@." Toploop.print_location loc (
           (Printexc.to_string y) ));
@@ -29,28 +29,28 @@ let wrap (parse_fun) (lb) =
         (raise Exit )
         end
   end
-let toplevel_phrase (token_stream) = begin match
+let toplevel_phrase token_stream = begin match
   (Gram.parse_origin_tokens (
     (Syntax.top_phrase :Ast.str_item  option  Gram.t  ) ) token_stream) with
-  | Some(str_item) ->
+  | Some str_item ->
       let str_item =
         (Syntax.AstFilters.fold_topphrase_filters (
-          (fun (t) -> (fun (filter) -> (filter t))) ) str_item) in
+          (fun t -> (fun filter -> (filter t))) ) str_item) in
       (Ast2pt.phrase str_item)
   | None  ->   (raise End_of_file ) end
-let use_file (token_stream) =
+let use_file token_stream =
   let (pl0,eoi) =
     let rec loop (() ) =
       let (pl,stopped_at_directive) =
         (Gram.parse_origin_tokens Syntax.use_file token_stream) in
       if (stopped_at_directive <> None ) then begin
         begin match pl with
-        | Ast.StDir(_,"load",Ast.ExStr(_,s))::[]  ->
+        | Ast.StDir (_,"load",Ast.ExStr (_,s))::[]  ->
             begin
             (Topdirs.dir_load Format.std_formatter s);
             (loop () )
             end
-        | Ast.StDir(_,"directory",Ast.ExStr(_,s))::[]  ->
+        | Ast.StDir (_,"directory",Ast.ExStr (_,s))::[]  ->
             begin
             (Topdirs.dir_directory s);
             (loop () )
@@ -81,11 +81,11 @@ let _=
   (Toploop.parse_toplevel_phrase := revise_parser);
   (Toploop.parse_use_file := ( (wrap use_file) ));
   (Syntax.current_warning := (
-    (fun (loc) ->
-      (fun (txt) ->
+    (fun loc ->
+      (fun txt ->
         (Toploop.print_warning loc Format.err_formatter (
           Warnings.Camlp4 (txt) )))) ));
-  (iter_and_take_callbacks ( (fun ((_,f)) -> (f () )) ))
+  (iter_and_take_callbacks ( (fun (_,f) -> (f () )) ))
   end
 let _=
   let open FanParsers in

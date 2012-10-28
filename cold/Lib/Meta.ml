@@ -1,14 +1,14 @@
 module Ast = Camlp4Ast
 module MetaLocVar : Ast.META_LOC =
   struct
-  let meta_loc_patt (_loc) (_) =
+  let meta_loc_patt _loc _ =
     Ast.PaId ((_loc,( Ast.IdLid ((_loc,( FanLoc.name.contents ))) )))
-  let meta_loc_expr (_loc) (_) =
+  let meta_loc_expr _loc _ =
     Ast.ExId ((_loc,( Ast.IdLid ((_loc,( FanLoc.name.contents ))) )))
   end 
 module MetaLoc : Ast.META_LOC =
   struct
-  let meta_loc_patt (_loc) (location) =
+  let meta_loc_patt _loc location =
     let (a,b,c,d,e,f,g,h) = (FanLoc.to_tuple location) in
     Ast.PaApp
       ((_loc,(
@@ -48,7 +48,7 @@ module MetaLoc : Ast.META_LOC =
                     end else begin
                       Ast.PaId ((_loc,( Ast.IdUid ((_loc,"False")) )))
                     end ))) ))) ))) )))
-  let meta_loc_expr (_loc) (location) =
+  let meta_loc_expr _loc location =
     let (a,b,c,d,e,f,g,h) = (FanLoc.to_tuple location) in
     Ast.ExApp
       ((_loc,(
@@ -91,13 +91,13 @@ module MetaLoc : Ast.META_LOC =
   end 
 module MetaGhostLoc : Ast.META_LOC =
   struct
-  let meta_loc_patt (_loc) (_) =
+  let meta_loc_patt _loc _ =
     Ast.PaId
       ((_loc,(
         Ast.IdAcc
           ((_loc,( Ast.IdUid ((_loc,"FanLoc")) ),( Ast.IdLid ((_loc,"ghost"))
             ))) )))
-  let meta_loc_expr (_loc) (_) =
+  let meta_loc_expr _loc _ =
     Ast.ExId
       ((_loc,(
         Ast.IdAcc
@@ -106,12 +106,12 @@ module MetaGhostLoc : Ast.META_LOC =
   end 
 module MetaLocQuotation = struct
   let loc_name = (ref None )
-  let meta_loc_expr (_loc) (loc) = begin match loc_name.contents with
+  let meta_loc_expr _loc loc = begin match loc_name.contents with
     | None  ->
         Ast.ExId ((_loc,( Ast.IdLid ((_loc,( FanLoc.name.contents ))) )))
-    | Some("here") ->   (MetaLoc.meta_loc_expr _loc loc)
-    | Some(x) ->   Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) ))) end
-  let meta_loc_patt (_loc) (_) = Ast.PaAny (_loc)
+    | Some "here" ->   (MetaLoc.meta_loc_expr _loc loc)
+    | Some x ->   Ast.ExId ((_loc,( Ast.IdLid ((_loc,x)) ))) end
+  let meta_loc_patt _loc _ = Ast.PaAny (_loc)
   end
 module MetaQAst = Ast.Meta.Make(MetaLocQuotation)
 module ME = MetaQAst.Expr

@@ -5,59 +5,57 @@ type brothers =
 let rec flatten_tree =
   (function
   | DeadEnd  ->   []
-  | LocAct(_,_) ->   [[]]
-  | Node({node = n;brother = b;son = s}) ->
-      (( (List.map ( (fun (l) -> n::l) ) ( (flatten_tree s) )) ) @ (
+  | LocAct (_,_) ->   [[]]
+  | Node {node = n;brother = b;son = s} ->
+      (( (List.map ( (fun l -> n::l) ) ( (flatten_tree s) )) ) @ (
         (flatten_tree b) )))
-class text_grammar = object(self : 'self)
+class text_grammar = object((self : 'self))
   method tree =
-    (fun (ppf) ->
-      (fun (t) ->
-        (self#level ppf Format.pp_print_space ( (flatten_tree t) ))))
+    (fun ppf ->
+      (fun t -> (self#level ppf Format.pp_print_space ( (flatten_tree t) ))))
   method symbol =
-    (fun (ppf) ->
+    (fun ppf ->
       (function
-      | (`Smeta (n,sl,_)) ->   (self#meta ppf n sl)
-      | (`Slist0 s) ->   (fprintf ppf "LIST0 %a" ( self#symbol1 ) s)
-      | (`Slist0sep (s,t)) ->
+      | `Smeta (n,sl,_) ->   (self#meta ppf n sl)
+      | `Slist0 s ->   (fprintf ppf "LIST0 %a" ( self#symbol1 ) s)
+      | `Slist0sep (s,t) ->
           (fprintf ppf "LIST0 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 )
             t)
-      | (`Slist1 s) ->   (fprintf ppf "LIST1 %a" ( self#symbol1 ) s)
-      | (`Slist1sep (s,t)) ->
+      | `Slist1 s ->   (fprintf ppf "LIST1 %a" ( self#symbol1 ) s)
+      | `Slist1sep (s,t) ->
           (fprintf ppf "LIST1 %a SEP %a" ( self#symbol1 ) s ( self#symbol1 )
             t)
-      | (`Sopt s) ->   (fprintf ppf "OPT %a" ( self#symbol1 ) s)
-      | (`Stry s) ->   (fprintf ppf "TRY %a" ( self#symbol1 ) s)
-      | (`Snterml (e,l)) ->   (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
-      | (((`Snterm _)|`Snext|`Sself|(`Stree _)|(`Stoken _)|(`Skeyword _)) as
-          s)
-        ->   (self#symbol1 ppf s)))
+      | `Sopt s ->   (fprintf ppf "OPT %a" ( self#symbol1 ) s)
+      | `Stry s ->   (fprintf ppf "TRY %a" ( self#symbol1 ) s)
+      | `Snterml (e,l) ->   (fprintf ppf "%s@ Level@ %S" ( e.ename ) l)
+      | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
+          (self#symbol1 ppf s)))
   method description =
-    (fun (ppf) ->
+    (fun ppf ->
       (function
       | `Normal ->   ()
       | `Antiquot ->   (fprintf ppf "$")))
   method symbol1 =
-    (fun (ppf) ->
+    (fun ppf ->
       (function
-      | (`Snterm e) ->   (pp_print_string ppf ( e.ename ))
+      | `Snterm e ->   (pp_print_string ppf ( e.ename ))
       | `Sself ->   (pp_print_string ppf "SELF")
       | `Snext ->   (pp_print_string ppf "NEXT")
-      | (`Stoken (_,(description,content))) ->
+      | `Stoken (_,(description,content)) ->
           begin
           (self#description ppf description);
           (pp_print_string ppf content)
           end
-      | (`Skeyword s) ->   (fprintf ppf "%S" s)
-      | (`Stree t) ->   (self#tree ppf t)
-      | (((`Smeta (_,_,_))|(`Snterml (_,_))|(`Slist0 _)|(`Slist0sep (_,_))|
-          (`Slist1 _)|(`Slist1sep (_,_))|(`Sopt _)|(`Stry _)) as s)
+      | `Skeyword s ->   (fprintf ppf "%S" s)
+      | `Stree t ->   (self#tree ppf t)
+      | `Smeta (_,_,_)|`Snterml (_,_)|`Slist0 _|`Slist0sep (_,_)|`Slist1 _|
+          `Slist1sep (_,_)|`Sopt _|`Stry _ as s
         ->   (fprintf ppf "(%a)" ( self#symbol ) s)))
   method meta =
-    (fun (ppf) ->
-      (fun (n) ->
-        (fun (sl) ->
-          let rec loop (i) =
+    (fun ppf ->
+      (fun n ->
+        (fun sl ->
+          let rec loop i =
             (function
             | []  ->   ()
             | s::sl ->
@@ -79,49 +77,49 @@ class text_grammar = object(self : 'self)
                   end) in
           (loop 0 sl))))
   method rule =
-    (fun (ppf) ->
-      (fun (symbols) ->
+    (fun ppf ->
+      (fun symbols ->
         begin
         (fprintf ppf "@[<hov 0>");
         (List.fold_left (
-          (fun (sep) ->
-            (fun (symbol) ->
+          (fun sep ->
+            (fun symbol ->
               begin
               (fprintf ppf "%t%a" sep ( self#symbol ) symbol);
-              (fun (ppf) -> (fprintf ppf ";@ "))
-              end)) ) ( (fun (_) -> ()) ) symbols ppf);
+              (fun ppf -> (fprintf ppf ";@ "))
+              end)) ) ( (fun _ -> ()) ) symbols ppf);
         (fprintf ppf "@]")
         end))
   method level =
-    (fun (ppf) ->
-      (fun (space) ->
-        (fun (rules) ->
+    (fun ppf ->
+      (fun space ->
+        (fun rules ->
           begin
           (fprintf ppf "@[<hov 0>[ ");
           (List.fold_left (
-            (fun (sep) ->
-              (fun (rule) ->
+            (fun sep ->
+              (fun rule ->
                 begin
                 (fprintf ppf "%t%a" sep ( self#rule ) rule);
-                (fun (ppf) -> (fprintf ppf "%a| " space () ))
-                end)) ) ( (fun (_) -> ()) ) rules ppf);
+                (fun ppf -> (fprintf ppf "%a| " space () ))
+                end)) ) ( (fun _ -> ()) ) rules ppf);
           (fprintf ppf " ]@]")
           end)))
   method assoc =
-    (fun (ppf) ->
+    (fun ppf ->
       (function
       | `LA ->   (fprintf ppf "LA")
       | `RA ->   (fprintf ppf "RA")
       | `NA ->   (fprintf ppf "NA")))
   method levels =
-    (fun (ppf) ->
-      (fun (elev) ->
+    (fun ppf ->
+      (fun elev ->
         ((List.fold_left (
-           (fun (sep) ->
-             (fun (lev) ->
+           (fun sep ->
+             (fun lev ->
                let rules =
                  ((
-                   (List.map ( (fun (t) -> `Sself::t) ) (
+                   (List.map ( (fun t -> `Sself::t) ) (
                      (flatten_tree ( lev.lsuffix )) )) ) @ (
                    (flatten_tree ( lev.lprefix )) )) in
                begin
@@ -130,46 +128,46 @@ class text_grammar = object(self : 'self)
                  match
                  lev.lname
                  with
-                 | Some(n) ->   (fprintf ppf "%S@;<1 2>" n)
+                 | Some n ->   (fprintf ppf "%S@;<1 2>" n)
                  | None  ->   ()
                  end;
                  (self#assoc ppf ( lev.assoc ));
                  (fprintf ppf "@]@;<1 2>");
                  (self#level ppf Format.pp_force_newline rules);
-                 (fun (ppf) -> (fprintf ppf "@,| "))
-                 end)) ) ( (fun (_) -> ()) ) elev ppf) :unit  )))
+                 (fun ppf -> (fprintf ppf "@,| "))
+                 end)) ) ( (fun _ -> ()) ) elev ppf) :unit  )))
   method entry =
-    (fun (ppf) ->
-      (fun (e) ->
+    (fun ppf ->
+      (fun e ->
         (begin
           (fprintf ppf "@[<v 0>%s: [ " ( e.ename ));
           begin
           match
           e.edesc
           with
-          | Dlevels(elev) ->   (self#levels ppf elev)
-          | Dparser(_) ->   (fprintf ppf "<parser>")
+          | Dlevels elev ->   (self#levels ppf elev)
+          | Dparser _ ->   (fprintf ppf "<parser>")
           end;
           (fprintf ppf " ]@]")
           end :unit  )))
   end
-class dump_grammar = object(self : 'self)
+class dump_grammar = object((self : 'self))
   inherit  text_grammar
   method! tree =
-    (fun (ppf) ->
-      (fun (tree) ->
-        let rec get_brothers (acc) =
+    (fun ppf ->
+      (fun tree ->
+        let rec get_brothers acc =
           (function
           | DeadEnd  ->   (List.rev acc)
-          | LocAct(_,_) ->   (List.rev acc)
-          | Node({node = n;brother = b;son = s}) ->
+          | LocAct (_,_) ->   (List.rev acc)
+          | Node {node = n;brother = b;son = s} ->
               (get_brothers ( Bro ((n,( (get_brothers []  s) )))::acc ) b))
-          and print_brothers (ppf) (brothers) =
+          and print_brothers ppf brothers =
           if (brothers = [] ) then begin
             (fprintf ppf "@ []")
           end else begin
             (List.iter (
-              (fun (Bro(n,xs)) ->
+              (fun (Bro (n,xs)) ->
                 begin
                 (fprintf ppf "@ @[<hv2>- %a" ( self#symbol ) n);
                 begin
@@ -187,27 +185,27 @@ class dump_grammar = object(self : 'self)
                 end;
                 (fprintf ppf "@]")
                 end) ) brothers)
-          end and print_children (ppf) =
+          end and print_children ppf =
           (List.iter ( (fprintf ppf ";@ %a" ( self#symbol )) )) and
-          get_children (acc) =
+          get_children acc =
           (function
           | []  ->   (List.rev acc)
-          | Bro(n,x)::[]  ->   (get_children ( n::acc ) x)
+          | Bro (n,x)::[]  ->   (get_children ( n::acc ) x)
           | _ ->   (raise Exit )) in
         (print_brothers ppf ( (get_brothers []  tree) ))))
   method! levels =
-    (fun (ppf) ->
-      (fun (elev) ->
+    (fun ppf ->
+      (fun elev ->
         (List.fold_left (
-          (fun (sep) ->
-            (fun (lev) ->
+          (fun sep ->
+            (fun lev ->
               begin
               (fprintf ppf "%t@[<v2>" sep);
               begin
               match
               lev.lname
               with
-              | Some(n) ->   (fprintf ppf "%S@;<1 2>" n)
+              | Some n ->   (fprintf ppf "%S@;<1 2>" n)
               | None  ->   ()
               end;
               (self#assoc ppf ( lev.assoc ));
@@ -217,8 +215,8 @@ class dump_grammar = object(self : 'self)
               (fprintf ppf "@]@ @[<v2>prefix:@ ");
               (self#tree ppf ( lev.lprefix ));
               (fprintf ppf "@]");
-              (fun (ppf) -> (fprintf ppf "@,| "))
-              end)) ) ( (fun (_) -> ()) ) elev ppf)))
+              (fun ppf -> (fprintf ppf "@,| "))
+              end)) ) ( (fun _ -> ()) ) elev ppf)))
   end
 let text = new text_grammar
 let dump = new dump_grammar

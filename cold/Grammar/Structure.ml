@@ -72,9 +72,9 @@ type ('a,'b,'c) foldsep =
     symbol  list  ->
       ('a Stream.t  -> 'b) -> ('a Stream.t  -> unit ) -> 'a Stream.t  -> 'c
   
-let get_filter (g) = g.gfilter
-let token_location (r) = r.cur_loc
-let using ({gkeywords = table;gfilter = filter;_}) (kwd) =
+let get_filter g = g.gfilter
+let token_location r = r.cur_loc
+let using {gkeywords = table;gfilter = filter;_} kwd =
   let r = begin try (Hashtbl.find table kwd)
     with
     | Not_found  ->   let r = (ref 0) in begin
@@ -88,9 +88,9 @@ let using ({gkeywords = table;gfilter = filter;_}) (kwd) =
     end
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
-let removing ({gkeywords = table;gfilter = filter;_}) (kwd) =
+let removing {gkeywords = table;gfilter = filter;_} kwd =
   let r = (Hashtbl.find table kwd) in
-  let ()  = (decr r) in
+  let (() ) = (decr r) in
   if (( r.contents ) = 0) then begin
     begin
     (FanToken.Filter.keyword_removed filter kwd);
