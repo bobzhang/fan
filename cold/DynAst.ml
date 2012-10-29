@@ -55,7 +55,7 @@ let module_binding_tag = (Tag_module_binding :Ast.module_binding  tag  )
 type dyn  
 external dyn_tag : 'a tag  -> dyn  tag  = "%identity"
 module Pack(X:sig type 'a t   end) = struct
-  type pack = (dyn  tag *Obj.t )  exception Pack_error
+  type pack = (dyn  tag * Obj.t )  exception Pack_error
   let pack tag (v : 'a X.t ) = ((dyn_tag tag),(Obj.repr v))
   let unpack =
     (fun tag ->

@@ -532,7 +532,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     ->
                                                                     (mk_entry
                                                                     ~name:n
-                                                                    ~pos:pos
+                                                                    ~pos
                                                                     ~levels:ll
                                                                     :'entry )))))]))]))))
          ());
@@ -627,7 +627,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (mk_level
                                                                     ~label:lab
                                                                     ~assoc:ass
-                                                                    ~rules:rules
+                                                                    ~rules
                                                                     :'level )))))]))]))))
          ());
     Gram.extend (assoc :'assoc Gram.t  )
@@ -723,7 +723,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                           fun _ ->
                             fun (s : 'symbol) ->
                               fun (_loc : FanLoc.t ) ->
-                                ({s with pattern = (Some p)} :'psymbol )))))]))]))))
+                                ({s with pattern = (Some p) } :'psymbol )))))]))]))))
          ());
     Gram.extend (symbol :'symbol Gram.t  )
       (((fun () -> (None,([((Some "top"),(Some `NA),([(([`Stoken
@@ -754,7 +754,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     mk_symbol
                                                                     ~used:(
                                                                     s.used)
-                                                                    ~text:text
+                                                                    ~text
                                                                     ~styp:(
                                                                     s.styp)
                                                                     ~pattern:None
@@ -801,8 +801,8 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     mk_symbol
                                                                     ~used:(
                                                                     s.used)
-                                                                    ~text:text
-                                                                    ~styp:styp
+                                                                    ~text
+                                                                    ~styp
                                                                     ~pattern:None
                                                                     :'symbol
                                                                     )
@@ -858,8 +858,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                       failwithf
                                         "only (LIST0|LIST1) allowed here"))
                                 sep s in
-                            mk_symbol ~used:used ~text:text ~styp:styp
-                              ~pattern:None
+                            mk_symbol ~used ~text ~styp ~pattern:None
                            :'symbol )
                        | _ -> assert false))))]));(None,None,([(([`Skeyword
            "(";`Sself;`Skeyword
@@ -997,7 +996,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (_loc,"=")))),x)),y))
                                                                     ys in
                                                                   mk_tok _loc
-                                                                    ~restrict:restrict
+                                                                    ~restrict
                                                                     p
                                                                     (
                                                                     STtok
@@ -1014,7 +1013,7 @@ module MakeGrammarParser(Syntax:Sig.Camlp4Syntax) = struct
                                  retype_rule_list_without_patterns _loc rl in
                                let t = new_type_var () in
                                let used = used_of_rule_list rl in
-                               mk_symbol ~used:used
+                               mk_symbol ~used
                                  ~text:(TXrules (_loc,(srules _loc t rl "")))
                                  ~styp:(STquo (_loc,t)) ~pattern:None
                               :'symbol )))));(([`Stoken
@@ -1486,7 +1485,7 @@ module MakeListComprehension(Syntax:Sig.Camlp4Syntax) = struct
                                                                   :'item )))))]))]))))
          ())
   let _=
-    if is_revised ~expr:expr ~sem_expr_for_list:sem_expr_for_list
+    if is_revised ~expr ~sem_expr_for_list
     then
       let _ = (expr :'expr Gram.t  ) and _ =
         (comprehension_or_sem_expr_for_list
@@ -1550,9 +1549,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
   include Syntax module Ast = Camlp4Ast
   type 'a item_or_def =  
     | SdStr of 'a
-    | SdDef of string *(string  list *Ast.expr ) option 
+    | SdDef of string * (string  list * Ast.expr ) option 
     | SdUnd of string 
-    | SdITE of bool *'a item_or_def  list *'a item_or_def  list 
+    | SdITE of bool * 'a item_or_def  list * 'a item_or_def  list 
     | SdLazy of 'a Lazy.t   let defined = ref []
   let is_defined i = List.mem_assoc i defined.contents
   let incorrect_number loc l1 l2 =
@@ -12936,12 +12935,12 @@ module MakeRevisedParserParser(Syntax:Sig.Camlp4Syntax) =
   struct
   include Syntax module Ast = Camlp4Ast
   type spat_comp =  
-    | SpTrm of FanLoc.t *Ast.patt *Ast.expr  option 
-    | SpNtr of FanLoc.t *Ast.patt *Ast.expr 
-    | SpStr of FanLoc.t *Ast.patt  
+    | SpTrm of FanLoc.t * Ast.patt * Ast.expr  option 
+    | SpNtr of FanLoc.t * Ast.patt * Ast.expr 
+    | SpStr of FanLoc.t * Ast.patt  
   type sexp_comp =  
-    | SeTrm of FanLoc.t *Ast.expr 
-    | SeNtr of FanLoc.t *Ast.expr   let stream_expr = Gram.mk "stream_expr"
+    | SeTrm of FanLoc.t * Ast.expr 
+    | SeNtr of FanLoc.t * Ast.expr   let stream_expr = Gram.mk "stream_expr"
   let stream_begin = Gram.mk "stream_begin"
   let stream_end = Gram.mk "stream_end"
   let stream_quot = Gram.mk "stream_quot"

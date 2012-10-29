@@ -5,20 +5,20 @@ include Entry
 include Structure
 let _=
   let gkeywords = Hashtbl.create 301 in
-  {gkeywords = gkeywords;gfilter =
-                           (FanToken.Filter.mk
-                              ~is_kwd:(Hashtbl.mem gkeywords));glexer =
-                                                                 (FanLexer.mk
-                                                                    ());
-    warning_verbose = (ref true);error_verbose = FanConfig.verbose}
+  {gkeywords = gkeywords;
+    gfilter = (FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords));
+    glexer = (FanLexer.mk ());
+    warning_verbose = (ref true);
+    error_verbose = FanConfig.verbose
+  }
 let gram =
   let gkeywords = Hashtbl.create 301 in
-  {gkeywords = gkeywords;gfilter =
-                           (FanToken.Filter.mk
-                              ~is_kwd:(Hashtbl.mem gkeywords));glexer =
-                                                                 (FanLexer.mk
-                                                                    ());
-    warning_verbose = (ref true);error_verbose = FanConfig.verbose}
+  {gkeywords = gkeywords;
+    gfilter = (FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords));
+    glexer = (FanLexer.mk ());
+    warning_verbose = (ref true);
+    error_verbose = FanConfig.verbose
+  }
 let mk = mk gram
 let of_parser name strm = of_parser gram name strm
 let get_filter () = gram.gfilter

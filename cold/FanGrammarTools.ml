@@ -10,12 +10,13 @@ let meta_action = ref false
 let grammar_module_name =
   let _loc = FanLoc.ghost in ref (Ast.IdUid (_loc,""))
 let gm () = grammar_module_name.contents
-let mk_entry ~name  ~pos  ~levels  = {name = name;pos = pos;levels = levels}
+let mk_entry ~name  ~pos  ~levels  =
+  {name = name; pos = pos; levels = levels }
 let mk_level ~label  ~assoc  ~rules  =
-  {label = label;assoc = assoc;rules = rules}
-let mk_rule ~prod  ~action  = {prod = prod;action = action}
+  {label = label; assoc = assoc; rules = rules }
+let mk_rule ~prod  ~action  = {prod = prod; action = action }
 let mk_symbol ~used  ~text  ~styp  ~pattern  =
-  {used = used;text = text;styp = styp;pattern = pattern}
+  {used = used; text = text; styp = styp; pattern = pattern }
 let string_of_patt patt =
   let buf = Buffer.create 42 in
   let () =
@@ -99,8 +100,10 @@ let retype_rule_list_without_patterns _loc rl =
        | {prod = ({pattern = None ;styp = STtok _;_} as s)::[];action = None }
            ->
            {prod =
-              ([{s with
-                  pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))}]);
+              ([{s
+                  with
+                  pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))
+                }]);
              action =
                (Some
                   (Ast.ExApp
@@ -108,12 +111,16 @@ let retype_rule_list_without_patterns _loc rl =
                               (_loc,(Ast.IdAcc
                                        (_loc,(gm ()),(Ast.IdLid
                                                         (_loc,"string_of_token")))))),(
-                     Ast.ExId (_loc,(Ast.IdLid (_loc,"x")))))))}
+                     Ast.ExId (_loc,(Ast.IdLid (_loc,"x")))))))
+           }
        | {prod = ({pattern = None ;_} as s)::[];action = None } ->
            {prod =
-              ([{s with
-                  pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))}]);
-             action = (Some (Ast.ExId (_loc,(Ast.IdLid (_loc,"x")))))}
+              ([{s
+                  with
+                  pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))
+                }]);
+             action = (Some (Ast.ExId (_loc,(Ast.IdLid (_loc,"x")))))
+           }
        | {prod = [];action = Some _} as r -> r
        | _ -> raise Exit) rl
   with | Exit  -> rl
@@ -433,7 +440,7 @@ let expr_of_delete_rule _loc n sl =
       (Ast.ExId (_loc,(Ast.IdUid (_loc,"[]")))) in
   ((n.expr),sl)
 let mk_name _loc i =
-  {expr = (Ast.ExId (_loc,i));tvar = (Ident.tvar_of_ident i);loc = _loc}
+  {expr = (Ast.ExId (_loc,i)); tvar = (Ident.tvar_of_ident i); loc = _loc }
 let slist loc min sep symb = TXlist (loc,min,symb,sep)
 let text_of_entry _loc e =
   let ent =
@@ -626,7 +633,7 @@ let mk_tok _loc ?restrict  p t =
                                                                     (_loc,"False"))))))))) in
       let descr = string_of_patt p' in
       let text = TXtok (_loc,match_fun,"Normal",descr) in
-      {used = [];text = text;styp = t;pattern = (Some p)}
+      {used = []; text = text; styp = t; pattern = (Some p) }
   | Some restrict ->
       let p' = (Camlp4Ast.wildcarder#patt) p in
       let match_fun =
@@ -643,7 +650,7 @@ let mk_tok _loc ?restrict  p t =
                                                                   (_loc,"False"))))))))) in
       let descr = string_of_patt p in
       let text = TXtok (_loc,match_fun,"Antiquot",descr) in
-      {used = [];text = text;styp = t;pattern = (Some p')}
+      {used = []; text = text; styp = t; pattern = (Some p') }
 let sfold _loc n foldfun f e s =
   let styp = STquo (_loc,(new_type_var ())) in
   let e =
@@ -662,8 +669,11 @@ let sfold _loc n foldfun f e s =
                                              (_loc,(gm ()),(Ast.IdLid
                                                               (_loc,"fold")))))),(
                            Ast.TyAny _loc)))),(s.styp))),styp) in
-  {used = (s.used);text = (TXmeta (_loc,n,([s.text]),e,t));styp = styp;
-    pattern = None}
+  {used = (s.used);
+    text = (TXmeta (_loc,n,([s.text]),e,t));
+    styp = styp;
+    pattern = None
+  }
 let sfoldsep _loc n foldfun f e s sep =
   let styp = STquo (_loc,(new_type_var ())) in
   let e =
@@ -682,6 +692,8 @@ let sfoldsep _loc n foldfun f e s sep =
                                              (_loc,(gm ()),(Ast.IdLid
                                                               (_loc,"foldsep")))))),(
                            Ast.TyAny _loc)))),(s.styp))),styp) in
-  {used = (s.used @ sep.used);text =
-                                (TXmeta (_loc,n,([s.text;sep.text]),e,t));
-    styp = styp;pattern = None}
+  {used = (s.used @ sep.used);
+    text = (TXmeta (_loc,n,([s.text;sep.text]),e,t));
+    styp = styp;
+    pattern = None
+  }

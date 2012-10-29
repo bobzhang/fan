@@ -55,7 +55,7 @@ let rec top_symb entry =
 let top_tree entry =
   function
   | Node {node = s;brother = bro;son = son} ->
-      Node {node = (top_symb entry s);brother = bro;son = son}
+      Node {node = (top_symb entry s); brother = bro; son = son }
   | LocAct (_,_)|DeadEnd  -> raise Stream.Failure
 let entry_of_symb entry =
   function

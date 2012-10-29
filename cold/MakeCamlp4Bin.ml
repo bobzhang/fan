@@ -107,8 +107,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     let cs = Stream.of_channel ic in
     let clear () = if name = "-" then () else close_in ic in
     let phr =
-      (try pa ?directive_handler:directive_handler loc cs
-       with | x -> (clear (); raise x)) in
+      (try pa ?directive_handler loc cs with | x -> (clear (); raise x)) in
     (clear (); phr) let output_file = ref None
   let process dyn_loader name pa pr clean fold_filters getdir =
     (((parse_file dyn_loader name pa getdir) |>

@@ -8,16 +8,14 @@ let print ppf e = fprintf ppf "%a@\n" (Print.text#entry) e
 let dump ppf e = fprintf ppf "%a@\n" (Print.dump#entry) e
 let trace_parser = ref false
 let mk g n =
-  {egram = g;ename = n;estart = (empty_entry n);econtinue =
-                                                  (fun _ ->
-                                                     fun _ ->
-                                                       fun _ ->
-                                                         fun
-                                                           (__strm :
-                                                             _ Stream.t ) ->
-                                                           raise
-                                                             Stream.Failure);
-    edesc = (Dlevels [])}
+  {egram = g;
+    ename = n;
+    estart = (empty_entry n);
+    econtinue =
+      (fun _ ->
+         fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    edesc = (Dlevels [])
+  }
 let action_parse entry ts =
   (try
      let p =
@@ -41,18 +39,17 @@ let filter_and_parse_tokens entry ts =
 let parse entry loc cs = filter_and_parse_tokens entry (lex entry loc cs)
 let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string entry loc str)
-let of_parser g n (p : (token *token_info ) Stream.t  -> 'a) =
+let of_parser g n (p : (token * token_info ) Stream.t  -> 'a) =
   let f ts = Action.mk (p ts) in
-  {egram = g;ename = n;estart = (fun _ -> f);econtinue =
-                                               (fun _ ->
-                                                  fun _ ->
-                                                    fun _ ->
-                                                      fun
-                                                        (__strm :
-                                                          _ Stream.t ) ->
-                                                        raise Stream.Failure);
-    edesc = (Dparser f)}
-let setup_parser e (p : (token *token_info ) Stream.t  -> 'a) =
+  {egram = g;
+    ename = n;
+    estart = (fun _ -> f);
+    econtinue =
+      (fun _ ->
+         fun _ -> fun _ -> fun (__strm : _ Stream.t ) -> raise Stream.Failure);
+    edesc = (Dparser f)
+  }
+let setup_parser e (p : (token * token_info ) Stream.t  -> 'a) =
   let f ts = Action.mk (p ts) in
   e.estart <- (fun _ -> f);
   e.econtinue <-

@@ -79,5 +79,5 @@ class ['accu] fold_free_vars (f : string  -> 'accu -> 'accu)
     | me -> (super#module_expr) me
   end
 let free_vars env_init e =
-  let fold = (new fold_free_vars) SSet.add ~env_init:env_init SSet.empty in
+  let fold = (new fold_free_vars) SSet.add ~env_init SSet.empty in
   ((fold#expr) e)#free

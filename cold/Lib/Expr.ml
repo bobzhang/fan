@@ -481,7 +481,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     function
     | Ast.PaAnt (_loc,s)|Ast.PaStr (_loc,s) as p ->
         let mloc _loc = Meta.MetaLocQuotation.meta_loc_patt _loc _loc in
-        handle_antiquot_in_string ~s:s ~default:p ~parse:parse_patt ~loc:_loc
+        handle_antiquot_in_string ~s ~default:p ~parse:parse_patt ~loc:_loc
           ~decorate:((fun n ->
                         fun p ->
                           match n with
@@ -661,7 +661,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
     function
     | Ast.ExAnt (_loc,s)|Ast.ExStr (_loc,s) as e ->
         let mloc _loc = Meta.MetaLocQuotation.meta_loc_expr _loc _loc in
-        handle_antiquot_in_string ~s:s ~default:e ~parse:parse_expr ~loc:_loc
+        handle_antiquot_in_string ~s ~default:e ~parse:parse_expr ~loc:_loc
           ~decorate:((fun n ->
                         fun e ->
                           match n with

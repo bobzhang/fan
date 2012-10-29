@@ -26,23 +26,36 @@ let dump f x =
     ((x.loc_end).pos_cnum - (x.loc_start).pos_bol) (x.loc_end).pos_lnum
     ((x.loc_end).pos_cnum - (x.loc_end).pos_bol)
     (fun o -> if x.loc_ghost then fprintf o " (ghost)" else ())
-let start_pos name = {pos_fname = name;pos_lnum = 1;pos_bol = 0;pos_cnum = 0}
+let start_pos name =
+  {pos_fname = name; pos_lnum = 1; pos_bol = 0; pos_cnum = 0 }
 let ghost_name = "ghost-location"
 let ghost =
-  {loc_start = (start_pos ghost_name);loc_end = (start_pos ghost_name);
-    loc_ghost = true}
+  {loc_start = (start_pos ghost_name);
+    loc_end = (start_pos ghost_name);
+    loc_ghost = true
+  }
 let mk file_name =
-  {loc_start = (start_pos file_name);loc_end = (start_pos file_name);
-    loc_ghost = false}
+  {loc_start = (start_pos file_name);
+    loc_end = (start_pos file_name);
+    loc_ghost = false
+  }
 let of_tuple
   (file_name,start_line,start_bol,start_off,stop_line,stop_bol,stop_off,ghost)
   =
   {loc_start =
-     {pos_fname = file_name;pos_lnum = start_line;pos_bol = start_bol;
-       pos_cnum = start_off};loc_end =
-                               {pos_fname = file_name;pos_lnum = stop_line;
-                                 pos_bol = stop_bol;pos_cnum = stop_off};
-    loc_ghost = ghost}
+     {pos_fname = file_name;
+       pos_lnum = start_line;
+       pos_bol = start_bol;
+       pos_cnum = start_off
+     };
+    loc_end =
+      {pos_fname = file_name;
+        pos_lnum = stop_line;
+        pos_bol = stop_bol;
+        pos_cnum = stop_off
+      };
+    loc_ghost = ghost
+  }
 let to_tuple
   {loc_start =
      {pos_fname = pos_fname;pos_lnum = start_line;pos_bol = start_bol;
@@ -60,9 +73,9 @@ let better_file_name a b =
   | (x,_) -> x
 let of_lexbuf lb =
   let start = Lexing.lexeme_start_p lb and stop = Lexing.lexeme_end_p lb in
-  let loc = {loc_start = start;loc_end = stop;loc_ghost = false} in loc
+  let loc = {loc_start = start; loc_end = stop; loc_ghost = false } in loc
 let of_lexing_position pos =
-  let loc = {loc_start = pos;loc_end = pos;loc_ghost = false} in loc
+  let loc = {loc_start = pos; loc_end = pos; loc_ghost = false } in loc
 let start_pos x = x.loc_start
 let stop_pos x = x.loc_end
 let merge a b =
@@ -71,25 +84,25 @@ let merge a b =
   else
     let r =
       (match ((a.loc_ghost),(b.loc_ghost)) with
-       | (false ,false ) -> {a with loc_end = (b.loc_end)}
-       | (true ,true ) -> {a with loc_end = (b.loc_end)}
-       | (true ,_) -> {a with loc_end = (b.loc_end)}
-       | (_,true ) -> {b with loc_start = (a.loc_start)}) in
+       | (false ,false ) -> {a with loc_end = (b.loc_end) }
+       | (true ,true ) -> {a with loc_end = (b.loc_end) }
+       | (true ,_) -> {a with loc_end = (b.loc_end) }
+       | (_,true ) -> {b with loc_start = (a.loc_start) }) in
     r
-let join x = {x with loc_end = (x.loc_start)}
+let join x = {x with loc_end = (x.loc_start) }
 let map f start_stop_both x =
   match start_stop_both with
-  | `start -> {x with loc_start = (f x.loc_start)}
-  | `stop -> {x with loc_end = (f x.loc_end)}
-  | `both -> {x with loc_start = (f x.loc_start);loc_end = (f x.loc_end)}
-let move_pos chars x = {x with pos_cnum = (x.pos_cnum + chars)}
+  | `start -> {x with loc_start = (f x.loc_start) }
+  | `stop -> {x with loc_end = (f x.loc_end) }
+  | `both -> {x with loc_start = (f x.loc_start); loc_end = (f x.loc_end) }
+let move_pos chars x = {x with pos_cnum = (x.pos_cnum + chars) }
 let move s chars x = map (move_pos chars) s x
 let move_line lines x =
   let move_line_pos x =
-    {x with pos_lnum = (x.pos_lnum + lines);pos_bol = (x.pos_cnum)} in
+    {x with pos_lnum = (x.pos_lnum + lines); pos_bol = (x.pos_cnum) } in
   map move_line_pos `both x
 let shift width x =
-  {x with loc_start = (x.loc_end);loc_end = (move_pos width x.loc_end)}
+  {x with loc_start = (x.loc_end); loc_end = (move_pos width x.loc_end) }
 let file_name x = (x.loc_start).pos_fname
 let start_line x = (x.loc_start).pos_lnum
 let stop_line x = (x.loc_end).pos_lnum
@@ -99,23 +112,23 @@ let start_off x = (x.loc_start).pos_cnum
 let stop_off x = (x.loc_end).pos_cnum
 let is_ghost x = x.loc_ghost
 let set_file_name s x =
-  {x with
-    loc_start = {(x.loc_start) with pos_fname = s};loc_end =
-                                                     {(x.loc_end) with
-                                                       pos_fname = s}}
-let ghostify x = {x with loc_ghost = true}
+  {x
+    with
+    loc_start = {(x.loc_start) with pos_fname = s };
+    loc_end = {(x.loc_end) with pos_fname = s }
+  }
+let ghostify x = {x with loc_ghost = true }
 let make_absolute x =
   let pwd = Sys.getcwd () in
   let old_name = (x.loc_start).pos_fname in
   if Filename.is_relative old_name
   then
     let new_name = Filename.concat pwd old_name in
-    {x with
-      loc_start = {(x.loc_start) with pos_fname = new_name};loc_end =
-                                                              {(x.loc_end)
-                                                                with
-                                                                pos_fname =
-                                                                  new_name}}
+    {x
+      with
+      loc_start = {(x.loc_start) with pos_fname = new_name };
+      loc_end = {(x.loc_end) with pos_fname = new_name }
+    }
   else x
 let strictly_before x y =
   let b =

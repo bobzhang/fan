@@ -14,9 +14,10 @@ let keep_prev_loc strm =
               let strm = __strm in
               Stream.lcons
                 ((fun _ ->
-                    (tok,{prev_loc = prev_loc;cur_loc = cur_loc;prev_loc_only
-                                                                  = false})))
-                (Stream.slazy ((fun _ -> go cur_loc strm))))
+                    (tok,{prev_loc = prev_loc;
+                           cur_loc = cur_loc;
+                           prev_loc_only = false
+                         }))) (Stream.slazy ((fun _ -> go cur_loc strm))))
          | _ -> Stream.sempty) in
       go init_loc strm
 let drop_prev_loc strm = Stream.map (fun (tok,r) -> (tok,(r.cur_loc))) strm

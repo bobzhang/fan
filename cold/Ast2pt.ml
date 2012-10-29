@@ -58,9 +58,8 @@ let ident_tag ?(conv_lid=fun x -> x)  i =
   match self i None with
   | Some x -> x
   | None  -> error (loc_of_ident i) "invalid long identifier "
-let ident_noloc ?conv_lid  i = fst (ident_tag ?conv_lid:conv_lid i)
-let ident ?conv_lid  i =
-  with_loc (ident_noloc ?conv_lid:conv_lid i) (loc_of_ident i)
+let ident_noloc ?conv_lid  i = fst (ident_tag ?conv_lid i)
+let ident ?conv_lid  i = with_loc (ident_noloc ?conv_lid i) (loc_of_ident i)
 let long_lident msg id =
   match ident_tag id with
   | (i,`lident) -> with_loc i (loc_of_ident id)
@@ -74,7 +73,7 @@ let long_uident_noloc ?(conv_con=fun x -> x)  i =
   | (i,`app) -> i
   | _ -> error (loc_of_ident i) "uppercase identifier expected"
 let long_uident ?conv_con  i =
-  with_loc (long_uident_noloc ?conv_con:conv_con i) (loc_of_ident i)
+  with_loc (long_uident_noloc ?conv_con i) (loc_of_ident i)
 let rec ctyp_long_id_prefix t =
   match t with
   | Ast.TyId (_,i) -> ident_noloc i
@@ -183,8 +182,14 @@ let rec ctyp =
   :module_type  -> package_type  )
 let mktype loc tl cl tk tp tm =
   let (params,variance) = List.split tl in
-  {ptype_params = params;ptype_cstrs = cl;ptype_kind = tk;ptype_private = tp;
-    ptype_manifest = tm;ptype_loc = loc;ptype_variance = variance}
+  {ptype_params = params;
+    ptype_cstrs = cl;
+    ptype_kind = tk;
+    ptype_private = tp;
+    ptype_manifest = tm;
+    ptype_loc = loc;
+    ptype_variance = variance
+  }
 let mkprivate' m = if m then Private else Public
 let mkprivate =
   function
@@ -230,7 +235,7 @@ let rec type_decl tl cl loc m pflag =
         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m
 let type_decl tl cl t loc = type_decl tl cl loc None false t
 let mkvalue_desc loc t p =
-  {pval_type = (ctyp t);pval_prim = p;pval_loc = loc}
+  {pval_type = (ctyp t); pval_prim = p; pval_loc = loc }
 let rec list_of_meta_list =
   function
   | Ast.LNil  -> []
@@ -287,10 +292,14 @@ let mkwithtyp pwith_type loc id_tpl ct =
   let (params,variance) = List.split tpl in
   let (kind,priv,ct) = opt_private_ctyp ct in
   (id,(pwith_type
-         {ptype_params = params;ptype_cstrs = [];ptype_kind = kind;ptype_private
-                                                                    = priv;
-           ptype_manifest = (Some ct);ptype_loc = loc;ptype_variance =
-                                                        variance}))
+         {ptype_params = params;
+           ptype_cstrs = [];
+           ptype_kind = kind;
+           ptype_private = priv;
+           ptype_manifest = (Some ct);
+           ptype_loc = loc;
+           ptype_variance = variance
+         }))
 let rec mkwithc wc acc =
   match wc with
   | Ast.WcNil _ -> acc
@@ -340,7 +349,7 @@ let rec patt =
   | Ast.PaId (loc,i) ->
       let p =
         Ppat_construct
-          ((long_uident ~conv_con:conv_con i),None,(constructors_arity ())) in
+          ((long_uident ~conv_con i),None,(constructors_arity ())) in
       mkpat loc p
   | PaAli (loc,p1,p2) ->
       let (p,i) =
@@ -611,7 +620,7 @@ let rec expr =
   | ExObj (loc,po,cfl) ->
       let p = (match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p) in
       let cil = class_str_item cfl [] in
-      mkexp loc (Pexp_object {pcstr_pat = (patt p);pcstr_fields = cil})
+      mkexp loc (Pexp_object {pcstr_pat = (patt p); pcstr_fields = cil })
   | ExOlb (loc,_,_) -> error loc "labeled expression not allowed here"
   | ExOvr (loc,iel) -> mkexp loc (Pexp_override (mkideexp iel []))
   | ExRec (loc,lel,eo) ->
@@ -885,7 +894,7 @@ let rec expr =
       let cil = class_sig_item ctfl [] in
       mkcty loc
         (Pcty_signature
-           {pcsig_self = (ctyp t);pcsig_fields = cil;pcsig_loc = loc})
+           {pcsig_self = (ctyp t); pcsig_fields = cil; pcsig_loc = loc })
   | CtCon (loc,_,_,_) ->
       error loc "invalid virtual class inside a class type"
   | CtAnt (_,_)|CtEq (_,_,_)|CtCol (_,_,_)|CtAnd (_,_,_)|CtNil _ -> assert
@@ -896,10 +905,13 @@ let rec expr =
         (match params with
          | Ast.TyNil _ -> (loc,([],[]))
          | t -> ((loc_of_ctyp t),(List.split (class_parameters t [])))) in
-      {pci_virt = (mkvirtual vir);pci_params = (params,loc_params);pci_name =
-                                                                    (with_loc
-                                                                    name nloc);
-        pci_expr = (class_expr ce);pci_loc = loc;pci_variance = variance}
+      {pci_virt = (mkvirtual vir);
+        pci_params = (params,loc_params);
+        pci_name = (with_loc name nloc);
+        pci_expr = (class_expr ce);
+        pci_loc = loc;
+        pci_variance = variance
+      }
   | ce -> error (loc_of_class_expr ce) "bad class definition" and
   class_info_class_type ci =
   match ci with
@@ -909,10 +921,13 @@ let rec expr =
         (match params with
          | Ast.TyNil _ -> (loc,([],[]))
          | t -> ((loc_of_ctyp t),(List.split (class_parameters t [])))) in
-      {pci_virt = (mkvirtual vir);pci_params = (params,loc_params);pci_name =
-                                                                    (with_loc
-                                                                    name nloc);
-        pci_expr = (class_type ct);pci_loc = loc;pci_variance = variance}
+      {pci_virt = (mkvirtual vir);
+        pci_params = (params,loc_params);
+        pci_name = (with_loc name nloc);
+        pci_expr = (class_type ct);
+        pci_loc = loc;
+        pci_variance = variance
+      }
   | ct ->
       error (loc_of_class_type ct)
         "bad class/class type declaration/definition" and class_sig_item c l
@@ -954,7 +969,7 @@ let rec expr =
   | CeStr (loc,po,cfl) ->
       let p = (match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p) in
       let cil = class_str_item cfl [] in
-      mkcl loc (Pcl_structure {pcstr_pat = (patt p);pcstr_fields = cil})
+      mkcl loc (Pcl_structure {pcstr_pat = (patt p); pcstr_fields = cil })
   | CeTyc (loc,ce,ct) ->
       mkcl loc (Pcl_constraint ((class_expr ce),(class_type ct)))
   | CeCon (loc,_,_,_) ->

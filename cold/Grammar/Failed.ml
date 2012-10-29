@@ -90,6 +90,6 @@ let tree_failed entry prev_symb_result prev_symb tree =
   else ();
   txt ^ (" (in [" ^ (entry.ename ^ "])"))
 let symb_failed entry prev_symb_result prev_symb symb =
-  let tree = Node {node = symb;brother = DeadEnd;son = DeadEnd} in
+  let tree = Node {node = symb; brother = DeadEnd; son = DeadEnd } in
   tree_failed entry prev_symb_result prev_symb tree
 let symb_failed_txt e s1 s2 = symb_failed e 0 s1 s2

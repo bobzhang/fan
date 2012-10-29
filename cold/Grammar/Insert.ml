@@ -20,7 +20,7 @@ let rec derive_eps =
   | DeadEnd  -> false
 let empty_lev lname assoc =
   let assoc = match assoc with | Some a -> a | None  -> `LA in
-  {assoc = assoc;lname = lname;lsuffix = DeadEnd;lprefix = DeadEnd}
+  {assoc = assoc; lname = lname; lsuffix = DeadEnd; lprefix = DeadEnd }
 let change_lev entry lev n lname assoc =
   let a =
     match assoc with
@@ -40,8 +40,11 @@ let change_lev entry lev n lname assoc =
           flush Pervasives.stderr)
        else ()
    | None  -> ());
-  {assoc = a;lname = (lev.lname);lsuffix = (lev.lsuffix);lprefix =
-                                                           (lev.lprefix)}
+  {assoc = a;
+    lname = (lev.lname);
+    lsuffix = (lev.lsuffix);
+    lprefix = (lev.lprefix)
+  }
 let change_to_self entry =
   function
   | `Snterm e when e == entry -> `Sself
@@ -154,7 +157,7 @@ let insert_tree entry gsymbols action tree =
     | [] ->
         (match tree with
          | Node {node = s;son = son;brother = bro} ->
-             Node {node = s;son = son;brother = (insert [] bro)}
+             Node {node = s; son = son; brother = (insert [] bro) }
          | LocAct (old_action,action_list) ->
              let () =
                if ((entry.egram).warning_verbose).contents
@@ -168,13 +171,13 @@ let insert_tree entry gsymbols action tree =
     and insert_in_tree s sl tree =
     match try_insert s sl tree with
     | Some t -> t
-    | None  -> Node {node = s;son = (insert sl DeadEnd);brother = tree} and
-    try_insert s sl tree =
+    | None  -> Node {node = s; son = (insert sl DeadEnd); brother = tree }
+    and try_insert s sl tree =
     match tree with
     | Node {node = s1;son = son;brother = bro} ->
         if Tools.eq_symbol s s1
         then
-          let t = Node {node = s1;son = (insert sl son);brother = bro} in
+          let t = Node {node = s1; son = (insert sl son); brother = bro } in
           Some t
         else
           if (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
@@ -183,25 +186,30 @@ let insert_tree entry gsymbols action tree =
               (match try_insert s sl bro with
                | Some bro -> bro
                | None  ->
-                   Node {node = s;son = (insert sl DeadEnd);brother = bro}) in
-            let t = Node {node = s1;son = son;brother = bro} in Some t
+                   Node {node = s; son = (insert sl DeadEnd); brother = bro }) in
+            let t = Node {node = s1; son = son; brother = bro } in Some t
           else
             (match try_insert s sl bro with
              | Some bro ->
-                 let t = Node {node = s1;son = son;brother = bro} in Some t
+                 let t = Node {node = s1; son = son; brother = bro } in
+                 Some t
              | None  -> None)
     | LocAct (_,_)|DeadEnd  -> None in
   insert gsymbols tree
 let insert_level entry e1 symbols action slev =
   match e1 with
   | true  ->
-      {assoc = (slev.assoc);lname = (slev.lname);lsuffix =
-                                                   (insert_tree entry symbols
-                                                      action slev.lsuffix);
-        lprefix = (slev.lprefix)}
+      {assoc = (slev.assoc);
+        lname = (slev.lname);
+        lsuffix = (insert_tree entry symbols action slev.lsuffix);
+        lprefix = (slev.lprefix)
+      }
   | false  ->
-      {assoc = (slev.assoc);lname = (slev.lname);lsuffix = (slev.lsuffix);
-        lprefix = (insert_tree entry symbols action slev.lprefix)}
+      {assoc = (slev.assoc);
+        lname = (slev.lname);
+        lsuffix = (slev.lsuffix);
+        lprefix = (insert_tree entry symbols action slev.lprefix)
+      }
 let levels_of_rules entry position rules =
   let elev =
     match entry.edesc with

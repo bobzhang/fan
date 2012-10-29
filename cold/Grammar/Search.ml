@@ -11,7 +11,7 @@ let tree_in_entry prev_symb tree =
               | None  -> search_levels levels))
         and search_level level =
         (match search_tree level.lsuffix with
-         | Some t -> Some (Node {node = `Sself;son = t;brother = DeadEnd})
+         | Some t -> Some (Node {node = `Sself; son = t; brother = DeadEnd })
          | None  -> search_tree level.lprefix)
         and search_tree t =
         if (tree <> DeadEnd) && (t == tree)
@@ -21,12 +21,14 @@ let tree_in_entry prev_symb tree =
            | Node n ->
                (match search_symbol n.node with
                 | Some symb ->
-                    Some (Node {node = symb;son = (n.son);brother = DeadEnd})
+                    Some
+                      (Node {node = symb; son = (n.son); brother = DeadEnd })
                 | None  ->
                     (match search_tree n.son with
                      | Some t ->
                          Some
-                           (Node {node = (n.node);son = t;brother = DeadEnd})
+                           (Node
+                              {node = (n.node); son = t; brother = DeadEnd })
                      | None  -> search_tree n.brother))
            | LocAct (_,_)|DeadEnd  -> None)
         and search_symbol symb =

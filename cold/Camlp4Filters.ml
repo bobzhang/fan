@@ -176,7 +176,7 @@ module MakeFoldGenerator(Syn:Sig.Camlp4Syntax) = struct
     | Ast.IdAcc (_,i1,i2) ->
         (lid_of_ident sep i1) ^ (sep ^ (lid_of_ident sep i2))
     | _ -> assert false
-  type type_decl = (string *Ast.ident *Ast.ctyp  list *Ast.ctyp *bool ) 
+  type type_decl = (string * Ast.ident * Ast.ctyp  list * Ast.ctyp * bool ) 
   let builtin_types =
     let tyMap = SMap.empty in
     let tyMap =
@@ -1581,15 +1581,13 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                 (_,i))
                ->
                mk_meta_module
-                 {name = i;type_decls = (Lazy.force type_decls);app =
-                                                                  (Ast.ExId
-                                                                    (_loc,(
-                                                                    Ast.IdAcc
-                                                                    (_loc,(
-                                                                    Ast.IdUid
-                                                                    (_loc,"Ast")),(
-                                                                    Ast.IdUid
-                                                                    (_loc,"ExApp"))))));
+                 {name = i;
+                   type_decls = (Lazy.force type_decls);
+                   app =
+                     (Ast.ExId
+                        (_loc,(Ast.IdAcc
+                                 (_loc,(Ast.IdUid (_loc,"Ast")),(Ast.IdUid
+                                                                   (_loc,"ExApp"))))));
                    acc =
                      (Ast.ExId
                         (_loc,(Ast.IdAcc
@@ -1633,7 +1631,8 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                    ant =
                      (Ast.IdAcc
                         (_loc,(Ast.IdUid (_loc,"Ast")),(Ast.IdUid
-                                                          (_loc,"ExAnt"))))}
+                                                          (_loc,"ExAnt"))))
+                 }
            | Ast.MeApp
                (_,Ast.MeId
                 (_,Ast.IdAcc
@@ -1642,15 +1641,13 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                 (_,i))
                ->
                mk_meta_module
-                 {name = i;type_decls = (Lazy.force type_decls);app =
-                                                                  (Ast.ExId
-                                                                    (_loc,(
-                                                                    Ast.IdAcc
-                                                                    (_loc,(
-                                                                    Ast.IdUid
-                                                                    (_loc,"Ast")),(
-                                                                    Ast.IdUid
-                                                                    (_loc,"PaApp"))))));
+                 {name = i;
+                   type_decls = (Lazy.force type_decls);
+                   app =
+                     (Ast.ExId
+                        (_loc,(Ast.IdAcc
+                                 (_loc,(Ast.IdUid (_loc,"Ast")),(Ast.IdUid
+                                                                   (_loc,"PaApp"))))));
                    acc =
                      (Ast.ExId
                         (_loc,(Ast.IdAcc
@@ -1694,7 +1691,8 @@ module MakeMetaGenerator(Syn:Sig.Camlp4Syntax) = struct
                    ant =
                      (Ast.IdAcc
                         (_loc,(Ast.IdUid (_loc,"Ast")),(Ast.IdUid
-                                                          (_loc,"PaAnt"))))}
+                                                          (_loc,"PaAnt"))))
+                 }
            | me -> me
        end)#str_item) st
   let _= Syn.AstFilters.register_str_item_filter filter

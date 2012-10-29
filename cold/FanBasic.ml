@@ -9,9 +9,9 @@ let x ?(off=0)  (i : int ) =
   else
     let base = let open Char in ((code 'a') + off) |> chr in
     (String.of_char base) ^ (string_of_int i)
-let xid ?(off=0)  (i : int ) = (Ast.IdLid (_loc,(x ~off:off i)) :Ast.ident  )
-let allx ?(off=0)  i = "all_" ^ (x ~off:off i)
-let allxid ?(off=0)  i = Ast.IdLid (_loc,(allx ~off:off i))
+let xid ?(off=0)  (i : int ) = (Ast.IdLid (_loc,(x ~off i)) :Ast.ident  )
+let allx ?(off=0)  i = "all_" ^ (x ~off i)
+let allxid ?(off=0)  i = Ast.IdLid (_loc,(allx ~off i))
 let check_valid str =
   let len = String.length str in
   if

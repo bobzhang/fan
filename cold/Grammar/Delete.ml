@@ -8,13 +8,14 @@ let delete_rule_in_tree entry =
         else
           (match delete_in_tree symbols n.brother with
            | Some (dsl,t) ->
-               Some (dsl,(Node {node = (n.node);son = (n.son);brother = t}))
+               Some
+                 (dsl,(Node {node = (n.node); son = (n.son); brother = t }))
            | None  -> None)
     | (_::_,_) -> None
     | ([],Node n) ->
         (match delete_in_tree [] n.brother with
          | Some (dsl,t) ->
-             Some (dsl,(Node {node = (n.node);son = (n.son);brother = t}))
+             Some (dsl,(Node {node = (n.node); son = (n.son); brother = t }))
          | None  -> None)
     | ([],DeadEnd ) -> None
     | ([],LocAct (_,[])) -> Some ((Some []),DeadEnd)
@@ -23,10 +24,10 @@ let delete_rule_in_tree entry =
     match delete_in_tree sl n.son with
     | Some (Some dsl,DeadEnd ) -> Some ((Some ((n.node)::dsl)),(n.brother))
     | Some (Some dsl,t) ->
-        let t = Node {node = (n.node);son = t;brother = (n.brother)} in
+        let t = Node {node = (n.node); son = t; brother = (n.brother) } in
         Some ((Some ((n.node)::dsl)),t)
     | Some (None ,t) ->
-        let t = Node {node = (n.node);son = t;brother = (n.brother)} in
+        let t = Node {node = (n.node); son = t; brother = (n.brother) } in
         Some (None,t)
     | None  -> None in
   delete_in_tree
@@ -58,8 +59,11 @@ let rec delete_rule_in_suffix entry symbols =
              | DeadEnd  when lev.lprefix == DeadEnd -> levs
              | _ ->
                  let lev =
-                   {assoc = (lev.assoc);lname = (lev.lname);lsuffix = t;
-                     lprefix = (lev.lprefix)} in
+                   {assoc = (lev.assoc);
+                     lname = (lev.lname);
+                     lsuffix = t;
+                     lprefix = (lev.lprefix)
+                   } in
                  lev::levs))
        | None  ->
            let levs = delete_rule_in_suffix entry symbols levs in lev::levs)
@@ -76,9 +80,11 @@ let rec delete_rule_in_prefix entry symbols =
              | DeadEnd  when lev.lsuffix == DeadEnd -> levs
              | _ ->
                  let lev =
-                   {assoc = (lev.assoc);lname = (lev.lname);lsuffix =
-                                                              (lev.lsuffix);
-                     lprefix = t} in
+                   {assoc = (lev.assoc);
+                     lname = (lev.lname);
+                     lsuffix = (lev.lsuffix);
+                     lprefix = t
+                   } in
                  lev::levs))
        | None  ->
            let levs = delete_rule_in_prefix entry symbols levs in lev::levs)

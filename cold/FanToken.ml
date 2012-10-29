@@ -4,7 +4,7 @@ open FanSig
 type error =  
   | Illegal_token of string 
   | Keyword_as_label of string 
-  | Illegal_token_pattern of (string *string )
+  | Illegal_token_pattern of (string * string )
   | Illegal_constructor of string  
 exception TokenError of error 
 let print_basic_error ppf =
@@ -90,7 +90,7 @@ let check_unknown_keywords tok loc =
   match tok with | `SYMBOL s -> err (Illegal_token s) loc | _ -> ()
 module Filter =
   struct
-  let mk ~is_kwd  = {is_kwd = is_kwd;filter = ignore_layout}
+  let mk ~is_kwd  = {is_kwd = is_kwd; filter = ignore_layout }
   let filter x =
     let f (tok,loc) =
       let tok = keyword_conversion tok x.is_kwd in (tok,loc) in

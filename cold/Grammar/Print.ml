@@ -1,7 +1,7 @@
 open Structure
 open Format
 type brothers =  
-  | Bro of symbol *brothers  list  
+  | Bro of symbol * brothers  list  
 let rec flatten_tree =
   function
   | DeadEnd  -> []

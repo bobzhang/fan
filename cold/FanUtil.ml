@@ -110,14 +110,15 @@ let remove_underscores s =
       (fun ch -> if ch <> '_' then ignore (Buffer.add_char buf ch) else ()) s in
   Buffer.contents buf
 module Options :
-  sig type spec_list = (string *Arg.spec *string ) list  
-  val init : spec_list  -> unit 
-  val add : string  -> Arg.spec  -> string  -> unit 
-  val print_usage_list : spec_list  -> unit 
-  val ext_spec_list : unit  -> spec_list 
-  val parse : (string  -> unit ) -> string  array  -> string  list  end =
-  struct
-  type spec_list = (string *Arg.spec *string ) list   open Format
+  sig
+    type spec_list = (string * Arg.spec * string ) list  
+    val init : spec_list  -> unit 
+    val add : string  -> Arg.spec  -> string  -> unit 
+    val print_usage_list : spec_list  -> unit 
+    val ext_spec_list : unit  -> spec_list 
+    val parse : (string  -> unit ) -> string  array  -> string  list 
+  end = struct
+  type spec_list = (string * Arg.spec * string ) list   open Format
   let rec action_arg s sl =
     function
     | Arg.Unit f -> if s = "" then (f (); Some sl) else None
