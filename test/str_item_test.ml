@@ -119,3 +119,22 @@ let f = fun (`a (Some _ | None)) -> 3;;
 let f = fun `a (Some _ | None) -> 3;;
 let f = fun (`a (Some x) | x) -> 3;;
 let f = fun (`a `b `c) -> 3;;
+
+let u =
+  for i = 0 to 11 do
+    print_int a long line;
+    print_int i;
+    print_string;
+  done
+let u =
+  while true do
+    this is ;
+    a test;
+    ha statement;
+  done
+let g =
+  f a  g b b c d  gh g   g g  g  b
+let f () =
+  if f a g then
+    3
+  else 4
