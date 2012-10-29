@@ -17,24 +17,24 @@ type 'a tag =
   | Tag_rec_binding
   | Tag_module_binding 
 let string_of_tag =
-  (function
-  | Tag_ctyp  ->   "ctyp"
-  | Tag_patt  ->   "patt"
-  | Tag_expr  ->   "expr"
-  | Tag_module_type  ->   "module_type"
-  | Tag_sig_item  ->   "sig_item"
-  | Tag_with_constr  ->   "with_constr"
-  | Tag_module_expr  ->   "module_expr"
-  | Tag_str_item  ->   "str_item"
-  | Tag_class_type  ->   "class_type"
-  | Tag_class_sig_item  ->   "class_sig_item"
-  | Tag_class_expr  ->   "class_expr"
-  | Tag_class_str_item  ->   "class_str_item"
-  | Tag_match_case  ->   "match_case"
-  | Tag_ident  ->   "ident"
-  | Tag_binding  ->   "binding"
-  | Tag_rec_binding  ->   "rec_binding"
-  | Tag_module_binding  ->   "module_binding")
+  function
+  | Tag_ctyp  -> "ctyp"
+  | Tag_patt  -> "patt"
+  | Tag_expr  -> "expr"
+  | Tag_module_type  -> "module_type"
+  | Tag_sig_item  -> "sig_item"
+  | Tag_with_constr  -> "with_constr"
+  | Tag_module_expr  -> "module_expr"
+  | Tag_str_item  -> "str_item"
+  | Tag_class_type  -> "class_type"
+  | Tag_class_sig_item  -> "class_sig_item"
+  | Tag_class_expr  -> "class_expr"
+  | Tag_class_str_item  -> "class_str_item"
+  | Tag_match_case  -> "match_case"
+  | Tag_ident  -> "ident"
+  | Tag_binding  -> "binding"
+  | Tag_rec_binding  -> "rec_binding"
+  | Tag_module_binding  -> "module_binding"
 let ctyp_tag = (Tag_ctyp :Ast.ctyp  tag  )
 let patt_tag = (Tag_patt :Ast.patt  tag  )
 let expr_tag = (Tag_expr :Ast.expr  tag  )
@@ -56,17 +56,14 @@ type dyn
 external dyn_tag : 'a tag  -> dyn  tag  = "%identity"
 module Pack(X:sig type 'a t   end) = struct
   type pack = (dyn  tag *Obj.t )  exception Pack_error
-  let pack tag (v : 'a X.t ) = (( (dyn_tag tag) ),( (Obj.repr v) ))
+  let pack tag (v : 'a X.t ) = ((dyn_tag tag),(Obj.repr v))
   let unpack =
-    ((fun tag ->
-       (fun (tag',obj) ->
-         if (( (dyn_tag tag) ) = tag') then begin
-           ((Obj.obj obj) :'a X.t  )
-         end else begin
-           (raise Pack_error )
-         end)) :'a tag  -> pack  -> 'a X.t  )
+    (fun tag ->
+       fun (tag',obj) ->
+         if (dyn_tag tag) = tag'
+         then (Obj.obj obj :'a X.t  )
+         else raise Pack_error :'a tag  -> pack  -> 'a X.t  )
   let print_tag =
-    ((fun f ->
-       (fun (tag,_) -> (Format.pp_print_string f ( (string_of_tag tag) ))))
-      :Format.formatter  -> pack  -> unit  )
+    (fun f -> fun (tag,_) -> Format.pp_print_string f (string_of_tag tag)
+    :Format.formatter  -> pack  -> unit  )
   end

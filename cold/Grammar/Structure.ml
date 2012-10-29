@@ -21,7 +21,7 @@ type token_info =
   cur_loc: FanLoc.t ;
   prev_loc_only: bool } 
 let ghost_token_info =
-  {prev_loc = FanLoc.ghost;cur_loc = FanLoc.ghost;prev_loc_only = false }
+  {prev_loc = FanLoc.ghost;cur_loc = FanLoc.ghost;prev_loc_only = false}
 type token_stream = (token *token_info ) Stream.t  
 type efun = token_stream  -> Action.t  
 type description = [ `Normal | `Antiquot] 
@@ -75,27 +75,15 @@ type ('a,'b,'c) foldsep =
 let get_filter g = g.gfilter
 let token_location r = r.cur_loc
 let using {gkeywords = table;gfilter = filter;_} kwd =
-  let r = begin try (Hashtbl.find table kwd)
-    with
-    | Not_found  ->   let r = (ref 0) in begin
-                        (Hashtbl.add table kwd r);
-                        r
-                        end
-  end in
-  begin
-    (FanToken.Filter.keyword_added filter kwd ( (( r.contents ) = 0) ));
-    (incr r)
-    end
+  let r =
+    try Hashtbl.find table kwd
+    with | Not_found  -> let r = ref 0 in (Hashtbl.add table kwd r; r) in
+  FanToken.Filter.keyword_added filter kwd (r.contents = 0); incr r
 let mk_action = Action.mk
 let string_of_token = FanToken.extract_string
 let removing {gkeywords = table;gfilter = filter;_} kwd =
-  let r = (Hashtbl.find table kwd) in
-  let (() ) = (decr r) in
-  if (( r.contents ) = 0) then begin
-    begin
-    (FanToken.Filter.keyword_removed filter kwd);
-    (Hashtbl.remove table kwd)
-    end
-  end else begin
-    ()
-  end
+  let r = Hashtbl.find table kwd in
+  let () = decr r in
+  if r.contents = 0
+  then (FanToken.Filter.keyword_removed filter kwd; Hashtbl.remove table kwd)
+  else ()

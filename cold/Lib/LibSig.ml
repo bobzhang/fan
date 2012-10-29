@@ -60,11 +60,11 @@ type warning_type =
   | Abstract of string 
   | Qualified of string  
 let string_of_warning_type =
-  (sprintf "Warning: %a\n" (
+  sprintf "Warning: %a\n"
     (fun _ ->
-      (function
-      | Abstract s ->   ("Abstract: " ^ s)
-      | Qualified s ->   ("Qualified: " ^ s))) ))
+       function
+       | Abstract s -> "Abstract: " ^ s
+       | Qualified s -> "Qualified: " ^ s)
 module type Grammar =
   sig type 'a t   type loc   val eoi_entry : 'a t  -> 'a t 
   val parse_quot_string_with_filter :

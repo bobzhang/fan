@@ -138,3 +138,56 @@ let f () =
   if f a g then
     3
   else 4
+
+
+
+
+let check x msg =
+  if ((start_line x) > (stop_line x) ||
+      (start_bol x) > (stop_bol x) ||
+      (start_off x) > (stop_off x) ||
+      (start_line x) < 0 || (stop_line x) < 0 ||
+      (start_bol x) < 0 || (stop_bol x) < 0 ||
+      (start_off x) < 0 ||  (stop_off x) < 0)
+      (* Here, we don't check
+        (start_off x) < (start_bol x) || (stop_off x) < (start_bol x)
+        since the lexer is called on antiquotations, with off=0, but line and bolpos
+        have "correct" lets *)
+  then begin
+    eprintf "*** Warning: (%s) strange positions ***\n%a@\n" msg print x;
+    false
+  end
+  else true
+let a = 3 + 4 -2
+
+let filter x =
+  let f (tok,loc) =
+    let tok = keyword_conversion tok (x.is_kwd) in (tok,loc) in
+  fun strm -> (x.filter) (Stream.map f strm)
+
+let rec action_arg s sl = function
+  | Arg.Unit f -> if s = "" then (f (); Some sl) else None
+  | Arg.Bool f ->
+      if s = ""
+      then
+        (match sl with
+        | s::sl ->
+            (try f (bool_of_string s); Some sl
+            with | Invalid_argument "bool_of_string" -> None)
+        | [] -> None)
+        else
+          (try f (bool_of_string s); Some sl
+          with | Invalid_argument "bool_of_string" -> None)
+  | Arg.Int f ->
+      if s = ""
+      then
+        (match sl with
+          | s::sl ->
+              try f (int_of_string s); Some sl
+              with | Failure "int_of_string" -> None
+            | [] -> None)
+      else
+        (try f (int_of_string s); Some sl
+        with | Failure "int_of_string" -> None)
+            
+            
