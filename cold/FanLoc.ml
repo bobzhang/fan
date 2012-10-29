@@ -112,8 +112,7 @@ let start_off x = (x.loc_start).pos_cnum
 let stop_off x = (x.loc_end).pos_cnum
 let is_ghost x = x.loc_ghost
 let set_file_name s x =
-  {x
-    with
+  {x with
     loc_start = {(x.loc_start) with pos_fname = s };
     loc_end = {(x.loc_end) with pos_fname = s }
   }
@@ -124,8 +123,7 @@ let make_absolute x =
   if Filename.is_relative old_name
   then
     let new_name = Filename.concat pwd old_name in
-    {x
-      with
+    {x with
       loc_start = {(x.loc_start) with pos_fname = new_name };
       loc_end = {(x.loc_end) with pos_fname = new_name }
     }

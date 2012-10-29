@@ -4950,1628 +4950,1815 @@ module Meta =
       end
     end
   end
-class map = object((o : 'self_type))
-  method string :string  -> string = o#unknown
-  method list
-    :'a_out 'a . ('self_type -> 'a -> 'a_out) -> 'a list  -> 'a_out list =
-    fun _f_a ->
-      function
-      | [] -> []
-      | _x::_x_i1 ->
-          let _x = _f_a o _x in let _x_i1 = (o#list) _f_a _x_i1 in _x::_x_i1
-  method with_constr :with_constr  -> with_constr =
-    function
-    | WcNil _x -> let _x = (o#loc) _x in WcNil _x
-    | WcTyp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in WcTyp (_x,_x_i1,_x_i2)
-    | WcMod (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in WcMod (_x,_x_i1,_x_i2)
-    | WcTyS (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in WcTyS (_x,_x_i1,_x_i2)
-    | WcMoS (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in WcMoS (_x,_x_i1,_x_i2)
-    | WcAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#with_constr) _x_i1 in
-        let _x_i2 = (o#with_constr) _x_i2 in WcAnd (_x,_x_i1,_x_i2)
-    | WcAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in WcAnt (_x,_x_i1)
-  method virtual_flag :virtual_flag  -> virtual_flag =
-    function
-    | ViVirtual  -> ViVirtual
-    | ViNil  -> ViNil
-    | ViAnt _x -> let _x = (o#string) _x in ViAnt _x
-  method str_item :str_item  -> str_item =
-    function
-    | StNil _x -> let _x = (o#loc) _x in StNil _x
-    | StCls (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_expr) _x_i1 in StCls (_x,_x_i1)
-    | StClt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in StClt (_x,_x_i1)
-    | StSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#str_item) _x_i1 in
-        let _x_i2 = (o#str_item) _x_i2 in StSem (_x,_x_i1,_x_i2)
-    | StDir (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in StDir (_x,_x_i1,_x_i2)
-    | StExc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#meta_option) ((fun o -> o#ident)) _x_i2 in
-        StExc (_x,_x_i1,_x_i2)
-    | StExp (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in StExp (_x,_x_i1)
-    | StExt (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in
-        let _x_i3 = (o#meta_list) ((fun o -> o#string)) _x_i3 in
-        StExt (_x,_x_i1,_x_i2,_x_i3)
-    | StInc (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_expr) _x_i1 in StInc (_x,_x_i1)
-    | StMod (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_expr) _x_i2 in StMod (_x,_x_i1,_x_i2)
-    | StRecMod (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_binding) _x_i1 in StRecMod (_x,_x_i1)
-    | StMty (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in StMty (_x,_x_i1,_x_i2)
-    | StOpn (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in StOpn (_x,_x_i1)
-    | StTyp (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in StTyp (_x,_x_i1)
-    | StVal (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_flag) _x_i1 in
-        let _x_i2 = (o#binding) _x_i2 in StVal (_x,_x_i1,_x_i2)
-    | StAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in StAnt (_x,_x_i1)
-  method sig_item :sig_item  -> sig_item =
-    function
-    | SgNil _x -> let _x = (o#loc) _x in SgNil _x
-    | SgCls (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in SgCls (_x,_x_i1)
-    | SgClt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in SgClt (_x,_x_i1)
-    | SgSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#sig_item) _x_i1 in
-        let _x_i2 = (o#sig_item) _x_i2 in SgSem (_x,_x_i1,_x_i2)
-    | SgDir (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in SgDir (_x,_x_i1,_x_i2)
-    | SgExc (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in SgExc (_x,_x_i1)
-    | SgExt (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in
-        let _x_i3 = (o#meta_list) ((fun o -> o#string)) _x_i3 in
-        SgExt (_x,_x_i1,_x_i2,_x_i3)
-    | SgInc (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_type) _x_i1 in SgInc (_x,_x_i1)
-    | SgMod (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in SgMod (_x,_x_i1,_x_i2)
-    | SgRecMod (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_binding) _x_i1 in SgRecMod (_x,_x_i1)
-    | SgMty (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in SgMty (_x,_x_i1,_x_i2)
-    | SgOpn (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in SgOpn (_x,_x_i1)
-    | SgTyp (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in SgTyp (_x,_x_i1)
-    | SgVal (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in SgVal (_x,_x_i1,_x_i2)
-    | SgAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in SgAnt (_x,_x_i1)
-  method row_var_flag :row_var_flag  -> row_var_flag =
-    function
-    | RvRowVar  -> RvRowVar
-    | RvNil  -> RvNil
-    | RvAnt _x -> let _x = (o#string) _x in RvAnt _x
-  method rec_flag :rec_flag  -> rec_flag =
-    function
-    | ReRecursive  -> ReRecursive
-    | ReNil  -> ReNil
-    | ReAnt _x -> let _x = (o#string) _x in ReAnt _x
-  method rec_binding :rec_binding  -> rec_binding =
-    function
-    | RbNil _x -> let _x = (o#loc) _x in RbNil _x
-    | RbSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_binding) _x_i1 in
-        let _x_i2 = (o#rec_binding) _x_i2 in RbSem (_x,_x_i1,_x_i2)
-    | RbEq (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in RbEq (_x,_x_i1,_x_i2)
-    | RbAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in RbAnt (_x,_x_i1)
-  method private_flag :private_flag  -> private_flag =
-    function
-    | PrPrivate  -> PrPrivate
-    | PrNil  -> PrNil
-    | PrAnt _x -> let _x = (o#string) _x in PrAnt _x
-  method patt :patt  -> patt =
-    function
-    | PaNil _x -> let _x = (o#loc) _x in PaNil _x
-    | PaId (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ident) _x_i1 in PaId (_x,_x_i1)
-    | PaAli (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaAli (_x,_x_i1,_x_i2)
-    | PaAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaAnt (_x,_x_i1)
-    | PaAny _x -> let _x = (o#loc) _x in PaAny _x
-    | PaApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaApp (_x,_x_i1,_x_i2)
-    | PaArr (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#patt) _x_i1 in PaArr (_x,_x_i1)
-    | PaCom (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaCom (_x,_x_i1,_x_i2)
-    | PaSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaSem (_x,_x_i1,_x_i2)
-    | PaChr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaChr (_x,_x_i1)
-    | PaInt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaInt (_x,_x_i1)
-    | PaInt32 (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaInt32 (_x,_x_i1)
-    | PaInt64 (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaInt64 (_x,_x_i1)
-    | PaNativeInt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaNativeInt (_x,_x_i1)
-    | PaFlo (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaFlo (_x,_x_i1)
-    | PaLab (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaLab (_x,_x_i1,_x_i2)
-    | PaOlb (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaOlb (_x,_x_i1,_x_i2)
-    | PaOlbi (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in PaOlbi (_x,_x_i1,_x_i2,_x_i3)
-    | PaOrp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaOrp (_x,_x_i1,_x_i2)
-    | PaRng (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaRng (_x,_x_i1,_x_i2)
-    | PaRec (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#patt) _x_i1 in PaRec (_x,_x_i1)
-    | PaEq (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#patt) _x_i2 in PaEq (_x,_x_i1,_x_i2)
-    | PaStr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaStr (_x,_x_i1)
-    | PaTup (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#patt) _x_i1 in PaTup (_x,_x_i1)
-    | PaTyc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in PaTyc (_x,_x_i1,_x_i2)
-    | PaTyp (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in PaTyp (_x,_x_i1)
-    | PaVrn (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaVrn (_x,_x_i1)
-    | PaLaz (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#patt) _x_i1 in PaLaz (_x,_x_i1)
-    | PaMod (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in PaMod (_x,_x_i1)
-  method override_flag :override_flag  -> override_flag =
-    function
-    | OvOverride  -> OvOverride
-    | OvNil  -> OvNil
-    | OvAnt _x -> let _x = (o#string) _x in OvAnt _x
-  method mutable_flag :mutable_flag  -> mutable_flag =
-    function
-    | MuMutable  -> MuMutable
-    | MuNil  -> MuNil
-    | MuAnt _x -> let _x = (o#string) _x in MuAnt _x
-  method module_type :module_type  -> module_type =
-    function
-    | MtNil _x -> let _x = (o#loc) _x in MtNil _x
-    | MtId (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ident) _x_i1 in MtId (_x,_x_i1)
-    | MtFun (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in
-        let _x_i3 = (o#module_type) _x_i3 in MtFun (_x,_x_i1,_x_i2,_x_i3)
-    | MtQuo (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in MtQuo (_x,_x_i1)
-    | MtSig (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#sig_item) _x_i1 in MtSig (_x,_x_i1)
-    | MtWit (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_type) _x_i1 in
-        let _x_i2 = (o#with_constr) _x_i2 in MtWit (_x,_x_i1,_x_i2)
-    | MtOf (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_expr) _x_i1 in MtOf (_x,_x_i1)
-    | MtAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in MtAnt (_x,_x_i1)
-  method module_expr :module_expr  -> module_expr =
-    function
-    | MeNil _x -> let _x = (o#loc) _x in MeNil _x
-    | MeId (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ident) _x_i1 in MeId (_x,_x_i1)
-    | MeApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_expr) _x_i1 in
-        let _x_i2 = (o#module_expr) _x_i2 in MeApp (_x,_x_i1,_x_i2)
-    | MeFun (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in
-        let _x_i3 = (o#module_expr) _x_i3 in MeFun (_x,_x_i1,_x_i2,_x_i3)
-    | MeStr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#str_item) _x_i1 in MeStr (_x,_x_i1)
-    | MeTyc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_expr) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in MeTyc (_x,_x_i1,_x_i2)
-    | MePkg (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in MePkg (_x,_x_i1)
-    | MeAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in MeAnt (_x,_x_i1)
-  method module_binding :module_binding  -> module_binding =
-    function
-    | MbNil _x -> let _x = (o#loc) _x in MbNil _x
-    | MbAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_binding) _x_i1 in
-        let _x_i2 = (o#module_binding) _x_i2 in MbAnd (_x,_x_i1,_x_i2)
-    | MbColEq (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in
-        let _x_i3 = (o#module_expr) _x_i3 in MbColEq (_x,_x_i1,_x_i2,_x_i3)
-    | MbCol (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_type) _x_i2 in MbCol (_x,_x_i1,_x_i2)
-    | MbAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in MbAnt (_x,_x_i1)
-  method meta_option
-    :'a_out 'a .
-       ('self_type -> 'a -> 'a_out) -> 'a meta_option  -> 'a_out meta_option =
-    fun _f_a ->
-      function
-      | ONone  -> ONone
-      | OSome _x -> let _x = _f_a o _x in OSome _x
-      | OAnt _x -> let _x = (o#string) _x in OAnt _x
-  method meta_list
-    :'a_out 'a .
-       ('self_type -> 'a -> 'a_out) -> 'a meta_list  -> 'a_out meta_list =
-    fun _f_a ->
-      function
-      | LNil  -> LNil
-      | LCons (_x,_x_i1) ->
-          let _x = _f_a o _x in
-          let _x_i1 = (o#meta_list) _f_a _x_i1 in LCons (_x,_x_i1)
-      | LAnt _x -> let _x = (o#string) _x in LAnt _x
-  method meta_bool :meta_bool  -> meta_bool =
-    function
-    | BTrue  -> BTrue
-    | BFalse  -> BFalse
-    | BAnt _x -> let _x = (o#string) _x in BAnt _x
-  method match_case :match_case  -> match_case =
-    function
-    | McNil _x -> let _x = (o#loc) _x in McNil _x
-    | McOr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#match_case) _x_i1 in
-        let _x_i2 = (o#match_case) _x_i2 in McOr (_x,_x_i1,_x_i2)
-    | McArr (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in McArr (_x,_x_i1,_x_i2,_x_i3)
-    | McAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in McAnt (_x,_x_i1)
-  method loc :loc  -> loc = o#unknown
-  method ident :ident  -> ident =
-    function
-    | IdAcc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in IdAcc (_x,_x_i1,_x_i2)
-    | IdApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in IdApp (_x,_x_i1,_x_i2)
-    | IdLid (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in IdLid (_x,_x_i1)
-    | IdUid (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in IdUid (_x,_x_i1)
-    | IdAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in IdAnt (_x,_x_i1)
-  method expr :expr  -> expr =
-    function
-    | ExNil _x -> let _x = (o#loc) _x in ExNil _x
-    | ExId (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ident) _x_i1 in ExId (_x,_x_i1)
-    | ExAcc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExAcc (_x,_x_i1,_x_i2)
-    | ExAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExAnt (_x,_x_i1)
-    | ExApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExApp (_x,_x_i1,_x_i2)
-    | ExAre (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExAre (_x,_x_i1,_x_i2)
-    | ExArr (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in ExArr (_x,_x_i1)
-    | ExSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExSem (_x,_x_i1,_x_i2)
-    | ExAsf _x -> let _x = (o#loc) _x in ExAsf _x
-    | ExAsr (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in ExAsr (_x,_x_i1)
-    | ExAss (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExAss (_x,_x_i1,_x_i2)
-    | ExChr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExChr (_x,_x_i1)
-    | ExCoe (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in ExCoe (_x,_x_i1,_x_i2,_x_i3)
-    | ExFlo (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExFlo (_x,_x_i1)
-    | ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in
-        let _x_i4 = (o#direction_flag) _x_i4 in
-        let _x_i5 = (o#expr) _x_i5 in
-        ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5)
-    | ExFun (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#match_case) _x_i1 in ExFun (_x,_x_i1)
-    | ExIfe (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in ExIfe (_x,_x_i1,_x_i2,_x_i3)
-    | ExInt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExInt (_x,_x_i1)
-    | ExInt32 (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExInt32 (_x,_x_i1)
-    | ExInt64 (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExInt64 (_x,_x_i1)
-    | ExNativeInt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExNativeInt (_x,_x_i1)
-    | ExLab (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExLab (_x,_x_i1,_x_i2)
-    | ExLaz (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in ExLaz (_x,_x_i1)
-    | ExLet (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_flag) _x_i1 in
-        let _x_i2 = (o#binding) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in ExLet (_x,_x_i1,_x_i2,_x_i3)
-    | ExLmd (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#module_expr) _x_i2 in
-        let _x_i3 = (o#expr) _x_i3 in ExLmd (_x,_x_i1,_x_i2,_x_i3)
-    | ExMat (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#match_case) _x_i2 in ExMat (_x,_x_i1,_x_i2)
-    | ExNew (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in ExNew (_x,_x_i1)
-    | ExObj (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#class_str_item) _x_i2 in ExObj (_x,_x_i1,_x_i2)
-    | ExOlb (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExOlb (_x,_x_i1,_x_i2)
-    | ExOvr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_binding) _x_i1 in ExOvr (_x,_x_i1)
-    | ExRec (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_binding) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExRec (_x,_x_i1,_x_i2)
-    | ExSeq (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in ExSeq (_x,_x_i1)
-    | ExSnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#string) _x_i2 in ExSnd (_x,_x_i1,_x_i2)
-    | ExSte (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExSte (_x,_x_i1,_x_i2)
-    | ExStr (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExStr (_x,_x_i1)
-    | ExTry (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#match_case) _x_i2 in ExTry (_x,_x_i1,_x_i2)
-    | ExTup (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in ExTup (_x,_x_i1)
-    | ExCom (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExCom (_x,_x_i1,_x_i2)
-    | ExTyc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in ExTyc (_x,_x_i1,_x_i2)
-    | ExVrn (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in ExVrn (_x,_x_i1)
-    | ExWhi (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExWhi (_x,_x_i1,_x_i2)
-    | ExOpI (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExOpI (_x,_x_i1,_x_i2)
-    | ExFUN (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in ExFUN (_x,_x_i1,_x_i2)
-    | ExPkg (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_expr) _x_i1 in ExPkg (_x,_x_i1)
-  method direction_flag :direction_flag  -> direction_flag =
-    function
-    | DiTo  -> DiTo
-    | DiDownto  -> DiDownto
-    | DiAnt _x -> let _x = (o#string) _x in DiAnt _x
-  method ctyp :ctyp  -> ctyp =
-    function
-    | TyNil _x -> let _x = (o#loc) _x in TyNil _x
-    | TyAli (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyAli (_x,_x_i1,_x_i2)
-    | TyAny _x -> let _x = (o#loc) _x in TyAny _x
-    | TyApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyApp (_x,_x_i1,_x_i2)
-    | TyArr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyArr (_x,_x_i1,_x_i2)
-    | TyCls (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ident) _x_i1 in TyCls (_x,_x_i1)
-    | TyLab (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyLab (_x,_x_i1,_x_i2)
-    | TyId (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ident) _x_i1 in TyId (_x,_x_i1)
-    | TyMan (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyMan (_x,_x_i1,_x_i2)
-    | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#list) ((fun o -> o#ctyp)) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in
-        let _x_i4 =
-          (o#list)
-            ((fun o ->
-                fun (_x,_x_i1) ->
-                  let _x = (o#ctyp) _x in
-                  let _x_i1 = (o#ctyp) _x_i1 in (_x,_x_i1))) _x_i4 in
-        TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4)
-    | TyObj (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#row_var_flag) _x_i2 in TyObj (_x,_x_i1,_x_i2)
-    | TyOlb (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyOlb (_x,_x_i1,_x_i2)
-    | TyPol (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyPol (_x,_x_i1,_x_i2)
-    | TyTypePol (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyTypePol (_x,_x_i1,_x_i2)
-    | TyQuo (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in TyQuo (_x,_x_i1)
-    | TyQuP (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in TyQuP (_x,_x_i1)
-    | TyQuM (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in TyQuM (_x,_x_i1)
-    | TyAnP _x -> let _x = (o#loc) _x in TyAnP _x
-    | TyAnM _x -> let _x = (o#loc) _x in TyAnM _x
-    | TyVrn (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in TyVrn (_x,_x_i1)
-    | TyRec (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in TyRec (_x,_x_i1)
-    | TyCol (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyCol (_x,_x_i1,_x_i2)
-    | TySem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TySem (_x,_x_i1,_x_i2)
-    | TyCom (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyCom (_x,_x_i1,_x_i2)
-    | TySum (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in TySum (_x,_x_i1)
-    | TyOf (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyOf (_x,_x_i1,_x_i2)
-    | TyAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyAnd (_x,_x_i1,_x_i2)
-    | TyOr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyOr (_x,_x_i1,_x_i2)
-    | TyPrv (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in TyPrv (_x,_x_i1)
-    | TyMut (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in TyMut (_x,_x_i1)
-    | TyTup (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#ctyp) _x_i1 in TyTup (_x,_x_i1)
-    | TySta (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TySta (_x,_x_i1,_x_i2)
-    | TyVrnEq (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in TyVrnEq (_x,_x_i1)
-    | TyVrnSup (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in TyVrnSup (_x,_x_i1)
-    | TyVrnInf (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in TyVrnInf (_x,_x_i1)
-    | TyVrnInfSup (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyVrnInfSup (_x,_x_i1,_x_i2)
-    | TyAmp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyAmp (_x,_x_i1,_x_i2)
-    | TyOfAmp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in TyOfAmp (_x,_x_i1,_x_i2)
-    | TyPkg (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#module_type) _x_i1 in TyPkg (_x,_x_i1)
-    | TyAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in TyAnt (_x,_x_i1)
-  method class_type :class_type  -> class_type =
-    function
-    | CtNil _x -> let _x = (o#loc) _x in CtNil _x
-    | CtCon (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#virtual_flag) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CtCon (_x,_x_i1,_x_i2,_x_i3)
-    | CtFun (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#class_type) _x_i2 in CtFun (_x,_x_i1,_x_i2)
-    | CtSig (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#class_sig_item) _x_i2 in CtSig (_x,_x_i1,_x_i2)
-    | CtAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in
-        let _x_i2 = (o#class_type) _x_i2 in CtAnd (_x,_x_i1,_x_i2)
-    | CtCol (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in
-        let _x_i2 = (o#class_type) _x_i2 in CtCol (_x,_x_i1,_x_i2)
-    | CtEq (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in
-        let _x_i2 = (o#class_type) _x_i2 in CtEq (_x,_x_i1,_x_i2)
-    | CtAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in CtAnt (_x,_x_i1)
-  method class_str_item :class_str_item  -> class_str_item =
-    function
-    | CrNil _x -> let _x = (o#loc) _x in CrNil _x
-    | CrSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_str_item) _x_i1 in
-        let _x_i2 = (o#class_str_item) _x_i2 in CrSem (_x,_x_i1,_x_i2)
-    | CrCtr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in CrCtr (_x,_x_i1,_x_i2)
-    | CrInh (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#override_flag) _x_i1 in
-        let _x_i2 = (o#class_expr) _x_i2 in
-        let _x_i3 = (o#string) _x_i3 in CrInh (_x,_x_i1,_x_i2,_x_i3)
-    | CrIni (_x,_x_i1) ->
-        let _x = (o#loc) _x in let _x_i1 = (o#expr) _x_i1 in CrIni (_x,_x_i1)
-    | CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#override_flag) _x_i2 in
-        let _x_i3 = (o#private_flag) _x_i3 in
-        let _x_i4 = (o#expr) _x_i4 in
-        let _x_i5 = (o#ctyp) _x_i5 in
-        CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5)
-    | CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#override_flag) _x_i2 in
-        let _x_i3 = (o#mutable_flag) _x_i3 in
-        let _x_i4 = (o#expr) _x_i4 in CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4)
-    | CrVir (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#private_flag) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CrVir (_x,_x_i1,_x_i2,_x_i3)
-    | CrVvr (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#mutable_flag) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CrVvr (_x,_x_i1,_x_i2,_x_i3)
-    | CrAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in CrAnt (_x,_x_i1)
-  method class_sig_item :class_sig_item  -> class_sig_item =
-    function
-    | CgNil _x -> let _x = (o#loc) _x in CgNil _x
-    | CgCtr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#ctyp) _x_i1 in
-        let _x_i2 = (o#ctyp) _x_i2 in CgCtr (_x,_x_i1,_x_i2)
-    | CgSem (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_sig_item) _x_i1 in
-        let _x_i2 = (o#class_sig_item) _x_i2 in CgSem (_x,_x_i1,_x_i2)
-    | CgInh (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_type) _x_i1 in CgInh (_x,_x_i1)
-    | CgMth (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#private_flag) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CgMth (_x,_x_i1,_x_i2,_x_i3)
-    | CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#mutable_flag) _x_i2 in
-        let _x_i3 = (o#virtual_flag) _x_i3 in
-        let _x_i4 = (o#ctyp) _x_i4 in CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4)
-    | CgVir (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in
-        let _x_i2 = (o#private_flag) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CgVir (_x,_x_i1,_x_i2,_x_i3)
-    | CgAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in CgAnt (_x,_x_i1)
-  method class_expr :class_expr  -> class_expr =
-    function
-    | CeNil _x -> let _x = (o#loc) _x in CeNil _x
-    | CeApp (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_expr) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in CeApp (_x,_x_i1,_x_i2)
-    | CeCon (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#virtual_flag) _x_i1 in
-        let _x_i2 = (o#ident) _x_i2 in
-        let _x_i3 = (o#ctyp) _x_i3 in CeCon (_x,_x_i1,_x_i2,_x_i3)
-    | CeFun (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#class_expr) _x_i2 in CeFun (_x,_x_i1,_x_i2)
-    | CeLet (_x,_x_i1,_x_i2,_x_i3) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#rec_flag) _x_i1 in
-        let _x_i2 = (o#binding) _x_i2 in
-        let _x_i3 = (o#class_expr) _x_i3 in CeLet (_x,_x_i1,_x_i2,_x_i3)
-    | CeStr (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#class_str_item) _x_i2 in CeStr (_x,_x_i1,_x_i2)
-    | CeTyc (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_expr) _x_i1 in
-        let _x_i2 = (o#class_type) _x_i2 in CeTyc (_x,_x_i1,_x_i2)
-    | CeAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_expr) _x_i1 in
-        let _x_i2 = (o#class_expr) _x_i2 in CeAnd (_x,_x_i1,_x_i2)
-    | CeEq (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#class_expr) _x_i1 in
-        let _x_i2 = (o#class_expr) _x_i2 in CeEq (_x,_x_i1,_x_i2)
-    | CeAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in CeAnt (_x,_x_i1)
-  method binding :binding  -> binding =
-    function
-    | BiNil _x -> let _x = (o#loc) _x in BiNil _x
-    | BiAnd (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#binding) _x_i1 in
-        let _x_i2 = (o#binding) _x_i2 in BiAnd (_x,_x_i1,_x_i2)
-    | BiEq (_x,_x_i1,_x_i2) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#patt) _x_i1 in
-        let _x_i2 = (o#expr) _x_i2 in BiEq (_x,_x_i1,_x_i2)
-    | BiAnt (_x,_x_i1) ->
-        let _x = (o#loc) _x in
-        let _x_i1 = (o#string) _x_i1 in BiAnt (_x,_x_i1)
-  method unknown :'a . 'a -> 'a= fun x -> x
-  end
-class fold = object((o : 'self_type))
-  method string :string  -> 'self_type= o#unknown
-  method list
-    :'a . ('self_type -> 'a -> 'self_type) -> 'a list  -> 'self_type=
-    fun _f_a ->
-      function
-      | [] -> o
-      | _x::_x_i1 -> let o = _f_a o _x in let o = (o#list) _f_a _x_i1 in o
-  method with_constr :with_constr  -> 'self_type=
-    function
-    | WcNil _x -> let o = (o#loc) _x in o
-    | WcTyp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | WcMod (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
-    | WcTyS (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | WcMoS (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
-    | WcAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#with_constr) _x_i1 in let o = (o#with_constr) _x_i2 in o
-    | WcAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method virtual_flag :virtual_flag  -> 'self_type=
-    function
-    | ViVirtual  -> o
-    | ViNil  -> o
-    | ViAnt _x -> let o = (o#string) _x in o
-  method str_item :str_item  -> 'self_type=
-    function
-    | StNil _x -> let o = (o#loc) _x in o
-    | StCls (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#class_expr) _x_i1 in o
-    | StClt (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
-    | StSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#str_item) _x_i1 in let o = (o#str_item) _x_i2 in o
-    | StDir (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
-    | StExc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in
-        let o = (o#meta_option) ((fun o -> o#ident)) _x_i2 in o
-    | StExp (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | StExt (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#ctyp) _x_i2 in
-        let o = (o#meta_list) ((fun o -> o#string)) _x_i3 in o
-    | StInc (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
-    | StMod (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#module_expr) _x_i2 in o
-    | StRecMod (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_binding) _x_i1 in o
-    | StMty (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#module_type) _x_i2 in o
-    | StOpn (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | StTyp (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | StVal (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#rec_flag) _x_i1 in let o = (o#binding) _x_i2 in o
-    | StAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method sig_item :sig_item  -> 'self_type=
-    function
-    | SgNil _x -> let o = (o#loc) _x in o
-    | SgCls (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
-    | SgClt (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
-    | SgSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#sig_item) _x_i1 in let o = (o#sig_item) _x_i2 in o
-    | SgDir (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
-    | SgExc (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | SgExt (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#ctyp) _x_i2 in
-        let o = (o#meta_list) ((fun o -> o#string)) _x_i3 in o
-    | SgInc (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_type) _x_i1 in o
-    | SgMod (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#module_type) _x_i2 in o
-    | SgRecMod (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_binding) _x_i1 in o
-    | SgMty (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#module_type) _x_i2 in o
-    | SgOpn (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | SgTyp (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | SgVal (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | SgAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method row_var_flag :row_var_flag  -> 'self_type=
-    function
-    | RvRowVar  -> o
-    | RvNil  -> o
-    | RvAnt _x -> let o = (o#string) _x in o
-  method rec_flag :rec_flag  -> 'self_type=
-    function
-    | ReRecursive  -> o
-    | ReNil  -> o
-    | ReAnt _x -> let o = (o#string) _x in o
-  method rec_binding :rec_binding  -> 'self_type=
-    function
-    | RbNil _x -> let o = (o#loc) _x in o
-    | RbSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#rec_binding) _x_i1 in let o = (o#rec_binding) _x_i2 in o
-    | RbEq (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#expr) _x_i2 in o
-    | RbAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method private_flag :private_flag  -> 'self_type=
-    function
-    | PrPrivate  -> o
-    | PrNil  -> o
-    | PrAnt _x -> let o = (o#string) _x in o
-  method patt :patt  -> 'self_type=
-    function
-    | PaNil _x -> let o = (o#loc) _x in o
-    | PaId (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | PaAli (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaAny _x -> let o = (o#loc) _x in o
-    | PaApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaArr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
-    | PaCom (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaChr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaInt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaInt32 (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaInt64 (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaNativeInt (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaFlo (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaLab (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaOlb (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaOlbi (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#patt) _x_i2 in let o = (o#expr) _x_i3 in o
-    | PaOrp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaRng (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaRec (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
-    | PaEq (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#patt) _x_i2 in o
-    | PaStr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaTup (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
-    | PaTyc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | PaTyp (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | PaVrn (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | PaLaz (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
-    | PaMod (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method override_flag :override_flag  -> 'self_type=
-    function
-    | OvOverride  -> o
-    | OvNil  -> o
-    | OvAnt _x -> let o = (o#string) _x in o
-  method mutable_flag :mutable_flag  -> 'self_type=
-    function
-    | MuMutable  -> o
-    | MuNil  -> o
-    | MuAnt _x -> let o = (o#string) _x in o
-  method module_type :module_type  -> 'self_type=
-    function
-    | MtNil _x -> let o = (o#loc) _x in o
-    | MtId (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | MtFun (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#module_type) _x_i2 in let o = (o#module_type) _x_i3 in o
-    | MtQuo (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | MtSig (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#sig_item) _x_i1 in o
-    | MtWit (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#module_type) _x_i1 in let o = (o#with_constr) _x_i2 in o
-    | MtOf (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
-    | MtAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method module_expr :module_expr  -> 'self_type=
-    function
-    | MeNil _x -> let o = (o#loc) _x in o
-    | MeId (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | MeApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#module_expr) _x_i1 in let o = (o#module_expr) _x_i2 in o
-    | MeFun (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#module_type) _x_i2 in let o = (o#module_expr) _x_i3 in o
-    | MeStr (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#str_item) _x_i1 in o
-    | MeTyc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#module_expr) _x_i1 in let o = (o#module_type) _x_i2 in o
-    | MePkg (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | MeAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method module_binding :module_binding  -> 'self_type=
-    function
-    | MbNil _x -> let o = (o#loc) _x in o
-    | MbAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#module_binding) _x_i1 in
-        let o = (o#module_binding) _x_i2 in o
-    | MbColEq (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#module_type) _x_i2 in let o = (o#module_expr) _x_i3 in o
-    | MbCol (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#module_type) _x_i2 in o
-    | MbAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method meta_option
-    :'a . ('self_type -> 'a -> 'self_type) -> 'a meta_option  -> 'self_type=
-    fun _f_a ->
-      function
-      | ONone  -> o
-      | OSome _x -> let o = _f_a o _x in o
-      | OAnt _x -> let o = (o#string) _x in o
-  method meta_list
-    :'a . ('self_type -> 'a -> 'self_type) -> 'a meta_list  -> 'self_type=
-    fun _f_a ->
-      function
-      | LNil  -> o
-      | LCons (_x,_x_i1) ->
-          let o = _f_a o _x in let o = (o#meta_list) _f_a _x_i1 in o
-      | LAnt _x -> let o = (o#string) _x in o
-  method meta_bool :meta_bool  -> 'self_type=
-    function
-    | BTrue  -> o
-    | BFalse  -> o
-    | BAnt _x -> let o = (o#string) _x in o
-  method match_case :match_case  -> 'self_type=
-    function
-    | McNil _x -> let o = (o#loc) _x in o
-    | McOr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#match_case) _x_i1 in let o = (o#match_case) _x_i2 in o
-    | McArr (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in
-        let o = (o#expr) _x_i2 in let o = (o#expr) _x_i3 in o
-    | McAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method loc :loc  -> 'self_type= o#unknown
-  method ident :ident  -> 'self_type=
-    function
-    | IdAcc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
-    | IdApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
-    | IdLid (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | IdUid (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | IdAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method expr :expr  -> 'self_type=
-    function
-    | ExNil _x -> let o = (o#loc) _x in o
-    | ExId (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | ExAcc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExAre (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExArr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | ExSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExAsf _x -> let o = (o#loc) _x in o
-    | ExAsr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | ExAss (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExChr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExCoe (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in
-        let o = (o#ctyp) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | ExFlo (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#expr) _x_i2 in
-        let o = (o#expr) _x_i3 in
-        let o = (o#direction_flag) _x_i4 in let o = (o#expr) _x_i5 in o
-    | ExFun (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#match_case) _x_i1 in o
-    | ExIfe (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in
-        let o = (o#expr) _x_i2 in let o = (o#expr) _x_i3 in o
-    | ExInt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExInt32 (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExInt64 (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExNativeInt (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExLab (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExLaz (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | ExLet (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#rec_flag) _x_i1 in
-        let o = (o#binding) _x_i2 in let o = (o#expr) _x_i3 in o
-    | ExLmd (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#module_expr) _x_i2 in let o = (o#expr) _x_i3 in o
-    | ExMat (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#match_case) _x_i2 in o
-    | ExNew (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | ExObj (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#class_str_item) _x_i2 in o
-    | ExOlb (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExOvr (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#rec_binding) _x_i1 in o
-    | ExRec (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#rec_binding) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExSeq (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | ExSnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#string) _x_i2 in o
-    | ExSte (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExStr (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExTry (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#match_case) _x_i2 in o
-    | ExTup (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | ExCom (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExTyc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | ExVrn (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | ExWhi (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExOpI (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ident) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExFUN (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
-    | ExPkg (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
-  method direction_flag :direction_flag  -> 'self_type=
-    function
-    | DiTo  -> o
-    | DiDownto  -> o
-    | DiAnt _x -> let o = (o#string) _x in o
-  method ctyp :ctyp  -> 'self_type=
-    function
-    | TyNil _x -> let o = (o#loc) _x in o
-    | TyAli (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyAny _x -> let o = (o#loc) _x in o
-    | TyApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyArr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyCls (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | TyLab (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyId (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
-    | TyMan (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#list) ((fun o -> o#ctyp)) _x_i2 in
-        let o = (o#ctyp) _x_i3 in
-        let o =
-          (o#list)
-            ((fun o ->
-                fun (_x,_x_i1) ->
-                  let o = (o#ctyp) _x in let o = (o#ctyp) _x_i1 in o)) _x_i4 in
-        o
-    | TyObj (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#row_var_flag) _x_i2 in o
-    | TyOlb (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyPol (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyTypePol (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyQuo (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | TyQuP (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | TyQuM (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | TyAnP _x -> let o = (o#loc) _x in o
-    | TyAnM _x -> let o = (o#loc) _x in o
-    | TyVrn (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-    | TyRec (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyCol (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TySem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyCom (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TySum (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyOf (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyOr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyPrv (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyMut (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyTup (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TySta (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyVrnEq (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyVrnSup (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyVrnInf (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
-    | TyVrnInfSup (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyAmp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyOfAmp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | TyPkg (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#module_type) _x_i1 in o
-    | TyAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method class_type :class_type  -> 'self_type=
-    function
-    | CtNil _x -> let o = (o#loc) _x in o
-    | CtCon (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#virtual_flag) _x_i1 in
-        let o = (o#ident) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CtFun (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#class_type) _x_i2 in o
-    | CtSig (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#class_sig_item) _x_i2 in o
-    | CtAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_type) _x_i1 in let o = (o#class_type) _x_i2 in o
-    | CtCol (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_type) _x_i1 in let o = (o#class_type) _x_i2 in o
-    | CtEq (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_type) _x_i1 in let o = (o#class_type) _x_i2 in o
-    | CtAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method class_str_item :class_str_item  -> 'self_type=
-    function
-    | CrNil _x -> let o = (o#loc) _x in o
-    | CrSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_str_item) _x_i1 in
-        let o = (o#class_str_item) _x_i2 in o
-    | CrCtr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | CrInh (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#override_flag) _x_i1 in
-        let o = (o#class_expr) _x_i2 in let o = (o#string) _x_i3 in o
-    | CrIni (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
-    | CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#override_flag) _x_i2 in
-        let o = (o#private_flag) _x_i3 in
-        let o = (o#expr) _x_i4 in let o = (o#ctyp) _x_i5 in o
-    | CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#override_flag) _x_i2 in
-        let o = (o#mutable_flag) _x_i3 in let o = (o#expr) _x_i4 in o
-    | CrVir (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#private_flag) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CrVvr (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#mutable_flag) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CrAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method class_sig_item :class_sig_item  -> 'self_type=
-    function
-    | CgNil _x -> let o = (o#loc) _x in o
-    | CgCtr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
-    | CgSem (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_sig_item) _x_i1 in
-        let o = (o#class_sig_item) _x_i2 in o
-    | CgInh (_x,_x_i1) ->
-        let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
-    | CgMth (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#private_flag) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#mutable_flag) _x_i2 in
-        let o = (o#virtual_flag) _x_i3 in let o = (o#ctyp) _x_i4 in o
-    | CgVir (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#string) _x_i1 in
-        let o = (o#private_flag) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CgAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method class_expr :class_expr  -> 'self_type=
-    function
-    | CeNil _x -> let o = (o#loc) _x in o
-    | CeApp (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_expr) _x_i1 in let o = (o#expr) _x_i2 in o
-    | CeCon (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#virtual_flag) _x_i1 in
-        let o = (o#ident) _x_i2 in let o = (o#ctyp) _x_i3 in o
-    | CeFun (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#class_expr) _x_i2 in o
-    | CeLet (_x,_x_i1,_x_i2,_x_i3) ->
-        let o = (o#loc) _x in
-        let o = (o#rec_flag) _x_i1 in
-        let o = (o#binding) _x_i2 in let o = (o#class_expr) _x_i3 in o
-    | CeStr (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#class_str_item) _x_i2 in o
-    | CeTyc (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_expr) _x_i1 in let o = (o#class_type) _x_i2 in o
-    | CeAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_expr) _x_i1 in let o = (o#class_expr) _x_i2 in o
-    | CeEq (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#class_expr) _x_i1 in let o = (o#class_expr) _x_i2 in o
-    | CeAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method binding :binding  -> 'self_type=
-    function
-    | BiNil _x -> let o = (o#loc) _x in o
-    | BiAnd (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#binding) _x_i1 in let o = (o#binding) _x_i2 in o
-    | BiEq (_x,_x_i1,_x_i2) ->
-        let o = (o#loc) _x in
-        let o = (o#patt) _x_i1 in let o = (o#expr) _x_i2 in o
-    | BiAnt (_x,_x_i1) -> let o = (o#loc) _x in let o = (o#string) _x_i1 in o
-  method unknown :'a . 'a -> 'self_type= fun _ -> o
-  end
+class map = object (o : 'self_type)
+              method string : string  -> string = o#unknown
+              method list :
+                'a_out 'a .
+                  ('self_type -> 'a -> 'a_out) -> 'a list  -> 'a_out list =
+                fun _f_a ->
+                  function
+                  | [] -> []
+                  | _x::_x_i1 ->
+                      let _x = _f_a o _x in
+                      let _x_i1 = (o#list) _f_a _x_i1 in _x::_x_i1
+              method with_constr : with_constr  -> with_constr =
+                function
+                | WcNil _x -> let _x = (o#loc) _x in WcNil _x
+                | WcTyp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in WcTyp (_x,_x_i1,_x_i2)
+                | WcMod (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in WcMod (_x,_x_i1,_x_i2)
+                | WcTyS (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in WcTyS (_x,_x_i1,_x_i2)
+                | WcMoS (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in WcMoS (_x,_x_i1,_x_i2)
+                | WcAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#with_constr) _x_i1 in
+                    let _x_i2 = (o#with_constr) _x_i2 in
+                    WcAnd (_x,_x_i1,_x_i2)
+                | WcAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in WcAnt (_x,_x_i1)
+              method virtual_flag : virtual_flag  -> virtual_flag =
+                function
+                | ViVirtual  -> ViVirtual
+                | ViNil  -> ViNil
+                | ViAnt _x -> let _x = (o#string) _x in ViAnt _x
+              method str_item : str_item  -> str_item =
+                function
+                | StNil _x -> let _x = (o#loc) _x in StNil _x
+                | StCls (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_expr) _x_i1 in StCls (_x,_x_i1)
+                | StClt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in StClt (_x,_x_i1)
+                | StSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#str_item) _x_i1 in
+                    let _x_i2 = (o#str_item) _x_i2 in StSem (_x,_x_i1,_x_i2)
+                | StDir (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in StDir (_x,_x_i1,_x_i2)
+                | StExc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#meta_option) ((fun o -> o#ident)) _x_i2 in
+                    StExc (_x,_x_i1,_x_i2)
+                | StExp (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in StExp (_x,_x_i1)
+                | StExt (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in
+                    let _x_i3 = (o#meta_list) ((fun o -> o#string)) _x_i3 in
+                    StExt (_x,_x_i1,_x_i2,_x_i3)
+                | StInc (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_expr) _x_i1 in StInc (_x,_x_i1)
+                | StMod (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_expr) _x_i2 in
+                    StMod (_x,_x_i1,_x_i2)
+                | StRecMod (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_binding) _x_i1 in
+                    StRecMod (_x,_x_i1)
+                | StMty (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    StMty (_x,_x_i1,_x_i2)
+                | StOpn (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in StOpn (_x,_x_i1)
+                | StTyp (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in StTyp (_x,_x_i1)
+                | StVal (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_flag) _x_i1 in
+                    let _x_i2 = (o#binding) _x_i2 in StVal (_x,_x_i1,_x_i2)
+                | StAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in StAnt (_x,_x_i1)
+              method sig_item : sig_item  -> sig_item =
+                function
+                | SgNil _x -> let _x = (o#loc) _x in SgNil _x
+                | SgCls (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in SgCls (_x,_x_i1)
+                | SgClt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in SgClt (_x,_x_i1)
+                | SgSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#sig_item) _x_i1 in
+                    let _x_i2 = (o#sig_item) _x_i2 in SgSem (_x,_x_i1,_x_i2)
+                | SgDir (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in SgDir (_x,_x_i1,_x_i2)
+                | SgExc (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in SgExc (_x,_x_i1)
+                | SgExt (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in
+                    let _x_i3 = (o#meta_list) ((fun o -> o#string)) _x_i3 in
+                    SgExt (_x,_x_i1,_x_i2,_x_i3)
+                | SgInc (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_type) _x_i1 in SgInc (_x,_x_i1)
+                | SgMod (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    SgMod (_x,_x_i1,_x_i2)
+                | SgRecMod (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_binding) _x_i1 in
+                    SgRecMod (_x,_x_i1)
+                | SgMty (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    SgMty (_x,_x_i1,_x_i2)
+                | SgOpn (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in SgOpn (_x,_x_i1)
+                | SgTyp (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in SgTyp (_x,_x_i1)
+                | SgVal (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in SgVal (_x,_x_i1,_x_i2)
+                | SgAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in SgAnt (_x,_x_i1)
+              method row_var_flag : row_var_flag  -> row_var_flag =
+                function
+                | RvRowVar  -> RvRowVar
+                | RvNil  -> RvNil
+                | RvAnt _x -> let _x = (o#string) _x in RvAnt _x
+              method rec_flag : rec_flag  -> rec_flag =
+                function
+                | ReRecursive  -> ReRecursive
+                | ReNil  -> ReNil
+                | ReAnt _x -> let _x = (o#string) _x in ReAnt _x
+              method rec_binding : rec_binding  -> rec_binding =
+                function
+                | RbNil _x -> let _x = (o#loc) _x in RbNil _x
+                | RbSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_binding) _x_i1 in
+                    let _x_i2 = (o#rec_binding) _x_i2 in
+                    RbSem (_x,_x_i1,_x_i2)
+                | RbEq (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in RbEq (_x,_x_i1,_x_i2)
+                | RbAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in RbAnt (_x,_x_i1)
+              method private_flag : private_flag  -> private_flag =
+                function
+                | PrPrivate  -> PrPrivate
+                | PrNil  -> PrNil
+                | PrAnt _x -> let _x = (o#string) _x in PrAnt _x
+              method patt : patt  -> patt =
+                function
+                | PaNil _x -> let _x = (o#loc) _x in PaNil _x
+                | PaId (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in PaId (_x,_x_i1)
+                | PaAli (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaAli (_x,_x_i1,_x_i2)
+                | PaAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaAnt (_x,_x_i1)
+                | PaAny _x -> let _x = (o#loc) _x in PaAny _x
+                | PaApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaApp (_x,_x_i1,_x_i2)
+                | PaArr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in PaArr (_x,_x_i1)
+                | PaCom (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaCom (_x,_x_i1,_x_i2)
+                | PaSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaSem (_x,_x_i1,_x_i2)
+                | PaChr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaChr (_x,_x_i1)
+                | PaInt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaInt (_x,_x_i1)
+                | PaInt32 (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaInt32 (_x,_x_i1)
+                | PaInt64 (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaInt64 (_x,_x_i1)
+                | PaNativeInt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaNativeInt (_x,_x_i1)
+                | PaFlo (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaFlo (_x,_x_i1)
+                | PaLab (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaLab (_x,_x_i1,_x_i2)
+                | PaOlb (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaOlb (_x,_x_i1,_x_i2)
+                | PaOlbi (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    PaOlbi (_x,_x_i1,_x_i2,_x_i3)
+                | PaOrp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaOrp (_x,_x_i1,_x_i2)
+                | PaRng (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaRng (_x,_x_i1,_x_i2)
+                | PaRec (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in PaRec (_x,_x_i1)
+                | PaEq (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#patt) _x_i2 in PaEq (_x,_x_i1,_x_i2)
+                | PaStr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaStr (_x,_x_i1)
+                | PaTup (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in PaTup (_x,_x_i1)
+                | PaTyc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in PaTyc (_x,_x_i1,_x_i2)
+                | PaTyp (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in PaTyp (_x,_x_i1)
+                | PaVrn (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaVrn (_x,_x_i1)
+                | PaLaz (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in PaLaz (_x,_x_i1)
+                | PaMod (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in PaMod (_x,_x_i1)
+              method override_flag : override_flag  -> override_flag =
+                function
+                | OvOverride  -> OvOverride
+                | OvNil  -> OvNil
+                | OvAnt _x -> let _x = (o#string) _x in OvAnt _x
+              method mutable_flag : mutable_flag  -> mutable_flag =
+                function
+                | MuMutable  -> MuMutable
+                | MuNil  -> MuNil
+                | MuAnt _x -> let _x = (o#string) _x in MuAnt _x
+              method module_type : module_type  -> module_type =
+                function
+                | MtNil _x -> let _x = (o#loc) _x in MtNil _x
+                | MtId (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in MtId (_x,_x_i1)
+                | MtFun (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    let _x_i3 = (o#module_type) _x_i3 in
+                    MtFun (_x,_x_i1,_x_i2,_x_i3)
+                | MtQuo (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in MtQuo (_x,_x_i1)
+                | MtSig (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#sig_item) _x_i1 in MtSig (_x,_x_i1)
+                | MtWit (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_type) _x_i1 in
+                    let _x_i2 = (o#with_constr) _x_i2 in
+                    MtWit (_x,_x_i1,_x_i2)
+                | MtOf (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_expr) _x_i1 in MtOf (_x,_x_i1)
+                | MtAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in MtAnt (_x,_x_i1)
+              method module_expr : module_expr  -> module_expr =
+                function
+                | MeNil _x -> let _x = (o#loc) _x in MeNil _x
+                | MeId (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in MeId (_x,_x_i1)
+                | MeApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_expr) _x_i1 in
+                    let _x_i2 = (o#module_expr) _x_i2 in
+                    MeApp (_x,_x_i1,_x_i2)
+                | MeFun (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    let _x_i3 = (o#module_expr) _x_i3 in
+                    MeFun (_x,_x_i1,_x_i2,_x_i3)
+                | MeStr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#str_item) _x_i1 in MeStr (_x,_x_i1)
+                | MeTyc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_expr) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    MeTyc (_x,_x_i1,_x_i2)
+                | MePkg (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in MePkg (_x,_x_i1)
+                | MeAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in MeAnt (_x,_x_i1)
+              method module_binding : module_binding  -> module_binding =
+                function
+                | MbNil _x -> let _x = (o#loc) _x in MbNil _x
+                | MbAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_binding) _x_i1 in
+                    let _x_i2 = (o#module_binding) _x_i2 in
+                    MbAnd (_x,_x_i1,_x_i2)
+                | MbColEq (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    let _x_i3 = (o#module_expr) _x_i3 in
+                    MbColEq (_x,_x_i1,_x_i2,_x_i3)
+                | MbCol (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_type) _x_i2 in
+                    MbCol (_x,_x_i1,_x_i2)
+                | MbAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in MbAnt (_x,_x_i1)
+              method meta_option :
+                'a_out 'a .
+                  ('self_type -> 'a -> 'a_out) ->
+                    'a meta_option  -> 'a_out meta_option =
+                fun _f_a ->
+                  function
+                  | ONone  -> ONone
+                  | OSome _x -> let _x = _f_a o _x in OSome _x
+                  | OAnt _x -> let _x = (o#string) _x in OAnt _x
+              method meta_list :
+                'a_out 'a .
+                  ('self_type -> 'a -> 'a_out) ->
+                    'a meta_list  -> 'a_out meta_list =
+                fun _f_a ->
+                  function
+                  | LNil  -> LNil
+                  | LCons (_x,_x_i1) ->
+                      let _x = _f_a o _x in
+                      let _x_i1 = (o#meta_list) _f_a _x_i1 in
+                      LCons (_x,_x_i1)
+                  | LAnt _x -> let _x = (o#string) _x in LAnt _x
+              method meta_bool : meta_bool  -> meta_bool =
+                function
+                | BTrue  -> BTrue
+                | BFalse  -> BFalse
+                | BAnt _x -> let _x = (o#string) _x in BAnt _x
+              method match_case : match_case  -> match_case =
+                function
+                | McNil _x -> let _x = (o#loc) _x in McNil _x
+                | McOr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#match_case) _x_i1 in
+                    let _x_i2 = (o#match_case) _x_i2 in McOr (_x,_x_i1,_x_i2)
+                | McArr (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    McArr (_x,_x_i1,_x_i2,_x_i3)
+                | McAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in McAnt (_x,_x_i1)
+              method loc : loc  -> loc = o#unknown
+              method ident : ident  -> ident =
+                function
+                | IdAcc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in IdAcc (_x,_x_i1,_x_i2)
+                | IdApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in IdApp (_x,_x_i1,_x_i2)
+                | IdLid (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in IdLid (_x,_x_i1)
+                | IdUid (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in IdUid (_x,_x_i1)
+                | IdAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in IdAnt (_x,_x_i1)
+              method expr : expr  -> expr =
+                function
+                | ExNil _x -> let _x = (o#loc) _x in ExNil _x
+                | ExId (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in ExId (_x,_x_i1)
+                | ExAcc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExAcc (_x,_x_i1,_x_i2)
+                | ExAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExAnt (_x,_x_i1)
+                | ExApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExApp (_x,_x_i1,_x_i2)
+                | ExAre (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExAre (_x,_x_i1,_x_i2)
+                | ExArr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in ExArr (_x,_x_i1)
+                | ExSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExSem (_x,_x_i1,_x_i2)
+                | ExAsf _x -> let _x = (o#loc) _x in ExAsf _x
+                | ExAsr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in ExAsr (_x,_x_i1)
+                | ExAss (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExAss (_x,_x_i1,_x_i2)
+                | ExChr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExChr (_x,_x_i1)
+                | ExCoe (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    ExCoe (_x,_x_i1,_x_i2,_x_i3)
+                | ExFlo (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExFlo (_x,_x_i1)
+                | ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    let _x_i4 = (o#direction_flag) _x_i4 in
+                    let _x_i5 = (o#expr) _x_i5 in
+                    ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5)
+                | ExFun (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#match_case) _x_i1 in ExFun (_x,_x_i1)
+                | ExIfe (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    ExIfe (_x,_x_i1,_x_i2,_x_i3)
+                | ExInt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExInt (_x,_x_i1)
+                | ExInt32 (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExInt32 (_x,_x_i1)
+                | ExInt64 (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExInt64 (_x,_x_i1)
+                | ExNativeInt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExNativeInt (_x,_x_i1)
+                | ExLab (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExLab (_x,_x_i1,_x_i2)
+                | ExLaz (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in ExLaz (_x,_x_i1)
+                | ExLet (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_flag) _x_i1 in
+                    let _x_i2 = (o#binding) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    ExLet (_x,_x_i1,_x_i2,_x_i3)
+                | ExLmd (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#module_expr) _x_i2 in
+                    let _x_i3 = (o#expr) _x_i3 in
+                    ExLmd (_x,_x_i1,_x_i2,_x_i3)
+                | ExMat (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#match_case) _x_i2 in
+                    ExMat (_x,_x_i1,_x_i2)
+                | ExNew (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in ExNew (_x,_x_i1)
+                | ExObj (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#class_str_item) _x_i2 in
+                    ExObj (_x,_x_i1,_x_i2)
+                | ExOlb (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExOlb (_x,_x_i1,_x_i2)
+                | ExOvr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_binding) _x_i1 in ExOvr (_x,_x_i1)
+                | ExRec (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_binding) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExRec (_x,_x_i1,_x_i2)
+                | ExSeq (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in ExSeq (_x,_x_i1)
+                | ExSnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#string) _x_i2 in ExSnd (_x,_x_i1,_x_i2)
+                | ExSte (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExSte (_x,_x_i1,_x_i2)
+                | ExStr (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExStr (_x,_x_i1)
+                | ExTry (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#match_case) _x_i2 in
+                    ExTry (_x,_x_i1,_x_i2)
+                | ExTup (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in ExTup (_x,_x_i1)
+                | ExCom (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExCom (_x,_x_i1,_x_i2)
+                | ExTyc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in ExTyc (_x,_x_i1,_x_i2)
+                | ExVrn (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in ExVrn (_x,_x_i1)
+                | ExWhi (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExWhi (_x,_x_i1,_x_i2)
+                | ExOpI (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExOpI (_x,_x_i1,_x_i2)
+                | ExFUN (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in ExFUN (_x,_x_i1,_x_i2)
+                | ExPkg (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_expr) _x_i1 in ExPkg (_x,_x_i1)
+              method direction_flag : direction_flag  -> direction_flag =
+                function
+                | DiTo  -> DiTo
+                | DiDownto  -> DiDownto
+                | DiAnt _x -> let _x = (o#string) _x in DiAnt _x
+              method ctyp : ctyp  -> ctyp =
+                function
+                | TyNil _x -> let _x = (o#loc) _x in TyNil _x
+                | TyAli (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyAli (_x,_x_i1,_x_i2)
+                | TyAny _x -> let _x = (o#loc) _x in TyAny _x
+                | TyApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyApp (_x,_x_i1,_x_i2)
+                | TyArr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyArr (_x,_x_i1,_x_i2)
+                | TyCls (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in TyCls (_x,_x_i1)
+                | TyLab (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyLab (_x,_x_i1,_x_i2)
+                | TyId (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ident) _x_i1 in TyId (_x,_x_i1)
+                | TyMan (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyMan (_x,_x_i1,_x_i2)
+                | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#list) ((fun o -> o#ctyp)) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    let _x_i4 =
+                      (o#list)
+                        ((fun o ->
+                            fun (_x,_x_i1) ->
+                              let _x = (o#ctyp) _x in
+                              let _x_i1 = (o#ctyp) _x_i1 in (_x,_x_i1)))
+                        _x_i4 in
+                    TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4)
+                | TyObj (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#row_var_flag) _x_i2 in
+                    TyObj (_x,_x_i1,_x_i2)
+                | TyOlb (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyOlb (_x,_x_i1,_x_i2)
+                | TyPol (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyPol (_x,_x_i1,_x_i2)
+                | TyTypePol (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyTypePol (_x,_x_i1,_x_i2)
+                | TyQuo (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in TyQuo (_x,_x_i1)
+                | TyQuP (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in TyQuP (_x,_x_i1)
+                | TyQuM (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in TyQuM (_x,_x_i1)
+                | TyAnP _x -> let _x = (o#loc) _x in TyAnP _x
+                | TyAnM _x -> let _x = (o#loc) _x in TyAnM _x
+                | TyVrn (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in TyVrn (_x,_x_i1)
+                | TyRec (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyRec (_x,_x_i1)
+                | TyCol (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyCol (_x,_x_i1,_x_i2)
+                | TySem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TySem (_x,_x_i1,_x_i2)
+                | TyCom (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyCom (_x,_x_i1,_x_i2)
+                | TySum (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TySum (_x,_x_i1)
+                | TyOf (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyOf (_x,_x_i1,_x_i2)
+                | TyAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyAnd (_x,_x_i1,_x_i2)
+                | TyOr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyOr (_x,_x_i1,_x_i2)
+                | TyPrv (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyPrv (_x,_x_i1)
+                | TyMut (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyMut (_x,_x_i1)
+                | TyTup (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyTup (_x,_x_i1)
+                | TySta (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TySta (_x,_x_i1,_x_i2)
+                | TyVrnEq (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyVrnEq (_x,_x_i1)
+                | TyVrnSup (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyVrnSup (_x,_x_i1)
+                | TyVrnInf (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in TyVrnInf (_x,_x_i1)
+                | TyVrnInfSup (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in
+                    TyVrnInfSup (_x,_x_i1,_x_i2)
+                | TyAmp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyAmp (_x,_x_i1,_x_i2)
+                | TyOfAmp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in TyOfAmp (_x,_x_i1,_x_i2)
+                | TyPkg (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#module_type) _x_i1 in TyPkg (_x,_x_i1)
+                | TyAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in TyAnt (_x,_x_i1)
+              method class_type : class_type  -> class_type =
+                function
+                | CtNil _x -> let _x = (o#loc) _x in CtNil _x
+                | CtCon (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#virtual_flag) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CtCon (_x,_x_i1,_x_i2,_x_i3)
+                | CtFun (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#class_type) _x_i2 in
+                    CtFun (_x,_x_i1,_x_i2)
+                | CtSig (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#class_sig_item) _x_i2 in
+                    CtSig (_x,_x_i1,_x_i2)
+                | CtAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in
+                    let _x_i2 = (o#class_type) _x_i2 in
+                    CtAnd (_x,_x_i1,_x_i2)
+                | CtCol (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in
+                    let _x_i2 = (o#class_type) _x_i2 in
+                    CtCol (_x,_x_i1,_x_i2)
+                | CtEq (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in
+                    let _x_i2 = (o#class_type) _x_i2 in CtEq (_x,_x_i1,_x_i2)
+                | CtAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in CtAnt (_x,_x_i1)
+              method class_str_item : class_str_item  -> class_str_item =
+                function
+                | CrNil _x -> let _x = (o#loc) _x in CrNil _x
+                | CrSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_str_item) _x_i1 in
+                    let _x_i2 = (o#class_str_item) _x_i2 in
+                    CrSem (_x,_x_i1,_x_i2)
+                | CrCtr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in CrCtr (_x,_x_i1,_x_i2)
+                | CrInh (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#override_flag) _x_i1 in
+                    let _x_i2 = (o#class_expr) _x_i2 in
+                    let _x_i3 = (o#string) _x_i3 in
+                    CrInh (_x,_x_i1,_x_i2,_x_i3)
+                | CrIni (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#expr) _x_i1 in CrIni (_x,_x_i1)
+                | CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#override_flag) _x_i2 in
+                    let _x_i3 = (o#private_flag) _x_i3 in
+                    let _x_i4 = (o#expr) _x_i4 in
+                    let _x_i5 = (o#ctyp) _x_i5 in
+                    CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5)
+                | CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#override_flag) _x_i2 in
+                    let _x_i3 = (o#mutable_flag) _x_i3 in
+                    let _x_i4 = (o#expr) _x_i4 in
+                    CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4)
+                | CrVir (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#private_flag) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CrVir (_x,_x_i1,_x_i2,_x_i3)
+                | CrVvr (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#mutable_flag) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CrVvr (_x,_x_i1,_x_i2,_x_i3)
+                | CrAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in CrAnt (_x,_x_i1)
+              method class_sig_item : class_sig_item  -> class_sig_item =
+                function
+                | CgNil _x -> let _x = (o#loc) _x in CgNil _x
+                | CgCtr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#ctyp) _x_i1 in
+                    let _x_i2 = (o#ctyp) _x_i2 in CgCtr (_x,_x_i1,_x_i2)
+                | CgSem (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_sig_item) _x_i1 in
+                    let _x_i2 = (o#class_sig_item) _x_i2 in
+                    CgSem (_x,_x_i1,_x_i2)
+                | CgInh (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_type) _x_i1 in CgInh (_x,_x_i1)
+                | CgMth (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#private_flag) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CgMth (_x,_x_i1,_x_i2,_x_i3)
+                | CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#mutable_flag) _x_i2 in
+                    let _x_i3 = (o#virtual_flag) _x_i3 in
+                    let _x_i4 = (o#ctyp) _x_i4 in
+                    CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4)
+                | CgVir (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in
+                    let _x_i2 = (o#private_flag) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CgVir (_x,_x_i1,_x_i2,_x_i3)
+                | CgAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in CgAnt (_x,_x_i1)
+              method class_expr : class_expr  -> class_expr =
+                function
+                | CeNil _x -> let _x = (o#loc) _x in CeNil _x
+                | CeApp (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_expr) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in CeApp (_x,_x_i1,_x_i2)
+                | CeCon (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#virtual_flag) _x_i1 in
+                    let _x_i2 = (o#ident) _x_i2 in
+                    let _x_i3 = (o#ctyp) _x_i3 in
+                    CeCon (_x,_x_i1,_x_i2,_x_i3)
+                | CeFun (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#class_expr) _x_i2 in
+                    CeFun (_x,_x_i1,_x_i2)
+                | CeLet (_x,_x_i1,_x_i2,_x_i3) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#rec_flag) _x_i1 in
+                    let _x_i2 = (o#binding) _x_i2 in
+                    let _x_i3 = (o#class_expr) _x_i3 in
+                    CeLet (_x,_x_i1,_x_i2,_x_i3)
+                | CeStr (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#class_str_item) _x_i2 in
+                    CeStr (_x,_x_i1,_x_i2)
+                | CeTyc (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_expr) _x_i1 in
+                    let _x_i2 = (o#class_type) _x_i2 in
+                    CeTyc (_x,_x_i1,_x_i2)
+                | CeAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_expr) _x_i1 in
+                    let _x_i2 = (o#class_expr) _x_i2 in
+                    CeAnd (_x,_x_i1,_x_i2)
+                | CeEq (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#class_expr) _x_i1 in
+                    let _x_i2 = (o#class_expr) _x_i2 in CeEq (_x,_x_i1,_x_i2)
+                | CeAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in CeAnt (_x,_x_i1)
+              method binding : binding  -> binding =
+                function
+                | BiNil _x -> let _x = (o#loc) _x in BiNil _x
+                | BiAnd (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#binding) _x_i1 in
+                    let _x_i2 = (o#binding) _x_i2 in BiAnd (_x,_x_i1,_x_i2)
+                | BiEq (_x,_x_i1,_x_i2) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#patt) _x_i1 in
+                    let _x_i2 = (o#expr) _x_i2 in BiEq (_x,_x_i1,_x_i2)
+                | BiAnt (_x,_x_i1) ->
+                    let _x = (o#loc) _x in
+                    let _x_i1 = (o#string) _x_i1 in BiAnt (_x,_x_i1)
+              method unknown : 'a . 'a -> 'a= fun x -> x
+            end
+class fold = object (o : 'self_type)
+               method string : string  -> 'self_type= o#unknown
+               method list :
+                 'a .
+                   ('self_type -> 'a -> 'self_type) -> 'a list  -> 'self_type=
+                 fun _f_a ->
+                   function
+                   | [] -> o
+                   | _x::_x_i1 ->
+                       let o = _f_a o _x in let o = (o#list) _f_a _x_i1 in o
+               method with_constr : with_constr  -> 'self_type=
+                 function
+                 | WcNil _x -> let o = (o#loc) _x in o
+                 | WcTyp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | WcMod (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
+                 | WcTyS (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | WcMoS (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
+                 | WcAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#with_constr) _x_i1 in
+                     let o = (o#with_constr) _x_i2 in o
+                 | WcAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method virtual_flag : virtual_flag  -> 'self_type=
+                 function
+                 | ViVirtual  -> o
+                 | ViNil  -> o
+                 | ViAnt _x -> let o = (o#string) _x in o
+               method str_item : str_item  -> 'self_type=
+                 function
+                 | StNil _x -> let o = (o#loc) _x in o
+                 | StCls (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#class_expr) _x_i1 in o
+                 | StClt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
+                 | StSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#str_item) _x_i1 in
+                     let o = (o#str_item) _x_i2 in o
+                 | StDir (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | StExc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in
+                     let o = (o#meta_option) ((fun o -> o#ident)) _x_i2 in o
+                 | StExp (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | StExt (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#ctyp) _x_i2 in
+                     let o = (o#meta_list) ((fun o -> o#string)) _x_i3 in o
+                 | StInc (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
+                 | StMod (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_expr) _x_i2 in o
+                 | StRecMod (_x,_x_i1) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_binding) _x_i1 in o
+                 | StMty (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in o
+                 | StOpn (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | StTyp (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | StVal (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#rec_flag) _x_i1 in
+                     let o = (o#binding) _x_i2 in o
+                 | StAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method sig_item : sig_item  -> 'self_type=
+                 function
+                 | SgNil _x -> let o = (o#loc) _x in o
+                 | SgCls (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
+                 | SgClt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
+                 | SgSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#sig_item) _x_i1 in
+                     let o = (o#sig_item) _x_i2 in o
+                 | SgDir (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | SgExc (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | SgExt (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#ctyp) _x_i2 in
+                     let o = (o#meta_list) ((fun o -> o#string)) _x_i3 in o
+                 | SgInc (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#module_type) _x_i1 in o
+                 | SgMod (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in o
+                 | SgRecMod (_x,_x_i1) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_binding) _x_i1 in o
+                 | SgMty (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in o
+                 | SgOpn (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | SgTyp (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | SgVal (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | SgAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method row_var_flag : row_var_flag  -> 'self_type=
+                 function
+                 | RvRowVar  -> o
+                 | RvNil  -> o
+                 | RvAnt _x -> let o = (o#string) _x in o
+               method rec_flag : rec_flag  -> 'self_type=
+                 function
+                 | ReRecursive  -> o
+                 | ReNil  -> o
+                 | ReAnt _x -> let o = (o#string) _x in o
+               method rec_binding : rec_binding  -> 'self_type=
+                 function
+                 | RbNil _x -> let o = (o#loc) _x in o
+                 | RbSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#rec_binding) _x_i1 in
+                     let o = (o#rec_binding) _x_i2 in o
+                 | RbEq (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | RbAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method private_flag : private_flag  -> 'self_type=
+                 function
+                 | PrPrivate  -> o
+                 | PrNil  -> o
+                 | PrAnt _x -> let o = (o#string) _x in o
+               method patt : patt  -> 'self_type=
+                 function
+                 | PaNil _x -> let o = (o#loc) _x in o
+                 | PaId (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | PaAli (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaAny _x -> let o = (o#loc) _x in o
+                 | PaApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaArr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
+                 | PaCom (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaChr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaInt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaInt32 (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaInt64 (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaNativeInt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaFlo (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaLab (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaOlb (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaOlbi (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#patt) _x_i2 in let o = (o#expr) _x_i3 in o
+                 | PaOrp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaRng (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaRec (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
+                 | PaEq (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#patt) _x_i2 in o
+                 | PaStr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaTup (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
+                 | PaTyc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | PaTyp (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | PaVrn (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | PaLaz (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#patt) _x_i1 in o
+                 | PaMod (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method override_flag : override_flag  -> 'self_type=
+                 function
+                 | OvOverride  -> o
+                 | OvNil  -> o
+                 | OvAnt _x -> let o = (o#string) _x in o
+               method mutable_flag : mutable_flag  -> 'self_type=
+                 function
+                 | MuMutable  -> o
+                 | MuNil  -> o
+                 | MuAnt _x -> let o = (o#string) _x in o
+               method module_type : module_type  -> 'self_type=
+                 function
+                 | MtNil _x -> let o = (o#loc) _x in o
+                 | MtId (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | MtFun (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in
+                     let o = (o#module_type) _x_i3 in o
+                 | MtQuo (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | MtSig (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#sig_item) _x_i1 in o
+                 | MtWit (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_type) _x_i1 in
+                     let o = (o#with_constr) _x_i2 in o
+                 | MtOf (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
+                 | MtAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method module_expr : module_expr  -> 'self_type=
+                 function
+                 | MeNil _x -> let o = (o#loc) _x in o
+                 | MeId (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | MeApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_expr) _x_i1 in
+                     let o = (o#module_expr) _x_i2 in o
+                 | MeFun (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in
+                     let o = (o#module_expr) _x_i3 in o
+                 | MeStr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#str_item) _x_i1 in o
+                 | MeTyc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_expr) _x_i1 in
+                     let o = (o#module_type) _x_i2 in o
+                 | MePkg (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | MeAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method module_binding : module_binding  -> 'self_type=
+                 function
+                 | MbNil _x -> let o = (o#loc) _x in o
+                 | MbAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#module_binding) _x_i1 in
+                     let o = (o#module_binding) _x_i2 in o
+                 | MbColEq (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in
+                     let o = (o#module_expr) _x_i3 in o
+                 | MbCol (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_type) _x_i2 in o
+                 | MbAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method meta_option :
+                 'a .
+                   ('self_type -> 'a -> 'self_type) ->
+                     'a meta_option  -> 'self_type=
+                 fun _f_a ->
+                   function
+                   | ONone  -> o
+                   | OSome _x -> let o = _f_a o _x in o
+                   | OAnt _x -> let o = (o#string) _x in o
+               method meta_list :
+                 'a .
+                   ('self_type -> 'a -> 'self_type) ->
+                     'a meta_list  -> 'self_type=
+                 fun _f_a ->
+                   function
+                   | LNil  -> o
+                   | LCons (_x,_x_i1) ->
+                       let o = _f_a o _x in
+                       let o = (o#meta_list) _f_a _x_i1 in o
+                   | LAnt _x -> let o = (o#string) _x in o
+               method meta_bool : meta_bool  -> 'self_type=
+                 function
+                 | BTrue  -> o
+                 | BFalse  -> o
+                 | BAnt _x -> let o = (o#string) _x in o
+               method match_case : match_case  -> 'self_type=
+                 function
+                 | McNil _x -> let o = (o#loc) _x in o
+                 | McOr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#match_case) _x_i1 in
+                     let o = (o#match_case) _x_i2 in o
+                 | McArr (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in
+                     let o = (o#expr) _x_i2 in let o = (o#expr) _x_i3 in o
+                 | McAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method loc : loc  -> 'self_type= o#unknown
+               method ident : ident  -> 'self_type=
+                 function
+                 | IdAcc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
+                 | IdApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#ident) _x_i2 in o
+                 | IdLid (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | IdUid (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | IdAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method expr : expr  -> 'self_type=
+                 function
+                 | ExNil _x -> let o = (o#loc) _x in o
+                 | ExId (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | ExAcc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExAre (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExArr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | ExSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExAsf _x -> let o = (o#loc) _x in o
+                 | ExAsr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | ExAss (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExChr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExCoe (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in
+                     let o = (o#ctyp) _x_i2 in let o = (o#ctyp) _x_i3 in o
+                 | ExFlo (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExFor (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#expr) _x_i2 in
+                     let o = (o#expr) _x_i3 in
+                     let o = (o#direction_flag) _x_i4 in
+                     let o = (o#expr) _x_i5 in o
+                 | ExFun (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#match_case) _x_i1 in o
+                 | ExIfe (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in
+                     let o = (o#expr) _x_i2 in let o = (o#expr) _x_i3 in o
+                 | ExInt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExInt32 (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExInt64 (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExNativeInt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExLab (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExLaz (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | ExLet (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#rec_flag) _x_i1 in
+                     let o = (o#binding) _x_i2 in let o = (o#expr) _x_i3 in o
+                 | ExLmd (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#module_expr) _x_i2 in
+                     let o = (o#expr) _x_i3 in o
+                 | ExMat (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in
+                     let o = (o#match_case) _x_i2 in o
+                 | ExNew (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | ExObj (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in
+                     let o = (o#class_str_item) _x_i2 in o
+                 | ExOlb (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExOvr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#rec_binding) _x_i1 in o
+                 | ExRec (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#rec_binding) _x_i1 in
+                     let o = (o#expr) _x_i2 in o
+                 | ExSeq (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | ExSnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#string) _x_i2 in o
+                 | ExSte (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExStr (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExTry (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in
+                     let o = (o#match_case) _x_i2 in o
+                 | ExTup (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | ExCom (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExTyc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | ExVrn (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | ExWhi (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#expr) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExOpI (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ident) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExFUN (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | ExPkg (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#module_expr) _x_i1 in o
+               method direction_flag : direction_flag  -> 'self_type=
+                 function
+                 | DiTo  -> o
+                 | DiDownto  -> o
+                 | DiAnt _x -> let o = (o#string) _x in o
+               method ctyp : ctyp  -> 'self_type=
+                 function
+                 | TyNil _x -> let o = (o#loc) _x in o
+                 | TyAli (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyAny _x -> let o = (o#loc) _x in o
+                 | TyApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyArr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyCls (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | TyLab (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyId (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ident) _x_i1 in o
+                 | TyMan (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#list) ((fun o -> o#ctyp)) _x_i2 in
+                     let o = (o#ctyp) _x_i3 in
+                     let o =
+                       (o#list)
+                         ((fun o ->
+                             fun (_x,_x_i1) ->
+                               let o = (o#ctyp) _x in
+                               let o = (o#ctyp) _x_i1 in o)) _x_i4 in
+                     o
+                 | TyObj (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in
+                     let o = (o#row_var_flag) _x_i2 in o
+                 | TyOlb (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyPol (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyTypePol (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyQuo (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | TyQuP (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | TyQuM (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | TyAnP _x -> let o = (o#loc) _x in o
+                 | TyAnM _x -> let o = (o#loc) _x in o
+                 | TyVrn (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+                 | TyRec (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyCol (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TySem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyCom (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TySum (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyOf (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyOr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyPrv (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyMut (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyTup (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TySta (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyVrnEq (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyVrnSup (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyVrnInf (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#ctyp) _x_i1 in o
+                 | TyVrnInfSup (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyAmp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyOfAmp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | TyPkg (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#module_type) _x_i1 in o
+                 | TyAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method class_type : class_type  -> 'self_type=
+                 function
+                 | CtNil _x -> let o = (o#loc) _x in o
+                 | CtCon (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#virtual_flag) _x_i1 in
+                     let o = (o#ident) _x_i2 in let o = (o#ctyp) _x_i3 in o
+                 | CtFun (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in
+                     let o = (o#class_type) _x_i2 in o
+                 | CtSig (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in
+                     let o = (o#class_sig_item) _x_i2 in o
+                 | CtAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_type) _x_i1 in
+                     let o = (o#class_type) _x_i2 in o
+                 | CtCol (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_type) _x_i1 in
+                     let o = (o#class_type) _x_i2 in o
+                 | CtEq (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_type) _x_i1 in
+                     let o = (o#class_type) _x_i2 in o
+                 | CtAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method class_str_item : class_str_item  -> 'self_type=
+                 function
+                 | CrNil _x -> let o = (o#loc) _x in o
+                 | CrSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_str_item) _x_i1 in
+                     let o = (o#class_str_item) _x_i2 in o
+                 | CrCtr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | CrInh (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#override_flag) _x_i1 in
+                     let o = (o#class_expr) _x_i2 in
+                     let o = (o#string) _x_i3 in o
+                 | CrIni (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#expr) _x_i1 in o
+                 | CrMth (_x,_x_i1,_x_i2,_x_i3,_x_i4,_x_i5) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#override_flag) _x_i2 in
+                     let o = (o#private_flag) _x_i3 in
+                     let o = (o#expr) _x_i4 in let o = (o#ctyp) _x_i5 in o
+                 | CrVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#override_flag) _x_i2 in
+                     let o = (o#mutable_flag) _x_i3 in
+                     let o = (o#expr) _x_i4 in o
+                 | CrVir (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#private_flag) _x_i2 in
+                     let o = (o#ctyp) _x_i3 in o
+                 | CrVvr (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#mutable_flag) _x_i2 in
+                     let o = (o#ctyp) _x_i3 in o
+                 | CrAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method class_sig_item : class_sig_item  -> 'self_type=
+                 function
+                 | CgNil _x -> let o = (o#loc) _x in o
+                 | CgCtr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#ctyp) _x_i1 in let o = (o#ctyp) _x_i2 in o
+                 | CgSem (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_sig_item) _x_i1 in
+                     let o = (o#class_sig_item) _x_i2 in o
+                 | CgInh (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#class_type) _x_i1 in o
+                 | CgMth (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#private_flag) _x_i2 in
+                     let o = (o#ctyp) _x_i3 in o
+                 | CgVal (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#mutable_flag) _x_i2 in
+                     let o = (o#virtual_flag) _x_i3 in
+                     let o = (o#ctyp) _x_i4 in o
+                 | CgVir (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#string) _x_i1 in
+                     let o = (o#private_flag) _x_i2 in
+                     let o = (o#ctyp) _x_i3 in o
+                 | CgAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method class_expr : class_expr  -> 'self_type=
+                 function
+                 | CeNil _x -> let o = (o#loc) _x in o
+                 | CeApp (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_expr) _x_i1 in
+                     let o = (o#expr) _x_i2 in o
+                 | CeCon (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#virtual_flag) _x_i1 in
+                     let o = (o#ident) _x_i2 in let o = (o#ctyp) _x_i3 in o
+                 | CeFun (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in
+                     let o = (o#class_expr) _x_i2 in o
+                 | CeLet (_x,_x_i1,_x_i2,_x_i3) ->
+                     let o = (o#loc) _x in
+                     let o = (o#rec_flag) _x_i1 in
+                     let o = (o#binding) _x_i2 in
+                     let o = (o#class_expr) _x_i3 in o
+                 | CeStr (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in
+                     let o = (o#class_str_item) _x_i2 in o
+                 | CeTyc (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_expr) _x_i1 in
+                     let o = (o#class_type) _x_i2 in o
+                 | CeAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_expr) _x_i1 in
+                     let o = (o#class_expr) _x_i2 in o
+                 | CeEq (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#class_expr) _x_i1 in
+                     let o = (o#class_expr) _x_i2 in o
+                 | CeAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method binding : binding  -> 'self_type=
+                 function
+                 | BiNil _x -> let o = (o#loc) _x in o
+                 | BiAnd (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#binding) _x_i1 in
+                     let o = (o#binding) _x_i2 in o
+                 | BiEq (_x,_x_i1,_x_i2) ->
+                     let o = (o#loc) _x in
+                     let o = (o#patt) _x_i1 in let o = (o#expr) _x_i2 in o
+                 | BiAnt (_x,_x_i1) ->
+                     let o = (o#loc) _x in let o = (o#string) _x_i1 in o
+               method unknown : 'a . 'a -> 'self_type= fun _ -> o
+             end
 let map_expr f =
-  object
-  inherit  map as super
-  method! expr = fun x -> f ((super#expr) x)
-  end
+  object  inherit  map as super method! expr x = f ((super#expr) x) end
 let map_patt f =
-  object
-  inherit  map as super
-  method! patt = fun x -> f ((super#patt) x)
-  end
+  object  inherit  map as super method! patt x = f ((super#patt) x) end
 let map_ctyp f =
-  object
-  inherit  map as super
-  method! ctyp = fun x -> f ((super#ctyp) x)
-  end
+  object  inherit  map as super method! ctyp x = f ((super#ctyp) x) end
 let map_str_item f =
-  object
-  inherit  map as super
-  method! str_item = fun x -> f ((super#str_item) x)
+  object  inherit  map as super method! str_item x = f ((super#str_item) x)
   end
 let map_sig_item f =
-  object
-  inherit  map as super
-  method! sig_item = fun x -> f ((super#sig_item) x)
+  object  inherit  map as super method! sig_item x = f ((super#sig_item) x)
   end
 let map_loc f =
-  object
-  inherit  map as super
-  method! loc = fun x -> f ((super#loc) x)
-  end
-class clean_ast = object
-  inherit  map as super
-  method! with_constr =
-    fun wc ->
-      match (super#with_constr) wc with
-      | Ast.WcAnd (_,Ast.WcNil _,wc)|Ast.WcAnd (_,wc,Ast.WcNil _) -> wc
-      | wc -> wc
-  method! expr =
-    fun e ->
-      match (super#expr) e with
-      | Ast.ExLet (_,_,Ast.BiNil _,e)|Ast.ExRec (_,Ast.RbNil _,e)|Ast.ExCom
-          (_,Ast.ExNil _,e)|Ast.ExCom (_,e,Ast.ExNil _)|Ast.ExSem
-          (_,Ast.ExNil _,e)|Ast.ExSem (_,e,Ast.ExNil _) -> e
-      | e -> e
-  method! patt =
-    fun p ->
-      match (super#patt) p with
-      | Ast.PaAli (_,p,Ast.PaNil _)|Ast.PaOrp (_,Ast.PaNil _,p)|Ast.PaOrp
-          (_,p,Ast.PaNil _)|Ast.PaCom (_,Ast.PaNil _,p)|Ast.PaCom
-          (_,p,Ast.PaNil _)|Ast.PaSem (_,Ast.PaNil _,p)|Ast.PaSem
-          (_,p,Ast.PaNil _) -> p
-      | p -> p
-  method! match_case =
-    fun mc ->
-      match (super#match_case) mc with
-      | Ast.McOr (_,Ast.McNil _,mc)|Ast.McOr (_,mc,Ast.McNil _) -> mc
-      | mc -> mc
-  method! binding =
-    fun bi ->
-      match (super#binding) bi with
-      | Ast.BiAnd (_,Ast.BiNil _,bi)|Ast.BiAnd (_,bi,Ast.BiNil _) -> bi
-      | bi -> bi
-  method! rec_binding =
-    fun rb ->
-      match (super#rec_binding) rb with
-      | Ast.RbSem (_,Ast.RbNil _,bi)|Ast.RbSem (_,bi,Ast.RbNil _) -> bi
-      | bi -> bi
-  method! module_binding =
-    fun mb ->
-      match (super#module_binding) mb with
-      | Ast.MbAnd (_,Ast.MbNil _,mb)|Ast.MbAnd (_,mb,Ast.MbNil _) -> mb
-      | mb -> mb
-  method! ctyp =
-    fun t ->
-      match (super#ctyp) t with
-      | Ast.TyPol (_,Ast.TyNil _,t)|Ast.TyAli (_,Ast.TyNil _,t)|Ast.TyAli
-          (_,t,Ast.TyNil _)|Ast.TyArr (_,t,Ast.TyNil _)|Ast.TyArr
-          (_,Ast.TyNil _,t)|Ast.TyOr (_,Ast.TyNil _,t)|Ast.TyOr
-          (_,t,Ast.TyNil _)|Ast.TyOf (_,t,Ast.TyNil _)|Ast.TyAnd
-          (_,Ast.TyNil _,t)|Ast.TyAnd (_,t,Ast.TyNil _)|Ast.TySem
-          (_,t,Ast.TyNil _)|Ast.TySem (_,Ast.TyNil _,t)|Ast.TyCom
-          (_,Ast.TyNil _,t)|Ast.TyCom (_,t,Ast.TyNil _)|Ast.TyAmp
-          (_,t,Ast.TyNil _)|Ast.TyAmp (_,Ast.TyNil _,t)|Ast.TySta
-          (_,Ast.TyNil _,t)|Ast.TySta (_,t,Ast.TyNil _) -> t
-      | t -> t
-  method! sig_item =
-    fun sg ->
-      match (super#sig_item) sg with
-      | Ast.SgSem (_,Ast.SgNil _,sg)|Ast.SgSem (_,sg,Ast.SgNil _) -> sg
-      | Ast.SgTyp (loc,Ast.TyNil _) -> Ast.SgNil loc
-      | sg -> sg
-  method! str_item =
-    fun st ->
-      match (super#str_item) st with
-      | Ast.StSem (_,Ast.StNil _,st)|Ast.StSem (_,st,Ast.StNil _) -> st
-      | Ast.StTyp (loc,Ast.TyNil _) -> Ast.StNil loc
-      | Ast.StVal (loc,_,Ast.BiNil _) -> Ast.StNil loc
-      | st -> st
-  method! module_type =
-    fun mt ->
-      match (super#module_type) mt with
-      | Ast.MtWit (_,mt,Ast.WcNil _) -> mt
-      | mt -> mt
-  method! class_expr =
-    fun ce ->
-      match (super#class_expr) ce with
-      | Ast.CeAnd (_,Ast.CeNil _,ce)|Ast.CeAnd (_,ce,Ast.CeNil _) -> ce
-      | ce -> ce
-  method! class_type =
-    fun ct ->
-      match (super#class_type) ct with
-      | Ast.CtAnd (_,Ast.CtNil _,ct)|Ast.CtAnd (_,ct,Ast.CtNil _) -> ct
-      | ct -> ct
-  method! class_sig_item =
-    fun csg ->
-      match (super#class_sig_item) csg with
-      | Ast.CgSem (_,Ast.CgNil _,csg)|Ast.CgSem (_,csg,Ast.CgNil _) -> csg
-      | csg -> csg
-  method! class_str_item =
-    fun cst ->
-      match (super#class_str_item) cst with
-      | Ast.CrSem (_,Ast.CrNil _,cst)|Ast.CrSem (_,cst,Ast.CrNil _) -> cst
-      | cst -> cst
-  end
-class reloc _loc = object
-  inherit  map
-  method! loc = fun _ -> _loc
-  end
+  object  inherit  map as super method! loc x = f ((super#loc) x) end
+class clean_ast = object 
+                    inherit  map as super
+                    method! with_constr wc =
+                      match (super#with_constr) wc with
+                      | Ast.WcAnd (_,Ast.WcNil _,wc)|Ast.WcAnd
+                          (_,wc,Ast.WcNil _) -> wc
+                      | wc -> wc
+                    method! expr e =
+                      match (super#expr) e with
+                      | Ast.ExLet (_,_,Ast.BiNil _,e)|Ast.ExRec
+                          (_,Ast.RbNil _,e)|Ast.ExCom
+                          (_,Ast.ExNil _,e)|Ast.ExCom
+                          (_,e,Ast.ExNil _)|Ast.ExSem
+                          (_,Ast.ExNil _,e)|Ast.ExSem (_,e,Ast.ExNil _) -> e
+                      | e -> e
+                    method! patt p =
+                      match (super#patt) p with
+                      | Ast.PaAli (_,p,Ast.PaNil _)|Ast.PaOrp
+                          (_,Ast.PaNil _,p)|Ast.PaOrp
+                          (_,p,Ast.PaNil _)|Ast.PaCom
+                          (_,Ast.PaNil _,p)|Ast.PaCom
+                          (_,p,Ast.PaNil _)|Ast.PaSem
+                          (_,Ast.PaNil _,p)|Ast.PaSem (_,p,Ast.PaNil _) -> p
+                      | p -> p
+                    method! match_case mc =
+                      match (super#match_case) mc with
+                      | Ast.McOr (_,Ast.McNil _,mc)|Ast.McOr
+                          (_,mc,Ast.McNil _) -> mc
+                      | mc -> mc
+                    method! binding bi =
+                      match (super#binding) bi with
+                      | Ast.BiAnd (_,Ast.BiNil _,bi)|Ast.BiAnd
+                          (_,bi,Ast.BiNil _) -> bi
+                      | bi -> bi
+                    method! rec_binding rb =
+                      match (super#rec_binding) rb with
+                      | Ast.RbSem (_,Ast.RbNil _,bi)|Ast.RbSem
+                          (_,bi,Ast.RbNil _) -> bi
+                      | bi -> bi
+                    method! module_binding mb =
+                      match (super#module_binding) mb with
+                      | Ast.MbAnd (_,Ast.MbNil _,mb)|Ast.MbAnd
+                          (_,mb,Ast.MbNil _) -> mb
+                      | mb -> mb
+                    method! ctyp t =
+                      match (super#ctyp) t with
+                      | Ast.TyPol (_,Ast.TyNil _,t)|Ast.TyAli
+                          (_,Ast.TyNil _,t)|Ast.TyAli
+                          (_,t,Ast.TyNil _)|Ast.TyArr
+                          (_,t,Ast.TyNil _)|Ast.TyArr
+                          (_,Ast.TyNil _,t)|Ast.TyOr
+                          (_,Ast.TyNil _,t)|Ast.TyOr
+                          (_,t,Ast.TyNil _)|Ast.TyOf
+                          (_,t,Ast.TyNil _)|Ast.TyAnd
+                          (_,Ast.TyNil _,t)|Ast.TyAnd
+                          (_,t,Ast.TyNil _)|Ast.TySem
+                          (_,t,Ast.TyNil _)|Ast.TySem
+                          (_,Ast.TyNil _,t)|Ast.TyCom
+                          (_,Ast.TyNil _,t)|Ast.TyCom
+                          (_,t,Ast.TyNil _)|Ast.TyAmp
+                          (_,t,Ast.TyNil _)|Ast.TyAmp
+                          (_,Ast.TyNil _,t)|Ast.TySta
+                          (_,Ast.TyNil _,t)|Ast.TySta (_,t,Ast.TyNil _) -> t
+                      | t -> t
+                    method! sig_item sg =
+                      match (super#sig_item) sg with
+                      | Ast.SgSem (_,Ast.SgNil _,sg)|Ast.SgSem
+                          (_,sg,Ast.SgNil _) -> sg
+                      | Ast.SgTyp (loc,Ast.TyNil _) -> Ast.SgNil loc
+                      | sg -> sg
+                    method! str_item st =
+                      match (super#str_item) st with
+                      | Ast.StSem (_,Ast.StNil _,st)|Ast.StSem
+                          (_,st,Ast.StNil _) -> st
+                      | Ast.StTyp (loc,Ast.TyNil _) -> Ast.StNil loc
+                      | Ast.StVal (loc,_,Ast.BiNil _) -> Ast.StNil loc
+                      | st -> st
+                    method! module_type mt =
+                      match (super#module_type) mt with
+                      | Ast.MtWit (_,mt,Ast.WcNil _) -> mt
+                      | mt -> mt
+                    method! class_expr ce =
+                      match (super#class_expr) ce with
+                      | Ast.CeAnd (_,Ast.CeNil _,ce)|Ast.CeAnd
+                          (_,ce,Ast.CeNil _) -> ce
+                      | ce -> ce
+                    method! class_type ct =
+                      match (super#class_type) ct with
+                      | Ast.CtAnd (_,Ast.CtNil _,ct)|Ast.CtAnd
+                          (_,ct,Ast.CtNil _) -> ct
+                      | ct -> ct
+                    method! class_sig_item csg =
+                      match (super#class_sig_item) csg with
+                      | Ast.CgSem (_,Ast.CgNil _,csg)|Ast.CgSem
+                          (_,csg,Ast.CgNil _) -> csg
+                      | csg -> csg
+                    method! class_str_item cst =
+                      match (super#class_str_item) cst with
+                      | Ast.CrSem (_,Ast.CrNil _,cst)|Ast.CrSem
+                          (_,cst,Ast.CrNil _) -> cst
+                      | cst -> cst
+                  end
+class reloc _loc = object  inherit  map method! loc _ = _loc end
 let wildcarder =
-  object(self)
-  inherit  map as super
-  method! patt =
-    function
-    | Ast.PaId (_loc,Ast.IdLid (_,_)) -> Ast.PaAny _loc
-    | Ast.PaAli (_,p,_) -> (self#patt) p
-    | p -> (super#patt) p
+  object (self)
+    inherit  map as super
+    method! patt =
+      function
+      | Ast.PaId (_loc,Ast.IdLid (_,_)) -> Ast.PaAny _loc
+      | Ast.PaAli (_,p,_) -> (self#patt) p
+      | p -> (super#patt) p
   end

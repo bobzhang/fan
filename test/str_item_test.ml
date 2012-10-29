@@ -225,3 +225,6 @@ let test_labels = begin
   f ?g:g 3 ;
 end
 ;;
+
+
+let f (x:int) (y:bool) = x+y

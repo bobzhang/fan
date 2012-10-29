@@ -100,8 +100,7 @@ let retype_rule_list_without_patterns _loc rl =
        | {prod = ({pattern = None ;styp = STtok _;_} as s)::[];action = None }
            ->
            {prod =
-              ([{s
-                  with
+              ([{s with
                   pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))
                 }]);
              action =
@@ -115,8 +114,7 @@ let retype_rule_list_without_patterns _loc rl =
            }
        | {prod = ({pattern = None ;_} as s)::[];action = None } ->
            {prod =
-              ([{s
-                  with
+              ([{s with
                   pattern = (Some (Ast.PaId (_loc,(Ast.IdLid (_loc,"x")))))
                 }]);
              action = (Some (Ast.ExId (_loc,(Ast.IdLid (_loc,"x")))))
