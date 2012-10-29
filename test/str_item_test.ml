@@ -189,5 +189,39 @@ let rec action_arg s sl = function
       else
         (try f (int_of_string s); Some sl
         with | Failure "int_of_string" -> None)
-            
-            
+let u = {
+  v =3;
+  u = 32;
+}
+
+let f = {
+  u={a=3;
+     v=b;
+   };
+  g={
+  a=4;
+  b=3;
+  };
+  g={
+  a=4;
+  b=3;
+  };
+  g={
+  a=4;
+  b=3;
+  };
+  g={
+  a=4;
+  b=3;
+  }
+}    
+    
+let test_labels = begin
+  List.find ~f:ff (+) g ;
+  List.find ~f (+) g;
+  List.find ~f (+) g;
+  f ?g:(Some 32)   3;
+  f ?g 3 ;
+  f ?g:g 3 ;
+end
+;;

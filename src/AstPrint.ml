@@ -11,39 +11,15 @@
 (**************************************************************************)
 
 (* Original Code from Ber-metaocaml, modified fo 3.12.0 and fixed *)
-
 (* Printing code expressions *)
 (* Authors:  Ed Pizzi, Fabrice Le Fessant *)
-(* Rewrite: Hongbo Zhang: University of Pennsylvania*)
+(* Extensivily Rewrite: Hongbo Zhang: University of Pennsylvania*)
 
-(* FIXME what kind of error check should we do ?,
-   Location for error message
- *)
-
-(*
-  label:
-        | Ptyp_arrow of label * core_type * core_type
-        | Pcty_fun of label * core_type * class_type
-        | Pcl_fun of label * expression option * pattern * class_expr
-        | Pexp_function of label * expression option * (pattern * expression) list
- *)
 open Asttypes
 open Format
 open Location
 open Longident
 open Parsetree
-
-
-(* let indent    = 1 ;; (\* standard indentation increment *\) *)
-let bar_on_first_case = true ;;
-
-(* These sets of symbols are taken from the manual. However, it's
-   unclear what the sets infix_symbols and prefix_symbols are for, as
-   operator_chars, which contains their union seems to be the only set
-   useful to determine whether an identifier is prefix or infix.
-   The set postfix_chars I added, which is the set of characters allowed
-   at the end of an identifier to allow for internal MetaOCaml variable
-   renaming. *)
 
 let prefix_symbols  = [ '!'; '?'; '~' ] ;;
 let infix_symbols = [ '='; '<'; '>'; '@'; '^'; '|'; '&'; '+'; '-'; '*'; '/'; '$'; '%' ] 
@@ -67,17 +43,11 @@ let fixity_of_string s =
     `Infix s
   else `Prefix
 
-(* let fixity_of_longident = function *)
-(*   | {txt=Lident name;_} -> fixity_of_string name *)
-(*   | _ -> `Prefix  *)
-
 let view_fixity_of_exp = function 
   | {pexp_desc = Pexp_ident {txt=Lident l;_};_} -> fixity_of_string l
   | _ -> `Prefix  ;;
 
-let is_infix  = function 
-  | `Infix _ -> true
-  | _  -> false
+let is_infix  = function  | `Infix _ -> true | _  -> false
 
 let is_predef_option = function
   | (Ldot (Lident "*predef*","option")) -> true
@@ -89,6 +59,7 @@ let override = function
   | Override -> "!"
   | Fresh -> ""
 
+(* variance encoding: need to sync up with the [parser.mly] *)        
 let type_variance = function
   | (false,false) -> ""
   | (true,false) -> "+"
@@ -167,7 +138,7 @@ class printer  ()= object(self:'self)
     | Mutable -> pp f "mutable@ "
   method virtual_flag f  = function
     | Concrete -> ()
-    | Virtual -> pp f "virtual@ "
+    | Virtual -> pp f "virtual@;"
           (* trailing space added *)        
   method rec_flag f = function
     | Nonrecursive -> ()
@@ -227,8 +198,7 @@ class printer  ()= object(self:'self)
     match x.ptyp_desc with
     | Ptyp_any -> pp f "_";       
     | Ptyp_var s -> self#tyvar f  s; 
-    | Ptyp_tuple l ->
-        pp f "(%a)" (self#list self#core_type1 ~sep:"*") l 
+    | Ptyp_tuple l ->  pp f "(%a)" (self#list self#core_type1 ~sep:"*@;") l 
     | Ptyp_constr (li, l) ->
         pp f "%a%a@;" 
           (fun f l -> match l with
@@ -556,14 +526,13 @@ class printer  ()= object(self:'self)
         pp f "(%a%a%a)" self#expression e
           (self#option self#core_type ~first:"@ :" ~last:"@ ") cto1
           (self#option self#core_type ~first:"@ :>") cto2
-
     | Pexp_variant (l, None) -> pp f "`%s" l 
     | Pexp_record (l, eo) ->
         let longident_x_expression f (li, e) =
-          pp f "@[<hov2>%a@ =@ %a@]" self#longident_loc li self#simple_expr e in 
-        pp f "@[<hov2>{%a%a}@]"
-          (self#option ~last:"@ with@ " self#simple_expr) eo
-          (self#list longident_x_expression ~sep:";")  l
+          pp f "@[<hov2>%a@;=@;%a@]" self#longident_loc li self#simple_expr e in 
+        pp f "@[<hv0>@[<hv2>{%a%a@]@;}@]"(* "@[<hov2>{%a%a}@]" *)
+          (self#option ~last:"@;with@;" self#simple_expr) eo
+          (self#list longident_x_expression ~sep:";@;")  l
     | Pexp_array (l) ->
         pp f "@[<0>@[<2>[|%a|]@]@]"
           (self#list self#under_semi#simple_expr ~sep:";") l
@@ -592,6 +561,29 @@ class printer  ()= object(self:'self)
       |[] -> ()
       |_ -> pp f "@ of@ %a" (self#list ~sep:"*" self#core_type) ed) ed
 
+
+  method class_signature f { pcsig_self = ct; pcsig_fields = l ;_} =
+    let class_type_field f x =
+      match x.pctf_desc with
+      | Pctf_inher (ct) ->  
+          pp f "@[<2>inherit@ %a@]" self#class_type ct 
+      | Pctf_val (s, mf, vf, ct) ->
+          pp f "@[<2>val @ %a%a%s@ :@ %a@]"
+            self#mutable_flag mf self#virtual_flag vf s  self#core_type  ct 
+      | Pctf_virt (s, pf, ct) ->    (* todo: test this *)
+          pp f "@[<2>method@ %a@ virtual@ %s@ :@ %a@]"
+            self#private_flag pf s  self#core_type ct 
+      | Pctf_meth (s, pf, ct) ->
+          pp f "@[<2>method@ %a@ %s@ :@ %a@]"
+            self#private_flag pf s self#core_type ct 
+      | Pctf_cstr (ct1, ct2) ->
+          pp f "@[<2>constraint@ %a@ =@ %a@]"
+            self#core_type ct1 self#core_type ct2 in 
+    pp f "@[<hv0>@[<hv2>object @[<1>%a@]@ %a@]@ end@]" (* "@\nobject%a@\n%a@\nend" *)
+      (fun f ct -> match ct.ptyp_desc with
+      | Ptyp_any -> ()
+      | _ -> pp f "(%a)" self#core_type ct) ct
+      (self#list   class_type_field ~sep:"@;") l  ;
   method class_type f x =  match x.pcty_desc with
   | Pcty_signature cs ->
       self#class_signature f cs;
@@ -602,42 +594,22 @@ class printer  ()= object(self:'self)
         | _  -> pp f "[%a]@ " (self#list self#core_type ~sep:"," ) l) l 
         self#longident_loc li 
   | Pcty_fun (l, co, cl) ->
-      pp f "(%a@ ->@ %a)@ " (* FIXME remove parens later *)
+      pp f "@[<2>%a@;->@;%a@]" (* FIXME remove parens later *)
         self#type_with_label (l,co) self#class_type cl;
 
-  method class_signature f { pcsig_self = ct; pcsig_fields = l ;_} =
-    let class_type_field f x =
-      match x.pctf_desc with
-      | Pctf_inher (ct) ->  
-          pp f "inherit@ %a" self#class_type ct 
-      | Pctf_val (s, mf, vf, ct) ->
-          pp f "val @ %a%a%s@ :@ %a"
-            self#mutable_flag mf self#virtual_flag vf s  self#core_type  ct 
-      | Pctf_virt (s, pf, ct) ->    (* todo: test this *)
-          pp f "method@ %a@ virtual@ %s@ :@ %a"
-            self#private_flag pf s  self#core_type ct 
-      | Pctf_meth (s, pf, ct) ->
-          pp f "method@ %a@ %s@]@ :@ %a"
-            self#private_flag pf s self#core_type ct 
-      | Pctf_cstr (ct1, ct2) ->
-          pp f "constraint@ %a@ =@ %a"
-            self#core_type ct1 self#core_type ct2 in 
-    pp f "@\nobject%a@\n%a@\nend"
-      (fun f ct -> match ct.ptyp_desc with
-      | Ptyp_any -> ()
-      | _ -> pp f "@ (%a)" self#core_type ct) ct
-      (self#list   class_type_field ~sep:"@\n") l  ;
-
+    
+  (* [class type a = object end] *)  
   method class_type_declaration_list f  l =
     let class_type_declaration f ({pci_params=(ls,_);pci_name={txt;_};pci_variance;_} as x) =
-      pp f "%a%a%s@ =@ %a" self#virtual_flag x.pci_virt  self#class_params_def (List.combine ls pci_variance) txt
+      pp f "%a%a%s@ =@ %a" self#virtual_flag x.pci_virt
+        self#class_params_def (List.combine ls pci_variance) txt
         self#class_type x.pci_expr in 
     match l with
     | [] -> () 
-    | [h] -> pp f "@[<hv2>class@ type@ %a@]" class_type_declaration   h 
+    | [h] -> pp f "@[<hv2>class type %a@]" class_type_declaration   h 
     | _ ->
-        pp f "@[<hv2>class@ type@ %a@]"
-          (self#list class_type_declaration ~sep:"@\nand@ ") l 
+        pp f "@[<2>class type %a@]"
+          (self#list class_type_declaration ~sep:"@]@;@[<2>and@;") l 
 
   method class_expr f x =
     match x.pcl_desc with
@@ -649,9 +621,7 @@ class printer  ()= object(self:'self)
           self#pattern_x_expression_def_list  l
           self#class_expr ce
     | Pcl_apply (ce, l) ->
-        pp f "(%a@ %a)"
-          self#class_expr  ce
-          (self#list self#label_x_expression_param (* ~breakfirst:true *) ) l 
+        pp f "(%a@ %a)"  self#class_expr ce (self#list self#label_x_expression_param) l 
     | Pcl_constr (li, l) ->
         pp f "%a%a"
           (fun f l-> if l <>[] then 
@@ -712,8 +682,8 @@ class printer  ()= object(self:'self)
     | Pmty_ident li ->
         pp f "%a" self#longident_loc li;
     | Pmty_signature (s) ->
-        pp f "@[<hov>sig@ %a@ end@]"
-          (self#list self#signature_item  (* ~breakfirst:true *) (* ~indent *)) s
+        pp f "@[<hv0>@[<hv2>sig@ %a@]@ end@]" (* "@[<hov>sig@ %a@ end@]" *)
+          (self#list self#signature_item  ) s (* FIXME wrong indentation*)
     | Pmty_functor (s, mt1, mt2) ->
         pp f "@[<hov2>functor@ (%s@ :@ %a)@ ->@ %a@]" s.txt
           self#module_type mt1  self#module_type mt2 
@@ -740,14 +710,14 @@ class printer  ()= object(self:'self)
     | Pmty_typeof me ->
         pp f "@[<hov2>module@ type@ of@ %a@]"
           self#module_expr me 
-  method signature f x =  self#list ~sep:"@\n" self#signature_item f x
+  method signature f x =  self#list ~sep:"@." self#signature_item f x
 
   method signature_item f x :unit= begin
     match x.psig_desc with
     | Psig_type l ->
         self#type_def_list f l
     | Psig_value (s, vd) ->
-        pp f "@[<hov2>%a@]"
+        pp f "@[<2>%a@]"
           (fun f (s,vd) -> 
             let intro = if vd.pval_prim = [] then "val" else "external" in
             if (is_infix (fixity_of_string s.txt)) || List.mem s.txt.[0] prefix_symbols then
@@ -757,12 +727,19 @@ class printer  ()= object(self:'self)
             self#value_description f vd;) (s,vd)
     | Psig_exception (s, ed) ->
         self#exception_declaration f (s.txt,ed)
-    | Psig_class (l) ->
+    | Psig_class l ->
         let class_description f ({pci_params=(ls,_);pci_name={txt;_};pci_variance;_} as x) =
-          pp f "@[<hv>@[<hov2>class@ %a%a%s@ :@]@ %a@]"  self#virtual_flag x.pci_virt
-            self#class_params_def (List.combine ls pci_variance)  txt  self#class_type x.pci_expr in 
-        pp f "@[<hov2>%a@]"
-          (self#list class_description) l 
+          pp f "%a%a%s@;:@;%a" (* "@[<2>class %a%a%s@;:@;%a@]" *)
+            self#virtual_flag x.pci_virt
+            self#class_params_def
+            (List.combine ls pci_variance)
+            txt  self#class_type x.pci_expr in 
+        pp f  "@[<0>%a@]"
+          (fun f l ->  match l with
+            |[]  ->()
+            |[x] -> pp f "@[<2>class %a@]" class_description x 
+            |_ -> self#list ~first:"@[<v0>class @[<2>" ~sep:"@]@;and @[" ~last:"@]@]"
+                  class_description f l) l 
     | Psig_module (s, mt) ->
         pp f "@[<hov>module@ %s@ :@ %a@]"
           s.txt
@@ -871,7 +848,7 @@ class printer  ()= object(self:'self)
     | Pstr_open (li) ->
         pp f "open %a" self#longident_loc li;
     | Pstr_modtype (s, mt) ->
-        pp f "@[<hov2>module@ type@ %s@ =@ %a@]" s.txt self#module_type mt 
+        pp f "@[<2>module type %s =@;%a@]" s.txt self#module_type mt 
     | Pstr_class l ->
         let class_declaration f  (* for the second will be changed to and FIXME*)
             ({pci_params=(ls,_);
@@ -885,7 +862,6 @@ class printer  ()= object(self:'self)
               self#label_exp f (l,eo,p);
               class_fun_helper f e
           | _ -> e in
-          (* pp std_formatter "@%a%a%s%a" pp_print_int 3 pp_print_int 3 "haha" pp_print_int 3;; segfault *)
           pp f "%a%a%s %a"  self#virtual_flag pci_virt self#class_params_def ls txt 
             (fun f _ ->  
               let ce =
@@ -959,7 +935,7 @@ class printer  ()= object(self:'self)
         pp f "@\n|@;%s%a" s.txt
           (fun f l -> match l with
           | [] -> ()
-          | _ -> pp f "@;of@;%a" (self#list self#core_type1 ~sep:"*") l) l
+          | _ -> pp f "@;of@;%a" (self#list self#core_type1 ~sep:"*@;") l) l
     |Some x ->
         pp f "@\n|@;%s:@;%a" s.txt
           (self#list self#core_type1 ~sep:"@;->@;") (l@[x]) in
@@ -1005,10 +981,21 @@ class printer  ()= object(self:'self)
     match l with
     | ""  -> self#expression2 f e ; (* level 2*)
     | lbl ->
-        if  lbl.[0] = '?' then 
-          pp f "%s:%a" lbl self#simple_expr e 
-        else 
-          pp f "~%s:%a" lbl self#simple_expr e 
+        let simple_name = match e.pexp_desc with
+        | Pexp_ident {txt=Lident l;_} -> Some l
+        | _ -> None in 
+        if  lbl.[0] = '?' then
+          let str = String.sub lbl 1 (String.length lbl-1) in
+          if Some str = simple_name then
+            pp f "%s" lbl
+          else
+            pp f "%s:%a" lbl self#simple_expr e 
+        else
+          if Some lbl = simple_name then
+            pp f "~%s" lbl 
+          else 
+            pp f "~%s:%a" lbl self#simple_expr e
+              
   method directive_argument f x =
     (match x with
     | Pdir_none -> ()
