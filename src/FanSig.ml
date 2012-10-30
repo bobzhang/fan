@@ -42,8 +42,8 @@ type quotation ={
 (*     ["n"]. To interpret a string use the first string of the [STRING] *)
 (*     constructor (or if you need to compute it use the module *)
 (*     {!Camlp4.Struct.Token.Eval}. Same thing for the constructor [CHAR]. *\) *)
-type token  =
-  [ = `KEYWORD of string
+type token =
+  [=  `KEYWORD of string
   | `SYMBOL of string
   | `LIDENT of string
   | `UIDENT of string

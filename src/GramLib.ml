@@ -32,9 +32,9 @@ let test_patt_lessminus =
         skip_patt 1);
 
 (* very ad-hoc trick*)  
-let is_revised ~expr ~sem_expr_for_list =
+let is_revised ~expr ~sem_expr_for_list:(x: Gram.t _) =
   try begin
-      DELETE_RULE Gram expr: "["; sem_expr_for_list; "::"; expr; "]" END;
+      DELETE_RULE Gram expr: "["; x; "::"; expr; "]" END;
       True
   end with [ Not_found -> False ];
     

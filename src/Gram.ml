@@ -4,16 +4,15 @@ open Grammar;
 include Entry;
 include Structure;
 
-(* module Dynamic = struct *)
-(*   let mk () = *)
-    let gkeywords = Hashtbl.create 301 in{
-    gkeywords = gkeywords;
-    gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
-    glexer = FanLexer.mk ();
-    warning_verbose = ref True;
-    error_verbose = FanConfig.verbose };
+let gkeywords = Hashtbl.create 301 in{
+  gkeywords = gkeywords;
+  gfilter = FanToken.Filter.mk ~is_kwd:(Hashtbl.mem gkeywords);
+  glexer = FanLexer.mk ();
+  warning_verbose = ref True;
+  error_verbose = FanConfig.verbose
+};
 
-(* end; *)
+
   
 let gram =
   let gkeywords = Hashtbl.create 301 in{
@@ -45,7 +44,8 @@ let debug_origin_token_stream (entry:t 'a) tokens : 'a =
   
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry (Stream.map (fun t -> (t,FanLoc.ghost)) tokens);
-  (* with a special exception handler *)  
+
+(* with a special exception handler *)  
 let parse_string_safe entry loc s =
   try
     parse_string entry loc s

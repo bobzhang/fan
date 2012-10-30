@@ -769,7 +769,8 @@ let define_context_for_root r =
     def (r // "Camlp4") [ r];
     def (r // "Grammar") [r];
     def (r // "Lib") [r];
-    def ("test") ["src"]
+    def ("test") ["src"];
+    def "test_r" ["src"]
     (* the toplevel directory can see src, this is only for debugging convenience, you should never put any
        library code in toplevel, only test files
      *)
