@@ -46,57 +46,55 @@ let change_lev entry lev n lname assoc =
     lprefix = (lev.lprefix)
   }
 let change_to_self entry =
-  function
-  | `Snterm e when e == entry -> `Sself
-  | x -> x
+  function | `Snterm e when e == entry -> `Sself | x -> x
 let get_level entry position levs =
   match position with
   | Some `First -> ([], empty_lev, levs)
   | Some `Last -> (levs, empty_lev, [])
   | Some (`Level n) ->
       let rec get =
-        (function
-         | [] ->
-             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-                entry.ename;
-              flush Pervasives.stderr;
-              failwith "Grammar.extend")
-         | lev::levs ->
-             if Tools.is_level_labelled n lev
-             then ([], (change_lev entry lev n), levs)
-             else
-               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+        function
+        | [] ->
+            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+               entry.ename;
+             flush Pervasives.stderr;
+             failwith "Grammar.extend")
+        | lev::levs ->
+            if Tools.is_level_labelled n lev
+            then ([], (change_lev entry lev n), levs)
+            else
+              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                levs2) in
       get levs
   | Some (`Before n) ->
       let rec get =
-        (function
-         | [] ->
-             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-                entry.ename;
-              flush Pervasives.stderr;
-              failwith "Grammar.extend")
-         | lev::levs ->
-             if Tools.is_level_labelled n lev
-             then ([], empty_lev, (lev :: levs))
-             else
-               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+        function
+        | [] ->
+            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+               entry.ename;
+             flush Pervasives.stderr;
+             failwith "Grammar.extend")
+        | lev::levs ->
+            if Tools.is_level_labelled n lev
+            then ([], empty_lev, (lev :: levs))
+            else
+              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                levs2) in
       get levs
   | Some (`After n) ->
       let rec get =
-        (function
-         | [] ->
-             (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
-                entry.ename;
-              flush Pervasives.stderr;
-              failwith "Grammar.extend")
-         | lev::levs ->
-             if Tools.is_level_labelled n lev
-             then ([lev], empty_lev, levs)
-             else
-               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
-                 levs2)) in
+        function
+        | [] ->
+            (eprintf "No level labelled \"%s\" in entry \"%s\"\n" n
+               entry.ename;
+             flush Pervasives.stderr;
+             failwith "Grammar.extend")
+        | lev::levs ->
+            if Tools.is_level_labelled n lev
+            then ([lev], empty_lev, levs)
+            else
+              let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                levs2) in
       get levs
   | None  ->
       (match levs with
@@ -135,9 +133,7 @@ let rec check_gram entry =
        tree_check_gram entry son)
   | LocAct (_,_)|DeadEnd  -> ()
 let get_initial =
-  function
-  | `Sself::symbols -> (true, symbols)
-  | symbols -> (false, symbols)
+  function | `Sself::symbols -> (true, symbols) | symbols -> (false, symbols)
 let insert_tokens gram symbols =
   let rec insert =
     function
@@ -186,10 +182,10 @@ let insert_tree entry gsymbols action tree =
           if (is_before s1 s) || ((derive_eps s) && (not (derive_eps s1)))
           then
             let bro =
-              (match try_insert s sl bro with
-               | Some bro -> bro
-               | None  ->
-                   Node {node = s; son = (insert sl DeadEnd); brother = bro }) in
+              match try_insert s sl bro with
+              | Some bro -> bro
+              | None  ->
+                  Node {node = s; son = (insert sl DeadEnd); brother = bro } in
             let t = Node {node = s1; son = son; brother = bro } in Some t
           else
             (match try_insert s sl bro with
@@ -227,20 +223,20 @@ let levels_of_rules entry position rules =
     let (levs1,make_lev,levs2) = get_level entry position elev in
     let (levs,_) =
       List.fold_left
-        ((fun (levs,make_lev) ->
-            fun (lname,assoc,level) ->
-              let lev = make_lev lname assoc in
-              let lev =
-                List.fold_left
-                  (fun lev ->
-                     fun (symbols,action) ->
-                       let symbols =
-                         List.map (change_to_self entry) symbols in
-                       let () = List.iter (check_gram entry) symbols in
-                       let (e1,symbols) = get_initial symbols in
-                       let () = insert_tokens entry.egram symbols in
-                       insert_level entry e1 symbols action lev) lev level in
-              ((lev :: levs), empty_lev))) ([], make_lev) rules in
+        (fun (levs,make_lev) ->
+           fun (lname,assoc,level) ->
+             let lev = make_lev lname assoc in
+             let lev =
+               List.fold_left
+                 (fun lev ->
+                    fun (symbols,action) ->
+                      let symbols =
+                        List.map (change_to_self entry) symbols in
+                      let () = List.iter (check_gram entry) symbols in
+                      let (e1,symbols) = get_initial symbols in
+                      let () = insert_tokens entry.egram symbols in
+                      insert_level entry e1 symbols action lev) lev level in
+             ((lev :: levs), empty_lev)) ([], make_lev) rules in
     levs1 @ ((List.rev levs) @ levs2)
 let extend entry (position,rules) =
   let elev = levels_of_rules entry position rules in

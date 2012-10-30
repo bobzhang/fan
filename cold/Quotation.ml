@@ -79,9 +79,9 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
           (pp "finding quotation";
            bprintf ppf "@ @[<hv2>Available quotation expanders are:@\n";
            List.iter
-             ((fun ((s,t),_) ->
-                 bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
-                   Exp_key.print_tag t)) expanders_table.contents;
+             (fun ((s,t),_) ->
+                bprintf ppf "@[<2>%s@ (in@ a@ position@ of %a)@]@ " s
+                  Exp_key.print_tag t) expanders_table.contents;
            bprintf ppf "@]")
       | Expanding  -> pp "expanding quotation"
       | ParsingResult (loc,str) ->
@@ -181,19 +181,19 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
            | None  -> exp_ast
            | Some name ->
                let rec subst_first_loc =
-                 (function
-                  | Ast.PaApp
-                      (_loc,Ast.PaId
-                       (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
-                      ->
-                      Ast.PaApp (_loc,
-                        (Ast.PaId (_loc,
-                           (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
-                              (Ast.IdUid (_loc, u)))))),
-                        (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
-                  | Ast.PaApp (_loc,a,b) ->
-                      Ast.PaApp (_loc, (subst_first_loc a), b)
-                  | p -> p) in
+                 function
+                 | Ast.PaApp
+                     (_loc,Ast.PaId
+                      (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
+                     ->
+                     Ast.PaApp (_loc,
+                       (Ast.PaId (_loc,
+                          (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
+                             (Ast.IdUid (_loc, u)))))),
+                       (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
+                 | Ast.PaApp (_loc,a,b) ->
+                     Ast.PaApp (_loc, (subst_first_loc a), b)
+                 | p -> p in
                subst_first_loc exp_ast) in
     add name DynAst.expr_tag expand_expr;
     add name DynAst.patt_tag expand_patt;

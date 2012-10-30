@@ -11,8 +11,7 @@ let filter (_,q) =
          let xs = __strm in (Queue.add (x, loc) q; self xs))
     | Some x ->
         (Stream.junk __strm;
-         let xs = __strm in
-         Stream.icons x (Stream.slazy ((fun _ -> self xs))))
+         let xs = __strm in Stream.icons x (Stream.slazy (fun _ -> self xs)))
     | _ -> Stream.sempty in
   self
 let take_list (_,q) =

@@ -12,18 +12,15 @@ let mkvirtual =
   | Ast.ViNil  -> Concrete
   | _ -> assert false
 let mkdirection =
-  function
-  | Ast.DiTo  -> Upto
-  | Ast.DiDownto  -> Downto
-  | _ -> assert false
+  function | Ast.DiTo  -> Upto | Ast.DiDownto  -> Downto | _ -> assert false
 let conv_con =
   let t = Hashtbl.create 73 in
-  List.iter ((fun (s,s') -> Hashtbl.add t s s')) [("True", "true"); ("False",
+  List.iter (fun (s,s') -> Hashtbl.add t s s') [("True", "true"); ("False",
     "false"); (" True", "True"); (" False", "False")];
   (fun s -> try Hashtbl.find t s with | Not_found  -> s)
 let conv_lab =
   let t = Hashtbl.create 73 in
-  List.iter ((fun (s,s') -> Hashtbl.add t s s')) [("val", "contents")];
+  List.iter (fun (s,s') -> Hashtbl.add t s s') [("val", "contents")];
   (fun s -> try Hashtbl.find t s with | Not_found  -> s)
 let mkrf =
   function
@@ -49,10 +46,10 @@ let ident_tag ?(conv_lid=fun x -> x)  i =
          | _ -> error (Camlp4Ast.loc_of_ident i) "invalid long identifier")
     | Ast.IdLid (_,s) ->
         let x =
-          (match acc with
-           | None  -> lident (conv_lid s)
-           | Some (acc,(`uident|`app)) -> ldot acc (conv_lid s)
-           | _ -> error (loc_of_ident i) "invalid long identifier") in
+          match acc with
+          | None  -> lident (conv_lid s)
+          | Some (acc,(`uident|`app)) -> ldot acc (conv_lid s)
+          | _ -> error (loc_of_ident i) "invalid long identifier" in
         Some (x, `lident)
     | _ -> error (loc_of_ident i) "invalid long identifier" in
   match self i None with
@@ -96,10 +93,10 @@ let rec ctyp =
       let li = long_type_ident i in mktyp loc (Ptyp_constr (li, []))
   | TyAli (loc,t1,t2) ->
       let (t,i) =
-        (match (t1, t2) with
-         | (t,TyQuo (_,s)) -> (t, s)
-         | (TyQuo (_,s),t) -> (t, s)
-         | _ -> error loc "invalid alias type") in
+        match (t1, t2) with
+        | (t,TyQuo (_,s)) -> (t, s)
+        | (TyQuo (_,s),t) -> (t, s)
+        | _ -> error loc "invalid alias type" in
       mktyp loc (Ptyp_alias ((ctyp t), i))
   | TyAny loc -> mktyp loc Ptyp_any
   | TyApp (loc,_,_) as f ->
@@ -234,7 +231,7 @@ let rec type_decl tl cl loc m pflag =
       if m <> None
       then error loc "only one manifest type allowed by definition"
       else
-        let m = (match t with | Ast.TyNil _ -> None | _ -> Some (ctyp t)) in
+        let m = match t with | Ast.TyNil _ -> None | _ -> Some (ctyp t) in
         mktype loc tl cl Ptype_abstract (mkprivate' pflag) m
 let type_decl tl cl t loc = type_decl tl cl loc None false t
 let mkvalue_desc loc t p =
@@ -307,19 +304,17 @@ let rec mkwithc wc acc =
   match wc with
   | Ast.WcNil _ -> acc
   | Ast.WcTyp (loc,id_tpl,ct) ->
-      (mkwithtyp ((fun x -> Pwith_type x)) loc id_tpl ct) :: acc
+      (mkwithtyp (fun x -> Pwith_type x) loc id_tpl ct) :: acc
   | Ast.WcMod (_,i1,i2) -> ((long_uident i1),
       (Pwith_module (long_uident i2))) :: acc
   | Ast.WcTyS (loc,id_tpl,ct) ->
-      (mkwithtyp ((fun x -> Pwith_typesubst x)) loc id_tpl ct) :: acc
+      (mkwithtyp (fun x -> Pwith_typesubst x) loc id_tpl ct) :: acc
   | Ast.WcMoS (_,i1,i2) -> ((long_uident i1),
       (Pwith_modsubst (long_uident i2))) :: acc
   | Ast.WcAnd (_,wc1,wc2) -> mkwithc wc1 (mkwithc wc2 acc)
   | Ast.WcAnt (loc,_) -> error loc "bad with constraint (antiquotation)"
 let rec patt_fa al =
-  function
-  | PaApp (_,f,a) -> patt_fa (a :: al) f
-  | f -> (f, al)
+  function | PaApp (_,f,a) -> patt_fa (a :: al) f | f -> (f, al)
 let rec deep_mkrangepat loc c1 c2 =
   if c1 = c2
   then mkghpat loc (Ppat_constant (Const_char c1))
@@ -348,10 +343,10 @@ let rec patt =
       mkpat loc p
   | PaAli (loc,p1,p2) ->
       let (p,i) =
-        (match (p1, p2) with
-         | (p,Ast.PaId (_,Ast.IdLid (sloc,s))) -> (p, (with_loc s sloc))
-         | (Ast.PaId (_,Ast.IdLid (sloc,s)),p) -> (p, (with_loc s sloc))
-         | _ -> error loc "invalid alias pattern") in
+        match (p1, p2) with
+        | (p,Ast.PaId (_,Ast.IdLid (sloc,s))) -> (p, (with_loc s sloc))
+        | (Ast.PaId (_,Ast.IdLid (sloc,s)),p) -> (p, (with_loc s sloc))
+        | _ -> error loc "invalid alias pattern" in
       mkpat loc (Ppat_alias ((patt p), i))
   | PaAnt (loc,_) -> error loc "antiquotation not allowed here"
   | PaAny loc -> mkpat loc Ppat_any
@@ -372,7 +367,7 @@ let rec patt =
                (Ppat_construct (li, (Some (mkpat loc (Ppat_tuple al))), true))
            else
              let a =
-               (match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al)) in
+               match al with | a::[] -> a | _ -> mkpat loc (Ppat_tuple al) in
              mkpat loc (Ppat_construct (li, (Some a), false))
        | Ppat_variant (s,None ) ->
            let a =
@@ -390,35 +385,35 @@ let rec patt =
       mkpat loc (Ppat_constant (Const_char (char_of_char_token loc s)))
   | PaInt (loc,s) ->
       let i =
-        (try int_of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int") in
+        try int_of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int" in
       mkpat loc (Ppat_constant (Const_int i))
   | PaInt32 (loc,s) ->
       let i32 =
-        (try Int32.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int32") in
+        try Int32.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int32" in
       mkpat loc (Ppat_constant (Const_int32 i32))
   | PaInt64 (loc,s) ->
       let i64 =
-        (try Int64.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int64") in
+        try Int64.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int64" in
       mkpat loc (Ppat_constant (Const_int64 i64))
   | PaNativeInt (loc,s) ->
       let nati =
-        (try Nativeint.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type nativeint") in
+        try Nativeint.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type nativeint" in
       mkpat loc (Ppat_constant (Const_nativeint nati))
   | PaFlo (loc,s) ->
       mkpat loc (Ppat_constant (Const_float (remove_underscores s)))
@@ -434,9 +429,7 @@ let rec patt =
        | _ -> error loc "range pattern allowed only for characters")
   | PaRec (loc,p) ->
       let ps = list_of_patt p [] in
-      let is_wildcard = (function
-                         | Ast.PaAny _ -> true
-                         | _ -> false) in
+      let is_wildcard = function | Ast.PaAny _ -> true | _ -> false in
       let (wildcards,ps) = List.partition is_wildcard ps in
       let is_closed = if wildcards = [] then Closed else Open in
       mkpat loc (Ppat_record ((List.map mklabpat ps), is_closed))
@@ -465,26 +458,26 @@ let rec expr =
   function
   | ExAcc (loc,_,_)|Ast.ExId (loc,Ast.IdAcc (_,_,_)) as e ->
       let (e,l) =
-        (match Expr.sep_expr [] e with
-         | (loc,ml,Ast.ExId (sloc,Ast.IdUid (_,s)))::l ->
-             let ca = constructors_arity () in
-             ((mkexp loc
-                 (Pexp_construct ((mkli sloc (conv_con s) ml), None, ca))),
-               l)
-         | (loc,ml,Ast.ExId (sloc,Ast.IdLid (_,s)))::l ->
-             ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
-         | (_,[],e)::l -> ((expr e), l)
-         | _ -> error loc "bad ast in expression") in
+        match Expr.sep_expr [] e with
+        | (loc,ml,Ast.ExId (sloc,Ast.IdUid (_,s)))::l ->
+            let ca = constructors_arity () in
+            ((mkexp loc
+                (Pexp_construct ((mkli sloc (conv_con s) ml), None, ca))),
+              l)
+        | (loc,ml,Ast.ExId (sloc,Ast.IdLid (_,s)))::l ->
+            ((mkexp loc (Pexp_ident (mkli sloc s ml))), l)
+        | (_,[],e)::l -> ((expr e), l)
+        | _ -> error loc "bad ast in expression" in
       let (_,e) =
         List.fold_left
-          ((fun (loc_bp,e1) ->
-              fun (loc_ep,ml,e2) ->
-                match e2 with
-                | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
-                    let loc = FanLoc.merge loc_bp loc_ep in (loc,
-                      (mkexp loc
-                         (Pexp_field (e1, (mkli sloc (conv_lab s) ml)))))
-                | _ -> error (loc_of_expr e2) "lowercase identifier expected"))
+          (fun (loc_bp,e1) ->
+             fun (loc_ep,ml,e2) ->
+               match e2 with
+               | Ast.ExId (sloc,Ast.IdLid (_,s)) ->
+                   let loc = FanLoc.merge loc_bp loc_ep in (loc,
+                     (mkexp loc
+                        (Pexp_field (e1, (mkli sloc (conv_lab s) ml)))))
+               | _ -> error (loc_of_expr e2) "lowercase identifier expected")
           (loc, e) l in
       e
   | ExAnt (loc,_) -> error loc "antiquotation not allowed here"
@@ -500,7 +493,7 @@ let rec expr =
                (Pexp_construct (li, (Some (mkexp loc (Pexp_tuple al))), true))
            else
              let a =
-               (match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al)) in
+               match al with | a::[] -> a | _ -> mkexp loc (Pexp_tuple al) in
              mkexp loc (Pexp_construct (li, (Some a), false))
        | Pexp_variant (s,None ) ->
            let al = List.map snd al in
@@ -521,31 +514,31 @@ let rec expr =
   | ExAsf loc -> mkexp loc Pexp_assertfalse
   | ExAss (loc,e,v) ->
       let e =
-        (match e with
-         | Ast.ExAcc (loc,x,Ast.ExId (_,Ast.IdLid (_,"contents"))) ->
-             Pexp_apply ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
-               [("", (expr x)); ("", (expr v))])
-         | ExAcc (loc,_,_) ->
-             (match (expr e).pexp_desc with
-              | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (expr v))
-              | _ -> error loc "bad record access")
-         | ExAre (loc,e1,e2) ->
-             Pexp_apply
-               ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
-               [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
-         | Ast.ExId (lloc,Ast.IdLid (_,lab)) ->
-             Pexp_setinstvar ((with_loc lab lloc), (expr v))
-         | ExSte (loc,e1,e2) ->
-             Pexp_apply
-               ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
-               [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
-         | _ -> error loc "bad left part of assignment") in
+        match e with
+        | Ast.ExAcc (loc,x,Ast.ExId (_,Ast.IdLid (_,"contents"))) ->
+            Pexp_apply ((mkexp loc (Pexp_ident (lident_with_loc ":=" loc))),
+              [("", (expr x)); ("", (expr v))])
+        | ExAcc (loc,_,_) ->
+            (match (expr e).pexp_desc with
+             | Pexp_field (e,lab) -> Pexp_setfield (e, lab, (expr v))
+             | _ -> error loc "bad record access")
+        | ExAre (loc,e1,e2) ->
+            Pexp_apply
+              ((mkexp loc (Pexp_ident (array_function loc "Array" "set"))),
+              [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
+        | Ast.ExId (lloc,Ast.IdLid (_,lab)) ->
+            Pexp_setinstvar ((with_loc lab lloc), (expr v))
+        | ExSte (loc,e1,e2) ->
+            Pexp_apply
+              ((mkexp loc (Pexp_ident (array_function loc "String" "set"))),
+              [("", (expr e1)); ("", (expr e2)); ("", (expr v))])
+        | _ -> error loc "bad left part of assignment" in
       mkexp loc e
   | ExAsr (loc,e) -> mkexp loc (Pexp_assert (expr e))
   | ExChr (loc,s) ->
       mkexp loc (Pexp_constant (Const_char (char_of_char_token loc s)))
   | ExCoe (loc,e,t1,t2) ->
-      let t1 = (match t1 with | Ast.TyNil _ -> None | t -> Some (ctyp t)) in
+      let t1 = match t1 with | Ast.TyNil _ -> None | t -> Some (ctyp t) in
       mkexp loc (Pexp_constraint ((expr e), t1, (Some (ctyp t2))))
   | ExFlo (loc,s) ->
       mkexp loc (Pexp_constant (Const_float (remove_underscores s)))
@@ -573,35 +566,35 @@ let rec expr =
       mkexp loc (Pexp_ifthenelse ((expr e1), (expr e2), (Some (expr e3))))
   | ExInt (loc,s) ->
       let i =
-        (try int_of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int") in
+        try int_of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int" in
       mkexp loc (Pexp_constant (Const_int i))
   | ExInt32 (loc,s) ->
       let i32 =
-        (try Int32.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int32") in
+        try Int32.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int32" in
       mkexp loc (Pexp_constant (Const_int32 i32))
   | ExInt64 (loc,s) ->
       let i64 =
-        (try Int64.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type int64") in
+        try Int64.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type int64" in
       mkexp loc (Pexp_constant (Const_int64 i64))
   | ExNativeInt (loc,s) ->
       let nati =
-        (try Nativeint.of_string s
-         with
-         | Failure _ ->
-             error loc
-               "Integer literal exceeds the range of representable integers of type nativeint") in
+        try Nativeint.of_string s
+        with
+        | Failure _ ->
+            error loc
+              "Integer literal exceeds the range of representable integers of type nativeint" in
       mkexp loc (Pexp_constant (Const_nativeint nati))
   | ExLab (loc,_,_) -> error loc "labeled expression not allowed here"
   | ExLaz (loc,e) -> mkexp loc (Pexp_lazy (expr e))
@@ -613,7 +606,7 @@ let rec expr =
   | ExMat (loc,e,a) -> mkexp loc (Pexp_match ((expr e), (match_case a [])))
   | ExNew (loc,id) -> mkexp loc (Pexp_new (long_type_ident id))
   | ExObj (loc,po,cfl) ->
-      let p = (match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p) in
+      let p = match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p in
       let cil = class_str_item cfl [] in
       mkexp loc (Pexp_object {pcstr_pat = (patt p); pcstr_fields = cil })
   | ExOlb (loc,_,_) -> error loc "labeled expression not allowed here"
@@ -623,16 +616,16 @@ let rec expr =
        | Ast.RbNil _ -> error loc "empty record"
        | _ ->
            let eo =
-             (match eo with | Ast.ExNil _ -> None | e -> Some (expr e)) in
+             match eo with | Ast.ExNil _ -> None | e -> Some (expr e) in
            mkexp loc (Pexp_record ((mklabexp lel []), eo)))
   | ExSeq (_loc,e) ->
       let rec loop =
-        (function
-         | [] -> expr (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))
-         | e::[] -> expr e
-         | e::el ->
-             let _loc = FanLoc.merge (loc_of_expr e) _loc in
-             mkexp _loc (Pexp_sequence ((expr e), (loop el)))) in
+        function
+        | [] -> expr (Ast.ExId (_loc, (Ast.IdUid (_loc, "()"))))
+        | e::[] -> expr e
+        | e::el ->
+            let _loc = FanLoc.merge (loc_of_expr e) _loc in
+            mkexp _loc (Pexp_sequence ((expr e), (loop el))) in
       loop (list_of_expr e [])
   | ExSnd (loc,e,s) -> mkexp loc (Pexp_send ((expr e), s))
   | ExSte (loc,e1,e2) ->
@@ -690,22 +683,22 @@ let rec expr =
        (_,e,TyTypePol (_,vs,ty)))
       ->
       let rec id_to_string x =
-        (match x with
-         | Ast.TyId (_,Ast.IdLid (_,x)) -> [x]
-         | Ast.TyApp (_,x,y) -> (id_to_string x) @ (id_to_string y)
-         | _ -> assert false) in
+        match x with
+        | Ast.TyId (_,Ast.IdLid (_,x)) -> [x]
+        | Ast.TyApp (_,x,y) -> (id_to_string x) @ (id_to_string y)
+        | _ -> assert false in
       let vars = id_to_string vs in
-      let ampersand_vars = List.map ((fun x -> "&" ^ x)) vars in
+      let ampersand_vars = List.map (fun x -> "&" ^ x) vars in
       let ty' = varify_constructors vars (ctyp ty) in
       let mkexp = mkexp _loc in
       let mkpat = mkpat _loc in
       let e = mkexp (Pexp_constraint ((expr e), (Some (ctyp ty)), None)) in
       let rec mk_newtypes x =
-        (match x with
-         | newtype::[] -> mkexp (Pexp_newtype (newtype, e))
-         | newtype::newtypes ->
-             mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes)))
-         | [] -> assert false) in
+        match x with
+        | newtype::[] -> mkexp (Pexp_newtype (newtype, e))
+        | newtype::newtypes ->
+            mkexp (Pexp_newtype (newtype, (mk_newtypes newtypes)))
+        | [] -> assert false in
       let pat =
         mkpat
           (Ppat_constraint ((mkpat (Ppat_var (with_loc bind_name sloc))),
@@ -740,9 +733,9 @@ let rec expr =
   | Ast.TyDcl (cloc,c,tl,td,cl) ->
       let cl =
         List.map
-          ((fun (t1,t2) ->
-              let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
-              ((ctyp t1), (ctyp t2), loc))) cl in
+          (fun (t1,t2) ->
+             let loc = FanLoc.merge (loc_of_ctyp t1) (loc_of_ctyp t2) in
+             ((ctyp t1), (ctyp t2), loc)) cl in
       ((with_loc c cloc),
         (type_decl (List.fold_right optional_type_parameters tl []) cl td
            cloc))
@@ -794,9 +787,9 @@ let rec expr =
       (mksig loc (Psig_recmodule (module_sig_binding mb []))) :: l
   | SgMty (loc,n,mt) ->
       let si =
-        (match mt with
-         | MtQuo (_,_) -> Pmodtype_abstract
-         | _ -> Pmodtype_manifest (module_type mt)) in
+        match mt with
+        | MtQuo (_,_) -> Pmodtype_abstract
+        | _ -> Pmodtype_manifest (module_type mt) in
       (mksig loc (Psig_modtype ((with_loc n loc), si))) :: l
   | SgOpn (loc,id) -> (mksig loc (Psig_open (long_uident id))) :: l
   | SgTyp (loc,tdl) -> (mksig loc (Psig_type (mktype_decl tdl []))) :: l
@@ -892,7 +885,7 @@ let rec expr =
       mkcty loc (Pcty_fun (("?" ^ lab), (ctyp t), (class_type ct)))
   | CtFun (loc,t,ct) -> mkcty loc (Pcty_fun ("", (ctyp t), (class_type ct)))
   | CtSig (loc,t_o,ctfl) ->
-      let t = (match t_o with | Ast.TyNil _ -> Ast.TyAny loc | t -> t) in
+      let t = match t_o with | Ast.TyNil _ -> Ast.TyAny loc | t -> t in
       let cil = class_sig_item ctfl [] in
       mkcty loc
         (Pcty_signature
@@ -904,9 +897,9 @@ let rec expr =
   match ci with
   | CeEq (_,CeCon (loc,vir,IdLid (nloc,name),params),ce) ->
       let (loc_params,(params,variance)) =
-        (match params with
-         | Ast.TyNil _ -> (loc, ([], []))
-         | t -> ((loc_of_ctyp t), (List.split (class_parameters t [])))) in
+        match params with
+        | Ast.TyNil _ -> (loc, ([], []))
+        | t -> ((loc_of_ctyp t), (List.split (class_parameters t []))) in
       {pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
         pci_name = (with_loc name nloc);
@@ -920,9 +913,9 @@ let rec expr =
   | CtEq (_,CtCon (loc,vir,IdLid (nloc,name),params),ct)|CtCol
       (_,CtCon (loc,vir,IdLid (nloc,name),params),ct) ->
       let (loc_params,(params,variance)) =
-        (match params with
-         | Ast.TyNil _ -> (loc, ([], []))
-         | t -> ((loc_of_ctyp t), (List.split (class_parameters t [])))) in
+        match params with
+        | Ast.TyNil _ -> (loc, ([], []))
+        | t -> ((loc_of_ctyp t), (List.split (class_parameters t []))) in
       {pci_virt = (mkvirtual vir);
         pci_params = (params, loc_params);
         pci_name = (with_loc name nloc);
@@ -972,7 +965,7 @@ let rec expr =
   | CeLet (loc,rf,bi,ce) ->
       mkcl loc (Pcl_let ((mkrf rf), (binding bi []), (class_expr ce)))
   | CeStr (loc,po,cfl) ->
-      let p = (match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p) in
+      let p = match po with | Ast.PaNil _ -> Ast.PaAny loc | p -> p in
       let cil = class_str_item cfl [] in
       mkcl loc (Pcl_structure {pcstr_pat = (patt p); pcstr_fields = cil })
   | CeTyc (loc,ce,ct) ->
@@ -992,7 +985,7 @@ let rec expr =
   | CrIni (loc,e) -> (mkcf loc (Pcf_init (expr e))) :: l
   | CrMth (loc,s,ov,pf,e,t) ->
       let t =
-        (match t with | Ast.TyNil _ -> None | t -> Some (mkpolytype (ctyp t))) in
+        match t with | Ast.TyNil _ -> None | t -> Some (mkpolytype (ctyp t)) in
       let e = mkexp loc (Pexp_poly ((expr e), t)) in
       (mkcf loc
          (Pcf_meth ((with_loc s loc), (mkprivate pf), (override_flag loc ov),

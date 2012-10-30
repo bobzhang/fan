@@ -7,7 +7,7 @@ let rec flatten_tree =
   | DeadEnd  -> []
   | LocAct (_,_) -> [[]]
   | Node {node = n;brother = b;son = s} ->
-      (List.map ((fun l -> n :: l)) (flatten_tree s)) @ (flatten_tree b)
+      (List.map (fun l -> n :: l) (flatten_tree s)) @ (flatten_tree b)
 class text_grammar =
   object (self : 'self)
     method tree ppf t = self#level ppf Format.pp_print_space (flatten_tree t)
@@ -26,9 +26,7 @@ class text_grammar =
       | `Snterm _|`Snext|`Sself|`Stree _|`Stoken _|`Skeyword _ as s ->
           self#symbol1 ppf s
     method description ppf =
-      function
-      | `Normal -> ()
-      | `Antiquot -> fprintf ppf "$"
+      function | `Normal -> () | `Antiquot -> fprintf ppf "$"
     method symbol1 ppf =
       function
       | `Snterm e -> pp_print_string ppf e.ename
@@ -47,8 +45,8 @@ class text_grammar =
         | [] -> ()
         | s::sl ->
             let j =
-              (try String.index_from n i ' '
-               with | Not_found  -> String.length n) in
+              try String.index_from n i ' '
+              with | Not_found  -> String.length n in
             (fprintf ppf "%s %a" (String.sub n i (j - i)) self#symbol1 s;
              if sl = []
              then ()
@@ -57,19 +55,19 @@ class text_grammar =
     method rule ppf symbols =
       fprintf ppf "@[<hov 0>";
       List.fold_left
-        ((fun sep ->
-            fun symbol ->
-              fprintf ppf "%t%a" sep self#symbol symbol;
-              (fun ppf -> fprintf ppf ";@ "))) ((fun _ -> ())) symbols ppf;
+        (fun sep ->
+           fun symbol ->
+             fprintf ppf "%t%a" sep self#symbol symbol;
+             (fun ppf -> fprintf ppf ";@ ")) (fun _ -> ()) symbols ppf;
       fprintf ppf "@]"
     method level ppf space rules =
       fprintf ppf "@[<hov 0>[ ";
       List.fold_left
-        ((fun sep ->
-            fun rule ->
-              fprintf ppf "%t%a" sep self#rule rule;
-              (fun ppf -> fprintf ppf "%a| " space ()))) ((fun _ -> ()))
-        rules ppf;
+        (fun sep ->
+           fun rule ->
+             fprintf ppf "%t%a" sep self#rule rule;
+             (fun ppf -> fprintf ppf "%a| " space ())) (fun _ -> ()) rules
+        ppf;
       fprintf ppf " ]@]"
     method assoc ppf =
       function
@@ -115,15 +113,15 @@ class dump_grammar =
         then fprintf ppf "@ []"
         else
           List.iter
-            ((fun (Bro (n,xs)) ->
-                fprintf ppf "@ @[<hv2>- %a" self#symbol n;
-                (match xs with
-                 | [] -> ()
-                 | _::[] ->
-                     (try print_children ppf (get_children [] xs)
-                      with | Exit  -> fprintf ppf ":%a" print_brothers xs)
-                 | _ -> fprintf ppf ":%a" print_brothers xs);
-                fprintf ppf "@]")) brothers
+            (fun (Bro (n,xs)) ->
+               fprintf ppf "@ @[<hv2>- %a" self#symbol n;
+               (match xs with
+                | [] -> ()
+                | _::[] ->
+                    (try print_children ppf (get_children [] xs)
+                     with | Exit  -> fprintf ppf ":%a" print_brothers xs)
+                | _ -> fprintf ppf ":%a" print_brothers xs);
+               fprintf ppf "@]") brothers
         and print_children ppf = List.iter (fprintf ppf ";@ %a" self#symbol)
         and get_children acc =
         function

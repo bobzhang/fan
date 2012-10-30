@@ -21,8 +21,8 @@ let sfold0sep f e entry symbl psymb psep =
     match try Some (psep __strm) with | Stream.Failure  -> None with
     | Some () ->
         let a =
-          (try psymb __strm
-           with | Stream.Failure  -> raise (Stream.Error (failed symbl))) in
+          try psymb __strm
+          with | Stream.Failure  -> raise (Stream.Error (failed symbl)) in
         kont (f a accu) __strm
     | _ -> accu in
   fun (__strm : _ Stream.t ) ->

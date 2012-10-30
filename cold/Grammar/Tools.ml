@@ -8,17 +8,17 @@ let keep_prev_loc strm =
   | Some (_tok0,init_loc) ->
       let rec go prev_loc strm1 =
         let (__strm : _ Stream.t ) = strm1 in
-        (match Stream.peek __strm with
-         | Some (tok,cur_loc) ->
-             (Stream.junk __strm;
-              let strm = __strm in
-              Stream.lcons
-                ((fun _ -> (tok,
-                    {prev_loc = prev_loc;
-                      cur_loc = cur_loc;
-                      prev_loc_only = false
-                    }))) (Stream.slazy ((fun _ -> go cur_loc strm))))
-         | _ -> Stream.sempty) in
+        match Stream.peek __strm with
+        | Some (tok,cur_loc) ->
+            (Stream.junk __strm;
+             let strm = __strm in
+             Stream.lcons
+               (fun _ -> (tok,
+                  {prev_loc = prev_loc;
+                    cur_loc = cur_loc;
+                    prev_loc_only = false
+                  })) (Stream.slazy (fun _ -> go cur_loc strm)))
+        | _ -> Stream.sempty in
       go init_loc strm
 let drop_prev_loc strm = Stream.map (fun (tok,r) -> (tok, (r.cur_loc))) strm
 let get_cur_loc strm =
@@ -34,9 +34,7 @@ let get_prev_loc strm =
     | None  -> FanLoc.ghost in
   result
 let is_level_labelled n =
-  function
-  | {lname = Some n1;_} -> n = n1
-  | _ -> false
+  function | {lname = Some n1;_} -> n = n1 | _ -> false
 let warning_verbose = ref true
 let rec get_token_list entry tokl last_tok =
   function

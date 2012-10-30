@@ -79,8 +79,8 @@ let string ?strict  s =
     | Some '\\' ->
         (Stream.junk __strm;
          let _ =
-           (try backslash_in_string (strict <> None) store __strm
-            with | Stream.Failure  -> raise (Stream.Error "")) in
+           try backslash_in_string (strict <> None) store __strm
+           with | Stream.Failure  -> raise (Stream.Error "") in
          parse __strm)
     | Some c -> (Stream.junk __strm; let s = __strm in (store c; parse s))
     | _ -> Buffer.contents buf in

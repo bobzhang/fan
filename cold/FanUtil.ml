@@ -182,13 +182,13 @@ module Options :
         else (r := (float_of_string s); Some sl)
     | Arg.Tuple specs ->
         let rec action_args s sl =
-          (function
-           | [] -> Some sl
-           | spec::spec_list ->
-               (match action_arg s sl spec with
-                | None  -> action_args "" [] spec_list
-                | Some (s::sl) -> action_args s sl spec_list
-                | Some sl -> action_args "" sl spec_list)) in
+          function
+          | [] -> Some sl
+          | spec::spec_list ->
+              (match action_arg s sl spec with
+               | None  -> action_args "" [] spec_list
+               | Some (s::sl) -> action_args s sl spec_list
+               | Some sl -> action_args "" sl spec_list) in
         action_args s sl specs
     | Arg.Symbol (syms,f) ->
         (match if s = "" then sl else s :: sl with
@@ -263,8 +263,7 @@ module Options :
     match l with
     | [] -> "<none>"
     | h::t ->
-        (List.fold_left ((fun x -> fun y -> x ^ ("|" ^ y))) ("{" ^ h) t) ^
-          "}"
+        (List.fold_left (fun x -> fun y -> x ^ ("|" ^ y)) ("{" ^ h) t) ^ "}"
   let print_usage_list l =
     List.iter
       (fun (key,spec,doc) ->

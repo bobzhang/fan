@@ -54,9 +54,7 @@ let ident_of_ctyp =
     | Ast.TyId (_,Ast.IdLid (_,_)) -> error ()
     | Ast.TyId (_,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function
-  | Ast.TyId (_,i) -> i
-  | t -> self t
+  function | Ast.TyId (_,i) -> i | t -> self t
 let ident_of_patt =
   let error () =
     invalid_arg "ident_of_patt: this pattern is not an identifier" in
@@ -66,9 +64,7 @@ let ident_of_patt =
     | Ast.PaId (_,Ast.IdLid (_,_)) -> error ()
     | Ast.PaId (_,i) -> if is_module_longident i then i else error ()
     | _ -> error () in
-  function
-  | Ast.PaId (_,i) -> i
-  | p -> self p
+  function | Ast.PaId (_,i) -> i | p -> self p
 let rec is_irrefut_patt =
   function
   | Ast.PaId (_,Ast.IdLid (_,_)) -> true
@@ -1036,11 +1032,11 @@ module Meta =
                     (meta_list meta_ctyp _loc x2))),
                  (meta_ctyp _loc x3))),
               (meta_list
-                 ((fun _loc ->
-                     fun (x1,x2) ->
-                       Ast.ExTup (_loc,
-                         (Ast.ExCom (_loc, (meta_ctyp _loc x1),
-                            (meta_ctyp _loc x2)))))) _loc x4))
+                 (fun _loc ->
+                    fun (x1,x2) ->
+                      Ast.ExTup (_loc,
+                        (Ast.ExCom (_loc, (meta_ctyp _loc x1),
+                           (meta_ctyp _loc x2))))) _loc x4))
         | Ast.TyMan (x0,x1,x2) ->
             Ast.ExApp (_loc,
               (Ast.ExApp (_loc,
@@ -3120,11 +3116,11 @@ module Meta =
                     (meta_list meta_ctyp _loc x2))),
                  (meta_ctyp _loc x3))),
               (meta_list
-                 ((fun _loc ->
-                     fun (x1,x2) ->
-                       Ast.PaTup (_loc,
-                         (Ast.PaCom (_loc, (meta_ctyp _loc x1),
-                            (meta_ctyp _loc x2)))))) _loc x4))
+                 (fun _loc ->
+                    fun (x1,x2) ->
+                      Ast.PaTup (_loc,
+                        (Ast.PaCom (_loc, (meta_ctyp _loc x1),
+                           (meta_ctyp _loc x2))))) _loc x4))
         | Ast.TyMan (x0,x1,x2) ->
             Ast.PaApp (_loc,
               (Ast.PaApp (_loc,
@@ -4611,7 +4607,7 @@ class map =
       | StExc (_x,_x_i1,_x_i2) ->
           let _x = o#loc _x in
           let _x_i1 = o#ctyp _x_i1 in
-          let _x_i2 = o#meta_option ((fun o -> o#ident)) _x_i2 in
+          let _x_i2 = o#meta_option (fun o -> o#ident) _x_i2 in
           StExc (_x, _x_i1, _x_i2)
       | StExp (_x,_x_i1) ->
           let _x = o#loc _x in let _x_i1 = o#expr _x_i1 in StExp (_x, _x_i1)
@@ -4619,7 +4615,7 @@ class map =
           let _x = o#loc _x in
           let _x_i1 = o#string _x_i1 in
           let _x_i2 = o#ctyp _x_i2 in
-          let _x_i3 = o#meta_list ((fun o -> o#string)) _x_i3 in
+          let _x_i3 = o#meta_list (fun o -> o#string) _x_i3 in
           StExt (_x, _x_i1, _x_i2, _x_i3)
       | StInc (_x,_x_i1) ->
           let _x = o#loc _x in
@@ -4669,7 +4665,7 @@ class map =
           let _x = o#loc _x in
           let _x_i1 = o#string _x_i1 in
           let _x_i2 = o#ctyp _x_i2 in
-          let _x_i3 = o#meta_list ((fun o -> o#string)) _x_i3 in
+          let _x_i3 = o#meta_list (fun o -> o#string) _x_i3 in
           SgExt (_x, _x_i1, _x_i2, _x_i3)
       | SgInc (_x,_x_i1) ->
           let _x = o#loc _x in
@@ -5146,14 +5142,14 @@ class map =
       | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
           let _x = o#loc _x in
           let _x_i1 = o#string _x_i1 in
-          let _x_i2 = o#list ((fun o -> o#ctyp)) _x_i2 in
+          let _x_i2 = o#list (fun o -> o#ctyp) _x_i2 in
           let _x_i3 = o#ctyp _x_i3 in
           let _x_i4 =
             o#list
-              ((fun o ->
-                  fun (_x,_x_i1) ->
-                    let _x = o#ctyp _x in
-                    let _x_i1 = o#ctyp _x_i1 in (_x, _x_i1))) _x_i4 in
+              (fun o ->
+                 fun (_x,_x_i1) ->
+                   let _x = o#ctyp _x in
+                   let _x_i1 = o#ctyp _x_i1 in (_x, _x_i1)) _x_i4 in
           TyDcl (_x, _x_i1, _x_i2, _x_i3, _x_i4)
       | TyObj (_x,_x_i1,_x_i2) ->
           let _x = o#loc _x in
@@ -5464,13 +5460,13 @@ class fold =
       | StExc (_x,_x_i1,_x_i2) ->
           let o = o#loc _x in
           let o = o#ctyp _x_i1 in
-          let o = o#meta_option ((fun o -> o#ident)) _x_i2 in o
+          let o = o#meta_option (fun o -> o#ident) _x_i2 in o
       | StExp (_x,_x_i1) -> let o = o#loc _x in let o = o#expr _x_i1 in o
       | StExt (_x,_x_i1,_x_i2,_x_i3) ->
           let o = o#loc _x in
           let o = o#string _x_i1 in
           let o = o#ctyp _x_i2 in
-          let o = o#meta_list ((fun o -> o#string)) _x_i3 in o
+          let o = o#meta_list (fun o -> o#string) _x_i3 in o
       | StInc (_x,_x_i1) ->
           let o = o#loc _x in let o = o#module_expr _x_i1 in o
       | StMod (_x,_x_i1,_x_i2) ->
@@ -5505,7 +5501,7 @@ class fold =
           let o = o#loc _x in
           let o = o#string _x_i1 in
           let o = o#ctyp _x_i2 in
-          let o = o#meta_list ((fun o -> o#string)) _x_i3 in o
+          let o = o#meta_list (fun o -> o#string) _x_i3 in o
       | SgInc (_x,_x_i1) ->
           let o = o#loc _x in let o = o#module_type _x_i1 in o
       | SgMod (_x,_x_i1,_x_i2) ->
@@ -5835,13 +5831,13 @@ class fold =
       | TyDcl (_x,_x_i1,_x_i2,_x_i3,_x_i4) ->
           let o = o#loc _x in
           let o = o#string _x_i1 in
-          let o = o#list ((fun o -> o#ctyp)) _x_i2 in
+          let o = o#list (fun o -> o#ctyp) _x_i2 in
           let o = o#ctyp _x_i3 in
           let o =
             o#list
-              ((fun o ->
-                  fun (_x,_x_i1) ->
-                    let o = o#ctyp _x in let o = o#ctyp _x_i1 in o)) _x_i4 in
+              (fun o ->
+                 fun (_x,_x_i1) ->
+                   let o = o#ctyp _x in let o = o#ctyp _x_i1 in o) _x_i4 in
           o
       | TyObj (_x,_x_i1,_x_i2) ->
           let o = o#loc _x in

@@ -57,14 +57,14 @@ let rec infix_kwds_filter (__strm : _ Stream.t ) =
               | Some (`KEYWORD ")",_) ->
                   (Stream.junk __strm;
                    let xs = __strm in
-                   Stream.lcons ((fun _ -> ((`LIDENT i), _loc)))
-                     (Stream.slazy ((fun _ -> infix_kwds_filter xs))))
+                   Stream.lcons (fun _ -> ((`LIDENT i), _loc))
+                     (Stream.slazy (fun _ -> infix_kwds_filter xs)))
               | _ -> raise (Stream.Error "")))
         | _ ->
             let xs = __strm in
-            Stream.icons tok (Stream.slazy ((fun _ -> infix_kwds_filter xs)))))
+            Stream.icons tok (Stream.slazy (fun _ -> infix_kwds_filter xs))))
   | Some x ->
       (Stream.junk __strm;
        let xs = __strm in
-       Stream.icons x (Stream.slazy ((fun _ -> infix_kwds_filter xs))))
+       Stream.icons x (Stream.slazy (fun _ -> infix_kwds_filter xs)))
   | _ -> raise Stream.Failure

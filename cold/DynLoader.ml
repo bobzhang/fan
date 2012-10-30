@@ -36,12 +36,12 @@ module Make(U:sig  end) : S = struct
     else
       let res =
         fold_load_path x
-          ((fun dir ->
-              function
-              | None  ->
-                  let fullname = Filename.concat dir name in
-                  if Sys.file_exists fullname then Some fullname else None
-              | x -> x)) None in
+          (fun dir ->
+             function
+             | None  ->
+                 let fullname = Filename.concat dir name in
+                 if Sys.file_exists fullname then Some fullname else None
+             | x -> x) None in
       (match res with | None  -> raise Not_found | Some x -> x)
   let load =
     let _initialized = ref false in
@@ -60,9 +60,8 @@ module Make(U:sig  end) : S = struct
                     (Dynlink.error_message e))))
         else ();
         let fname =
-          (try find_in_path _path file
-           with
-           | Not_found  -> raise (Error (file, "file not found in path"))) in
+          try find_in_path _path file
+          with | Not_found  -> raise (Error (file, "file not found in path")) in
         (try Dynlink.loadfile fname
          with
          | Dynlink.Error e ->

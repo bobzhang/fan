@@ -264,3 +264,28 @@ let z = []
 let x = x::ys
 let z =(x,ys)
                
+let conv_con =
+  let t = Hashtbl.create 73 in
+  List.iter (fun (s,s') -> Hashtbl.add t s s')
+    [("True", "true");
+     ("False", "false");
+     (" True", "True");
+     (" False", "False")];
+  (fun s -> try Hashtbl.find t s with | Not_found  -> s)
+
+let f =
+   List.iter (fun x -> x) [ ];
+  (fun s -> x)
+let t ()=
+  (let a = List.iter
+      (function Some x -> x | None -> y| A->3|B->4) 3  in
+  ()); 3
+
+let t ()= begin
+  let a = List.iter (function Some x -> x | None -> y| A->3|B->4| C->5|D->6) 3  in  (); 3
+end
+    
+let g () = begin 
+  List.iter (function Some x -> x | None -> y) 3  ;
+  3
+end

@@ -1,8 +1,6 @@
 open Structure
 open Format
-let name_of_descr = function
-                    | (`Antiquot,s) -> "$" ^ s
-                    | (_,s) -> s
+let name_of_descr = function | (`Antiquot,s) -> "$" ^ s | (_,s) -> s
 let name_of_symbol entry =
   function
   | `Snterm e -> "[" ^ (e.ename ^ "]")
@@ -20,31 +18,31 @@ let rec name_of_symbol_failed entry =
   function
   | Node {node = s;brother = bro;son = son} ->
       let tokl =
-        (match s with
-         | `Stoken _|`Skeyword _ -> Tools.get_token_list entry [] s son
-         | _ -> None) in
+        match s with
+        | `Stoken _|`Skeyword _ -> Tools.get_token_list entry [] s son
+        | _ -> None in
       (match tokl with
        | None  ->
            let txt = name_of_symbol_failed entry s in
            let txt =
-             (match (s, son) with
-              | (`Sopt _,Node _) ->
-                  txt ^ (" or " ^ (name_of_tree_failed entry son))
-              | _ -> txt) in
+             match (s, son) with
+             | (`Sopt _,Node _) ->
+                 txt ^ (" or " ^ (name_of_tree_failed entry son))
+             | _ -> txt in
            let txt =
-             (match bro with
-              | DeadEnd |LocAct (_,_) -> txt
-              | Node _ -> txt ^ (" or " ^ (name_of_tree_failed entry bro))) in
+             match bro with
+             | DeadEnd |LocAct (_,_) -> txt
+             | Node _ -> txt ^ (" or " ^ (name_of_tree_failed entry bro)) in
            txt
        | Some (tokl,_,_) ->
            List.fold_left
-             ((fun s ->
-                 fun tok ->
-                   (if s = "" then "" else s ^ " then ") ^
-                     (match tok with
-                      | `Stoken (_,descr) -> name_of_descr descr
-                      | `Skeyword kwd -> kwd
-                      | _ -> assert false))) "" tokl)
+             (fun s ->
+                fun tok ->
+                  (if s = "" then "" else s ^ " then ") ^
+                    (match tok with
+                     | `Stoken (_,descr) -> name_of_descr descr
+                     | `Skeyword kwd -> kwd
+                     | _ -> assert false)) "" tokl)
   | DeadEnd |LocAct (_,_) -> "???"
 let magic _s x = Obj.magic x
 let tree_failed entry prev_symb_result prev_symb tree =

@@ -26,7 +26,7 @@ let toplevel_phrase token_stream =
   | Some str_item ->
       let str_item =
         Syntax.AstFilters.fold_topphrase_filters
-          ((fun t -> fun filter -> filter t)) str_item in
+          (fun t -> fun filter -> filter t) str_item in
       Ast2pt.phrase str_item
   | None  -> raise End_of_file
 let use_file token_stream =
@@ -59,11 +59,10 @@ let _=
   Toploop.parse_toplevel_phrase := revise_parser;
   Toploop.parse_use_file := (wrap use_file);
   Syntax.current_warning :=
-    ((fun loc ->
-        fun txt ->
-          Toploop.print_warning loc Format.err_formatter
-            (Warnings.Camlp4 txt)));
-  iter_and_take_callbacks ((fun (_,f) -> f ()))
+    (fun loc ->
+       fun txt ->
+         Toploop.print_warning loc Format.err_formatter (Warnings.Camlp4 txt));
+  iter_and_take_callbacks (fun (_,f) -> f ())
 let _=
   let open FanParsers in
     pa_r (module P);

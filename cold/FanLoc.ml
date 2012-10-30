@@ -84,11 +84,11 @@ let merge a b =
   then a
   else
     let r =
-      (match ((a.loc_ghost), (b.loc_ghost)) with
-       | (false ,false ) -> {a with loc_end = (b.loc_end) }
-       | (true ,true ) -> {a with loc_end = (b.loc_end) }
-       | (true ,_) -> {a with loc_end = (b.loc_end) }
-       | (_,true ) -> {b with loc_start = (a.loc_start) }) in
+      match ((a.loc_ghost), (b.loc_ghost)) with
+      | (false ,false ) -> {a with loc_end = (b.loc_end) }
+      | (true ,true ) -> {a with loc_end = (b.loc_end) }
+      | (true ,_) -> {a with loc_end = (b.loc_end) }
+      | (_,true ) -> {b with loc_start = (a.loc_start) } in
     r
 let join x = {x with loc_end = (x.loc_start) }
 let map f start_stop_both x =

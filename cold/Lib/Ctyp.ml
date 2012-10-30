@@ -1,7 +1,5 @@
 open Camlp4Ast
-let rec fa al = function
-                | Ast.TyApp (_,f,a) -> fa (a :: al) f
-                | f -> (f, al)
+let rec fa al = function | Ast.TyApp (_,f,a) -> fa (a :: al) f | f -> (f, al)
 let rec to_var_list =
   function
   | Ast.TyApp (_,t1,t2) -> (to_var_list t1) @ (to_var_list t2)

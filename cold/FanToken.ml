@@ -18,9 +18,7 @@ let print_basic_error ppf =
 let string_of_error_msg = to_string_of_printer print_basic_error
 let _=
   Printexc.register_printer
-    (function
-     | TokenError e -> Some (string_of_error_msg e)
-     | _ -> None)
+    (function | TokenError e -> Some (string_of_error_msg e) | _ -> None)
 let to_string =
   function
   | `KEYWORD s -> sprintf "`KEYWORD %S" s
@@ -63,13 +61,11 @@ let rec ignore_layout (__strm : _ Stream.t ) =
   | Some x ->
       (Stream.junk __strm;
        let s = __strm in
-       Stream.icons x (Stream.slazy ((fun _ -> ignore_layout s))))
+       Stream.icons x (Stream.slazy (fun _ -> ignore_layout s)))
   | _ -> Stream.sempty
 let print ppf x = pp_print_string ppf (token_to_string x)
 let match_keyword kwd =
-  function
-  | `KEYWORD kwd' when kwd = kwd' -> true
-  | _ -> false
+  function | `KEYWORD kwd' when kwd = kwd' -> true | _ -> false
 let extract_string =
   function
   | `KEYWORD s|`SYMBOL s|`LIDENT s|`UIDENT s|`INT (_,s)|`INT32 (_,s)|

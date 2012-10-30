@@ -91,8 +91,7 @@ module Stream = struct
       match Stream.peek __strm with
       | Some x ->
           (Stream.junk __strm;
-           let xs = __strm in
-           Stream.lapp ((fun _ -> aux xs)) (Stream.ising x))
+           let xs = __strm in Stream.lapp (fun _ -> aux xs) (Stream.ising x))
       | _ -> Stream.sempty in
     aux strm
   let tail (__strm : _ Stream.t ) =
@@ -104,7 +103,7 @@ module Stream = struct
     | Some x ->
         (Stream.junk __strm;
          let xs = __strm in
-         Stream.lcons ((fun _ -> f x)) (Stream.slazy ((fun _ -> map f xs))))
+         Stream.lcons (fun _ -> f x) (Stream.slazy (fun _ -> map f xs)))
     | _ -> Stream.sempty
   end
 module ErrorMonad = struct
@@ -114,9 +113,7 @@ module ErrorMonad = struct
   let fail x = Right x
   let (>>=) ma f = match ma with | Left v -> f v | Right x -> Right x
   let bind = (>>=)
-  let map f = function
-              | Left v -> Left (f v)
-              | Right s -> Right s
+  let map f = function | Left v -> Left (f v) | Right s -> Right s
   let (>>|) ma (str,f) =
     match ma with | Left v -> f v | Right x -> Right (x ^ str)
   let (>>?) ma str =
@@ -131,6 +128,6 @@ module ErrorMonad = struct
       | [] -> return []
       | x::xs ->
           (f x acc) >>=
-            ((fun x -> (aux (acc + 1) xs) >>= (fun xs -> return (x :: xs)))) in
+            (fun x -> (aux (acc + 1) xs) >>= (fun xs -> return (x :: xs))) in
     aux 0 xs
   end

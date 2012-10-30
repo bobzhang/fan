@@ -65,19 +65,19 @@ let check_use nl el =
     while modif.contents do
       modif := false;
       Hashtbl.iter
-        ((fun _ ->
-            fun (r,e) ->
-              if r.contents = UsedNotScanned
-              then
-                (r := UsedScanned;
-                 List.iter
-                   ((fun level ->
-                       let rules = level.rules in
-                       List.iter
-                         (fun rule ->
-                            List.iter (fun s -> mark_symbol modif tbl s)
-                              rule.prod) rules)) e.levels)
-              else ())) tbl
+        (fun _ ->
+           fun (r,e) ->
+             if r.contents = UsedNotScanned
+             then
+               (r := UsedScanned;
+                List.iter
+                  (fun level ->
+                     let rules = level.rules in
+                     List.iter
+                       (fun rule ->
+                          List.iter (fun s -> mark_symbol modif tbl s)
+                            rule.prod) rules) e.levels)
+             else ()) tbl
       done in
   Hashtbl.iter
     (fun s ->
@@ -261,13 +261,13 @@ let rec make_expr entry tvar =
   | TXmeta (_loc,n,tl,e,t) ->
       let el =
         List.fold_right
-          ((fun t ->
-              fun el ->
-                Ast.ExApp (_loc,
-                  (Ast.ExApp (_loc,
-                     (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
-                     (make_expr entry "" t))),
-                  el))) tl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
+          (fun t ->
+             fun el ->
+               Ast.ExApp (_loc,
+                 (Ast.ExApp (_loc,
+                    (Ast.ExId (_loc, (Ast.IdUid (_loc, "::")))),
+                    (make_expr entry "" t))),
+                 el)) tl (Ast.ExId (_loc, (Ast.IdUid (_loc, "[]")))) in
       Ast.ExApp (_loc,
         (Ast.ExApp (_loc,
            (Ast.ExApp (_loc,
@@ -428,31 +428,31 @@ let let_in_of_extend _loc gram gl el default =
        let ll =
          let same_tvar e n = (e.name).tvar = n.tvar in
          List.fold_right
-           ((fun e ->
-               fun ll ->
-                 match (e.name).expr with
-                 | Ast.ExId (_,Ast.IdLid (_,_)) ->
-                     if List.exists (same_tvar e) nl
-                     then ll
-                     else
-                       if List.exists (same_tvar e) ll
-                       then ll
-                       else (e.name) :: ll
-                 | _ -> ll)) el [] in
+           (fun e ->
+              fun ll ->
+                match (e.name).expr with
+                | Ast.ExId (_,Ast.IdLid (_,_)) ->
+                    if List.exists (same_tvar e) nl
+                    then ll
+                    else
+                      if List.exists (same_tvar e) ll
+                      then ll
+                      else (e.name) :: ll
+                | _ -> ll) el [] in
        let local_binding_of_name =
-         (function
-          | {expr = Ast.ExId (_,Ast.IdLid (_,i));tvar = x;loc = _loc} ->
-              Ast.BiEq (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, i)))),
-                (Ast.ExTyc (_loc,
-                   (Ast.ExApp (_loc,
-                      (Ast.ExId (_loc,
-                         (Ast.IdLid (_loc, "grammar_entry_create")))),
-                      (Ast.ExStr (_loc, i)))),
-                   (Ast.TyApp (_loc,
-                      (Ast.TyId (_loc,
-                         (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "t")))))),
-                      (Ast.TyQuo (_loc, x)))))))
-          | _ -> failwith "internal error in the Grammar extension") in
+         function
+         | {expr = Ast.ExId (_,Ast.IdLid (_,i));tvar = x;loc = _loc} ->
+             Ast.BiEq (_loc, (Ast.PaId (_loc, (Ast.IdLid (_loc, i)))),
+               (Ast.ExTyc (_loc,
+                  (Ast.ExApp (_loc,
+                     (Ast.ExId (_loc,
+                        (Ast.IdLid (_loc, "grammar_entry_create")))),
+                     (Ast.ExStr (_loc, i)))),
+                  (Ast.TyApp (_loc,
+                     (Ast.TyId (_loc,
+                        (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "t")))))),
+                     (Ast.TyQuo (_loc, x)))))))
+         | _ -> failwith "internal error in the Grammar extension" in
        let expr_of_name {expr = e;tvar = x;loc = _loc} =
          Ast.ExTyc (_loc, e,
            (Ast.TyApp (_loc,
@@ -460,42 +460,41 @@ let let_in_of_extend _loc gram gl el default =
                  (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "t")))))),
               (Ast.TyQuo (_loc, x))))) in
        let e =
-         (match ll with
-          | [] -> default
-          | x::xs ->
-              let locals =
-                List.fold_right
-                  ((fun name ->
-                      fun acc ->
-                        Ast.BiAnd (_loc, acc, (local_binding_of_name name))))
-                  xs (local_binding_of_name x) in
-              let entry_mk =
-                (match gram with
-                 | Some g ->
-                     Ast.ExApp (_loc,
-                       (Ast.ExId (_loc,
-                          (Ast.IdAcc (_loc, (gm ()),
-                             (Ast.IdLid (_loc, "mk")))))),
-                       (Ast.ExId (_loc, g)))
-                 | None  ->
-                     Ast.ExId (_loc,
-                       (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "mk")))))) in
-              Ast.ExLet (_loc, Ast.ReNil,
-                (Ast.BiEq (_loc,
-                   (Ast.PaId (_loc,
-                      (Ast.IdLid (_loc, "grammar_entry_create")))),
-                   entry_mk)),
-                (Ast.ExLet (_loc, Ast.ReNil, locals, default)))) in
+         match ll with
+         | [] -> default
+         | x::xs ->
+             let locals =
+               List.fold_right
+                 (fun name ->
+                    fun acc ->
+                      Ast.BiAnd (_loc, acc, (local_binding_of_name name))) xs
+                 (local_binding_of_name x) in
+             let entry_mk =
+               match gram with
+               | Some g ->
+                   Ast.ExApp (_loc,
+                     (Ast.ExId (_loc,
+                        (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "mk")))))),
+                     (Ast.ExId (_loc, g)))
+               | None  ->
+                   Ast.ExId (_loc,
+                     (Ast.IdAcc (_loc, (gm ()), (Ast.IdLid (_loc, "mk"))))) in
+             Ast.ExLet (_loc, Ast.ReNil,
+               (Ast.BiEq (_loc,
+                  (Ast.PaId (_loc,
+                     (Ast.IdLid (_loc, "grammar_entry_create")))),
+                  entry_mk)),
+               (Ast.ExLet (_loc, Ast.ReNil, locals, default))) in
        (match nl with
         | [] -> e
         | x::xs ->
             let globals =
               List.fold_right
-                ((fun name ->
-                    fun acc ->
-                      Ast.BiAnd (_loc, acc,
-                        (Ast.BiEq (_loc, (Ast.PaAny _loc),
-                           (expr_of_name name)))))) xs
+                (fun name ->
+                   fun acc ->
+                     Ast.BiAnd (_loc, acc,
+                       (Ast.BiEq (_loc, (Ast.PaAny _loc),
+                          (expr_of_name name))))) xs
                 (Ast.BiEq (_loc, (Ast.PaAny _loc), (expr_of_name x))) in
             Ast.ExLet (_loc, Ast.ReNil, globals, e)))
 let text_of_functorial_extend _loc gram gl el =
@@ -521,8 +520,7 @@ let text_of_functorial_extend _loc gram gl el =
     | e::[] -> e
     | e::el ->
         Ast.ExSeq (_loc,
-          (List.fold_left ((fun acc -> fun x -> Ast.ExSem (_loc, acc, x))) e
-             el)) in
+          (List.fold_left (fun acc -> fun x -> Ast.ExSem (_loc, acc, x)) e el)) in
   let_in_of_extend _loc gram gl el args
 let mk_tok _loc ?restrict  p t =
   match restrict with

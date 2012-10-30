@@ -63,7 +63,7 @@ let varify_constructors var_names =
           Ptyp_poly (string_lst, (loop core_type))
       | Ptyp_package (longident,lst) ->
           Ptyp_package (longident,
-            (List.map ((fun (n,typ) -> (n, (loop typ)))) lst)) in
+            (List.map (fun (n,typ) -> (n, (loop typ))) lst)) in
     {t with ptyp_desc = desc } and loop_core_field t =
     let desc =
       match t.pfield_desc with
