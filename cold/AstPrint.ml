@@ -66,6 +66,36 @@ let type_variance = function
   | (false,true) -> "-"
   | (_,_) -> assert false
 
+type construct = 
+  [ `cons of expression list
+  | `list of expression list
+  | `nil
+  | `normal
+  | `simple of Longident.t
+  | `tuple ]
+      
+let view_expr x = 
+  match x.pexp_desc with
+  | Pexp_construct ( {txt= Lident "()"; _},_,_) -> `tuple
+  | Pexp_construct ( {txt= Lident "[]";_},_,_) -> `nil
+  | Pexp_construct ( {txt= Lident"::";_},Some _,_) ->
+      let rec loop exp acc = match exp with
+          | {pexp_desc=Pexp_construct ({txt=Lident "[]";_},_,_);_} -> (List.rev acc,true)
+          | {pexp_desc=
+             Pexp_construct ({txt=Lident "::";_},Some ({pexp_desc= Pexp_tuple([e1;e2]);_}),_);_} ->
+              loop e2 (e1::acc)
+          | e -> (List.rev (e::acc),false) in
+      let (ls,b) = loop x []  in
+      if b then
+        `list ls
+      else `cons ls
+  | Pexp_construct (x,None,_) -> `simple (x.txt)
+  | _ -> `normal
+        
+let is_simple_construct :construct -> bool = function
+  | `nil | `tuple | `list _ | `simple _  -> true
+  | `cons _ | `normal -> false
+  
 let pp = fprintf
 
 let rec is_irrefut_patt x =
@@ -433,28 +463,14 @@ class printer  ()= object(self:'self)
                 (self#list self#label_x_expression_param)  l 
             end (e,l))
             
-    | Pexp_construct (li, eo, _)  ->
-        (* either a::b::c::d   or a::b::c::[]
-         *)
-        let view_expression_list (exp:Parsetree.expression) =
-          let rec loop exp acc = match exp with
-          |{pexp_desc=Pexp_construct ({txt=Lident "[]";_},_,_);_} -> (List.rev acc,true)
-          |{pexp_desc=
-            Pexp_construct ({txt=Lident "::";_},Some ({pexp_desc= Pexp_tuple([e1;e2]);_}),_);_} ->
-              loop e2 (e1::acc)
-          | e -> (List.rev (e::acc),false) in loop exp [] in
-        (match li.txt with
-        | Lident ("::") ->
-            (match view_expression_list x with
-            | ls,true ->
-                pp f "[%a]" (self#list self#under_semi#expression ~sep:";") ls 
-
-            | ls,false -> 
-                self#list self#simple_expr f ls ~sep:"::")
-        | Lident ("()") -> pp f "()" ;
-        | _ ->
-            pp f "@[<hov2>%a%a@]" self#longident_loc li
-              (self#option ~first:"@;"self#simple_expr ) eo)
+    | Pexp_construct (li, Some eo, _)
+      when not (is_simple_construct (view_expr x))-> (* Not efficient FIXME*)
+        (match view_expr x with
+        | `cons ls -> self#list self#simple_expr f ls ~sep:"@;::@;"
+        | `normal ->
+            pp f "@[<2>%a@;%a@]" self#longident_loc li
+              self#simple_expr  eo
+        | _ -> assert false)
     | Pexp_setfield (e1, li, e2) ->
         pp f "@[<hov2>%a.%a@ <-@ %a@]" self#simple_expr  e1  self#longident_loc li self#expression e2;
     | Pexp_ifthenelse (e1, e2, eo) ->
@@ -487,7 +503,7 @@ class printer  ()= object(self:'self)
     | Pexp_assert (e) ->
         pp f "@[<hov2>assert@ %a@]" self#expression e 
     | Pexp_assertfalse ->
-        pp f "assert@;false" ;
+        pp f "@[<2>assert@;false@]" ;
     | Pexp_lazy (e) ->
         pp f "@[<hov2>lazy@ %a@]" self#simple_expr e 
     | Pexp_poly _ -> 
@@ -496,7 +512,7 @@ class printer  ()= object(self:'self)
         pp f "@[<2>let open %a in@;%a@]" self#longident_loc lid
           self#expression  e
     | Pexp_variant (l,Some eo) ->
-        pp f "`%s@;%a" l  self#simple_expr eo
+        pp f "@[<2>`%s@;%a@]" l  self#simple_expr eo
     | _ -> self#expression1 f x
   method expression1 f x =
     match x.pexp_desc with
@@ -511,7 +527,14 @@ class printer  ()= object(self:'self)
     | _ -> self#simple_expr f x 
   method simple_expr f x =
     match x.pexp_desc with
-    | Pexp_construct (li, None, _) -> self#longident_loc f li
+    | Pexp_construct _  when is_simple_construct (view_expr x) ->
+        (match view_expr x with
+        | `nil -> pp f "[]"
+        | `tuple -> pp f "()"
+        | `list xs -> pp f "[%a]"  (self#list self#under_semi#expression ~sep:";@;") xs 
+        | `simple x -> self#longident f x
+        | _ -> assert false)
+    (* | Pexp_construct (li, None, _) -> self#longident_loc f li *)
     | Pexp_ident li -> 
         let flag = is_infix (view_fixity_of_exp x) || (match li.txt with
         | Lident li -> List.mem li.[0] prefix_symbols
@@ -522,11 +545,11 @@ class printer  ()= object(self:'self)
         pp f "(module@;%a)"  self#module_expr me
     | Pexp_newtype (lid, e) ->
         pp f "fun@;(type@;%s)@;->@;%a"  lid  self#expression  e
-    | Pexp_tuple (l) ->
-        pp f "(%a)"  (self#list self#simple_expr  ~sep:",")  l
+    | Pexp_tuple l ->
+        pp f "(%a)"  (self#list self#simple_expr  ~sep:",@;")  l
     | Pexp_constraint (e, cto1, cto2) ->
         pp f "(%a%a%a)" self#expression e
-          (self#option self#core_type ~first:"@ :" ~last:"@ ") cto1
+          (self#option self#core_type ~first:"@ :" ~last:"@;") cto1
           (self#option self#core_type ~first:"@ :>") cto2
     | Pexp_variant (l, None) -> pp f "`%s" l 
     | Pexp_record (l, eo) ->

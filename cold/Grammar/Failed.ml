@@ -27,7 +27,7 @@ let rec name_of_symbol_failed entry =
        | None  ->
            let txt = name_of_symbol_failed entry s in
            let txt =
-             (match (s,son) with
+             (match (s, son) with
               | (`Sopt _,Node _) ->
                   txt ^ (" or " ^ (name_of_tree_failed entry son))
               | _ -> txt) in

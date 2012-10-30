@@ -1,7 +1,7 @@
 open Structure
 open Format
 let is_before s1 s2 =
-  match (s1,s2) with
+  match (s1, s2) with
   | ((`Skeyword _|`Stoken _),(`Skeyword _|`Stoken _)) -> false
   | ((`Skeyword _|`Stoken _),_) -> true
   | _ -> false
@@ -51,8 +51,8 @@ let change_to_self entry =
   | x -> x
 let get_level entry position levs =
   match position with
-  | Some `First -> ([],empty_lev,levs)
-  | Some `Last -> (levs,empty_lev,[])
+  | Some `First -> ([], empty_lev, levs)
+  | Some `Last -> (levs, empty_lev, [])
   | Some (`Level n) ->
       let rec get =
         (function
@@ -63,9 +63,10 @@ let get_level entry position levs =
               failwith "Grammar.extend")
          | lev::levs ->
              if Tools.is_level_labelled n lev
-             then ([],(change_lev entry lev n),levs)
+             then ([], (change_lev entry lev n), levs)
              else
-               let (levs1,rlev,levs2) = get levs in ((lev::levs1),rlev,levs2)) in
+               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                 levs2)) in
       get levs
   | Some (`Before n) ->
       let rec get =
@@ -77,9 +78,10 @@ let get_level entry position levs =
               failwith "Grammar.extend")
          | lev::levs ->
              if Tools.is_level_labelled n lev
-             then ([],empty_lev,(lev::levs))
+             then ([], empty_lev, (lev :: levs))
              else
-               let (levs1,rlev,levs2) = get levs in ((lev::levs1),rlev,levs2)) in
+               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                 levs2)) in
       get levs
   | Some (`After n) ->
       let rec get =
@@ -91,14 +93,15 @@ let get_level entry position levs =
               failwith "Grammar.extend")
          | lev::levs ->
              if Tools.is_level_labelled n lev
-             then (([lev]),empty_lev,levs)
+             then ([lev], empty_lev, levs)
              else
-               let (levs1,rlev,levs2) = get levs in ((lev::levs1),rlev,levs2)) in
+               let (levs1,rlev,levs2) = get levs in ((lev :: levs1), rlev,
+                 levs2)) in
       get levs
   | None  ->
       (match levs with
-       | lev::levs -> ([],(change_lev entry lev "<top>"),levs)
-       | [] -> ([],empty_lev,[]))
+       | lev::levs -> ([], (change_lev entry lev "<top>"), levs)
+       | [] -> ([], empty_lev, []))
 let rec check_gram entry =
   function
   | `Snterm e ->
@@ -133,8 +136,8 @@ let rec check_gram entry =
   | LocAct (_,_)|DeadEnd  -> ()
 let get_initial =
   function
-  | `Sself::symbols -> (true,symbols)
-  | symbols -> (false,symbols)
+  | `Sself::symbols -> (true, symbols)
+  | symbols -> (false, symbols)
 let insert_tokens gram symbols =
   let rec insert =
     function
@@ -166,8 +169,8 @@ let insert_tree entry gsymbols action tree =
                    "<W> Grammar extension: in [%s] some rule has been masked@."
                    entry.ename
                else () in
-             LocAct (action,(old_action::action_list))
-         | DeadEnd  -> LocAct (action,[]))
+             LocAct (action, (old_action :: action_list))
+         | DeadEnd  -> LocAct (action, []))
     and insert_in_tree s sl tree =
     match try_insert s sl tree with
     | Some t -> t
@@ -237,7 +240,7 @@ let levels_of_rules entry position rules =
                        let (e1,symbols) = get_initial symbols in
                        let () = insert_tokens entry.egram symbols in
                        insert_level entry e1 symbols action lev) lev level in
-              ((lev::levs),empty_lev))) ([],make_lev) rules in
+              ((lev :: levs), empty_lev))) ([], make_lev) rules in
     levs1 @ ((List.rev levs) @ levs2)
 let extend entry (position,rules) =
   let elev = levels_of_rules entry position rules in

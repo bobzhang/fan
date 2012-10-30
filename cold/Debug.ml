@@ -7,7 +7,7 @@ type section = string
 let out_channel =
   try
     let f = Sys.getenv "CAMLP4_DEBUG_FILE" in
-    open_out_gen ([Open_wronly;Open_creat;Open_append;Open_text]) 438 f
+    open_out_gen [Open_wronly; Open_creat; Open_append; Open_text] 438 f
   with | Not_found  -> Pervasives.stderr
 let mode =
   try

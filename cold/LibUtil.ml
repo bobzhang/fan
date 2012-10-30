@@ -6,7 +6,7 @@ module MapMake(S:Map.OrderedType) = struct
     List.fold_left (fun acc -> fun (k,v) -> add k v acc) empty lst
   let of_hashtbl tbl =
     Hashtbl.fold (fun k -> fun v -> fun acc -> add k v acc) tbl empty
-  let elements map = fold (fun k -> fun v -> fun acc -> (k,v)::acc) map []
+  let elements map = fold (fun k -> fun v -> fun acc -> (k, v) :: acc) map []
   end
 module SSet = Set.Make(String)
 module SMap = MapMake(String)
@@ -23,7 +23,7 @@ module Hashset = struct
   let fold f = Hashtbl.fold (fun v -> fun () -> fun st -> f v st)
   let elements = Hashtbl.length let clear = Hashtbl.clear
   let of_list size vs = let set = create size in List.iter (add set) vs; set
-  let to_list set = fold (fun x -> fun y -> x::y) set []
+  let to_list set = fold (fun x -> fun y -> x :: y) set []
   end
 let mk_set (type s) ~cmp  =
   let module M = struct
@@ -42,9 +42,9 @@ let (<|) f x = f x
 let (|-) f g x = g (f x)
 let (-|) f g x = f (g x)
 let flip f x y = f y x
-let ( *** )  f g (x,y) = ((f x),(g y))
-let (&&&) f g x = ((f x),(g x))
-let curry f x y = f (x,y)
+let ( *** )  f g (x,y) = ((f x), (g y))
+let (&&&) f g x = ((f x), (g x))
+let curry f x y = f (x, y)
 let uncurry f (x,y) = f x y
 let const x _ = x
 let tap f x = f x; x
@@ -81,8 +81,8 @@ module Buffer = struct
   end
 module Hashtbl = struct
   include BatHashtbl
-  let keys tbl = fold (fun k -> fun _ -> fun acc -> k::acc) tbl []
-  let values tbl = fold (fun _ -> fun v -> fun acc -> v::acc) tbl []
+  let keys tbl = fold (fun k -> fun _ -> fun acc -> k :: acc) tbl []
+  let values tbl = fold (fun _ -> fun v -> fun acc -> v :: acc) tbl []
   end
 module Stream = struct
   include BatStream include Stream
@@ -131,6 +131,6 @@ module ErrorMonad = struct
       | [] -> return []
       | x::xs ->
           (f x acc) >>=
-            ((fun x -> (aux (acc + 1) xs) >>= (fun xs -> return (x::xs)))) in
+            ((fun x -> (aux (acc + 1) xs) >>= (fun xs -> return (x :: xs)))) in
     aux 0 xs
   end

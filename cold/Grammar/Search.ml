@@ -42,10 +42,10 @@ let tree_in_entry prev_symb tree =
               | None  -> None)
          | `Slist0sep (symb,sep) ->
              (match search_symbol symb with
-              | Some symb -> Some (`Slist0sep (symb,sep))
+              | Some symb -> Some (`Slist0sep (symb, sep))
               | None  ->
                   (match search_symbol sep with
-                   | Some sep -> Some (`Slist0sep (symb,sep))
+                   | Some sep -> Some (`Slist0sep (symb, sep))
                    | None  -> None))
          | `Slist1 symb ->
              (match search_symbol symb with
@@ -53,10 +53,10 @@ let tree_in_entry prev_symb tree =
               | None  -> None)
          | `Slist1sep (symb,sep) ->
              (match search_symbol symb with
-              | Some symb -> Some (`Slist1sep (symb,sep))
+              | Some symb -> Some (`Slist1sep (symb, sep))
               | None  ->
                   (match search_symbol sep with
-                   | Some sep -> Some (`Slist1sep (symb,sep))
+                   | Some sep -> Some (`Slist1sep (symb, sep))
                    | None  -> None))
          | `Sopt symb ->
              (match search_symbol symb with

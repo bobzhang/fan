@@ -51,9 +51,9 @@ let token_to_string =
   function
   | #token as x -> to_string x
   | _ -> invalid_arg "token_to_string not implemented for this token"
-let err error loc = raise (FanLoc.Exc_located (loc,(TokenError error)))
+let err error loc = raise (FanLoc.Exc_located (loc, (TokenError error)))
 let error_no_respect_rules p_con p_prm =
-  raise (TokenError (Illegal_token_pattern (p_con,p_prm)))
+  raise (TokenError (Illegal_token_pattern (p_con, p_prm)))
 let check_keyword _ = true
 let error_on_unknown_keywords = ref false
 let rec ignore_layout (__strm : _ Stream.t ) =
@@ -93,7 +93,7 @@ module Filter =
   let mk ~is_kwd  = {is_kwd = is_kwd; filter = ignore_layout }
   let filter x =
     let f (tok,loc) =
-      let tok = keyword_conversion tok x.is_kwd in (tok,loc) in
+      let tok = keyword_conversion tok x.is_kwd in (tok, loc) in
     fun strm -> x.filter (Stream.map f strm)
   let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
   let keyword_removed _ _ = ()

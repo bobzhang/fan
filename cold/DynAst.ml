@@ -56,7 +56,7 @@ type dyn
 external dyn_tag : 'a tag  -> dyn  tag  = "%identity"
 module Pack(X:sig type 'a t   end) = struct
   type pack = (dyn  tag * Obj.t )  exception Pack_error
-  let pack tag (v : 'a X.t ) = ((dyn_tag tag),(Obj.repr v))
+  let pack tag (v : 'a X.t ) = ((dyn_tag tag), (Obj.repr v))
   let unpack =
     (fun tag ->
        fun (tag',obj) ->

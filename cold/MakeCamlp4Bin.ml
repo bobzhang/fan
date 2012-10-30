@@ -20,7 +20,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
                       
                       end)
   let (objext,libext) =
-    if DynLoader.is_native then (".cmxs",".cmxs") else (".cmo",".cma")
+    if DynLoader.is_native then (".cmxs", ".cmxs") else (".cmo", ".cma")
   let rewrite_and_load n x =
     let dyn_loader = DynLoader.instance.contents () in
     let find_in_path = DynLoader.find_in_path dyn_loader in
@@ -32,7 +32,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           (List.mem n PreCast.loaded_modules.contents)
       then ()
       else (add_to_loaded_modules n; DynLoader.load dyn_loader (n ^ objext)) in
-    (match (n,(String.lowercase x)) with
+    (match (n, (String.lowercase x)) with
      | (("Parsers"|""),("pa_r.cmo"|"r"|"ocamlr"|"ocamlrevised"|"camlp4ocamlrevisedparser.cmo"))
          -> pa_r (module PreCast)
      | (("Parsers"|""),("pa_rp.cmo"|"rp"|"rparser"|"camlp4ocamlrevisedparserparser.cmo"))
@@ -116,11 +116,11 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       |> (pr ?input_file:(Some name) ?output_file:(output_file.contents))
   let gind =
     function
-    | Ast.SgDir (loc,n,Ast.ExStr (_,s)) -> Some (loc,n,s)
+    | Ast.SgDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
     | _ -> None
   let gimd =
     function
-    | Ast.StDir (loc,n,Ast.ExStr (_,s)) -> Some (loc,n,s)
+    | Ast.StDir (loc,n,Ast.ExStr (_,s)) -> Some (loc, n, s)
     | _ -> None
   let process_intf dyn_loader name =
     process dyn_loader name PreCast.CurrentParser.parse_interf
@@ -166,7 +166,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
             else (fun usage -> usage ()))) in
     let do_task usage =
       match t.contents with | Some f -> f usage | None  -> () in
-    (task,do_task)
+    (task, do_task)
   let input_file x =
     let dyn_loader = DynLoader.instance.contents () in
     rcall_callback.contents ();
@@ -182,29 +182,48 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      | ModuleImpl file_name -> rewrite_and_load "" file_name
      | IncludeDir dir -> DynLoader.include_dir dyn_loader dir);
     rcall_callback.contents ()
-  let initial_spec_list =
-    [("-I",(Arg.String ((fun x -> input_file (IncludeDir x)))),"<directory>  Add directory in search patch for object files.");("-where",(
-    Arg.Unit print_stdlib),"Print camlp4 library directory and exit.");("-nolib",(
-    Arg.Clear search_stdlib),"No automatic search for object files in library directory.");("-intf",(
-    Arg.String ((fun x -> input_file (Intf x)))),"<file>  Parse <file> as an interface, whatever its extension.");("-impl",(
-    Arg.String ((fun x -> input_file (Impl x)))),"<file>  Parse <file> as an implementation, whatever its extension.");("-str",(
-    Arg.String ((fun x -> input_file (Str x)))),"<string>  Parse <string> as an implementation.");("-unsafe",(
-    Arg.Set FanConfig.unsafe),"Generate unsafe accesses to array and strings.");("-noassert",(
-    Arg.Unit warn_noassert),"Obsolete, do not use this option.");("-verbose",(
-    Arg.Set FanConfig.verbose),"More verbose in parsing errors.");("-loc",(
-    Arg.Set_string FanLoc.name),("<name>   Name of the location variable (default: "
-                                   ^ (FanLoc.name.contents ^ ").")));("-QD",(
-    Arg.String ((fun x -> PreCast.Syntax.Quotation.dump_file := (Some x)))),"<file> Dump quotation expander result in case of syntax error.");("-o",(
-    Arg.String ((fun x -> output_file := (Some x)))),"<file> Output on <file> instead of standard output.");("-v",(
-    Arg.Unit print_version),"Print Camlp4 version and exit.");("-version",(
-    Arg.Unit just_print_the_version),"Print Camlp4 version number and exit.");("-vnum",(
-    Arg.Unit just_print_the_version),"Print Camlp4 version number and exit.");("-no_quot",(
-    Arg.Clear FanConfig.quotations),"Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");("-loaded-modules",(
-    Arg.Set print_loaded_modules),"Print the list of loaded modules.");("-parser",(
-    Arg.String (rewrite_and_load "Parsers")),"<name>  Load the parser FanParsers/<name>.cm(o|a|xs)");("-printer",(
-    Arg.String (rewrite_and_load "Printers")),"<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)");("-filter",(
-    Arg.String (rewrite_and_load "Filters")),"<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)");("-ignore",(
-    Arg.String ignore),"ignore the next argument");("--",(Arg.Unit ignore),"Deprecated, does nothing")]
+  let initial_spec_list = [("-I",
+    (Arg.String ((fun x -> input_file (IncludeDir x)))),
+    "<directory>  Add directory in search patch for object files.");
+    ("-where", (Arg.Unit print_stdlib),
+    "Print camlp4 library directory and exit."); ("-nolib",
+    (Arg.Clear search_stdlib),
+    "No automatic search for object files in library directory."); ("-intf",
+    (Arg.String ((fun x -> input_file (Intf x)))),
+    "<file>  Parse <file> as an interface, whatever its extension.");
+    ("-impl", (Arg.String ((fun x -> input_file (Impl x)))),
+    "<file>  Parse <file> as an implementation, whatever its extension.");
+    ("-str", (Arg.String ((fun x -> input_file (Str x)))),
+    "<string>  Parse <string> as an implementation."); ("-unsafe",
+    (Arg.Set FanConfig.unsafe),
+    "Generate unsafe accesses to array and strings."); ("-noassert",
+    (Arg.Unit warn_noassert), "Obsolete, do not use this option.");
+    ("-verbose", (Arg.Set FanConfig.verbose),
+    "More verbose in parsing errors."); ("-loc",
+    (Arg.Set_string FanLoc.name),
+    ("<name>   Name of the location variable (default: " ^
+       (FanLoc.name.contents ^ ")."))); ("-QD",
+    (Arg.String ((fun x -> PreCast.Syntax.Quotation.dump_file := (Some x)))),
+    "<file> Dump quotation expander result in case of syntax error."); ("-o",
+    (Arg.String ((fun x -> output_file := (Some x)))),
+    "<file> Output on <file> instead of standard output."); ("-v",
+    (Arg.Unit print_version), "Print Camlp4 version and exit."); ("-version",
+    (Arg.Unit just_print_the_version),
+    "Print Camlp4 version number and exit."); ("-vnum",
+    (Arg.Unit just_print_the_version),
+    "Print Camlp4 version number and exit."); ("-no_quot",
+    (Arg.Clear FanConfig.quotations),
+    "Don't parse quotations, allowing to use, e.g. \"<:>\" as token.");
+    ("-loaded-modules", (Arg.Set print_loaded_modules),
+    "Print the list of loaded modules."); ("-parser",
+    (Arg.String (rewrite_and_load "Parsers")),
+    "<name>  Load the parser FanParsers/<name>.cm(o|a|xs)"); ("-printer",
+    (Arg.String (rewrite_and_load "Printers")),
+    "<name>  Load the printer Camlp4Printers/<name>.cm(o|a|xs)"); ("-filter",
+    (Arg.String (rewrite_and_load "Filters")),
+    "<name>  Load the filter Camlp4Filters/<name>.cm(o|a|xs)"); ("-ignore",
+    (Arg.String ignore), "ignore the next argument"); ("--",
+    (Arg.Unit ignore), "Deprecated, does nothing")]
   let _= FanUtil.Options.init initial_spec_list
   let anon_fun name =
     input_file

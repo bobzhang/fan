@@ -149,19 +149,17 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let entry = Gram.mk "entry"
   let _=
     Gram.extend (top_phrase :'top_phrase Gram.t  )
-      ((fun () -> (None,([(None,None,([(([`Stoken
-          (((function
-             | `EOI -> true
-             | _ -> false)),(`Normal,"`EOI"))]),(Gram.mk_action
-                                                   ((fun __camlp4_0 ->
-                                                       fun (_loc : FanLoc.t )
-                                                         ->
-                                                         match __camlp4_0
-                                                         with
-                                                         | `EOI -> (None
-                                                             :'top_phrase )
-                                                         | _ -> assert false))))]))])))
-         ())
+      ((fun () -> (None, [(None, None,
+          [([`Stoken (((function
+                        | `EOI -> true
+                        | _ -> false)),
+               (`Normal, "`EOI"))],
+          (Gram.mk_action
+             ((fun __camlp4_0 ->
+                 fun (_loc : FanLoc.t ) ->
+                   match __camlp4_0 with
+                   | `EOI -> (None :'top_phrase )
+                   | _ -> assert false))))])])) ())
   module AntiquotSyntax = struct
     module Ast = Ast module Gram = Gram
     let antiquot_expr = Gram.eoi_entry expr
@@ -180,7 +178,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
              | x::xs ->
                  (match directive_handler x with
                   | None  -> xs
-                  | Some x -> x::xs)) in
+                  | Some x -> x :: xs)) in
           (List.rev pl) @ (loop new_loc)
       | None  -> pl in
     loop init_loc

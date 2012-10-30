@@ -31,16 +31,16 @@ let parse_string entry loc str =
   filter_and_parse_tokens entry (lex_string loc str)
 let debug_origin_token_stream (entry : 'a t ) tokens =
   (parse_origin_tokens entry
-     (Stream.map (fun t -> (t,ghost_token_info)) tokens) :'a )
+     (Stream.map (fun t -> (t, ghost_token_info)) tokens) :'a )
 let debug_filtered_token_stream entry tokens =
   filter_and_parse_tokens entry
-    (Stream.map (fun t -> (t,FanLoc.ghost)) tokens)
+    (Stream.map (fun t -> (t, FanLoc.ghost)) tokens)
 let parse_string_safe entry loc s =
   try parse_string entry loc s
   with
   | FanLoc.Exc_located (loc,e) ->
       (eprintf "%s" (Printexc.to_string e);
-       FanLoc.error_report (loc,s);
+       FanLoc.error_report (loc, s);
        FanLoc.raise loc e)
 let wrap_stream_parser p loc s =
   try p loc s
@@ -54,8 +54,8 @@ let parse_file_with ~rule  file =
     let st = Stream.of_channel ch in parse rule (FanLoc.mk file) st
   else failwithf "@[file: %s not found@]@." file
 let delete_rule = Delete.delete_rule
-let srules e rl = `Stree
-  (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl)
+let srules e rl =
+  `Stree (List.fold_left (flip (uncurry (Insert.insert_tree e))) DeadEnd rl)
 let sfold0 = Fold.sfold0
 let sfold1 = Fold.sfold1
 let sfold0sep = Fold.sfold0sep
@@ -64,21 +64,16 @@ let eoi_entry entry =
   let entry_eoi = mk ((name entry) ^ "_eoi") in
   let () =
     extend (entry_eoi :'entry_eoi t  )
-      ((fun () -> (None,([(None,None,([(([`Snterm
-          (obj (entry :'entry t  ));`Stoken
-          (((function
-             | `EOI -> true
-             | _ -> false)),(`Normal,"`EOI"))]),(mk_action
-                                                   ((fun __camlp4_0 ->
-                                                       fun (x : 'entry) ->
-                                                         fun
-                                                           (_loc : FanLoc.t )
-                                                           ->
-                                                           match __camlp4_0
-                                                           with
-                                                           | `EOI -> (x
-                                                               :'entry_eoi )
-                                                           | _ -> assert
-                                                               false))))]))])))
-         ()) in
+      ((fun () -> (None, [(None, None, [([`Snterm (obj (entry :'entry t  ));
+          `Stoken (((function
+                     | `EOI -> true
+                     | _ -> false)),
+            (`Normal, "`EOI"))],
+          (mk_action
+             ((fun __camlp4_0 ->
+                 fun (x : 'entry) ->
+                   fun (_loc : FanLoc.t ) ->
+                     match __camlp4_0 with
+                     | `EOI -> (x :'entry_eoi )
+                     | _ -> assert false))))])])) ()) in
   entry_eoi

@@ -46,7 +46,7 @@ and k =
   | Fold
   | Iter
   | Map 
-let preserve = ["self";"self_type";"unit";"result"]
+let preserve = ["self"; "self_type"; "unit"; "result"]
 module type Config =
   sig
     val mk_variant : string  -> ty_info  list  -> Ast.expr 

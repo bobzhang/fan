@@ -228,3 +228,39 @@ end
 
 
 let f (x:int) (y:bool) = x+y
+let () =
+  Gram.extend (position :'position Gram.t  )
+    ((fun () -> (None, [(None, None,
+        [([`Stoken
+             (((function
+                | `UIDENT ("Before"|"After"|"Level") -> true
+                | _ -> false)),
+             (`Normal, "`UIDENT (\"Before\"|\"After\"|\"Level\")"));
+        `Snterm (Gram.obj (string :'string Gram.t  ))],
+        (Gram.mk_action
+           ((fun (n : 'string) ->
+               fun __camlp4_0 ->
+                 fun (_loc : FanLoc.t ) ->
+                   match __camlp4_0 with
+                   | `UIDENT ("Before"|"After"|"Level" as x) ->
+                       (Ast.ExApp (_loc, (Ast.ExVrn (_loc, x)), n) :'position
+                       )
+                   | _ -> assert false))));
+        ([`Stoken
+            (((function
+               | `UIDENT ("First"|"Last") -> true
+               | _ -> false)),
+            (`Normal, "`UIDENT (\"First\"|\"Last\")"))],
+        (Gram.mk_action
+           ((fun __camlp4_0 ->
+               fun (_loc : FanLoc.t ) ->
+                 match __camlp4_0 with
+                 | `UIDENT ("First"|"Last" as x) -> (Ast.ExVrn (_loc, x)
+                     :'position )
+                 | _ -> assert false))))])])) ())
+let v = [1;2;3]
+let v = ()
+let z = []
+let x = x::ys
+let z =(x,ys)
+               

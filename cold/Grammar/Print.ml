@@ -7,7 +7,7 @@ let rec flatten_tree =
   | DeadEnd  -> []
   | LocAct (_,_) -> [[]]
   | Node {node = n;brother = b;son = s} ->
-      (List.map ((fun l -> n::l)) (flatten_tree s)) @ (flatten_tree b)
+      (List.map ((fun l -> n :: l)) (flatten_tree s)) @ (flatten_tree b)
 class text_grammar =
   object (self : 'self)
     method tree ppf t = self#level ppf Format.pp_print_space (flatten_tree t)
@@ -81,8 +81,8 @@ class text_grammar =
          (fun sep ->
             fun lev ->
               let rules =
-                (List.map (fun t -> `Sself::t) (flatten_tree lev.lsuffix)) @
-                  (flatten_tree lev.lprefix) in
+                (List.map (fun t -> `Sself :: t) (flatten_tree lev.lsuffix))
+                  @ (flatten_tree lev.lprefix) in
               fprintf ppf "%t@[<hov 2>" sep;
               (match lev.lname with
                | Some n -> fprintf ppf "%S@;<1 2>" n
@@ -109,7 +109,7 @@ class dump_grammar =
         | DeadEnd  -> List.rev acc
         | LocAct (_,_) -> List.rev acc
         | Node {node = n;brother = b;son = s} ->
-            get_brothers ((Bro (n,(get_brothers [] s)))::acc) b
+            get_brothers ((Bro (n, (get_brothers [] s))) :: acc) b
         and print_brothers ppf brothers =
         if brothers = []
         then fprintf ppf "@ []"
@@ -128,7 +128,7 @@ class dump_grammar =
         and get_children acc =
         function
         | [] -> List.rev acc
-        | Bro (n,x)::[] -> get_children (n::acc) x
+        | Bro (n,x)::[] -> get_children (n :: acc) x
         | _ -> raise Exit in
       print_brothers ppf (get_brothers [] tree)
     method! levels ppf elev =

@@ -41,8 +41,8 @@ let use_file token_stream =
              (Topdirs.dir_load Format.std_formatter s; loop ())
          | Ast.StDir (_,"directory",Ast.ExStr (_,s))::[] ->
              (Topdirs.dir_directory s; loop ())
-         | _ -> (pl,false))
-      else (pl,true) in
+         | _ -> (pl, false))
+      else (pl, true) in
     loop () in
   let pl =
     if eoi

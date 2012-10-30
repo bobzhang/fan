@@ -27,9 +27,10 @@ let test_patt_lessminus =
        skip_patt 1)
 let is_revised ~expr  ~sem_expr_for_list  =
   try
-    Gram.delete_rule expr ([`Skeyword "[";`Snterm
-      (Gram.obj (sem_expr_for_list :'sem_expr_for_list Gram.t  ));`Skeyword
-      "::";`Snterm (Gram.obj (expr :'expr Gram.t  ));`Skeyword "]"]);
+    Gram.delete_rule expr [`Skeyword "[";
+      `Snterm (Gram.obj (sem_expr_for_list :'sem_expr_for_list Gram.t  ));
+      `Skeyword "::"; `Snterm (Gram.obj (expr :'expr Gram.t  ));
+      `Skeyword "]"];
     true
   with | Not_found  -> false
 let setup_op_parser entry p =
@@ -39,7 +40,7 @@ let setup_op_parser entry p =
        | Some ((`KEYWORD x|`SYMBOL x),ti) when p x ->
            (Stream.junk __strm;
             let _loc = Gram.token_location ti in
-            Ast.ExId (_loc,(Ast.IdLid (_loc,x))))
+            Ast.ExId (_loc, (Ast.IdLid (_loc, x))))
        | _ -> raise Stream.Failure)
 let rec infix_kwds_filter (__strm : _ Stream.t ) =
   match Stream.peek __strm with
@@ -56,7 +57,7 @@ let rec infix_kwds_filter (__strm : _ Stream.t ) =
               | Some (`KEYWORD ")",_) ->
                   (Stream.junk __strm;
                    let xs = __strm in
-                   Stream.lcons ((fun _ -> ((`LIDENT i),_loc)))
+                   Stream.lcons ((fun _ -> ((`LIDENT i), _loc)))
                      (Stream.slazy ((fun _ -> infix_kwds_filter xs))))
               | _ -> raise (Stream.Error "")))
         | _ ->

@@ -9,7 +9,7 @@ let add_loc bp parse_fun strm =
     if (FanLoc.start_off bp) > (FanLoc.stop_off ep)
     then FanLoc.join bp
     else FanLoc.merge bp ep in
-  (x,loc)
+  (x, loc)
 module StreamOrig = Stream
 module Stream = struct
   type 'a t = 'a StreamOrig.t   exception Failure = StreamOrig.Failure
@@ -50,7 +50,7 @@ let rec top_symb entry =
   function
   | `Sself|`Snext -> `Snterm entry
   | `Snterml (e,_) -> `Snterm e
-  | `Slist1sep (s,sep) -> `Slist1sep ((top_symb entry s),sep)
+  | `Slist1sep (s,sep) -> `Slist1sep ((top_symb entry s), sep)
   | _ -> raise Stream.Failure
 let top_tree entry =
   function
@@ -238,7 +238,7 @@ let rec parser_of_tree entry nlevn alevn =
       let ps = parser_of_symbol entry nlevn s in
       let rec loop al (__strm : _ Stream.t ) =
         (match try Some (ps __strm) with | Stream.Failure  -> None with
-         | Some a -> loop (a::al) __strm
+         | Some a -> loop (a :: al) __strm
          | _ -> al) in
       (fun (__strm : _ Stream.t ) ->
          let a = loop [] __strm in Action.mk (List.rev a))
@@ -254,21 +254,21 @@ let rec parser_of_tree entry nlevn alevn =
                 | Stream.Failure  ->
                     raise
                       (Stream.Error (Failed.symb_failed entry v sep symb))) in
-             kont (a::al) __strm
+             kont (a :: al) __strm
          | _ -> al) in
       (fun (__strm : _ Stream.t ) ->
          match try Some (ps __strm) with | Stream.Failure  -> None with
-         | Some a -> let s = __strm in Action.mk (List.rev (kont ([a]) s))
+         | Some a -> let s = __strm in Action.mk (List.rev (kont [a] s))
          | _ -> Action.mk [])
   | `Slist1 s ->
       let ps = parser_of_symbol entry nlevn s in
       let rec loop al (__strm : _ Stream.t ) =
         (match try Some (ps __strm) with | Stream.Failure  -> None with
-         | Some a -> loop (a::al) __strm
+         | Some a -> loop (a :: al) __strm
          | _ -> al) in
       (fun (__strm : _ Stream.t ) ->
          let a = ps __strm in
-         let s = __strm in Action.mk (List.rev (loop ([a]) s)))
+         let s = __strm in Action.mk (List.rev (loop [a] s)))
   | `Slist1sep (symb,sep) ->
       let ps = parser_of_symbol entry nlevn symb in
       let pt = parser_of_symbol entry nlevn sep in
@@ -285,11 +285,11 @@ let rec parser_of_tree entry nlevn alevn =
                          raise
                            (Stream.Error
                               (Failed.symb_failed entry v sep symb)))) in
-             kont (a::al) __strm
+             kont (a :: al) __strm
          | _ -> al) in
       (fun (__strm : _ Stream.t ) ->
          let a = ps __strm in
-         let s = __strm in Action.mk (List.rev (kont ([a]) s)))
+         let s = __strm in Action.mk (List.rev (kont [a] s)))
   | `Sopt s ->
       let ps = parser_of_symbol entry nlevn s in
       (fun (__strm : _ Stream.t ) ->

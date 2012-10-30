@@ -1,16 +1,3 @@
-(**************************************************************************)
-(*                                                                        *)
-(*                                OCaml                                   *)
-(*                                                                        *)
-(*    Thomas Gazagnaire (OCamlPro), Fabrice Le Fessant (INRIA Saclay)     *)
-(*                                                                        *)
-(*   Copyright 2007 Institut National de Recherche en Informatique et     *)
-(*   en Automatique.  All rights reserved.  This file is distributed      *)
-(*   under the terms of the Q Public License version 1.0.                 *)
-(*                                                                        *)
-(**************************************************************************)
-
-
 val prefix_symbols : char list
 val infix_symbols : char list
 val operator_chars : char list
@@ -24,6 +11,22 @@ val is_predef_option : Longident.t -> bool
 type space_formatter = (unit, Format.formatter, unit) format
 val override : Asttypes.override_flag -> string
 val type_variance : bool * bool -> string
+type construct =
+    [ `cons of Parsetree.expression list
+    | `list of Parsetree.expression list
+    | `nil
+    | `normal
+    | `simple of Longident.t
+    | `tuple ]
+val view_expr :
+  Parsetree.expression ->
+  [> `cons of Parsetree.expression list
+   | `list of Parsetree.expression list
+   | `nil
+   | `normal
+   | `simple of Longident.t
+   | `tuple ]
+val is_simple_construct : construct -> bool
 val pp : Format.formatter -> ('a, Format.formatter, unit) format -> 'a
 val is_irrefut_patt : Parsetree.pattern -> bool
 class printer :
@@ -135,4 +138,3 @@ val core_type : Format.formatter -> Parsetree.core_type -> unit
 val pattern : Format.formatter -> Parsetree.pattern -> unit
 val signature : Format.formatter -> Parsetree.signature -> unit
 val structure : Format.formatter -> Parsetree.structure -> unit
-

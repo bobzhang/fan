@@ -62,9 +62,10 @@ let to_tuple
        pos_cnum = start_off};loc_end =
                                {pos_lnum = stop_line;pos_bol = stop_bol;
                                  pos_cnum = stop_off;_};loc_ghost = ghost} =
-  (pos_fname,start_line,start_bol,start_off,stop_line,stop_bol,stop_off,ghost)
+  (pos_fname, start_line, start_bol, start_off, stop_line, stop_bol,
+  stop_off, ghost)
 let better_file_name a b =
-  match (a,b) with
+  match (a, b) with
   | ("","") -> a
   | ("",x) -> x
   | (x,"") -> x
@@ -83,7 +84,7 @@ let merge a b =
   then a
   else
     let r =
-      (match ((a.loc_ghost),(b.loc_ghost)) with
+      (match ((a.loc_ghost), (b.loc_ghost)) with
        | (false ,false ) -> {a with loc_end = (b.loc_end) }
        | (true ,true ) -> {a with loc_end = (b.loc_end) }
        | (true ,_) -> {a with loc_end = (b.loc_end) }
@@ -134,7 +135,7 @@ let strictly_before x y =
       ((x.loc_end).pos_fname = (y.loc_start).pos_fname) in
   b
 let to_string x =
-  let (a,b) = ((x.loc_start),(x.loc_end)) in
+  let (a,b) = ((x.loc_start), (x.loc_end)) in
   let res =
     sprintf "File \"%s\", line %d, characters %d-%d" a.pos_fname a.pos_lnum
       (a.pos_cnum - a.pos_bol) (b.pos_cnum - a.pos_bol) in
@@ -171,11 +172,11 @@ let name = ref "_loc"
 let raise loc exc =
   match exc with
   | Exc_located (_,_) -> raise exc
-  | _ -> raise (Exc_located (loc,exc))
+  | _ -> raise (Exc_located (loc, exc))
 let error_report (loc,s) =
   prerr_endline (to_string loc);
-  let (start_bol,stop_bol,start_off,stop_off) =
-    ((start_bol loc),(stop_bol loc),(start_off loc),(stop_off loc)) in
+  let (start_bol,stop_bol,start_off,stop_off) = ((start_bol loc),
+    (stop_bol loc), (start_off loc), (stop_off loc)) in
   let abs_start_off = start_bol + start_off in
   let abs_stop_off = stop_bol + stop_off in
   let err_location =

@@ -42,7 +42,7 @@ let cvt_int32_literal s = Int32.neg (Int32.of_string ("-" ^ s))
 let cvt_int64_literal s = Int64.neg (Int64.of_string ("-" ^ s))
 let cvt_nativeint_literal s = Nativeint.neg (Nativeint.of_string ("-" ^ s))
 let mk_anti ?(c="")  n s = "\\$" ^ (n ^ (c ^ (":" ^ s)))
-let append_eLem el e = el @ ([e])
+let append_eLem el e = el @ [e]
 let is_antiquot s =
   let len = String.length s in
   (len > 2) && (((s.[0]) = '\\') && ((s.[1]) = '$'))
@@ -54,7 +54,7 @@ let view_antiquot s =
        let pos = String.index s ':' in
        let name = String.sub s 2 (pos - 2) in
        let code = String.sub s (pos + 1) (((String.length s) - pos) - 1) in
-       Some (name,code)
+       Some (name, code)
      with | Not_found  -> None)
   else None
 let handle_antiquot_in_string ~s  ~default  ~parse  ~loc  ~decorate  =
@@ -78,11 +78,11 @@ let njunk n strm = for _i = 1 to  n do Stream.junk strm  done
 let rec list_remove x =
   function
   | (y,_)::l when y = x -> l
-  | d::l -> d::(list_remove x l)
+  | d::l -> d :: (list_remove x l)
   | [] -> []
 let symbolchar =
-  let list =
-    ['$';'!';'%';'&';'*';'+';'-';'.';'/';':';'<';'=';'>';'?';'@';'^';'|';'~';'\\'] in
+  let list = ['$'; '!'; '%'; '&'; '*'; '+'; '-'; '.'; '/'; ':'; '<'; '=';
+    '>'; '?'; '@'; '^'; '|'; '~'; '\\'] in
   let rec loop s i =
     if i == (String.length s)
     then true
@@ -135,7 +135,7 @@ module Options :
            with | Invalid_argument "bool_of_string" -> None)
     | Arg.Set r -> if s = "" then (r := true; Some sl) else None
     | Arg.Clear r -> if s = "" then (r := false; Some sl) else None
-    | Arg.Rest f -> (List.iter f (s::sl); Some [])
+    | Arg.Rest f -> (List.iter f (s :: sl); Some [])
     | Arg.String f ->
         if s = ""
         then (match sl with | s::sl -> (f s; Some sl) | [] -> None)
@@ -191,7 +191,7 @@ module Options :
                 | Some sl -> action_args "" sl spec_list)) in
         action_args s sl specs
     | Arg.Symbol (syms,f) ->
-        (match if s = "" then sl else s::sl with
+        (match if s = "" then sl else s :: sl with
          | s::sl when List.mem s syms -> (f s; Some sl)
          | _ -> None)
   let common_start s1 s2 =
@@ -219,7 +219,7 @@ module Options :
         then
           (match parse_arg fold s sl with
            | Some sl -> parse_aux fold anon_fun sl
-           | None  -> s::(parse_aux fold anon_fun sl))
+           | None  -> s :: (parse_aux fold anon_fun sl))
         else ((anon_fun s :unit  ); parse_aux fold anon_fun sl)
   let align_doc key s =
     let s =
@@ -238,7 +238,7 @@ module Options :
         then
           let rec loop i =
             if i = (String.length s)
-            then ("",s)
+            then ("", s)
             else
               if (s.[i]) <> '>'
               then loop (i + 1)
@@ -246,15 +246,15 @@ module Options :
                 let p = String.sub s 0 (i + 1) in
                 let rec loop i =
                   if i >= (String.length s)
-                  then (p,"")
+                  then (p, "")
                   else
                     if (s.[i]) = ' '
                     then loop (i + 1)
-                    else (p,(String.sub s i ((String.length s) - i))) in
+                    else (p, (String.sub s i ((String.length s) - i))) in
                 loop (i + 1) in
           loop 0
-        else ("",s)
-      else ("","") in
+        else ("", s)
+      else ("", "") in
     let tab =
       String.make (max 1 ((16 - (String.length key)) - (String.length p)))
         ' ' in
@@ -276,11 +276,11 @@ module Options :
          | _ -> eprintf "  %s %s\n" key (align_doc key doc)) l
   let remaining_args argv =
     let rec loop l i =
-      if i == (Array.length argv) then l else loop ((argv.(i))::l) (i + 1) in
+      if i == (Array.length argv) then l else loop ((argv.(i)) :: l) (i + 1) in
     List.rev (loop [] (Arg.current.contents + 1)) let init_spec_list = ref []
   let ext_spec_list = ref [] let init spec_list = init_spec_list := spec_list
   let add name spec descr =
-    ext_spec_list := ((name,spec,descr)::(ext_spec_list.contents))
+    ext_spec_list := ((name, spec, descr) :: (ext_spec_list.contents))
   let fold f init =
     let spec_list = init_spec_list.contents @ ext_spec_list.contents in
     let specs =

@@ -56,11 +56,11 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
          with | Not_found  -> default.contents)
     | name -> name
   let find name tag =
-    let key = ((expander_name tag name),(Exp_key.pack tag ())) in
+    let key = ((expander_name tag name), (Exp_key.pack tag ())) in
     Exp_fun.unpack tag (List.assoc key expanders_table.contents)
   let add name tag f =
-    let elt = ((name,(Exp_key.pack tag ())),(Exp_fun.pack tag f)) in
-    expanders_table := (elt::(expanders_table.contents))
+    let elt = ((name, (Exp_key.pack tag ())), (Exp_fun.pack tag f)) in
+    expanders_table := (elt :: (expanders_table.contents))
   let dump_file = ref None
   type quotation_error_message =  
     | Finding
@@ -119,25 +119,25 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       try expander loc loc_name_opt quot.q_contents
       with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
       | FanLoc.Exc_located (iloc,exc) ->
-          let exc1 = Quotation ((quot.q_name),pos_tag,Expanding,exc) in
-          raise (FanLoc.Exc_located (iloc,exc1))
+          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
       | exc ->
-          let exc1 = Quotation ((quot.q_name),pos_tag,Expanding,exc) in
-          raise (FanLoc.Exc_located (loc,exc1))
+          let exc1 = Quotation ((quot.q_name), pos_tag, Expanding, exc) in
+          raise (FanLoc.Exc_located (loc, exc1))
   let parse_quotation_result parse loc quot pos_tag str =
     let open FanSig in
       try parse loc str
       with
       | FanLoc.Exc_located (iloc,Quotation (n,pos_tag,Expanding ,exc)) ->
-          let ctx = ParsingResult (iloc,(quot.q_contents)) in
-          let exc1 = Quotation (n,pos_tag,ctx,exc) in
-          raise (FanLoc.Exc_located (iloc,exc1))
+          let ctx = ParsingResult (iloc, (quot.q_contents)) in
+          let exc1 = Quotation (n, pos_tag, ctx, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
       | FanLoc.Exc_located (iloc,(Quotation _ as exc)) ->
-          raise (FanLoc.Exc_located (iloc,exc))
+          raise (FanLoc.Exc_located (iloc, exc))
       | FanLoc.Exc_located (iloc,exc) ->
-          let ctx = ParsingResult (iloc,(quot.q_contents)) in
-          let exc1 = Quotation ((quot.q_name),pos_tag,ctx,exc) in
-          raise (FanLoc.Exc_located (iloc,exc1))
+          let ctx = ParsingResult (iloc, (quot.q_contents)) in
+          let exc1 = Quotation ((quot.q_name), pos_tag, ctx, exc) in
+          raise (FanLoc.Exc_located (iloc, exc1))
   let expand loc quotation tag =
     let open FanSig in
       let pos_tag = DynAst.string_of_tag tag in
@@ -147,12 +147,12 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
         with | FanLoc.Exc_located (_,Quotation _) as exc -> raise exc
         | FanLoc.Exc_located (qloc,exc) ->
             raise
-              (FanLoc.Exc_located
-                 (qloc,(Quotation (name,pos_tag,Finding,exc))))
+              (FanLoc.Exc_located (qloc,
+                 (Quotation (name, pos_tag, Finding, exc))))
         | exc ->
             raise
-              (FanLoc.Exc_located
-                 (loc,(Quotation (name,pos_tag,Finding,exc)))) in
+              (FanLoc.Exc_located (loc,
+                 (Quotation (name, pos_tag, Finding, exc)))) in
       let loc = FanLoc.join (FanLoc.move `start quotation.q_shift loc) in
       expand_quotation loc expander pos_tag quotation
   let parse_quot_string entry loc loc_name_opt s =
@@ -169,7 +169,8 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
       ((parse_quot_string entry_eoi loc loc_name_opt s) |> (mexpr loc)) |>
         anti_filter#expr in
     let expand_str_item loc loc_name_opt s =
-      let exp_ast = expand_expr loc loc_name_opt s in Ast.StExp (loc,exp_ast) in
+      let exp_ast = expand_expr loc loc_name_opt s in
+      Ast.StExp (loc, exp_ast) in
     let expand_patt _loc loc_name_opt s =
       BatRef.protect FanConfig.antiquotations true
         (fun _ ->
@@ -185,16 +186,13 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
                       (_loc,Ast.PaId
                        (_,Ast.IdAcc (_,Ast.IdUid (_,"Ast"),Ast.IdUid (_,u))),_)
                       ->
-                      Ast.PaApp
-                        (_loc,(Ast.PaId
-                                 (_loc,(Ast.IdAcc
-                                          (_loc,(Ast.IdUid (_loc,"Ast")),(
-                                          Ast.IdUid (_loc,u)))))),(Ast.PaId
-                                                                    (_loc,(
-                                                                    Ast.IdLid
-                                                                    (_loc,name)))))
+                      Ast.PaApp (_loc,
+                        (Ast.PaId (_loc,
+                           (Ast.IdAcc (_loc, (Ast.IdUid (_loc, "Ast")),
+                              (Ast.IdUid (_loc, u)))))),
+                        (Ast.PaId (_loc, (Ast.IdLid (_loc, name)))))
                   | Ast.PaApp (_loc,a,b) ->
-                      Ast.PaApp (_loc,(subst_first_loc a),b)
+                      Ast.PaApp (_loc, (subst_first_loc a), b)
                   | p -> p) in
                subst_first_loc exp_ast) in
     add name DynAst.expr_tag expand_expr;
@@ -208,7 +206,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
   let add_quotation_of_expr ~name  ~entry  =
     let expand_fun = parse_quot_string (Gram.eoi_entry entry) in
     let mk_fun loc loc_name_opt s =
-      Ast.StExp (loc,(expand_fun loc loc_name_opt s)) in
+      Ast.StExp (loc, (expand_fun loc loc_name_opt s)) in
     add name DynAst.expr_tag expand_fun; add name DynAst.str_item_tag mk_fun
   let add_quotation_of_patt ~name  ~entry  =
     add name DynAst.patt_tag (parse_quot_string (Gram.eoi_entry entry))
