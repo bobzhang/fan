@@ -1951,6 +1951,10 @@ New syntax:\
         | `ANTIQUOT ((""|"stri"|"anti"|"list" as n),s); semi; SELF{st} ->
             <:str_item< $(anti:mk_anti n ~c:"str_item" s); $st >>
         | LIST0 [ str_item{st}; semi -> st ]{l} -> Ast.stSem_of_list l  ] ]
+    phrase:
+      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> (* directive to be the same as normal syntax*)
+            <:str_item< # $n $dp >>
+        | str_item{st}; semi -> st  ] ]        
     top_phrase:
       [ [ phrase{ph} -> Some ph
         | `EOI -> None ] ]
@@ -1959,10 +1963,7 @@ New syntax:\
             ([ <:str_item< # $n $dp >> ], stopped_at _loc)
         | str_item{si}; semi;  SELF{(sil, stopped)} -> ([si :: sil], stopped)
         | `EOI -> ([], None) ] ]
-    phrase:
-      [ [ "#"; a_LIDENT{n}; opt_expr{dp}; ";;" -> (* directive to be the same as normal syntax*)
-            <:str_item< # $n $dp >>
-        | str_item{st}; semi -> st  ] ]
+    
     a_INT:
       [ [ `ANTIQUOT ((""|"int"|"`int" as n),s) -> mk_anti n s
         | `INT (_, s) -> s ] ]

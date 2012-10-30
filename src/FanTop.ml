@@ -1,8 +1,7 @@
 
-(* module Gram = Grammar.Static; *)
 module P = MakePreCast.Make (struct end) ;
 open P;
-(* open FanSig;   *)
+
 let wrap parse_fun lb =
   let () = iter_and_take_callbacks (fun (_, f) -> f ()) in
   let not_filtered_token_stream = FanLexer.from_lexbuf lb in
@@ -33,6 +32,22 @@ let toplevel_phrase token_stream =
         Ast2pt.phrase str_item
     | None -> raise End_of_file ];
 
+
+    
+let fake token_stream = begin 
+  try
+    Stream.iter (fun (tok,_) ->
+      if tok= `INT (3,"3") then raise Not_found
+      else
+        Format.fprintf Format.std_formatter
+          "@[%a@]@." FanToken.print tok ) token_stream;
+  with
+    [Not_found -> ()];
+  prerr_endline "got it";
+  Parsetree.Ptop_dir "pwd" Parsetree.Pdir_none;
+end;
+
+  
 let use_file token_stream =
   let (pl0, eoi) =
     loop () where rec loop () =
@@ -76,7 +91,6 @@ let _  =   begin
 let open FanParsers in  begin
    pa_r (module P);
    pa_rp (module P);
-   (* pa_qb; *)
    pa_q (module P);
    pa_g (module P);
    pa_l (module P);
@@ -91,7 +105,9 @@ let revise ()  = begin
   Toploop.parse_toplevel_phrase := revise_parser;
 end;
 
-
+let token() = begin
+  Toploop.parse_toplevel_phrase := wrap fake ;
+end;
 
 
 

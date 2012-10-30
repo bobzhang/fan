@@ -53,7 +53,8 @@ let rec infix_kwds_filter = parser
                 [< (`LIDENT i, _loc); '(infix_kwds_filter xs) >]
         | [< 'xs >] ->
                 [< tok; '(infix_kwds_filter xs) >] ]
-    | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >] ];
+  | [< x; 'xs >] -> [< x; '(infix_kwds_filter xs) >]
+  | [< >] -> [< >] ];
   
 
 (* let mk_lang_meta fan_quots fan_quot fan_str_item fan_expr fan_class_str_item fan_ctyp =  *)
