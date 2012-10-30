@@ -302,7 +302,12 @@ class printer  ()= object(self:'self)
           list_of_pattern  (p2::acc) p1
       | x -> x::acc in
     match x.ppat_desc with
-    | Ppat_alias (p, s) -> pp f "@[<2>%a@;as@;%s@]"  self#pattern p  s.txt (* RA*)
+    | Ppat_alias (p, s) -> pp f "@[<2>%a@;as@;%a@]"
+          self#pattern p
+          (fun f s->
+            if is_infix (fixity_of_string s.txt) || List.mem s.txt.[0] prefix_symbols
+            then pp f "( %s )" s.txt
+            else pp f "%s" s.txt ) s (* RA*)
     | Ppat_or (p1, p2) -> (* *)
         (match p1 with
         | {ppat_desc=Ppat_constant (Const_char a);_} -> begin 
@@ -498,7 +503,7 @@ class printer  ()= object(self:'self)
           (self#list string_x_expression  ~sep:";"  )  l;
     | Pexp_letmodule (s, me, e) ->
         pp f "@[<hov2>let@ module@ %s@ =@ %a@ in@ %a@]" s.txt
-          self#module_expr me  self#expression e
+          self#reset#module_expr me  self#expression e
     | Pexp_assert (e) ->
         pp f "@[<hov2>assert@ %a@]" self#expression e 
     | Pexp_assertfalse ->

@@ -289,3 +289,6 @@ let g () = begin
   List.iter (function Some x -> x | None -> y) 3  ;
   3
 end
+let h () =
+  match x with
+  |{x=y;_} as ( * )-> x 
