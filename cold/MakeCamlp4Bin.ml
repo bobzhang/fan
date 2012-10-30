@@ -22,7 +22,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
   let (objext,libext) =
     if DynLoader.is_native then (".cmxs",".cmxs") else (".cmo",".cma")
   let rewrite_and_load n x =
-    let dyn_loader = (DynLoader.instance.contents) () in
+    let dyn_loader = DynLoader.instance.contents () in
     let find_in_path = DynLoader.find_in_path dyn_loader in
     let real_load name =
       add_to_loaded_modules name; DynLoader.load dyn_loader name in
@@ -82,7 +82,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
      | _ ->
          let y = "Camlp4" ^ (n ^ ("/" ^ (x ^ objext))) in
          real_load ((try find_in_path y with | Not_found  -> x)));
-    (rcall_callback.contents) ()
+    rcall_callback.contents ()
   let print_warning = eprintf "%a:\n%s@." FanLoc.print
   let rec parse_file dyn_loader name pa getdir =
     let directive_handler =
@@ -124,13 +124,11 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
     | _ -> None
   let process_intf dyn_loader name =
     process dyn_loader name PreCast.CurrentParser.parse_interf
-      PreCast.CurrentPrinter.print_interf
-      ((new Camlp4Ast.clean_ast)#sig_item)
+      PreCast.CurrentPrinter.print_interf (new Camlp4Ast.clean_ast)#sig_item
       PreCast.Syntax.AstFilters.fold_interf_filters gind
   let process_impl dyn_loader name =
     process dyn_loader name PreCast.CurrentParser.parse_implem
-      PreCast.CurrentPrinter.print_implem
-      ((new Camlp4Ast.clean_ast)#str_item)
+      PreCast.CurrentPrinter.print_implem (new Camlp4Ast.clean_ast)#str_item
       PreCast.Syntax.AstFilters.fold_implem_filters gimd
   let just_print_the_version () = printf "%s@." FanConfig.version; exit 0
   let print_version () =
@@ -170,8 +168,8 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
       match t.contents with | Some f -> f usage | None  -> () in
     (task,do_task)
   let input_file x =
-    let dyn_loader = (DynLoader.instance.contents) () in
-    (rcall_callback.contents) ();
+    let dyn_loader = DynLoader.instance.contents () in
+    rcall_callback.contents ();
     (match x with
      | Intf file_name -> task (process_intf dyn_loader) file_name
      | Impl file_name -> task (process_impl dyn_loader) file_name
@@ -183,7 +181,7 @@ module Camlp4Bin(PreCast:Sig.PRECAST) =
           at_exit ((fun () -> Sys.remove f)))
      | ModuleImpl file_name -> rewrite_and_load "" file_name
      | IncludeDir dir -> DynLoader.include_dir dyn_loader dir);
-    (rcall_callback.contents) ()
+    rcall_callback.contents ()
   let initial_spec_list =
     [("-I",(Arg.String ((fun x -> input_file (IncludeDir x)))),"<directory>  Add directory in search patch for object files.");("-where",(
     Arg.Unit print_stdlib),"Print camlp4 library directory and exit.");("-nolib",(

@@ -1580,9 +1580,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     | 
                                                                     `UIDENT _
                                                                     ->
-                                                                    ((((new
+                                                                    (((new
                                                                     Ast.reloc)
-                                                                    _loc)#expr)
+                                                                    _loc)#expr
                                                                     e :
                                                                     'expr )
                                                                     | 
@@ -1611,9 +1611,9 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                                                     (let p =
                                                                     Expr.substp
                                                                     _loc [] e in
-                                                                    (((new
+                                                                    ((new
                                                                     Ast.reloc)
-                                                                    _loc)#patt)
+                                                                    _loc)#patt
                                                                     p :
                                                                     'patt )
                                                                     | 
@@ -1640,7 +1640,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                 if (List.length el) = (List.length sl)
                                 then
                                   let env = List.combine sl el in
-                                  (((new Expr.subst) _loc env)#expr) e
+                                  ((new Expr.subst) _loc env)#expr e
                                 else incorrect_number _loc el sl
                                :'expr )
                            | _ -> assert false))))]))])))) ());
@@ -1663,7 +1663,7 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                 then
                                   let env = List.combine sl pl in
                                   let p = Expr.substp _loc env e in
-                                  (((new Ast.reloc) _loc)#patt) p
+                                  ((new Ast.reloc) _loc)#patt p
                                 else incorrect_number _loc pl sl
                                :'patt )
                            | _ -> assert false))))]))])))) ()))
@@ -2293,8 +2293,8 @@ module MakeMacroParser(Syntax:Sig.Camlp4Syntax) = struct
                                           fun (_loc : FanLoc.t ) ->
                                             match __camlp4_0 with
                                             | `LIDENT i ->
-                                                ((((new Expr.subst) _loc
-                                                     ([(i,def)]))#expr) body
+                                                (((new Expr.subst) _loc
+                                                    ([(i,def)]))#expr body
                                                 :'expr )
                                             | _ -> assert false))));(([`Skeyword
            "IFNDEF";`Snterm (Gram.obj (uident :'uident Gram.t  ));`Skeyword
@@ -2529,7 +2529,7 @@ module MakeNothing(Syn:Sig.Camlp4Syntax) = struct
   module Ast = Camlp4Ast
   let _=
     Syn.AstFilters.register_str_item_filter
-      ((Ast.map_expr Expr.map_expr)#str_item)
+      (Ast.map_expr Expr.map_expr)#str_item
   end
 module IdRevisedParser = struct
   let name = "Camlp4OCamlRevisedParser" let version = Sys.ocaml_version

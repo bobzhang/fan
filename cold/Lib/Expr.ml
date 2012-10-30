@@ -370,69 +370,68 @@ let substp _loc env =
         Ast.PaRec (_loc,(substbi bi))
     | _ -> bad_patt _loc in
   loop
-class subst _loc env
-  = object 
-      inherit  (Ast.reloc _loc) as super
-      method! expr =
-        function
-        | Ast.ExId (_,Ast.IdLid (_,x))|Ast.ExId (_,Ast.IdUid (_,x)) as e ->
-            (try List.assoc x env with | Not_found  -> (super#expr) e)
-        | Ast.ExApp
-            (_loc,Ast.ExId (_,Ast.IdUid (_,"LOCATION_OF")),Ast.ExId
-             (_,Ast.IdLid (_,x)))|Ast.ExApp
-            (_loc,Ast.ExId (_,Ast.IdUid (_,"LOCATION_OF")),Ast.ExId
-             (_,Ast.IdUid (_,x)))
-            as e ->
-            (try
-               let loc = Ast.loc_of_expr (List.assoc x env) in
-               let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
-               Ast.ExApp
-                 (_loc,(Ast.ExId
-                          (_loc,(Ast.IdAcc
-                                   (_loc,(Ast.IdUid (_loc,"FanLoc")),(
-                                   Ast.IdLid (_loc,"of_tuple")))))),(
-                 Ast.ExTup
-                   (_loc,(Ast.ExCom
-                            (_loc,(Ast.ExStr
-                                     (_loc,(Ast.safe_string_escaped a))),(
-                            Ast.ExCom
-                              (_loc,(Ast.ExCom
-                                       (_loc,(Ast.ExCom
-                                                (_loc,(Ast.ExCom
-                                                         (_loc,(Ast.ExCom
+class subst _loc env =
+  object 
+    inherit  (Ast.reloc _loc) as super
+    method! expr =
+      function
+      | Ast.ExId (_,Ast.IdLid (_,x))|Ast.ExId (_,Ast.IdUid (_,x)) as e ->
+          (try List.assoc x env with | Not_found  -> super#expr e)
+      | Ast.ExApp
+          (_loc,Ast.ExId (_,Ast.IdUid (_,"LOCATION_OF")),Ast.ExId
+           (_,Ast.IdLid (_,x)))|Ast.ExApp
+          (_loc,Ast.ExId (_,Ast.IdUid (_,"LOCATION_OF")),Ast.ExId
+           (_,Ast.IdUid (_,x)))
+          as e ->
+          (try
+             let loc = Ast.loc_of_expr (List.assoc x env) in
+             let (a,b,c,d,e,f,g,h) = FanLoc.to_tuple loc in
+             Ast.ExApp
+               (_loc,(Ast.ExId
+                        (_loc,(Ast.IdAcc
+                                 (_loc,(Ast.IdUid (_loc,"FanLoc")),(Ast.IdLid
+                                                                    (_loc,"of_tuple")))))),(
+               Ast.ExTup
+                 (_loc,(Ast.ExCom
+                          (_loc,(Ast.ExStr (_loc,(Ast.safe_string_escaped a))),(
+                          Ast.ExCom
+                            (_loc,(Ast.ExCom
+                                     (_loc,(Ast.ExCom
+                                              (_loc,(Ast.ExCom
+                                                       (_loc,(Ast.ExCom
+                                                                (_loc,(
+                                                                Ast.ExCom
                                                                   (_loc,(
-                                                                  Ast.ExCom
-                                                                    (_loc,(
-                                                                    Ast.ExInt
-                                                                    (_loc,(
-                                                                    string_of_int
-                                                                    b))),(
-                                                                    Ast.ExInt
-                                                                    (_loc,(
-                                                                    string_of_int
-                                                                    c))))),(
                                                                   Ast.ExInt
                                                                     (_loc,(
                                                                     string_of_int
+                                                                    b))),(
+                                                                  Ast.ExInt
+                                                                    (_loc,(
+                                                                    string_of_int
+                                                                    c))))),(
+                                                                Ast.ExInt
+                                                                  (_loc,(
+                                                                  string_of_int
                                                                     d))))),(
-                                                         Ast.ExInt
-                                                           (_loc,(string_of_int
-                                                                    e))))),(
-                                                Ast.ExInt
-                                                  (_loc,(string_of_int f))))),(
-                                       Ast.ExInt (_loc,(string_of_int g))))),(
-                              if h
-                              then Ast.ExId (_loc,(Ast.IdUid (_loc,"True")))
-                              else Ast.ExId (_loc,(Ast.IdUid (_loc,"False")))))))))))
-             with | Not_found  -> (super#expr) e)
-        | e -> (super#expr) e
-      method! patt =
-        function
-        | Ast.PaId (_,Ast.IdLid (_,x))|Ast.PaId (_,Ast.IdUid (_,x)) as p ->
-            (try substp _loc [] (List.assoc x env)
-             with | Not_found  -> (super#patt) p)
-        | p -> (super#patt) p
-    end
+                                                       Ast.ExInt
+                                                         (_loc,(string_of_int
+                                                                  e))))),(
+                                              Ast.ExInt
+                                                (_loc,(string_of_int f))))),(
+                                     Ast.ExInt (_loc,(string_of_int g))))),(
+                            if h
+                            then Ast.ExId (_loc,(Ast.IdUid (_loc,"True")))
+                            else Ast.ExId (_loc,(Ast.IdUid (_loc,"False")))))))))))
+           with | Not_found  -> super#expr e)
+      | e -> super#expr e
+    method! patt =
+      function
+      | Ast.PaId (_,Ast.IdLid (_,x))|Ast.PaId (_,Ast.IdUid (_,x)) as p ->
+          (try substp _loc [] (List.assoc x env)
+           with | Not_found  -> super#patt p)
+      | p -> super#patt p
+  end
 let map_expr =
   function
   | Ast.ExApp (_,e,Ast.ExId (_,Ast.IdUid (_,"NOTHING")))|Ast.ExFun
@@ -658,7 +657,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                                (_loc,"IdAnt")))))),(
                                            mloc _loc))),p)
                             | _ -> p))
-      | p -> (super#patt) p
+      | p -> super#patt p
     method! expr =
       function
       | Ast.ExAnt (_loc,s)|Ast.ExStr (_loc,s) as e ->
@@ -1105,7 +1104,7 @@ let antiquot_expander ~parse_patt  ~parse_expr  =
                                                                (_loc,"IdAnt")))))),(
                                            mloc _loc))),e)
                             | _ -> e))
-      | e -> (super#expr) e
+      | e -> super#expr e
   end
 let capture_antiquot =
   object 
@@ -1122,12 +1121,12 @@ let capture_antiquot =
                let () = constraints <- (cons,cons')::constraints in
                Ast.PaId (_loc,(Ast.IdLid (_loc,code')))
            | None  -> p)
-      | p -> (super#patt) p
+      | p -> super#patt p
     method get_captured_variables = constraints
     method clear_captured_variables = constraints <- []
   end
 let filter_patt_with_captured_variables patt =
   capture_antiquot#clear_captured_variables;
-  let patt = (capture_antiquot#patt) patt in
+  let patt = capture_antiquot#patt patt in
   let constraints = capture_antiquot#get_captured_variables in
   (patt,constraints)

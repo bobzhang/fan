@@ -64,7 +64,7 @@ let entry_of_symb entry =
   | `Snterml (e,_) -> e
   | _ -> raise Stream.Failure
 let continue entry loc a s son p1 (__strm : _ Stream.t ) =
-  let a = ((entry_of_symb entry s).econtinue) 0 loc a __strm in
+  let a = (entry_of_symb entry s).econtinue 0 loc a __strm in
   let act =
     try p1 __strm
     with
@@ -106,11 +106,11 @@ let rec parser_of_tree entry nlevn alevn =
   | LocAct (act,_) -> (fun (__strm : _ Stream.t ) -> act)
   | Node {node = `Sself;son = LocAct (act,_);brother = DeadEnd } ->
       (fun (__strm : _ Stream.t ) ->
-         let a = (entry.estart) alevn __strm in Action.getf act a)
+         let a = entry.estart alevn __strm in Action.getf act a)
   | Node {node = `Sself;son = LocAct (act,_);brother = bro} ->
       let p2 = parser_of_tree entry nlevn alevn bro in
       (fun (__strm : _ Stream.t ) ->
-         match try Some ((entry.estart) alevn __strm)
+         match try Some (entry.estart alevn __strm)
                with | Stream.Failure  -> None
          with
          | Some a -> Action.getf act a
@@ -303,11 +303,11 @@ let rec parser_of_tree entry nlevn alevn =
          let bp = loc_bp strm in
          let (__strm : _ Stream.t ) = strm in
          let (act,loc) = add_loc bp pt __strm in Action.getf act loc)
-  | `Snterm e -> (fun (__strm : _ Stream.t ) -> (e.estart) 0 __strm)
+  | `Snterm e -> (fun (__strm : _ Stream.t ) -> e.estart 0 __strm)
   | `Snterml (e,l) ->
-      (fun (__strm : _ Stream.t ) -> (e.estart) (level_number e l) __strm)
-  | `Sself -> (fun (__strm : _ Stream.t ) -> (entry.estart) 0 __strm)
-  | `Snext -> (fun (__strm : _ Stream.t ) -> (entry.estart) nlevn __strm)
+      (fun (__strm : _ Stream.t ) -> e.estart (level_number e l) __strm)
+  | `Sself -> (fun (__strm : _ Stream.t ) -> entry.estart 0 __strm)
+  | `Snext -> (fun (__strm : _ Stream.t ) -> entry.estart nlevn __strm)
   | `Skeyword kwd ->
       (fun (__strm : _ Stream.t ) ->
          match Stream.peek __strm with
@@ -340,7 +340,7 @@ let rec start_parser_of_levels entry clevn =
                      let (act,loc) = add_loc bp p2 __strm in
                      let strm = __strm in
                      let a = Action.getf act loc in
-                     (entry.econtinue) levn loc a strm)
+                     entry.econtinue levn loc a strm)
             | _ ->
                 (fun levn ->
                    fun strm ->
@@ -354,7 +354,7 @@ let rec start_parser_of_levels entry clevn =
                         with
                         | Some (act,loc) ->
                             let a = Action.getf act loc in
-                            (entry.econtinue) levn loc a strm
+                            entry.econtinue levn loc a strm
                         | _ -> p1 levn __strm))))
 let start_parser_of_entry entry =
   match entry.edesc with
@@ -387,7 +387,7 @@ let rec continue_parser_of_levels entry clevn =
                        | Stream.Failure  ->
                            let (act,loc) = add_loc bp p2 __strm in
                            let a = Action.getf2 act a loc in
-                           (entry.econtinue) levn loc a strm)))
+                           entry.econtinue levn loc a strm)))
 let continue_parser_of_entry entry =
   match entry.edesc with
   | Dlevels elev ->

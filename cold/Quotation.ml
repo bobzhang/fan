@@ -50,7 +50,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
   let default_at_pos pos str = Hashtbl.replace default_tbl pos str
   let expander_name pos_tag name =
     let str = DynAst.string_of_tag pos_tag in
-    match (translate.contents) name with
+    match translate.contents name with
     | "" ->
         (try Hashtbl.find default_tbl str
          with | Not_found  -> default.contents)
@@ -167,7 +167,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
     let entry_eoi = Gram.eoi_entry entry in
     let expand_expr loc loc_name_opt s =
       ((parse_quot_string entry_eoi loc loc_name_opt s) |> (mexpr loc)) |>
-        (anti_filter#expr) in
+        anti_filter#expr in
     let expand_str_item loc loc_name_opt s =
       let exp_ast = expand_expr loc loc_name_opt s in Ast.StExp (loc,exp_ast) in
     let expand_patt _loc loc_name_opt s =
@@ -175,7 +175,7 @@ module Make(TheAntiquotSyntax:AntiquotSyntax) : S =
         (fun _ ->
            let ast = Gram.parse_string entry_eoi _loc s in
            let meta_ast = mpatt _loc ast in
-           let exp_ast = (anti_filter#patt) meta_ast in
+           let exp_ast = anti_filter#patt meta_ast in
            match loc_name_opt with
            | None  -> exp_ast
            | Some name ->

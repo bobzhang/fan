@@ -608,7 +608,7 @@ let text_of_functorial_extend _loc gram gl el =
 let mk_tok _loc ?restrict  p t =
   match restrict with
   | None  ->
-      let p' = (Camlp4Ast.wildcarder#patt) p in
+      let p' = Camlp4Ast.wildcarder#patt p in
       let match_fun =
         if Camlp4Ast.is_irrefut_patt p'
         then
@@ -633,7 +633,7 @@ let mk_tok _loc ?restrict  p t =
       let text = TXtok (_loc,match_fun,"Normal",descr) in
       {used = []; text = text; styp = t; pattern = (Some p) }
   | Some restrict ->
-      let p' = (Camlp4Ast.wildcarder#patt) p in
+      let p' = Camlp4Ast.wildcarder#patt p in
       let match_fun =
         Ast.ExFun
           (_loc,(Ast.McOr

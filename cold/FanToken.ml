@@ -94,7 +94,7 @@ module Filter =
   let filter x =
     let f (tok,loc) =
       let tok = keyword_conversion tok x.is_kwd in (tok,loc) in
-    fun strm -> (x.filter) (Stream.map f strm)
+    fun strm -> x.filter (Stream.map f strm)
   let define_filter x f = x.filter <- f x.filter let keyword_added _ _ _ = ()
   let keyword_removed _ _ = ()
   end

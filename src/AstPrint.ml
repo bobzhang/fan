@@ -368,7 +368,8 @@ class printer  ()= object(self:'self)
     | Pexp_apply
         ({pexp_desc=
           Pexp_ident
-            {txt= Ldot (Lident (("Array"|"String") as s),"get");_};_},[(_,e1);(_,e2)]) -> begin
+            {txt= Ldot (Lident (("Array"|"String") as s),"get");_};_},
+         [(_,e1);(_,e2)]) -> begin
               let fmt:(_,_,_)format =
                 if s= "Array" then "@[<hov>%a.(%a)@]" else "@[<hov>%a.[%a]@]" in
               pp f fmt   self#simple_expr e1 self#expression e2;
@@ -428,7 +429,7 @@ class printer  ()= object(self:'self)
                 pp f "@[<2>%a %a@]" self#simple_expr e  (self#list self#label_x_expression_param)  l)
           | _ -> 
             pp f "@[<hov2>%a@]" begin fun f (e,l) -> 
-              pp f "%a@ %a" self#simple_expr e
+              pp f "%a@ %a" self#expression2 e
                 (self#list self#label_x_expression_param)  l 
             end (e,l))
             
@@ -471,8 +472,6 @@ class printer  ()= object(self:'self)
         pp f "@[<hv>%a@]"
           (self#list self#under_semi#expression ~sep:";@;") lst
     | Pexp_when (_e1, _e2) ->  assert false (*FIXME handled already in pattern *)
-    | Pexp_send (e, s) ->
-        pp f "@[<hov2>%a#%s@]" self#simple_expr e  s 
     | Pexp_new (li) ->
         pp f "@[<hov2>new@ %a@]" self#longident_loc li;
     | Pexp_setinstvar (s, e) ->
@@ -502,10 +501,13 @@ class printer  ()= object(self:'self)
   method expression1 f x =
     match x.pexp_desc with
     | Pexp_object cs -> pp f "%a" self#class_structure cs
-    | _ -> self#expression2 f x 
+    | _ -> self#expression2 f x
+  (* used in [Pexp_apply] *)        
   method expression2 f x =
     match x.pexp_desc with
-    | Pexp_field (e, li) -> pp f "@[<hov2>%a.%a@]" self#simple_expr e self#longident_loc li 
+    | Pexp_field (e, li) -> pp f "@[<hov2>%a.%a@]" self#simple_expr e self#longident_loc li
+    | Pexp_send (e, s) ->  pp f "@[<hov2>%a#%s@]" self#simple_expr e  s 
+
     | _ -> self#simple_expr f x 
   method simple_expr f x =
     match x.pexp_desc with
@@ -579,7 +581,7 @@ class printer  ()= object(self:'self)
       | Pctf_cstr (ct1, ct2) ->
           pp f "@[<2>constraint@ %a@ =@ %a@]"
             self#core_type ct1 self#core_type ct2 in 
-    pp f "@[<hv0>@[<hv2>object @[<1>%a@]@ %a@]@ end@]" (* "@\nobject%a@\n%a@\nend" *)
+    pp f "@[<hv0>@[<hv2>object @[<1>%a@]@ %a@]@ end@]"
       (fun f ct -> match ct.ptyp_desc with
       | Ptyp_any -> ()
       | _ -> pp f "(%a)" self#core_type ct) ct
@@ -648,7 +650,7 @@ class printer  ()= object(self:'self)
         pp f "@[<2>initializer@ %a@]" self#expression e 
 
   method class_structure f { pcstr_pat = p; pcstr_fields =  l } =
-    pp f "@[<hv0>@[<hv2>object %a@;%a@]@ end@]" 
+    pp f "@[<hv0>@[<hv2>object %a@;%a@]@;end@]" 
       (fun f p -> match p.ppat_desc with
       | Ppat_any -> ()
       | Ppat_constraint _ -> pp f "%a"  self#pattern  p
@@ -881,11 +883,14 @@ class printer  ()= object(self:'self)
                     pp f ": @[%a@] " self#class_type  ct ;
                     ce
                 | _ -> ce ) in
-              pp f "= %a" self#class_expr ce ) x in
+              pp f "=@;%a" self#class_expr ce ) x in
         (match l with
         | [] -> ()
         | [x] -> pp f "@[<2>class %a@]" class_declaration x
-        | xs ->  self#list ~first:"@[<v0>class @[<2>" ~sep:"@]@;and @[" ~last:"@]@]" class_declaration f xs)
+        | xs ->  self#list
+              ~first:"@[<v0>class @[<2>"
+              ~sep:"@]@;and @["
+              ~last:"@]@]" class_declaration f xs)
     | Pstr_class_type (l) ->
         self#class_type_declaration_list f l ;
     | Pstr_primitive (s, vd) ->

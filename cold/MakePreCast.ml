@@ -89,15 +89,15 @@ module Make(U:sig  end) : Sig.PRECAST =
   module CurrentParser =
     struct
     let parse_interf ?directive_handler  loc strm =
-      (sig_item_parser.contents) ?directive_handler loc strm
+      sig_item_parser.contents ?directive_handler loc strm
     let parse_implem ?directive_handler  loc strm =
-      (str_item_parser.contents) ?directive_handler loc strm
+      str_item_parser.contents ?directive_handler loc strm
     end
   module CurrentPrinter =
     struct
     let print_interf ?input_file  ?output_file  ast =
-      (sig_item_printer.contents) ?input_file ?output_file ast
+      sig_item_printer.contents ?input_file ?output_file ast
     let print_implem ?input_file  ?output_file  ast =
-      (str_item_printer.contents) ?input_file ?output_file ast
+      str_item_printer.contents ?input_file ?output_file ast
     end
   end 

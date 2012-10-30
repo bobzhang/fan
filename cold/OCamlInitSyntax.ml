@@ -3,7 +3,7 @@ module Make(U:sig  end) : Sig.Camlp4Syntax = struct
   let default_warning loc txt =
     Format.eprintf "<W> %a: %s@." FanLoc.print loc txt
   let current_warning = ref default_warning
-  let print_warning loc txt = (current_warning.contents) loc txt
+  let print_warning loc txt = current_warning.contents loc txt
   let a_CHAR = Gram.mk "a_CHAR" let a_FLOAT = Gram.mk "a_FLOAT"
   let a_INT = Gram.mk "a_INT" let a_INT32 = Gram.mk "a_INT32"
   let a_INT64 = Gram.mk "a_INT64" let a_LABEL = Gram.mk "a_LABEL"

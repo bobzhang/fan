@@ -4,8 +4,8 @@ open Structure
 open Tools
 type 'a t = internal_entry  
 let name e = e.ename
-let print ppf e = fprintf ppf "%a@\n" (Print.text#entry) e
-let dump ppf e = fprintf ppf "%a@\n" (Print.dump#entry) e
+let print ppf e = fprintf ppf "%a@\n" Print.text#entry e
+let dump ppf e = fprintf ppf "%a@\n" Print.dump#entry e
 let trace_parser = ref false
 let mk g n =
   {egram = g;
@@ -21,7 +21,7 @@ let action_parse entry ts =
      let p =
        if trace_parser.contents then Format.fprintf else Format.ifprintf in
      let () = p Format.err_formatter "@[<4>%s@ " entry.ename in
-     let res = (entry.estart) 0 ts in
+     let res = entry.estart 0 ts in
      let () = p Format.err_formatter "@]@." in res
    with
    | Stream.Failure  ->
@@ -29,7 +29,7 @@ let action_parse entry ts =
          (Stream.Error ("illegal begin of " ^ entry.ename))
    | FanLoc.Exc_located (_,_) as exc -> raise exc
    | exc -> FanLoc.raise (get_prev_loc ts) exc :Action.t  )
-let lex entry loc cs = ((entry.egram).glexer) loc cs
+let lex entry loc cs = (entry.egram).glexer loc cs
 let lex_string entry loc str = lex entry loc (Stream.of_string str)
 let filter entry ts =
   keep_prev_loc (FanToken.Filter.filter (get_filter entry.egram) ts)
