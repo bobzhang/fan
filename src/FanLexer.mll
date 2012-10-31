@@ -5,8 +5,6 @@
 
 (** A lexical analyzer. *)
 
-(* FIXME interface module Make (Token : Token) |+ Note that this Token sig is not in Sig +| *)
-(* : Sig.Lexer. S with module FanLoc = Token.FanLoc and module Token = Token; *)
 
 (* type context =
 { loc        : FanLoc.t    ;
@@ -28,263 +26,247 @@ let mk' : context -> Stream.t char -> Stream.t (Token.t * FanLoc.t);            
 open FanUtil
 open LibUtil  
 open Format  
-(* module Make (Token : FanSig.Camlp4Token) *)
-(* (\* = *\) struct *)
-  (* module FanLoc = Token.FanLoc *)
-  (* module Token = Token *)
+open Lexing
 
-  open Lexing
-  (* open Camlp4.Sig *)
-  (* open FanSig *)
-  (* Error report *)
-  (* module Error = struct *)
+type lex_error  =
+  | Illegal_character of char
+  | Illegal_escape    of string
+  | Unterminated_comment
+  | Unterminated_string
+  | Unterminated_quotation
+  | Unterminated_antiquot
+  | Unterminated_string_in_comment
+  | Unterminated_string_in_quotation
+  | Unterminated_string_in_antiquot
+  | Comment_start
+  | Comment_not_end
+  | Literal_overflow of string
 
-    type lex_error  =
-      | Illegal_character of char
-      | Illegal_escape    of string
-      | Unterminated_comment
-      | Unterminated_string
-      | Unterminated_quotation
-      | Unterminated_antiquot
-      | Unterminated_string_in_comment
-      | Unterminated_string_in_quotation
-      | Unterminated_string_in_antiquot
-      | Comment_start
-      | Comment_not_end
-      | Literal_overflow of string
+exception Lexing_error  of lex_error
 
-    exception Lexing_error  of lex_error
+let print_lex_error ppf =  function
+  | Illegal_character c ->
+      fprintf ppf "Illegal character (%s)" (Char.escaped c)
+  | Illegal_escape s ->
+      fprintf ppf "Illegal backslash escape in string or character (%s)" s
+  | Unterminated_comment ->
+      fprintf ppf "Comment not terminated"
+  | Unterminated_string ->
+      fprintf ppf "String literal not terminated"
+  | Unterminated_string_in_comment ->
+      fprintf ppf "This comment contains an unterminated string literal"
+  | Unterminated_string_in_quotation ->
+      fprintf ppf "This quotation contains an unterminated string literal"
+  | Unterminated_string_in_antiquot ->
+      fprintf ppf "This antiquotaion contains an unterminated string literal"
+  | Unterminated_quotation ->
+      fprintf ppf "Quotation not terminated"
+  | Unterminated_antiquot ->
+      fprintf ppf "Antiquotation not terminated"
+  | Literal_overflow ty ->
+      fprintf ppf "Integer literal exceeds the range of representable integers of type %s" ty
+  | Comment_start ->
+      fprintf ppf "this is the start of a comment"
+  | Comment_not_end ->
+      fprintf ppf "this is not the end of a comment"
 
-
-    let print_lex_error ppf =  function
-      | Illegal_character c ->
-          fprintf ppf "Illegal character (%s)" (Char.escaped c)
-      | Illegal_escape s ->
-          fprintf ppf "Illegal backslash escape in string or character (%s)" s
-      | Unterminated_comment ->
-          fprintf ppf "Comment not terminated"
-      | Unterminated_string ->
-          fprintf ppf "String literal not terminated"
-      | Unterminated_string_in_comment ->
-          fprintf ppf "This comment contains an unterminated string literal"
-      | Unterminated_string_in_quotation ->
-          fprintf ppf "This quotation contains an unterminated string literal"
-      | Unterminated_string_in_antiquot ->
-          fprintf ppf "This antiquotaion contains an unterminated string literal"
-      | Unterminated_quotation ->
-          fprintf ppf "Quotation not terminated"
-      | Unterminated_antiquot ->
-          fprintf ppf "Antiquotation not terminated"
-      | Literal_overflow ty ->
-          fprintf ppf "Integer literal exceeds the range of representable integers of type %s" ty
-      | Comment_start ->
-          fprintf ppf "this is the start of a comment"
-      | Comment_not_end ->
-          fprintf ppf "this is not the end of a comment"
-
-    (* let to_string x = *)
-    (*   let b = Buffer.create 50 in *)
-    (*   let () = bprintf b "%a" print x in Buffer.contents b *)
             
-  let lex_error_to_string = to_string_of_printer print_lex_error
-  let _ =
-    Printexc.register_printer (function
-      | Lexing_error e -> Some (lex_error_to_string e)
-      | _ -> None )    
-  (* let module M = FanUtil.ErrorHandler.Register(Error) in () *)
+let lex_error_to_string = to_string_of_printer print_lex_error
+let _ =
+  Printexc.register_printer (function
+    | Lexing_error e -> Some (lex_error_to_string e)
+    | _ -> None )    
 
-  let debug = ref false
-  let opt_char_len  = function
-      | Some _ -> 1
-      | None -> 0
 
-  let print_opt_char fmt = function
-    | Some c ->fprintf fmt "Some %c" c
-    | None -> fprintf fmt "None"
-  module Stack=struct   
-    include Stack
-    let push v stk= begin 
-      if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
-      push v stk
-    end 
-    let pop stk = begin
-      if !debug then Format.eprintf "Pop %a@." print_opt_char (top stk);
-      pop stk
-    end 
-  end
-   (* the trailing char after "<<" *)    
-   let opt_char : char option Stack.t = Stack.create ()
-   let turn_on_quotation_debug () = debug:=true
-   let turn_off_quotation_debug () = debug:=false
-   let clear_stack () = Stack.clear opt_char 
-   let show_stack () = begin
-     eprintf "stack expand to check the error message@.";
-     Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
-   end
-   (* the trailing char after "$" *)    
-   (* let anti_char : char Stack.t = Stack.create ()
-    * let show_anti_stack() = begin
-    *   Stack.iter (Format.eprintf "%c@." ) anti_char
-    * end  *)
-       
+let debug = ref false
+let opt_char_len  = function
+  | Some _ -> 1
+  | None -> 0
 
-  (* open Error *)
+let print_opt_char fmt = function
+  | Some c ->fprintf fmt "Some %c" c
+  | None -> fprintf fmt "None"
+module Stack=struct   
+  include Stack
+  let push v stk= begin 
+    if!debug then Format.eprintf "Push %a@." print_opt_char v else ();
+    push v stk
+  end 
+  let pop stk = begin
+    if !debug then Format.eprintf "Pop %a@." print_opt_char (top stk);
+    pop stk
+  end 
+end
+    (* the trailing char after "<<" *)    
+let opt_char : char option Stack.t = Stack.create ()
+let turn_on_quotation_debug () = debug:=true
+let turn_off_quotation_debug () = debug:=false
+let clear_stack () = Stack.clear opt_char 
+let show_stack () = begin
+  eprintf "stack expand to check the error message@.";
+  Stack.iter (Format.eprintf "%a@." print_opt_char ) opt_char 
+end
+    
+    
 
-  (* To store some context information:
-  *   loc       : position of the beginning of a string, quotation and comment
-  *   in_comment: are we in a comment?
-  *   quotations: shall we lex quotation?
-  *               If quotations is false it's a SYMBOL token.
-  *   antiquots : shall we lex antiquotations.
-  *)
 
-  type context =
-  { loc        : FanLoc.t    ;
-    in_comment : bool     ;
-    quotations : bool     ;
-    antiquots  : bool     ;
-    lexbuf     : lexbuf   ;
-    buffer     : Buffer.t }
+(* To store some context information:
+ *   loc       : position of the beginning of a string, quotation and comment
+ *   in_comment: are we in a comment?
+ *   quotations: shall we lex quotation?
+ *               If quotations is false it's a SYMBOL token.
+ *   antiquots : shall we lex antiquotations.
+ *)
 
-  let default_context lb =
+type context =
+    { loc        : FanLoc.t    ;
+      in_comment : bool     ;
+      quotations : bool     ;
+      antiquots  : bool     ;
+      lexbuf     : lexbuf   ;
+      buffer     : Buffer.t }
+      
+let default_context lb =
   { loc        = FanLoc.ghost ;
     in_comment = false     ;
     quotations = true      ;
     antiquots  = false     ;
     lexbuf     = lb        ;
     buffer     = Buffer.create 256 }
+    
 
-  (* To buffer string literals, quotations and antiquotations *)
+(* To buffer string literals, quotations and antiquotations *)
 
-  let store c = Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
-  let istore_char c i = Buffer.add_char c.buffer (Lexing.lexeme_char c.lexbuf i)
-  let buff_contents c =
-    let contents = Buffer.contents c.buffer in
-    Buffer.reset c.buffer; contents
+let store c = Buffer.add_string c.buffer (Lexing.lexeme c.lexbuf)
+let istore_char c i = Buffer.add_char c.buffer (Lexing.lexeme_char c.lexbuf i)
+let buff_contents c =
+  let contents = Buffer.contents c.buffer in
+  Buffer.reset c.buffer; contents
+    
+let loc c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
+let quotations c = c.quotations
+let antiquots c = c.antiquots
+let is_in_comment c = c.in_comment
+let in_comment c = { (c) with in_comment = true }
 
-  let loc c = FanLoc.merge c.loc (FanLoc.of_lexbuf c.lexbuf)
-  let quotations c = c.quotations
-  let antiquots c = c.antiquots
-  let is_in_comment c = c.in_comment
-  let in_comment c = { (c) with in_comment = true }
+(* update the lexing position to the loc *)    
+let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
 
-  (* update the lexing position to the loc *)    
-  let set_start_p c = c.lexbuf.lex_start_p <- FanLoc.start_pos c.loc
+(* shift the lexing buffer, usually shift back *)    
+let move_start_p shift c =
+  let p = c.lexbuf.lex_start_p in
+  c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift }
+      
+(* create a new context with  the location of the context for the lexer
+   the old context was kept *)      
+let with_curr_loc lexer c =
+  lexer ({c with loc = FanLoc.of_lexbuf c.lexbuf}) c.lexbuf
+    
+let parse_nested ~lexer c = begin 
+  with_curr_loc lexer c;
+  set_start_p c;
+  buff_contents c
+end
 
-  (* shift the lexing buffer, usually shift back *)    
-  let move_start_p shift c =
-    let p = c.lexbuf.lex_start_p in
-    c.lexbuf.lex_start_p <- { (p) with pos_cnum = p.pos_cnum + shift }
+let shift n c = { (c) with loc = FanLoc.move `both n c.loc }
 
-  (* create a new context with  the location of the context for the lexer
-     the old context was kept
-   *)      
-  let with_curr_loc lexer c =
-    lexer ({c with loc = FanLoc.of_lexbuf c.lexbuf}) c.lexbuf
+let store_parse f c =  begin
+  store c ; f c c.lexbuf
+end
 
-  let parse_nested ~lexer c = begin 
-    with_curr_loc lexer c;
-    set_start_p c;
-    buff_contents c
-  end
-  let shift n c = { (c) with loc = FanLoc.move `both n c.loc }
-
-  let store_parse f c =  begin
-    store c ; f c c.lexbuf
-  end
-
-  let parse f c =
-    f c c.lexbuf
-  let mk_quotation quotation c ~name ~loc ~shift ~retract =
-   let s = parse_nested ~lexer:quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
-   let contents = String.sub s 0 (String.length s - retract) in
-   `QUOTATION {
-   FanSig.q_name     = name     ;
-   q_loc      = loc      ;
-   q_shift    = shift    ;
-   q_contents = contents }
+let parse f c =
+  f c c.lexbuf
+let mk_quotation quotation c ~name ~loc ~shift ~retract =
+  let s = parse_nested ~lexer:quotation ({c with loc = FanLoc.of_lexbuf c.lexbuf}) in
+  let contents = String.sub s 0 (String.length s - retract) in
+  `QUOTATION {
+  FanSig.q_name     = name     ;
+  q_loc      = loc      ;
+  q_shift    = shift    ;
+  q_contents = contents }
+    
 
 
-  (* Update the current location with file name and line number. *)
+(* Update the current location with file name and line number. *)
 
-  let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
-    let lexbuf = c.lexbuf in
-    let pos = lexbuf.lex_curr_p in
-    let new_file = match file with
-    | None -> pos.pos_fname
-    | Some s -> s in
-    lexbuf.lex_curr_p <- { pos with
-      pos_fname = new_file;
-      pos_lnum = if absolute then line else pos.pos_lnum + line;
-      pos_bol = pos.pos_cnum - retract;
-    }
+let update_loc   ?file ?(absolute=false) ?(retract=0) ?(line=1)  c  =
+  let lexbuf = c.lexbuf in
+  let pos = lexbuf.lex_curr_p in
+  let new_file = match file with
+  | None -> pos.pos_fname
+  | Some s -> s in
+  lexbuf.lex_curr_p <- { pos with
+                         pos_fname = new_file;
+                         pos_lnum = if absolute then line else pos.pos_lnum + line;
+                         pos_bol = pos.pos_cnum - retract;
+                       }
 	
-    (* To convert integer literals, copied from "../parsing/lexer.mll" *)
+
 	
 
 
-  let err (error:lex_error) (loc:FanLoc.t) =
-    raise(FanLoc.Exc_located(loc, Lexing_error error))
+let err (error:lex_error) (loc:FanLoc.t) =
+  raise(FanLoc.Exc_located(loc, Lexing_error error))
+    
+let warn error loc =
+  Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
 
-  let warn error loc =
-    Format.eprintf "Warning: %a: %a@." FanLoc.print loc print_lex_error error
+}
 
-  }
-
-  let newline = ('\010' | '\013' | "\013\010")
-  let blank = [' ' '\009' '\012']
-  let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
-  let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
-  let identchar =
-    ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
-  let ident = (lowercase|uppercase) identchar*
-  let locname = ident
-  let lident = lowercase identchar *
-  let uident = uppercase identchar *
-   
-  let not_star_symbolchar =
-    ['$' '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
-  let symbolchar = '*' | not_star_symbolchar
-  let quotchar =
-    ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
-  let extra_quot =
-    ['!' '%' '&' '+' '-' '.' '/' ':'  '='  '?' '@' '^' '|' '~' '\\']
-  let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
-  let decimal_literal =
-    ['0'-'9'] ['0'-'9' '_']*
-  let hex_literal =
-    '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
-  let oct_literal =
-    '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
-  let bin_literal =
-    '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
-  let int_literal =
-    decimal_literal | hex_literal | oct_literal | bin_literal
-  let float_literal =
-    ['0'-'9'] ['0'-'9' '_']*
+let newline = ('\010' | '\013' | "\013\010")
+let blank = [' ' '\009' '\012']
+let lowercase = ['a'-'z' '\223'-'\246' '\248'-'\255' '_']
+let uppercase = ['A'-'Z' '\192'-'\214' '\216'-'\222']
+let identchar =
+  ['A'-'Z' 'a'-'z' '_' '\192'-'\214' '\216'-'\246' '\248'-'\255' '\'' '0'-'9']
+let ident = (lowercase|uppercase) identchar*
+let locname = ident
+let lident = lowercase identchar *
+let uident = uppercase identchar *
+    
+let not_star_symbolchar =
+  ['$' '!' '%' '&' '+' '-' '.' '/' ':' '<' '=' '>' '?' '@' '^' '|' '~' '\\']
+let symbolchar = '*' | not_star_symbolchar
+let quotchar =
+  ['!' '%' '&' '+' '-' '.' '/' ':' '=' '?' '@' '^' '|' '~' '\\' '*']
+let extra_quot =
+  ['!' '%' '&' '+' '-' '.' '/' ':'  '='  '?' '@' '^' '|' '~' '\\']
+let hexa_char = ['0'-'9' 'A'-'F' 'a'-'f']
+let decimal_literal =
+  ['0'-'9'] ['0'-'9' '_']*
+let hex_literal =
+  '0' ['x' 'X'] hexa_char ['0'-'9' 'A'-'F' 'a'-'f' '_']*
+let oct_literal =
+  '0' ['o' 'O'] ['0'-'7'] ['0'-'7' '_']*
+let bin_literal =
+  '0' ['b' 'B'] ['0'-'1'] ['0'-'1' '_']*
+let int_literal =
+  decimal_literal | hex_literal | oct_literal | bin_literal
+let float_literal =
+  ['0'-'9'] ['0'-'9' '_']*
     ('.' ['0'-'9' '_']* )?
     (['e' 'E'] ['+' '-']? ['0'-'9'] ['0'-'9' '_']*)?
+  
+(* Delimitors are extended (from 3.09) in a conservative way *)
 
-  (* Delimitors are extended (from 3.09) in a conservative way *)
+(* These chars that can't start an expression or a pattern: *)
+let safe_delimchars = ['%' '&' '/' '@' '^']
+    
+(* These symbols are unsafe since "[<", "[|", etc. exsist. *)
+let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
 
-  (* These chars that can't start an expression or a pattern: *)
-  let safe_delimchars = ['%' '&' '/' '@' '^']
-
-  (* These symbols are unsafe since "[<", "[|", etc. exsist. *)
-  let delimchars = safe_delimchars | ['|' '<' '>' ':' '=' '.']
-
-  let left_delims  = ['(' '[' '{']
-  let right_delims = [')' ']' '}']
-
-  let left_delimitor =
-    (* At least a safe_delimchars *)
-    left_delims delimchars* safe_delimchars (delimchars|left_delims)*
+let left_delims  = ['(' '[' '{']
+let right_delims = [')' ']' '}']
+    
+let left_delimitor =
+(* At least a safe_delimchars *)
+  left_delims delimchars* safe_delimchars (delimchars|left_delims)*
    (* A '(' or a new super '(' without "(<" *)
-   | '(' (['|' ':'] delimchars*)?
-   (* Old brackets, no new brackets starting with "[|" or "[:" *)
-   | '[' ['|' ':']?
+  | '(' (['|' ':'] delimchars*)?
+  (* Old brackets, no new brackets starting with "[|" or "[:" *)
+  | '[' ['|' ':']?
    (* Old "[<","{<" and new ones *)
-   | ['[' '{'] delimchars* '<'
+  | ['[' '{'] delimchars* '<'
    (* Old brace and new ones *)
    | '{' (['|' ':'] delimchars*)?
 
@@ -638,44 +620,7 @@ let from_stream ?quotations loc strm =
 let mk () loc strm =
   from_stream ~quotations:!FanConfig.quotations loc strm
 
-let debug_from_string str =
-  let loc = FanLoc.mk "<string>" in
-  let stream = from_string loc str  in
-  try
-    Stream.iter (fun (t,loc) ->
-    match t with
-    |`EOI -> begin
-        fprintf std_formatter "%a@ %a@." FanToken.print t FanLoc.print loc;
-        raise (Stream.Error "end")
-    end
-    | _ ->  fprintf std_formatter "%a@ %a@."
-          FanToken.print t FanLoc.print loc) stream
-  with
-    Stream.Error "end" -> ()
-  | exn -> begin
-      eprintf "@[%s@]@." (Printexc.to_string exn);
-      raise exn
-  end;;
-
-let debug_from_file file =
-  let loc = FanLoc.mk file in
-  let chan = (open_in file) in
-  let stream = Stream.of_channel  chan in 
-  let stream = from_stream loc stream in begin 
-  try
-    Stream.iter (fun (t,loc) ->
-    match t with
-    |`EOI -> begin
-        close_in chan;
-        raise (Stream.Error "end");
-    end 
-    | _ ->  fprintf std_formatter "%a@ %a@."
-          FanToken.print t FanLoc.print loc) stream
-  with
-    Stream.Error _ -> close_in chan;
-  end ;;
 
 
-(* end *)
 }
 
