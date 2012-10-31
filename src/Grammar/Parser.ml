@@ -1,15 +1,15 @@
 
 open Structure;
-
+open LibUtil;
 open FanUtil;
 module Tools=Tools.Make (struct end);
-let loc_bp = Tools.get_cur_loc;
-let loc_ep = Tools.get_prev_loc;
+let get_cur_loc = Tools.get_cur_loc;
+let get_prev_loc = Tools.get_prev_loc;
 (* let drop_prev_loc = Tools.drop_prev_loc; *) (* FIXME unused *)
 
 let add_loc bp parse_fun strm =
   let x = parse_fun strm in
-  let ep = loc_ep strm in
+  let ep = get_prev_loc strm in
   let loc =
     if FanLoc.start_off bp > FanLoc.stop_off ep then
       (* If nothing has been consumed, create a 0-length location. *)
@@ -17,27 +17,6 @@ let add_loc bp parse_fun strm =
     else
       FanLoc.merge bp ep in
   (x, loc);
-
-
-  
-module StreamOrig = Stream;
-(* We don't want Stream's functions to be used implictly. *)
-module Stream = struct
-  type t 'a = StreamOrig.t 'a;
-  exception Failure = StreamOrig.Failure;
-  exception Error = StreamOrig.Error;
-  let peek = StreamOrig.peek;
-  let junk = StreamOrig.junk;
-  let dup strm = (* shadowing the old version, was used by [try_parser] *)
-      (* This version of peek_nth is off-by-one from Stream.peek_nth *)
-    let  rec loop n =   fun
-          [ [] -> None
-          | [x] -> if n = 0 then Some x else None
-          | [_ :: l] -> loop (n - 1) l ] in
-    let peek_nth n =
-      loop n (Stream.npeek (n + 1) strm) in 
-    Stream.from peek_nth;
-end;
 
 let try_parser ps strm =
   let strm' = Stream.dup strm in
@@ -47,7 +26,7 @@ let try_parser ps strm =
     [ Stream.Error _ | FanLoc.Exc_located _ (Stream.Error _) ->
         raise Stream.Failure
     | exc -> raise exc ] in begin 
-        njunk (StreamOrig.count strm') strm ;
+        njunk (Stream.count strm') strm ;
         r;
     end;
 
@@ -86,10 +65,10 @@ let continue entry loc a s son p1 = parser
   Action.mk (fun _ -> Action.getf act a);
 
 (* PR#4603, PR#4330, PR#4551:
-   Here loc_bp replaced get_loc_ep to fix all these bugs.
+   Here get_cur_loc replaced get_prev_loc to fix all these bugs.
    If you do change it again look at these bugs. *)
 let skip_if_empty bp strm =
-  if loc_bp strm = bp then
+  if get_cur_loc strm = bp then
     Action.mk (fun _ -> raise Stream.Failure)
   else
     raise Stream.Failure ;
@@ -132,7 +111,7 @@ let rec parser_of_tree entry nlevn alevn = fun
         let p1 = parser_of_tree entry nlevn alevn son in
         let p1 = parser_cont p1 entry nlevn alevn s son in
         fun strm ->
-          let bp = loc_bp strm in
+          let bp = get_cur_loc strm in
           match strm with parser
           [< a = ps; act = p1 bp a >] -> Action.getf act a
           | Some (tokl, last_tok, son) ->
@@ -150,7 +129,7 @@ let rec parser_of_tree entry nlevn alevn = fun
         let p1 = parser_cont p1 entry nlevn alevn s son in
         let p2 = parser_of_tree entry nlevn alevn bro in
         fun strm ->
-          let bp = loc_bp strm in
+          let bp = get_cur_loc strm in
           match strm with parser
           [ [< a = ps; act = p1 bp a >] -> Action.getf act a
           | [< a = p2 >] -> a ]
@@ -174,7 +153,7 @@ and parser_of_token_list p1 tokl =
         [ Some (tok, _) when tematch tok -> (njunk n strm ; Action.mk tok)
         | _ -> raise Stream.Failure ] in
         fun strm ->
-          let bp = loc_bp strm in
+          let bp = get_cur_loc strm in
           match strm with parser
           [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
@@ -194,7 +173,7 @@ and parser_of_token_list p1 tokl =
                     (njunk n strm ; Action.mk tok)
                 | _ -> raise Stream.Failure ] in
               fun strm ->
-                let bp = loc_bp strm in
+                let bp = get_cur_loc strm in
                 match strm with parser
                [< a = ps; act = p1 bp a >] -> Action.getf act a
           | _ ->
@@ -254,7 +233,7 @@ and parser_of_symbol entry nlevn = fun
       try_parser ps
   | `Stree t ->
       let pt = parser_of_tree entry 1 0 t in fun strm ->
-        let bp = loc_bp strm in
+        let bp = get_cur_loc strm in
         match strm with parser
         [< (act, loc) = add_loc bp pt >] ->
             Action.getf act loc
@@ -284,7 +263,7 @@ let rec start_parser_of_levels entry clevn = fun
           match levs with
           [ [] ->
             fun levn strm ->
-              let bp = loc_bp strm in
+              let bp = get_cur_loc strm in
               match strm with parser
               [< (act, loc) = add_loc bp p2; 'strm >] ->
                let a = Action.getf act loc in
@@ -294,7 +273,7 @@ let rec start_parser_of_levels entry clevn = fun
                     if levn > clevn then
                       p1 levn strm
                     else
-                      let bp = loc_bp strm in
+                      let bp = get_cur_loc strm in
                       match strm with parser
                       [ [< (act, loc) = add_loc bp p2 >] ->
                         let a = Action.getf act loc in

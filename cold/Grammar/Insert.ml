@@ -1,5 +1,8 @@
 open Structure
 open Format
+module Tools = Tools.Make(struct
+  
+  end)
 let is_before s1 s2 =
   match (s1, s2) with
   | ((`Skeyword _|`Stoken _),(`Skeyword _|`Stoken _)) -> false

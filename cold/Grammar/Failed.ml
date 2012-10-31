@@ -1,5 +1,8 @@
 open Structure
 open Format
+module Tools = Tools.Make(struct
+  
+  end)
 let name_of_descr = function | (`Antiquot,s) -> "$" ^ s | (_,s) -> s
 let name_of_symbol entry =
   function

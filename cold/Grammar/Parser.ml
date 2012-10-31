@@ -1,5 +1,9 @@
 open Structure
+open LibUtil
 open FanUtil
+module Tools = Tools.Make(struct
+  
+  end)
 let loc_bp = Tools.get_cur_loc
 let loc_ep = Tools.get_prev_loc
 let add_loc bp parse_fun strm =
@@ -10,20 +14,6 @@ let add_loc bp parse_fun strm =
     then FanLoc.join bp
     else FanLoc.merge bp ep in
   (x, loc)
-module StreamOrig = Stream
-module Stream = struct
-  type 'a t = 'a StreamOrig.t   exception Failure = StreamOrig.Failure
-  exception Error = StreamOrig.Error let peek = StreamOrig.peek
-  let junk = StreamOrig.junk
-  let dup strm =
-    let rec loop n =
-      function
-      | [] -> None
-      | x::[] -> if n = 0 then Some x else None
-      | _::l -> loop (n - 1) l in
-    let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
-    Stream.from peek_nth
-  end
 let try_parser ps strm =
   let strm' = Stream.dup strm in
   let r =
@@ -32,7 +22,7 @@ let try_parser ps strm =
     | Stream.Error _|FanLoc.Exc_located (_,Stream.Error _) ->
         raise Stream.Failure
     | exc -> raise exc in
-  njunk (StreamOrig.count strm') strm; r
+  njunk (Stream.count strm') strm; r
 let level_number entry lab =
   let rec lookup levn =
     function

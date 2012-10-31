@@ -1,4 +1,7 @@
 open Structure
+module Tools = Tools.Make(struct
+  
+  end)
 let delete_rule_in_tree entry =
   let rec delete_in_tree symbols tree =
     match (symbols, tree) with

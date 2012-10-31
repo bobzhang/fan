@@ -105,6 +105,14 @@ module Stream = struct
          let xs = __strm in
          Stream.lcons (fun _ -> f x) (Stream.slazy (fun _ -> map f xs)))
     | _ -> Stream.sempty
+  let dup strm =
+    let rec loop n =
+      function
+      | [] -> None
+      | x::[] -> if n = 0 then Some x else None
+      | _::l -> loop (n - 1) l in
+    let peek_nth n = loop n (Stream.npeek (n + 1) strm) in
+    Stream.from peek_nth
   end
 module ErrorMonad = struct
   type log = string   type 'a result =  

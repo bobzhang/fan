@@ -1,34 +1,16 @@
-val prefix_symbols : char list
-val infix_symbols : char list
-val operator_chars : char list
-val numeric_chars : char list
-val special_infix_strings : string list
-val fixity_of_string : string -> [> `Infix of string | `Prefix ]
-val view_fixity_of_exp :
-  Parsetree.expression -> [> `Infix of string | `Prefix ]
-val is_infix : [> `Infix of 'a ] -> bool
-val is_predef_option : Longident.t -> bool
+(***********************************************************************)
+(*                                                                     *)
+(*                                OCaml                                *)
+(*                                                                     *)
+(*            Hongbo Zhang (University of Pennsylvania)                *)
+(*                                                                     *)
+(*  Copyright 1996 Institut National de Recherche en Informatique et   *)
+(*  en Automatique.  All rights reserved.  This file is distributed    *)
+(*  under the terms of the Q Public License version 1.0.               *)
+(*                                                                     *)
+(***********************************************************************)
+
 type space_formatter = (unit, Format.formatter, unit) format
-val override : Asttypes.override_flag -> string
-val type_variance : bool * bool -> string
-type construct =
-    [ `cons of Parsetree.expression list
-    | `list of Parsetree.expression list
-    | `nil
-    | `normal
-    | `simple of Longident.t
-    | `tuple ]
-val view_expr :
-  Parsetree.expression ->
-  [> `cons of Parsetree.expression list
-   | `list of Parsetree.expression list
-   | `nil
-   | `normal
-   | `simple of Longident.t
-   | `tuple ]
-val is_simple_construct : construct -> bool
-val pp : Format.formatter -> ('a, Format.formatter, unit) format -> 'a
-val is_irrefut_patt : Parsetree.pattern -> bool
 class printer :
   unit ->
   object ('b)

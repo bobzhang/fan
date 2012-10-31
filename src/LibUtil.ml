@@ -160,6 +160,18 @@ module Stream = struct
   let rec map f = parser
     [ [< x; 'xs >] -> [< f x; 'map f xs >]
     | [< >] -> [< >] ];
+
+  (*  Used by [try_parser], very in-efficient 
+      This version of peek_nth is off-by-one from Stream.peek_nth *)      
+  let dup strm = 
+    let  rec loop n = fun
+      [ [] -> None
+      | [x] -> if n = 0 then Some x else None
+      | [_ :: l] -> loop (n - 1) l ] in
+    let peek_nth n =
+      loop n (Stream.npeek (n + 1) strm) in 
+    Stream.from peek_nth;
+      
    (* let rec filter f = parser *)
    (*  [ [< x; 'xs>] -> [<>]]    *)
   (* value rec map f = parser *)

@@ -6,7 +6,8 @@ module Make (U:sig end) = struct
   let empty_entry ename _ =
       raise (Stream.Error ("entry [" ^ ename ^ "] is empty"));
   
-  let keep_prev_loc strm =  match Stream.peek strm with
+  let keep_prev_loc (strm:('c * FanLoc.t) Stream.t ) : ('c * token_info) Stream.t =
+    match Stream.peek strm with
     [ None -> [< >]
     | Some (tok0,init_loc) ->
         let rec go prev_loc strm1 =
