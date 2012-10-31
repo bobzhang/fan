@@ -2,6 +2,7 @@
 open FanSig;
 open Format;
 open Structure;
+module Tools = Tools.Make (struct end);
 open Tools;
 
 type t 'a =internal_entry;

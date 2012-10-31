@@ -2,7 +2,7 @@
 (* module Print  = Print.Make (struct end); (\* FIXME later*\) *)
 open Structure;
 open Format;
-
+module Tools=Tools.Make(struct end);
 let name_of_descr = fun
   [(`Antiquot,s) -> "$"^s
   |(_,s) -> s ];
