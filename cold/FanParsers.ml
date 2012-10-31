@@ -7538,6 +7538,23 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                       (Ast.StAnt (_loc, (mk_anti n ~c:"str_item" s))
                       :'str_items )
                   | _ -> assert false)))])])) ());
+    Gram.extend (phrase :'phrase Gram.t  )
+      ((fun () -> (None, [(None, None,
+          [([`Snterm (Gram.obj (str_item :'str_item Gram.t  ));
+          `Snterm (Gram.obj (semi :'semi Gram.t  ))],
+          (Gram.mk_action
+             (fun _ ->
+                fun (st : 'str_item) ->
+                  fun (_loc : FanLoc.t ) -> (st :'phrase ))));
+          ([`Skeyword "#"; `Snterm (Gram.obj (a_LIDENT :'a_LIDENT Gram.t  ));
+          `Snterm (Gram.obj (opt_expr :'opt_expr Gram.t  )); `Skeyword ";;"],
+          (Gram.mk_action
+             (fun _ ->
+                fun (dp : 'opt_expr) ->
+                  fun (n : 'a_LIDENT) ->
+                    fun _ ->
+                      fun (_loc : FanLoc.t ) -> (Ast.StDir (_loc, n, dp)
+                        :'phrase ))))])])) ());
     Gram.extend (top_phrase :'top_phrase Gram.t  )
       ((fun () -> (None, [(None, None,
           [([`Stoken (((function | `EOI -> true | _ -> false)), (`Normal,
@@ -7580,23 +7597,6 @@ module MakeRevisedParser(Syntax:Sig.Camlp4Syntax) = struct
                     fun _ ->
                       fun (_loc : FanLoc.t ) -> (([Ast.StDir (_loc, n, dp)],
                         (stopped_at _loc)) :'use_file ))))])])) ());
-    Gram.extend (phrase :'phrase Gram.t  )
-      ((fun () -> (None, [(None, None,
-          [([`Snterm (Gram.obj (str_item :'str_item Gram.t  ));
-          `Snterm (Gram.obj (semi :'semi Gram.t  ))],
-          (Gram.mk_action
-             (fun _ ->
-                fun (st : 'str_item) ->
-                  fun (_loc : FanLoc.t ) -> (st :'phrase ))));
-          ([`Skeyword "#"; `Snterm (Gram.obj (a_LIDENT :'a_LIDENT Gram.t  ));
-          `Snterm (Gram.obj (opt_expr :'opt_expr Gram.t  )); `Skeyword ";;"],
-          (Gram.mk_action
-             (fun _ ->
-                fun (dp : 'opt_expr) ->
-                  fun (n : 'a_LIDENT) ->
-                    fun _ ->
-                      fun (_loc : FanLoc.t ) -> (Ast.StDir (_loc, n, dp)
-                        :'phrase ))))])])) ());
     Gram.extend (a_INT :'a_INT Gram.t  )
       ((fun () -> (None, [(None, None,
           [([`Stoken (((function | `INT (_,_) -> true | _ -> false)),

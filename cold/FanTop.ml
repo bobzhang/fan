@@ -29,6 +29,18 @@ let toplevel_phrase token_stream =
           (fun t -> fun filter -> filter t) str_item in
       Ast2pt.phrase str_item
   | None  -> raise End_of_file
+let fake token_stream =
+  (try
+     Stream.iter
+       (fun (tok,_) ->
+          if tok = (`INT (3, "3"))
+          then raise Not_found
+          else
+            Format.fprintf Format.std_formatter "@[%a@]@." FanToken.print tok)
+       token_stream
+   with | Not_found  -> ());
+  prerr_endline "got it";
+  Parsetree.Ptop_dir ("pwd", Parsetree.Pdir_none)
 let use_file token_stream =
   let (pl0,eoi) =
     let rec loop () =
@@ -73,3 +85,4 @@ let _=
     pa_m (module P)
 let normal () = Toploop.parse_toplevel_phrase := Parse.toplevel_phrase
 let revise () = Toploop.parse_toplevel_phrase := revise_parser
+let token () = Toploop.parse_toplevel_phrase := (wrap fake)
