@@ -367,5 +367,5 @@ let error_report (loc,s) = begin
   prerr_endline (sprintf "err: ^%s^" err_location);
 end ;
 
-
+let string_loc = mk "<string>";
     

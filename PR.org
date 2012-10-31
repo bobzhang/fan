@@ -27,7 +27,7 @@
 
   #+END_SRC
 
-  infix_kwds_filter
+  infix_kwds_filter -> add empty stream patt
   
 
 * 0002
@@ -35,3 +35,5 @@
 
 * 0003
   [Exit] exception is a special exception
+
+* 0004 EOI

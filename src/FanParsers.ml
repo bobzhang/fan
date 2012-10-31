@@ -1928,6 +1928,8 @@ New syntax:\
     opt_expr:
       [ [ expr{e} -> e
         | -> <:expr<>> ] ]
+
+    (* mli entrance *)    
     interf:
       [ [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
             ([ <:sig_item< # $n $dp >> ], stopped_at _loc)
@@ -1940,6 +1942,8 @@ New syntax:\
         | `ANTIQUOT ((""|"sigi"|"anti"|"list" as n),s); semi; SELF{sg} ->
             <:sig_item< $(anti:mk_anti n ~c:"sig_item" s); $sg >> 
         | LIST0 [ sig_item{sg}; semi -> sg ]{l} -> Ast.sgSem_of_list l  ] ]
+
+    (* ml entrance *)    
     implem:
       [ [ "#"; a_LIDENT{n}; opt_expr{dp}; semi ->
             ([ <:str_item< # $n $dp >> ], stopped_at _loc)

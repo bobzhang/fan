@@ -292,3 +292,11 @@ end
 let h () =
   match x with
   |{x=y;_} as ( * )-> x 
+
+
+let a = 3 + (-1)
+
+let u a b = (or) a b   
+
+
+let f g h = ( * ) 3  4 1 2    

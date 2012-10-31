@@ -187,7 +187,8 @@ module Camlp4Bin
       let gimd = fun
         [ <:str_item@loc< # $n $str:s >> -> Some (loc, n, s)
         | _ -> None ];
-      
+
+      (* [entrance] *)  
       let process_intf dyn_loader name =
         process dyn_loader name PreCast.CurrentParser.parse_interf PreCast.CurrentPrinter.print_interf
                 (new Camlp4Ast.clean_ast)#sig_item

@@ -1,2 +1,3 @@
+src/FanLexUtil.cmo
 src/Fan.byte
 src/FanTop.cma
